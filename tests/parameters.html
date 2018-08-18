@@ -1,0 +1,68 @@
+<html>
+  <head>
+    <!-- Material Design Lite -->
+    <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <!-- Material Design icon font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="./parameters.css">
+
+    <script src="http://localhost:3150/VisualiveEngineClient/lib/Visualive.js"></script>
+    <script src="http://localhost:3150/VisualiveUI/lib/VisualiveUI-dev.js"></script>
+    <script src="../src/ui/ParameterContainer.js"></script>
+    <script src="../src/ui/parameter-widgets/BaseWidget.js"></script>
+    <script src="../src/ui/parameter-widgets/StringWidget.js"></script>
+    <script src="../src/ui/parameter-widgets/NumberWidget.js"></script>
+    <script src="../src/ui/parameter-widgets/Vec2Widget.js"></script>
+  </head>
+  <body>
+    <!-- Wide card with share menu button -->
+    <div class="vlparam-card mdl-card mdl-shadow--4dp">
+      <div class="mdl-card__title">
+        <h2 class="mdl-card__title-text">Visualive Parameter Widgets</h2>
+      </div>
+      <div class="mdl-card__actions mdl-card--border" id='parameters'>
+      </div>
+    </div>
+        <script type="text/javascript">
+          const parametersElem = document.getElementById("parameters");
+
+
+          // https://webdesign.tutsplus.com/tutorials/building-responsive-forms-with-flexbox--cms-26767
+          const parameterContainer = new ParameterContainer(parametersElem);
+
+          {
+            const parameter = new Visualive.StringParameter('Name', 'Foo');
+            const widget = new StringWidget(parameter);
+            parameterContainer.addWidget(widget)
+          }
+          {
+            const parameter = new Visualive.NumberParameter('Number');
+            const widget = new NumberWidget(parameter);
+            parameterContainer.addWidget(widget)
+          }
+          {
+            const parameter = new Visualive.NumberParameter('Smooth', 10);
+            parameter.setRange([0, 30])
+
+            const widget = new NumberWidget(parameter);
+            parameterContainer.addWidget(widget)
+          }
+          {
+            const parameter = new Visualive.NumberParameter('Stepped', 5);
+            parameter.setRange([0, 30])
+            parameter.setStep(4)
+
+            const widget = new NumberWidget(parameter);
+            parameterContainer.addWidget(widget)
+          }
+
+          {
+            const parameter = new Visualive.Vec2Parameter('Vec2 Parameter', new Visualive.Vec2(2, 3));
+            const widget = new Vec2Widget(parameter);
+            parameterContainer.addWidget(widget)
+          }
+
+        </script> 
+  </body>
+</html>
