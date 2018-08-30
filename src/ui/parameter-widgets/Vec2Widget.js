@@ -1,19 +1,13 @@
 
-class Vec2Widget {
-  constructor(parameter){
+class Vec2Widget extends BaseWidget {
+  constructor(parameter, parentDomElem){
 
-    this.labelElem = document.createElement('label');
-    this.labelElem.setAttribute('for', parameter.getName() );
-    this.labelElem.appendChild(document.createTextNode(parameter.getName()));
+    const container = document.createElement('div');
+    container.className = 'container';
 
-
-    this.container = document.createElement('div');
-    this.container.className = 'container';
-
-    this.ul = document.createElement('ul');
-    this.ul.className = 'flex-editvalues';
-    this.container.appendChild(this.ul);
-
+    const ul = document.createElement('ul');
+    ul.className = 'flex-editvalues';
+    container.appendChild(ul);
 
     const xField = document.createElement('input');
     // xField.className = 'mdl-textfield__input'
@@ -26,7 +20,7 @@ class Vec2Widget {
 
     const xli = document.createElement("li");
     xli.appendChild(xField);
-    this.ul.appendChild(xli);
+    ul.appendChild(xli);
 
     const yField = document.createElement('input');
     // yField.className = 'mdl-textfield__input'
@@ -39,28 +33,38 @@ class Vec2Widget {
 
     const yli = document.createElement("li");
     yli.appendChild(yField);
-    this.ul.appendChild(yli);
+    ul.appendChild(yli);
 
-    let settingParameterValue = false;
+    parentDomElem.appendChild(container);
+
+    /////////////////////////////
+    // Handle Changes.
+
+    let change = undefined;
     parameter.valueChanged.connect(()=>{
-      if(!settingParameterValue){
+      if(!change){
         const vec2 = parameter.getValue();
         xField.value = vec2.x
         yField.value = vec2.y
       }
     })
-    const updateParam = ()=>{
-      settingParameterValue = true;
-      parameter.setValue(new Visualive.Vec2(xField.valueAsNumber, yField.valueAsNumber))
-      settingParameterValue = false;
+    const valueChange = ()=>{
+      if(!change) {
+        change = new ParameterValueChange(parameter);
+        undoRedoManager.addChange(change)
+      }
+      change.setValue(new Visualive.Vec2(xField.valueAsNumber, yField.valueAsNumber))
     }
-    xField.addEventListener('input', updateParam);
-    yField.addEventListener('input', updateParam);
-  }
-
-  setParentDomElem(parentDomElem){
-    this.parentDomElem = parentDomElem;
-    parentDomElem.appendChild(this.labelElem);
-    parentDomElem.appendChild(this.container);
+    const valueChangeEnd = ()=>{
+      valueChange()
+      change = undefined;
+    }
+    xField.addEventListener('input', valueChange);
+    yField.addEventListener('input', valueChange);
+    xField.addEventListener('change', valueChangeEnd);
+    yField.addEventListener('change', valueChangeEnd);
   }
 }
+
+
+parameterWidgetFactory.registerWidget(Vec2Widget, (p) => p.constructor.name == 'Vec2Parameter')

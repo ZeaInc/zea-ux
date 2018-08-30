@@ -1,5 +1,5 @@
 class ParameterContainer {
-  constructor(rootElement){
+  constructor(rootElement, parameterOwner){
     this.rootElement = rootElement;
     this.container = document.createElement('div');
     this.container.className = 'container';
@@ -10,15 +10,31 @@ class ParameterContainer {
     this.container.appendChild(this.ul);
 
     this.widgets = [];
+    for(let parameter of parameterOwner.getParameters()) {
+       this.addParameterWidget(parameter)
+    }
   }
+
   getDomElement() {
     return this.container;
   }
 
-  addWidget(widget) {
+  addParameterWidget(parameter, widget) {
+
+
     var li = document.createElement("li");
     this.ul.appendChild(li);
-    widget.setParentDomElem(li);
+
+    const labelElem = document.createElement('label');
+    labelElem.setAttribute('for', parameter.getName() );
+    labelElem.appendChild(document.createTextNode(parameter.getName()));
+    li.appendChild(labelElem);
+    
+    const widget = parameterWidgetFactory.constructWidget(parameter, li);
+    if(!widget) {
+      console.warn("Unable to display parameter:" + parameter.getName())
+      return
+    }
     this.widgets.push(widget);
   }
 }

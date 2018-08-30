@@ -9,11 +9,15 @@
 
     <script src="http://localhost:3150/VisualiveEngineClient/lib/Visualive.js"></script>
     <script src="http://localhost:3150/VisualiveUI/lib/VisualiveUI-dev.js"></script>
+    <script src="../deps/iro.min.js"></script>
     <script src="../src/ui/ParameterContainer.js"></script>
+    <script src="../src/ui/ParameterWidgetFactory.js"></script>
     <script src="../src/ui/parameter-widgets/BaseWidget.js"></script>
+    <script src="../src/ui/parameter-widgets/BooleanWidget.js"></script>
     <script src="../src/ui/parameter-widgets/StringWidget.js"></script>
     <script src="../src/ui/parameter-widgets/NumberWidget.js"></script>
     <script src="../src/ui/parameter-widgets/Vec2Widget.js"></script>
+    <script src="../src/ui/parameter-widgets/ColorWidget.js"></script>
   </head>
   <body>
     <!-- Wide card with share menu button -->
@@ -24,44 +28,29 @@
       <div class="mdl-card__actions mdl-card--border" id='parameters'>
       </div>
     </div>
+    <div class="vlparam-card mdl-card mdl-shadow--4dp">
+      <div class="mdl-card__title">
+        <h2 class="mdl-card__title-text">GeomItem</h2>
+      </div>
+      <div class="mdl-card__actions mdl-card--border" id='geomitem-parameters'>
+      </div>
+    </div>
         <script type="text/javascript">
-          const parametersElem = document.getElementById("parameters");
 
+          const parameterOwner = new Visualive.ParameterOwner();
+          parameterOwner.addParameter(new Visualive.StringParameter('Name', 'Foo'));
+          parameterOwner.addParameter(new Visualive.NumberParameter('Number', 5));
+          parameterOwner.addParameter(new Visualive.NumberParameter('Smooth', 10).setRange([0, 30]));
+          parameterOwner.addParameter(new Visualive.NumberParameter('Stepped', 6).setRange([0, 30]).setStep(5))
+          parameterOwner.addParameter(new Visualive.Vec2Parameter('Vec2 Parameter', new Visualive.Vec2(2, 3)))
+          parameterOwner.addParameter(new Visualive.ColorParameter('Color', new Visualive.Color(1, 1, 0, 1)))
 
           // https://webdesign.tutsplus.com/tutorials/building-responsive-forms-with-flexbox--cms-26767
-          const parameterContainer = new ParameterContainer(parametersElem);
+          const parameterContainer = new ParameterContainer(document.getElementById("parameters"), parameterOwner);
 
-          {
-            const parameter = new Visualive.StringParameter('Name', 'Foo');
-            const widget = new StringWidget(parameter);
-            parameterContainer.addWidget(widget)
-          }
-          {
-            const parameter = new Visualive.NumberParameter('Number');
-            const widget = new NumberWidget(parameter);
-            parameterContainer.addWidget(widget)
-          }
-          {
-            const parameter = new Visualive.NumberParameter('Smooth', 10);
-            parameter.setRange([0, 30])
 
-            const widget = new NumberWidget(parameter);
-            parameterContainer.addWidget(widget)
-          }
-          {
-            const parameter = new Visualive.NumberParameter('Stepped', 5);
-            parameter.setRange([0, 30])
-            parameter.setStep(4)
-
-            const widget = new NumberWidget(parameter);
-            parameterContainer.addWidget(widget)
-          }
-
-          {
-            const parameter = new Visualive.Vec2Parameter('Vec2 Parameter', new Visualive.Vec2(2, 3));
-            const widget = new Vec2Widget(parameter);
-            parameterContainer.addWidget(widget)
-          }
+          const geomItem = new Visualive.GeomItem();
+          const parameterContainer2 = new ParameterContainer(document.getElementById("geomitem-parameters"), geomItem);
 
         </script> 
   </body>

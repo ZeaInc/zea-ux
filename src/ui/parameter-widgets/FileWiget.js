@@ -1,5 +1,7 @@
 
-class StringWidget extends BaseWidget {
+
+
+class FileWidget extends BaseWidget {
   constructor(parameter, parentDomElem){
     super(parameter)
 
@@ -7,7 +9,7 @@ class StringWidget extends BaseWidget {
     input.className = 'mdl-textfield__input'
     input.setAttribute('id', parameter.getName() );
     input.setAttribute('type', 'text')
-    input.setAttribute('value', parameter.getValue() )
+    input.setAttribute('value', parameter.getFilepath() )
     input.setAttribute('tabindex', 0 )
 
     parentDomElem.appendChild(inputOwner);
@@ -37,8 +39,6 @@ class StringWidget extends BaseWidget {
       change = undefined;
     });
   }
-
 }
 
-
-parameterWidgetFactory.registerWidget(StringWidget, (p) => p.constructor.name == 'StringParameter')
+parameterWidgetFactory.registerWidget(FileWidget, (p) => p.constructor.name == 'FilePathParameter')
