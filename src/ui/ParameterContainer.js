@@ -1,5 +1,7 @@
+import parameterWidgetFactory from '../ui/ParameterWidgetFactory';
+
 class ParameterContainer {
-  constructor(rootElement, parameterOwner){
+  constructor(rootElement, parameterOwner) {
     this.rootElement = rootElement;
     this.container = document.createElement('div');
     this.container.className = 'container';
@@ -10,8 +12,8 @@ class ParameterContainer {
     this.container.appendChild(this.ul);
 
     this.widgets = [];
-    for(let parameter of parameterOwner.getParameters()) {
-       this.addParameterWidget(parameter)
+    for (let parameter of parameterOwner.getParameters()) {
+      this.addParameterWidget(parameter);
     }
   }
 
@@ -19,22 +21,24 @@ class ParameterContainer {
     return this.container;
   }
 
-  addParameterWidget(parameter, widget) {
+  addParameterWidget(parameter) {
+    const parameterName = parameter.getName();
 
-
-    var li = document.createElement("li");
+    const li = document.createElement('li');
     this.ul.appendChild(li);
 
     const labelElem = document.createElement('label');
-    labelElem.setAttribute('for', parameter.getName() );
-    labelElem.appendChild(document.createTextNode(parameter.getName()));
+    labelElem.setAttribute('for', parameterName);
+    labelElem.appendChild(document.createTextNode(parameterName));
     li.appendChild(labelElem);
-    
+
     const widget = parameterWidgetFactory.constructWidget(parameter, li);
-    if(!widget) {
-      console.warn("Unable to display parameter:" + parameter.getName())
-      return
+    if (!widget) {
+      console.warn(`Unable to display parameter '${parameterName}'`);
+      return;
     }
     this.widgets.push(widget);
   }
 }
+
+export default ParameterContainer;

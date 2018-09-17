@@ -1,7 +1,7 @@
+import BaseWidget from './BaseWidget';
 
 class Vec2Widget extends BaseWidget {
-  constructor(parameter, parentDomElem){
-
+  constructor(parameter, parentDomElem) {
     const container = document.createElement('div');
     container.className = 'container';
 
@@ -11,27 +11,27 @@ class Vec2Widget extends BaseWidget {
 
     const xField = document.createElement('input');
     // xField.className = 'mdl-textfield__input'
-    xField.setAttribute('id', parameter.getName() );
-    xField.setAttribute('type', 'number')
-    xField.setAttribute('pattern', '-?[0-9]*(\.[0-9]+)?')
-    xField.setAttribute('value', parameter.getValue().x )
-    xField.setAttribute('tabindex', 0 )
-    xField.style.width = '50%'
+    xField.setAttribute('id', parameter.getName());
+    xField.setAttribute('type', 'number');
+    xField.setAttribute('pattern', '-?[0-9]*(.[0-9]+)?');
+    xField.setAttribute('value', parameter.getValue().x);
+    xField.setAttribute('tabindex', 0);
+    xField.style.width = '50%';
 
-    const xli = document.createElement("li");
+    const xli = document.createElement('li');
     xli.appendChild(xField);
     ul.appendChild(xli);
 
     const yField = document.createElement('input');
     // yField.className = 'mdl-textfield__input'
-    yField.setAttribute('id', parameter.getName() );
-    yField.setAttribute('type', 'number')
-    yField.setAttribute('pattern', '-?[0-9]*(\.[0-9]+)?')
-    yField.setAttribute('value', parameter.getValue().y )
-    yField.setAttribute('tabindex', 0 )
-    yField.style.width = '50%'
+    yField.setAttribute('id', parameter.getName());
+    yField.setAttribute('type', 'number');
+    yField.setAttribute('pattern', '-?[0-9]*(.[0-9]+)?');
+    yField.setAttribute('value', parameter.getValue().y);
+    yField.setAttribute('tabindex', 0);
+    yField.style.width = '50%';
 
-    const yli = document.createElement("li");
+    const yli = document.createElement('li');
     yli.appendChild(yField);
     ul.appendChild(yli);
 
@@ -41,24 +41,26 @@ class Vec2Widget extends BaseWidget {
     // Handle Changes.
 
     let change = undefined;
-    parameter.valueChanged.connect(()=>{
-      if(!change){
+    parameter.valueChanged.connect(() => {
+      if (!change) {
         const vec2 = parameter.getValue();
-        xField.value = vec2.x
-        yField.value = vec2.y
+        xField.value = vec2.x;
+        yField.value = vec2.y;
       }
-    })
-    const valueChange = ()=>{
-      if(!change) {
+    });
+    const valueChange = () => {
+      if (!change) {
         change = new ParameterValueChange(parameter);
-        undoRedoManager.addChange(change)
+        undoRedoManager.addChange(change);
       }
-      change.setValue(new Visualive.Vec2(xField.valueAsNumber, yField.valueAsNumber))
-    }
-    const valueChangeEnd = ()=>{
-      valueChange()
+      change.setValue(
+        new Visualive.Vec2(xField.valueAsNumber, yField.valueAsNumber)
+      );
+    };
+    const valueChangeEnd = () => {
+      valueChange();
       change = undefined;
-    }
+    };
     xField.addEventListener('input', valueChange);
     yField.addEventListener('input', valueChange);
     xField.addEventListener('change', valueChangeEnd);
@@ -66,5 +68,7 @@ class Vec2Widget extends BaseWidget {
   }
 }
 
-
-parameterWidgetFactory.registerWidget(Vec2Widget, (p) => p.constructor.name == 'Vec2Parameter')
+parameterWidgetFactory.registerWidget(
+  Vec2Widget,
+  p => p.constructor.name == 'Vec2Parameter'
+);

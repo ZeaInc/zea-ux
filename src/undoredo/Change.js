@@ -1,15 +1,11 @@
 class Change {
+  constructor(name) {
+    this.name = name;
+  }
 
-	constructor(name) {
-		this.name = name;
-	}
+  undo() {}
 
-	undo() {
-
-	}
-
-	redo() {
-
-	}
-
+  redo() {}
 }
+
+export default Change;
