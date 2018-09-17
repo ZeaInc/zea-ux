@@ -1,33 +1,28 @@
-
-import {
-    undoRedoManager,
-    ParameterValueChange
-} from '../undoredo';
+import parameterWidgetFactory from '../ParameterWidgetFactory';
+import undoRedoManager from '../../undoredo/UndoRedoManager';
+import ParameterValueChange from '../../undoredo/ParameterValueChange';
 
 class NumberWidget {
-  constructor(parameter, parentDomElem){
-
+  constructor(parameter, parentDomElem) {
     const range = parameter.getRange();
     let input = document.createElement('input');
-    if(range) {
+    if (range) {
       input.className = 'mdl-slider mdl-js-slider';
-      input.setAttribute('id', parameter.getName() );
-      input.setAttribute('type', 'range')
-      input.setAttribute('min', range[0] )
-      input.setAttribute('max', range[1] )
-      input.setAttribute('value', parameter.getValue() )
-      const step = parameter.getStep()
-      if(step)
-        input.setAttribute('step', step )
-      input.setAttribute('tabindex', 0 )
-    }
-    else {
-      input.className = 'mdl-textfield__input'
-      input.setAttribute('id', parameter.getName() );
-      input.setAttribute('type', 'number')
-      input.setAttribute('pattern', '-?[0-9]*(\.[0-9]+)?')
-      input.setAttribute('value', parameter.getValue() )
-      input.setAttribute('tabindex', 0 )
+      input.setAttribute('id', parameter.getName());
+      input.setAttribute('type', 'range');
+      input.setAttribute('min', range[0]);
+      input.setAttribute('max', range[1]);
+      input.setAttribute('value', parameter.getValue());
+      const step = parameter.getStep();
+      if (step) input.setAttribute('step', step);
+      input.setAttribute('tabindex', 0);
+    } else {
+      input.className = 'mdl-textfield__input';
+      input.setAttribute('id', parameter.getName());
+      input.setAttribute('type', 'number');
+      input.setAttribute('pattern', '-?[0-9]*(.[0-9]+)?');
+      input.setAttribute('value', parameter.getValue());
+      input.setAttribute('tabindex', 0);
     }
     parentDomElem.appendChild(input);
     componentHandler.upgradeElement(input);
@@ -36,26 +31,28 @@ class NumberWidget {
     // Handle Changes.
 
     let change = undefined;
-    parameter.valueChanged.connect(()=>{
-      if(!change)
-        input.value = parameter.getValue();
-    })
-    input.addEventListener('input', ()=>{
-      if(!change) {
-        change = new ParameterValueChange(parameter);
-        undoRedoManager.addChange(change)
-      }
-      change.setValue(input.valueAsNumber)
+    parameter.valueChanged.connect(() => {
+      if (!change) input.value = parameter.getValue();
     });
-    input.addEventListener('change', ()=>{
-      if(!change) {
+    input.addEventListener('input', () => {
+      if (!change) {
         change = new ParameterValueChange(parameter);
-        undoRedoManager.addChange(change)
+        undoRedoManager.addChange(change);
       }
-      change.setValue(input.valueAsNumber)
+      change.setValue(input.valueAsNumber);
+    });
+    input.addEventListener('change', () => {
+      if (!change) {
+        change = new ParameterValueChange(parameter);
+        undoRedoManager.addChange(change);
+      }
+      change.setValue(input.valueAsNumber);
       change = undefined;
     });
   }
 }
 
-parameterWidgetFactory.registerWidget(NumberWidget, (p) => p.constructor.name == 'NumberParameter')
+parameterWidgetFactory.registerWidget(
+  NumberWidget,
+  p => p.constructor.name == 'NumberParameter'
+);

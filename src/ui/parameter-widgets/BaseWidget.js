@@ -1,13 +1,14 @@
-
 class BaseWidget {
-  constructor(parameter){
+  constructor(parameter) {
     this.labelElem = document.createElement('label');
-    this.labelElem.setAttribute('for', parameter.getName() );
+    this.labelElem.setAttribute('for', parameter.getName());
     this.labelElem.appendChild(document.createTextNode(parameter.getName()));
   }
 
-  setParentDomElem(parentDomElem){
+  setParentDomElem(parentDomElem) {
     this.parentDomElem = parentDomElem;
     parentDomElem.appendChild(this.labelElem);
   }
 }
+
+export default BaseWidget;
