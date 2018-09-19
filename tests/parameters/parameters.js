@@ -1,5 +1,4 @@
-import ParameterContainer from '@visualive/ux';
-import * as widgets from '@Visualive/ux';
+import { ParameterContainer, undoRedoManager } from '@Visualive/ux';
 
 const parameterOwner = new Visualive.ParameterOwner();
 
@@ -29,3 +28,9 @@ const parameterContainer2 = new ParameterContainer(
   document.getElementById('geomitem-parameters'),
   geomItem
 );
+
+document.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'z') {
+    undoRedoManager.undo();
+  }
+});

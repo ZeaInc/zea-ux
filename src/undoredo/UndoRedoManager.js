@@ -12,7 +12,7 @@ class UndoRedoManager {
   undo() {
     if (this.__undoStack.length > 0) {
       const change = this.__undoStack.pop();
-      change.redo();
+      change.undo();
       this.__redoStack.push(change);
     }
   }
@@ -26,6 +26,4 @@ class UndoRedoManager {
   }
 }
 
-const undoRedoManager = new UndoRedoManager();
-
-export default undoRedoManager;
+export default new UndoRedoManager();

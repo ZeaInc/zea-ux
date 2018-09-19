@@ -9,7 +9,7 @@ class ParameterValueChange extends Change {
   }
 
   setValue(value) {
-    this.__param.setValue(param);
+    this.__param.setValue(value);
     this.__newValue = value;
   }
 
