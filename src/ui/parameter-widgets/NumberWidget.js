@@ -31,9 +31,11 @@ class NumberWidget {
     // Handle Changes.
 
     let change = undefined;
+
     parameter.valueChanged.connect(() => {
       if (!change) input.value = parameter.getValue();
     });
+
     input.addEventListener('input', () => {
       if (!change) {
         change = new ParameterValueChange(parameter);
@@ -41,6 +43,7 @@ class NumberWidget {
       }
       change.setValue(input.valueAsNumber);
     });
+
     input.addEventListener('change', () => {
       if (!change) {
         change = new ParameterValueChange(parameter);
