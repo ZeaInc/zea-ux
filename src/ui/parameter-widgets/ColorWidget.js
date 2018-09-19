@@ -1,19 +1,19 @@
+import iro from '@jaames/iro';
+
 import BaseWidget from './BaseWidget';
 
-import { undoRedoManager, ParameterValueChange } from '../undoredo';
-
-// TODO: build as lib
-// import iro from "@jaames/iro";
+import parameterWidgetFactory from '../ParameterWidgetFactory';
+import undoRedoManager from '../../undoredo/UndoRedoManager';
+import ParameterValueChange from '../../undoredo/ParameterValueChange';
 
 class ColorWidget extends BaseWidget {
   constructor(parameter, parentDomElem) {
     super(parameter);
 
     const colorPicker = new iro.ColorPicker(parentDomElem, {
-      // color picker options
-      // Option guide: https://rakujira.jp/projects/iro/docs/guide.html#Color-Picker-Options
-      width: 320,
-      height: 320,
+      // Color picker options:
+      // https://rakujira.jp/projects/iro/docs/guide.html#Color-Picker-Options
+      width: 200,
       color: { r: 255, g: 0, b: 0 },
       anticlockwise: true,
       borderWidth: 1,
@@ -24,6 +24,7 @@ class ColorWidget extends BaseWidget {
     // Handle Changes.
 
     let change = undefined;
+
     parameter.valueChanged.connect(() => {
       if (!change) {
         const col = parameter.getValue();
@@ -34,14 +35,21 @@ class ColorWidget extends BaseWidget {
         };
       }
     });
+
     colorPicker.on('input:start', () => {
       change = new ParameterValueChange(parameter);
       undoRedoManager.addChange(change);
     });
+
     colorPicker.on('input:end', () => {
       change = undefined;
     });
+
     colorPicker.on('color:change', (color, changes) => {
+      if (!change) {
+        change = new ParameterValueChange(parameter);
+        undoRedoManager.addChange(change);
+      }
       const rgb = colorPicker.color.rgb;
       change.setValue(
         new Visualive.Color(rgb.r / 255, rgb.g / 255, rgb.b / 255)

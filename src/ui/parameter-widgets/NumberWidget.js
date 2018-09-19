@@ -1,9 +1,13 @@
+import BaseWidget from './BaseWidget';
+
 import parameterWidgetFactory from '../ParameterWidgetFactory';
 import undoRedoManager from '../../undoredo/UndoRedoManager';
 import ParameterValueChange from '../../undoredo/ParameterValueChange';
 
-class NumberWidget {
+class NumberWidget extends BaseWidget {
   constructor(parameter, parentDomElem) {
+    super(parameter)
+
     const range = parameter.getRange();
     let input = document.createElement('input');
     if (range) {

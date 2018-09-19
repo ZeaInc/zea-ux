@@ -1,7 +1,13 @@
 import BaseWidget from './BaseWidget';
 
+import parameterWidgetFactory from '../ParameterWidgetFactory';
+import undoRedoManager from '../../undoredo/UndoRedoManager';
+import ParameterValueChange from '../../undoredo/ParameterValueChange';
+
 class Vec2Widget extends BaseWidget {
   constructor(parameter, parentDomElem) {
+    super(parameter)
+
     const container = document.createElement('div');
     container.className = 'container';
 
@@ -16,7 +22,7 @@ class Vec2Widget extends BaseWidget {
     xField.setAttribute('pattern', '-?[0-9]*(.[0-9]+)?');
     xField.setAttribute('value', parameter.getValue().x);
     xField.setAttribute('tabindex', 0);
-    xField.style.width = '50%';
+    xField.style.width = '100%';
 
     const xli = document.createElement('li');
     xli.appendChild(xField);
@@ -29,7 +35,7 @@ class Vec2Widget extends BaseWidget {
     yField.setAttribute('pattern', '-?[0-9]*(.[0-9]+)?');
     yField.setAttribute('value', parameter.getValue().y);
     yField.setAttribute('tabindex', 0);
-    yField.style.width = '50%';
+    yField.style.width = '100%';
 
     const yli = document.createElement('li');
     yli.appendChild(yField);
