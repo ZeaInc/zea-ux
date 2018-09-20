@@ -1,6 +1,5 @@
 class TreeItemElement {
-
-  constructor(parentElement, treeItem, expanded=false){
+  constructor(parentElement, treeItem, expanded = false) {
     this.parentElement = parentElement;
     this.treeItem = treeItem;
 
@@ -13,43 +12,34 @@ class TreeItemElement {
     this.ul = document.createElement('ul');
     this.ul.className = 'flex-outer';
     this.li.appendChild(this.ul);
-    
+
     this.childElements = [];
     this._expanded = false;
     const children = this.treeItem.getChildren();
-    if(children.length > 0) {
+    if (children.length > 0) {
       this.expandBtn = document.createElement('button');
       this.li.appendChild(this.expandBtn);
-      this.expandBtn.addEventListener('click', ()=>{
-        if(this._expanded)
-          this.collapse();
-        else
-          this.expand();
+      this.expandBtn.addEventListener('click', () => {
+        if (this._expanded) this.collapse();
+        else this.expand();
       });
 
-      if(expanded) {
+      if (expanded) {
         this.expand();
-      }
-      else {
+      } else {
         this.expand.innerHTML = '+';
       }
     }
 
-    this.treeItem.childAdded.connect((childItem, index)=>{
-
-
-    });
-    this.treeItem.childRemoved.connect((childItem, index)=>{
-
-
-    });
+    this.treeItem.childAdded.connect((childItem, index) => {});
+    this.treeItem.childRemoved.connect((childItem, index) => {});
   }
 
-  expand(){
-    if(!this._expanded) {
+  expand() {
+    if (!this._expanded) {
       const children = this.treeItem.getChildren();
-      for(let child of children) {
-        const childTreeItem = new TreeItemElement(this.ul, child)
+      for (let child of children) {
+        const childTreeItem = new TreeItemElement(this.ul, child);
         this.childElements.push(childTreeItem);
       }
       this._expanded = true;
@@ -57,15 +47,15 @@ class TreeItemElement {
     }
   }
 
-  collapse(){
+  collapse() {
     this.expandBtn.innerHTML = '+';
-    this._expanded = false  ;
+    this._expanded = false;
   }
 }
 
 class SceneTreeView {
-  constructor(parentElement, rootTreeItem){
-    console.log("SceneTreeView")
+  constructor(parentElement, rootTreeItem) {
+    console.log('SceneTreeView');
     this.parentElement = parentElement;
     this.container = document.createElement('div');
     this.container.className = 'container';
@@ -81,5 +71,4 @@ class SceneTreeView {
   getDomElement() {
     return this.container;
   }
-
 }

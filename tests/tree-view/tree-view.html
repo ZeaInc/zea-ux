@@ -29,18 +29,14 @@
       <div class="mdl-card__actions mdl-card--border" id='vlw-tree'>
       </div>
     </div>
-        <script type="text/javascript">
+    <script type="text/javascript">
+      const rootItem = new Visualive.TreeItem('root');
+      const childItem1 = rootItem.addChild(new Visualive.TreeItem('child1'));
+      const childItem2 = rootItem.addChild(new Visualive.TreeItem('child2'));
+      const geomItem =  childItem2.addChild(new Visualive.GeomItem());
 
-          const rootItem = new Visualive.TreeItem('root');
-          const childItem1 = rootItem.addChild(new Visualive.TreeItem('child1'));
-          const childItem2 = rootItem.addChild(new Visualive.TreeItem('child2'));
-          const geomItem =  childItem2.addChild(new Visualive.GeomItem());
-
-          // https://webdesign.tutsplus.com/tutorials/building-responsive-forms-with-flexbox--cms-26767
-          const sceneTreeView = new SceneTreeView(document.getElementById("vlw-tree"), rootItem);
-
-
-
-        </script> 
+      // https://webdesign.tutsplus.com/tutorials/building-responsive-forms-with-flexbox--cms-26767
+      const sceneTreeView = new SceneTreeView(document.getElementById("vlw-tree"), rootItem);
+    </script>
   </body>
 </html>
