@@ -4,7 +4,7 @@ import parameterWidgetFactory from '../ParameterWidgetFactory';
 import undoRedoManager from '../../undoredo/UndoRedoManager';
 import ParameterValueChange from '../../undoredo/ParameterValueChange';
 
-class Vec2Widget extends BaseWidget {
+class Vec3Widget extends BaseWidget {
   constructor(parameter, parentDomElem) {
     super(parameter);
 
@@ -41,40 +41,65 @@ class Vec2Widget extends BaseWidget {
     yli.appendChild(yField);
     ul.appendChild(yli);
 
+    const zField = document.createElement('input');
+    // zField.className = 'mdl-textfield__input'
+    zField.setAttribute('id', parameter.getName());
+    zField.setAttribute('type', 'number');
+    zField.setAttribute('pattern', '-?[0-9]*(.[0-9]+)?');
+    zField.setAttribute('value', parameter.getValue().z);
+    zField.setAttribute('tabindex', 0);
+    zField.style.width = '100%';
+
+    const zli = document.createElement('li');
+    zli.appendChild(zField);
+    ul.appendChild(zli);
+
     parentDomElem.appendChild(container);
 
     /////////////////////////////
     // Handle Changes.
 
     let change = undefined;
+
     parameter.valueChanged.connect(() => {
       if (!change) {
-        const vec2 = parameter.getValue();
-        xField.value = vec2.x;
-        yField.value = vec2.y;
+        const vec3 = parameter.getValue();
+        xField.value = vec3.x;
+        yField.value = vec3.y;
+        zField.value = vec3.z;
       }
     });
+
     const valueChange = () => {
       if (!change) {
         change = new ParameterValueChange(parameter);
         undoRedoManager.addChange(change);
       }
       change.setValue(
-        new Visualive.Vec2(xField.valueAsNumber, yField.valueAsNumber)
+        new Visualive.Vec3(
+          xField.valueAsNumber,
+          yField.valueAsNumber,
+          zField.valueAsNumber
+        )
       );
     };
+
     const valueChangeEnd = () => {
       valueChange();
       change = undefined;
     };
+
     xField.addEventListener('input', valueChange);
     yField.addEventListener('input', valueChange);
+    zField.addEventListener('input', valueChange);
+
     xField.addEventListener('change', valueChangeEnd);
     yField.addEventListener('change', valueChangeEnd);
+    zField.addEventListener('change', valueChangeEnd);
   }
 }
 
 parameterWidgetFactory.registerWidget(
-  Vec2Widget,
-  p => p.constructor.name == 'Vec2Parameter'
+  Vec3Widget,
+  p => p.constructor.name == 'Vec3Parameter'
 );

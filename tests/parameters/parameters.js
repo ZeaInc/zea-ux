@@ -11,7 +11,13 @@ parameterOwner.addParameter(
   new Visualive.NumberParameter('Stepped', 6).setRange([0, 30]).setStep(5)
 );
 parameterOwner.addParameter(
-  new Visualive.Vec2Parameter('Vec2 Parameter', new Visualive.Vec2(2, 3))
+  new Visualive.Vec2Parameter('Vec2 Parameter', new Visualive.Vec2(1, 2))
+);
+parameterOwner.addParameter(
+  new Visualive.Vec3Parameter('Vec3 Parameter', new Visualive.Vec3(3, 4, 5))
+);
+parameterOwner.addParameter(
+  new Visualive.Vec4Parameter('Vec4 Parameter', new Visualive.Vec4(6, 7, 8, 9))
 );
 parameterOwner.addParameter(
   new Visualive.ColorParameter('Color', new Visualive.Color(1, 1, 0, 1))

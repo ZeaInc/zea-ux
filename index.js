@@ -7,6 +7,8 @@ import ColorWidget from './src/ui/parameter-widgets/ColorWidget';
 import NumberWidget from './src/ui/parameter-widgets/NumberWidget';
 import StringWidget from './src/ui/parameter-widgets/StringWidget';
 import Vec2Widget from './src/ui/parameter-widgets/Vec2Widget';
+import Vec3Widget from './src/ui/parameter-widgets/Vec3Widget';
+import Vec4Widget from './src/ui/parameter-widgets/Vec4Widget';
 
 export {
   BooleanWidget,
@@ -16,4 +18,6 @@ export {
   StringWidget,
   undoRedoManager,
   Vec2Widget,
+  Vec3Widget,
+  Vec4Widget,
 };
