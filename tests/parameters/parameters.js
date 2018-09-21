@@ -38,5 +38,11 @@ const parameterContainer2 = new ParameterContainer(
 document.addEventListener('keydown', e => {
   if ((e.metaKey || e.ctrlKey) && e.key === 'z') {
     undoRedoManager.undo();
+    return;
+  }
+
+  if (e.key === 'h') {
+    // TODO: Selection.
+    return;
   }
 });

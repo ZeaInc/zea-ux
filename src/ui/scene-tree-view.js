@@ -1,5 +1,5 @@
 class TreeItemElement {
-  constructor(parentElement, treeItem, expanded = false) {
+  constructor(treeItem, parentElement, expanded = false) {
     this.parentElement = parentElement;
     this.treeItem = treeItem;
 
@@ -37,7 +37,9 @@ class TreeItemElement {
       }
     }
 
-    this.treeItem.childAdded.connect((childItem, index) => {});
+    this.treeItem.childAdded.connect((childItem, index) => {
+      console.log('Child added', index);
+    });
     this.treeItem.childRemoved.connect((childItem, index) => {});
   }
 
@@ -50,7 +52,7 @@ class TreeItemElement {
     if (!this.childrenAlreadyCreated) {
       const children = this.treeItem.getChildren();
       for (let child of children) {
-        const childTreeItem = new TreeItemElement(this.ul, child);
+        const childTreeItem = new TreeItemElement(child, this.ul);
         this.childElements.push(childTreeItem);
       }
       this.childrenAlreadyCreated = true;
@@ -76,7 +78,7 @@ class SceneTreeView {
     this.ul.className = 'flex-outer TreeNodesList TreeNodesList--root';
     this.container.appendChild(this.ul);
 
-    this.rootElement = new TreeItemElement(this.ul, rootTreeItem, true);
+    this.rootElement = new TreeItemElement(rootTreeItem, this.ul, true);
   }
 
   getDomElement() {

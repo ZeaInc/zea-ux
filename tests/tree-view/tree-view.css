@@ -1,5 +1,5 @@
 .TreeNodesList {
-  /* border-left: 1px dotted; */
+  border-left: 1px dotted;
   list-style-type: none;
   padding: 0 0 0 15px;
 }
@@ -25,7 +25,7 @@
 }
 
 .TreeNodesListItem::before {
-  /* border-bottom: 1px dotted; */
+  border-bottom: 1px dotted;
   content: '';
   display: inline-block;
   left: -15px;
