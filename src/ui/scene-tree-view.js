@@ -1,78 +1,79 @@
 class TreeItemElement {
-
-  constructor(parentElement, treeItem, expanded=false){
+  constructor(parentElement, treeItem, expanded = false) {
     this.parentElement = parentElement;
     this.treeItem = treeItem;
 
     this.li = document.createElement('li');
-    this.li.innerHTML = treeItem.getName();
+    this.li.className = 'TreeNodesListItem';
 
-    // this.li.className = 'flex-outer';
+    this.expandBtn = document.createElement('button');
+    this.expandBtn.className = 'TreeNodesListItem__Toggle';
+    this.li.appendChild(this.expandBtn);
+
+    this.titleElement = document.createElement('span');
+    this.titleElement.className = 'TreeNodesListItem__Title';
+    this.titleElement.textContent = treeItem.getName();
+    this.li.appendChild(this.titleElement);
+
     this.parentElement.appendChild(this.li);
 
     this.ul = document.createElement('ul');
-    this.ul.className = 'flex-outer';
+    this.ul.className = 'flex-outer TreeNodesList';
     this.li.appendChild(this.ul);
-    
+
     this.childElements = [];
     this._expanded = false;
     const children = this.treeItem.getChildren();
-    if(children.length > 0) {
-      this.expandBtn = document.createElement('button');
-      this.li.appendChild(this.expandBtn);
-      this.expandBtn.addEventListener('click', ()=>{
-        if(this._expanded)
-          this.collapse();
-        else
-          this.expand();
+    if (children.length) {
+      this.expandBtn.addEventListener('click', () => {
+        this._expanded ? this.collapse() : this.expand();
       });
 
-      if(expanded) {
+      if (expanded) {
         this.expand();
-      }
-      else {
-        this.expand.innerHTML = '+';
+      } else {
+        this.expandBtn.innerHTML =
+          '<i class="material-icons md-24">arrow_right</i>';
       }
     }
 
-    this.treeItem.childAdded.connect((childItem, index)=>{
-
-
-    });
-    this.treeItem.childRemoved.connect((childItem, index)=>{
-
-
-    });
+    this.treeItem.childAdded.connect((childItem, index) => {});
+    this.treeItem.childRemoved.connect((childItem, index) => {});
   }
 
-  expand(){
-    if(!this._expanded) {
+  expand() {
+    this._expanded = true;
+    this.ul.classList.remove('TreeNodesList--collapsed');
+    this.expandBtn.innerHTML =
+      '<i class="material-icons md-24">arrow_drop_down</i>';
+
+    if (!this.childrenAlreadyCreated) {
       const children = this.treeItem.getChildren();
-      for(let child of children) {
-        const childTreeItem = new TreeItemElement(this.ul, child)
+      for (let child of children) {
+        const childTreeItem = new TreeItemElement(this.ul, child);
         this.childElements.push(childTreeItem);
       }
-      this._expanded = true;
-      this.expandBtn.innerHTML = '-';
+      this.childrenAlreadyCreated = true;
     }
   }
 
-  collapse(){
-    this.expandBtn.innerHTML = '+';
-    this._expanded = false  ;
+  collapse() {
+    this.ul.classList.add('TreeNodesList--collapsed');
+    this.expandBtn.innerHTML =
+      '<i class="material-icons md-24">arrow_right</i>';
+    this._expanded = false;
   }
 }
 
 class SceneTreeView {
-  constructor(parentElement, rootTreeItem){
-    console.log("SceneTreeView")
+  constructor(parentElement, rootTreeItem) {
     this.parentElement = parentElement;
     this.container = document.createElement('div');
-    this.container.className = 'container';
+    this.container.className = 'container SceneTreeView';
     this.parentElement.appendChild(this.container);
 
     this.ul = document.createElement('ul');
-    this.ul.className = 'flex-outer';
+    this.ul.className = 'flex-outer TreeNodesList TreeNodesList--root';
     this.container.appendChild(this.ul);
 
     this.rootElement = new TreeItemElement(this.ul, rootTreeItem, true);
@@ -81,5 +82,6 @@ class SceneTreeView {
   getDomElement() {
     return this.container;
   }
-
 }
+
+export default SceneTreeView;

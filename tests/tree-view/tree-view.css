@@ -1,0 +1,69 @@
+.TreeNodesList {
+  /* border-left: 1px dotted; */
+  list-style-type: none;
+  padding: 0 0 0 15px;
+}
+
+.TreeNodesList--collapsed {
+  display: none;
+}
+
+.TreeNodesList--root {
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+.TreeNodesListItem__Toggle {
+  border: none;
+  height: 25px;
+  margin-left: -21px;
+  padding: 0;
+  width: 24px;
+  top: 6px;
+  position: relative;
+}
+
+.TreeNodesListItem::before {
+  /* border-bottom: 1px dotted; */
+  content: '';
+  display: inline-block;
+  left: -15px;
+  position: relative;
+  top: -5px;
+  width: 10px;
+}
+
+.TreeNodesListItem__Toggle:focus {
+  outline: none;
+}
+
+/* Rules for sizing the icon. */
+.material-icons.md-18 {
+  font-size: 18px;
+}
+.material-icons.md-24 {
+  font-size: 24px;
+}
+.material-icons.md-36 {
+  font-size: 36px;
+}
+.material-icons.md-48 {
+  font-size: 48px;
+}
+
+/* Rules for using icons as black on a light background. */
+.material-icons.md-dark {
+  color: rgba(0, 0, 0, 0.54);
+}
+.material-icons.md-dark.md-inactive {
+  color: rgba(0, 0, 0, 0.26);
+}
+
+/* Rules for using icons as white on a dark background. */
+.material-icons.md-light {
+  color: rgba(255, 255, 255, 1);
+}
+.material-icons.md-light.md-inactive {
+  color: rgba(255, 255, 255, 0.3);
+}
