@@ -1,3 +1,6 @@
+import undoRedoManager from '../undoredo/UndoRedoManager';
+import ParameterValueChange from '../undoredo/ParameterValueChange';
+
 class TreeItemElement {
   constructor(treeItem, parentElement, expanded = false) {
     this.parentElement = parentElement;
@@ -17,8 +20,19 @@ class TreeItemElement {
     this.toggleVisibilityBtn.innerHTML =
       '<i class="material-icons md-15">visibility</i>';
 
+    const visibleParam = this.treeItem.getParameter('Visible');
+
     this.toggleVisibilityBtn.addEventListener('click', () => {
-      this.treeItem.setVisible(!this.treeItem.getVisible());
+      const change = new ParameterValueChange(visibleParam);
+      change.setValue(!visibleParam.getValue());
+      undoRedoManager.addChange(change);
+    });
+
+    visibleParam.valueChanged.connect(() => {
+      const visible = visibleParam.getValue();
+      visible
+        ? this.li.classList.remove('TreeNodesListItem--isHidden')
+        : this.li.classList.add('TreeNodesListItem--isHidden');
     });
 
     // Title element.
@@ -27,8 +41,19 @@ class TreeItemElement {
     this.titleElement.textContent = treeItem.getName();
     this.li.appendChild(this.titleElement);
 
+    const selectedParam = this.treeItem.getParameter('Selected');
+
     this.titleElement.addEventListener('click', () => {
-      this.treeItem.setSelected(!this.treeItem.getSelected());
+      const change = new ParameterValueChange(selectedParam);
+      change.setValue(!selectedParam.getValue());
+      undoRedoManager.addChange(change);
+    });
+
+    selectedParam.valueChanged.connect(() => {
+      const selected = selectedParam.getValue();
+      selected
+        ? this.li.classList.add('TreeNodesListItem--isSelected')
+        : this.li.classList.remove('TreeNodesListItem--isSelected');
     });
 
     this.parentElement.appendChild(this.li);
@@ -58,21 +83,6 @@ class TreeItemElement {
     });
 
     this.treeItem.childRemoved.connect((childItem, index) => {});
-
-    this.treeItem.selectedChanged.connect(() => {
-      const selected = this.treeItem.getSelected();
-      selected
-        ? this.li.classList.add('TreeNodesListItem--isSelected')
-        : this.li.classList.remove('TreeNodesListItem--isSelected');
-    });
-
-    this.treeItem.visibilityChanged.connect(() => {
-      const visible = this.treeItem.getVisible();
-      console.info(visible);
-      visible
-        ? this.li.classList.remove('TreeNodesListItem--isHidden')
-        : this.li.classList.add('TreeNodesListItem--isHidden');
-    });
   }
 
   addChild(treeItem, parentElement, expanded = false) {

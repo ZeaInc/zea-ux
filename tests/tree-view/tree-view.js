@@ -27,3 +27,9 @@ const sceneTreeView = new SceneTreeView(
   document.getElementById('vlw-tree'),
   rootItem
 );
+
+document.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'z') {
+    undoRedoManager.undo();
+  }
+});
