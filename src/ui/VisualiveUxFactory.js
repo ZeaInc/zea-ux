@@ -1,4 +1,4 @@
-class ParameterWidgetFactory {
+class VisualiveUxFactory {
   constructor() {
     this.treeItemFactories = [];
     this.widgetFactories = [];
@@ -51,6 +51,6 @@ class ParameterWidgetFactory {
   }
 }
 
-const parameterWidgetFactory = new ParameterWidgetFactory();
+const visualiveUxFactory = new VisualiveUxFactory();
 
-export default parameterWidgetFactory;
+export default visualiveUxFactory;

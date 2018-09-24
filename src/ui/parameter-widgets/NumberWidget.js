@@ -1,6 +1,6 @@
 import BaseWidget from './BaseWidget';
 
-import parameterWidgetFactory from '../ParameterWidgetFactory';
+import visualiveUxFactory from '../VisualiveUxFactory';
 import undoRedoManager from '../../undoredo/UndoRedoManager';
 import ParameterValueChange from '../../undoredo/ParameterValueChange';
 
@@ -59,7 +59,7 @@ class NumberWidget extends BaseWidget {
   }
 }
 
-parameterWidgetFactory.registerWidget(
+visualiveUxFactory.registerWidget(
   NumberWidget,
   p => p.constructor.name == 'NumberParameter'
 );

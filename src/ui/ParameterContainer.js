@@ -1,4 +1,4 @@
-import parameterWidgetFactory from '../ui/ParameterWidgetFactory';
+import visualiveUxFactory from '../ui/VisualiveUxFactory';
 
 class ParameterContainer {
   constructor(rootElement, parameterOwner) {
@@ -32,7 +32,7 @@ class ParameterContainer {
     labelElem.appendChild(document.createTextNode(parameterName));
     li.appendChild(labelElem);
 
-    const widget = parameterWidgetFactory.constructWidget(parameter, li);
+    const widget = visualiveUxFactory.constructWidget(parameter, li);
     if (!widget) {
       console.warn(`Unable to display parameter '${parameterName}'`);
       return;

@@ -1,7 +1,7 @@
 import ParameterValueChange from '../../undoredo/ParameterValueChange';
 import undoRedoManager from '../../undoredo/UndoRedoManager';
 
-import parameterWidgetFactory from '../ParameterWidgetFactory';
+import visualiveUxFactory from '../VisualiveUxFactory';
 import BaseWidget from './BaseWidget';
 
 class StringWidget extends BaseWidget {
@@ -43,7 +43,7 @@ class StringWidget extends BaseWidget {
   }
 }
 
-parameterWidgetFactory.registerWidget(
+visualiveUxFactory.registerWidget(
   StringWidget,
   p => p.constructor.name == 'StringParameter'
 );

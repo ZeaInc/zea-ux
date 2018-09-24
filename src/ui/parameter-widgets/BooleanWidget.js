@@ -1,4 +1,4 @@
-import parameterWidgetFactory from '../ParameterWidgetFactory';
+import visualiveUxFactory from '../VisualiveUxFactory';
 import BaseWidget from './BaseWidget';
 
 class BooleanWidget extends BaseWidget {
@@ -31,7 +31,7 @@ class BooleanWidget extends BaseWidget {
   }
 }
 
-parameterWidgetFactory.registerWidget(
+visualiveUxFactory.registerWidget(
   BooleanWidget,
   p => p.constructor.name == 'BooleanParameter'
 );
