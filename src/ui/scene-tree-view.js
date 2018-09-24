@@ -10,10 +10,26 @@ class TreeItemElement {
     this.expandBtn.className = 'TreeNodesListItem__Toggle';
     this.li.appendChild(this.expandBtn);
 
+    // Visibility toggle.
+    this.toggleVisibilityBtn = document.createElement('button');
+    this.toggleVisibilityBtn.className = 'TreeNodesListItem__ToggleVisibility';
+    this.li.appendChild(this.toggleVisibilityBtn);
+    this.toggleVisibilityBtn.innerHTML =
+      '<i class="material-icons md-15">visibility</i>';
+
+    this.toggleVisibilityBtn.addEventListener('click', () => {
+      this.treeItem.setVisible(!this.treeItem.getVisible());
+    });
+
+    // Title element.
     this.titleElement = document.createElement('span');
     this.titleElement.className = 'TreeNodesListItem__Title';
     this.titleElement.textContent = treeItem.getName();
     this.li.appendChild(this.titleElement);
+
+    this.titleElement.addEventListener('click', () => {
+      this.treeItem.setSelected(!this.treeItem.getSelected());
+    });
 
     this.parentElement.appendChild(this.li);
 
@@ -38,9 +54,46 @@ class TreeItemElement {
     }
 
     this.treeItem.childAdded.connect((childItem, index) => {
-      console.log('Child added', index);
+      this.addChild(childItem, this.ul);
     });
+
     this.treeItem.childRemoved.connect((childItem, index) => {});
+
+    this.treeItem.selectedChanged.connect(() => {
+      const selected = this.treeItem.getSelected();
+      selected
+        ? this.li.classList.add('TreeNodesListItem--isSelected')
+        : this.li.classList.remove('TreeNodesListItem--isSelected');
+    });
+
+    this.treeItem.visibilityChanged.connect(() => {
+      const visible = this.treeItem.getVisible();
+      console.info(visible);
+      visible
+        ? this.li.classList.remove('TreeNodesListItem--isHidden')
+        : this.li.classList.add('TreeNodesListItem--isHidden');
+    });
+  }
+
+  addChild(treeItem, parentElement, expanded = false) {
+    const childTreeItem = new TreeItemElement(
+      treeItem,
+      parentElement,
+      expanded
+    );
+    this.childElements.push(childTreeItem);
+    this.expandBtn.innerHTML =
+      '<i class="material-icons md-24">arrow_drop_down</i>';
+    this.expandBtn.addEventListener('click', () => {
+      this._expanded ? this.collapse() : this.expand();
+    });
+
+    if (expanded) {
+      this.expand();
+    } else {
+      this.expandBtn.innerHTML =
+        '<i class="material-icons md-24">arrow_right</i>';
+    }
   }
 
   expand() {
@@ -52,8 +105,7 @@ class TreeItemElement {
     if (!this.childrenAlreadyCreated) {
       const children = this.treeItem.getChildren();
       for (let child of children) {
-        const childTreeItem = new TreeItemElement(child, this.ul);
-        this.childElements.push(childTreeItem);
+        this.addChild(child, this.ul);
       }
       this.childrenAlreadyCreated = true;
     }

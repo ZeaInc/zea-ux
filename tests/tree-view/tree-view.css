@@ -14,6 +14,19 @@
   padding: 0;
 }
 
+.TreeNodesListItem__ToggleVisibility {
+  border: none;
+  color: #bdbdbd;
+  font-size: 5px;
+  height: 25px;
+  padding: 0;
+  width: 25px;
+}
+
+.TreeNodesListItem__ToggleVisibility:focus {
+  outline: none;
+}
+
 .TreeNodesListItem__Toggle {
   border: none;
   height: 25px;
@@ -38,7 +51,29 @@
   outline: none;
 }
 
+.TreeNodesListItem__Title {
+  cursor: default;
+  padding: 2px 4px;
+  border-radius: 5px;
+}
+
+.TreeNodesListItem__Title:hover {
+  background-color: #e1f5fe;
+}
+
+.TreeNodesListItem--isSelected > .TreeNodesListItem__Title {
+  background-color: #4fc3f7;
+}
+
+.TreeNodesListItem--isHidden > .TreeNodesListItem__Title {
+  background-color: #eeeeee;
+  color: #9e9e9e;
+}
+
 /* Rules for sizing the icon. */
+.material-icons.md-15 {
+  font-size: 15px;
+}
 .material-icons.md-18 {
   font-size: 18px;
 }

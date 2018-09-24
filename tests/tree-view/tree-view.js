@@ -4,23 +4,22 @@ import {
   undoRedoManager,
 } from '@Visualive/ux';
 
-const rootItem = new Visualive.TreeItem('Root');
+const rootItem = new Visualive.TreeItem('Root Tree Item');
 
-const addRootToChild = i => {
-  console.log(i);
-  const childItem1 = rootItem.addChild(
+const addChildrenToRoot = i => {
+  const firstLevelChild = rootItem.addChild(
     new Visualive.TreeItem(`Child Tree Item ${i}`)
   );
 
   window.setTimeout(() => {
-    for (let ii = 0; ++ii <= 100; ) {
-      childItem1.addChild(new Visualive.GeomItem(`Geom Item ${ii}`));
+    for (let ii = 0; ++ii <= 5; ) {
+      firstLevelChild.addChild(new Visualive.GeomItem(`Geom Item ${ii}`));
     }
   }, i * 1000);
 };
 
 for (let i = 0; ++i <= 4; ) {
-  addRootToChild(i);
+  addChildrenToRoot(i);
 }
 
 // https://webdesign.tutsplus.com/tutorials/building-responsive-forms-with-flexbox--cms-26767

@@ -21,7 +21,7 @@ class ParameterWidgetFactory {
     }
 
     console.warn(
-      `Tree item Factory not found for parameter '${treeItem.getName()}' of class '${
+      `Tree item factory not found for parameter '${treeItem.getName()}' of class '${
         treeItem.constructor.name
       }'`
     );
@@ -44,7 +44,7 @@ class ParameterWidgetFactory {
     }
 
     console.warn(
-      `Widget Factory not found for parameter '${param.getName()}' of class '${
+      `Widget factory not found for parameter '${param.getName()}' of class '${
         param.constructor.name
       }'`
     );
