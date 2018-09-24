@@ -1,3 +1,4 @@
+import visualiveUxFactory from './VisualiveUxFactory';
 import undoRedoManager from '../undoredo/UndoRedoManager';
 import ParameterValueChange from '../undoredo/ParameterValueChange';
 
@@ -86,7 +87,7 @@ class TreeItemElement {
   }
 
   addChild(treeItem, parentElement, expanded = false) {
-    const childTreeItem = new TreeItemElement(
+    const childTreeItem = visualiveUxFactory.constructTreeItemElement(
       treeItem,
       parentElement,
       expanded
@@ -128,6 +129,11 @@ class TreeItemElement {
     this._expanded = false;
   }
 }
+
+visualiveUxFactory.registerTreeItemElement(
+  TreeItemElement,
+  p => p.constructor.name == 'TreeItem' || p.constructor.name == 'GeomItem'
+);
 
 class SceneTreeView {
   constructor(parentElement, rootTreeItem) {
