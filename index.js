@@ -12,6 +12,8 @@ import undoRedoManager from './src/undoredo/UndoRedoManager';
 
 import SceneTreeView from './src/ui/scene-tree-view';
 
+import SelectionManager from './src/SelectionManager';
+
 export {
   BooleanWidget,
   ColorWidget,
@@ -23,4 +25,5 @@ export {
   ParameterContainer,
   undoRedoManager,
   SceneTreeView,
+  SelectionManager,
 };

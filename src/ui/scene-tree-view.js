@@ -60,7 +60,7 @@ class TreeItemElement {
     this.parentElement.appendChild(this.li);
 
     this.ul = document.createElement('ul');
-    this.ul.className = 'flex-outer TreeNodesList';
+    this.ul.className = 'TreeNodesList';
     this.li.appendChild(this.ul);
 
     this.childElements = [];
@@ -130,9 +130,20 @@ class TreeItemElement {
   }
 }
 
+class GeomItemElement extends TreeItemElement {
+  constructor(treeItem, parentElement, expanded = false) {
+    super(treeItem, parentElement, expanded);
+  }
+}
+
 visualiveUxFactory.registerTreeItemElement(
   TreeItemElement,
-  p => p.constructor.name == 'TreeItem' || p.constructor.name == 'GeomItem'
+  p => p.constructor.name == 'TreeItem'
+);
+
+visualiveUxFactory.registerTreeItemElement(
+  GeomItemElement,
+  p => p.constructor.name == 'GeomItem'
 );
 
 class SceneTreeView {
@@ -143,7 +154,7 @@ class SceneTreeView {
     this.parentElement.appendChild(this.container);
 
     this.ul = document.createElement('ul');
-    this.ul.className = 'flex-outer TreeNodesList TreeNodesList--root';
+    this.ul.className = 'TreeNodesList TreeNodesList--root';
     this.container.appendChild(this.ul);
 
     this.rootElement = new TreeItemElement(rootTreeItem, this.ul, true);

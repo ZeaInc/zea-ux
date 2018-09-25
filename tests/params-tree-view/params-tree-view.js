@@ -6,19 +6,19 @@ import {
 } from '@Visualive/ux';
 
 const rootItem = new Visualive.TreeItem('Root Tree Item');
+const parametersWrapper = document.getElementById('parameters');
 
 const selectionManager = new SelectionManager(rootItem);
+const parameterContainer = new ParameterContainer(parametersWrapper);
 
 const addChildrenToRoot = i => {
   const firstLevelChild = rootItem.addChild(
     new Visualive.TreeItem(`Child Tree Item ${i}`)
   );
 
-  window.setTimeout(() => {
-    for (let ii = 0; ++ii <= 5; ) {
-      firstLevelChild.addChild(new Visualive.GeomItem(`Geom Item ${ii}`));
-    }
-  }, i * 1000);
+  for (let ii = 0; ++ii <= 5; ) {
+    firstLevelChild.addChild(new Visualive.GeomItem(`Geom Item ${ii}`));
+  }
 };
 
 for (let i = 0; ++i <= 4; ) {
@@ -37,6 +37,6 @@ document.addEventListener('keydown', e => {
   }
 });
 
-selectionManager.leadSelectionChange.connect(selectedTreeItem =>
-  console.log('received', selectedTreeItem.getName())
-);
+selectionManager.leadSelectionChange.connect(selectedTreeItem => {
+  parameterContainer.setParameterOwner(selectedTreeItem);
+});

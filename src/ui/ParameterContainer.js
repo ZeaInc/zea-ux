@@ -11,14 +11,25 @@ class ParameterContainer {
     this.ul.className = 'flex-outer';
     this.container.appendChild(this.ul);
 
-    this.widgets = [];
-    for (let parameter of parameterOwner.getParameters()) {
-      this.addParameterWidget(parameter);
+    if (parameterOwner) {
+      this.setParameterOwner(parameterOwner);
     }
   }
 
   getDomElement() {
     return this.container;
+  }
+
+  setParameterOwner(parameterOwner) {
+    this.ul.innerHTML = '';
+    this.parameterOwner = parameterOwner;
+
+    this.widgets = [];
+    if (parameterOwner) {
+      for (let parameter of parameterOwner.getParameters()) {
+        this.addParameterWidget(parameter);
+      }
+    }
   }
 
   addParameterWidget(parameter) {
