@@ -2,6 +2,30 @@ class VisualiveUxFactory {
   constructor() {
     this.treeItemFactories = [];
     this.widgetFactories = [];
+    this.inspectorFactories = [];
+  }
+
+  registerInpector(inspector, rule) {
+    this.inspectorFactories.push({ inspector, rule });
+  }
+
+  constructInspector(baseItem, parentElement) {
+    // Note: Iterate over the factories in reverse order.
+    // This allows widgets to override existing widgets in special cases.
+    // E.g. display a custom color picker in VR compared to the
+    // material editor.
+    for (let i = this.inspectorFactories.length; i-- > 0; ) {
+      const reg = this.inspectorFactories[i];
+      if (reg.rule(baseItem)) {
+        return new reg.inspector(baseItem, parentElement);
+      }
+    }
+
+    console.warn(
+      `Inspector factory not found for parameter '${baseItem.getName()}' of class '${
+        baseItem.constructor.name
+      }'`
+    );
   }
 
   registerTreeItemElement(treeItemElement, rule) {

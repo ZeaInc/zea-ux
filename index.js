@@ -6,7 +6,9 @@ import Vec2Widget from './src/ui/parameter-widgets/Vec2Widget';
 import Vec3Widget from './src/ui/parameter-widgets/Vec3Widget';
 import Vec4Widget from './src/ui/parameter-widgets/Vec4Widget';
 
-import ParameterContainer from './src/ui/ParameterContainer';
+import TreeItemInspector from './src/ui/TreeItemInspector';
+
+import InspectorContainer from './src/ui/InspectorContainer';
 
 import undoRedoManager from './src/undoredo/UndoRedoManager';
 
@@ -22,8 +24,9 @@ export {
   Vec2Widget,
   Vec3Widget,
   Vec4Widget,
-  ParameterContainer,
+  InspectorContainer,
   undoRedoManager,
   SceneTreeView,
   SelectionManager,
+  TreeItemInspector,
 };

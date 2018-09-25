@@ -6,7 +6,7 @@ import ParameterValueChange from '../../undoredo/ParameterValueChange';
 
 class NumberWidget extends BaseWidget {
   constructor(parameter, parentDomElem) {
-    super(parameter)
+    super(parameter);
 
     const range = parameter.getRange();
     let input = document.createElement('input');
@@ -61,5 +61,5 @@ class NumberWidget extends BaseWidget {
 
 visualiveUxFactory.registerWidget(
   NumberWidget,
-  p => p.constructor.name == 'NumberParameter'
+  p => p instanceof Visualive.NumberParameter
 );

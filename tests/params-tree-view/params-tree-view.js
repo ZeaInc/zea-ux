@@ -1,5 +1,5 @@
 import {
-  ParameterContainer,
+  InspectorContainer,
   SceneTreeView,
   undoRedoManager,
   SelectionManager,
@@ -9,7 +9,7 @@ const rootItem = new Visualive.TreeItem('Root Tree Item');
 const parametersWrapper = document.getElementById('parameters');
 
 const selectionManager = new SelectionManager(rootItem);
-const parameterContainer = new ParameterContainer(parametersWrapper);
+const inspectorContainer = new InspectorContainer(parametersWrapper);
 
 const addChildrenToRoot = i => {
   const firstLevelChild = rootItem.addChild(
@@ -38,5 +38,5 @@ document.addEventListener('keydown', e => {
 });
 
 selectionManager.leadSelectionChange.connect(selectedTreeItem => {
-  parameterContainer.setParameterOwner(selectedTreeItem);
+  inspectorContainer.inspect(selectedTreeItem);
 });

@@ -1,11 +1,11 @@
 import visualiveUxFactory from '../ui/VisualiveUxFactory';
 
 class ParameterContainer {
-  constructor(rootElement, parameterOwner) {
-    this.rootElement = rootElement;
+  constructor(parameterOwner, domElement) {
+    this.domElement = domElement;
     this.container = document.createElement('div');
     this.container.className = 'container';
-    this.rootElement.appendChild(this.container);
+    this.domElement.appendChild(this.container);
 
     this.ul = document.createElement('ul');
     this.ul.className = 'flex-outer';
@@ -16,12 +16,15 @@ class ParameterContainer {
     }
   }
 
+  destroy() {
+    this.domElement.innerHTML = '';
+  }
+
   getDomElement() {
     return this.container;
   }
 
   setParameterOwner(parameterOwner) {
-    this.ul.innerHTML = '';
     this.parameterOwner = parameterOwner;
 
     this.widgets = [];
