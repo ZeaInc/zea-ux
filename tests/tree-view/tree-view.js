@@ -7,8 +7,6 @@ import {
 
 const rootItem = new Visualive.TreeItem('Root Tree Item');
 
-const selectionManager = new SelectionManager(rootItem);
-
 const addChildrenToRoot = i => {
   const firstLevelChild = rootItem.addChild(
     new Visualive.TreeItem(`Child Tree Item ${i}`)
@@ -25,10 +23,15 @@ for (let i = 0; ++i <= 4; ) {
   addChildrenToRoot(i);
 }
 
-// https://webdesign.tutsplus.com/tutorials/building-responsive-forms-with-flexbox--cms-26767
 const sceneTreeView = new SceneTreeView(
   document.getElementById('vlw-tree'),
   rootItem
+);
+
+const selectionManager = new SelectionManager(rootItem);
+
+selectionManager.leadSelectionChange.connect(selectedTreeItem =>
+  console.log('Received', selectedTreeItem.getName())
 );
 
 document.addEventListener('keydown', e => {
@@ -36,7 +39,3 @@ document.addEventListener('keydown', e => {
     undoRedoManager.undo();
   }
 });
-
-selectionManager.leadSelectionChange.connect(selectedTreeItem =>
-  console.log('received', selectedTreeItem.getName())
-);

@@ -3,8 +3,8 @@ import undoRedoManager from '../undoredo/UndoRedoManager';
 import ParameterValueChange from '../undoredo/ParameterValueChange';
 
 class TreeItemElement {
-  constructor(treeItem, parentElement, expanded = false) {
-    this.parentElement = parentElement;
+  constructor(treeItem, parentDomElement, expanded = false) {
+    this.parentDomElement = parentDomElement;
     this.treeItem = treeItem;
 
     this.li = document.createElement('li');
@@ -57,7 +57,7 @@ class TreeItemElement {
         : this.li.classList.remove('TreeNodesListItem--isSelected');
     });
 
-    this.parentElement.appendChild(this.li);
+    this.parentDomElement.appendChild(this.li);
 
     this.ul = document.createElement('ul');
     this.ul.className = 'TreeNodesList';
@@ -86,10 +86,10 @@ class TreeItemElement {
     this.treeItem.childRemoved.connect((childItem, index) => {});
   }
 
-  addChild(treeItem, parentElement, expanded = false) {
+  addChild(treeItem, parentDomElement, expanded = false) {
     const childTreeItem = visualiveUxFactory.constructTreeItemElement(
       treeItem,
-      parentElement,
+      parentDomElement,
       expanded
     );
     this.childElements.push(childTreeItem);
@@ -130,32 +130,30 @@ class TreeItemElement {
   }
 }
 
+visualiveUxFactory.registerTreeItemElement(
+  TreeItemElement,
+  p => p.constructor.name === 'TreeItem'
+);
+
 class GeomItemElement extends TreeItemElement {
-  constructor(treeItem, parentElement, expanded = false) {
-    super(treeItem, parentElement, expanded);
+  constructor(treeItem, parentDomElement, expanded = false) {
+    super(treeItem, parentDomElement, expanded);
   }
 }
 
 visualiveUxFactory.registerTreeItemElement(
-  TreeItemElement,
-  p => p.constructor.name == 'TreeItem'
-);
-
-visualiveUxFactory.registerTreeItemElement(
   GeomItemElement,
-  p => p.constructor.name == 'GeomItem'
+  p => p.constructor.name === 'GeomItem'
 );
 
 class SceneTreeView {
-  constructor(parentElement, rootTreeItem) {
-    this.parentElement = parentElement;
-    this.container = document.createElement('div');
-    this.container.className = 'container SceneTreeView';
-    this.parentElement.appendChild(this.container);
+  constructor(parentDomElement, rootTreeItem) {
+    this.parentDomElement = parentDomElement;
 
     this.ul = document.createElement('ul');
     this.ul.className = 'TreeNodesList TreeNodesList--root';
-    this.container.appendChild(this.ul);
+
+    this.parentDomElement.appendChild(this.ul);
 
     this.rootElement = new TreeItemElement(rootTreeItem, this.ul, true);
   }
