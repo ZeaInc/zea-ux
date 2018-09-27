@@ -21,12 +21,9 @@ class TopMenuBar {
 
   _addMenuItemTo(domElement, command) {
     const li = this._addLiTo(domElement, 'pure-menu-item');
-    const a = this._addATo(
-      li,
-      'pure-menu-link',
-      `${command.title} ${this._keyComboAsText(command)}`,
-      command.callback
-    );
+    const a = this._addATo(li, 'pure-menu-link', null, command.callback);
+    this._addSpanTo(a, 'CommandTitle', command.title);
+    this._addSpanTo(a, 'CommandShortcut', this._keyComboAsText(command));
 
     const { children } = command;
 
@@ -60,6 +57,16 @@ class TopMenuBar {
         registerChildren(rootMenuItem);
       }
     });
+  }
+
+  _addSpanTo(domElement, className, innerHTML) {
+    const span = document.createElement('span');
+    span.className = className;
+    if (innerHTML) {
+      span.innerHTML = innerHTML;
+    }
+    domElement.appendChild(span);
+    return span;
   }
 
   _addATo(domElement, className, innerHTML, onClick) {
