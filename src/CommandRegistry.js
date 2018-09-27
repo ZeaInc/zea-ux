@@ -1,31 +1,26 @@
 class CommandRegistry {
   constructor() {
     this.commands = [];
-    this.commandsTree = {};
   }
 
   registerCommand(command) {
-    const { name } = command;
+    const { title } = command;
 
-    if (!name) {
-      console.warn('A command is missing its name.');
+    if (!title) {
+      console.warn('A command is missing its title.');
       return;
     }
 
     if (!command.key) {
-      console.warn(`The command '${name}' is missing its key.`);
+      console.warn(`The command '${title}' is missing its key.`);
       return;
     }
 
+    this._addCommand(command);
+  }
+
+  _addCommand(command) {
     this.commands.push(command);
-
-    command.pathOnMenu.forEach(pathFragment => {
-      if (!this.commandsTree[pathFragment]) {
-        this.commandsTree[pathFragment] = { children: [] };
-      }
-      this.commandsTree[pathFragment].children.push(command);
-    });
-
     this._addKeyListener(command);
   }
 

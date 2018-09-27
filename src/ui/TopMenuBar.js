@@ -1,21 +1,64 @@
+import CommandRegistry from '../CommandRegistry';
+
 class TopMenuBar {
-  constructor(commandRegistry, domElement) {
-    this.commandRegistry = commandRegistry;
+  constructor(menuItems, domElement) {
+    this.menuItems = menuItems;
     this.domElement = domElement;
 
+    this._registerCommands();
     this._buildTopBar();
   }
 
   _buildTopBar() {
-    const { commandsTree } = this.commandRegistry;
-
     this.domElement.innerHTML = '';
 
     const ul = this._addUlTo(this.domElement, 'pure-menu-list');
 
-    Object.keys(commandsTree).forEach(k => {
-      const command = commandsTree[k];
-      this._addMenuItemTo(ul, command, k);
+    this.menuItems.forEach(rootMenuItem => {
+      this._addMenuItemTo(ul, rootMenuItem);
+    });
+  }
+
+  _addMenuItemTo(domElement, command) {
+    const li = this._addLiTo(domElement, 'pure-menu-item');
+    const a = this._addATo(
+      li,
+      'pure-menu-link',
+      `${command.title} ${this._keyComboAsText(command)}`,
+      command.callback
+    );
+
+    const { children } = command;
+
+    if (children && children.length) {
+      li.classList.add('pure-menu-has-children', 'pure-menu-allow-hover');
+      const ul = this._addUlTo(li, 'pure-menu-children shadow-3');
+
+      children.forEach(child => {
+        this._addMenuItemTo(ul, child, child.name);
+      });
+    }
+  }
+
+  _registerCommands() {
+    const commandRegistry = new CommandRegistry();
+
+    const registerChildren = command => {
+      command.children.forEach(child => {
+        if (child.children) {
+          registerChildren(child);
+        } else {
+          if (child.key) {
+            commandRegistry.registerCommand(child);
+          }
+        }
+      });
+    };
+
+    this.menuItems.forEach(rootMenuItem => {
+      if (rootMenuItem.children) {
+        registerChildren(rootMenuItem);
+      }
     });
   }
 
@@ -71,27 +114,6 @@ class TopMenuBar {
       this._comboFragment(metaKeys.control, 'Ctrl') +
       key;
     return keyComboExpected;
-  }
-
-  _addMenuItemTo(domElement, command, key) {
-    const li = this._addLiTo(domElement, 'pure-menu-item');
-    const a = this._addATo(
-      li,
-      'pure-menu-link',
-      `${key} ${this._keyComboAsText(command)}`,
-      command.callback
-    );
-
-    const { children } = command;
-
-    if (children && children.length) {
-      li.classList.add('pure-menu-has-children', 'pure-menu-allow-hover');
-      const ul = this._addUlTo(li, 'pure-menu-children shadow-3');
-
-      children.forEach(child => {
-        this._addMenuItemTo(ul, child, child.name);
-      });
-    }
   }
 }
 
