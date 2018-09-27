@@ -1,5 +1,7 @@
-import visualiveUxFactory from '../VisualiveUxFactory';
 import BaseWidget from './BaseWidget';
+
+import visualiveUxFactory from '../VisualiveUxFactory';
+import undoRedoManager from '../../undoredo/UndoRedoManager';
 
 class BooleanWidget extends BaseWidget {
   constructor(parameter, parentDomElem) {

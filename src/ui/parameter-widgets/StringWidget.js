@@ -1,8 +1,9 @@
+import BaseWidget from './BaseWidget';
+
 import ParameterValueChange from '../../undoredo/ParameterValueChange';
 import undoRedoManager from '../../undoredo/UndoRedoManager';
 
 import visualiveUxFactory from '../VisualiveUxFactory';
-import BaseWidget from './BaseWidget';
 
 class StringWidget extends BaseWidget {
   constructor(parameter, parentDomElem) {

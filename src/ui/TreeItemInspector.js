@@ -11,7 +11,7 @@ class TreeItemInspector {
   }
 }
 
-visualiveUxFactory.registerWidget(
+visualiveUxFactory.registerInpector(
   TreeItemInspector,
   p => p instanceof Visualive.TreeItem
 );
