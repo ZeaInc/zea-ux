@@ -1,24 +1,38 @@
-import parameterWidgetFactory from '../ui/ParameterWidgetFactory';
+import visualiveUxFactory from '../ui/VisualiveUxFactory';
 
 class ParameterContainer {
-  constructor(rootElement, parameterOwner) {
-    this.rootElement = rootElement;
+  constructor(parameterOwner, domElement) {
+    this.domElement = domElement;
     this.container = document.createElement('div');
     this.container.className = 'container';
-    this.rootElement.appendChild(this.container);
+    this.domElement.appendChild(this.container);
 
     this.ul = document.createElement('ul');
     this.ul.className = 'flex-outer';
     this.container.appendChild(this.ul);
 
-    this.widgets = [];
-    for (let parameter of parameterOwner.getParameters()) {
-      this.addParameterWidget(parameter);
+    if (parameterOwner) {
+      this.setParameterOwner(parameterOwner);
     }
+  }
+
+  destroy() {
+    this.domElement.innerHTML = '';
   }
 
   getDomElement() {
     return this.container;
+  }
+
+  setParameterOwner(parameterOwner) {
+    this.parameterOwner = parameterOwner;
+
+    this.widgets = [];
+    if (parameterOwner) {
+      for (let parameter of parameterOwner.getParameters()) {
+        this.addParameterWidget(parameter);
+      }
+    }
   }
 
   addParameterWidget(parameter) {
@@ -32,7 +46,7 @@ class ParameterContainer {
     labelElem.appendChild(document.createTextNode(parameterName));
     li.appendChild(labelElem);
 
-    const widget = parameterWidgetFactory.constructWidget(parameter, li);
+    const widget = visualiveUxFactory.constructWidget(parameter, li);
     if (!widget) {
       console.warn(`Unable to display parameter '${parameterName}'`);
       return;

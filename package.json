@@ -1,18 +1,14 @@
 {
   "name": "@visualive/ux",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "test": "parcel tests/index.html"
-  },
   "author": "Visualive",
   "license": "ISC",
   "devDependencies": {
     "eslint": "^5.5.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.14.0",
-    "parcel-bundler": "^1.9.7",
     "prettier": "^1.14.2"
   },
   "dependencies": {

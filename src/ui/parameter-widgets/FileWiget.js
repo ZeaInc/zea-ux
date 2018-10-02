@@ -39,7 +39,7 @@ class FileWidget extends BaseWidget {
   }
 }
 
-parameterWidgetFactory.registerWidget(
+visualiveUxFactory.registerWidget(
   FileWidget,
   p => p.constructor.name == 'FilePathParameter'
 );

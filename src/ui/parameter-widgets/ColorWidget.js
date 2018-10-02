@@ -2,7 +2,7 @@ import iro from '@jaames/iro';
 
 import BaseWidget from './BaseWidget';
 
-import parameterWidgetFactory from '../ParameterWidgetFactory';
+import visualiveUxFactory from '../VisualiveUxFactory';
 import undoRedoManager from '../../undoredo/UndoRedoManager';
 import ParameterValueChange from '../../undoredo/ParameterValueChange';
 
@@ -60,7 +60,7 @@ class ColorWidget extends BaseWidget {
   setParentDomElem(parentDomElem) {}
 }
 
-parameterWidgetFactory.registerWidget(
+visualiveUxFactory.registerWidget(
   ColorWidget,
   p => p.constructor.name == 'ColorParameter'
 );

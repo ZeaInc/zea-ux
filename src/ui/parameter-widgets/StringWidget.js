@@ -1,8 +1,9 @@
+import BaseWidget from './BaseWidget';
+
 import ParameterValueChange from '../../undoredo/ParameterValueChange';
 import undoRedoManager from '../../undoredo/UndoRedoManager';
 
-import parameterWidgetFactory from '../ParameterWidgetFactory';
-import BaseWidget from './BaseWidget';
+import visualiveUxFactory from '../VisualiveUxFactory';
 
 class StringWidget extends BaseWidget {
   constructor(parameter, parentDomElem) {
@@ -43,7 +44,7 @@ class StringWidget extends BaseWidget {
   }
 }
 
-parameterWidgetFactory.registerWidget(
+visualiveUxFactory.registerWidget(
   StringWidget,
   p => p.constructor.name == 'StringParameter'
 );
