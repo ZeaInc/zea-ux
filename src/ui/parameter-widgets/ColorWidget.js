@@ -3,11 +3,10 @@ import iro from '@jaames/iro';
 import BaseWidget from './BaseWidget';
 
 import visualiveUxFactory from '../VisualiveUxFactory';
-import undoRedoManager from '../../undoredo/UndoRedoManager';
 import ParameterValueChange from '../../undoredo/ParameterValueChange';
 
 class ColorWidget extends BaseWidget {
-  constructor(parameter, parentDomElem) {
+  constructor(parameter, parentDomElem, undoRedoManager) {
     super(parameter);
 
     const colorPicker = new iro.ColorPicker(parentDomElem, {

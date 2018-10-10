@@ -1,11 +1,10 @@
 import BaseWidget from './BaseWidget';
 
 import visualiveUxFactory from '../VisualiveUxFactory';
-import undoRedoManager from '../../undoredo/UndoRedoManager';
 import ParameterValueChange from '../../undoredo/ParameterValueChange';
 
 class NumberWidget extends BaseWidget {
-  constructor(parameter, parentDomElem) {
+  constructor(parameter, parentDomElem, undoRedoManager) {
     super(parameter);
 
     const range = parameter.getRange();

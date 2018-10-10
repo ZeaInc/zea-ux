@@ -26,4 +26,4 @@ class UndoRedoManager {
   }
 }
 
-export default new UndoRedoManager();
+export default UndoRedoManager;

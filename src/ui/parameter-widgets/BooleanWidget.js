@@ -1,10 +1,9 @@
 import BaseWidget from './BaseWidget';
 
 import visualiveUxFactory from '../VisualiveUxFactory';
-import undoRedoManager from '../../undoredo/UndoRedoManager';
 
 class BooleanWidget extends BaseWidget {
-  constructor(parameter, parentDomElem) {
+  constructor(parameter, parentDomElem, undoRedoManager) {
     super(parameter);
 
     const input = document.createElement('input');

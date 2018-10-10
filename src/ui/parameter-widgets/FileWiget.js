@@ -1,7 +1,7 @@
 import BaseWidget from './BaseWidget';
 
 class FileWidget extends BaseWidget {
-  constructor(parameter, parentDomElem) {
+  constructor(parameter, parentDomElem, undoRedoManager) {
     super(parameter);
 
     const input = document.createElement('input');

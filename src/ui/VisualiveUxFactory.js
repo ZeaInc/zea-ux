@@ -9,15 +9,16 @@ class VisualiveUxFactory {
     this.inspectorFactories.push({ inspector, rule });
   }
 
-  constructInspector(baseItem, parentElement) {
+  constructInspector(...args) {
     // Note: Iterate over the factories in reverse order.
     // This allows widgets to override existing widgets in special cases.
     // E.g. display a custom color picker in VR compared to the
     // material editor.
+    const baseItem = args[0];
     for (let i = this.inspectorFactories.length; i-- > 0; ) {
       const reg = this.inspectorFactories[i];
       if (reg.rule(baseItem)) {
-        return new reg.inspector(baseItem, parentElement);
+        return new reg.inspector(...args);
       }
     }
 
@@ -32,15 +33,16 @@ class VisualiveUxFactory {
     this.treeItemFactories.push({ treeItemElement, rule });
   }
 
-  constructTreeItemElement(treeItem, parentElement) {
+  constructTreeItemElement(...args) {
     // Note: Iterate over the factories in reverse order.
     // This allows widgets to override existing widgets in special cases.
     // E.g. display a custom color picker in VR compared to the
     // material editor.
+    const treeItem = args[0];
     for (let i = this.treeItemFactories.length; i-- > 0; ) {
       const reg = this.treeItemFactories[i];
       if (reg.rule(treeItem)) {
-        return new reg.treeItemElement(treeItem, parentElement);
+        return new reg.treeItemElement(...args);
       }
     }
 
@@ -55,15 +57,16 @@ class VisualiveUxFactory {
     this.widgetFactories.push({ widget, rule });
   }
 
-  constructWidget(param, parentElement) {
+  constructWidget(...args) {
     // Note: Iterate over the widgetFactories in reverse order.
     // This allows widgets to override existing widgets in special cases.
     // E.g. display a custom color picker in VR compared to the
     // material editor.
+    const param = args[0];
     for (let i = this.widgetFactories.length; i-- > 0; ) {
       const reg = this.widgetFactories[i];
       if (reg.rule(param)) {
-        return new reg.widget(param, parentElement);
+        return new reg.widget(...args);
       }
     }
 
