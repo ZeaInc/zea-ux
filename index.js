@@ -1,3 +1,17 @@
+import {
+  getRequest,
+  getCurrentUser,
+  getProjectResources,
+  getProjectResourcesRecursive,
+  getParameterFromUrl
+} from './src/PlatformAPI.js';
+
+import UndoRedoManager from './src/undoredo/UndoRedoManager';
+
+import SelectionManager from './src/SelectionManager';
+import ActionRegistry from './src/ActionRegistry';
+import LoaderRegistry from './src/LoaderRegistry';
+
 import BooleanWidget from './src/ui/parameter-widgets/BooleanWidget';
 import ColorWidget from './src/ui/parameter-widgets/ColorWidget';
 import NumberWidget from './src/ui/parameter-widgets/NumberWidget';
@@ -10,13 +24,29 @@ import TreeItemInspector from './src/ui/TreeItemInspector';
 import InspectorContainer from './src/ui/InspectorContainer';
 import SceneTreeView from './src/ui/scene-tree-view';
 import TopMenuBar from './src/ui/TopMenuBar';
+import {
+  UserChip,
+  CurrentUserChip
+} from './src/ui/UserChip';
 
-import undoRedoManager from './src/undoredo/UndoRedoManager';
-
-import SelectionManager from './src/SelectionManager';
-import CommandRegistry from './src/CommandRegistry';
 
 export {
+  getRequest,
+  getCurrentUser,
+  getProjectResources,
+  getProjectResourcesRecursive,
+  getParameterFromUrl,
+
+  ActionRegistry,
+  LoaderRegistry,
+  UndoRedoManager,
+  SelectionManager,
+
+  SceneTreeView,
+  TopMenuBar,
+  UserChip,
+  CurrentUserChip,
+
   BooleanWidget,
   ColorWidget,
   NumberWidget,
@@ -24,11 +54,8 @@ export {
   Vec2Widget,
   Vec3Widget,
   Vec4Widget,
+
   InspectorContainer,
-  undoRedoManager,
-  SceneTreeView,
-  SelectionManager,
-  TreeItemInspector,
-  TopMenuBar,
-  CommandRegistry,
+  TreeItemInspector
+
 };
