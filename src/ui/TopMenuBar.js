@@ -15,44 +15,36 @@ class TopMenuBar {
 
     const actions = this.actionRegistry.getActions();
     actions.forEach(action => {
-      this._addMenuItemTo(ul, action);
+      this._addMenuItem(ul, action);
     });
 
     this.actionRegistry.actionAdded.connect((action)=>{
-
-      this._addMenuItemTo(ul, action);
+      this._addMenuItem(ul, action);
     })
   }
 
-  _addMenuItemTo(domElement, action) {
+  _addMenuItem(domElement, action) {
     let parentElement = domElement;
     for(let i=0; i<action.path.length; i++) {
       const pathItem = action.path[i];
       if(!this.__existingItems[pathItem]) {
-        if(i==0) {
-
-        }
         const li = this._addLiTo(parentElement, 'pure-menu-item');
         li.classList.add('pure-menu-has-children', 'pure-menu-allow-hover');
-        this._addSpanTo(li, 'ActionTitle', pathItem);
-        this.__existingItems[pathItem] = li;
+        const a = this._addATo(li, 'pure-menu-link', pathItem);
+
+        const ul = this._addUlTo(li, 'pure-menu-children shadow-3');
+
+        this.__existingItems[pathItem] = ul;
       }
       parentElement = this.__existingItems[pathItem]
     }
+
     const a = this._addATo(parentElement, 'pure-menu-link', null, action.callback);
     this._addSpanTo(a, 'ActionTitle', action.name);
     this._addSpanTo(a, 'ActionShortcut', this._keyComboAsText(action));
 
-    // const { children } = action;
-
-    // if (children && children.length) {
-    //   li.classList.add('pure-menu-has-children', 'pure-menu-allow-hover');
-    //   const ul = this._addUlTo(li, 'pure-menu-children shadow-3');
-
-    //   children.forEach(child => {
-    //     this._addMenuItemTo(ul, child, child.name);
-    //   });
-    // }
+    if(action.key)
+      this._addKeyListener(action);
   }
 
   _addKeyListener(action) {
@@ -81,28 +73,6 @@ class TopMenuBar {
     event.preventDefault();
     callback();
   }
-
-  // _registerActions() {
-  //   const ActionRegistry = new ActionRegistry();
-
-  //   const registerChildren = action => {
-  //     action.children.forEach(child => {
-  //       if (child.children) {
-  //         registerChildren(child);
-  //       } else {
-  //         if (child.key) {
-  //           ActionRegistry.registerAction(child);
-  //         }
-  //       }
-  //     });
-  //   };
-
-  //   this.menuItems.forEach(rootMenuItem => {
-  //     if (rootMenuItem.children) {
-  //       registerChildren(rootMenuItem);
-  //     }
-  //   });
-  // }
 
   _addSpanTo(domElement, className, innerHTML) {
     const span = document.createElement('span');
