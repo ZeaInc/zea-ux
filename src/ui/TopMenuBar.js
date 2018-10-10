@@ -3,7 +3,7 @@ class TopMenuBar {
   constructor(actionRegistry, domElement) {
     this.actionRegistry = actionRegistry;
     this.domElement = domElement;
-    this.__rootLevelItems = {};
+    this.__existingItems = {};
 
     this._buildTopBar();
   }
@@ -28,16 +28,16 @@ class TopMenuBar {
     let parentElement = domElement;
     for(let i=0; i<action.path.length; i++) {
       const pathItem = action.path[i];
-      if(!this.__rootLevelItems[pathItem]) {
+      if(!this.__existingItems[pathItem]) {
         if(i==0) {
-          
+
         }
         const li = this._addLiTo(parentElement, 'pure-menu-item');
         li.classList.add('pure-menu-has-children', 'pure-menu-allow-hover');
         this._addSpanTo(li, 'ActionTitle', pathItem);
-        this.__rootLevelItems[pathItem] = li;
+        this.__existingItems[pathItem] = li;
       }
-      parentElement = this.__rootLevelItems[pathItem]
+      parentElement = this.__existingItems[pathItem]
     }
     const a = this._addATo(parentElement, 'pure-menu-link', null, action.callback);
     this._addSpanTo(a, 'ActionTitle', action.name);
