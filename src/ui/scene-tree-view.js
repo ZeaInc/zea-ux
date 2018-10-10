@@ -3,9 +3,10 @@ import undoRedoManager from '../undoredo/UndoRedoManager';
 import ParameterValueChange from '../undoredo/ParameterValueChange';
 
 class TreeItemElement {
-  constructor(treeItem, parentDomElement, expanded = false) {
-    this.parentDomElement = parentDomElement;
+  constructor(treeItem, parentDomElement, undoRedoManager, expanded = false) {
     this.treeItem = treeItem;
+    this.parentDomElement = parentDomElement;
+    this.undoRedoManager = undoRedoManager;
 
     this.li = document.createElement('li');
     this.li.className = 'TreeNodesListItem';
@@ -65,19 +66,18 @@ class TreeItemElement {
 
     this.childElements = [];
     this._expanded = false;
-    const children = this.treeItem.getChildren();
-    if (children.length) {
-      this.expandBtn.addEventListener('click', () => {
-        this._expanded ? this.collapse() : this.expand();
-      });
 
-      if (expanded) {
-        this.expand();
-      } else {
-        this.expandBtn.innerHTML =
-          '<i class="material-icons md-24">arrow_right</i>';
-      }
+    if (expanded) {
+      this.expand();
+    } else {
+      const children = this.treeItem.getChildren();
+      if (children.length > 0)
+        this.collapse();
     }
+
+    this.expandBtn.addEventListener('click', () => {
+      this._expanded ? this.collapse() : this.expand();
+    });
 
     this.treeItem.childAdded.connect((childItem, index) => {
       this.addChild(childItem, this.ul);
@@ -87,23 +87,17 @@ class TreeItemElement {
   }
 
   addChild(treeItem, parentDomElement, expanded = false) {
-    const childTreeItem = visualiveUxFactory.constructTreeItemElement(
-      treeItem,
-      parentDomElement,
-      expanded
-    );
-    this.childElements.push(childTreeItem);
-    this.expandBtn.innerHTML =
-      '<i class="material-icons md-24">arrow_drop_down</i>';
-    this.expandBtn.addEventListener('click', () => {
-      this._expanded ? this.collapse() : this.expand();
-    });
-
-    if (expanded) {
-      this.expand();
-    } else {
-      this.expandBtn.innerHTML =
-        '<i class="material-icons md-24">arrow_right</i>';
+    if(this._expanded) {
+      const childTreeItem = visualiveUxFactory.constructTreeItemElement(
+        treeItem,
+        parentDomElement,
+        this.undoRedoManager,
+        expanded
+      );
+      this.childElements.push(childTreeItem);
+    }
+    else {
+      this.collapse();
     }
   }
 
@@ -136,8 +130,8 @@ visualiveUxFactory.registerTreeItemElement(
 );
 
 class GeomItemElement extends TreeItemElement {
-  constructor(treeItem, parentDomElement, expanded = false) {
-    super(treeItem, parentDomElement, expanded);
+  constructor(treeItem, parentDomElement, undoRedoManager, expanded = false) {
+    super(treeItem, parentDomElement, undoRedoManager, expanded);
   }
 }
 
@@ -147,15 +141,16 @@ visualiveUxFactory.registerTreeItemElement(
 );
 
 class SceneTreeView {
-  constructor(parentDomElement, rootTreeItem) {
+  constructor(parentDomElement, rootTreeItem, undoRedoManager) {
     this.parentDomElement = parentDomElement;
+    this.undoRedoManager = undoRedoManager;
 
     this.ul = document.createElement('ul');
     this.ul.className = 'TreeNodesList TreeNodesList--root';
 
     this.parentDomElement.appendChild(this.ul);
 
-    this.rootElement = new TreeItemElement(rootTreeItem, this.ul, true);
+    this.rootElement = new TreeItemElement(rootTreeItem, this.ul, undoRedoManager, true);
   }
 
   getDomElement() {
