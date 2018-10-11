@@ -1,0 +1,9 @@
+
+.user-chip {
+  display: flex;
+  align-items: center;
+}
+
+.user-image {
+  width: 40px;
+}
