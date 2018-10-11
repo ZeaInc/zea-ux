@@ -1,8 +1,10 @@
 import visualiveUxFactory from '../ui/VisualiveUxFactory';
 
 class ParameterContainer {
-  constructor(parameterOwner, domElement) {
+  constructor(parameterOwner, domElement, undoRedoManager) {
     this.domElement = domElement;
+    this.undoRedoManager = undoRedoManager;
+
     this.container = document.createElement('div');
     this.container.className = 'container';
     this.domElement.appendChild(this.container);
@@ -46,7 +48,7 @@ class ParameterContainer {
     labelElem.appendChild(document.createTextNode(parameterName));
     li.appendChild(labelElem);
 
-    const widget = visualiveUxFactory.constructWidget(parameter, li);
+    const widget = visualiveUxFactory.constructWidget(parameter, li, this.undoRedoManager);
     if (!widget) {
       console.warn(`Unable to display parameter '${parameterName}'`);
       return;

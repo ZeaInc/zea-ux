@@ -1,19 +1,24 @@
 import visualiveUxFactory from './VisualiveUxFactory';
 
 class InspectorContainer {
-  constructor(domElement) {
+  constructor(domElement, undoRedoManager) {
     this.domElement = domElement;
+    this.domElement.innerHTML = '';
+    this.undoRedoManager = undoRedoManager;
   }
 
   inspect(baseItem) {
     if (this.inspector) {
       this.inspector.destroy();
+      this.domElement.innerHTML = '';
     }
-
-    this.inspector = visualiveUxFactory.constructInspector(
-      baseItem,
-      this.domElement
-    );
+    if(baseItem) {
+      this.inspector = visualiveUxFactory.constructInspector(
+        baseItem,
+        this.domElement,
+        this.undoRedoManager
+      );
+    }
   }
 }
 

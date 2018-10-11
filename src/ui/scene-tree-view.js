@@ -12,7 +12,7 @@ class TreeItemElement {
     this.li.className = 'TreeNodesListItem';
 
     this.expandBtn = document.createElement('button');
-    this.expandBtn.className = 'TreeNodesListItem__Toggle';
+    this.expandBtn.className = 'TreeNodesListItem__ToggleExpanded';
     this.li.appendChild(this.expandBtn);
 
     // Visibility toggle.
@@ -36,6 +36,8 @@ class TreeItemElement {
         ? this.li.classList.remove('TreeNodesListItem--isHidden')
         : this.li.classList.add('TreeNodesListItem--isHidden');
     });
+
+
 
     // Title element.
     this.titleElement = document.createElement('span');
@@ -76,21 +78,41 @@ class TreeItemElement {
     }
 
     this.expandBtn.addEventListener('click', () => {
-      this._expanded ? this.collapse() : this.expand();
+      if (this.treeItem.numChildren() > 0) {
+        this._expanded ? this.collapse() : this.expand();
+      }
     });
 
     this.treeItem.childAdded.connect((childItem, index) => {
-      this.addChild(childItem, this.ul);
+      this.addChild(childItem);
     });
 
     this.treeItem.childRemoved.connect((childItem, index) => {});
   }
 
-  addChild(treeItem, parentDomElement, expanded = false) {
+  addComponent(component) {
+
+    if(!this.subul) {
+      this.subul = document.createElement('ul');
+      // this.subul.className = 'TreeNodesList';
+      this.titleElement.appendChild(this.subul);
+    }
+
+    // Title element.
+    const li = document.createElement('li');
+    li.className = 'TreeNodesListItem';
+    const nameElement = document.createElement('span');
+    nameElement.className = 'TreeNodesListItem__Title';
+    nameElement.textContent = component;
+    li.appendChild(nameElement);
+    this.subul.appendChild(li);
+  }
+
+  addChild(treeItem, expanded = false) {
     if(this._expanded) {
       const childTreeItem = visualiveUxFactory.constructTreeItemElement(
         treeItem,
-        parentDomElement,
+        this.ul,
         this.undoRedoManager,
         expanded
       );
@@ -110,7 +132,7 @@ class TreeItemElement {
     if (!this.childrenAlreadyCreated) {
       const children = this.treeItem.getChildren();
       for (let child of children) {
-        this.addChild(child, this.ul);
+        this.addChild(child);
       }
       this.childrenAlreadyCreated = true;
     }
@@ -126,18 +148,21 @@ class TreeItemElement {
 
 visualiveUxFactory.registerTreeItemElement(
   TreeItemElement,
-  p => p.constructor.name === 'TreeItem'
+  p => p instanceof Visualive.TreeItem
 );
 
 class GeomItemElement extends TreeItemElement {
   constructor(treeItem, parentDomElement, undoRedoManager, expanded = false) {
     super(treeItem, parentDomElement, undoRedoManager, expanded);
+
+    // this.addComponent('material')
+    // this.addComponent('geometry')
   }
 }
 
 visualiveUxFactory.registerTreeItemElement(
   GeomItemElement,
-  p => p.constructor.name === 'GeomItem'
+  p => p instanceof Visualive.GeomItem
 );
 
 class SceneTreeView {

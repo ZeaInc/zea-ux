@@ -2,8 +2,8 @@ import ParameterContainer from './ParameterContainer';
 import visualiveUxFactory from './VisualiveUxFactory';
 
 class TreeItemInspector {
-  constructor(treeItem, domElement) {
-    this.parameterContainer = new ParameterContainer(treeItem, domElement);
+  constructor(treeItem, domElement, undoRedoManager) {
+    this.parameterContainer = new ParameterContainer(treeItem, domElement, undoRedoManager);
   }
 
   destroy() {

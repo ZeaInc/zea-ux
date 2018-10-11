@@ -3,8 +3,8 @@ class LoaderRegistry {
     this.loaders = [];
   }
 
-  registerLoader(laoder, rule) {
-    this.loaders.push({ laoder, rule });
+  registerLoader(loader, rule) {
+    this.loaders.push({ loader, rule });
   }
 
   findLoader(file) {
