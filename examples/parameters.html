@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Parameters</title>
+
+    <script src="http://localhost:3150/VisualiveEngineClient/lib/Visualive.js"></script>
+
+    <!-- Use https://tachyons.io to normalize styles and add useful classes -->
+    <link rel="stylesheet" href="https://unpkg.com/tachyons@4/css/tachyons.min.css"/>
+
+    <!-- Material Design Lite -->
+    <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <!-- Material Design icon font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css">
+
+    
+    <link rel="stylesheet" href="../css/parameters.css">
+    <script type="module">
+      
+import { UndoRedoManager, ParameterContainer } from '../index.js';
+
+const undoRedoManager = new UndoRedoManager();
+const parameterOwner = new Visualive.ParameterOwner();
+
+parameterOwner.addParameter(new Visualive.StringParameter('Name', 'Foo'));
+parameterOwner.addParameter(new Visualive.NumberParameter('Number', 5));
+parameterOwner.addParameter(
+  new Visualive.NumberParameter('Smooth', 10).setRange([0, 30])
+);
+parameterOwner.addParameter(
+  new Visualive.NumberParameter('Stepped', 6).setRange([0, 30]).setStep(5)
+);
+parameterOwner.addParameter(
+  new Visualive.Vec2Parameter('Vec2 Parameter', new Visualive.Vec2(1, 2))
+);
+parameterOwner.addParameter(
+  new Visualive.Vec3Parameter('Vec3 Parameter', new Visualive.Vec3(3, 4, 5))
+);
+parameterOwner.addParameter(
+  new Visualive.Vec4Parameter('Vec4 Parameter', new Visualive.Vec4(6, 7, 8, 9))
+);
+parameterOwner.addParameter(
+  new Visualive.ColorParameter('Color', new Visualive.Color(1, 1, 0, 1))
+);
+
+const parameterContainer = new ParameterContainer(
+  parameterOwner,
+  document.getElementById('parameters'),
+  undoRedoManager
+);
+
+// const geomItem = new Visualive.GeomItem();
+// const ParameterContainer2 = new ParameterContainer(
+//   geomItem,
+//   document.getElementById('geomitem-parameters'),
+// );
+
+document.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'z') {
+    undoRedoManager.undo();
+  }
+});
+
+    </script>
+
+  </head>
+  <body>
+    <div id="parameters" class="pure-menu pure-menu-horizontal ml3"></div>
+  </body>
+</html>

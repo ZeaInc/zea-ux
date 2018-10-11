@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Parameters</title>
+
+    <script src="http://localhost:3150/VisualiveEngineClient/lib/Visualive.js"></script>
+
+    <!-- Use https://tachyons.io to normalize styles and add useful classes -->
+    <link rel="stylesheet" href="https://unpkg.com/tachyons@4/css/tachyons.min.css"/>
+
+    <!-- Material Design Lite -->
+    <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <!-- Material Design icon font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css">
+
+  
+    <link rel="stylesheet" href="../css/tree-view.css">
+    <script type="module">
+      
+import {
+  ParameterContainer,
+  SceneTreeView,
+  UndoRedoManager,
+  SelectionManager,
+} from '../index.js';
+
+const undoRedoManager = new UndoRedoManager();
+
+const rootItem = new Visualive.TreeItem('Root Tree Item');
+
+const addChildrenToRoot = i => {
+  const firstLevelChild = rootItem.addChild(
+    new Visualive.TreeItem(`Child Tree Item ${i}`)
+  );
+
+  window.setTimeout(() => {
+    for (let ii = 0; ++ii <= 5; ) {
+      firstLevelChild.addChild(new Visualive.GeomItem(`Geom Item ${ii}`));
+    }
+  }, i * 1000);
+};
+
+for (let i = 0; ++i <= 4; ) {
+  addChildrenToRoot(i);
+}
+
+const sceneTreeView = new SceneTreeView(
+  document.getElementById('vlw-tree'),
+  rootItem
+);
+
+const selectionManager = new SelectionManager(rootItem);
+
+selectionManager.leadSelectionChange.connect(selectedTreeItem =>
+  console.log('Received', selectedTreeItem.getName())
+);
+
+document.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'z') {
+    undoRedoManager.undo();
+  }
+});
+
+    </script>
+
+  </head>
+  <body>
+    <div id="vlw-tree"></div>
+  </body>
+</html>
