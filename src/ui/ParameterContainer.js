@@ -3,6 +3,7 @@ import visualiveUxFactory from '../ui/VisualiveUxFactory';
 class ParameterContainer {
   constructor(parameterOwner, domElement, undoRedoManager) {
     this.domElement = domElement;
+    this.clean();
     this.undoRedoManager = undoRedoManager;
 
     this.container = document.createElement('div');
@@ -17,9 +18,15 @@ class ParameterContainer {
       this.setParameterOwner(parameterOwner);
     }
   }
+  
+  clean(){
+    while (this.domElement.firstChild) {
+        this.domElement.removeChild(this.domElement.firstChild);
+    }
+  }
 
   destroy() {
-    this.domElement.innerHTML = '';
+    this.clean();
   }
 
   getDomElement() {

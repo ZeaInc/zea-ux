@@ -4,6 +4,7 @@ import { getCurrentUser } from '../PlatformAPI.js';
 export class UserChip {
   constructor(domElement){
     this.domElement = domElement;
+    this.clean();
     this.userDiv = document.createElement('div');
     this.userDiv.className = 'user-chip';
     this.domElement.appendChild(this.userDiv);
@@ -21,8 +22,14 @@ export class UserChip {
     this.userDiv.appendChild(this.userImageDiv);
   }
 
+  clean(){
+    while (this.domElement.firstChild) {
+        this.domElement.removeChild(this.domElement.firstChild);
+    }
+  }
+
   unmount(){
-    this.domElement.innerHTML = "";
+    this.clean();
   }
 }
 
