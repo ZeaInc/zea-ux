@@ -1,18 +1,22 @@
-import iro from '@jaames/iro';
+// import iro from '@jaames/iro.js';
+import iro from '../../../node_modules/@jaames/iro/dist/iro.es.js';
+// import iro from 'https://rawgit.com/jaames/iro.js/master/dist/iro.es.js';
 
-import BaseWidget from './BaseWidget';
+import BaseWidget from './BaseWidget.js';
 
-import visualiveUxFactory from '../VisualiveUxFactory';
-import ParameterValueChange from '../../undoredo/ParameterValueChange';
+import visualiveUxFactory from '../VisualiveUxFactory.js';
+import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 
-class ColorWidget extends BaseWidget {
+export default class ColorWidget extends BaseWidget {
   constructor(parameter, parentDomElem, undoRedoManager) {
+    console.log("ColorWidget")
     super(parameter);
 
     const colorPicker = new iro.ColorPicker(parentDomElem, {
       // Color picker options:
       // https://rakujira.jp/projects/iro/docs/guide.html#Color-Picker-Options
       width: 200,
+      height: 200,
       color: { r: 255, g: 0, b: 0 },
       anticlockwise: true,
       borderWidth: 1,

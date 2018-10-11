@@ -1,6 +1,6 @@
 
 
-import getSettings from './config/settings';
+import getSettings from './config/settings.js';
 
 const { HOST_URL } = getSettings();
 export const INVALID_TOKEN = 'invalid token';

@@ -1,6 +1,6 @@
-import ParameterContainer from './ParameterContainer';
-import visualiveUxFactory from './VisualiveUxFactory';
-import StringWidget from './parameter-widgets/StringWidget';
+import ParameterContainer from './ParameterContainer.js';
+import visualiveUxFactory from './VisualiveUxFactory.js';
+import StringWidget from './parameter-widgets/StringWidget.js';
 
 class NameParam {
   constructor(treeItem) {
@@ -21,10 +21,17 @@ class NameParam {
   }
 }
 
-class TreeItemInspector {
+export default class TreeItemInspector {
   constructor(treeItem, domElement, undoRedoManager) {
-  	// this.nameWidget = new StringWidget(new NameParam(treeItem), domElement, undoRedoManager);
-    this.parameterContainer = new ParameterContainer(treeItem, domElement, undoRedoManager);
+
+    const ul = document.createElement('ul');
+    const linameWidget = document.createElement('li');
+    const liparameterContainer = document.createElement('li');
+    domElement.appendChild(ul);
+    ul.appendChild(linameWidget);
+    ul.appendChild(liparameterContainer);
+  	this.nameWidget = new StringWidget(new NameParam(treeItem), linameWidget, undoRedoManager);
+    this.parameterContainer = new ParameterContainer(treeItem, liparameterContainer, undoRedoManager);
   }
 
   destroy() {

@@ -1,4 +1,4 @@
-import visualiveUxFactory from './VisualiveUxFactory';
+import visualiveUxFactory from './VisualiveUxFactory.js';
 
 class InspectorContainer {
   constructor(domElement, undoRedoManager) {

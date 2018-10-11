@@ -1,13 +1,13 @@
-import Development from './development';
-import Production from './production';
-import Stage from './stage';
+import Development from './development.js';
+import Production from './production.js';
+import Stage from './stage.js';
 
 const getSettings = () => {
+  if (window.process == undefined || process.env.NODE_ENV === 'stage') {
+    return { HOST_URL: Stage };
+  }
   if (process.env.NODE_ENV === 'production') {
     return { HOST_URL: Production };
-  }
-  if (process.env.NODE_ENV === 'stage') {
-    return { HOST_URL: Stage };
   }
   return { HOST_URL: Development };
 };

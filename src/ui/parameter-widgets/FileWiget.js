@@ -1,4 +1,4 @@
-import BaseWidget from './BaseWidget';
+import BaseWidget from './BaseWidget.js';
 
 class FileWidget extends BaseWidget {
   constructor(parameter, parentDomElem, undoRedoManager) {

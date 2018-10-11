@@ -1,4 +1,4 @@
-import Change from './Change';
+import Change from './Change.js';
 
 class ParameterValueChange extends Change {
   constructor(param) {

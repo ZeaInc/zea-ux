@@ -1,7 +1,7 @@
-import BaseWidget from './BaseWidget';
+import BaseWidget from './BaseWidget.js';
 
-import ParameterValueChange from '../../undoredo/ParameterValueChange';
-import visualiveUxFactory from '../VisualiveUxFactory';
+import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
+import visualiveUxFactory from '../VisualiveUxFactory.js';
 
 
 

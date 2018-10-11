@@ -1,9 +1,9 @@
-import BaseWidget from './BaseWidget';
+import BaseWidget from './BaseWidget.js';
 
-import visualiveUxFactory from '../VisualiveUxFactory';
-import ParameterValueChange from '../../undoredo/ParameterValueChange';
+import visualiveUxFactory from '../VisualiveUxFactory.js';
+import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 
-class Vec2Widget extends BaseWidget {
+export default class Vec2Widget extends BaseWidget {
   constructor(parameter, parentDomElem, undoRedoManager) {
     super(parameter);
 

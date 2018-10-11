@@ -1,4 +1,4 @@
-import visualiveUxFactory from '../ui/VisualiveUxFactory';
+import visualiveUxFactory from '../ui/VisualiveUxFactory.js';
 
 class ParameterContainer {
   constructor(parameterOwner, domElement, undoRedoManager) {

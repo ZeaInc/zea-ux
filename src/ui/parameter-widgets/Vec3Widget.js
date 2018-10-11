@@ -1,11 +1,10 @@
-import BaseWidget from './BaseWidget';
+import BaseWidget from './BaseWidget.js';
 
-import visualiveUxFactory from '../VisualiveUxFactory';
-import undoRedoManager from '../../undoredo/UndoRedoManager';
-import ParameterValueChange from '../../undoredo/ParameterValueChange';
+import visualiveUxFactory from '../VisualiveUxFactory.js';
+import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 
-class Vec3Widget extends BaseWidget {
-  constructor(parameter, parentDomElem) {
+export default class Vec3Widget extends BaseWidget {
+  constructor(parameter, parentDomElem, undoRedoManager) {
     super(parameter);
 
     const container = document.createElement('div');

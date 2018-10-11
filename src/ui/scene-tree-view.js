@@ -1,6 +1,6 @@
-import visualiveUxFactory from './VisualiveUxFactory';
-import undoRedoManager from '../undoredo/UndoRedoManager';
-import ParameterValueChange from '../undoredo/ParameterValueChange';
+import visualiveUxFactory from './VisualiveUxFactory.js';
+import undoRedoManager from '../undoredo/UndoRedoManager.js';
+import ParameterValueChange from '../undoredo/ParameterValueChange.js';
 
 class TreeItemElement {
   constructor(treeItem, parentDomElement, undoRedoManager, expanded = false) {
@@ -30,12 +30,14 @@ class TreeItemElement {
       undoRedoManager.addChange(change);
     });
 
-    visibleParam.valueChanged.connect(() => {
+    const updateVisibility = () => {
       const visible = visibleParam.getValue();
       visible
         ? this.li.classList.remove('TreeNodesListItem--isHidden')
         : this.li.classList.add('TreeNodesListItem--isHidden');
-    });
+    }
+    visibleParam.valueChanged.connect(updateVisibility);
+    updateVisibility();
 
 
 
@@ -53,12 +55,14 @@ class TreeItemElement {
       undoRedoManager.addChange(change);
     });
 
-    selectedParam.valueChanged.connect(() => {
+    const updateSelected = ()=>{
       const selected = selectedParam.getValue();
       selected
         ? this.li.classList.add('TreeNodesListItem--isSelected')
         : this.li.classList.remove('TreeNodesListItem--isSelected');
-    });
+    }
+    selectedParam.valueChanged.connect(updateSelected);
+    updateSelected()
 
     this.parentDomElement.appendChild(this.li);
 

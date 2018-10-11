@@ -1,21 +1,19 @@
-import BaseWidget from './BaseWidget';
+import BaseWidget from './BaseWidget.js';
 
-import visualiveUxFactory from '../VisualiveUxFactory';
-import ParameterValueChange from '../../undoredo/ParameterValueChange';
+import visualiveUxFactory from '../VisualiveUxFactory.js';
+import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 
-class BooleanWidget extends BaseWidget {
+export default class BooleanWidget extends BaseWidget {
   constructor(parameter, parentDomElem, undoRedoManager) {
     super(parameter);
-
+    console.log("BooleanWidget", parameter.getName(), parameter.getValue())
     const input = document.createElement('input');
-    // input.className = 'mdl-switch__input';
     input.setAttribute('id', parameter.getName());
     input.setAttribute('type', 'checkbox');
-    input.setAttribute('checked', parameter.getValue());
     input.setAttribute('tabindex', 0);
+    input.checked = parameter.getValue();
 
     parentDomElem.appendChild(input);
-    // componentHandler.upgradeElement(input);
 
     /////////////////////////////
     // Handle Changes.
@@ -23,7 +21,7 @@ class BooleanWidget extends BaseWidget {
     let settingParameterValue = false;
     parameter.valueChanged.connect(() => {
       if (!settingParameterValue)
-        input.setAttribute('checked', parameter.getValue());
+        input.checked = parameter.getValue();
     });
     input.addEventListener('input', () => {
       settingParameterValue = true;
