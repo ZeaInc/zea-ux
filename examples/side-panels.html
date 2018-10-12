@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Side Panels</title>
+    
+    <link rel="stylesheet" href="../css/side-panels.css">
+    <script type="module">
+    
+import {
+  setupPanels
+} from '../index.js';
+
+setupPanels()
+
+    </script>
+
+<style>
+.flex-container {
+  display: flex;
+}
+</style>
+  </head>
+  <body>
+    <div class="PanelsWrapper">
+      <div class="SidePanel SidePanel--left bg-white">
+        <div class="mdl-card__actions" id="vlw-tree"></div>
+      </div>
+
+      <div class="PanelHandler"></div>
+
+      <div class="Viewport" id="viewport"></div>
+
+      <div class="PanelHandler"></div>
+
+      <div class="SidePanel SidePanel--right bg-white">
+        <div class="mdl-card__actions" id="parameters"></div>
+      </div>
+    </div>
+  </body>
+</html>
