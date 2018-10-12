@@ -1,5 +1,3 @@
-
-
 export default function setupPanels() {
   const panelHandlers = document.getElementsByClassName('PanelHandler');
   const viewportElement = document.getElementById('viewport');
@@ -24,11 +22,8 @@ export default function setupPanels() {
 
     function doDrag(e) {
       const delta = e.clientX - startX;
-      let panelWidth = isLeftPanel
-          ? startWidth + delta
-          : startWidth - delta;
-      if(panelWidth < 40)
-        panelWidth = 0;
+      let panelWidth = isLeftPanel ? startWidth + delta : startWidth - delta;
+      if (panelWidth < 40) panelWidth = 0;
       panel.style.width = `${panelWidth}px`;
     }
 
