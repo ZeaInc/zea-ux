@@ -1,12 +1,11 @@
 import visualiveUxFactory from './VisualiveUxFactory.js';
-import undoRedoManager from '../undoredo/UndoRedoManager.js';
 import ParameterValueChange from '../undoredo/ParameterValueChange.js';
 
 class TreeItemElement {
-  constructor(treeItem, parentDomElement, undoRedoManager, expanded = false) {
+  constructor(treeItem, parentDomElement, appData, expanded = false) {
     this.treeItem = treeItem;
     this.parentDomElement = parentDomElement;
-    this.undoRedoManager = undoRedoManager;
+    this.appData = appData;
 
     this.li = document.createElement('li');
     this.li.className = 'TreeNodesListItem';
@@ -27,7 +26,7 @@ class TreeItemElement {
     this.toggleVisibilityBtn.addEventListener('click', () => {
       const change = new ParameterValueChange(visibleParam);
       change.setValue(!visibleParam.getValue());
-      undoRedoManager.addChange(change);
+      this.appData.undoRedoManager.addChange(change);
     });
 
     const updateVisibility = () => {
@@ -49,10 +48,8 @@ class TreeItemElement {
 
     const selectedParam = this.treeItem.getParameter('Selected');
 
-    this.titleElement.addEventListener('click', () => {
-      const change = new ParameterValueChange(selectedParam);
-      change.setValue(!selectedParam.getValue());
-      undoRedoManager.addChange(change);
+    this.titleElement.addEventListener('click', (e) => {
+      appData.selectionManager.toggleItemSelection(this.treeItem, !e.ctrlKey);
     });
 
     const updateSelected = ()=>{
@@ -117,7 +114,7 @@ class TreeItemElement {
       const childTreeItem = visualiveUxFactory.constructTreeItemElement(
         treeItem,
         this.ul,
-        this.undoRedoManager,
+        this.appData,
         expanded
       );
       this.childElements.push(childTreeItem);
@@ -156,8 +153,8 @@ visualiveUxFactory.registerTreeItemElement(
 );
 
 class GeomItemElement extends TreeItemElement {
-  constructor(treeItem, parentDomElement, undoRedoManager, expanded = false) {
-    super(treeItem, parentDomElement, undoRedoManager, expanded);
+  constructor(treeItem, parentDomElement, appData, expanded = false) {
+    super(treeItem, parentDomElement, appData, expanded);
 
     // this.addComponent('material')
     // this.addComponent('geometry')
@@ -170,16 +167,16 @@ visualiveUxFactory.registerTreeItemElement(
 );
 
 class SceneTreeView {
-  constructor(parentDomElement, rootTreeItem, undoRedoManager) {
+  constructor(parentDomElement, rootTreeItem, appData) {
     this.parentDomElement = parentDomElement;
-    this.undoRedoManager = undoRedoManager;
+    this.appData = appData;
 
     this.ul = document.createElement('ul');
     this.ul.className = 'TreeNodesList TreeNodesList--root';
 
     this.parentDomElement.appendChild(this.ul);
 
-    this.rootElement = new TreeItemElement(rootTreeItem, this.ul, undoRedoManager, true);
+    this.rootElement = new TreeItemElement(rootTreeItem, this.ul, appData, true);
   }
 
   getDomElement() {

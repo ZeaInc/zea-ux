@@ -25,6 +25,12 @@
 import { UndoRedoManager, SceneTreeView, SelectionManager, InspectorContainer } from '../index.js';
 
 const undoRedoManager = new UndoRedoManager();
+const selectionManager = new SelectionManager(undoRedoManager);
+
+const appData = {
+  undoRedoManager,
+  selectionManager
+}
 
 const rootItem = new Visualive.TreeItem('Root Tree Item');
 
@@ -45,15 +51,13 @@ for (let i = 0; ++i <= 4; ) {
 const sceneTreeView = new SceneTreeView(
   document.getElementById('vlw-tree'),
   rootItem,
-  undoRedoManager
+  appData
 );
 
-const selectionManager = new SelectionManager(rootItem);
 const inspectorContainer = new InspectorContainer(
   document.getElementById('parameters'),
   undoRedoManager
 );
-
 
 document.addEventListener('keydown', e => {
   if ((e.metaKey || e.ctrlKey) && e.key === 'z') {
@@ -61,7 +65,7 @@ document.addEventListener('keydown', e => {
   }
 });
 
-selectionManager.leadSelectionChange.connect(selectedTreeItem => {
+selectionManager.leadSelectionChanged.connect(selectedTreeItem => {
   inspectorContainer.inspect(selectedTreeItem);
 });
 

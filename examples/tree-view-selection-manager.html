@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
-    <title>Parameters</title>
+    <title>TreeView SelectionManager</title>
 
     <script src="http://localhost:3150/VisualiveEngineClient/lib/Visualive.js"></script>
 
@@ -29,6 +29,12 @@ import {
 } from '../index.js';
 
 const undoRedoManager = new UndoRedoManager();
+const selectionManager = new SelectionManager(undoRedoManager);
+
+const appData = {
+  undoRedoManager,
+  selectionManager
+}
 
 const rootItem = new Visualive.TreeItem('Root Tree Item');
 
@@ -37,11 +43,9 @@ const addChildrenToRoot = i => {
     new Visualive.TreeItem(`Child Tree Item ${i}`)
   );
 
-  window.setTimeout(() => {
-    for (let ii = 0; ++ii <= 5; ) {
-      firstLevelChild.addChild(new Visualive.GeomItem(`Geom Item ${ii}`));
-    }
-  }, i * 1000);
+  for (let ii = 0; ++ii <= 5; ) {
+    firstLevelChild.addChild(new Visualive.GeomItem(`Geom Item ${ii}`));
+  }
 };
 
 for (let i = 0; ++i <= 4; ) {
@@ -51,12 +55,11 @@ for (let i = 0; ++i <= 4; ) {
 const sceneTreeView = new SceneTreeView(
   document.getElementById('vlw-tree'),
   rootItem,
-  undoRedoManager
+  appData
 );
 
-const selectionManager = new SelectionManager(rootItem);
 
-selectionManager.leadSelectionChange.connect(selectedTreeItem =>
+selectionManager.leadSelectionChanged.connect(selectedTreeItem =>
   console.log('Received', selectedTreeItem ? selectedTreeItem.getName() : "None")
 );
 
