@@ -33,21 +33,6 @@ import Vec2Widget from './src/ui/parameter-widgets/Vec2Widget.js';
 import Vec3Widget from './src/ui/parameter-widgets/Vec3Widget.js';
 import Vec4Widget from './src/ui/parameter-widgets/Vec4Widget.js';
 
-// const styleSheets = {
-//   TopBar: '@visualive/ux/css/top-bar.css'
-// }
-// async function loadStyles(stylesheets) {
-//     let arr = await Promise.all(stylesheets.map(url => fetch(url)))
-//     arr = await Promise.all(arr.map(url => url.text()))
-//     const style = document.createElement('style')
-//     style.textContent = arr.reduce(
-//         (prev, fileContents) => prev + fileContents, ''
-//     )
-//     document.head.appendChild(style);
-//     // Do whatever now
-// }
-
-
 export {
   getRequest,
   getCurrentUser,

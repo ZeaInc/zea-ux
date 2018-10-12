@@ -2,12 +2,6 @@
   border-left: 1px dotted;
   list-style-type: none;
   padding: 0 0 0 15px;
-  
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  -o-user-select: none;
 }
 
 .TreeNodesList--collapsed {
