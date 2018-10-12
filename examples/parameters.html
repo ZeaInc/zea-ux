@@ -53,12 +53,6 @@ const parameterContainer = new ParameterContainer(
   undoRedoManager
 );
 
-// const geomItem = new Visualive.GeomItem();
-// const ParameterContainer2 = new ParameterContainer(
-//   geomItem,
-//   document.getElementById('geomitem-parameters'),
-// );
-
 document.addEventListener('keydown', e => {
   if ((e.metaKey || e.ctrlKey) && e.key === 'z') {
     undoRedoManager.undo();
