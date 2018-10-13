@@ -17,7 +17,6 @@ export default class StringWidget extends BaseWidget {
     input.setAttribute('tabindex', 0);
 
     parentDomElem.appendChild(input);
-    componentHandler.upgradeElement(input);
 
     /////////////////////////////
     // Handle Changes.

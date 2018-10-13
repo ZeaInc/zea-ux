@@ -25,6 +25,7 @@ export default class TreeItemInspector {
   constructor(treeItem, domElement, undoRedoManager) {
 
     const ul = document.createElement('ul');
+    ul.className = 'list pa0'
     const linameWidget = document.createElement('li');
     const liparameterContainer = document.createElement('li');
     domElement.appendChild(ul);

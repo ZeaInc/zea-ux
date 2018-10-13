@@ -12,7 +12,6 @@ class FileWidget extends BaseWidget {
     input.setAttribute('tabindex', 0);
 
     parentDomElem.appendChild(inputOwner);
-    componentHandler.upgradeElement(input);
 
     /////////////////////////////
     // Handle Changes.
