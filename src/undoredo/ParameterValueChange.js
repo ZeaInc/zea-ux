@@ -1,16 +1,11 @@
 import Change from './Change.js';
 
 class ParameterValueChange extends Change {
-  constructor(param) {
+  constructor(param, newValue) {
     super(param.getName() + ' Changed');
     this.__param = param;
-    this.__newValue;
+    this.__newValue = newValue;
     this.__oldValue = param.getValue();
-  }
-
-  setValue(value) {
-    this.__param.setValue(value);
-    this.__newValue = value;
   }
 
   undo() {
@@ -18,6 +13,11 @@ class ParameterValueChange extends Change {
   }
 
   redo() {
+    this.__param.setValue(this.__newValue);
+  }
+
+  update(updateData) {
+    this.__newValue = updateData.value;
     this.__param.setValue(this.__newValue);
   }
 }

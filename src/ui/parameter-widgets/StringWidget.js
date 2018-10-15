@@ -25,21 +25,25 @@ export default class StringWidget extends BaseWidget {
     parameter.valueChanged.connect(() => {
       if (!change) input.value = parameter.getValue();
     });
-    input.addEventListener('input', () => {
+
+    const valueChange = () => {
+      const value = input.value
       if (!change) {
-        change = new ParameterValueChange(parameter);
+        change = new ParameterValueChange(parameter, value);
         undoRedoManager.addChange(change);
       }
-      change.setValue(input.valueAsNumber);
-    });
-    input.addEventListener('change', () => {
-      if (!change) {
-        change = new ParameterValueChange(parameter);
-        undoRedoManager.addChange(change);
+      else {
+        undoRedoManager.updateChange({ value });
       }
-      change.setValue(input.valueAsNumber);
+    };
+
+    const valueChangeEnd = () => {
+      valueChange();
       change = undefined;
-    });
+    };
+
+    input.addEventListener('input', valueChange);
+    input.addEventListener('change', valueChangeEnd);
   }
 }
 

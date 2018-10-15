@@ -18,17 +18,15 @@ export default class BooleanWidget extends BaseWidget {
     /////////////////////////////
     // Handle Changes.
 
-    let settingParameterValue = false;
+    let change;
     parameter.valueChanged.connect(() => {
-      if (!settingParameterValue)
+      if (!change)
         input.checked = parameter.getValue();
     });
     input.addEventListener('input', () => {
-      settingParameterValue = true;
-      const change = new ParameterValueChange(parameter);
-      change.setValue(input.checked);
+      change = new ParameterValueChange(parameter, input.checked);
       undoRedoManager.addChange(change);
-      settingParameterValue = false;
+      change = undefined;
     });
   }
 }

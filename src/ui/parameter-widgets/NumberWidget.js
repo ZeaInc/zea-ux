@@ -38,22 +38,24 @@ export default class NumberWidget extends BaseWidget {
       if (!change) input.value = parameter.getValue();
     });
 
-    input.addEventListener('input', () => {
+    const valueChange = () => {
+      const value = input.valueAsNumber
       if (!change) {
-        change = new ParameterValueChange(parameter);
+        change = new ParameterValueChange(parameter, value);
         undoRedoManager.addChange(change);
       }
-      change.setValue(input.valueAsNumber);
-    });
+      else {
+        undoRedoManager.updateChange({ value });
+      }
+    };
 
-    input.addEventListener('change', () => {
-      if (!change) {
-        change = new ParameterValueChange(parameter);
-        undoRedoManager.addChange(change);
-      }
-      change.setValue(input.valueAsNumber);
+    const valueChangeEnd = () => {
+      valueChange();
       change = undefined;
-    });
+    };
+
+    input.addEventListener('input', valueChange);
+    input.addEventListener('change', valueChangeEnd);
   }
 }
 

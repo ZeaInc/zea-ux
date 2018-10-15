@@ -70,17 +70,18 @@ export default class Vec3Widget extends BaseWidget {
     });
 
     const valueChange = () => {
-      if (!change) {
-        change = new ParameterValueChange(parameter);
-        undoRedoManager.addChange(change);
-      }
-      change.setValue(
-        new Visualive.Vec3(
+      const value = new Visualive.Vec3(
           xField.valueAsNumber,
           yField.valueAsNumber,
           zField.valueAsNumber
         )
-      );
+      if (!change) {
+        change = new ParameterValueChange(parameter, value);
+        undoRedoManager.addChange(change);
+      }
+      else {
+        undoRedoManager.updateChange({ value });
+      }
     };
 
     const valueChangeEnd = () => {
