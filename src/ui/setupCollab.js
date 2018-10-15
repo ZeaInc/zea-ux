@@ -84,13 +84,13 @@ const setupCollab = $collabWrapper => {
     $form.reset();
   });
 
-  visualiveSession.on(VisualiveSession.actions.TEXT_MESSAGE, message => {
+  visualiveSession.sub(VisualiveSession.actions.TEXT_MESSAGE, message => {
     const p = document.createElement('p');
     p.innerHTML = `<strong>${message.userId}:</strong> ${message.payload.text}`;
     $receivedMessages.appendChild(p);
   });
 
-  visualiveSession.on(VisualiveSession.actions.USER_JOINED, message => {
+  visualiveSession.sub(VisualiveSession.actions.USER_JOINED, message => {
     const p = document.createElement('p');
     p.innerHTML = `<strong>(User Joined: ${message.userId})</strong>`;
     $receivedMessages.appendChild(p);
