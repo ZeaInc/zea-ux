@@ -1,3 +1,6 @@
+
+const __changeClasses {};
+
 class UndoRedoManager {
   constructor() {
     this.__undoStack = [];
@@ -41,6 +44,19 @@ class UndoRedoManager {
       this.changeRedone.emit();
     }
   }
+
+  ////////////////////////////////////
+  // User Synchronization
+
+  constructChange(claName) {
+    return new __changeClasses[claName];
+  }
+
+  static registerChange(cls) {
+    __changeClasses[cls.name] = cls;
+  }
+
+
 }
 
 export default UndoRedoManager;
