@@ -1,8 +1,7 @@
-
 import { getCurrentUser } from '../PlatformAPI.js';
 
 export class UserChip {
-  constructor(domElement){
+  constructor(domElement) {
     this.domElement = domElement;
     this.clean();
     this.userDiv = document.createElement('div');
@@ -17,26 +16,25 @@ export class UserChip {
     this.userImage = document.createElement('img');
     this.userImage.className = 'user-image br-100 ba b--black-10';
     this.userImage.alt = 'Avatar';
-    this.userImage.src = "https://placeimg.com/150/150/tech";
+    this.userImage.src = 'https://placeimg.com/150/150/tech';
     this.userImageDiv.appendChild(this.userImage);
     this.userDiv.appendChild(this.userImageDiv);
   }
 
-  clean(){
+  clean() {
     while (this.domElement.firstChild) {
-        this.domElement.removeChild(this.domElement.firstChild);
+      this.domElement.removeChild(this.domElement.firstChild);
     }
   }
 
-  unmount(){
+  unmount() {
     this.clean();
   }
 }
 
-
 export class CurrentUserChip extends UserChip {
-  constructor(domElement){
-    super(domElement)
+  constructor(domElement) {
+    super(domElement);
     getCurrentUser()
       .then(currentUser => {
         this.userNameSpan.innerHTML = currentUser.name;
