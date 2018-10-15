@@ -95,6 +95,8 @@ const setupCollab = $collabWrapper => {
     p.innerHTML = `<strong>(User Joined: ${message.userId})</strong>`;
     $receivedMessages.appendChild(p);
   });
+
+  return visualiveSession;
 };
 
 export default setupCollab;
