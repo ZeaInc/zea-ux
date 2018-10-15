@@ -1,6 +1,7 @@
 
 
 import UndoRedoManager from './undoredo/UndoRedoManager.js';
+import Avatar from './Avatar.js';
 
 export default class SessionSync {
   constructor(collab, appData) {
@@ -9,15 +10,14 @@ export default class SessionSync {
 
     collab.userJoined(userdata => {
       usersData[userdata.id] = {
-        undoRedoManager: new UndoRedoManager()
+        undoRedoManager: new UndoRedoManager(),
+        avatar: new Avatar(userdata)
       }
     })
 
     collab.userLeft(userdata => {
-      usersData[userdata.id] = {
-        undoRedoManager: new UndoRedoManager(),
-        avatar: new Avatar()
-      }
+      usersData[userdata.id].avatar.destroy();
+      delete usersData[userdata.id];
     })
 
     /////////////////////////////////////////////
@@ -56,9 +56,7 @@ export default class SessionSync {
       undoRedoManager.changeFromJSON(data.changeData);
     })
 
-
   }
-
 }
 
 
