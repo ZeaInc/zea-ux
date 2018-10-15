@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Collab Inspector SessionSync</title>
+
+    <script src="http://localhost:3150/VisualiveEngineClient/lib/Visualive.js"></script>
+
+    <!-- Use https://tachyons.io to normalize styles and add useful classes -->
+    <link rel="stylesheet" href="https://unpkg.com/tachyons@4/css/tachyons.min.css"/>
+
+    <!-- Material Design Lite -->
+    <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <!-- Material Design icon font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css">
+
+    
+    <link rel="stylesheet" href="../css/tree-view.css">
+    <link rel="stylesheet" href="../css/parameters.css">
+    <script type="module">
+      
+import { UndoRedoManager, ParameterContainer, SessionSync } from '../index.js';
+
+const undoRedoManager = new UndoRedoManager();
+
+const appData = {
+  undoRedoManager
+}
+
+const baseItem = new Visualive.BaseItem();
+
+baseItem.addParameter(new Visualive.StringParameter('Name', 'Foo'));
+baseItem.addParameter(new Visualive.NumberParameter('Number', 5));
+baseItem.addParameter(
+  new Visualive.NumberParameter('Smooth', 10).setRange([0, 30])
+);
+baseItem.addParameter(
+  new Visualive.NumberParameter('Stepped', 6).setRange([0, 30]).setStep(5)
+);
+baseItem.addParameter(
+  new Visualive.Vec2Parameter('Vec2 Parameter', new Visualive.Vec2(1, 2))
+);
+baseItem.addParameter(
+  new Visualive.Vec3Parameter('Vec3 Parameter', new Visualive.Vec3(3, 4, 5))
+);
+baseItem.addParameter(
+  new Visualive.Vec4Parameter('Vec4 Parameter', new Visualive.Vec4(6, 7, 8, 9))
+);
+baseItem.addParameter(
+  new Visualive.ColorParameter('Color', new Visualive.Color(1, 1, 0, 1))
+);
+
+const parameterContainer = new ParameterContainer(
+  baseItem,
+  document.getElementById('parameters'),
+  undoRedoManager
+);
+
+document.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'z') {
+    undoRedoManager.undo();
+  }
+});
+
+
+const secondUserUndoManager = new UndoRedoManager();
+appData.undoRedoManager.changeAdded.connect((c)=>{
+  const data = {
+    changeData: c.toJSON(),
+    changeClass: c.constructor.name
+  }
+  const change = secondUserUndoManager.constructChange(data.changeClass);
+  change.fromJSON(data.changeData, baseItem)
+  secondUserUndoManager.addChange(change);
+})
+
+appData.undoRedoManager.changeUpdated.connect((data)=>{
+  const change = secondUserUndoManager.getCurrentChange();
+  change.changeFromJSON(data);
+})
+
+// const sessionSync = new SessionSync(null, appData);
+
+
+    </script>
+
+<style>
+.flex-container {
+  display: flex;
+}
+</style>
+  </head>
+  <body>
+    <div class="flex-container">
+      <div id="parameters"></div>
+      <div id="collab"></div>
+    </div>
+  </body>
+</html>

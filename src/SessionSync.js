@@ -53,7 +53,7 @@ export default class SessionSync {
 
     collab.sub("CHANGE_UPDATED", data =>{
       const undoRedoManager = usersData[data.userId].undoRedoManager;
-      undoRedoManager.updateChange(data.changeData);
+      undoRedoManager.changeFromJSON(data.changeData);
     })
 
 

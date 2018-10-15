@@ -10,6 +10,7 @@ import UndoRedoManager from './src/undoredo/UndoRedoManager.js';
 import ActionRegistry from './src/ActionRegistry.js';
 import SelectionManager from './src/SelectionManager.js';
 import LoaderRegistry from './src/LoaderRegistry.js';
+import SessionSync from './src/SessionSync.js';
 
 
 import TopMenuBar from './src/ui/TopMenuBar.js';
@@ -44,6 +45,7 @@ export {
   ActionRegistry,
   SelectionManager,
   LoaderRegistry,
+  SessionSync,
 
   TopMenuBar,
   setupPanels,
