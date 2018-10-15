@@ -21,6 +21,7 @@
     "prettier": "^1.14.2"
   },
   "dependencies": {
-    "@jaames/iro": "^3.5.1"
+    "@jaames/iro": "^3.5.1",
+    "@visualive/collab": "^0.0.4"
   }
 }
