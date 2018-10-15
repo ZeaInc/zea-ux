@@ -26,6 +26,7 @@ import { UndoRedoManager, ParameterContainer } from '../index.js';
 const undoRedoManager = new UndoRedoManager();
 const parameterOwner = new Visualive.ParameterOwner();
 
+parameterOwner.addParameter(new Visualive.BooleanParameter('Toggle', false));
 parameterOwner.addParameter(new Visualive.StringParameter('Name', 'Foo'));
 parameterOwner.addParameter(new Visualive.NumberParameter('Number', 5));
 parameterOwner.addParameter(
