@@ -25,8 +25,29 @@ const convertValuesToJSON = (value) => {
     }
 }
 
+const convertValuesFromJSON = (value) => {
+    if (value == undefined) {
+        return undefined;
+    } else if (value.className) {
+        const newval = Visualive.typeRegistry.getType(value.className).create();
+        newval.fromJSON(value);
+        return newval;
+    } else if (Array.isArray(value)) {
+        const arr = [];
+        for (const element of value)
+            arr.push(convertValuesFromJSON(element));
+        return arr;
+    } else if (typeof value === "object") {
+        const dict = {};
+        for (let key in value)
+            dict[key] = convertValuesFromJSON(value[key]);
+        return dict;
+    } else {
+        return value;
+    }
+}
 export default class SessionSync {
-  constructor(visualiveSession, appData) {
+  constructor(visualiveSession, appData, userId) {
 
     const usersData = {};
 
@@ -45,14 +66,21 @@ export default class SessionSync {
     /////////////////////////////////////////////
     // Pose Changes
 
-    // appData.scene.poseChanged.connect((data)=>{
-    //   visualiveSession.pub("POSE_CHANGED", data)
-    // })
+    // const myAvatar = new Avatar(appData.scene.getResourceLoader(), appData.scene.getRoot(), { userId });
 
-    // visualiveSession.sub("POSE_CHANGED", data =>{
-    //   const avatar = usersData[data.userId].avatar;
-    //   avatar.updatePose(data.pose);
-    // })
+    appData.renderer.viewChanged.connect((data) => {
+      const j = convertValuesToJSON(data);
+      visualiveSession.pub(VisualiveSession.actions.POSE_CHANGED, j);
+
+      // const data2 = convertValuesFromJSON(j);
+      // myAvatar.updatePose(data2);
+    });
+
+    visualiveSession.sub(VisualiveSession.actions.POSE_CHANGED, (j, userId) =>{
+      const data = convertValuesFromJSON(j);
+      const avatar = usersData[userId].avatar;
+      avatar.updatePose(data);
+    })
 
 
     /////////////////////////////////////////////
