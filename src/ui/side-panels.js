@@ -1,19 +1,18 @@
-export default function setupPanels() {
-  const panelHandlers = document.getElementsByClassName('PanelHandler');
-  const viewportElement = document.getElementById('viewport');
-  Object.keys(panelHandlers).forEach(i => {
-    const panelHandler = panelHandlers[i];
-    const panel = document.getElementsByClassName('SidePanel')[i];
-    const isLeftPanel = i == 0;
 
-    panelHandler.addEventListener('mousedown', initDrag, false);
+
+class Panel {
+  constructor(domElement, handleElement, panelSide) {
+    this.domElement = domElement;
+
+
+    handleElement.addEventListener('mousedown', initDrag, false);
 
     let startX, startWidth;
 
     function initDrag(e) {
       startX = e.clientX;
       startWidth = parseInt(
-        document.defaultView.getComputedStyle(panel).width,
+        document.defaultView.getComputedStyle(domElement).width,
         10
       );
       document.addEventListener('mousemove', doDrag, false);
@@ -22,14 +21,35 @@ export default function setupPanels() {
 
     function doDrag(e) {
       const delta = e.clientX - startX;
-      let panelWidth = isLeftPanel ? startWidth + delta : startWidth - delta;
+      let panelWidth = (panelSide==0) ? startWidth + delta : startWidth - delta;
       if (panelWidth < 40) panelWidth = 0;
-      panel.style.width = `${panelWidth}px`;
+      domElement.style.width = `${panelWidth}px`;
     }
 
     function stopDrag(e) {
       document.removeEventListener('mousemove', doDrag, false);
       document.removeEventListener('mouseup', stopDrag, false);
     }
-  });
+  }
+
+  setPanelWidget(widget) {
+    if(this.widget) {
+      this.widget.unMount();
+    }
+
+    this.widget = widget;
+    this.widget.mount()
+  }
 }
+
+export default class Panels {
+  constructor() {
+    this.viewportElement = document.getElementById('viewport');
+    const panelElements = document.getElementsByClassName('SidePanel');
+    const panelHandlers = document.getElementsByClassName('PanelHandler');
+
+    this.leftPanel = new Panel(panelElements[0], panelHandlers[0], 0)
+    this.rightPanel = new Panel(panelElements[1], panelHandlers[1], 1)
+  }
+}
+

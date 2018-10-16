@@ -22,8 +22,14 @@ class SelectionManager {
   constructor(undoRedoManager) {
     this.undoRedoManager = undoRedoManager;
     this.__selection = new Set();
+    this.leadSelection = undefined;
     this.selectionChanged = new Visualive.Signal();
     this.leadSelectionChanged = new Visualive.Signal();
+  }
+
+  setLeadSelection(treeItem) {
+    this.leadSelection = treeItem;
+    this.leadSelectionChanged.emit(treeItem);
   }
 
   toggleItemSelection(treeItem, replaceSelection = true) {
@@ -50,7 +56,7 @@ class SelectionManager {
     }
 
     if (sel && this.__selection.size === 1) {
-      this.leadSelectionChanged.emit(treeItem);
+      this.setLeadSelection(treeItem);
     }
 
     treeItem.traverse((subTreeItem)=>{
@@ -71,9 +77,9 @@ class SelectionManager {
 
     if (!sel) {
       if(this.__selection.size === 1)
-        this.leadSelectionChanged.emit(this.__selection.values().next().value);
+        this.setLeadSelection(this.__selection.values().next().value);
       else if(this.__selection.size === 0)
-        this.leadSelectionChanged.emit();
+        this.setLeadSelection();
     }
 
     const change = new SelectionChange(this, prevSelection, this.__selection);
@@ -129,10 +135,10 @@ class SelectionManager {
     this.undoRedoManager.addChange(change);
 
     if (this.__selection.size === 1) {
-      this.leadSelectionChanged.emit(treeItem);
+      this.setLeadSelection(treeItem);
     }
     else if (this.__selection.size === 0) {
-      this.leadSelectionChanged.emit();
+      this.setLeadSelection();
     }
     this.selectionChanged.emit(this.__selection);
   }

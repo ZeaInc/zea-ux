@@ -5,6 +5,10 @@ class InspectorContainer {
     this.domElement = domElement;
     this.domElement.innerHTML = '';
     this.appData = appData;
+
+    if(this.appData.selectionManager.leadSelection) {
+      this.inspect(this.appData.selectionManager.leadSelection);
+    }
     this._selChangedId = this.appData.selectionManager.leadSelectionChanged.connect(selectedTreeItem => {
       // console.log(
       //   'leadSelectionChange:',
@@ -27,6 +31,9 @@ class InspectorContainer {
         this.appData.undoRedoManager
       );
     }
+  }
+
+  mount(){
   }
 
   unMount(){
