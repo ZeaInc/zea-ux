@@ -1,8 +1,13 @@
 import { VisualiveSession } from '@visualive/collab';
+import { UserChip } from './UserChip.js';
 
 export default class CollabPanel {
   constructor($collabWrapper, visualiveSession) {
     const collabMarkup = `
+      
+      <div class="ba b--light-blue br2 pa2 h4 overflow-y-auto mb2">
+        <ul id="userChips" class="list pa0"></ul>
+      </div>
       <div class="ba b--light-blue br2 pa2 h5 overflow-y-auto mb2" id="receivedMessages"></div>
 
       <form autocomplete="off" name="formSendMessage">
@@ -47,11 +52,11 @@ export default class CollabPanel {
         </div>
       </form>
 
-      <div class="hidden" id="mediaWrapper"></div>
     `;
 
     $collabWrapper.innerHTML = collabMarkup;
 
+    const $userChips = document.getElementById('userChips');
     const $receivedMessages = document.getElementById('receivedMessages');
     const $mediaWrapper = document.getElementById('mediaWrapper');
 
@@ -77,16 +82,26 @@ export default class CollabPanel {
       $receivedMessages.appendChild(p);
     });
 
+    const userChipsElements = {}
     visualiveSession.sub(VisualiveSession.actions.USER_JOINED, (userData, userId) => {
       const p = document.createElement('p');
       p.innerHTML = `<strong>(User Joined: ${userData.name})</strong>`;
       $receivedMessages.appendChild(p);
+
+      const li = document.createElement('li');
+      $userChips.appendChild(li);
+      const userChip = new UserChip(li, userData);
+
+      userChipsElements[userData.id] = li;
     });
 
     visualiveSession.sub(VisualiveSession.actions.USER_LEFT, (userData, userId) => {
       const p = document.createElement('p');
       p.innerHTML = `<strong>(User Left: ${userData.name})</strong>`;
       $receivedMessages.appendChild(p);
+
+
+      $userChips.removeChild(userChipsElements[userData.id]);
     });
   }
 

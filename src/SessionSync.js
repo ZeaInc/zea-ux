@@ -61,7 +61,6 @@ export default class SessionSync {
     }
 
     visualiveSession.sub(VisualiveSession.actions.USER_JOINED, setupUser)
-    visualiveSession.sub(VisualiveSession.actions.USER_PING, setupUser)
     visualiveSession.sub(VisualiveSession.actions.USER_LEFT, userData => {
       userDatas[userData.id].avatar.destroy();
       delete userDatas[userData.id];
