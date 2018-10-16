@@ -524,6 +524,7 @@ class ViewTool extends BaseTool {
     this.__controllerTriggersHeld.splice(index, 1);
   }
 
+
 };
 
 export {

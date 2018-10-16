@@ -1,17 +1,11 @@
-;
-import {
-  BaseCreateTool
-} from '../BaseCreateTool.js';
 
+import BaseCreateTool from '../BaseCreateTool.js';
+import Change from '../../undoredo/Change.js';
 
 class CreateGeomChange extends Change {
-  constructor(name, parentItem, geomItem) {
+  constructor(name, parentItem) {
     super(name);
-    if(parentItem && geomItem) {
-      this.__parentItem = parentItem;
-      this.__geomItem = geomItem;
-      this.redo();
-    }
+    this.__parentItem = parentItem;
   }
 
   update(updateData) {
@@ -29,28 +23,22 @@ class CreateGeomChange extends Change {
 
   toJSON() {
     const j = super.toJSON();
-    if (this.__newValue.toJSON) {
-      j.newValue = this.__newValue.toJSON();
-    } else {
-      j.newValue = this.__newValue;
-    }
+    if (this.__parentItem) 
+      j.parentItemPath = this.__parentItem.getPath();
     return j;
   }
 
   fromJSON(j, root) {
-    this.__param = root.resolvePath(j.paramPath);
-    this.__oldValue = this.__param.getValue();
-    if (this.__newValue.fromJSON)
-      this.__newValue = this.__oldValue.clone();
+    this.__parentItem = root.resolvePath(j.parentItemPath);
     this.changeFromJSON(j);
   }
 
-  changeFromJSON(j) {
-    if (this.__newValue.fromJSON)
-      this.__newValue.fromJSON(j.value);
-    else
-      this.__newValue = j.value;
-  }
+  // changeFromJSON(j) {
+  //   if (this.__newValue.fromJSON)
+  //     this.__newValue.fromJSON(j.value);
+  //   else
+  //     this.__newValue = j.value;
+  // }
 }
 
 class CreateGeomTool extends BaseCreateTool {
@@ -79,10 +67,11 @@ class CreateGeomTool extends BaseCreateTool {
   onMouseDown(event, mousePos, viewport) {
     // 
     if(this.__stage == 0) {
-      this.xfo = this.screenPosToXfo(mousePos);
-      this.constructionPlane = new Visualive.Ray(this.xfo.tr, this.ori.getZAxis());
+      this.xfo = this.screenPosToXfo(mousePos, viewport);
+      this.constructionPlane = new Visualive.Ray(this.xfo.tr, this.xfo.ori.getZaxis());
 
-      this.createStart(xfo)
+      const scene = viewport.getRenderer().getScene();
+      this.createStart(this.xfo, scene.getRoot())
     }
     else if(event.button == 2) {
       this.undoRedoManager.undo();
@@ -92,9 +81,10 @@ class CreateGeomTool extends BaseCreateTool {
 
   onMouseMove(event, mousePos, viewport) {
     if(this.__stage > 0) {
-      const ray = this.calcRayFromScreenPos(mousePos);
-      const pt = ray.intersectRayPlane(this.constructionPlane)
-      this.createMove(pt)
+      const ray = viewport.calcRayFromScreenPos(mousePos);
+      const dist = ray.intersectRayPlane(this.constructionPlane);
+
+      this.createMove(ray.pointAtDist(dist))
     }
   }
 

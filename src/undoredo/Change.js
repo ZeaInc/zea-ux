@@ -1,4 +1,5 @@
-class Change {
+
+export default class Change {
 	constructor(name) {
 		this.name = name ? name : this.constructor.name;
 	}
@@ -26,5 +27,3 @@ class Change {
     this.update(j);
   }
 }
-
-export default Change;

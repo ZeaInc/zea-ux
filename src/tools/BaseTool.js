@@ -1,21 +1,71 @@
 class BaseTool extends Visualive.ParameterOwner {
-  constructor() {
+  constructor(undoRedoManager) {
     super();
+    this.undoRedoManager = undoRedoManager;
 
     this.actionFinished = new Visualive.Signal()
   }
 
-  activateTool(viewport) {}
-  deactivateTool(viewport) {}
+  activateTool(viewport) {
+
+    this.viewport = viewport;
+
+    this.mouseDownId = viewport.mouseDown.connect(this.onMouseDown.bind(this))
+    this.mouseMovedId = viewport.mouseMoved.connect(this.onMouseMove.bind(this))
+    this.mouseUpId = viewport.mouseUp.connect(this.onMouseUp.bind(this))
+    this.mouseWheelId = viewport.mouseWheel.connect(this.onWheel.bind(this))
+
+    /////////////////////////////////////
+    // Keyboard events
+    this.keyDownId = viewport.keyDown.connect(this.onKeyDown.bind(this))
+    this.keyUpId = viewport.keyUp.connect(this.onKeyUp.bind(this))
+    this.keyPressedId = viewport.keyPressed.connect(this.onKeyPressed.bind(this))
+
+    /////////////////////////////////////
+    // Touch events
+    this.touchStartId = viewport.touchStart.connect(this.onTouchStart.bind(this))
+    this.touchMoveId = viewport.touchMove.connect(this.onTouchMove.bind(this))
+    this.touchEndId = viewport.touchEnd.connect(this.onTouchEnd.bind(this))
+    this.touchCancelId = viewport.touchCancel.connect(this.onTouchCancel.bind(this))
+
+    /////////////////////////////////////
+    // VRController events
+    // this.controllerDownId = viewport.controllerDown.connect(this.onVRControllerDown.bind(this))
+    // this.controllerMoveId = viewport.controllerMove.connect(this.onVRControllerMove.bind(this))
+    // this.controllerUpId = viewport.controllerUp.connect(this.onVRControllerUp.bind(this))
+
+  }
+
+  deactivateTool() {
+
+    viewport.mouseDown.disconnectId(this.mouseDownId)
+    viewport.mouseMoved.disconnectId(this.mouseMovedId)
+    viewport.mouseUp.disconnectId(this.mouseUpId)
+    viewport.mouseWheel.disconnectId(this.mouseWheelId)
+
+    /////////////////////////////////////
+    // Keyboard events
+    viewport.keyDown.disconnectId(this.keyDownId)
+    viewport.keyUp.disconnectId(this.keyUpId)
+    viewport.keyPressed.disconnectId(this.keyPressedId)
+
+    /////////////////////////////////////
+    // Touch events
+    viewport.touchStart.disconnectId(this.touchStartId)
+    viewport.touchMove.disconnectId(this.touchMoveId)
+    viewport.touchEnd.disconnectId(this.touchEndId)
+    viewport.touchCancel.disconnectId(this.touchCancelId)
+
+    /////////////////////////////////////
+    // VRController events
+    viewport.controllerDown.disconnectId(this.controllerDownId)
+    viewport.controllerMove.disconnectId(this.controllerMoveId)
+    viewport.controllerUp.disconnectId(this.controllerUpId)
+
+  }
 
   /////////////////////////////////////
   // Mouse events
-  viewportPos(event, viewport) {
-    return new Vec2(
-      event.rendererX - viewport.getPosX(),
-      event.rendererY - viewport.getPosY()
-    );
-  }
 
   screenPosToXfo(screenPos, viewport) {
     // 
