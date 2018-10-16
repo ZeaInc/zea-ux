@@ -65,15 +65,15 @@ export default class CollabPanel {
 
     document.formSendMessage.addEventListener('submit', e => {
       const $form = e.target;
-      visualiveSession.sendTextMessage($form.messageToSend.value);
+      visualiveSession.pub(VisualiveSession.actions.TEXT_MESSAGE, { text: $form.messageToSend.value });
 
       e.preventDefault();
       $form.reset();
     });
 
-    visualiveSession.sub(VisualiveSession.actions.TEXT_MESSAGE, message => {
+    visualiveSession.sub(VisualiveSession.actions.TEXT_MESSAGE, (message, userId) => {
       const p = document.createElement('p');
-      p.innerHTML = `<strong>${message.userId}:</strong> ${message.payload.text}`;
+      p.innerHTML = `<strong>${userId}:</strong> ${message.text}`;
       $receivedMessages.appendChild(p);
     });
 
@@ -89,6 +89,6 @@ export default class CollabPanel {
   }
 
   unMount() {
-    
+
   }
 }
