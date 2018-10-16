@@ -101,15 +101,15 @@ export default class SessionSync {
       visualiveSession.pub(VisualiveSession.actions.CHANGE_UPDATED, convertValuesToJSON(data))
     })
 
-    visualiveSession.sub(VisualiveSession.actions.CHANGE_ADDED, data =>{
-      const undoRedoManager = userDatas[data.userId].undoRedoManager;
+    visualiveSession.sub(VisualiveSession.actions.CHANGE_ADDED, (data, userId) =>{
+      const undoRedoManager = userDatas[userId].undoRedoManager;
       const change = undoRedoManager.constructChange(data.changeClass);
       change.fromJSON(data.changeData, appData.scene)
       undoRedoManager.addChange(change);
     })
 
-    visualiveSession.sub("CHANGE_UPDATED", data =>{
-      const undoRedoManager = userDatas[data.userId].undoRedoManager;
+    visualiveSession.sub("CHANGE_UPDATED", (data, userId) =>{
+      const undoRedoManager = userDatas[userId].undoRedoManager;
       undoRedoManager.changeFromJSON(data.changeData);
     })
 
