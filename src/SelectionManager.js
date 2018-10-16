@@ -18,6 +18,30 @@ class SelectionChange extends Change {
   }
 }
 
+class ToggleSelectionVisibility extends Change {
+  constructor(selection, state) {
+    super('Selection Visibility Change');
+    this.selection = selection;
+    this.state = state;
+    this.do();
+  }
+
+  undo() {
+    this.do()
+  }
+
+  redo() {
+    this.do()
+  }
+
+  do() {
+    for (let treeItem of this.selection){
+        treeItem.getParameter('Visible').setValue(this.state);
+    }
+  }
+}
+
+
 class SelectionManager {
   constructor(undoRedoManager) {
     this.undoRedoManager = undoRedoManager;
@@ -38,10 +62,26 @@ class SelectionManager {
     // Avoid clearing the selection when we have the 
     // item already selected and are deselecting it. 
     // (to clear all selection)
-    if (replaceSelection && 
-      (this.__selection.size != 1 && !this.__selection.has(treeItem))) {
-        this.clearSelection(false);
+    if (replaceSelection && !(this.__selection.size == 1 && this.__selection.has(treeItem))) {
+
+      let clear = true;
+      if(this.__selection.has(treeItem)) {
+        let count = 1;
+        treeItem.traverse((subTreeItem)=>{
+          if(this.__selection.has(subTreeItem)) {
+            count++;
+          }
+        })
+        // Note: In some cases, the item is currently selected, and
+        // its children make up all the selected items. In that case
+        // the user intends to deselect the item and all its children.
+        // Avoid clearning here, so the deselection can occur.
+        clear = count != this.__selection.size;
       }
+
+      if(clear)
+        this.clearSelection(false);
+    }
 
     let sel;
     if(!this.__selection.has(treeItem)) {
@@ -190,6 +230,14 @@ class SelectionManager {
     }
   }
 
+
+  toggleSelectionVisiblity(){
+    if(this.leadSelection) {
+      const state = !this.leadSelection.getVisible();
+      const change = new ToggleSelectionVisibility(this.__selection, state);
+      this.undoRedoManager.addChange(change);
+    }
+  }
 
 }
 

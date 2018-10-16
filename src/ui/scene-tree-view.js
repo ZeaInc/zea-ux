@@ -1,6 +1,7 @@
 import visualiveUxFactory from './VisualiveUxFactory.js';
 import ParameterValueChange from '../undoredo/ParameterValueChange.js';
 
+
 class TreeItemElement {
   constructor(treeItem, parentDomElement, appData, expanded = false) {
     this.treeItem = treeItem;
@@ -21,21 +22,20 @@ class TreeItemElement {
     this.toggleVisibilityBtn.innerHTML =
       '<i class="material-icons md-15">visibility</i>';
 
-    const visibleParam = this.treeItem.getParameter('Visible');
 
     this.toggleVisibilityBtn.addEventListener('click', () => {
-      const change = new ParameterValueChange(visibleParam);
-      change.setValue(!visibleParam.getValue());
+      const visibleParam = this.treeItem.getParameter('Visible');
+      const change = new ParameterValueChange(visibleParam, !visibleParam.getValue());
       this.appData.undoRedoManager.addChange(change);
     });
 
     const updateVisibility = () => {
-      const visible = visibleParam.getValue();
+      const visible = this.treeItem.getVisible();
       visible
         ? this.li.classList.remove('TreeNodesListItem--isHidden')
         : this.li.classList.add('TreeNodesListItem--isHidden');
     }
-    visibleParam.valueChanged.connect(updateVisibility);
+    this.treeItem.visibilityChanged.connect(updateVisibility);
     updateVisibility();
 
 

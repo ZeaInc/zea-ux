@@ -130,12 +130,16 @@ class TopMenuBar {
     if (!key) {
       return '';
     }
-    const keyComboExpected =
-      this._comboFragment(metaKeys.shift, 'Shift') +
-      this._comboFragment(metaKeys.alt, 'Alt') +
-      this._comboFragment(metaKeys.control, 'Ctrl') +
-      key;
-    return keyComboExpected;
+    if(metaKeys){
+      return 
+        (metaKeys.shift ? this._comboFragment(metaKeys.shift, 'Shift') : '') +
+        (metaKeys.alt ? this._comboFragment(metaKeys.alt, 'Alt') : '') +
+        (metaKeys.control ? this._comboFragment(metaKeys.control, 'Ctrl') : '') +
+        key;
+    }
+    else {
+      return key
+    }
   }
 }
 

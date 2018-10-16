@@ -7,7 +7,7 @@ class ParameterValueChange extends Change {
       super(param.getName() + ' Changed');
       this.__oldValue = param.getValue();
       this.__param = param;
-      if(newValue) {
+      if(newValue != undefined) {
         this.__newValue = newValue;
         this.__param.setValue(this.__newValue);
       }
