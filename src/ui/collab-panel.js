@@ -77,9 +77,15 @@ export default class CollabPanel {
       $receivedMessages.appendChild(p);
     });
 
-    visualiveSession.sub(VisualiveSession.actions.USER_JOINED, message => {
+    visualiveSession.sub(VisualiveSession.actions.USER_JOINED, (userData, userId) => {
       const p = document.createElement('p');
-      p.innerHTML = `<strong>(User Joined: ${message.userId})</strong>`;
+      p.innerHTML = `<strong>(User Joined: ${userData.name})</strong>`;
+      $receivedMessages.appendChild(p);
+    });
+
+    visualiveSession.sub(VisualiveSession.actions.USER_LEFT, (userData, userId) => {
+      const p = document.createElement('p');
+      p.innerHTML = `<strong>(User Left: ${userData.name})</strong>`;
       $receivedMessages.appendChild(p);
     });
   }
