@@ -2,22 +2,18 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
-    <title>Side Panels</title>
+    <title>Collab</title>
+
+    <script src="http://localhost:3150/VisualiveEngineClient/lib/Visualive.js"></script>
 
     <link rel="stylesheet" href="https://unpkg.com/purecss/build/pure-min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://unpkg.com/tachyons/css/tachyons.min.css"/>
-
-    <script type="module">
-      import {
-        setupCollab
-      } from '../index.js';
-
-      const $collabWrapper = document.getElementById('collabWrapper');
-      setupCollab($collabWrapper);
-    </script>
+    <script src="https://stephenlb.github.io/webrtc-sdk/js/webrtc-v2.js"></script>
+    <script src="./collab.js"></script>
   </head>
   <body class="vh-100 flex overflow-hidden">
+    <div id="parameters"></div>
     <div class="ba b--light-gray shadow-4 ma2 pa2" id="collabWrapper"></div>
   </body>
 </html>

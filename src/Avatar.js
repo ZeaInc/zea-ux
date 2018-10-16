@@ -1,20 +1,20 @@
 
-class Avatar {
+export default class Avatar {
 
     constructor(resourceLoader, parentTreeItem, userData) {
         this.__resourceLoader = resourceLoader;
         this.__parentTreeItem = parentTreeItem;
         this.__userData = userData;
-        this.__userData.color = new Visualive.Color()
+        this.__userData.color = new Visualive.Color(1, 0, 1, 1)
 
         this.__controllers = [];
 
-        this.__treeItem = new TreeItem(user.id);
+        this.__treeItem = new Visualive.TreeItem(userData.userId);
 
         this.__parentTreeItem.addChild(this.__treeItem);
         this.__treeItem.setSelectable(false);
 
-        this.__material = new Material('user' + user.id + 'Material', 'SimpleSurfaceShader');
+        this.__material = new Visualive.Material('user' + userData.userId + 'Material', 'SimpleSurfaceShader');
         this.__material.addParameter('BaseColor', this.__userData.color);
     }
 
@@ -40,11 +40,11 @@ class Avatar {
     setCameraAndPointer() {
         this.__treeItem.removeAllChildren();
 
-        const shape = new Cone(0.2, 0.6, 4, true);
+        const shape = new Visualive.Cone(0.2, 0.6, 4, true);
         shape.computeVertexNormals();
-        const geomItem = new GeomItem('camera', shape, this.__material);
-        const geomXfo = new Xfo();
-        geomXfo.ori.setFromEulerAngles(new EulerAngles(Math.PI * 0.5, Math.PI * 0.25, 0.0));
+        const geomItem = new Visualive.GeomItem('camera', shape, this.__material);
+        const geomXfo = new Visualive.Xfo();
+        geomXfo.ori.setFromEulerAngles(new Visualive.EulerAngles(Math.PI * 0.5, Math.PI * 0.25, 0.0));
         geomItem.setGeomOffsetXfo(geomXfo);
 
         if (this.__audioIem) {
@@ -58,7 +58,7 @@ class Avatar {
 
     setViveRepresentation() {
         this.__treeItem.removeAllChildren();
-        let hmdHolder = new TreeItem("hmdHolder");
+        let hmdHolder = new Visualive.TreeItem("hmdHolder");
         if (this.__audioIem) {
             hmdHolder.addChild(this.__audioIem);
         }
@@ -81,7 +81,7 @@ class Avatar {
 
             this.__viveAsset.loaded.connect((entries) => {
                 let hmdTree = this.__viveAsset.getChildByName('HTC_Vive_HMD').clone();
-                hmdTree.getLocalXfo().ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI);
+                hmdTree.getLocalXfo().ori.setFromAxisAndAngle(new Visualive.Vec3(0, 1, 0), Math.PI);
                 hmdHolder.addChild(hmdTree);
             });
         }
@@ -92,12 +92,12 @@ class Avatar {
         for (let i = 0; i < data.controllers.length; i++) {
             if (i >= this.__controllers.length) {
 
-                const treeItem = new TreeItem("handleHolder" + i);
+                const treeItem = new Visualive.TreeItem("handleHolder" + i);
 
                 this.__viveAsset.loaded.connect(() => {
                     const controllerTree = this.__viveAsset.getChildByName('HTC_Vive_Controller').clone();
                     controllerTree.getLocalXfo().tr.set(0, -0.035, 0.01);
-                    controllerTree.getLocalXfo().ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI);
+                    controllerTree.getLocalXfo().ori.setFromAxisAndAngle(new Visualive.Vec3(0, 1, 0), Math.PI);
                     treeItem.addChild(controllerTree);
                 });
 
@@ -116,7 +116,7 @@ class Avatar {
         }
     }
 
-    onUserMessage(data) {
+    updatePose(data) {
         switch (data.interfaceType) {
             case 'CameraAndPointer':
                 if (this.__currentViewMode !== 'CameraAndPointer') {
@@ -152,8 +152,4 @@ class Avatar {
         // Notr: the marker pen tool stays, as we don't want lines
         // dissappearing after a user quits.
     }
-};
-
-export {
-    Avatar
 };

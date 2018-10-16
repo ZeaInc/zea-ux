@@ -1,0 +1,12 @@
+{
+  "name": "examples",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@visualive/ux": "^0.0.4"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.10.3"
+  }
+}

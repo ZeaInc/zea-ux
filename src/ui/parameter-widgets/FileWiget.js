@@ -22,17 +22,19 @@ class FileWidget extends BaseWidget {
     });
     input.addEventListener('input', () => {
       if (!change) {
-        change = new ParameterValueChange(parameter);
+        change = new ParameterValueChange(parameter, input.valueAsNumber);
         undoRedoManager.addChange(change);
       }
-      change.setValue(input.valueAsNumber);
+      else
+        undoRedoManager.updateChange({ value: input.valueAsNumber });
     });
     input.addEventListener('change', () => {
       if (!change) {
         change = new ParameterValueChange(parameter);
         undoRedoManager.addChange(change);
       }
-      change.setValue(input.valueAsNumber);
+      else
+        undoRedoManager.updateChange({ value: input.valueAsNumber });
       change = undefined;
     });
   }
