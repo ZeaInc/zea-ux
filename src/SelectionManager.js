@@ -33,7 +33,7 @@ class SelectionManager {
     // item already selected and are deselecting it. 
     // (to clear all selection)
     if (replaceSelection && 
-      !(this.__selection.size == 1 && this.__selection.has(treeItem))) {
+      (this.__selection.size != 1 && !this.__selection.has(treeItem))) {
         this.clearSelection(false);
       }
 
@@ -47,6 +47,10 @@ class SelectionManager {
       treeItem.getParameter('Selected').setValue(false);
       this.__selection.delete(treeItem);
       sel = false;
+    }
+
+    if (sel && this.__selection.size === 1) {
+      this.leadSelectionChanged.emit(treeItem);
     }
 
     treeItem.traverse((subTreeItem)=>{
@@ -64,15 +68,17 @@ class SelectionManager {
       }
     })
 
+
+    if (!sel) {
+      if(this.__selection.size === 1)
+        this.leadSelectionChanged.emit(this.__selection.values().next().value);
+      else if(this.__selection.size === 0)
+        this.leadSelectionChanged.emit();
+    }
+
     const change = new SelectionChange(this, prevSelection, this.__selection);
     this.undoRedoManager.addChange(change);
 
-    if (this.__selection.size === 1) {
-      this.leadSelectionChanged.emit(treeItem);
-    }
-    else if (this.__selection.size === 0) {
-      this.leadSelectionChanged.emit();
-    }
     this.selectionChanged.emit(this.__selection);
   }
 
