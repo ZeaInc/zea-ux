@@ -10,10 +10,11 @@ import UndoRedoManager from './src/undoredo/UndoRedoManager.js';
 import ActionRegistry from './src/ActionRegistry.js';
 import SelectionManager from './src/SelectionManager.js';
 import LoaderRegistry from './src/LoaderRegistry.js';
+import SessionSync from './src/SessionSync.js';
 
 import TopMenuBar from './src/ui/TopMenuBar.js';
-import setupPanels from './src/ui/side-panels.js';
-import setupCollab from './src/ui/setupCollab.js';
+import Panels from './src/ui/side-panels.js';
+import CollabPanel from './src/ui/collab-panel.js';
 import SceneTreeView from './src/ui/scene-tree-view.js';
 import TreeItemInspector from './src/ui/TreeItemInspector.js';
 import ParameterContainer from './src/ui/ParameterContainer.js';
@@ -39,9 +40,11 @@ export {
   ActionRegistry,
   SelectionManager,
   LoaderRegistry,
+  SessionSync,
+
   TopMenuBar,
-  setupPanels,
-  setupCollab,
+  Panels,
+  CollabPanel,
   SceneTreeView,
   TreeItemInspector,
   ParameterContainer,

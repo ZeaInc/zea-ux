@@ -49,14 +49,15 @@ export default class ColorWidget extends BaseWidget {
     });
 
     colorPicker.on('color:change', (color, changes) => {
+      const rgb = colorPicker.color.rgb;
+      const value = new Visualive.Color(rgb.r / 255, rgb.g / 255, rgb.b / 255);
       if (!change) {
-        change = new ParameterValueChange(parameter);
+        change = new ParameterValueChange(parameter, value);
         undoRedoManager.addChange(change);
       }
-      const rgb = colorPicker.color.rgb;
-      change.setValue(
-        new Visualive.Color(rgb.r / 255, rgb.g / 255, rgb.b / 255)
-      );
+      else {
+        undoRedoManager.updateChange({ value });
+      }
     });
   }
 

@@ -54,13 +54,17 @@ export default class Vec2Widget extends BaseWidget {
       }
     });
     const valueChange = () => {
+      const value = new Visualive.Vec2(
+          xField.valueAsNumber,
+          yField.valueAsNumber
+        )
       if (!change) {
-        change = new ParameterValueChange(parameter);
+        change = new ParameterValueChange(parameter, value);
         undoRedoManager.addChange(change);
       }
-      change.setValue(
-        new Visualive.Vec2(xField.valueAsNumber, yField.valueAsNumber)
-      );
+      else {
+        undoRedoManager.updateChange({ value });
+      }
     };
     const valueChangeEnd = () => {
       valueChange();
