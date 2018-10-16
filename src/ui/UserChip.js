@@ -40,7 +40,7 @@ export class CurrentUserChip extends UserChip {
         this.userNameSpan.innerHTML = currentUser.name;
         // this.userNameSpan.src = currentUser.image;
       })
-      .catch(() => {
+      .catch(err => {
         console.error('Error getting current user.');
       });
   }
