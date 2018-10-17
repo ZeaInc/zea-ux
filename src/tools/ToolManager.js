@@ -8,6 +8,8 @@ export default class ToolManager {
   pushTool(tool){
     this.__toolStack.push(tool);
     tool.activateTool(this.renderer);
+
+    console.log("ToolManager.pushTool:", tool.constructor.name)
   }
 
   popTool() {
@@ -15,6 +17,7 @@ export default class ToolManager {
       const tool = this.currTool();
       tool.deactivateTool(this.renderer);
       this.__toolStack.pop();
+      console.log("ToolManager.popTool:", tool.constructor.name, (this.currTool() ? currTool().constructor.name : ''))
     }
   }
 
@@ -92,13 +95,13 @@ export default class ToolManager {
   onKeyDown(key, event, viewport) {
     const tool = this.currTool();
     if(tool)
-      tool.onKeyDown(event, mousePos, viewport)
+      tool.onKeyDown(key, event, viewport)
   }
 
   onKeyUp(key, event, viewport) {
     const tool = this.currTool();
     if(tool)
-      tool.onKeyUp(event, mousePos, viewport)
+      tool.onKeyUp(key, event, viewport)
   }
 
   /////////////////////////////////////
@@ -106,25 +109,25 @@ export default class ToolManager {
   onTouchStart(event, viewport) {
     const tool = this.currTool();
     if(tool)
-      tool.onTouchStart(event, mousePos, viewport)
+      tool.onTouchStart(event, viewport)
   }
 
   onTouchMove(event, viewport) {
     const tool = this.currTool();
     if(tool)
-      tool.onTouchMove(event, mousePos, viewport)
+      tool.onTouchMove(event, viewport)
   }
 
   onTouchEnd(event, viewport) {
     const tool = this.currTool();
     if(tool)
-      tool.onTouchEnd(event, mousePos, viewport)
+      tool.onTouchEnd(event, viewport)
   }
 
   onTouchCancel(event, viewport) {
     const tool = this.currTool();
     if(tool)
-      tool.onMouseDown(event, mousePos, viewport)
+      tool.onMouseDown(event, viewport)
   }
 
   /////////////////////////////////////
@@ -132,19 +135,19 @@ export default class ToolManager {
   onVRControllerDown(event, viewport) {
     const tool = this.currTool();
     if(tool)
-      tool.onVRControllerDown(event, mousePos, viewport)
+      tool.onVRControllerDown(event, viewport)
   }
 
   onVRControllerMove(event, viewport) {
     const tool = this.currTool();
     if(tool)
-      tool.onVRControllerMove(event, mousePos, viewport)
+      tool.onVRControllerMove(event, viewport)
   }
 
   onVRControllerUp(event, viewport) {
     const tool = this.currTool();
     if(tool)
-      tool.onVRControllerUp(event, mousePos, viewport)
+      tool.onVRControllerUp(event, viewport)
   }
 
   destroy() {
