@@ -115,7 +115,7 @@ export default class CollabPanel {
     visualiveSession.sub(
       VisualiveSession.actions.USER_LEFT,
       (userData, userId) => {
-        addUser(userData);
+        removeUser(userData);
       }
     );
 

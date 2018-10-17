@@ -88,7 +88,11 @@ class TreeItemElement {
       this.addChild(childItem);
     });
 
-    this.treeItem.childRemoved.connect((childItem, index) => {});
+    this.treeItem.childRemoved.connect((childItem, index) => {
+      this.childElements[index].destroy();
+      this.childElements.splice(index, 1);
+    });
+
   }
 
   addComponent(component) {
@@ -144,6 +148,10 @@ class TreeItemElement {
     this.expandBtn.innerHTML =
       '<i class="material-icons md-24">arrow_right</i>';
     this._expanded = false;
+  }
+
+  destroy() {
+    this.parentDomElement.removeChild(this.li);
   }
 }
 
