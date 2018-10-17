@@ -4,7 +4,6 @@ import { UserChip } from './UserChip.js';
 export default class CollabPanel {
   constructor($collabWrapper, visualiveSession) {
     const collabMarkup = `
-      
       <div class="ba b--light-blue br2 pa2 h4 overflow-y-auto mb2">
         <ul id="userChips" class="list pa0"></ul>
       </div>
@@ -70,58 +69,63 @@ export default class CollabPanel {
 
     document.formSendMessage.addEventListener('submit', e => {
       const $form = e.target;
-      visualiveSession.pub(VisualiveSession.actions.TEXT_MESSAGE, { text: $form.messageToSend.value });
+      visualiveSession.pub(VisualiveSession.actions.TEXT_MESSAGE, {
+        text: $form.messageToSend.value,
+      });
 
       e.preventDefault();
       $form.reset();
     });
 
-    visualiveSession.sub(VisualiveSession.actions.TEXT_MESSAGE, (message, userId) => {
-      const p = document.createElement('p');
-      p.innerHTML = `<strong>${userId}:</strong> ${message.text}`;
-      $receivedMessages.appendChild(p);
-    });
+    visualiveSession.sub(
+      VisualiveSession.actions.TEXT_MESSAGE,
+      (message, userId) => {
+        const p = document.createElement('p');
+        p.innerHTML = `<strong>${userId}:</strong> ${message.text}`;
+        $receivedMessages.appendChild(p);
+        $receivedMessages.scrollTop = $receivedMessages.scrollHeight;
+      }
+    );
 
-    const userChipsElements = {}
-    const addUser = (userData)=>{
+    const userChipsElements = {};
+    const addUser = userData => {
       const p = document.createElement('p');
       p.innerHTML = `<strong>(User Joined: ${userData.name})</strong>`;
       $receivedMessages.appendChild(p);
+      $receivedMessages.scrollTop = $receivedMessages.scrollHeight;
 
       const li = document.createElement('li');
       $userChips.appendChild(li);
       const userChip = new UserChip(li, userData);
 
       userChipsElements[userData.id] = li;
-    }
-    const removeUser = (userData)=>{
+    };
+    const removeUser = userData => {
       const p = document.createElement('p');
       p.innerHTML = `<strong>(User Left: ${userData.name})</strong>`;
       $receivedMessages.appendChild(p);
+      $receivedMessages.scrollTop = $receivedMessages.scrollHeight;
 
       $userChips.removeChild(userChipsElements[userData.id]);
-    }
+    };
     visualiveSession.sub(VisualiveSession.actions.USER_JOINED, userData => {
-      addUser(userData)
+      addUser(userData);
     });
 
-    visualiveSession.sub(VisualiveSession.actions.USER_LEFT, (userData, userId) => {
-      addUser(userData)
-    });
+    visualiveSession.sub(
+      VisualiveSession.actions.USER_LEFT,
+      (userData, userId) => {
+        addUser(userData);
+      }
+    );
 
     const users = visualiveSession.getUsers();
-    for(let id in users) {
-      addUser(users[id])
+    for (let id in users) {
+      addUser(users[id]);
     }
-
-
   }
 
-  mount(){
+  mount() {}
 
-  }
-
-  unMount() {
-
-  }
+  unMount() {}
 }
