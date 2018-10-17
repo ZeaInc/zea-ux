@@ -90,7 +90,7 @@ export default class CollabPanel {
     const userChipsElements = {};
     const addUser = userData => {
       const p = document.createElement('p');
-      p.innerHTML = `<strong>(User Joined: ${userData.name})</strong>`;
+      p.innerHTML = `<strong>(${userData.name} has joined)</strong>`;
       $receivedMessages.appendChild(p);
       $receivedMessages.scrollTop = $receivedMessages.scrollHeight;
 
@@ -102,7 +102,7 @@ export default class CollabPanel {
     };
     const removeUser = userData => {
       const p = document.createElement('p');
-      p.innerHTML = `<strong>(User Left: ${userData.name})</strong>`;
+      p.innerHTML = `<strong>(${userData.name} has left)</strong>`;
       $receivedMessages.appendChild(p);
       $receivedMessages.scrollTop = $receivedMessages.scrollHeight;
 
