@@ -44,7 +44,6 @@ export default class Avatar {
     shape.computeVertexNormals();
     const geomItem = new Visualive.GeomItem('camera', shape, this.__material);
     const geomXfo = new Visualive.Xfo();
-    geomXfo.ori.setFromEulerAngles(new Visualive.EulerAngles(Math.PI * 0.5, Math.PI * 0.25, 0.0));
     geomItem.setGeomOffsetXfo(geomXfo);
 
     if (this.__audioIem) {
