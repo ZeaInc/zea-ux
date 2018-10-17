@@ -40,13 +40,13 @@ export default class CreateConeTool extends CreateGeomTool {
     const change = new CreateConeChange(scene.getRoot(), xfo);
     this.undoRedoManager.addChange(change);
 
-    this.__mode = 1;
+    this.stage = 1;
     this._radius = 0.0;
     this._height = 0.0;
   }
 
   createMove(pt) {
-    if(this.__mode == 1) {
+    if(this.stage == 1) {
       const vec = pt.subtract(this.xfo.tr)
       // TODO: Rotate the cone so the base is aligned with the vector towards the controller
       this._radius = vec.subtract(vec.dot(this.xfo.ori.getZAxis())).length();
@@ -62,12 +62,12 @@ export default class CreateConeTool extends CreateGeomTool {
   createRelease(pt) {
     if (this._radius == 0 || this._height == 0) {
       this.undoRedoManager.undo();
-      this.__stage = 0;
+      this.stage = 0;
     }
-    if(this.__stage == 1)
-      this.__stage = 2;
-    else if(this.__stage == 2)
-      this.__stage = 0;
+    if(this.stage == 1)
+      this.stage = 2;
+    else if(this.stage == 2)
+      this.stage = 0;
   }
 
 }

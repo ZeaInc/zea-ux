@@ -33,8 +33,9 @@ import Vec4Widget from './src/ui/parameter-widgets/Vec4Widget.js';
 import ToolManager from './src/tools/ToolManager.js';
 import ViewTool from './src/tools/ViewTool.js';
 import SelectionTool from './src/tools/SelectionTool.js';
-import CreateSphereTool from './src/tools/CreateTools/CreateSphereTool.js';
 import CreateLineTool from './src/tools/CreateTools/CreateLineTool.js';
+import CreateSphereTool from './src/tools/CreateTools/CreateSphereTool.js';
+import CreateCuboidTool from './src/tools/CreateTools/CreateCuboidTool.js';
 
 export {
   getRequest,
@@ -68,6 +69,7 @@ export {
   ToolManager,
   ViewTool,
   SelectionTool,
+  CreateLineTool,
   CreateSphereTool,
-  CreateLineTool
+  CreateCuboidTool
 };

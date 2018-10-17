@@ -452,8 +452,8 @@ export default class ViewTool extends BaseTool {
 
     if(this.__controllerTriggersHeld.length == 1) {
       this.__grabPos = event.controller.getTipXfo().tr.clone();
-      this.__stageXfo__GrabStart = vrpose.getXfo().clone();
-      this.__invOri = this.__stageXfo__GrabStart.ori.inverse();
+      this.stageXfo__GrabStart = vrpose.getXfo().clone();
+      this.__invOri = this.stageXfo__GrabStart.ori.inverse();
     }
     else if(this.__controllerTriggersHeld.length == 2) {
       const p0 = this.__controllerTriggersHeld[0].getTipXfo().tr;
@@ -463,8 +463,8 @@ export default class ViewTool extends BaseTool {
       this.__grabDist = this.__grabDir.length();
       this.__grabDir.y = 0.0;
       this.__grabDir.normalizeInPlace();
-      this.__stageXfo__GrabStart = vrpose.getGlobalXfo().clone();
-      this.__grab_to_stage = this.__grabPos.subtract(this.__stageXfo__GrabStart.tr);
+      this.stageXfo__GrabStart = vrpose.getGlobalXfo().clone();
+      this.__grab_to_stage = this.__grabPos.subtract(this.stageXfo__GrabStart.tr);
     }
   }
 
@@ -480,7 +480,7 @@ export default class ViewTool extends BaseTool {
 
       ////////////////
       // Update the stage Xfo
-      const stageXfo = this.__stageXfo__GrabStart.multiply(deltaXfo);
+      const stageXfo = this.stageXfo__GrabStart.multiply(deltaXfo);
       vrpose.setGlobalXfo(stageXfo);
     }
     else if(this.__controllerTriggersHeld == 2) {
@@ -499,9 +499,9 @@ export default class ViewTool extends BaseTool {
       const sc = Math.max(Math.min(this.__grabDist / grabDir.length(), 10.0), 0.1);
 
       // Avoid causing a scale that would make the user < 1.0 scale factor.
-      const stageSc = this.__stageXfo__GrabStart.sc.x * sc;
+      const stageSc = this.stageXfo__GrabStart.sc.x * sc;
       // if(stageSc < 1.0){
-      //     sc = 1.0 / this.__stageXfo__GrabStart.sc.x;
+      //     sc = 1.0 / this.stageXfo__GrabStart.sc.x;
       // }
 
       deltaXfo.sc.set(sc, sc, sc);
@@ -534,7 +534,7 @@ export default class ViewTool extends BaseTool {
 
       ////////////////
       // Update the stage Xfo
-      const stageXfo = this.__stageXfo__GrabStart.multiply(deltaXfo);
+      const stageXfo = this.stageXfo__GrabStart.multiply(deltaXfo);
       vrpose.setGlobalXfo(stageXfo);
     }
 

@@ -79,7 +79,7 @@ export default class CreateFreehandLineTool extends CreateGeomTool {
     const change = new CreateFreehandLineChange(scene.getRoot(), this.xfo, color, lineThickness);
     this.undoRedoManager.addChange(change);
 
-    this.__stage = 1;
+    this.stage = 1;
     this.prevP = xfo.tr;
     this.length = 0;
   }
@@ -98,6 +98,6 @@ export default class CreateFreehandLineTool extends CreateGeomTool {
     if (this.length == 0) {
       this.undoRedoManager.undo();
     }
-    this.__stage = 0;
+    this.stage = 0;
   }
 }

@@ -7,10 +7,10 @@ class CreateSphereChange extends CreateGeomChange {
   constructor(parentItem, xfo) {
     super("Create Sphere", parentItem);
 
-    const sphere = new Visualive.Sphere(0, 64, 32);
+    this.sphere = new Visualive.Sphere(0, 64, 32);
     const material = new Visualive.Material('Sphere', 'SimpleSurfaceShader');
     this.geomItem = new Visualive.GeomItem('Sphere');
-    this.geomItem.setGeometry(sphere);
+    this.geomItem.setGeometry(this.sphere);
     this.geomItem.setMaterial(material);
 
     if(parentItem && xfo) {
@@ -22,7 +22,7 @@ class CreateSphereChange extends CreateGeomChange {
   }
 
   update(updateData) {
-    this.geomItem.getGeometry().radius = updateData.radius;
+    this.sphere.radius = updateData.radius;
   }
 
   toJSON() {
@@ -43,10 +43,11 @@ export default class CreateSphereTool extends CreateGeomTool {
   }
 
   createStart(xfo, parentItem) {
-    this.xfo = xfo;
     const change = new CreateSphereChange(parentItem, xfo);
     this.undoRedoManager.addChange(change);
-    this.__stage = 1;
+
+    this.xfo = xfo;
+    this.stage = 1;
     this.radius = 0.0;
   }
 
@@ -56,10 +57,10 @@ export default class CreateSphereTool extends CreateGeomTool {
   }
 
   createRelease(pt) {
-    // if (this.radius == 0) {
-    //   this.undoRedoManager.undo();
-    // }
-    this.__stage = 0;
+    if (this.radius == 0) {
+      this.undoRedoManager.undo();
+    }
+    this.stage = 0;
   }
 }
 

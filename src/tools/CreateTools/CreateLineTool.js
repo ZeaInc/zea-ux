@@ -39,8 +39,9 @@ export default class CreateLineTool extends CreateGeomTool {
   createStart(xfo, parentItem) {
     const change = new CreateLineChange(parentItem, xfo);
     this.undoRedoManager.addChange(change);
+    
     this.xfo = xfo.inverse();
-    this.__stage = 1;
+    this.stage = 1;
     this.length = 0.0;
   }
 
@@ -54,6 +55,6 @@ export default class CreateLineTool extends CreateGeomTool {
     if (this.length == 0) {
       this.undoRedoManager.undo();
     }
-    this.__stage = 0;
+    this.stage = 0;
   }
 }

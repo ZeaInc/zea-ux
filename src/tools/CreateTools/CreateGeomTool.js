@@ -45,11 +45,11 @@ class CreateGeomTool extends BaseCreateTool {
   constructor(undoRedoManager) {
     super(undoRedoManager);
 
-    this.__stage = 0;
+    this.stage = 0;
   }
 
   createStart(xfo) {
-    this.__stage = 1;
+    this.stage = 1;
   }
 
   createPoint(pt) {
@@ -66,7 +66,7 @@ class CreateGeomTool extends BaseCreateTool {
 
   onMouseDown(event, mousePos, viewport) {
     // 
-    if(this.__stage == 0) {
+    if(this.stage == 0) {
       this.xfo = this.screenPosToXfo(mousePos, viewport);
       this.constructionPlane = new Visualive.Ray(this.xfo.tr, this.xfo.ori.getZaxis());
 
@@ -75,12 +75,12 @@ class CreateGeomTool extends BaseCreateTool {
     }
     else if(event.button == 2) {
       this.undoRedoManager.undo();
-      this.__stage = 0;
+      this.stage = 0;
     }
   }
 
   onMouseMove(event, mousePos, viewport) {
-    if(this.__stage > 0) {
+    if(this.stage > 0) {
       const ray = viewport.calcRayFromScreenPos(mousePos);
       const dist = ray.intersectRayPlane(this.constructionPlane);
 
@@ -89,7 +89,7 @@ class CreateGeomTool extends BaseCreateTool {
   }
 
   onMouseUp(event, mousePos, viewport) {
-    if(this.__stage > 0) {
+    if(this.stage > 0) {
       this.createRelease();
     }
   }
@@ -123,14 +123,14 @@ class CreateGeomTool extends BaseCreateTool {
   }
 
   onVRControllerMove(event, mousePos, viewport) {
-    if(this.__stage > 0) {
+    if(this.stage > 0) {
       // TODO: Snap the Xfo to any nearby construction planes.
       this.createMove(event.xfo.tr);
     }
   }
 
   onVRControllerUp(event, mousePos, viewport) {
-    if(this.__stage > 0) {
+    if(this.stage > 0) {
       this.createRelease();
     }
   }
