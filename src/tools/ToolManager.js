@@ -14,10 +14,11 @@ export default class ToolManager {
 
   popTool() {
     if(this.__toolStack.length > 0) {
-      const tool = this.currTool();
-      tool.deactivateTool(this.renderer);
+      const prevTool = this.currTool();
+      prevTool.deactivateTool(this.renderer);
       this.__toolStack.pop();
-      console.log("ToolManager.popTool:", tool.constructor.name, (this.currTool() ? currTool().constructor.name : ''))
+      const currTool = this.currTool();
+      console.log("ToolManager.popTool:", prevTool.constructor.name, (currTool ? currTool.constructor.name : ''))
     }
   }
 

@@ -52,7 +52,7 @@ export default class CreateSphereTool extends CreateGeomTool {
 
   createMove(pt) {
     this.radius = pt.distanceTo(this.xfo.tr);
-    // this.undoRedoManager.updateChange({ radius: this.radius });
+    this.undoRedoManager.updateChange({ radius: this.radius });
   }
 
   createRelease(pt) {

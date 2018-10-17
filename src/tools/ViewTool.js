@@ -181,13 +181,13 @@ export default class ViewTool extends BaseTool {
     this.__mouseDownPos = mouseDownPos;
     this.initDrag(viewport);
 
-    if (event.altKey || event.button == 2) {
+    if (event.button == 2) {
       this.__mode = 'pan';
-    } else if (event.ctrlKey && event.altKey) {
+    } else if (event.ctrlKey && event.button == 2) {
       this.__mode = 'dolly';
-    } else if (event.ctrlKey || event.button == 2) {
+    }/* else if (event.ctrlKey || event.button == 2) {
       this.__mode = 'look';
-    } else {
+    }*/ else {
       this.__mode = this.__defaultMode;
     }
   }
@@ -232,12 +232,10 @@ export default class ViewTool extends BaseTool {
 
 
   onMouseDown(event, mousePos, viewport) {
-    if (event.button == 0) {
-      this.dragging = true;
-      this.__mouseDownPos = mousePos;
-      this.onDragStart(event, mousePos, viewport)
-      return true;
-    }
+    this.dragging = true;
+    this.__mouseDownPos = mousePos;
+    this.onDragStart(event, mousePos, viewport)
+    return true;
   }
 
   onMouseUp(event, mousePos, viewport) {

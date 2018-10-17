@@ -1,7 +1,7 @@
 
 import  BaseTool from './BaseTool.js';
 
-class SelectionTool extends BaseTool {
+export default class SelectionTool extends BaseTool {
   constructor(appData) {
     super();
 
@@ -27,15 +27,17 @@ class SelectionTool extends BaseTool {
   }
 
   onMouseUp(event, mousePos, viewport) {
-    if (this.dragging) {
-      const mouseUpPos = mousePos;
-      const geomItems = viewport.getGeomItemsInRect(this.mouseDownPos, mouseUpPos);
 
-      if (!event.altKey) {
-        this.appData.selectionManager.selectItems(geomItems, !event.ctrlKey);
-      } else {
-        this.appData.selectionManager.deselectItems(geomItems);
-      }
+    viewport.renderGeomDataFbo();
+    if (this.dragging) {
+      // const mouseUpPos = mousePos;
+      // const geomItems = viewport.getGeomItemsInRect(this.mouseDownPos, mouseUpPos);
+
+      // if (!event.altKey) {
+      //   this.appData.selectionManager.selectItems(geomItems, !event.ctrlKey);
+      // } else {
+      //   this.appData.selectionManager.deselectItems(geomItems);
+      // }
     } else {
       const intersectionData = viewport.getGeomDataAtPos(mousePos);
       if (intersectionData != undefined) {
@@ -46,8 +48,4 @@ class SelectionTool extends BaseTool {
     this.mouseDownPos = undefined;
   }
 
-};
-
-export {
-  BaseTool
 };

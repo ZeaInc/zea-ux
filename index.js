@@ -66,5 +66,6 @@ export {
 
   ToolManager,
   ViewTool,
+  SelectionTool,
   CreateSphereTool
 };
