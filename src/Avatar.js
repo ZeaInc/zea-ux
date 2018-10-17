@@ -15,7 +15,7 @@ export default class Avatar {
     this.__treeItem.setSelectable(false);
 
     this.__material = new Visualive.Material('user' + userData.id + 'Material', 'SimpleSurfaceShader');
-    this.__material.addParameter('BaseColor', this.__userData.color);
+    this.__material.getParameter('BaseColor').setValue(this.__userData.color);
   }
 
   setAudioStream(stream) {
