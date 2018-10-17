@@ -50,7 +50,6 @@ export default class CollabPanel {
           </button>
         </div>
       </form>
-
     `;
 
     $collabWrapper.innerHTML = collabMarkup;
@@ -63,7 +62,6 @@ export default class CollabPanel {
       const $form = e.target;
       const roomId = visualiveSession.createRoom();
       $form.roomId.value = roomId;
-
       e.preventDefault();
     });
 
@@ -72,7 +70,6 @@ export default class CollabPanel {
       visualiveSession.pub(VisualiveSession.actions.TEXT_MESSAGE, {
         text: $form.messageToSend.value,
       });
-
       e.preventDefault();
       $form.reset();
     });
