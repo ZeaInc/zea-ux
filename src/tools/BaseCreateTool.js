@@ -1,7 +1,5 @@
-;
-import {
-    BaseTool
-} from './BaseTool.js';
+
+import BaseTool from './BaseTool.js';
 
 export default class BaseCreateTool extends BaseTool {
   constructor(undoRedoManager) {

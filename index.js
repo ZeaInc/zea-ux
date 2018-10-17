@@ -30,6 +30,7 @@ import Vec2Widget from './src/ui/parameter-widgets/Vec2Widget.js';
 import Vec3Widget from './src/ui/parameter-widgets/Vec3Widget.js';
 import Vec4Widget from './src/ui/parameter-widgets/Vec4Widget.js';
 
+import ToolManager from './src/tools/ToolManager.js';
 import ViewTool from './src/tools/ViewTool.js';
 import SelectionTool from './src/tools/SelectionTool.js';
 import CreateSphereTool from './src/tools/CreateTools/CreateSphereTool.js';
@@ -63,6 +64,7 @@ export {
   Vec3Widget,
   Vec4Widget,
 
-
+  ToolManager,
+  ViewTool,
   CreateSphereTool
 };

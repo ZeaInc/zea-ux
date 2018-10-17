@@ -48,6 +48,7 @@ class TopMenuBar {
   }
 
   _addKeyListener(action) {
+    let hotkeyDown = false;
     document.addEventListener('keydown', e => {
       const metaKeys = action.metaKeys || {};
 
@@ -64,9 +65,20 @@ class TopMenuBar {
         e.key;
 
       if (keyComboExpected.toLowerCase() === keyComboPressed.toLowerCase()) {
-        this._invokeCallback(action.callback, e);
+        hotkeyDown = true;
+        action.callback(event);
+        event.preventDefault();
       }
     });
+    if(action.hotkeyReleaseCallback) {
+      document.addEventListener('keyup', e => {
+        if(hotkeyDown){
+          action.hotkeyReleaseCallback(event);
+          event.preventDefault();
+          hotkeyDown = false;
+        }
+      });
+    }
   }
 
   _invokeCallback(callback, event) {

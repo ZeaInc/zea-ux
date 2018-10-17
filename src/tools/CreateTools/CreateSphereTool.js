@@ -7,14 +7,16 @@ class CreateSphereChange extends CreateGeomChange {
   constructor(parentItem, xfo) {
     super("Create Sphere", parentItem);
 
-    const sphere = new Visualive.Sphere(4.0);
-    const material = new Visualive.Material("Sphere");
-    this.__geomItem = new Visualive.GeomItem("Sphere");
+    const sphere = new Visualive.Sphere(0.2);
+    const material = new Visualive.Material('Sphere', 'SimpleSurfaceShader');
+    this.__geomItem = new Visualive.GeomItem('Sphere');
     this.__geomItem.setGeometry(sphere);
     this.__geomItem.setMaterial(material);
 
     if(parentItem && xfo) {
       this.__geomItem.setGlobalXfo(xfo);
+      const name = this.__parentItem.generateUniqueName(this.__geomItem.getName());
+      this.__geomItem.setName(name)
       this.__parentItem.addChild(this.__geomItem)
     }
   }

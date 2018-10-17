@@ -1,7 +1,5 @@
-;
-import {
-  BaseTool
-} from './BaseTool.js';
+
+import  BaseTool from './BaseTool.js';
 
 class SelectionTool extends BaseTool {
   constructor(appData) {

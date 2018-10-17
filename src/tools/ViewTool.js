@@ -1,24 +1,22 @@
 
-import {
-  BaseTool
-} from './BaseTool.js';
+import BaseTool from './BaseTool.js';
 
-class ViewTool extends BaseTool {
+export default class ViewTool extends BaseTool {
   constructor() {
     super();
 
     this.__defaultMode = 'orbit';
     this.__mode = this.__defaultMode;
 
-    this.__mouseDragDelta = new Vec2();
+    this.__mouseDragDelta = new Visualive.Vec2();
     this.__keyboardMovement = false;
     this.__keysPressed = [];
     this.__maxVel = 0.002;
-    this.__velocity = new Vec3();
+    this.__velocity = new Visualive.Vec3();
 
     this.__ongoingTouches = {};
 
-    this.__orbitRateParam = this.addParameter(new Visualive.NumberParameter('orbitRate', SystemDesc.isMobileDevice ? -0.002 : 0.01));
+    this.__orbitRateParam = this.addParameter(new Visualive.NumberParameter('orbitRate', Visualive.SystemDesc.isMobileDevice ? -0.002 : 0.01));
     this.__dollySpeedParam = this.addParameter(new Visualive.NumberParameter('dollySpeed', 0.02));
     this.__mouseWheelDollySpeedParam = this.addParameter(new Visualive.NumberParameter('mouseWheelDollySpeed', 0.002));
 
@@ -29,11 +27,11 @@ class ViewTool extends BaseTool {
 
   ///////////////////////////////////////
   // 
-  activateTool(viewport) {
+  activateTool(renderer) {
 
-    super.activateTool();
-    const camera = viewport.getCamera();
+    super.activateTool(renderer);
 
+    // const camera = viewport.getCamera();
     // if(camera instanceof VRPose) {
     //     const vrpose = camera;
     //     for(let vrController of vrpose.getControllers())
@@ -65,13 +63,13 @@ class ViewTool extends BaseTool {
     const globalXfo = this.__mouseDownCameraXfo.clone();
 
     // Orbit
-    const orbit = new Quat();
+    const orbit = new Visualive.Quat();
     orbit.rotateZ(dragVec.x * orbitRate * 0.12);
     // globalXfo.ori.multiplyInPlace(orbit);
     globalXfo.ori = orbit.multiply(globalXfo.ori);
 
     // Pitch
-    const pitch = new Quat();
+    const pitch = new Visualive.Quat();
     pitch.rotateX(dragVec.y * orbitRate * 0.12);
     globalXfo.ori.multiplyInPlace(pitch);
 
@@ -100,13 +98,13 @@ class ViewTool extends BaseTool {
     const globalXfo = this.__mouseDownCameraXfo.clone();
 
     // Orbit
-    const orbit = new Quat();
+    const orbit = new Visualive.Quat();
     orbit.rotateZ(dragVec.x * -orbitRate);
     // globalXfo.ori.multiplyInPlace(orbit);
     globalXfo.ori = orbit.multiply(globalXfo.ori);
 
     // Pitch
-    const pitch = new Quat();
+    const pitch = new Visualive.Quat();
     pitch.rotateX(dragVec.y * -orbitRate);
     globalXfo.ori.multiplyInPlace(pitch);
 
@@ -125,12 +123,12 @@ class ViewTool extends BaseTool {
   pan(dragVec, viewport) {
     const focalDistance = viewport.getCamera().getFocalDistance();
     const fovY = viewport.getCamera().getFov();
-    const xAxis = new Vec3(1, 0, 0);
-    const yAxis = new Vec3(0, 1, 0);
+    const xAxis = new Visualive.Vec3(1, 0, 0);
+    const yAxis = new Visualive.Vec3(0, 1, 0);
 
     const cameraPlaneHeight = 2.0 * focalDistance * Math.tan(0.5 * fovY);
     const cameraPlaneWidth = cameraPlaneHeight * (viewport.getWidth() / viewport.getHeight());
-    const delta = new Xfo();
+    const delta = new Visualive.Xfo();
     delta.tr = xAxis.scale(-(dragVec.x / viewport.getWidth()) * cameraPlaneWidth)
     delta.tr.addInPlace(yAxis.scale((dragVec.y / viewport.getHeight()) * cameraPlaneHeight));
 
@@ -139,7 +137,7 @@ class ViewTool extends BaseTool {
 
   dolly(dragVec, viewport) {
     const dollyDist = dragVec.x * this.__dollySpeedParam.getValue();
-    const delta = new Xfo();
+    const delta = new Visualive.Xfo();
     delta.tr.set(0, 0, dollyDist);
     viewport.getCamera().setGlobalXfo(this.__mouseDownCameraXfo.multiply(delta));
   }
@@ -148,12 +146,12 @@ class ViewTool extends BaseTool {
     const focalDistance = viewport.getCamera().getFocalDistance();
     const fovY = viewport.getCamera().getFov();
 
-    const xAxis = new Vec3(1, 0, 0);
-    const yAxis = new Vec3(0, 1, 0);
+    const xAxis = new Visualive.Vec3(1, 0, 0);
+    const yAxis = new Visualive.Vec3(0, 1, 0);
 
     const cameraPlaneHeight = 2.0 * focalDistance * Math.tan(0.5 * fovY);
     const cameraPlaneWidth = cameraPlaneHeight * (viewport.getWidth() / viewport.getHeight());
-    const delta = new Xfo();
+    const delta = new Visualive.Xfo();
     delta.tr = xAxis.scale(-(panDelta.x / viewport.getWidth()) * cameraPlaneWidth)
     delta.tr.addInPlace(yAxis.scale((panDelta.y / viewport.getHeight()) * cameraPlaneHeight));
 
@@ -232,6 +230,31 @@ class ViewTool extends BaseTool {
     return false;
   }
 
+
+  onMouseDown(event, mousePos, viewport) {
+    if (event.button == 0) {
+      this.dragging = true;
+      this.__mouseDownPos = mousePos;
+      this.onDragStart(event, mousePos, viewport)
+      return true;
+    }
+  }
+
+  onMouseUp(event, mousePos, viewport) {
+      if (this.dragging) {
+          this.onDragEnd(event, mousePos, viewport);
+          this.dragging = false;
+          return true;
+      }
+  }
+
+  onMouseMove(event, mousePos, viewport) {
+      if (this.dragging) {
+          this.onDrag(event, mousePos, viewport);
+          return true; 
+      }
+  }
+
   onWheel(event, viewport) {
     const focalDistance = viewport.getCamera().getFocalDistance();
     const mouseWheelDollySpeed = this.__mouseWheelDollySpeedParam.getValue();
@@ -245,7 +268,7 @@ class ViewTool extends BaseTool {
   }
 
   __integrateVelocityChange(velChange, viewport) {
-    const delta = new Xfo();
+    const delta = new Visualive.Xfo();
     delta.tr = this.__velocity.normalize().scale(this.__maxVel);
     viewport.getCamera().setGlobalXfo(viewport.getCamera().getGlobalXfo().multiply(delta));
   }
@@ -454,7 +477,7 @@ class ViewTool extends BaseTool {
     if(this.__controllerTriggersHeld == 1) {
       const grabPos = this.__controllerTriggersHeld[0].getTipXfo().tr;
 
-      const deltaXfo = new Xfo();
+      const deltaXfo = new Visualive.Xfo();
       deltaXfo.tr = this.__grabPos.subtract(grabPos);
 
       ////////////////
@@ -470,7 +493,7 @@ class ViewTool extends BaseTool {
       const grabPos = p0.lerp(p1, 0.5);
       const grabDir = p1.subtract(p0);
 
-      const deltaXfo = new Xfo();
+      const deltaXfo = new Visualive.Xfo();
 
       ////////////////
       // Compute sc
@@ -526,8 +549,3 @@ class ViewTool extends BaseTool {
 
 
 };
-
-export {
-  ViewTool
-};
-//export default Camera;
