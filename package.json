@@ -1,6 +1,6 @@
 {
   "name": "@visualive/ux",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "description": "",
   "keywords": [],
   "main": "index.js",
@@ -15,13 +15,13 @@
   "author": "Visualive",
   "license": "ISC",
   "devDependencies": {
-    "eslint": "^5.5.0",
+    "eslint": "^5.7.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.14.0",
     "prettier": "^1.14.2"
   },
   "dependencies": {
-    "@jaames/iro": "^3.5.1",
-    "@visualive/collab": "^0.0.4"
+    "@jaames/iro": "^3.5.3",
+    "@visualive/collab": "^0.0.6"
   }
 }
