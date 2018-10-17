@@ -1,5 +1,5 @@
-// import iro from '@jaames/iro.js';
-import iro from '../../../node_modules/@jaames/iro/dist/iro.es.js';
+import iro from '@jaames/iro';
+// import iro from '../../../node_modules/@jaames/iro/dist/iro.es.js';
 // import iro from 'https://rawgit.com/jaames/iro.js/master/dist/iro.es.js';
 
 import BaseWidget from './BaseWidget.js';
@@ -9,7 +9,7 @@ import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 
 export default class ColorWidget extends BaseWidget {
   constructor(parameter, parentDomElem, undoRedoManager) {
-    console.log("ColorWidget")
+    console.log('ColorWidget');
     super(parameter);
 
     const colorPicker = new iro.ColorPicker(parentDomElem, {
@@ -54,8 +54,7 @@ export default class ColorWidget extends BaseWidget {
       if (!change) {
         change = new ParameterValueChange(parameter, value);
         undoRedoManager.addChange(change);
-      }
-      else {
+      } else {
         undoRedoManager.updateChange({ value });
       }
     });

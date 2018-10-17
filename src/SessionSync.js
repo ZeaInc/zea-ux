@@ -49,24 +49,27 @@ const convertValuesFromJSON = (value) => {
 export default class SessionSync {
   constructor(visualiveSession, appData, userId) {
 
-    const usersData = {};
+    const userDatas = {};
 
-    visualiveSession.sub(VisualiveSession.actions.USER_JOINED, message => {
-      usersData[message.userId] = {
-        undoRedoManager: new UndoRedoManager(),
-        avatar: new Avatar(userdata)
+    const setupUser = (userData) => {
+      if(!(userData.id in userDatas)){
+        userDatas[userData.id] = {
+          undoRedoManager: new UndoRedoManager(),
+          avatar: new Avatar(appData.scene, appData.scene.getRoot(), userData)
+        }
       }
-    })
+    }
 
-    visualiveSession.sub(VisualiveSession.actions.USER_LEFT, message => {
-      usersData[message.userId].avatar.destroy();
-      delete usersData[message.userId];
+    visualiveSession.sub(VisualiveSession.actions.USER_JOINED, setupUser)
+    visualiveSession.sub(VisualiveSession.actions.USER_LEFT, userData => {
+      userDatas[userData.id].avatar.destroy();
+      delete userDatas[userData.id];
     })
 
     /////////////////////////////////////////////
     // Pose Changes
 
-    // const myAvatar = new Avatar(appData.scene.getResourceLoader(), appData.scene.getRoot(), { userId });
+    // const myAvatar = new Avatar(appData.scene, appData.scene.getRoot(), { userId });
 
     appData.renderer.viewChanged.connect((data) => {
       const j = convertValuesToJSON(data);
@@ -78,7 +81,7 @@ export default class SessionSync {
 
     visualiveSession.sub(VisualiveSession.actions.POSE_CHANGED, (j, userId) =>{
       const data = convertValuesFromJSON(j);
-      const avatar = usersData[userId].avatar;
+      const avatar = userDatas[userId].avatar;
       avatar.updatePose(data);
     })
 
@@ -97,15 +100,15 @@ export default class SessionSync {
       visualiveSession.pub(VisualiveSession.actions.CHANGE_UPDATED, convertValuesToJSON(data))
     })
 
-    visualiveSession.sub(VisualiveSession.actions.CHANGE_ADDED, data =>{
-      const undoRedoManager = usersData[data.userId].undoRedoManager;
+    visualiveSession.sub(VisualiveSession.actions.CHANGE_ADDED, (data, userId) =>{
+      const undoRedoManager = userDatas[userId].undoRedoManager;
       const change = undoRedoManager.constructChange(data.changeClass);
       change.fromJSON(data.changeData, appData.scene)
       undoRedoManager.addChange(change);
     })
 
-    visualiveSession.sub("CHANGE_UPDATED", data =>{
-      const undoRedoManager = usersData[data.userId].undoRedoManager;
+    visualiveSession.sub("CHANGE_UPDATED", (data, userId) =>{
+      const undoRedoManager = userDatas[userId].undoRedoManager;
       undoRedoManager.changeFromJSON(data.changeData);
     })
 
