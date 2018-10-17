@@ -5,7 +5,7 @@ import Change from '../../undoredo/Change.js';
 class CreateGeomChange extends Change {
   constructor(name, parentItem) {
     super(name);
-    this.__parentItem = parentItem;
+    this.parentItem = parentItem;
   }
 
   update(updateData) {
@@ -13,23 +13,23 @@ class CreateGeomChange extends Change {
   }
 
   undo() {
-    this.__parentItem.removeChild(this.__geomItem, false)
+    this.parentItem.removeChild(this.__geomItem, false)
   }
 
   redo() {
-    this.__parentItem.addChild(this.__geomItem, false)
+    this.parentItem.addChild(this.__geomItem, false)
   }
 
 
   toJSON() {
     const j = super.toJSON();
-    if (this.__parentItem) 
-      j.parentItemPath = this.__parentItem.getPath();
+    if (this.parentItem) 
+      j.parentItemPath = this.parentItem.getPath();
     return j;
   }
 
   fromJSON(j, root) {
-    this.__parentItem = root.resolvePath(j.parentItemPath);
+    this.parentItem = root.resolvePath(j.parentItemPath);
     this.changeFromJSON(j);
   }
 

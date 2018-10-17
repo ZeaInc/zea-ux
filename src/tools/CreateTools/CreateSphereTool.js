@@ -7,33 +7,33 @@ class CreateSphereChange extends CreateGeomChange {
   constructor(parentItem, xfo) {
     super("Create Sphere", parentItem);
 
-    const sphere = new Visualive.Sphere(0.2);
+    const sphere = new Visualive.Sphere(0, 64, 32);
     const material = new Visualive.Material('Sphere', 'SimpleSurfaceShader');
-    this.__geomItem = new Visualive.GeomItem('Sphere');
-    this.__geomItem.setGeometry(sphere);
-    this.__geomItem.setMaterial(material);
+    this.geomItem = new Visualive.GeomItem('Sphere');
+    this.geomItem.setGeometry(sphere);
+    this.geomItem.setMaterial(material);
 
     if(parentItem && xfo) {
-      this.__geomItem.setGlobalXfo(xfo);
-      const name = this.__parentItem.generateUniqueName(this.__geomItem.getName());
-      this.__geomItem.setName(name)
-      this.__parentItem.addChild(this.__geomItem)
+      this.geomItem.setGlobalXfo(xfo);
+      const name = this.parentItem.generateUniqueName(this.geomItem.getName());
+      this.geomItem.setName(name)
+      this.parentItem.addChild(this.geomItem)
     }
   }
 
   update(updateData) {
-    this.__geomItem.getGeometry().radius = updateData.radius;
+    this.geomItem.getGeometry().radius = updateData.radius;
   }
 
   toJSON() {
     const j = super.toJSON();
-    j.radius = this.__geomItem.getGeometry().radius;
+    j.radius = this.geomItem.getGeometry().radius;
     return j;
   }
 
   changeFromJSON(j) {
     if (j.radius)
-      this.__geomItem.getGeometry().radius =j.radius;
+      this.geomItem.getGeometry().radius =j.radius;
   }
 }
 

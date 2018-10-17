@@ -34,6 +34,7 @@ import ToolManager from './src/tools/ToolManager.js';
 import ViewTool from './src/tools/ViewTool.js';
 import SelectionTool from './src/tools/SelectionTool.js';
 import CreateSphereTool from './src/tools/CreateTools/CreateSphereTool.js';
+import CreateLineTool from './src/tools/CreateTools/CreateLineTool.js';
 
 export {
   getRequest,
@@ -67,5 +68,6 @@ export {
   ToolManager,
   ViewTool,
   SelectionTool,
-  CreateSphereTool
+  CreateSphereTool,
+  CreateLineTool
 };

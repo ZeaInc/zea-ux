@@ -5,24 +5,29 @@ import {
 
 class CreateLineChange extends CreateGeomChange {
   constructor(parentItem, xfo) {
-    super("Create Line");
+    super("Create Line", parentItem);
 
-    const line = new Visualive.Lines(0.0);
-    line.setNumVertices(2)
-    line.setNumSegments(1);
-    const material = new Visualive.Material("Line");
+    this.lineGeom = new Visualive.Lines(0.0);
+    this.lineGeom.setNumVertices(2)
+    this.lineGeom.setNumSegments(1);
+    this.lineGeom.setSegment(0, 0, 1);
+    const linesMaterial = new Visualive.Material('LabelLinesMaterial', 'LinesShader');
+    linesMaterial.getParameter('Color').setValue(new Visualive.Color(.7, .7, .7));
     this.geomItem = new Visualive.GeomItem("Line");
-    this.geomItem.setGeometry(line);
-    this.geomItem.setMaterial(material);
+    this.geomItem.setGeometry(this.lineGeom);
+    this.geomItem.setMaterial(linesMaterial);
 
     if(parentItem && xfo) {
-      this.geomItem.setGlobalXfo(this.xfo);
-      this.redo();
+      this.geomItem.setGlobalXfo(xfo);
+      const name = this.parentItem.generateUniqueName(this.geomItem.getName());
+      this.geomItem.setName(name)
+      this.parentItem.addChild(this.geomItem);
     }
   }
 
   update(updateData) {
-    this.geomItem.getGeometry().getVertex(1).setFromOther(updateData.p1)
+    this.lineGeom.getVertex(1).setFromOther(updateData.p1)
+    this.lineGeom.geomDataChanged.emit();
   }
 }
 
@@ -31,17 +36,16 @@ export default class CreateLineTool extends CreateGeomTool {
     super(undoRedoManager);
   }
 
-  createStart(xfo) {
-    this.xfo = xfo;
-    const scene = viewport.getRenderer().getScene();
-    const change = new CreateLineChange(scene.getRoot(), xfo);
+  createStart(xfo, parentItem) {
+    const change = new CreateLineChange(parentItem, xfo);
     this.undoRedoManager.addChange(change);
+    this.xfo = xfo.inverse();
     this.__stage = 1;
     this.length = 0.0;
   }
 
   createMove(pt) {
-    const offet = pt.subtract(this.xfo.tr)
+    const offet = this.xfo.transformVec3(pt)
     this.length = offet.length();
     this.undoRedoManager.updateChange({ p1: offet });
   }
