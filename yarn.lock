@@ -31,6 +31,11 @@
     shortid "^2.2.13"
     socket.io-client "^2.1.1"
 
+"@visualive/engine@^0.0.16":
+  version "0.0.16"
+  resolved "https://registry.yarnpkg.com/@visualive/engine/-/engine-0.0.16.tgz#032bb4ae7749fd00586813b70d7cd85645fefe92"
+  integrity sha512-GzeqN5cgHessA1jpypfB2/lA8+9Rc6BbWFzRZrNBXcwyy3idRj3U1Z8hYfmROvG70bdmDJQBiiDHx8BchWRAFw==
+
 acorn-jsx@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/acorn-jsx/-/acorn-jsx-4.1.1.tgz#e8e41e48ea2fe0c896740610ab6a4ffd8add225e"

@@ -1,3 +1,5 @@
+import * as Visualive from '@visualive/engine';
+
 import iro from '@jaames/iro';
 // import iro from '../../../node_modules/@jaames/iro/dist/iro.es.js';
 // import iro from 'https://rawgit.com/jaames/iro.js/master/dist/iro.es.js';
