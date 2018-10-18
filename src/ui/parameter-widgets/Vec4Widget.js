@@ -1,3 +1,5 @@
+import * as Visualive from '@visualive/engine';
+
 import BaseWidget from './BaseWidget.js';
 
 import visualiveUxFactory from '../VisualiveUxFactory.js';
@@ -82,19 +84,18 @@ export default class Vec4Widget extends BaseWidget {
         tField.value = vec4.t;
       }
     });
-    
+
     const valueChange = () => {
       const value = new Visualive.Vec4(
-          xField.valueAsNumber,
-          yField.valueAsNumber,
-          zField.valueAsNumber,
-          tField.valueAsNumber
-        )
+        xField.valueAsNumber,
+        yField.valueAsNumber,
+        zField.valueAsNumber,
+        tField.valueAsNumber
+      );
       if (!change) {
         change = new ParameterValueChange(parameter, value);
         undoRedoManager.addChange(change);
-      }
-      else {
+      } else {
         undoRedoManager.updateChange({ value });
       }
     };

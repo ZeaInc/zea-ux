@@ -1,3 +1,5 @@
+import * as Visualive from '@visualive/engine';
+
 import BaseWidget from './BaseWidget.js';
 
 import visualiveUxFactory from '../VisualiveUxFactory.js';

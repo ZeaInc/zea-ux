@@ -1,3 +1,4 @@
+import * as Visualive from '@visualive/engine';
 
 const __changeClasses = {};
 
@@ -27,18 +28,18 @@ class UndoRedoManager {
       change.destroy()
     this.__redoStack = [];
 
-    this.changeAdded.emit(change)
+    this.changeAdded.emit(change);
   }
 
-  getCurrentChange(){
-    return this.__undoStack[this.__undoStack.length-1];
+  getCurrentChange() {
+    return this.__undoStack[this.__undoStack.length - 1];
   }
 
   updateChange(updateData) {
-    if(this.__undoStack.length > 0) {
+    if (this.__undoStack.length > 0) {
       const change = this.getCurrentChange();
       change.update(updateData);
-      this.changeUpdated.emit(updateData)
+      this.changeUpdated.emit(updateData);
     }
   }
 
@@ -66,14 +67,12 @@ class UndoRedoManager {
   // User Synchronization
 
   constructChange(claName) {
-    return new __changeClasses[claName];
+    return new __changeClasses[claName]();
   }
 
   static registerChange(cls) {
     __changeClasses[cls.name] = cls;
   }
-
-
 }
 
 export default UndoRedoManager;
