@@ -72,16 +72,6 @@ export default class CreateCuboidTool extends CreateGeomTool {
     if(this.stage == 1){
       this.stage = 2;
       this.pt1 = pt;
-
-      // const camera = viewport.getCamera();
-      // const cameraXfo = camera.getGlobalXfo().clone();
-      // const cameraZ = camera.getGlobalXfo().ori.getZaxis();
-      // const planeZ = this.constructionPlane.ori.getZaxis();
-      // const axis = cameraZ.cross(planeZ).normalize();
-      // const quat = new Visualive.Quat();
-      // quat.setFromAxisAndAngle(axis, Math.PI * 0.5);
-      // this.constructionPlane.tr = pt;
-      // this.constructionPlane.ori = this.constructionPlane.ori.multiply(quat);
       
       const quat = new Visualive.Quat();
       quat.setFromAxisAndAngle(new Visualive.Vec3(1, 0, 0), Math.PI * 0.5);

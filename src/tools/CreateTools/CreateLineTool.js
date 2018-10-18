@@ -11,11 +11,11 @@ class CreateLineChange extends CreateGeomChange {
     this.lineGeom.setNumVertices(2)
     this.lineGeom.setNumSegments(1);
     this.lineGeom.setSegment(0, 0, 1);
-    const linesMaterial = new Visualive.Material('LabelLinesMaterial', 'LinesShader');
-    linesMaterial.getParameter('Color').setValue(new Visualive.Color(.7, .7, .7));
+    const material = new Visualive.Material('Line', 'LinesShader');
+    material.getParameter('Color').setValue(new Visualive.Color(.7, .2, .2));
     this.geomItem = new Visualive.GeomItem("Line");
     this.geomItem.setGeometry(this.lineGeom);
-    this.geomItem.setMaterial(linesMaterial);
+    this.geomItem.setMaterial(material);
 
     if(parentItem && xfo) {
       this.setParentAndXfo(parentItem, xfo);

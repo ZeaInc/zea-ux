@@ -36,6 +36,8 @@ import SelectionTool from './src/tools/SelectionTool.js';
 import CreateLineTool from './src/tools/CreateTools/CreateLineTool.js';
 import CreateSphereTool from './src/tools/CreateTools/CreateSphereTool.js';
 import CreateCuboidTool from './src/tools/CreateTools/CreateCuboidTool.js';
+import CreateFreehandLineTool from './src/tools/CreateTools/CreateFreehandLineTool.js';
+
 
 export {
   getRequest,
@@ -71,5 +73,6 @@ export {
   SelectionTool,
   CreateLineTool,
   CreateSphereTool,
-  CreateCuboidTool
+  CreateCuboidTool,
+  CreateFreehandLineTool
 };

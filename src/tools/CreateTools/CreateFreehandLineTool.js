@@ -4,50 +4,54 @@ import {
 } from './CreateGeomTool.js';
 
 class CreateFreehandLineChange extends CreateGeomChange {
-  constructor(parentItem, xfo, thickness, color) {
+  constructor(parentItem, xfo, color, thickness) {
     super("Create Freehand Line");
 
-    ///////////////
-    //
+    this.used = 0;
+    this.vertexCount = 100;
 
-    this.__used = 0;
-    this.__vertexCount = 100;
+    this.line = new Visualive.Lines();
+    this.line.setNumVertices(this.vertexCount);
+    this.line.setNumSegments(this.vertexCount - 1);
+    this.line.vertices.setValue(0, new Visualive.Vec3());
 
-    this.line = new Lines();
-    this.line.setNumVertices(this.__vertexCount);
-    this.line.setNumSegments(this.__vertexCount - 1);
-    this.line.vertices.setValue(used, xfo.tr);
+    const material = new Visualive.Material('freeHandLine', 'LinesShader');
+    // const material = new Visualive.Material('freeHandLine', 'FatLinesShader');
 
-    this.line.lineThickness = thickness;
-    this.line.addVertexAttribute('lineThickness', Visualive.Float32, 0.0);
+    this.geomItem = new Visualive.GeomItem("freeHandLine");
+    this.geomItem.setGeometry(this.line);
+    this.geomItem.setMaterial(material);
 
-    const material = new Visualive.Material('stroke', 'FatLinesShader');
+    if(color) {
+      material.getParameter('Color').setValue(color);
+    }
 
-    this.geomItem = new GeomItem(id, this.line, material);
+    // if(thickness) {
+    //   this.line.lineThickness = thickness;
+    //   this.line.addVertexAttribute('lineThickness', Visualive.Float32, 0.0);
+    // }
 
-
-    if(parentItem && xfo && thickness && color) {
-      this.geomItem.setGlobalXfo(this.xfo);
-      material.getParameter('Color').setValue(this.color);
-      this.redo();
+    if(parentItem && xfo) {
+      this.setParentAndXfo(parentItem, xfo);
     }
   }
 
   update(updateData) {
+    console.log("update:", this.used)
 
-    this.__used++;
+    this.used++;
 
     let realloc = false;
-    if (this.__used >= this.line.getNumSegments()) {
-        stroke.vertexCount = stroke.vertexCount + 100;
-        this.line.setNumVertices(stroke.vertexCount);
-        this.line.setNumSegments(stroke.vertexCount - 1);
+    if (this.used >= this.line.getNumSegments()) {
+        this.vertexCount = this.vertexCount + 100;
+        this.line.setNumVertices(this.vertexCount);
+        this.line.setNumSegments(this.vertexCount - 1);
         realloc = true;
     }
 
-    this.line.vertices.setValue(this.__used, updateData.point);
-    this.line.getVertexAttributes().lineThickness.setValue(this.__used, updateData.lineThickness);
-    this.line.setSegment(this.__used - 1, this.__used - 1, this.__used);
+    this.line.vertices.setValue(this.used, updateData.point);
+    // this.line.getVertexAttributes().lineThickness.setValue(this.used, updateData.lineThickness);
+    this.line.setSegment(this.used - 1, this.used - 1, this.used);
 
     if (realloc) {
         this.line.geomDataTopologyChanged.emit({
@@ -66,26 +70,27 @@ export default class CreateFreehandLineTool extends CreateGeomTool {
   constructor(undoRedoManager) {
     super(undoRedoManager);
 
-    this.cp = this.addParameter(new Visualive.ColorParameter('Line Color', new Visualive.Color(1, 0, 0, 1)));
+    this.cp = this.addParameter(new Visualive.ColorParameter('Line Color', new Visualive.Color(.7, .2, .2)));
     this.tp = this.addParameter(new Visualive.NumberParameter('Line Thickness', 0.01, [0, 0.1])); // 1cm.
     this.mp = this.addParameter(new Visualive.BooleanParameter('Modulate Thickness By Stroke Speed', false));
   }
 
-  createStart(xfo) {
-    this.xfo = new Visualive.Xfo(xfo.tr);
+  createStart(xfo, parentItem) {
+
     const color = this.cp.getValue();
     const lineThickness = this.tp.getValue();
-    const scene = viewport.getRenderer().getScene();
-    const change = new CreateFreehandLineChange(scene.getRoot(), this.xfo, color, lineThickness);
+    const change = new CreateFreehandLineChange(parentItem, xfo, color, lineThickness);
     this.undoRedoManager.addChange(change);
 
+    this.xfo = xfo;
+    this.invxfo = xfo.inverse();
     this.stage = 1;
     this.prevP = xfo.tr;
     this.length = 0;
   }
 
   createMove(pt) {
-    const p = pt.subtract(this.xfo.tr);
+    const p = this.invxfo.transformVec3(pt);
     const vel = p.subtract(this.prevP).length();
 
     this.undoRedoManager.updateChange({ point: p });
