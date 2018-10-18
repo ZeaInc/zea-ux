@@ -1,4 +1,4 @@
-import * as Visualive from '@visualive/engine';
+// import * as Visualive from '@visualive/engine';
 
 export default class Avatar {
 
