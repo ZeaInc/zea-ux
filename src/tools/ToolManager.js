@@ -6,6 +6,12 @@ export default class ToolManager {
   }
 
   pushTool(tool){
+    const currTool = this.currTool();
+    if(tool == currTool) {
+      console.warn("Tool Already Pushed onthe stack:", tool.constructor.name);
+      return;
+    }
+
     this.__toolStack.push(tool);
     tool.activateTool(this.renderer);
 
@@ -90,7 +96,7 @@ export default class ToolManager {
   onKeyPressed(key, event, viewport) {
     const tool = this.currTool();
     if(tool)
-      tool.onKeyPressed(event, mousePos, viewport)
+      tool.onKeyPressed(event, event, viewport)
   }
 
   onKeyDown(key, event, viewport) {

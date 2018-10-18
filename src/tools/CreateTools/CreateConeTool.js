@@ -5,7 +5,7 @@ import {
 
 class CreateConeChange extends CreateGeomChange {
   constructor(parentItem, xfo) {
-    super("Create Cone", parentItem);
+    super("Create Cone");
 
     const cone = new Visualive.Cone(0.0, 0.0);
     const material = new Visualive.Material("Sphere");
@@ -14,8 +14,7 @@ class CreateConeChange extends CreateGeomChange {
     this.geomItem.setMaterial(material);
 
     if(parentItem && xfo) {
-      this.geomItem.setGlobalXfo(this.xfo);
-      this.redo();
+      this.setParentAndXfo(parentItem, xfo);
     }
   }
 
@@ -61,7 +60,7 @@ export default class CreateConeTool extends CreateGeomTool {
 
   createRelease(pt) {
     if (this._radius == 0 || this._height == 0) {
-      this.undoRedoManager.undo();
+      this.undoRedoManager.undo(false);
       this.stage = 0;
     }
     if(this.stage == 1)

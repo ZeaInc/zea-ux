@@ -96,7 +96,7 @@ export default class CreateFreehandLineTool extends CreateGeomTool {
 
   createRelease(pt) {
     if (this.length == 0) {
-      this.undoRedoManager.undo();
+      this.undoRedoManager.undo(false);
     }
     this.stage = 0;
   }

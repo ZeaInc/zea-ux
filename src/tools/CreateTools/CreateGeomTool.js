@@ -3,9 +3,18 @@ import BaseCreateTool from '../BaseCreateTool.js';
 import Change from '../../undoredo/Change.js';
 
 class CreateGeomChange extends Change {
-  constructor(name, parentItem) {
+  constructor(name) {
     super(name);
+  }
+
+  setParentAndXfo(parentItem, xfo) {
     this.parentItem = parentItem;
+    this.geomItem.setGlobalXfo(xfo);
+    const name = this.parentItem.generateUniqueName(this.geomItem.getName());
+    this.geomItem.setName(name)
+    this.childIndex = this.parentItem.addChild(this.geomItem)
+
+    this.geomItem.addRef(this);// keep a ref to stop it being destroyed
   }
 
   update(updateData) {
@@ -13,23 +22,28 @@ class CreateGeomChange extends Change {
   }
 
   undo() {
-    this.parentItem.removeChild(this.__geomItem, false)
+    this.parentItem.removeChild(this.childIndex)
   }
 
   redo() {
-    this.parentItem.addChild(this.__geomItem, false)
+    this.parentItem.addChild(this.geomItem, false, false)
   }
-
 
   toJSON() {
     const j = super.toJSON();
-    if (this.parentItem) 
-      j.parentItemPath = this.parentItem.getPath();
+    j.parentItemPath = this.parentItem.getPath();
+    j.geomItemName = this.geomItem.getName();
+    j.geomItemXfo = this.geomItem.getParameter('LocalXfo').getValue();
     return j;
   }
 
   fromJSON(j, root) {
     this.parentItem = root.resolvePath(j.parentItemPath);
+    this.geomItem.setName(j.geomItemName);
+    const xfo = new Visualive.Xfo();
+    xfo.fromJSON(j.geomItemXfo)
+    this.geomItem.setLocalXfo(xfo);
+    this.childIndex = this.parentItem.addChild(this.geomItem)
     this.changeFromJSON(j);
   }
 
@@ -39,6 +53,10 @@ class CreateGeomChange extends Change {
   //   else
   //     this.__newValue = j.value;
   // }
+
+  destroy() {
+    this.geomItem.removeRef(this);// remove the tmp ref.
+  }
 }
 
 class CreateGeomTool extends BaseCreateTool {
@@ -46,6 +64,27 @@ class CreateGeomTool extends BaseCreateTool {
     super(undoRedoManager);
 
     this.stage = 0;
+  }
+
+  screenPosToXfo(screenPos, viewport) {
+    // 
+
+    const ray = viewport.calcRayFromScreenPos(screenPos);
+
+    // Raycast any working planes.
+    const planeRay = new Visualive.Ray(this.constructionPlane.tr, this.constructionPlane.ori.getZaxis());
+    const dist = ray.intersectRayPlane(planeRay);
+    if(dist > 0.0) {
+      const xfo = this.constructionPlane.clone();
+      xfo.tr = ray.pointAtDist(dist);
+      return xfo;
+    }
+
+    // else project based on focal dist.
+    const camera = viewport.getCamera();
+    const xfo = camera.getGlobalXfo().clone();
+    xfo.tr = ray.pointAtDist(camera.getFocalDistance());
+    return xfo;
   }
 
   createStart(xfo) {
@@ -67,30 +106,30 @@ class CreateGeomTool extends BaseCreateTool {
   onMouseDown(event, mousePos, viewport) {
     // 
     if(this.stage == 0) {
-      this.xfo = this.screenPosToXfo(mousePos, viewport);
-      this.constructionPlane = new Visualive.Ray(this.xfo.tr, this.xfo.ori.getZaxis());
-
       const scene = viewport.getRenderer().getScene();
+      this.constructionPlane = new Visualive.Xfo();
+
+      this.xfo = this.screenPosToXfo(mousePos, viewport);
+
       this.createStart(this.xfo, scene.getRoot())
     }
     else if(event.button == 2) {
-      this.undoRedoManager.undo();
+      this.undoRedoManager.undo(false);
       this.stage = 0;
     }
   }
 
   onMouseMove(event, mousePos, viewport) {
     if(this.stage > 0) {
-      const ray = viewport.calcRayFromScreenPos(mousePos);
-      const dist = ray.intersectRayPlane(this.constructionPlane);
-
-      this.createMove(ray.pointAtDist(dist))
+      const xfo = this.screenPosToXfo(mousePos, viewport);
+      this.createMove(xfo.tr)
     }
   }
 
   onMouseUp(event, mousePos, viewport) {
     if(this.stage > 0) {
-      this.createRelease();
+      const xfo = this.screenPosToXfo(mousePos, viewport);
+      this.createRelease(xfo.tr, viewport);
     }
   }
 

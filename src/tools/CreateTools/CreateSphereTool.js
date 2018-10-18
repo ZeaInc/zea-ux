@@ -14,10 +14,7 @@ class CreateSphereChange extends CreateGeomChange {
     this.geomItem.setMaterial(material);
 
     if(parentItem && xfo) {
-      this.geomItem.setGlobalXfo(xfo);
-      const name = this.parentItem.generateUniqueName(this.geomItem.getName());
-      this.geomItem.setName(name)
-      this.parentItem.addChild(this.geomItem)
+      this.setParentAndXfo(parentItem, xfo);
     }
   }
 
@@ -58,7 +55,7 @@ export default class CreateSphereTool extends CreateGeomTool {
 
   createRelease(pt) {
     if (this.radius == 0) {
-      this.undoRedoManager.undo();
+      this.undoRedoManager.undo(false);
     }
     this.stage = 0;
   }

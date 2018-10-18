@@ -5,7 +5,7 @@ import {
 
 class CreateLineChange extends CreateGeomChange {
   constructor(parentItem, xfo) {
-    super("Create Line", parentItem);
+    super("Create Line");
 
     this.lineGeom = new Visualive.Lines(0.0);
     this.lineGeom.setNumVertices(2)
@@ -18,10 +18,7 @@ class CreateLineChange extends CreateGeomChange {
     this.geomItem.setMaterial(linesMaterial);
 
     if(parentItem && xfo) {
-      this.geomItem.setGlobalXfo(xfo);
-      const name = this.parentItem.generateUniqueName(this.geomItem.getName());
-      this.geomItem.setName(name)
-      this.parentItem.addChild(this.geomItem);
+      this.setParentAndXfo(parentItem, xfo);
     }
   }
 
@@ -53,7 +50,7 @@ export default class CreateLineTool extends CreateGeomTool {
 
   createRelease(pt) {
     if (this.length == 0) {
-      this.undoRedoManager.undo();
+      this.undoRedoManager.undo(false);
     }
     this.stage = 0;
   }

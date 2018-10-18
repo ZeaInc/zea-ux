@@ -16,23 +16,6 @@ export default class BaseTool extends Visualive.ParameterOwner {
   /////////////////////////////////////
   // Mouse events
 
-  screenPosToXfo(screenPos, viewport) {
-    // 
-
-    const camera = viewport.getCamera();
-
-    const ray = viewport.calcRayFromScreenPos(screenPos);
-
-    // Raycast any working planes.
-
-
-    // else project based on focal dist.
-    const xfo = camera.getGlobalXfo().clone();
-    xfo.tr = ray.pointAtDist(camera.getFocalDistance());
-    return xfo;
-  }
-
-
   onMouseDown(event, mousePos, viewport) {}
 
   onMouseMove(event, mousePos, viewport) {}

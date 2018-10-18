@@ -8,6 +8,7 @@ export default class Change {
 
 	redo() {}
 
+
   update(updateData) {}
 
 	toJSON() { 
@@ -25,5 +26,8 @@ export default class Change {
     // Many change objects can load json directly
     // in the update method.
     this.update(j);
+  }
+  
+  destroy() {
   }
 }
