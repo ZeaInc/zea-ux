@@ -1,3 +1,4 @@
+import * as Visualive from '@visualive/engine';
 
 import Change from './undoredo/Change.js';
 
@@ -59,8 +60,8 @@ class SelectionManager {
   toggleItemSelection(treeItem, replaceSelection = true) {
     const prevSelection = new Set(this.__selection);
 
-    // Avoid clearing the selection when we have the 
-    // item already selected and are deselecting it. 
+    // Avoid clearing the selection when we have the
+    // item already selected and are deselecting it.
     // (to clear all selection)
     if (replaceSelection && !(this.__selection.size == 1 && this.__selection.has(treeItem))) {
 
