@@ -5,7 +5,8 @@
   "keywords": [],
   "main": "./dist/visualive-ux.js",
   "scripts": {
-    "build": "webpack"
+    "build": "webpack",
+    "build:dev": "webpack --watch"
   },
   "repository": {
     "type": "git",
