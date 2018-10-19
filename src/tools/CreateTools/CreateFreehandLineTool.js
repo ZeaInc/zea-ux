@@ -15,8 +15,10 @@ class CreateFreehandLineChange extends CreateGeomChange {
     this.line.setNumSegments(this.vertexCount - 1);
     this.line.vertices.setValue(0, new Visualive.Vec3());
 
-    const material = new Visualive.Material('freeHandLine', 'LinesShader');
-    // const material = new Visualive.Material('freeHandLine', 'FatLinesShader');
+    // const material = new Visualive.Material('freeHandLine', 'LinesShader');
+    this.line.lineThickness = 0.05;
+    // const material = new Visualive.Material('circle', 'LinesShader');
+    const material = new Visualive.Material('freeHandLine', 'FatLinesShader');
 
     this.geomItem = new Visualive.GeomItem("freeHandLine");
     this.geomItem.setGeometry(this.line);
@@ -26,10 +28,10 @@ class CreateFreehandLineChange extends CreateGeomChange {
       material.getParameter('Color').setValue(color);
     }
 
-    // if(thickness) {
-    //   this.line.lineThickness = thickness;
-    //   this.line.addVertexAttribute('lineThickness', Visualive.Float32, 0.0);
-    // }
+    if(thickness) {
+      this.line.lineThickness = thickness;
+      // this.line.addVertexAttribute('lineThickness', Visualive.Float32, 0.0);
+    }
 
     if(parentItem && xfo) {
       this.setParentAndXfo(parentItem, xfo);

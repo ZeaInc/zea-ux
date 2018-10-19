@@ -1,16 +1,20 @@
+
 import {
   CreateGeomChange,
   CreateGeomTool
 } from './CreateGeomTool.js';
 
-class CreateCuboidChange extends CreateGeomChange {
+class CreateRectChange extends CreateGeomChange {
   constructor(parentItem, xfo) {
-    super("Create Cuboid");
+    super("Create Rect");
 
-    this.cuboid = new Visualive.Cuboid(0, 0, 0, true);
-    const material = new Visualive.Material('Cuboid', 'SimpleSurfaceShader');
-    this.geomItem = new Visualive.GeomItem("Cuboid");
-    this.geomItem.setGeometry(this.cuboid);
+    this.rect = new Visualive.Rect(0, 0);
+    this.rect.lineThickness = 0.05;
+    // const material = new Visualive.Material('rect', 'LinesShader');
+    const material = new Visualive.Material('circle', 'FatLinesShader');
+    material.getParameter('Color').setValue(new Visualive.Color(.7, .2, .2));
+    this.geomItem = new Visualive.GeomItem("Rect");
+    this.geomItem.setGeometry(this.rect);
     this.geomItem.setMaterial(material);
 
     if(parentItem && xfo) {
@@ -20,40 +24,39 @@ class CreateCuboidChange extends CreateGeomChange {
 
   update(updateData) {
     if(updateData.baseSize){
-      this.cuboid.setBaseSize(updateData.baseSize[0], updateData.baseSize[1]);
+      this.rect.setSize(updateData.baseSize[0], updateData.baseSize[1]);
     }
     if(updateData.tr){
       const xfo = this.geomItem.getParameter('LocalXfo').getValue();
       xfo.tr.fromJSON(updateData.tr);
       this.geomItem.getParameter('LocalXfo').setValue(xfo);
     }
-    if(updateData.height) {
-      this.cuboid.z = updateData.height;
-    }
   }
 }
 
 
-export default class CreateCuboidTool extends CreateGeomTool {
+export default class CreateRectTool extends CreateGeomTool {
   constructor(undoRedoManager) {
     super(undoRedoManager);
-    console.log("Create Cuboid");
+    console.log("Create Rect");
   }
 
   createStart(xfo, parentItem) {
 
-    const change = new CreateCuboidChange(parentItem, xfo);
+    const change = new CreateRectChange(parentItem, xfo);
     this.undoRedoManager.addChange(change);
 
     this.xfo = xfo;
     this.invxfo = xfo.inverse();
     this.stage = 1;
-    this._height = 0.0;
+    this._size = 0.0;
   }
 
   createMove(pt) {
     if(this.stage == 1) {
       const delta = this.invxfo.transformVec3(pt);
+
+      this._size = Math.abs(delta.x), Math.abs(delta.y);
 
       // const delta = pt.subtract(this.xfo.tr)
       this.undoRedoManager.updateChange({ 
@@ -68,20 +71,10 @@ export default class CreateCuboidTool extends CreateGeomTool {
   }
 
   createRelease(pt, viewport) {
-
-    if(this.stage == 1){
-      this.stage = 2;
-      this.pt1 = pt;
-      
-      const quat = new Visualive.Quat();
-      quat.setFromAxisAndAngle(new Visualive.Vec3(1, 0, 0), Math.PI * 0.5);
-      this.constructionPlane.ori = this.constructionPlane.ori.multiply(quat);
-      this.constructionPlane.tr = pt;
-      this.invxfo = this.constructionPlane.inverse();
-
+    if (this._size == 0) {
+      this.undoRedoManager.undo(false);
     }
-    else if(this.stage == 2)
-      this.stage = 0;
+    this.stage = 0;
   }
 
 }

@@ -33,9 +33,12 @@ import ToolManager from './tools/ToolManager.js';
 import ViewTool from './tools/ViewTool.js';
 import SelectionTool from './tools/SelectionTool.js';
 import CreateLineTool from './tools/CreateTools/CreateLineTool.js';
+import CreateCircleTool from './tools/CreateTools/CreateCircleTool.js';
+import CreateRectTool from './tools/CreateTools/CreateRectTool.js';
+import CreateFreehandLineTool from './tools/CreateTools/CreateFreehandLineTool.js';
+
 import CreateSphereTool from './tools/CreateTools/CreateSphereTool.js';
 import CreateCuboidTool from './tools/CreateTools/CreateCuboidTool.js';
-import CreateFreehandLineTool from './tools/CreateTools/CreateFreehandLineTool.js';
 
 export {
   getCurrentUser,
@@ -71,6 +74,9 @@ export {
   ViewTool,
   SelectionTool,
   CreateLineTool,
+  CreateCircleTool,
+  CreateRectTool,
+
   CreateSphereTool,
   CreateCuboidTool,
   CreateFreehandLineTool
