@@ -4,8 +4,10 @@ class TopMenuBar {
     this.actionRegistry = actionRegistry;
     this.domElement = domElement;
     this.__existingItems = {};
+    this.__hotkeysToActions = {};
 
     this._buildTopBar();
+    this._addKeyListener();
   }
 
   _buildTopBar() {
@@ -43,28 +45,48 @@ class TopMenuBar {
     this._addSpanTo(a, 'ActionTitle', action.name);
     this._addSpanTo(a, 'ActionShortcut', this._keyComboAsText(action));
 
-    if(action.key)
-      this._addKeyListener(action);
-  }
-
-  _addKeyListener(action) {
-    document.addEventListener('keydown', e => {
+    if(action.key || action.metaKeys) {
       const metaKeys = action.metaKeys || {};
-
-      const keyComboExpected =
+      const keyComboExpected = (
         this._comboFragment(metaKeys.alt, 'A') +
         this._comboFragment(metaKeys.control, 'C') +
         this._comboFragment(metaKeys.shift, 'S') +
-        action.key;
+        (action.key || '')).toLowerCase();
+      this.__hotkeysToActions[keyComboExpected] = action;
+    }
+  }
 
-      const keyComboPressed =
+  _addKeyListener() {
+    let keyComboPressed;
+    
+    document.addEventListener('keypress', e => {
+      console.log("keypress")
+    });
+    document.addEventListener('keydown', e => {
+      if(keyComboPressed)
+        return;
+      let keys = (
         this._comboFragment(e.altKey, 'A') +
         this._comboFragment(e.metaKey || e.ctrlKey, 'C') +
         this._comboFragment(e.shiftKey, 'S') +
-        e.key;
-
-      if (keyComboExpected.toLowerCase() === keyComboPressed.toLowerCase()) {
-        this._invokeCallback(action.callback, e);
+        (((e.key != 'Alt') && (e.key != 'Ctrl')) ? e.key : '')).toLowerCase();
+      if(keys in this.__hotkeysToActions){
+        const action = this.__hotkeysToActions[keys];
+        action.callback(event);
+        keyComboPressed = keys;
+        event.preventDefault();
+      }
+    });
+    document.addEventListener('keyup', e => {
+      if(!keyComboPressed)
+        return;
+      if(keyComboPressed in this.__hotkeysToActions){
+        const action = this.__hotkeysToActions[keyComboPressed];
+        if(action.hotkeyReleaseCallback){
+          action.hotkeyReleaseCallback(event);
+          event.preventDefault();
+        }
+        keyComboPressed = undefined;
       }
     });
   }
@@ -127,7 +149,7 @@ class TopMenuBar {
 
   _keyComboAsText(action) {
     const { metaKeys, key } = action;
-    if (!key) {
+    if (!key && !metaKeys) {
       return '';
     }
     if(metaKeys){

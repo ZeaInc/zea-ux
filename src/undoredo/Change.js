@@ -1,4 +1,5 @@
-class Change {
+
+export default class Change {
 	constructor(name) {
 		this.name = name ? name : this.constructor.name;
 	}
@@ -6,6 +7,7 @@ class Change {
 	undo() {}
 
 	redo() {}
+
 
   update(updateData) {}
 
@@ -25,6 +27,7 @@ class Change {
     // in the update method.
     this.update(j);
   }
+  
+  destroy() {
+  }
 }
-
-export default Change;

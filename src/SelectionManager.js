@@ -215,6 +215,9 @@ class SelectionManager {
     this.selectionChanged.emit(this.__selection);
   }
 
+  getSelection(){
+    return this.__selection
+  }
 
   setSelection(selection) {
     for (let treeItem of selection){

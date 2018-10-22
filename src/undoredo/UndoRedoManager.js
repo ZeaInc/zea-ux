@@ -13,8 +13,19 @@ class UndoRedoManager {
     this.changeRedone = new Visualive.Signal();
   }
 
+  flush(){
+    for(let change of this.__undoStack)
+      change.destroy()
+    this.__undoStack = [];
+    for(let change of this.__redoStack)
+      change.destroy()
+    this.__redoStack = [];
+  }
+
   addChange(change) {
     this.__undoStack.push(change);
+    for(let change of this.__redoStack)
+      change.destroy()
     this.__redoStack = [];
 
     this.changeAdded.emit(change);
@@ -32,12 +43,14 @@ class UndoRedoManager {
     }
   }
 
-  undo() {
+  undo(pushOnRedoStack=true) {
     if (this.__undoStack.length > 0) {
       const change = this.__undoStack.pop();
       change.undo();
-      this.__redoStack.push(change);
-      this.changeUndone.emit();
+      if(pushOnRedoStack) {
+        this.__redoStack.push(change);
+        this.changeUndone.emit();
+      }
     }
   }
 

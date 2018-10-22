@@ -1,5 +1,4 @@
 import {
-  getRequest,
   getCurrentUser,
   getProjectData,
   getProjectResourcesRecursive,
@@ -30,12 +29,23 @@ import Vec2Widget from './ui/parameter-widgets/Vec2Widget.js';
 import Vec3Widget from './ui/parameter-widgets/Vec3Widget.js';
 import Vec4Widget from './ui/parameter-widgets/Vec4Widget.js';
 
+import ToolManager from './tools/ToolManager.js';
+import ViewTool from './tools/ViewTool.js';
+import SelectionTool from './tools/SelectionTool.js';
+import CreateLineTool from './tools/CreateTools/CreateLineTool.js';
+import CreateCircleTool from './tools/CreateTools/CreateCircleTool.js';
+import CreateRectTool from './tools/CreateTools/CreateRectTool.js';
+import CreateFreehandLineTool from './tools/CreateTools/CreateFreehandLineTool.js';
+
+import CreateSphereTool from './tools/CreateTools/CreateSphereTool.js';
+import CreateCuboidTool from './tools/CreateTools/CreateCuboidTool.js';
+
 export {
-  getRequest,
   getCurrentUser,
   getProjectData,
   getProjectResourcesRecursive,
   getParameterFromUrl,
+  
   UndoRedoManager,
   ActionRegistry,
   SelectionManager,
@@ -58,4 +68,16 @@ export {
   Vec2Widget,
   Vec3Widget,
   Vec4Widget,
+
+
+  ToolManager,
+  ViewTool,
+  SelectionTool,
+  CreateLineTool,
+  CreateCircleTool,
+  CreateRectTool,
+
+  CreateSphereTool,
+  CreateCuboidTool,
+  CreateFreehandLineTool
 };
