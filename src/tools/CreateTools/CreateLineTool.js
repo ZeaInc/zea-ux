@@ -1,3 +1,4 @@
+import UndoRedoManager from '../../undoredo/UndoRedoManager.js';
 import {
   CreateGeomChange,
   CreateGeomTool
@@ -23,10 +24,13 @@ class CreateLineChange extends CreateGeomChange {
   }
 
   update(updateData) {
-    this.lineGeom.getVertex(1).setFromOther(updateData.p1)
-    this.lineGeom.geomDataChanged.emit();
+    if(updateData.p1) {
+      this.lineGeom.getVertex(1).setFromOther(updateData.p1)
+      this.lineGeom.geomDataChanged.emit();
+    }
   }
 }
+UndoRedoManager.registerChange(CreateLineChange)
 
 export default class CreateLineTool extends CreateGeomTool {
   constructor(undoRedoManager) {

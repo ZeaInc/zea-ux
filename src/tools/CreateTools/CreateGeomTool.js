@@ -43,8 +43,7 @@ class CreateGeomChange extends Change {
     const xfo = new Visualive.Xfo();
     xfo.fromJSON(j.geomItemXfo)
     this.geomItem.setLocalXfo(xfo);
-    this.childIndex = this.parentItem.addChild(this.geomItem)
-    this.changeFromJSON(j);
+    this.childIndex = this.parentItem.addChild(this.geomItem);
   }
 
   // changeFromJSON(j) {

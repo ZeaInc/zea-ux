@@ -1,3 +1,4 @@
+import UndoRedoManager from '../../undoredo/UndoRedoManager.js';
 import {
   CreateGeomChange,
   CreateGeomTool
@@ -39,7 +40,7 @@ class CreateFreehandLineChange extends CreateGeomChange {
   }
 
   update(updateData) {
-    console.log("update:", this.used)
+    // console.log("update:", this.used)
 
     this.used++;
 
@@ -67,6 +68,7 @@ class CreateFreehandLineChange extends CreateGeomChange {
 
   }
 }
+UndoRedoManager.registerChange(CreateFreehandLineChange)
 
 export default class CreateFreehandLineTool extends CreateGeomTool {
   constructor(undoRedoManager) {

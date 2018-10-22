@@ -1,3 +1,4 @@
+import UndoRedoManager from '../../undoredo/UndoRedoManager.js';
 import {
   CreateGeomChange,
   CreateGeomTool
@@ -25,6 +26,7 @@ class CreateConeChange extends CreateGeomChange {
       this.geomItem.getGeometry().setHeight(updateData.height)
   }
 }
+UndoRedoManager.registerChange(CreateConeChange)
 
 
 export default class CreateConeTool extends CreateGeomTool {

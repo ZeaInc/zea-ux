@@ -1,3 +1,4 @@
+import UndoRedoManager from '../../undoredo/UndoRedoManager.js';
 import {
   CreateGeomChange,
   CreateGeomTool
@@ -37,6 +38,7 @@ class CreateCircleChange extends CreateGeomChange {
       this.circle.getParameter("Radius").setValue(j.radius);
   }
 }
+UndoRedoManager.registerChange(CreateCircleChange)
 
 export default class CreateCircleTool extends CreateGeomTool {
   constructor(undoRedoManager) {
@@ -64,4 +66,5 @@ export default class CreateCircleTool extends CreateGeomTool {
     this.stage = 0;
   }
 }
+
 

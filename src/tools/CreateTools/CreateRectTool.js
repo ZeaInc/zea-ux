@@ -1,4 +1,4 @@
-
+import UndoRedoManager from '../../undoredo/UndoRedoManager.js';
 import {
   CreateGeomChange,
   CreateGeomTool
@@ -33,6 +33,7 @@ class CreateRectChange extends CreateGeomChange {
     }
   }
 }
+UndoRedoManager.registerChange(CreateRectChange)
 
 
 export default class CreateRectTool extends CreateGeomTool {

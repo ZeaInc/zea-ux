@@ -1,3 +1,4 @@
+import UndoRedoManager from '../../undoredo/UndoRedoManager.js';
 import {
   CreateGeomChange,
   CreateGeomTool
@@ -33,6 +34,7 @@ class CreateSphereChange extends CreateGeomChange {
       this.geomItem.getGeometry().radius =j.radius;
   }
 }
+UndoRedoManager.registerChange(CreateSphereChange)
 
 export default class CreateSphereTool extends CreateGeomTool {
   constructor(undoRedoManager) {

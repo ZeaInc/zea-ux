@@ -1,4 +1,4 @@
-
+import UndoRedoManager from '../undoredo/UndoRedoManager.js';
 import  BaseTool from './BaseTool.js';
 
 export default class SelectionTool extends BaseTool {
@@ -49,3 +49,7 @@ export default class SelectionTool extends BaseTool {
   }
 
 };
+
+
+
+UndoRedoManager.registerChange(SelectionTool)
