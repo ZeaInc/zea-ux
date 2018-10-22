@@ -85,7 +85,7 @@ export default class CollabPanel {
     );
 
     const userChipsElements = {};
-    const addUser = userData => {
+    const addUserChip = userData => {
       const p = document.createElement('p');
       p.innerHTML = `<strong>(${userData.name} has joined)</strong>`;
       $receivedMessages.appendChild(p);
@@ -97,6 +97,7 @@ export default class CollabPanel {
 
       userChipsElements[userData.id] = li;
     };
+
     const removeUser = userData => {
       const p = document.createElement('p');
       p.innerHTML = `<strong>(${userData.name} has left)</strong>`;
@@ -105,8 +106,9 @@ export default class CollabPanel {
 
       $userChips.removeChild(userChipsElements[userData.id]);
     };
+
     visualiveSession.sub(VisualiveSession.actions.USER_JOINED, userData => {
-      addUser(userData);
+      addUserChip(userData);
     });
 
     visualiveSession.sub(
@@ -118,7 +120,7 @@ export default class CollabPanel {
 
     const users = visualiveSession.getUsers();
     for (let id in users) {
-      addUser(users[id]);
+      addUserChip(users[id]);
     }
   }
 
