@@ -63,6 +63,43 @@ class CreateGeomTool extends BaseCreateTool {
     super(undoRedoManager);
 
     this.stage = 0;
+
+  }
+
+  activateTool(renderer) {
+
+    renderer.getDiv().style.cursor = "crosshair";
+
+    const vrviewport = renderer.getVRViewport();
+    if (vrviewport) {
+      if(this.vrControllerToolTip) {
+        this.vrControllerToolTip = new Cross(0.05);
+        this.vrControllerToolTipMat = new Material('VRController Cross', 'LinesShader');
+        this.vrControllerToolTipMat.getParameter('BaseColor').setValue(this.cp.getValue());
+      }
+      const addIconToController = (id, controller) => {
+        const geomItem = new GeomItem('VRControllerTip', this.vrControllerToolTip, this.vrControllerToolTipMat);
+        controller.getTip().addChild(geomItem);
+      }
+      for(let controller of vrviewport.getControllers()) {
+        addIconToController(controller)
+      }
+      this.addIconToControllerId = vrviewport.controllerAdded.connect(addIconToController);
+    }
+
+  }
+
+  deactivateTool(renderer) {
+
+    renderer.getDiv().style.cursor = "pointer";
+
+    const vrviewport = renderer.getVRViewport();
+    if (vrviewport) {
+      for(let controller of vrviewport.getControllers()) {
+        controller.getTip().removeAllChildren();
+      }
+      vrviewport.controllerAdded.disconnectId(this.addIconToControllerId);
+    }
   }
 
   screenPosToXfo(screenPos, viewport) {

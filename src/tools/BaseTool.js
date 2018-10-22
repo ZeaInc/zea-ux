@@ -31,7 +31,7 @@ export default class BaseTool { // extends Visualive.ParameterOwner {
   /////////////////////////////////////
 
 
-  activateTool(viewport) {
+  activateTool(renderer) {
   }
 
   deactivateTool(renderer) {

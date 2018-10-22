@@ -468,7 +468,12 @@ export default class ViewTool extends BaseTool {
     }
   }
 
-  onVRControllerMove(event, viewport) {
+  onVRControllerUp(event, viewport) {
+    const index = this.__controllerTriggersHeld.indexOf(event.controller);
+    this.__controllerTriggersHeld.splice(index, 1);
+  }
+
+  onVRControllersMove(event, viewport) {
 
     const vrpose = viewport.getCamera();
 
@@ -539,11 +544,5 @@ export default class ViewTool extends BaseTool {
     }
 
   }
-
-  onVRControllerUp(event, viewport) {
-    const index = this.__controllerTriggersHeld.indexOf(event.controller);
-    this.__controllerTriggersHeld.splice(index, 1);
-  }
-
 
 };
