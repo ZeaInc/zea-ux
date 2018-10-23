@@ -50,6 +50,9 @@ import CreateCuboidTool from './tools/CreateTools/CreateCuboidTool.js';
 //////////////////////////////////////
 // Gizmos
 import GizmoTool from './tools/GizmoTool.js';
+import LinearMovementGizmo from './gizmos/LinearMovementGizmo.js';
+import PlanarMovementGizmo from './gizmos/PlanarMovementGizmo.js';
+import AxialRotationGizmo from './gizmos/AxialRotationGizmo.js';
 
 
 export {
@@ -99,4 +102,8 @@ export {
   CreateCuboidTool,
 
   // Gizmos
+  GizmoTool,
+  LinearMovementGizmo,
+  PlanarMovementGizmo,
+  AxialRotationGizmo
 };

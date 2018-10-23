@@ -16,6 +16,7 @@ export default class SelectionTool extends BaseTool {
   onMouseDown(event, mousePos, viewport) {
     this.mouseDownPos = mousePos;
     this.dragging = false;
+    return true;
   }
 
   onMouseMove(event, mousePos, viewport) {
@@ -24,6 +25,7 @@ export default class SelectionTool extends BaseTool {
 
       // Start drawing the selection rectangle on screen.
     }
+    return true;
   }
 
   onMouseUp(event, mousePos, viewport) {
@@ -43,9 +45,13 @@ export default class SelectionTool extends BaseTool {
       if (intersectionData != undefined) {
         this.appData.selectionManager.toggleItemSelection(intersectionData.geomItem, !event.ctrlKey);
       }
+      else {
+        this.appData.selectionManager.clearSelection();
+      }
     }
 
     this.mouseDownPos = undefined;
+    return true;
   }
 
 };
