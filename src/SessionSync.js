@@ -77,7 +77,23 @@ export default class SessionSync {
     // const myAvatar = new Avatar(appData.scene, appData.scene.getRoot(), { userId });
 
     appData.renderer.viewChanged.connect((data) => {
+
+      const controllers = data.controllers;
+      if(controllers)
+        delete data.controllers;
+
       const j = convertValuesToJSON(data);
+
+      if(controllers){
+        const controllerXfos = [];
+        for (let controller of data.controllers) {
+          controllerXfos.push({
+              xfo: controller.getTreeItem().getGlobalXfo().toJSON()
+          });
+        }
+        j.controllers = controllerXfos;
+      }
+
       visualiveSession.pub(VisualiveSession.actions.POSE_CHANGED, j);
 
       // const data2 = convertValuesFromJSON(j);

@@ -69,10 +69,10 @@ export default class BaseTool { // extends Visualive.ParameterOwner {
 
   /////////////////////////////////////
   // VRController events
-  onVRControllerDown(event, viewport) {}
+  onVRControllerButtonDown(event, viewport) {}
 
-  onVRControllerMove(event, viewport) {}
+  onVRControllerButtonUp(event, viewport) {}
 
-  onVRControllerUp(event, viewport) {}
+  onVRPoseChanged(event, viewport) {}
 
 };

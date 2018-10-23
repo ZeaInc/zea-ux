@@ -47,7 +47,7 @@ class CreateLineChange extends CreateGeomChange {
       material.getParameter('Color').setValue(color);
     }
 
-    if (.jthickness) {
+    if (j.thickness) {
       this.line.lineThickness = j.thickness;
       // this.line.addVertexAttribute('lineThickness', Visualive.Float32, 0.0);
     }

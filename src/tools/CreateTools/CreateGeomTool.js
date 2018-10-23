@@ -192,21 +192,30 @@ class CreateGeomTool extends BaseCreateTool {
   /////////////////////////////////////
   // VRController events
 
-  onVRControllerDown(event, viewport) {
-    // TODO: Snap the Xfo to any nearby construction planes.
-    this.createStart(event.xfo);
-  }
-
-  onVRControllerMove(event, mousePos, viewport) {
-    if(this.stage > 0) {
+  onVRControllerButtonDown(event, viewport) {
+    if(this.__activeController) {
       // TODO: Snap the Xfo to any nearby construction planes.
-      this.createMove(event.xfo.tr);
+      this.__activeController = event.controller;
+      const xfo = this.__activeController.getTipXfo();
+      this.createStart(xfo.tr);
     }
   }
 
-  onVRControllerUp(event, mousePos, viewport) {
+  onVRPoseChanged(event, viewport) {
+    if(this.__activeController && this.stage > 0) {
+      // TODO: Snap the Xfo to any nearby construction planes.
+      const xfo = this.__activeController.getTipXfo();
+      this.createMove(xfo.tr);
+    }
+  }
+
+  onVRControllerButtonUp(event, viewport) {
     if(this.stage > 0) {
-      this.createRelease();
+      if(this.__activeController == event.controller){
+        const xfo = this.__activeController.getTipXfo();
+        this.createRelease(xfo.tr);
+        this.__activeController =  undefined;
+      }
     }
   }
 

@@ -443,7 +443,7 @@ export default class ViewTool extends BaseTool {
   /////////////////////////////////////
   // VRController events
 
-  onVRControllerDown(event, viewport) {
+  onVRControllerButtonDown(event, viewport) {
     this.__controllerTriggersHeld.push(event.controller);
 
     const downXfo = event.xfo;
@@ -468,12 +468,12 @@ export default class ViewTool extends BaseTool {
     }
   }
 
-  onVRControllerUp(event, viewport) {
+  onVRControllerButtonUp(event, viewport) {
     const index = this.__controllerTriggersHeld.indexOf(event.controller);
     this.__controllerTriggersHeld.splice(index, 1);
   }
 
-  onVRControllersMove(event, viewport) {
+  onVRPoseChanged(event, vrviewport) {
 
     const vrpose = viewport.getCamera();
 
@@ -486,7 +486,7 @@ export default class ViewTool extends BaseTool {
       ////////////////
       // Update the stage Xfo
       const stageXfo = this.stageXfo__GrabStart.multiply(deltaXfo);
-      vrpose.setGlobalXfo(stageXfo);
+      vrviewport.setXfo(stageXfo);
     }
     else if(this.__controllerTriggersHeld == 2) {
 
@@ -540,7 +540,7 @@ export default class ViewTool extends BaseTool {
       ////////////////
       // Update the stage Xfo
       const stageXfo = this.stageXfo__GrabStart.multiply(deltaXfo);
-      vrpose.setGlobalXfo(stageXfo);
+      vrviewport.setXfo(stageXfo);
     }
 
   }

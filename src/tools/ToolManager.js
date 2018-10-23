@@ -60,9 +60,9 @@ export default class ToolManager {
       renderer.vrViewportSetup.connect(vrvp => {
         /////////////////////////////////////
         // VRController events
-        // this.controllerDownId = viewport.controllerDown.connect(this.onVRControllerDown.bind(this))
-        // this.controllerMoveId = viewport.controllerMove.connect(this.onVRControllerMove.bind(this))
-        // this.controllerUpId = viewport.controllerUp.connect(this.onVRControllerUp.bind(this))
+        this.controllerDownId = vrvp.controllerButtonDown.connect(this.onVRControllerButtonDown.bind(this))
+        this.controllerUpId = vrvp.controllerButtonDown.connect(this.onVRControllerButtonUp.bind(this))
+        this.onVRPoseChangedId = vrvp.viewChanged.connect(this.onVRPoseChanged.bind(this))
       });
     }
   }
@@ -139,23 +139,24 @@ export default class ToolManager {
 
   /////////////////////////////////////
   // VRController events
-  onVRControllerDown(event, viewport) {
+  onVRControllerButtonDown(event, viewport) {
     const tool = this.currTool();
     if(tool)
-      tool.onVRControllerDown(event, viewport)
+      tool.onVRControllerButtonDown(event, viewport)
   }
 
-  onVRControllerMove(event, viewport) {
+  onVRControllerButtonUp(event, viewport) {
     const tool = this.currTool();
     if(tool)
-      tool.onVRControllerMove(event, viewport)
+      tool.onVRControllerButtonUp(event, viewport)
   }
 
-  onVRControllerUp(event, viewport) {
+  onVRPoseChanged(event, viewport) {
     const tool = this.currTool();
     if(tool)
-      tool.onVRControllerUp(event, viewport)
+      tool.onVRPoseChanged(event, viewport)
   }
+
 
   destroy() {
     const viewport = this.renderer.getViewport();
@@ -183,8 +184,8 @@ export default class ToolManager {
         /////////////////////////////////////
         // VRController events
         viewport.controllerDown.disconnectId(this.controllerDownId)
-        viewport.controllerMove.disconnectId(this.controllerMoveId)
         viewport.controllerUp.disconnectId(this.controllerUpId)
+        viewport.viewChanged.disconnectId(this.onVRPoseChangedId)
       });
     }
 

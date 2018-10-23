@@ -2,9 +2,7 @@ import UndoRedoManager from '../../undoredo/UndoRedoManager.js';
 import {
   CreateGeomChange
 } from './CreateGeomTool.js';
-import {
-  CreateLineTool
-} from './CreateLineTool.js';
+import CreateLineTool from './CreateLineTool.js';
 
 class CreateFreehandLineChange extends CreateGeomChange {
   constructor(parentItem, xfo, color, thickness) {
@@ -77,7 +75,7 @@ class CreateFreehandLineChange extends CreateGeomChange {
       material.getParameter('Color').setValue(color);
     }
 
-    if (.jthickness) {
+    if (j.thickness) {
       this.line.lineThickness = j.thickness;
       // this.line.addVertexAttribute('lineThickness', Visualive.Float32, 0.0);
     }
@@ -85,7 +83,7 @@ class CreateFreehandLineChange extends CreateGeomChange {
 }
 UndoRedoManager.registerChange(CreateFreehandLineChange)
 
-export default class CreateFreehandLineTool extends CreateGeomTool {
+export default class CreateFreehandLineTool extends CreateLineTool {
   constructor(undoRedoManager) {
     super(undoRedoManager);
 

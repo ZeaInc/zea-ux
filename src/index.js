@@ -1,3 +1,4 @@
+
 import {
   getCurrentUser,
   getProjectData,
@@ -21,6 +22,8 @@ import InspectorContainer from './ui/InspectorContainer.js';
 
 import { UserChip, CurrentUserChip } from './ui/UserChip.js';
 
+//////////////////////////////////////
+// Parameter Widgets
 import BooleanWidget from './ui/parameter-widgets/BooleanWidget.js';
 import ColorWidget from './ui/parameter-widgets/ColorWidget.js';
 import NumberWidget from './ui/parameter-widgets/NumberWidget.js';
@@ -29,9 +32,13 @@ import Vec2Widget from './ui/parameter-widgets/Vec2Widget.js';
 import Vec3Widget from './ui/parameter-widgets/Vec3Widget.js';
 import Vec4Widget from './ui/parameter-widgets/Vec4Widget.js';
 
+//////////////////////////////////////
+// Tools
 import ToolManager from './tools/ToolManager.js';
 import ViewTool from './tools/ViewTool.js';
 import SelectionTool from './tools/SelectionTool.js';
+
+// Create Geom Tools
 import CreateLineTool from './tools/CreateTools/CreateLineTool.js';
 import CreateCircleTool from './tools/CreateTools/CreateCircleTool.js';
 import CreateRectTool from './tools/CreateTools/CreateRectTool.js';
@@ -39,6 +46,11 @@ import CreateFreehandLineTool from './tools/CreateTools/CreateFreehandLineTool.j
 
 import CreateSphereTool from './tools/CreateTools/CreateSphereTool.js';
 import CreateCuboidTool from './tools/CreateTools/CreateCuboidTool.js';
+
+//////////////////////////////////////
+// Gizmos
+import GizmoTool from './tools/GizmoTool.js';
+
 
 export {
   getCurrentUser,
@@ -61,6 +73,8 @@ export {
   InspectorContainer,
   UserChip,
   CurrentUserChip,
+
+  // Parameter Widgets
   BooleanWidget,
   ColorWidget,
   NumberWidget,
@@ -70,14 +84,19 @@ export {
   Vec4Widget,
 
 
+  // Tools
   ToolManager,
   ViewTool,
   SelectionTool,
+
+  // Create Geom Tools
   CreateLineTool,
   CreateCircleTool,
   CreateRectTool,
+  CreateFreehandLineTool,
 
   CreateSphereTool,
   CreateCuboidTool,
-  CreateFreehandLineTool
+
+  // Gizmos
 };
