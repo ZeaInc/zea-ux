@@ -9,7 +9,7 @@ const convertValuesToJSON = (value) => {
     return undefined;
   } else if (value.toJSON) {
     const result = value.toJSON();
-    result.className = value.constructor.name;
+    result.typeName = Visualive.typeRegistry.getTypeName(value);
     return result;
   } else if (Array.isArray(value)) {
     const arr = [];
@@ -29,8 +29,8 @@ const convertValuesToJSON = (value) => {
 const convertValuesFromJSON = (value) => {
   if (value == undefined) {
     return undefined;
-  } else if (value.className) {
-    const newval = Visualive.typeRegistry.getType(value.className).create();
+  } else if (value.typeName) {
+    const newval = Visualive.typeRegistry.getType(value.typeName).create();
     newval.fromJSON(value);
     return newval;
   } else if (Array.isArray(value)) {
