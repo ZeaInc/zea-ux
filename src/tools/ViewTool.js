@@ -40,7 +40,7 @@ export default class ViewTool extends BaseTool {
 
   }
 
-  deactivateTool(viewport) {}
+  deactivateTool(renderer) {}
 
   ///////////////////////////////////////
   // 

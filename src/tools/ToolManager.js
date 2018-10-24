@@ -71,8 +71,8 @@ export default class ToolManager {
     let i = this.__toolStack.length;
     while(i--) {
       const tool = this.__toolStack[i];
-      if(tool)
-        tool.onMouseDown(event, mousePos, viewport)
+      if(tool && tool.onMouseDown(event, mousePos, viewport) == true)
+        break;
     }
   }
 
