@@ -28,16 +28,9 @@ export default class ViewTool extends BaseTool {
   ///////////////////////////////////////
   // 
   activateTool(renderer) {
-
+    console.log("activateTool.ViewTool")
+    renderer.getDiv().style.cursor = "default";
     super.activateTool(renderer);
-
-    // const camera = viewport.getCamera();
-    // if(camera instanceof VRPose) {
-    //     const vrpose = camera;
-    //     for(let vrController of vrpose.getControllers())
-    //         vrController.setTipColor(this.__color);
-    // }
-
   }
 
   deactivateTool(renderer) {}
@@ -445,42 +438,45 @@ export default class ViewTool extends BaseTool {
   /////////////////////////////////////
   // VRController events
 
-  onVRControllerButtonDown(event, viewport) {
-    this.__controllerTriggersHeld.push(event.controller);
-
-    const downXfo = event.xfo;
-    const vrpose = viewport.getCamera();
-    const vrControllers = vrpose.getControllers();
+  __initMoveStage(vrviewport){
 
     if(this.__controllerTriggersHeld.length == 1) {
-      this.__grabPos = event.controller.getTipXfo().tr.clone();
-      this.stageXfo__GrabStart = vrpose.getXfo().clone();
+      this.__grabPos = this.__controllerTriggersHeld[0].getControllerStageLocalXfo().tr.clone();
+      this.stageXfo__GrabStart = vrviewport.getXfo().clone();
       this.__invOri = this.stageXfo__GrabStart.ori.inverse();
     }
     else if(this.__controllerTriggersHeld.length == 2) {
-      const p0 = this.__controllerTriggersHeld[0].getTipXfo().tr;
-      const p1 = this.__controllerTriggersHeld[1].getTipXfo().tr;
+      const p0 = this.__controllerTriggersHeld[0].getControllerStageLocalXfo().tr;
+      const p1 = this.__controllerTriggersHeld[1].getControllerStageLocalXfo().tr;
       this.__grabDir = p1.subtract(p0);
       this.__grabPos = p0.lerp(p1, 0.5);
       this.__grabDist = this.__grabDir.length();
       this.__grabDir.y = 0.0;
       this.__grabDir.normalizeInPlace();
-      this.stageXfo__GrabStart = vrpose.getGlobalXfo().clone();
+      this.stageXfo__GrabStart = vrviewport.getXfo().clone();
       this.__grab_to_stage = this.__grabPos.subtract(this.stageXfo__GrabStart.tr);
     }
   }
 
-  onVRControllerButtonUp(event, viewport) {
+  onVRControllerButtonDown(event, vrviewport) {
+    if(event.button != 1)
+      return;
+    this.__controllerTriggersHeld.push(event.controller);
+    this.__initMoveStage(vrviewport);
+  }
+
+  onVRControllerButtonUp(event, vrviewport) {
+    if(event.button != 1)
+      return;
     const index = this.__controllerTriggersHeld.indexOf(event.controller);
     this.__controllerTriggersHeld.splice(index, 1);
+    this.__initMoveStage(vrviewport);
   }
 
   onVRPoseChanged(event, vrviewport) {
 
-    const vrpose = viewport.getCamera();
-
-    if(this.__controllerTriggersHeld == 1) {
-      const grabPos = this.__controllerTriggersHeld[0].getTipXfo().tr;
+    if(this.__controllerTriggersHeld.length == 1) {
+      const grabPos = this.__controllerTriggersHeld[0].getControllerStageLocalXfo().tr;
 
       const deltaXfo = new Visualive.Xfo();
       deltaXfo.tr = this.__grabPos.subtract(grabPos);
@@ -490,10 +486,10 @@ export default class ViewTool extends BaseTool {
       const stageXfo = this.stageXfo__GrabStart.multiply(deltaXfo);
       vrviewport.setXfo(stageXfo);
     }
-    else if(this.__controllerTriggersHeld == 2) {
+    else if(this.__controllerTriggersHeld.length == 2) {
 
-      const p0 = this.__controllerTriggersHeld[0].getTipXfo().tr;
-      const p1 = this.__controllerTriggersHeld[1].getTipXfo().tr;
+      const p0 = this.__controllerTriggersHeld[0].getControllerStageLocalXfo().tr;
+      const p1 = this.__controllerTriggersHeld[1].getControllerStageLocalXfo().tr;
 
       const grabPos = p0.lerp(p1, 0.5);
       const grabDir = p1.subtract(p0);

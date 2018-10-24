@@ -5,6 +5,14 @@ export default class ToolManager {
     this.bind(renderer);
   }
 
+  insertTool(tool, index) {
+    this.__toolStack.splice(index, 0, tool);
+  }
+
+  removeTool(index) {
+    this.__toolStack.splice(index, 1);
+  }
+
   pushTool(tool){
     const currTool = this.currTool();
     if(tool == currTool) {
@@ -23,8 +31,10 @@ export default class ToolManager {
       const prevTool = this.currTool();
       prevTool.deactivateTool(this.renderer);
       this.__toolStack.pop();
-      const currTool = this.currTool();
-      console.log("ToolManager.popTool:", prevTool.constructor.name, (currTool ? currTool.constructor.name : ''))
+      const tool = this.currTool();
+      if(tool)
+        tool.activateTool(this.renderer);
+      console.log("ToolManager.popTool:", prevTool.constructor.name, (tool ? tool.constructor.name : ''))
     }
   }
 
@@ -61,7 +71,7 @@ export default class ToolManager {
         /////////////////////////////////////
         // VRController events
         this.controllerDownId = vrvp.controllerButtonDown.connect(this.onVRControllerButtonDown.bind(this))
-        this.controllerUpId = vrvp.controllerButtonDown.connect(this.onVRControllerButtonUp.bind(this))
+        this.controllerUpId = vrvp.controllerButtonUp.connect(this.onVRControllerButtonUp.bind(this))
         this.onVRPoseChangedId = vrvp.viewChanged.connect(this.onVRPoseChanged.bind(this))
       });
     }

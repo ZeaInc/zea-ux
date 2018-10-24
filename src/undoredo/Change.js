@@ -1,23 +1,23 @@
 
 export default class Change {
-	constructor(name) {
-		this.name = name ? name : this.constructor.name;
-	}
+  constructor(name) {
+    this.name = name ? name : this.constructor.name;
+  }
 
-	undo() {}
+  undo() {}
 
-	redo() {}
+  redo() {}
 
 
   update(updateData) {}
 
-	toJSON() { 
-		return {
-	   name: this.name
+  toJSON() { 
+    return {
+     name: this.name
    }
   }
 
-	fromJSON(j) {
+  fromJSON(j) {
     this.name = j.name;
   }
 

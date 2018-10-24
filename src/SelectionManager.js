@@ -1,5 +1,6 @@
 // import * as Visualive from '@visualive/engine';
 
+import UndoRedoManager from './undoredo/UndoRedoManager.js';
 import Change from './undoredo/Change.js';
 
 class SelectionChange extends Change {
@@ -17,7 +18,35 @@ class SelectionChange extends Change {
   redo() {
     this.__selectionManager.setSelection(this.__newSelection);
   }
+
+  toJSON(appData) { 
+    const j = super.toJSON(appData);
+
+    const itemPaths = [];
+    for (let treeItem of this.__newSelection){
+      itemPaths.push(treeItem.getPath())
+    }
+    j.itemPaths = itemPaths;
+    return j;
+  }
+
+  fromJSON(j, appData) {
+    super.fromJSON(j, appData);
+
+    this.__selectionManager = appData.selectionManager;
+    this.__prevSelection = new Set(this.__selectionManager.getSelection());
+
+    const newSelection = new Set();
+    for (let itemPath of j.itemPaths){
+      newSelection.add(appData.scene.getRoot().resolvePath(itemPath, 1));
+    }
+    this.__newSelection = newSelection;
+
+    this.__selectionManager.getSelection(this.__newSelection);
+  }
 }
+
+UndoRedoManager.registerChange('SelectionChange', SelectionChange)
 
 class ToggleSelectionVisibility extends Change {
   constructor(selection, state) {
@@ -50,6 +79,25 @@ class SelectionManager {
     this.leadSelection = undefined;
     this.selectionChanged = new Visualive.Signal();
     this.leadSelectionChanged = new Visualive.Signal();
+  }
+
+  getSelection(){
+    return this.__selection
+  }
+
+  setSelection(selection) {
+    for (let treeItem of selection){
+      if(!this.__selection.has(treeItem)) {
+        treeItem.getParameter('Selected').setValue(true);
+        this.__selection.add(treeItem);
+      }
+    }
+    for (let treeItem of this.__selection){
+      if(!selection.has(treeItem)) {
+        treeItem.getParameter('Selected').setValue(false);
+        this.__selection.delete(treeItem);
+      }
+    }
   }
 
   setLeadSelection(treeItem) {
@@ -214,26 +262,6 @@ class SelectionManager {
     }
     this.selectionChanged.emit(this.__selection);
   }
-
-  getSelection(){
-    return this.__selection
-  }
-
-  setSelection(selection) {
-    for (let treeItem of selection){
-      if(!this.__selection.has(treeItem)) {
-        treeItem.getParameter('Selected').setValue(true);
-        this.__selection.add(treeItem);
-      }
-    }
-    for (let treeItem of this.__selection){
-      if(!selection.has(treeItem)) {
-        treeItem.getParameter('Selected').setValue(false);
-        this.__selection.delete(treeItem);
-      }
-    }
-  }
-
 
   toggleSelectionVisiblity(){
     if(this.leadSelection) {

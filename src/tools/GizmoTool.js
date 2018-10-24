@@ -9,6 +9,28 @@ export default class GizmoTool extends BaseTool {
     this.activeGizmo = undefined;
   }
 
+  activateTool(renderer) {
+    console.log("activateTool.GizmoTool")
+
+    renderer.getDiv().style.cursor = "crosshair";
+
+    renderer.vrViewportSetup.connect((vrviewport)=>{
+      if(!this.vrControllerToolTip) {
+        this.vrControllerToolTip = new Visualive.Cross(0.03);
+        this.vrControllerToolTipMat = new Visualive.Material('Cross', 'ToolIconShader');
+        this.vrControllerToolTipMat.getParameter('BaseColor').setValue(new Visualive.Color("#03E3AC"));
+      }
+      const addIconToController = (controller) => {
+        const geomItem = new Visualive.GeomItem('GizmoToolTip', this.vrControllerToolTip, this.vrControllerToolTipMat);
+        controller.getTipItem().addChild(geomItem, false);
+      }
+      for(let controller of vrviewport.getControllers()) {
+        addIconToController(controller)
+      }
+      this.addIconToControllerId = vrviewport.controllerAdded.connect(addIconToController);
+    });
+  }
+
   /////////////////////////////////////
   // Mouse events
 
@@ -98,27 +120,27 @@ export default class GizmoTool extends BaseTool {
       this.activeGizmo.onVRPoseChanged(event);
       return true;
     } else {
-      let gizmoHit = false;
-      for (let controller of event.controllers) {
-        const intersectionData = event.controller.getGeomItemAtTip();
-        if (intersectionData != undefined && intersectionData.geomItem instanceof Gizmo) {
-          const gizmo = intersectionData.geomItem;
-          if (this.__highlightedGizmo)
-            this.__highlightedGizmo.unhiglight();
+      // let gizmoHit = false;
+      // for (let controller of event.controllers) {
+      //   const intersectionData = controller.getGeomItemAtTip();
+      //   if (intersectionData != undefined && intersectionData.geomItem instanceof Gizmo) {
+      //     const gizmo = intersectionData.geomItem;
+      //     if (this.__highlightedGizmo)
+      //       this.__highlightedGizmo.unhiglight();
 
-          this.__highlightedGizmo = gizmo;
-          this.__highlightedGizmo.higlight();
-          gizmoHit = true;
-          break;
-        }
-      }
+      //     this.__highlightedGizmo = gizmo;
+      //     this.__highlightedGizmo.higlight();
+      //     gizmoHit = true;
+      //     break;
+      //   }
+      // }
 
-      if (!gizmoHit) {
-        if (this.__highlightedGizmo) {
-          this.__highlightedGizmo.unhiglight();
-          this.__highlightedGizmo = undefined;
-        }
-      }
+      // if (!gizmoHit) {
+      //   if (this.__highlightedGizmo) {
+      //     this.__highlightedGizmo.unhiglight();
+      //     this.__highlightedGizmo = undefined;
+      //   }
+      // }
     }
   }
 

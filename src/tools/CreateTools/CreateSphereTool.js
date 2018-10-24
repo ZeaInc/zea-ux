@@ -34,7 +34,7 @@ class CreateSphereChange extends CreateGeomChange {
       this.geomItem.getGeometry().radius =j.radius;
   }
 }
-UndoRedoManager.registerChange(CreateSphereChange)
+UndoRedoManager.registerChange('CreateSphereChange', CreateSphereChange)
 
 export default class CreateSphereTool extends CreateGeomTool {
   constructor(undoRedoManager) {

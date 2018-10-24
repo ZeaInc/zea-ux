@@ -54,7 +54,7 @@ class CreateLineChange extends CreateGeomChange {
   }
 
 }
-UndoRedoManager.registerChange(CreateLineChange)
+UndoRedoManager.registerChange('CreateLineChange', CreateLineChange)
 
 export default class CreateLineTool extends CreateGeomTool {
   constructor(undoRedoManager) {
@@ -68,9 +68,8 @@ export default class CreateLineTool extends CreateGeomTool {
 
     renderer.getDiv().style.cursor = "crosshair";
 
-    const vrviewport = renderer.getVRViewport();
-    if (vrviewport) {
-      if(this.vrControllerToolTip) {
+    renderer.vrViewportSetup.connect((vrviewport)=>{
+      if(!this.vrControllerToolTip) {
         this.vrControllerToolTip = new Visualive.Sphere(this.tp.getValue(), 64);
         this.vrControllerToolTipMat = new Visualive.Material('marker', 'FlatSurfaceShader');
         this.vrControllerToolTipMat.getParameter('BaseColor').setValue(this.cp.getValue());
@@ -83,7 +82,7 @@ export default class CreateLineTool extends CreateGeomTool {
         addIconToController(controller)
       }
       this.addIconToControllerId = vrviewport.controllerAdded.connect(addIconToController);
-    }
+    });
 
   }
 

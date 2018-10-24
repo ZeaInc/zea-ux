@@ -33,7 +33,7 @@ class CreateCuboidChange extends CreateGeomChange {
     }
   }
 }
-UndoRedoManager.registerChange(CreateCuboidChange)
+UndoRedoManager.registerChange('CreateCuboidChange', CreateCuboidChange)
 
 
 export default class CreateCuboidTool extends CreateGeomTool {

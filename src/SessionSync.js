@@ -56,7 +56,7 @@ export default class SessionSync {
       if (!(userData.id in userDatas)) {
         userDatas[userData.id] = {
           undoRedoManager: new UndoRedoManager(),
-          avatar: new Avatar(appData.scene, appData.scene.getRoot(), userData)
+          avatar: new Avatar(appData, userData)
         }
       }
     }
@@ -74,7 +74,7 @@ export default class SessionSync {
     /////////////////////////////////////////////
     // Pose Changes
 
-    // const myAvatar = new Avatar(appData.scene, appData.scene.getRoot(), { userId });
+    // const otherAvatar = new Avatar(appData, { userId });
 
     appData.renderer.viewChanged.connect((data) => {
 
@@ -86,9 +86,9 @@ export default class SessionSync {
 
       if(controllers){
         const controllerXfos = [];
-        for (let controller of data.controllers) {
+        for (let controller of controllers) {
           controllerXfos.push({
-              xfo: controller.getTreeItem().getGlobalXfo().toJSON()
+              xfo: convertValuesToJSON(controller.getTreeItem().getGlobalXfo())
           });
         }
         j.controllers = controllerXfos;
@@ -96,8 +96,8 @@ export default class SessionSync {
 
       visualiveSession.pub(VisualiveSession.actions.POSE_CHANGED, j);
 
-      // const data2 = convertValuesFromJSON(j);
-      // myAvatar.updatePose(data2);
+      // const otherData = convertValuesFromJSON(j);
+      // otherAvatar.updatePose(otherData);
     });
 
     visualiveSession.sub(VisualiveSession.actions.POSE_CHANGED, (j, userId) => {
@@ -113,12 +113,18 @@ export default class SessionSync {
 
     /////////////////////////////////////////////
     // Scene Changes
+    // const otherUndoStack = new UndoRedoManager();
 
     appData.undoRedoManager.changeAdded.connect((change) => {
-      visualiveSession.pub(VisualiveSession.actions.COMMAND_ADDED, {
-        changeData: change.toJSON(),
+      const data = {
+        changeData: change.toJSON(appData),
         changeClass: change.constructor.name
-      })
+      };
+      visualiveSession.pub(VisualiveSession.actions.COMMAND_ADDED, data)
+
+      // const otherChange = otherUndoStack.constructChange(data.changeClass);
+      // otherChange.fromJSON(data.changeData, appData)
+      // otherUndoStack.addChange(otherChange);
     })
 
     appData.undoRedoManager.changeUpdated.connect((data) => {
@@ -132,7 +138,7 @@ export default class SessionSync {
       }
       const undoRedoManager = userDatas[userId].undoRedoManager;
       const change = undoRedoManager.constructChange(data.changeClass);
-      change.fromJSON(data.changeData, appData.scene.getRoot())
+      change.fromJSON(data.changeData, appData)
       undoRedoManager.addChange(change);
     })
 

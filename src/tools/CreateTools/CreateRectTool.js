@@ -33,7 +33,7 @@ class CreateRectChange extends CreateGeomChange {
     }
   }
 }
-UndoRedoManager.registerChange(CreateRectChange)
+UndoRedoManager.registerChange('CreateRectChange', CreateRectChange)
 
 
 export default class CreateRectTool extends CreateGeomTool {

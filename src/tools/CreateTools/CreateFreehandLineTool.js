@@ -81,7 +81,7 @@ class CreateFreehandLineChange extends CreateGeomChange {
     }
   }
 }
-UndoRedoManager.registerChange(CreateFreehandLineChange)
+UndoRedoManager.registerChange('CreateFreehandLineChange', CreateFreehandLineChange)
 
 export default class CreateFreehandLineTool extends CreateLineTool {
   constructor(undoRedoManager) {

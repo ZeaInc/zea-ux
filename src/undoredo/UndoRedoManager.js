@@ -70,8 +70,8 @@ class UndoRedoManager {
     return new __changeClasses[claName]();
   }
 
-  static registerChange(cls) {
-    __changeClasses[cls.name] = cls;
+  static registerChange(name, cls) {
+    __changeClasses[name] = cls;
   }
 }
 

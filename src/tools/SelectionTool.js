@@ -1,5 +1,6 @@
 import UndoRedoManager from '../undoredo/UndoRedoManager.js';
 import  BaseTool from './BaseTool.js';
+import Gizmo from '../gizmos/Gizmo.js';
 
 export default class SelectionTool extends BaseTool {
   constructor(appData) {
@@ -30,9 +31,11 @@ export default class SelectionTool extends BaseTool {
 
 
   onMouseDown(event, mousePos, viewport) {
-    this.mouseDownPos = mousePos;
-    this.dragging = false;
-    return true;
+    if(event.button == 0) {
+      this.mouseDownPos = mousePos;
+      this.dragging = false;
+      return true;
+    }
   }
 
   __resizeRect(viewport, delta) {
@@ -99,8 +102,37 @@ export default class SelectionTool extends BaseTool {
     }
   }
 
+  /////////////////////////////////////
+  // VRController events
+
+  onVRControllerButtonDown(event) {
+    if (event.button == 1) {
+      const intersectionData = event.controller.getGeomItemAtTip();
+      if (intersectionData != undefined && !(intersectionData.geomItem instanceof Gizmo)) {
+        this.appData.selectionManager.toggleItemSelection(intersectionData.geomItem);
+        return true;
+      }
+    }
+  }
+
+  // onVRPoseChanged(event) {
+  // }
+
+  // onVRControllerButtonUp(event) {
+
+  //   if (event.button == 1 && this.activeController == event.controller) {
+  //     const controllerUpPos = event.controller.getTipXfo();
+  //     if(this.controllerDownPos.distanceTo(controllerUpPos) < 0.1) {
+  //       const intersectionData = event.controller.getGeomItemAtTip();
+  //       if (intersectionData != undefined && !(intersectionData.geomItem instanceof Gizmo)) {
+  //         this.appData.selectionManager.toggleItemSelection(intersectionData.geomItem);
+  //         return true;
+  //       }
+  //     }
+  //   }
+  // }
 };
 
 
 
-UndoRedoManager.registerChange(SelectionTool)
+UndoRedoManager.registerChange('SelectionTool', SelectionTool)
