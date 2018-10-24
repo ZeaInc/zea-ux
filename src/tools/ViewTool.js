@@ -226,6 +226,7 @@ export default class ViewTool extends BaseTool {
   }
 
   onDragEnd(event, mouseUpPos, viewport) {
+    viewport.renderGeomDataFbo();
     this.movementFinished.emit();
     return false;
   }
@@ -262,6 +263,7 @@ export default class ViewTool extends BaseTool {
     if (this.__defaultMode == 'orbit')
       viewport.getCamera().setFocalDistance( focalDistance + zoomDist);
     viewport.getCamera().setGlobalXfo(xfo);
+    viewport.renderGeomDataFbo();
     this.movementFinished.emit();
   }
 

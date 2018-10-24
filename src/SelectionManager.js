@@ -123,7 +123,7 @@ class SelectionManager {
         this.setLeadSelection();
     }
 
-    const change = new SelectionChange(this, prevSelection, this.__selection);
+    const change = new SelectionChange(this, prevSelection, new Set(this.__selection));
     this.undoRedoManager.addChange(change);
 
     this.selectionChanged.emit(this.__selection);
@@ -161,22 +161,22 @@ class SelectionManager {
 
       if (!selectedParam.getValue()) {
         selectedParam.setValue(true);
-        this.__selection.add(selectedParam);
+        this.__selection.add(treeItem);
 
         treeItem.traverse((subTreeItem)=>{
-          if(this.__selection.has(subTreeItem)) {
-            subTreeItem.getParameter('Selected').setValue(false);
-            this.__selection.delete(treeItem);
+          if(!this.__selection.has(subTreeItem)) {
+            subTreeItem.getParameter('Selected').setValue(true);
+            this.__selection.add(subTreeItem);
           }
         })
       }
     }
 
-    const change = new SelectionChange(this, prevSelection, this.__selection);
+    const change = new SelectionChange(this, prevSelection, new Set(this.__selection));
     this.undoRedoManager.addChange(change);
 
     if (this.__selection.size === 1) {
-      this.setLeadSelection(treeItem);
+      this.setLeadSelection(this.__selection.values().next().value);
     }
     else if (this.__selection.size === 0) {
       this.setLeadSelection();
@@ -197,13 +197,13 @@ class SelectionManager {
           const selectedParam = subTreeItem.getParameter('Selected');
           if(!this.__selection.has(subTreeItem)) {
             selectedParam.setValue(true);
-            this.__selection.add(treeItem);
+            this.__selection.delete(treeItem);
           }
         })
       }
     }
 
-    const change = new SelectionChange(this, prevSelection, this.__selection);
+    const change = new SelectionChange(this, prevSelection, new Set(this.__selection));
     this.undoRedoManager.addChange(change);
 
     if (this.__selection.size === 1) {
