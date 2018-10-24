@@ -153,8 +153,6 @@ export default class Avatar {
   };
 
   destroy() {
-    this.__parentTreeItem.removeChildByHandle(this.__treeItem);
-    // Notr: the marker pen tool stays, as we don't want lines
-    // dissappearing after a user quits.
+    this.__appData.renderer.getCollector().removeTreeItem(this.__treeItem);
   }
 };
