@@ -42,7 +42,7 @@ class SelectionChange extends Change {
     }
     this.__newSelection = newSelection;
 
-    this.__selectionManager.getSelection(this.__newSelection);
+    this.__selectionManager.setSelection(this.__newSelection);
   }
 }
 

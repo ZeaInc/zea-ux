@@ -63,8 +63,8 @@ export default class SessionSync {
 
     visualiveSession.sub(VisualiveSession.actions.USER_JOINED, setupUser)
     visualiveSession.sub(VisualiveSession.actions.USER_LEFT, userData => {
-      if (!userDatas[userId]) {
-        console.warn("User id not in session:", userId);
+      if (!userDatas[userData.id]) {
+        console.warn("User id not in session:", userData.id);
         return;
       }
       userDatas[userData.id].avatar.destroy();
