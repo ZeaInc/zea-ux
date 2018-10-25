@@ -76,11 +76,19 @@ export default class SessionSync {
 
     // const otherAvatar = new Avatar(appData, { userId });
 
+    let tick = 0;
+
     appData.renderer.viewChanged.connect((data) => {
 
+      tick++;
+
       const controllers = data.controllers;
-      if(controllers)
+      if(controllers){
+        // only push every second pose of a vr stream. 
+        if(tick % 2 != 0)
+          return;
         delete data.controllers;
+      }
 
       const j = convertValuesToJSON(data);
 
