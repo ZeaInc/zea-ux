@@ -74,15 +74,13 @@ export default class CollabPanel {
       $form.reset();
     });
 
-    visualiveSession.sub(
-      VisualiveSession.actions.TEXT_MESSAGE,
-      (message, userId) => {
-        const p = document.createElement('p');
-        p.innerHTML = `<strong>${userId}:</strong> ${message.text}`;
-        $receivedMessages.appendChild(p);
-        $receivedMessages.scrollTop = $receivedMessages.scrollHeight;
-      }
-    );
+    visualiveSession.sub(VisualiveSession.actions.TEXT_MESSAGE, message => {
+      const { userData, text } = message.payload;
+      const p = document.createElement('p');
+      p.innerHTML = `<strong>${userData.name}:</strong> ${text}`;
+      $receivedMessages.appendChild(p);
+      $receivedMessages.scrollTop = $receivedMessages.scrollHeight;
+    });
 
     const userChipsElements = {};
     const addUserChip = userData => {
@@ -107,16 +105,20 @@ export default class CollabPanel {
       $userChips.removeChild(userChipsElements[userData.id]);
     };
 
-    visualiveSession.sub(VisualiveSession.actions.USER_JOINED, userData => {
+    visualiveSession.sub(VisualiveSession.actions.JOIN_ROOM, message => {
+      const { userData } = message.payload;
       addUserChip(userData);
     });
 
-    visualiveSession.sub(
-      VisualiveSession.actions.USER_LEFT,
-      (userData, userId) => {
-        removeUser(userData);
-      }
-    );
+    visualiveSession.sub(VisualiveSession.actions.PING_ROOM, message => {
+      const { userData } = message.payload;
+      addUserChip(userData);
+    });
+
+    visualiveSession.sub(VisualiveSession.actions.LEAVE_ROOM, message => {
+      const { userData } = message.payload;
+      removeUser(userData);
+    });
 
     const users = visualiveSession.getUsers();
     for (let id in users) {
