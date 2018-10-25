@@ -14,7 +14,7 @@ export default class Avatar {
     this.__appData.renderer.getCollector().addTreeItem(this.__treeItem);
 
     // this.__parentTreeItem.addChild(this.__treeItem);
-    this.__treeItem.setSelectable(false);
+    // this.__treeItem.setSelectable(false);
 
     this.__material = new Visualive.Material('user' + userData.id + 'Material', 'SimpleSurfaceShader');
     this.__material.getParameter('BaseColor').setValue(this.__userData.color);
@@ -29,10 +29,6 @@ export default class Avatar {
     if (head) {
       head.addChild(this.__audioIem);
     }
-  }
-
-  setAvatarVisibility(visible) {
-    this.__treeItem.setVisible(visible);
   }
 
   onPointerMoved(data) {
@@ -68,7 +64,7 @@ export default class Avatar {
     const resourceLoader = this.__appData.scene.getResourceLoader();
     if (!Visualive.SystemDesc.isMobileDevice && !this.__viveAsset && resourceLoader.resourceAvailable("VisualiveEngine/Vive.vla")) {
       this.__viveAsset = this.__appData.scene.loadCommonAssetResource("VisualiveEngine/Vive.vla");
-      this.__viveAsset.loaded.connect(()=>{
+      this.__viveAsset.geomsLoaded.connect(()=>{
         const materialLibrary = this.__viveAsset.getMaterialLibrary();
         const materialNames = materialLibrary.getMaterialNames();
         for(let name of materialNames) {
@@ -77,39 +73,51 @@ export default class Avatar {
             material.setShaderName('SimpleSurfaceShader');
         }
 
-        const hmdTree = this.__viveAsset.getChildByName('HTC_Vive_HMD').clone();
-        const xfo = hmdTree.getLocalXfo();
-        xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0, 1, 0), Math.PI);
-        hmdTree.setLocalXfo(xfo);
 
-        hmdHolder.addChild(hmdTree, false);
+        const sharedGeomItem = this.__viveAsset.getChildByName('HTC_Vive_HMD');
+        // sharedGeomItem.geomAssigned.connect(() => {
+          const hmdGeomItem = sharedGeomItem.clone();
+          const xfo = hmdGeomItem.getLocalXfo();
+          xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0, 1, 0), Math.PI);
+          hmdGeomItem.setLocalXfo(xfo);
+
+          hmdHolder.addChild(hmdGeomItem, false);
+        // })
       });
     }
     this.__currentViewMode = 'Vive';
   }
 
   updateViveControllers(data) {
+    const setupController = (i)=>{
+
+      const treeItem = new Visualive.TreeItem("handleHolder" + i);
+      const setupControllerGeom = (sharedControllerTree)=>{
+        const controllerTree = sharedControllerTree.clone();
+        const xfo = new Visualive.Xfo(
+          new Visualive.Vec3(0, -0.035, 0.01), 
+          new Visualive.Quat({ 
+            setFromAxisAndAngle: [
+              new Visualive.Vec3(0, 1, 0), 
+              Math.PI
+            ] 
+          }));
+        controllerTree.setLocalXfo(xfo);
+        treeItem.addChild(controllerTree);
+      }
+
+      this.__viveAsset.geomsLoaded.connect(() => {
+        const sharedControllerTree = this.__viveAsset.getChildByName('HTC_Vive_Controller').clone();
+        setupControllerGeom(sharedControllerTree);
+      });
+
+      this.__treeItem.addChild(treeItem);
+      this.__controllers[i] = treeItem;
+    }
+
     for (let i = 0; i < data.controllers.length; i++) {
       if (data.controllers[i] && !this.__controllers[i]) {
-
-        const treeItem = new Visualive.TreeItem("handleHolder" + i);
-
-        this.__viveAsset.loaded.connect(() => {
-          const controllerTree = this.__viveAsset.getChildByName('HTC_Vive_Controller').clone();
-          const xfo = new Visualive.Xfo(
-            new Visualive.Vec3(0, -0.035, 0.01), 
-            new Visualive.Quat({ 
-              setFromAxisAndAngle: [
-                new Visualive.Vec3(0, 1, 0), 
-                Math.PI
-              ] 
-            }));
-          controllerTree.setLocalXfo(xfo);
-          treeItem.addChild(controllerTree);
-        });
-
-        this.__treeItem.addChild(treeItem);
-        this.__controllers[i] = treeItem;
+        setupController(i)
       }
       this.__controllers[i].setGlobalXfo(data.controllers[i].xfo);
     }
