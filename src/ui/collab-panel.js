@@ -78,7 +78,8 @@ export default class CollabPanel {
       VisualiveSession.actions.TEXT_MESSAGE,
       (message, userId) => {
         const p = document.createElement('p');
-        p.innerHTML = `<strong>${userId}:</strong> ${message.text}`;
+        const userData = visualiveSession.getUser(userId);
+        p.innerHTML = `<strong>${userData.name}:</strong> ${message.text}`;
         $receivedMessages.appendChild(p);
         $receivedMessages.scrollTop = $receivedMessages.scrollHeight;
       }
@@ -107,14 +108,24 @@ export default class CollabPanel {
       $userChips.removeChild(userChipsElements[userData.id]);
     };
 
-    visualiveSession.sub(VisualiveSession.actions.USER_JOINED, userData => {
-      addUserChip(userData);
+    visualiveSession.sub(VisualiveSession.actions.USER_JOINED, (userData, userId) => {
+      addUser(userData);
     });
 
     visualiveSession.sub(
       VisualiveSession.actions.USER_LEFT,
       (userData, userId) => {
         removeUser(userData);
+      }
+    );
+
+    visualiveSession.sub(
+      VisualiveSession.actions.LEFT_ROOM,
+      () => {
+        const users = visualiveSession.getUsers();
+        for(let id in users)
+          removeUser(users[id]);
+        $receivedMessages.innerHTML = '';
       }
     );
 
