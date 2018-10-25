@@ -32,10 +32,10 @@
     socket.io-client "^2.1.1"
     socketio-wildcard "^2.0.0"
 
-"@visualive/engine@^0.0.18":
-  version "0.0.18"
-  resolved "https://registry.yarnpkg.com/@visualive/engine/-/engine-0.0.18.tgz#8f90cf51ab9da6921216de924c455fece2b9a2bd"
-  integrity sha512-dEy1emvgtytagG/aFbmB3UCRf7IunU4ZDrYuJ9wvMoQxq+tufonFLrurc+8ARqloFiLtGe7HP6Mm4XB1ws78sA==
+"@visualive/engine@^0.0.19":
+  version "0.0.19"
+  resolved "https://registry.yarnpkg.com/@visualive/engine/-/engine-0.0.19.tgz#d76d4fd2f237839e1f3da47291b8f01ef4900b5c"
+  integrity sha512-zSG1mwimnsGcTg6HdSAF2awurChdd15et2b7REWzzLT2CQ7OIz2A1A0W16e8cAVWV5B/QsYkd70zmO1D+Qt39Q==
 
 "@webassemblyjs/ast@1.7.10":
   version "1.7.10"

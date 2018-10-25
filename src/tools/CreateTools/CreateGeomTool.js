@@ -38,7 +38,7 @@ class CreateGeomChange extends Change {
   }
 
   fromJSON(j, root) {
-    this.parentItem = root.resolvePath(j.parentItemPath);
+    this.parentItem = root.resolvePath(j.parentItemPath, 1);
     this.geomItem.setName(j.geomItemName);
     const xfo = new Visualive.Xfo();
     xfo.fromJSON(j.geomItemXfo)
@@ -147,18 +147,22 @@ class CreateGeomTool extends BaseCreateTool {
 
       this.xfo = this.screenPosToXfo(mousePos, viewport);
 
-      this.createStart(this.xfo, scene.getRoot())
+      this.createStart(this.xfo, scene.getRoot());
+      return true;
     }
     else if(event.button == 2) {
       this.undoRedoManager.undo(false);
       this.stage = 0;
+      return true;
     }
+    return true;
   }
 
   onMouseMove(event, mousePos, viewport) {
     if(this.stage > 0) {
       const xfo = this.screenPosToXfo(mousePos, viewport);
       this.createMove(xfo.tr)
+      return true;
     }
   }
 
@@ -166,6 +170,7 @@ class CreateGeomTool extends BaseCreateTool {
     if(this.stage > 0) {
       const xfo = this.screenPosToXfo(mousePos, viewport);
       this.createRelease(xfo.tr, viewport);
+      return true;
     }
   }
 
@@ -198,6 +203,7 @@ class CreateGeomTool extends BaseCreateTool {
       this.__activeController = event.controller;
       const xfo = this.__activeController.getTipXfo();
       this.createStart(xfo.tr);
+      return true;
     }
   }
 
@@ -206,6 +212,7 @@ class CreateGeomTool extends BaseCreateTool {
       // TODO: Snap the Xfo to any nearby construction planes.
       const xfo = this.__activeController.getTipXfo();
       this.createMove(xfo.tr);
+      return true;
     }
   }
 
@@ -215,6 +222,7 @@ class CreateGeomTool extends BaseCreateTool {
         const xfo = this.__activeController.getTipXfo();
         this.createRelease(xfo.tr);
         this.__activeController =  undefined;
+        return true;
       }
     }
   }
