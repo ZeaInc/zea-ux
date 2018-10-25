@@ -99,7 +99,7 @@ export default class CollabPanel {
       userChipsElements[userData.id] = li;
     };
 
-    const removeUser = userData => {
+    const removeUserChip = userData => {
       const p = document.createElement('p');
       p.innerHTML = `<strong>(${userData.name} has left)</strong>`;
       $receivedMessages.appendChild(p);
@@ -109,13 +109,13 @@ export default class CollabPanel {
     };
 
     visualiveSession.sub(VisualiveSession.actions.USER_JOINED, (userData, userId) => {
-      addUser(userData);
+      addUserChip(userData);
     });
 
     visualiveSession.sub(
       VisualiveSession.actions.USER_LEFT,
       (userData, userId) => {
-        removeUser(userData);
+        removeUserChip(userData);
       }
     );
 
@@ -124,7 +124,7 @@ export default class CollabPanel {
       () => {
         const users = visualiveSession.getUsers();
         for(let id in users)
-          removeUser(users[id]);
+          removeUserChip(users[id]);
         $receivedMessages.innerHTML = '';
       }
     );
