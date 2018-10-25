@@ -111,7 +111,7 @@ export default class Avatar {
         this.__treeItem.addChild(treeItem);
         this.__controllers[i] = treeItem;
       }
-      this.__controllers[i].setLocalXfo(data.controllers[i].xfo);
+      this.__controllers[i].setGlobalXfo(data.controllers[i].xfo);
     }
     // Hide any controllers that have turned off
     // if (this.__controllers.length > data.controllers.length) {
@@ -139,7 +139,7 @@ export default class Avatar {
           this.setViveRepresentation(data);
         }
 
-        this.__treeItem.getChild(0).setLocalXfo(data.viewXfo);
+        this.__treeItem.getChild(0).setGlobalXfo(data.viewXfo);
         if (data.controllers)
           this.updateViveControllers(data);
         break;
