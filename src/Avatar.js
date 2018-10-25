@@ -2,9 +2,8 @@
 
 export default class Avatar {
 
-  constructor(scene, parentTreeItem, userData) {
-    this.__scene = scene;
-    this.__parentTreeItem = parentTreeItem;
+  constructor(appData, userData) {
+    this.__appData = appData;
     this.__userData = userData;
     this.__userData.color = new Visualive.Color(1, 0, 1, 1)
 
@@ -12,8 +11,10 @@ export default class Avatar {
 
     this.__treeItem = new Visualive.TreeItem(userData.id);
 
-    this.__parentTreeItem.addChild(this.__treeItem);
-    this.__treeItem.setSelectable(false);
+    this.__appData.renderer.getCollector().addTreeItem(this.__treeItem);
+
+    // this.__parentTreeItem.addChild(this.__treeItem);
+    // this.__treeItem.setSelectable(false);
 
     this.__material = new Visualive.Material('user' + userData.id + 'Material', 'SimpleSurfaceShader');
     this.__material.getParameter('BaseColor').setValue(this.__userData.color);
@@ -28,10 +29,6 @@ export default class Avatar {
     if (head) {
       head.addChild(this.__audioIem);
     }
-  }
-
-  setAvatarVisibility(visible) {
-    this.__treeItem.setVisible(visible);
   }
 
   onPointerMoved(data) {
@@ -64,10 +61,10 @@ export default class Avatar {
     }
     this.__treeItem.addChild(hmdHolder);
 
-    const resourceLoader = this.__scene.getResourceLoader();
+    const resourceLoader = this.__appData.scene.getResourceLoader();
     if (!Visualive.SystemDesc.isMobileDevice && !this.__viveAsset && resourceLoader.resourceAvailable("VisualiveEngine/Vive.vla")) {
-      this.__viveAsset = renderer.getScene().loadCommonAssetResource("VisualiveEngine/Vive.vla");
-      this.__viveAsset.loaded.connect(()=>{
+      this.__viveAsset = this.__appData.scene.loadCommonAssetResource("VisualiveEngine/Vive.vla");
+      this.__viveAsset.geomsLoaded.connect(()=>{
         const materialLibrary = this.__viveAsset.getMaterialLibrary();
         const materialNames = materialLibrary.getMaterialNames();
         for(let name of materialNames) {
@@ -76,39 +73,60 @@ export default class Avatar {
             material.setShaderName('SimpleSurfaceShader');
         }
 
-        const hmdTree = this.__viveAsset.getChildByName('HTC_Vive_HMD').clone();
-        hmdTree.getLocalXfo().ori.setFromAxisAndAngle(new Visualive.Vec3(0, 1, 0), Math.PI);
-        hmdHolder.addChild(hmdTree);
+
+        const sharedGeomItem = this.__viveAsset.getChildByName('HTC_Vive_HMD');
+        // sharedGeomItem.geomAssigned.connect(() => {
+          const hmdGeomItem = sharedGeomItem.clone();
+          const xfo = hmdGeomItem.getLocalXfo();
+          xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0, 1, 0), Math.PI);
+          hmdGeomItem.setLocalXfo(xfo);
+
+          hmdHolder.addChild(hmdGeomItem, false);
+        // })
       });
     }
     this.__currentViewMode = 'Vive';
   }
 
   updateViveControllers(data) {
-    for (let i = 0; i < data.controllers.length; i++) {
-      if (i >= this.__controllers.length) {
+    const setupController = (i)=>{
 
-        const treeItem = new Visualive.TreeItem("handleHolder" + i);
-
-        this.__viveAsset.loaded.connect(() => {
-          const controllerTree = this.__viveAsset.getChildByName('HTC_Vive_Controller').clone();
-          controllerTree.getLocalXfo().tr.set(0, -0.035, 0.01);
-          controllerTree.getLocalXfo().ori.setFromAxisAndAngle(new Visualive.Vec3(0, 1, 0), Math.PI);
-          treeItem.addChild(controllerTree);
-        });
-
-        this.__treeItem.addChild(treeItem);
-        this.__controllers.push(treeItem);
+      const treeItem = new Visualive.TreeItem("handleHolder" + i);
+      const setupControllerGeom = (sharedControllerTree)=>{
+        const controllerTree = sharedControllerTree.clone();
+        const xfo = new Visualive.Xfo(
+          new Visualive.Vec3(0, -0.035, 0.01), 
+          new Visualive.Quat({ 
+            setFromAxisAndAngle: [
+              new Visualive.Vec3(0, 1, 0), 
+              Math.PI
+            ] 
+          }));
+        controllerTree.setLocalXfo(xfo);
+        treeItem.addChild(controllerTree);
       }
-      this.__controllers[i].setVisible(true);
-      this.__controllers[i].setLocalXfo(data.controllers[i].xfo);
+
+      this.__viveAsset.geomsLoaded.connect(() => {
+        const sharedControllerTree = this.__viveAsset.getChildByName('HTC_Vive_Controller').clone();
+        setupControllerGeom(sharedControllerTree);
+      });
+
+      this.__treeItem.addChild(treeItem);
+      this.__controllers[i] = treeItem;
+    }
+
+    for (let i = 0; i < data.controllers.length; i++) {
+      if (data.controllers[i] && !this.__controllers[i]) {
+        setupController(i)
+      }
+      this.__controllers[i].setGlobalXfo(data.controllers[i].xfo);
     }
     // Hide any controllers that have turned off
-    if (this.__controllers.length > data.controllers.length) {
-      for (let i = data.controllers.length; i < this.__controllers.length; i++) {
-        this.__controllers[i].setVisible(false);
-      }
-    }
+    // if (this.__controllers.length > data.controllers.length) {
+    //   for (let i = data.controllers.length; i < this.__controllers.length; i++) {
+    //     this.__controllers[i].setVisible(false);
+    //   }
+    // }
   }
 
   updatePose(data) {
@@ -129,7 +147,7 @@ export default class Avatar {
           this.setViveRepresentation(data);
         }
 
-        this.__treeItem.getChild(0).setLocalXfo(data.viewXfo);
+        this.__treeItem.getChild(0).setGlobalXfo(data.viewXfo);
         if (data.controllers)
           this.updateViveControllers(data);
         break;
@@ -143,8 +161,6 @@ export default class Avatar {
   };
 
   destroy() {
-    this.__parentTreeItem.removeChildByHandle(this.__treeItem);
-    // Notr: the marker pen tool stays, as we don't want lines
-    // dissappearing after a user quits.
+    this.__appData.renderer.getCollector().removeTreeItem(this.__treeItem);
   }
 };

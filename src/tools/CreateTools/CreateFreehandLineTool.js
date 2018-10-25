@@ -1,8 +1,8 @@
 import UndoRedoManager from '../../undoredo/UndoRedoManager.js';
 import {
-  CreateGeomChange,
-  CreateGeomTool
+  CreateGeomChange
 } from './CreateGeomTool.js';
+import CreateLineTool from './CreateLineTool.js';
 
 class CreateFreehandLineChange extends CreateGeomChange {
   constructor(parentItem, xfo, color, thickness) {
@@ -25,16 +25,16 @@ class CreateFreehandLineChange extends CreateGeomChange {
     this.geomItem.setGeometry(this.line);
     this.geomItem.setMaterial(material);
 
-    if(color) {
+    if (color) {
       material.getParameter('Color').setValue(color);
     }
 
-    if(thickness) {
+    if (thickness) {
       this.line.lineThickness = thickness;
       // this.line.addVertexAttribute('lineThickness', Visualive.Float32, 0.0);
     }
 
-    if(parentItem && xfo) {
+    if (parentItem && xfo) {
       this.setParentAndXfo(parentItem, xfo);
     }
   }
@@ -46,10 +46,10 @@ class CreateFreehandLineChange extends CreateGeomChange {
 
     let realloc = false;
     if (this.used >= this.line.getNumSegments()) {
-        this.vertexCount = this.vertexCount + 100;
-        this.line.setNumVertices(this.vertexCount);
-        this.line.setNumSegments(this.vertexCount - 1);
-        realloc = true;
+      this.vertexCount = this.vertexCount + 100;
+      this.line.setNumVertices(this.vertexCount);
+      this.line.setNumSegments(this.vertexCount - 1);
+      realloc = true;
     }
 
     this.line.vertices.setValue(this.used, updateData.point);
@@ -57,25 +57,36 @@ class CreateFreehandLineChange extends CreateGeomChange {
     this.line.setSegment(this.used - 1, this.used - 1, this.used);
 
     if (realloc) {
-        this.line.geomDataTopologyChanged.emit({
-            'indicesChanged': true
-        });
+      this.line.geomDataTopologyChanged.emit({
+        'indicesChanged': true
+      });
     } else {
-        this.line.geomDataChanged.emit({
-            'indicesChanged': true
-        });
+      this.line.geomDataChanged.emit({
+        'indicesChanged': true
+      });
+    }
+  }
+
+  fromJSON(j, root) {
+    super.fromJSON(j, root);
+    if (j.color) {
+      const color = new Visualive.Color();
+      color.fromJSON(j.color);
+      material.getParameter('Color').setValue(color);
     }
 
+    if (j.thickness) {
+      this.line.lineThickness = j.thickness;
+      // this.line.addVertexAttribute('lineThickness', Visualive.Float32, 0.0);
+    }
   }
 }
-UndoRedoManager.registerChange(CreateFreehandLineChange)
+UndoRedoManager.registerChange('CreateFreehandLineChange', CreateFreehandLineChange)
 
-export default class CreateFreehandLineTool extends CreateGeomTool {
+export default class CreateFreehandLineTool extends CreateLineTool {
   constructor(undoRedoManager) {
     super(undoRedoManager);
 
-    this.cp = this.addParameter(new Visualive.ColorParameter('Line Color', new Visualive.Color(.7, .2, .2)));
-    this.tp = this.addParameter(new Visualive.NumberParameter('Line Thickness', 0.01, [0, 0.1])); // 1cm.
     this.mp = this.addParameter(new Visualive.BooleanParameter('Modulate Thickness By Stroke Speed', false));
   }
 
@@ -97,9 +108,11 @@ export default class CreateFreehandLineTool extends CreateGeomTool {
     const p = this.invxfo.transformVec3(pt);
     const vel = p.subtract(this.prevP).length();
 
-    this.undoRedoManager.updateChange({ point: p });
+    this.undoRedoManager.updateChange({
+      point: p
+    });
 
-    this.length += vel; 
+    this.length += vel;
     this.prevP = p;
   }
 

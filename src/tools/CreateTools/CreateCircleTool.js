@@ -38,7 +38,7 @@ class CreateCircleChange extends CreateGeomChange {
       this.circle.getParameter("Radius").setValue(j.radius);
   }
 }
-UndoRedoManager.registerChange(CreateCircleChange)
+UndoRedoManager.registerChange('CreateCircleChange', CreateCircleChange)
 
 export default class CreateCircleTool extends CreateGeomTool {
   constructor(undoRedoManager) {

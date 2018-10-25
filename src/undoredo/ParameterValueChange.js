@@ -4,7 +4,7 @@ import Change from './Change.js';
 class ParameterValueChange extends Change {
   constructor(param, newValue) {
     if(param) {
-      super(param.getName() + ' Changed');
+      super(param ? (param.getName()+ ' Changed') : 'ParameterValueChange');
       this.__oldValue = param.getValue();
       this.__param = param;
       if(newValue != undefined) {
@@ -30,7 +30,7 @@ class ParameterValueChange extends Change {
     this.__param.setValue(this.__newValue);
   }
 
-  toJSON() {
+  toJSON(appData) {
     const j = {
       name: this.name,
       paramPath: this.__param.getPath()
@@ -45,14 +45,15 @@ class ParameterValueChange extends Change {
     return j;
   }
 
-  fromJSON(j, root) {
-    this.__param = root.resolvePath(j.paramPath, 1);
+  fromJSON(j, appData) {
+    this.__param = appData.scene.getRoot().resolvePath(j.paramPath, 1);
     this.__oldValue = this.__param.getValue();
     if (this.__oldValue.clone)
       this.__newValue = this.__oldValue.clone();
     else
       this.__newValue = this.__oldValue;
 
+    this.name = this.__param.getName() + ' Changed';
     if(j.value != undefined)
       this.changeFromJSON(j);
   }
@@ -67,6 +68,6 @@ class ParameterValueChange extends Change {
 }
 
 
-UndoRedoManager.registerChange(ParameterValueChange)
+UndoRedoManager.registerChange('ParameterValueChange', ParameterValueChange)
 
 export default ParameterValueChange;

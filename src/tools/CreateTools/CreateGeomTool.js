@@ -63,6 +63,43 @@ class CreateGeomTool extends BaseCreateTool {
     super(undoRedoManager);
 
     this.stage = 0;
+
+  }
+
+  activateTool(renderer) {
+
+    renderer.getDiv().style.cursor = "crosshair";
+
+    const vrviewport = renderer.getVRViewport();
+    if (vrviewport) {
+      if(this.vrControllerToolTip) {
+        this.vrControllerToolTip = new Cross(0.05);
+        this.vrControllerToolTipMat = new Material('VRController Cross', 'LinesShader');
+        this.vrControllerToolTipMat.getParameter('BaseColor').setValue(this.cp.getValue());
+      }
+      const addIconToController = (id, controller) => {
+        const geomItem = new GeomItem('VRControllerTip', this.vrControllerToolTip, this.vrControllerToolTipMat);
+        controller.getTip().addChild(geomItem);
+      }
+      for(let controller of vrviewport.getControllers()) {
+        addIconToController(controller)
+      }
+      this.addIconToControllerId = vrviewport.controllerAdded.connect(addIconToController);
+    }
+
+  }
+
+  deactivateTool(renderer) {
+
+    renderer.getDiv().style.cursor = "pointer";
+
+    const vrviewport = renderer.getVRViewport();
+    if (vrviewport) {
+      for(let controller of vrviewport.getControllers()) {
+        controller.getTip().removeAllChildren();
+      }
+      vrviewport.controllerAdded.disconnectId(this.addIconToControllerId);
+    }
   }
 
   screenPosToXfo(screenPos, viewport) {
@@ -155,21 +192,30 @@ class CreateGeomTool extends BaseCreateTool {
   /////////////////////////////////////
   // VRController events
 
-  onVRControllerDown(event, viewport) {
-    // TODO: Snap the Xfo to any nearby construction planes.
-    this.createStart(event.xfo);
-  }
-
-  onVRControllerMove(event, mousePos, viewport) {
-    if(this.stage > 0) {
+  onVRControllerButtonDown(event, viewport) {
+    if(this.__activeController) {
       // TODO: Snap the Xfo to any nearby construction planes.
-      this.createMove(event.xfo.tr);
+      this.__activeController = event.controller;
+      const xfo = this.__activeController.getTipXfo();
+      this.createStart(xfo.tr);
     }
   }
 
-  onVRControllerUp(event, mousePos, viewport) {
+  onVRPoseChanged(event, viewport) {
+    if(this.__activeController && this.stage > 0) {
+      // TODO: Snap the Xfo to any nearby construction planes.
+      const xfo = this.__activeController.getTipXfo();
+      this.createMove(xfo.tr);
+    }
+  }
+
+  onVRControllerButtonUp(event, viewport) {
     if(this.stage > 0) {
-      this.createRelease();
+      if(this.__activeController == event.controller){
+        const xfo = this.__activeController.getTipXfo();
+        this.createRelease(xfo.tr);
+        this.__activeController =  undefined;
+      }
     }
   }
 

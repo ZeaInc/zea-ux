@@ -9,7 +9,7 @@ const convertValuesToJSON = (value) => {
     return undefined;
   } else if (value.toJSON) {
     const result = value.toJSON();
-    result.className = value.constructor.name;
+    result.typeName = Visualive.typeRegistry.getTypeName(value);
     return result;
   } else if (Array.isArray(value)) {
     const arr = [];
@@ -29,8 +29,8 @@ const convertValuesToJSON = (value) => {
 const convertValuesFromJSON = (value) => {
   if (value == undefined) {
     return undefined;
-  } else if (value.className) {
-    const newval = Visualive.typeRegistry.getType(value.className).create();
+  } else if (value.typeName) {
+    const newval = Visualive.typeRegistry.getType(value.typeName).create();
     newval.fromJSON(value);
     return newval;
   } else if (Array.isArray(value)) {
@@ -56,15 +56,15 @@ export default class SessionSync {
       if (!(userData.id in userDatas)) {
         userDatas[userData.id] = {
           undoRedoManager: new UndoRedoManager(),
-          avatar: new Avatar(appData.scene, appData.scene.getRoot(), userData)
+          avatar: new Avatar(appData, userData)
         }
       }
     }
 
     visualiveSession.sub(VisualiveSession.actions.USER_JOINED, setupUser)
     visualiveSession.sub(VisualiveSession.actions.USER_LEFT, userData => {
-      if (!userDatas[userId]) {
-        console.warn("User id not in session:", userId);
+      if (!userDatas[userData.id]) {
+        console.warn("User id not in session:", userData.id);
         return;
       }
       userDatas[userData.id].avatar.destroy();
@@ -74,14 +74,38 @@ export default class SessionSync {
     /////////////////////////////////////////////
     // Pose Changes
 
-    // const myAvatar = new Avatar(appData.scene, appData.scene.getRoot(), { userId });
+    // const otherAvatar = new Avatar(appData, { userId });
+
+    let tick = 0;
 
     appData.renderer.viewChanged.connect((data) => {
+
+      tick++;
+
+      const controllers = data.controllers;
+      if(controllers){
+        // only push every second pose of a vr stream. 
+        if(tick % 2 != 0)
+          return;
+        delete data.controllers;
+      }
+
       const j = convertValuesToJSON(data);
+
+      if(controllers){
+        const controllerXfos = [];
+        for (let controller of controllers) {
+          controllerXfos.push({
+              xfo: convertValuesToJSON(controller.getTreeItem().getGlobalXfo())
+          });
+        }
+        j.controllers = controllerXfos;
+      }
+
       visualiveSession.pub(VisualiveSession.actions.POSE_CHANGED, j);
 
-      // const data2 = convertValuesFromJSON(j);
-      // myAvatar.updatePose(data2);
+      // const otherData = convertValuesFromJSON(j);
+      // otherAvatar.updatePose(otherData);
     });
 
     visualiveSession.sub(VisualiveSession.actions.POSE_CHANGED, (j, userId) => {
@@ -97,12 +121,18 @@ export default class SessionSync {
 
     /////////////////////////////////////////////
     // Scene Changes
+    // const otherUndoStack = new UndoRedoManager();
 
     appData.undoRedoManager.changeAdded.connect((change) => {
-      visualiveSession.pub(VisualiveSession.actions.COMMAND_ADDED, {
-        changeData: change.toJSON(),
+      const data = {
+        changeData: change.toJSON(appData),
         changeClass: change.constructor.name
-      })
+      };
+      visualiveSession.pub(VisualiveSession.actions.COMMAND_ADDED, data)
+
+      // const otherChange = otherUndoStack.constructChange(data.changeClass);
+      // otherChange.fromJSON(data.changeData, appData)
+      // otherUndoStack.addChange(otherChange);
     })
 
     appData.undoRedoManager.changeUpdated.connect((data) => {
@@ -116,7 +146,7 @@ export default class SessionSync {
       }
       const undoRedoManager = userDatas[userId].undoRedoManager;
       const change = undoRedoManager.constructChange(data.changeClass);
-      change.fromJSON(data.changeData, appData.scene.getRoot())
+      change.fromJSON(data.changeData, appData)
       undoRedoManager.addChange(change);
     })
 

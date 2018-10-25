@@ -26,7 +26,7 @@ class CreateConeChange extends CreateGeomChange {
       this.geomItem.getGeometry().setHeight(updateData.height)
   }
 }
-UndoRedoManager.registerChange(CreateConeChange)
+UndoRedoManager.registerChange('CreateCircleChange', CreateCircleChange)
 
 
 export default class CreateConeTool extends CreateGeomTool {

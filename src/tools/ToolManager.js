@@ -5,6 +5,14 @@ export default class ToolManager {
     this.bind(renderer);
   }
 
+  insertTool(tool, index) {
+    this.__toolStack.splice(index, 0, tool);
+  }
+
+  removeTool(index) {
+    this.__toolStack.splice(index, 1);
+  }
+
   pushTool(tool){
     const currTool = this.currTool();
     if(tool == currTool) {
@@ -23,8 +31,10 @@ export default class ToolManager {
       const prevTool = this.currTool();
       prevTool.deactivateTool(this.renderer);
       this.__toolStack.pop();
-      const currTool = this.currTool();
-      console.log("ToolManager.popTool:", prevTool.constructor.name, (currTool ? currTool.constructor.name : ''))
+      const tool = this.currTool();
+      if(tool)
+        tool.activateTool(this.renderer);
+      console.log("ToolManager.popTool:", prevTool.constructor.name, (tool ? tool.constructor.name : ''))
     }
   }
 
@@ -60,102 +70,145 @@ export default class ToolManager {
       renderer.vrViewportSetup.connect(vrvp => {
         /////////////////////////////////////
         // VRController events
-        // this.controllerDownId = viewport.controllerDown.connect(this.onVRControllerDown.bind(this))
-        // this.controllerMoveId = viewport.controllerMove.connect(this.onVRControllerMove.bind(this))
-        // this.controllerUpId = viewport.controllerUp.connect(this.onVRControllerUp.bind(this))
+        this.controllerDownId = vrvp.controllerButtonDown.connect(this.onVRControllerButtonDown.bind(this))
+        this.controllerUpId = vrvp.controllerButtonUp.connect(this.onVRControllerButtonUp.bind(this))
+        this.onVRPoseChangedId = vrvp.viewChanged.connect(this.onVRPoseChanged.bind(this))
       });
     }
   }
 
   onMouseDown(event, mousePos, viewport) {
-    const tool = this.currTool();
-    if(tool)
-      tool.onMouseDown(event, mousePos, viewport)
+    let i = this.__toolStack.length;
+    while(i--) {
+      const tool = this.__toolStack[i];
+      if(tool && tool.onMouseDown(event, mousePos, viewport) == true)
+        break;
+    }
   }
 
   onMouseMove(event, mousePos, viewport) {
-    const tool = this.currTool();
-    if(tool)
-      tool.onMouseMove(event, mousePos, viewport)
+    let i = this.__toolStack.length;
+    while(i--) {
+      const tool = this.__toolStack[i];
+      if(tool && tool.onMouseMove(event, mousePos, viewport) == true)
+        break;
+    }
   }
 
   onMouseUp(event, mousePos, viewport) {
-    const tool = this.currTool();
-    if(tool)
-      tool.onMouseUp(event, mousePos, viewport)
+    let i = this.__toolStack.length;
+    while(i--) {
+      const tool = this.__toolStack[i];
+      if(tool && tool.onMouseUp(event, mousePos, viewport) == true)
+        break;
+    }
   }
 
   onWheel(event, viewport) {
-    const tool = this.currTool();
-    if(tool)
-      tool.onWheel(event, viewport)
+    let i = this.__toolStack.length;
+    while(i--) {
+      const tool = this.__toolStack[i];
+      if(tool && tool.onWheel(event, viewport) == true)
+        break;
+    }
   }
 
   /////////////////////////////////////
   // Keyboard events
   onKeyPressed(key, event, viewport) {
-    const tool = this.currTool();
-    if(tool)
-      tool.onKeyPressed(event, event, viewport)
+    let i = this.__toolStack.length;
+    while(i--) {
+      const tool = this.__toolStack[i];
+      if(tool && tool.onKeyPressed(event, event, viewport) == true)
+        break;
+    }
   }
 
   onKeyDown(key, event, viewport) {
-    const tool = this.currTool();
-    if(tool)
-      tool.onKeyDown(key, event, viewport)
+    let i = this.__toolStack.length;
+    while(i--) {
+      const tool = this.__toolStack[i];
+      if(tool && tool.onKeyDown(key, event, viewport) == true)
+        break;
+    }
   }
 
   onKeyUp(key, event, viewport) {
-    const tool = this.currTool();
-    if(tool)
-      tool.onKeyUp(key, event, viewport)
+    let i = this.__toolStack.length;
+    while(i--) {
+      const tool = this.__toolStack[i];
+      if(tool && tool.onKeyUp(key, event, viewport) == true)
+        break;
+    }
   }
 
   /////////////////////////////////////
   // Touch events
   onTouchStart(event, viewport) {
-    const tool = this.currTool();
-    if(tool)
-      tool.onTouchStart(event, viewport)
+    let i = this.__toolStack.length;
+    while(i--) {
+      const tool = this.__toolStack[i];
+      if(tool && tool.onTouchStart(event, viewport) == true)
+        break;
+    }
   }
 
   onTouchMove(event, viewport) {
-    const tool = this.currTool();
-    if(tool)
-      tool.onTouchMove(event, viewport)
+    let i = this.__toolStack.length;
+    while(i--) {
+      const tool = this.__toolStack[i];
+      if(tool && tool.onTouchMove(event, viewport) == true)
+        break;
+    }
   }
 
   onTouchEnd(event, viewport) {
-    const tool = this.currTool();
-    if(tool)
-      tool.onTouchEnd(event, viewport)
+    let i = this.__toolStack.length;
+    while(i--) {
+      const tool = this.__toolStack[i];
+      if(tool && tool.onTouchEnd(event, viewport) == true)
+        break;
+    }
   }
 
   onTouchCancel(event, viewport) {
-    const tool = this.currTool();
-    if(tool)
-      tool.onMouseDown(event, viewport)
+    let i = this.__toolStack.length;
+    while(i--) {
+      const tool = this.__toolStack[i];
+      if(tool && tool.onMouseDown(event, viewport) == true)
+        break;
+    }
   }
 
   /////////////////////////////////////
   // VRController events
-  onVRControllerDown(event, viewport) {
-    const tool = this.currTool();
-    if(tool)
-      tool.onVRControllerDown(event, viewport)
+  onVRControllerButtonDown(event, viewport) {
+    let i = this.__toolStack.length;
+    while(i--) {
+      const tool = this.__toolStack[i];
+      if(tool && tool.onVRControllerButtonDown(event, viewport) == true)
+        break;
+    }
   }
 
-  onVRControllerMove(event, viewport) {
-    const tool = this.currTool();
-    if(tool)
-      tool.onVRControllerMove(event, viewport)
+  onVRControllerButtonUp(event, viewport) {
+    let i = this.__toolStack.length;
+    while(i--) {
+      const tool = this.__toolStack[i];
+      if(tool && tool.onVRControllerButtonUp(event, viewport) == true)
+        break;
+    }
   }
 
-  onVRControllerUp(event, viewport) {
-    const tool = this.currTool();
-    if(tool)
-      tool.onVRControllerUp(event, viewport)
+  onVRPoseChanged(event, viewport) {
+    let i = this.__toolStack.length;
+    while(i--) {
+      const tool = this.__toolStack[i];
+      if(tool && tool.onVRPoseChanged(event, viewport) == true)
+        break;
+    }
   }
+
 
   destroy() {
     const viewport = this.renderer.getViewport();
@@ -183,8 +236,8 @@ export default class ToolManager {
         /////////////////////////////////////
         // VRController events
         viewport.controllerDown.disconnectId(this.controllerDownId)
-        viewport.controllerMove.disconnectId(this.controllerMoveId)
         viewport.controllerUp.disconnectId(this.controllerUpId)
+        viewport.viewChanged.disconnectId(this.onVRPoseChangedId)
       });
     }
 
