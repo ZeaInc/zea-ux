@@ -27,11 +27,15 @@ export default class SelectionTool extends BaseTool {
 
   }
 
-  deactivateTool(renderer) {}
+  deactivateTool(renderer) {
+    this.selectionRectXfo.sc.set(0,0,0)
+    this.rectItem.setGlobalXfo(this.selectionRectXfo)
+  }
 
 
   onMouseDown(event, mousePos, viewport) {
     if(event.button == 0) {
+      console.log("onMouseDown")
       this.mouseDownPos = mousePos;
       this.dragging = false;
       return true;
@@ -87,6 +91,9 @@ export default class SelectionTool extends BaseTool {
         } else {
           this.appData.selectionManager.deselectItems(geomItems);
         }
+        
+        this.selectionRectXfo.sc.set(0,0,0)
+        this.rectItem.setGlobalXfo(this.selectionRectXfo)
       } else {
         const intersectionData = viewport.getGeomDataAtPos(mousePos);
         if (intersectionData != undefined) {
