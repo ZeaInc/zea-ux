@@ -74,13 +74,16 @@ export default class CollabPanel {
       $form.reset();
     });
 
-    visualiveSession.sub(VisualiveSession.actions.TEXT_MESSAGE, message => {
-      const { userData, text } = message.payload;
-      const p = document.createElement('p');
-      p.innerHTML = `<strong>${userData.name}:</strong> ${text}`;
-      $receivedMessages.appendChild(p);
-      $receivedMessages.scrollTop = $receivedMessages.scrollHeight;
-    });
+    visualiveSession.sub(
+      VisualiveSession.actions.TEXT_MESSAGE,
+      (message, userId) => {
+        const p = document.createElement('p');
+        const userData = visualiveSession.getUser(userId);
+        p.innerHTML = `<strong>${userData.name}:</strong> ${message.text}`;
+        $receivedMessages.appendChild(p);
+        $receivedMessages.scrollTop = $receivedMessages.scrollHeight;
+      }
+    );
 
     const userChipsElements = {};
     const addUserChip = userData => {
@@ -96,7 +99,7 @@ export default class CollabPanel {
       userChipsElements[userData.id] = li;
     };
 
-    const removeUser = userData => {
+    const removeUserChip = userData => {
       const p = document.createElement('p');
       p.innerHTML = `<strong>(${userData.name} has left)</strong>`;
       $receivedMessages.appendChild(p);
@@ -105,20 +108,26 @@ export default class CollabPanel {
       $userChips.removeChild(userChipsElements[userData.id]);
     };
 
-    visualiveSession.sub(VisualiveSession.actions.JOIN_ROOM, message => {
-      const { userData } = message.payload;
+    visualiveSession.sub(VisualiveSession.actions.USER_JOINED, (userData, userId) => {
       addUserChip(userData);
     });
 
-    visualiveSession.sub(VisualiveSession.actions.PING_ROOM, message => {
-      const { userData } = message.payload;
-      addUserChip(userData);
-    });
+    visualiveSession.sub(
+      VisualiveSession.actions.USER_LEFT,
+      (userData, userId) => {
+        removeUserChip(userData);
+      }
+    );
 
-    visualiveSession.sub(VisualiveSession.actions.LEAVE_ROOM, message => {
-      const { userData } = message.payload;
-      removeUser(userData);
-    });
+    visualiveSession.sub(
+      VisualiveSession.actions.LEFT_ROOM,
+      () => {
+        const users = visualiveSession.getUsers();
+        for(let id in users)
+          removeUserChip(users[id]);
+        $receivedMessages.innerHTML = '';
+      }
+    );
 
     const users = visualiveSession.getUsers();
     for (let id in users) {
