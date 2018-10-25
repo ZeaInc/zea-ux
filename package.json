@@ -23,12 +23,12 @@
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.14.0",
     "prettier": "^1.14.2",
-    "webpack": "^4.21.0",
+    "webpack": "^4.23.1",
     "webpack-cli": "^3.1.2"
   },
   "dependencies": {
     "@jaames/iro": "^3.5.3",
-    "@visualive/collab": "^0.0.6",
-    "@visualive/engine": "^0.0.16"
+    "@visualive/collab": "^0.0.9",
+    "@visualive/engine": "^0.0.19"
   }
 }
