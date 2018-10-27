@@ -1,10 +1,4 @@
-
-import {
-  getCurrentUser,
-  getProjectData,
-  getProjectResourcesRecursive,
-  getParameterFromUrl,
-} from './PlatformAPI.js';
+import VisualiveApiClient, { getParameterFromUrl } from './VisualiveApiClient.js';
 
 import UndoRedoManager from './undoredo/UndoRedoManager.js';
 import ActionRegistry from './ActionRegistry.js';
@@ -20,7 +14,7 @@ import TreeItemInspector from './ui/TreeItemInspector.js';
 import ParameterContainer from './ui/ParameterContainer.js';
 import InspectorContainer from './ui/InspectorContainer.js';
 
-import { UserChip, CurrentUserChip } from './ui/UserChip.js';
+import { UserChip } from './ui/UserChip.js';
 
 //////////////////////////////////////
 // Parameter Widgets
@@ -54,13 +48,10 @@ import LinearMovementGizmo from './gizmos/LinearMovementGizmo.js';
 import PlanarMovementGizmo from './gizmos/PlanarMovementGizmo.js';
 import AxialRotationGizmo from './gizmos/AxialRotationGizmo.js';
 
-
 export {
-  getCurrentUser,
-  getProjectData,
-  getProjectResourcesRecursive,
+  VisualiveApiClient,
   getParameterFromUrl,
-  
+
   UndoRedoManager,
   ActionRegistry,
   SelectionManager,
@@ -75,7 +66,6 @@ export {
   ParameterContainer,
   InspectorContainer,
   UserChip,
-  CurrentUserChip,
 
   // Parameter Widgets
   BooleanWidget,
@@ -85,7 +75,6 @@ export {
   Vec2Widget,
   Vec3Widget,
   Vec4Widget,
-
 
   // Tools
   ToolManager,
@@ -105,5 +94,5 @@ export {
   GizmoTool,
   LinearMovementGizmo,
   PlanarMovementGizmo,
-  AxialRotationGizmo
+  AxialRotationGizmo,
 };

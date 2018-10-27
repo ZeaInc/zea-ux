@@ -1,7 +1,7 @@
 var path = require('path');
 
 module.exports = {
-  mode: 'development',
+  mode: 'production',
   entry: './src/index.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -10,4 +10,9 @@ module.exports = {
     libraryTarget: 'umd',
   },
   devtool: 'eval-source-map',
+  externals: {
+    '@jaames/iro': '@jaames/iro',
+    '@visualive/collab': '@visualive/collab',
+    '@visualive/engine': '@visualive/engine',
+  },
 };

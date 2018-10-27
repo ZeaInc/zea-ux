@@ -32,10 +32,10 @@
     socket.io-client "^2.1.1"
     socketio-wildcard "^2.0.0"
 
-"@visualive/engine@^0.0.19":
-  version "0.0.19"
-  resolved "https://registry.yarnpkg.com/@visualive/engine/-/engine-0.0.19.tgz#d76d4fd2f237839e1f3da47291b8f01ef4900b5c"
-  integrity sha512-zSG1mwimnsGcTg6HdSAF2awurChdd15et2b7REWzzLT2CQ7OIz2A1A0W16e8cAVWV5B/QsYkd70zmO1D+Qt39Q==
+"@visualive/engine@^0.0.20":
+  version "0.0.20"
+  resolved "https://registry.yarnpkg.com/@visualive/engine/-/engine-0.0.20.tgz#f2281116de93705682d87703b79504cbc0160a05"
+  integrity sha512-kEQYyMKbf79nY7PZub5UYQ3JXS/rtfX5JLImPh3mdkE9yJD+Wd6F1Bh5vXgFweHkfwp5340qIM0Nl3LZbtmvIQ==
 
 "@webassemblyjs/ast@1.7.10":
   version "1.7.10"
@@ -1178,10 +1178,10 @@ eslint-visitor-keys@^1.0.0:
   resolved "https://registry.yarnpkg.com/eslint-visitor-keys/-/eslint-visitor-keys-1.0.0.tgz#3f3180fb2e291017716acb4c9d6d5b5c34a6a81d"
   integrity sha512-qzm/XxIbxm/FHyH341ZrbnMUpe+5Bocte9xkmFMzPMjRaZMcXww+MpBptFvtU+79L362nqiLhekCxCxDPaUMBQ==
 
-eslint@^5.7.0:
-  version "5.7.0"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-5.7.0.tgz#55c326d6fb2ad45fcbd0ce17c3846f025d1d819c"
-  integrity sha512-zYCeFQahsxffGl87U2aJ7DPyH8CbWgxBC213Y8+TCanhUTf2gEvfq3EKpHmEcozTLyPmGe9LZdMAwC/CpJBM5A==
+eslint@^5.8.0:
+  version "5.8.0"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-5.8.0.tgz#91fbf24f6e0471e8fdf681a4d9dd1b2c9f28309b"
+  integrity sha512-Zok6Bru3y2JprqTNm14mgQ15YQu/SMDkWdnmHfFg770DIUlmMFd/gqqzCHekxzjHZJxXv3tmTpH0C1icaYJsRQ==
   dependencies:
     "@babel/code-frame" "^7.0.0"
     ajv "^6.5.3"

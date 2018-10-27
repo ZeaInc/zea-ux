@@ -1,10 +1,4 @@
-import {
-  getRequest,
-  getCurrentUser,
-  getProjectData,
-  getProjectResourcesRecursive,
-  getParameterFromUrl,
-} from './src/PlatformAPI.js';
+import VisualiveApiClient, { getParameterFromUrl } from './src/VisualiveApiClient.js';
 
 import UndoRedoManager from './src/undoredo/UndoRedoManager.js';
 import ActionRegistry from './src/ActionRegistry.js';
@@ -20,7 +14,7 @@ import TreeItemInspector from './src/ui/TreeItemInspector.js';
 import ParameterContainer from './src/ui/ParameterContainer.js';
 import InspectorContainer from './src/ui/InspectorContainer.js';
 
-import { UserChip, CurrentUserChip } from './src/ui/UserChip.js';
+import { UserChip } from './src/ui/UserChip.js';
 
 import BooleanWidget from './src/ui/parameter-widgets/BooleanWidget.js';
 import ColorWidget from './src/ui/parameter-widgets/ColorWidget.js';
@@ -38,12 +32,8 @@ import CreateSphereTool from './src/tools/CreateTools/CreateSphereTool.js';
 import CreateCuboidTool from './src/tools/CreateTools/CreateCuboidTool.js';
 import CreateFreehandLineTool from './src/tools/CreateTools/CreateFreehandLineTool.js';
 
-
 export {
-  getRequest,
-  getCurrentUser,
-  getProjectData,
-  getProjectResourcesRecursive,
+  VisualiveApiClient,
   getParameterFromUrl,
   UndoRedoManager,
   ActionRegistry,
@@ -59,7 +49,6 @@ export {
   ParameterContainer,
   InspectorContainer,
   UserChip,
-  CurrentUserChip,
   BooleanWidget,
   ColorWidget,
   NumberWidget,
@@ -74,5 +63,5 @@ export {
   CreateLineTool,
   CreateSphereTool,
   CreateCuboidTool,
-  CreateFreehandLineTool
+  CreateFreehandLineTool,
 };
