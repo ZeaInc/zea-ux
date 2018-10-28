@@ -29,6 +29,6 @@
   "dependencies": {
     "@jaames/iro": "^3.5.3",
     "@visualive/collab": "^0.0.9",
-    "@visualive/engine": "^0.0.21"
+    "@visualive/engine": "^0.0.22"
   }
 }
