@@ -1,12 +1,12 @@
 {
   "name": "@visualive/ux",
-  "version": "0.0.12",
+  "version": "0.0.14",
   "description": "",
   "keywords": [],
   "main": "./dist/visualive-ux.js",
   "scripts": {
     "build": "webpack",
-    "build:dev": "webpack --watch"
+    "build:dev": "webpack --mode=development --watch"
   },
   "repository": {
     "type": "git",
@@ -19,7 +19,7 @@
   "author": "Visualive",
   "license": "ISC",
   "devDependencies": {
-    "eslint": "^5.7.0",
+    "eslint": "^5.8.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.14.0",
     "prettier": "^1.14.2",

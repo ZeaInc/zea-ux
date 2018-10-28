@@ -1,5 +1,3 @@
-import { getCurrentUser } from '../PlatformAPI.js';
-
 export class UserChip {
   constructor(domElement, userData) {
     this.domElement = domElement;
@@ -20,8 +18,8 @@ export class UserChip {
     this.userImageDiv.appendChild(this.userImage);
     this.userDiv.appendChild(this.userImageDiv);
 
-    if(userData) {
-      this.setUserData(userData)
+    if (userData) {
+      this.setUserData(userData);
     }
   }
 
@@ -37,19 +35,5 @@ export class UserChip {
 
   unmount() {
     this.clean();
-  }
-}
-
-export class CurrentUserChip extends UserChip {
-  constructor(domElement) {
-    super(domElement);
-    getCurrentUser()
-      .then(currentUser => {
-        this.setUserData(currentUser);
-        // this.userNameSpan.src = currentUser.image;
-      })
-      .catch(err => {
-        console.error('Error getting current user.');
-      });
   }
 }
