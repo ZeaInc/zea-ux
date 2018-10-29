@@ -101,8 +101,10 @@ class SelectionManager {
   }
 
   setLeadSelection(treeItem) {
-    this.leadSelection = treeItem;
-    this.leadSelectionChanged.emit(treeItem);
+    if(this.leadSelection != treeItem) {
+      this.leadSelection = treeItem;
+      this.leadSelectionChanged.emit(treeItem);
+    }
   }
 
   toggleItemSelection(treeItem, replaceSelection = true) {
@@ -255,10 +257,10 @@ class SelectionManager {
     this.undoRedoManager.addChange(change);
 
     if (this.__selection.size === 1) {
-      this.leadSelectionChanged.emit(treeItem);
+      this.setLeadSelection(this.__selection.values().next().value);
     }
     else if (this.__selection.size === 0) {
-      this.leadSelectionChanged.emit();
+      this.setLeadSelection();
     }
     this.selectionChanged.emit(this.__selection);
   }
