@@ -1,6 +1,7 @@
 // import * as Visualive from '@visualive/engine';
 
 const __changeClasses = {};
+const __classNames = {};
 
 class UndoRedoManager {
   constructor() {
@@ -70,8 +71,16 @@ class UndoRedoManager {
     return new __changeClasses[claName]();
   }
 
+  static getChangeClassName(inst){
+    if(__classNames[inst.constructor.name])
+      return __classNames[inst.constructor.name];
+    console.warn("Change not registered:", inst.constructor.name);
+    return inst.constructor.name;
+  }
+
   static registerChange(name, cls) {
     __changeClasses[name] = cls;
+    __classNames[cls.name] = cls;
   }
 }
 

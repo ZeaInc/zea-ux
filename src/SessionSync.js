@@ -126,7 +126,7 @@ export default class SessionSync {
     appData.undoRedoManager.changeAdded.connect((change) => {
       const data = {
         changeData: change.toJSON(appData),
-        changeClass: change.constructor.name
+        changeClass: UndoRedoManager.getChangeClassName(change)
       };
       visualiveSession.pub(VisualiveSession.actions.COMMAND_ADDED, data)
 

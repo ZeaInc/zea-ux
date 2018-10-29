@@ -1,7 +1,10 @@
 
+
+import UndoRedoManager from './UndoRedoManager.js';
+
 export default class Change {
   constructor(name) {
-    this.name = name ? name : this.constructor.name;
+    this.name = name ? name : UndoRedoManager.getChangeClassName(this);
   }
 
   undo() {}
