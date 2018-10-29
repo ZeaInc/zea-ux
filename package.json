@@ -6,7 +6,8 @@
   "main": "./dist/visualive-ux.js",
   "scripts": {
     "build": "webpack",
-    "build:dev": "webpack --mode=development --watch"
+    "build:dev": "webpack --mode=development --watch",
+    "dist": "webpack && yarn publish"
   },
   "repository": {
     "type": "git",
