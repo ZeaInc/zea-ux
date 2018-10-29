@@ -14,7 +14,8 @@ export default class GizmoTool extends BaseTool {
 
     renderer.getDiv().style.cursor = "crosshair";
 
-    renderer.vrViewportSetup.connect((vrviewport)=>{
+    const vrviewport = renderer.getVRViewport();
+    if (vrviewport) {
       if(!this.vrControllerToolTip) {
         this.vrControllerToolTip = new Visualive.Cross(0.03);
         this.vrControllerToolTipMat = new Visualive.Material('Cross', 'ToolIconShader');
@@ -28,7 +29,20 @@ export default class GizmoTool extends BaseTool {
         addIconToController(controller)
       }
       this.addIconToControllerId = vrviewport.controllerAdded.connect(addIconToController);
-    });
+    }
+  }
+
+  deactivateTool(renderer) {
+
+    const vrviewport = renderer.getVRViewport();
+    if(this.vrviewport && this.vrControllerToolTip) {
+      const addIconToController = (controller) => {
+        controller.getTipItem().removeAllChildren();
+      }
+      for(let controller of this.vrviewport.getControllers()) {
+        removeIconFromController(controller)
+      }
+    }
   }
 
   /////////////////////////////////////
