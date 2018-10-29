@@ -47,7 +47,7 @@ class VisualiveApiClient {
 
   doRequest(url, method, data, contentType) {
     const urlFullPath = this.apiHostUrl + url;
-    const token = getTokenFromUrl();
+    const token = getTokenFromUrl() || localStorage.getItem('api-token');
     const headers = new Headers();
     headers.append('Content-Type', contentType);
     headers.append('x-access-token', token);
@@ -124,7 +124,11 @@ class VisualiveApiClient {
           const deps = [];
           for (let depId of data.dependencies) {
             deps.push(
-              this.getProjectResourcesRecursive(depId, undefined, collectedProjects)
+              this.getProjectResourcesRecursive(
+                depId,
+                undefined,
+                collectedProjects
+              )
             );
           }
           const allDeps = Promise.all(deps)
