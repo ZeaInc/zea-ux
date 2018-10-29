@@ -29,7 +29,7 @@ class CreateGeomChange extends Change {
     this.parentItem.addChild(this.geomItem, false, false)
   }
 
-  toJSON() {
+  toJSON(appData) {
     const j = super.toJSON();
     j.parentItemPath = this.parentItem.getPath();
     j.geomItemName = this.geomItem.getName();
@@ -37,8 +37,8 @@ class CreateGeomChange extends Change {
     return j;
   }
 
-  fromJSON(j, root) {
-    this.parentItem = root.resolvePath(j.parentItemPath, 1);
+  fromJSON(j, appData) {
+    this.parentItem = appData.scene.getRoot().resolvePath(j.parentItemPath, 1);
     this.geomItem.setName(j.geomItemName);
     const xfo = new Visualive.Xfo();
     xfo.fromJSON(j.geomItemXfo)
