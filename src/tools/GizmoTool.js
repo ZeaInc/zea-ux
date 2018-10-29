@@ -56,17 +56,6 @@ export default class GizmoTool extends BaseTool {
       if (intersectionData == undefined) 
         return;
       if(intersectionData.geomItem.getOwner() instanceof Gizmo) {
-        // const gizmo = intersectionData.geomItem.getOwner() ;
-        // this.gizmoPlane = gizmo.getManipulationPlane();
-        // const mouseDownDist = intersectionData.mouseRay.intersectRayVector(this.gizmoPlane);
-        // if (mouseDownDist > 0) {
-        //   const grabPos = intersectionData.mouseRay.dir.scale(mouseDownDist);
-        //   this.activeGizmo = gizmo;
-        //   this.activeGizmo.onDragStart(event, grabPos);
-        //   return true;
-        // }
-
-
         this.activeGizmo = intersectionData.geomItem.getOwner();
         this.activeGizmo.handleMouseDown(Object.assign(event, {intersectionData, mouseRay:intersectionData.mouseRay}), mousePos);
         return true;
@@ -76,10 +65,6 @@ export default class GizmoTool extends BaseTool {
 
   onMouseMove(event, mousePos, viewport) {
     if (this.activeGizmo) {
-      // const mouseRay = viewport.calcRayFromScreenPos(mousePos);
-      // const dist = mouseRay.intersectRayVector(this.gizmoPlane)[0];
-      // const dragPos = mouseRay.dir.scale(dist);
-      // this.activeGizmo.onDragStart(event, dragPos);
       this.activeGizmo.handleMouseMove(event, mousePos, viewport);
       return true;
     }
@@ -87,11 +72,6 @@ export default class GizmoTool extends BaseTool {
 
   onMouseUp(event, mousePos, viewport) {
     if (this.activeGizmo) {
-      // const mouseRay = viewport.calcRayFromScreenPos(mousePos);
-      // const dist = mouseRay.intersectRayVector(this.gizmoPlane)[0];
-      // const releasePos = mouseRay.dir.scale(dist);
-      // this.activeGizmo.onDragEnd(event, releasePos);
-      // this.activeGizmo = undefined;
       this.activeGizmo.handleMouseUp(event, mousePos, viewport);
       this.activeGizmo = undefined;
       return true;

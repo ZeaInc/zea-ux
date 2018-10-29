@@ -75,9 +75,12 @@ export default class ToolManager {
       renderer.vrViewportSetup.connect(vrvp => {
         /////////////////////////////////////
         // VRController events
-        this.controllerDownId = vrvp.controllerButtonDown.connect(this.onVRControllerButtonDown.bind(this))
-        this.controllerUpId = vrvp.controllerButtonUp.connect(this.onVRControllerButtonUp.bind(this))
-        this.onVRPoseChangedId = vrvp.viewChanged.connect(this.onVRPoseChanged.bind(this))
+        if(!vrvp != this.__vrvp) {
+          this.__vrvp = vrvp;
+          this.controllerDownId = vrvp.controllerButtonDown.connect(this.onVRControllerButtonDown.bind(this));
+          this.controllerUpId = vrvp.controllerButtonUp.connect(this.onVRControllerButtonUp.bind(this));
+          this.onVRPoseChangedId = vrvp.viewChanged.connect(this.onVRPoseChanged.bind(this));
+        }
       });
     }
   }
