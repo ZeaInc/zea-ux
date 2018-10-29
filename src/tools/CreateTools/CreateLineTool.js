@@ -39,8 +39,8 @@ class CreateLineChange extends CreateGeomChange {
     }
   }
 
-  fromJSON(j, root) {
-    super.fromJSON(j, root);
+  fromJSON(j, appData) {
+    super.fromJSON(j, appData);
     if (j.color) {
       const color = new Visualive.Color();
       color.fromJSON(j.color);

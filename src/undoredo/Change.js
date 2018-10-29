@@ -14,13 +14,13 @@ export default class Change {
 
   update(updateData) {}
 
-  toJSON() { 
+  toJSON(appData) { 
     return {
      name: this.name
    }
   }
 
-  fromJSON(j) {
+  fromJSON(j, appData) {
     this.name = j.name;
   }
 
