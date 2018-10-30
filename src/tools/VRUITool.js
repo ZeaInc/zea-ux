@@ -7,16 +7,16 @@ export default class VRUITool extends BaseTool {
     this.__triggerHeld = false;
 
 
-    const uimat = new Material('uimat', 'FlatSurfaceShader');
+    const uimat = new Visualive.Material('uimat', 'FlatSurfaceShader');
 
-    this.__uiimage = new DataImage();
-    uimat.getParameter('BaseColor').setValue(this.__uiimage);
+    // this.__uiimage = new DataImage();
+    // uimat.getParameter('BaseColor').setValue(this.__uiimage);
 
-    this.__uiGeomItem = new GeomItem('VRControllerUI', new Plane(), uimat);
+    this.__uiGeomItem = new Visualive.GeomItem('VRControllerUI', new Visualive.Plane(), uimat);
     this.__uiGeomItem.getLocalXfo().tr.set(0.0, -0.07, 0.05); 
-    this.__uiGeomItem.getLocalXfo().ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * -0.6);
-    this.__uiGeomItemGeomXfo = new Xfo();
-    this.__uiGeomItemGeomXfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), -Math.PI);
+    this.__uiGeomItem.getLocalXfo().ori.setFromAxisAndAngle(new Visualive.Vec3(1, 0, 0), Math.PI * -0.6);
+    this.__uiGeomItemGeomXfo = new Visualive.Xfo();
+    this.__uiGeomItemGeomXfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0, 1, 0), -Math.PI);
     this.__uiGeomItemGeomXfo.sc.set(0.3, 0.2, 1.0);
     this.__uiGeomItem.setGeomOffsetXfo(this.__uiGeomItemGeomXfo)
     this.__dims = { width: 200, height: 300 };
@@ -24,10 +24,10 @@ export default class VRUITool extends BaseTool {
     this.__uiGeomItem.addRef(this)
 
 
-    const pointermat = new Material('pointermat', 'FlatSurfaceShader');
-    pointermat.getParameter('BaseColor').setValue(new Color(1.2, 0, 0));
+    const pointermat = new Visualive.Material('pointermat', 'FlatSurfaceShader');
+    pointermat.getParameter('BaseColor').setValue(new Visualive.Color(1.2, 0, 0));
 
-    const line = new Lines();
+    const line = new Visualive.Lines();
     line.setNumVertices(2);
     line.setNumSegments(1);
     line.setSegment(0, 0, 1);
@@ -35,9 +35,9 @@ export default class VRUITool extends BaseTool {
     line.getVertex(1).set(0.0, 0.0, -1.0);
     line.setBoundingBoxDirty();
 
-    this.__uiPointerItem = new GeomItem('VRControllerPointer', line, pointermat);
+    this.__uiPointerItem = new Visualive.GeomItem('VRControllerPointer', line, pointermat);
     this.__uiPointerItem.getLocalXfo().tr.set(0.0, -0.08, -0.04);
-    this.__uiPointerItem.getLocalXfo().ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * -0.2);
+    this.__uiPointerItem.getLocalXfo().ori.setFromAxisAndAngle(new Visualive.Vec3(1, 0, 0), Math.PI * -0.2);
     // this.__uiPointerItem.setVisible(false);
     this.__uiPointerItem.addRef(this)
   }

@@ -12,6 +12,7 @@ export default class BaseTool extends Visualive.ParameterOwner {
   }
 
   /////////////////////////////////////
+  // Tools on the tool stack.
 
   pushed(index) {
     this.index = index;
@@ -21,7 +22,6 @@ export default class BaseTool extends Visualive.ParameterOwner {
   }
 
   activateTool() {
-    this.index = index;
   }
 
   deactivateTool() {

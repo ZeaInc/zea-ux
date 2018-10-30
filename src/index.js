@@ -31,6 +31,7 @@ import Vec4Widget from './ui/parameter-widgets/Vec4Widget.js';
 import ToolManager from './tools/ToolManager.js';
 import ViewTool from './tools/ViewTool.js';
 import SelectionTool from './tools/SelectionTool.js';
+import OpenVRUITool from './tools/OpenVRUITool.js';
 
 // Create Geom Tools
 import CreateLineTool from './tools/CreateTools/CreateLineTool.js';
@@ -80,6 +81,7 @@ export {
   ToolManager,
   ViewTool,
   SelectionTool,
+  OpenVRUITool,
 
   // Create Geom Tools
   CreateLineTool,

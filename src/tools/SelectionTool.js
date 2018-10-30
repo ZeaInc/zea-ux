@@ -4,9 +4,8 @@ import Gizmo from '../gizmos/Gizmo.js';
 
 export default class SelectionTool extends BaseTool {
   constructor(appData) {
-    super();
+    super(appData);
 
-    this.appData = appData;
     this.dragging = false;
 
 
@@ -89,7 +88,7 @@ export default class SelectionTool extends BaseTool {
         const br = new Visualive.Vec2(Math.max(this.mouseDownPos.x, mouseUpPos.x), Math.max(this.mouseDownPos.y, mouseUpPos.y))
         const geomItems = viewport.getGeomItemsInRect(tl, br);
 
-        if (!event.altKey) {
+        if (!event.shiftKey) {
           this.appData.selectionManager.selectItems(geomItems, !event.ctrlKey);
         } else {
           this.appData.selectionManager.deselectItems(geomItems);
@@ -100,7 +99,13 @@ export default class SelectionTool extends BaseTool {
       } else {
         const intersectionData = viewport.getGeomDataAtPos(mousePos);
         if (intersectionData != undefined) {
-          this.appData.selectionManager.toggleItemSelection(intersectionData.geomItem, !event.ctrlKey);
+          if (!event.shiftKey) {
+            this.appData.selectionManager.toggleItemSelection(intersectionData.geomItem, !event.ctrlKey);
+          } else {
+            const items = new Set();
+            items.add(intersectionData.geomItem)
+            this.appData.selectionManager.deselectItems(items);
+          }
         }
         else {
           this.appData.selectionManager.clearSelection();

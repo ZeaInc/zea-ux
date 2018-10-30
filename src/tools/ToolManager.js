@@ -2,7 +2,6 @@ export default class ToolManager {
   constructor(appData){
     this.__toolStack = [];
     this.appData = appData;
-    this.bind(this.appData.renderer);
   }
 
   insertTool(tool, index) {
@@ -44,8 +43,8 @@ export default class ToolManager {
       prevTool.popped();
       
       const tool = this.currTool();
-      // if(tool)
-      //   tool.activateTool();
+      if(tool)
+        tool.activateTool();
       console.log("ToolManager.popTool:", prevTool.constructor.name, (tool ? tool.constructor.name : ''))
     }
   }
