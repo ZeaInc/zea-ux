@@ -11,50 +11,58 @@ export default class VRUITool extends BaseTool {
 
     // this.__uiimage = new DataImage();
     // uimat.getParameter('BaseColor').setValue(this.__uiimage);
+    uimat.getParameter('BaseColor').setValue(new Visualive.Color(0.3, 0.3, 0.3));
 
-    this.__uiGeomItem = new Visualive.GeomItem('VRControllerUI', new Visualive.Plane(), uimat);
-    this.__uiGeomItem.getLocalXfo().tr.set(0.0, -0.07, 0.05); 
-    this.__uiGeomItem.getLocalXfo().ori.setFromAxisAndAngle(new Visualive.Vec3(1, 0, 0), Math.PI * -0.6);
-    this.__uiGeomItemGeomXfo = new Visualive.Xfo();
-    this.__uiGeomItemGeomXfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0, 1, 0), -Math.PI);
-    this.__uiGeomItemGeomXfo.sc.set(0.3, 0.2, 1.0);
-    this.__uiGeomItem.setGeomOffsetXfo(this.__uiGeomItemGeomXfo)
+    this.__uiGeomItem = new Visualive.GeomItem('VRControllerUI', new Visualive.Plane(1, 1), uimat);
+    this.__localXfo = new Visualive.Xfo();
+    this.__localXfo.sc.set(0.3, 0.2, 1.0);
+    this.__localXfo.ori.setFromAxisAndAngle(new Visualive.Vec3(1, 0, 0), Math.PI * -0.6);
     this.__dims = { width: 200, height: 300 };
     // this.__uiGeomItem.setVisible(false);
     this.__uiGeomItem.addRef(this)
 
 
-    const pointermat = new Visualive.Material('pointermat', 'FlatSurfaceShader');
-    pointermat.getParameter('BaseColor').setValue(new Visualive.Color(1.2, 0, 0));
+    const pointermat = new Visualive.Material('pointermat', 'LinesShader');
+    pointermat.getParameter('Color').setValue(new Visualive.Color(1.2, 0, 0));
 
     const line = new Visualive.Lines();
     line.setNumVertices(2);
     line.setNumSegments(1);
     line.setSegment(0, 0, 1);
     line.getVertex(0).set(0.0, 0.0, 0.0);
-    line.getVertex(1).set(0.0, 0.0, -1.0);
+    line.getVertex(1).set(0.0, 0.0, -0.1);
     line.setBoundingBoxDirty();
 
     this.__uiPointerItem = new Visualive.GeomItem('VRControllerPointer', line, pointermat);
-    this.__uiPointerItem.getLocalXfo().tr.set(0.0, -0.08, -0.04);
     this.__uiPointerItem.getLocalXfo().ori.setFromAxisAndAngle(new Visualive.Vec3(1, 0, 0), Math.PI * -0.2);
-    // this.__uiPointerItem.setVisible(false);
     this.__uiPointerItem.addRef(this)
   }
 
   /////////////////////////////////////
 
-  setUIControllers(uiController, pointerController) {
+  setUIControllers(uiController, pointerController, headXfo) {
     this.uiController = uiController;
     this.pointerController = pointerController;
 
+    const xfoA =  this.uiController.getTreeItem().getGlobalXfo();
+    const xfoB =  this.pointerController.getTreeItem().getGlobalXfo();
+    const headToCtrlA = xfoA.tr.subtract(headXfo.tr);
+    const headToCtrlB = xfoB.tr.subtract(headXfo.tr);
+    if(headToCtrlA.cross(headToCtrlB).dot(headXfo.ori.getYaxis()) > 0.0){
+      this.__localXfo.tr.set(0.1, -0.07, 0.05); 
+    }
+    else {
+      this.__localXfo.tr.set(-0.1, -0.07, 0.05); 
+    }
+
+    this.__uiGeomItem.setLocalXfo(this.__localXfo); 
   }
 
   activateTool() {
     super.activateTool();
 
-    this.uiController.getTipItem().addChild(this.__uiGeomItem);
-    this.pointerController.getTipItem().addChild(this.__uiPointerItem);
+    this.uiController.getTipItem().addChild(this.__uiGeomItem, false);
+    this.pointerController.getTipItem().addChild(this.__uiPointerItem, false);
   }
 
   deactivateTool() {

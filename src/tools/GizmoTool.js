@@ -16,12 +16,10 @@ export default class GizmoTool extends BaseTool {
     this.appData.renderer.getDiv().style.cursor = "crosshair";
 
     const addIconToController = (controller) => {
-      if(!this.vrControllerToolTip) {
-        this.vrControllerToolTip = new Visualive.Cross(0.03);
-        this.vrControllerToolTipMat = new Visualive.Material('Cross', 'ToolIconShader');
-        this.vrControllerToolTipMat.getParameter('BaseColor').setValue(new Visualive.Color("#03E3AC"));
-      }
-      const geomItem = new Visualive.GeomItem('GizmoToolTip', this.vrControllerToolTip, this.vrControllerToolTipMat);
+      const cross = new Visualive.Cross(0.03);
+      const mat = new Visualive.Material('Cross', 'ToolIconShader');
+      mat.getParameter('BaseColor').setValue(new Visualive.Color("#03E3AC"));
+      const geomItem = new Visualive.GeomItem('GizmoToolTip', cross, mat);
       controller.getTipItem().addChild(geomItem, false);
     }
     const addIconToControllers = (vrviewport)=>{

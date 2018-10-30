@@ -28,7 +28,7 @@ export default class OpenVRUITool extends BaseTool {
       const headToCtrlA = xfoA.tr.subtract(headXfo.tr);
       headToCtrlA.normalizeInPlace();
       if (headToCtrlA.angleTo(xfoA.ori.getYaxis()) < (Math.PI * 0.25)) {
-        this.vrUITool.setUIControllers(ctrlA, ctrlB);
+        this.vrUITool.setUIControllers(ctrlA, ctrlB, headXfo);
         this.appData.toolManager.pushTool(this.vrUITool);
         return true;
       }

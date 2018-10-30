@@ -13,8 +13,13 @@ export default class ToolManager {
     const tool = this.__toolStack[index]
     this.__toolStack.splice(index, 1);
     tool.uninstalled();
-    if(index == this.__toolStack.length)
-        tool.deactivateTool();
+    if(index == this.__toolStack.length){
+      tool.deactivateTool();
+
+      const nextTool = this.currTool();
+      if(nextTool)
+        nextTool.activateTool();
+    }
   }
 
   pushTool(tool){
