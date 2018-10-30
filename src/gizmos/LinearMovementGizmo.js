@@ -11,14 +11,16 @@ export default class LinearMovementGizmo extends Gizmo {
 
   handleMouseDown(event, mousePos, viewport) {
     this.gizmoRay = this.getManipulationRay();
-    this.grabDist = event.mouseRay.intersectRayVector(this.gizmoRay)[1];
+    const mouseRay = viewport.calcRayFromScreenPos(mousePos);
+    this.grabDist = mouseRay.intersectRayVector(this.gizmoRay)[1];
     const grabPos = this.gizmoRay.start.add(this.gizmoRay.dir.scale(this.grabDist));
     this.onDragStart({});
     return true;
   }
 
   handleMouseMove(event, mousePos, viewport) {
-    const dist = event.mouseRay.intersectRayVector(this.gizmoRay)[1];
+    const mouseRay = viewport.calcRayFromScreenPos(mousePos);
+    const dist = mouseRay.intersectRayVector(this.gizmoRay)[1];
     const dragPos = this.gizmoRay.start.add(this.gizmoRay.dir.scale(dist));
     this.onDrag({ value: dist, delta: (dist-this.grabDist)  });
   }

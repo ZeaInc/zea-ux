@@ -66,7 +66,7 @@ export default class GizmoTool extends BaseTool {
         return;
       if(intersectionData.geomItem.getOwner() instanceof Gizmo) {
         this.activeGizmo = intersectionData.geomItem.getOwner();
-        this.activeGizmo.handleMouseDown(Object.assign(event, {intersectionData, mouseRay:intersectionData.mouseRay}), mousePos);
+        this.activeGizmo.handleMouseDown(Object.assign(event, {intersectionData, mouseRay:intersectionData.mouseRay}), mousePos, viewport);
         return true;
       }
     }

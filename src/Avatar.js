@@ -21,13 +21,13 @@ export default class Avatar {
   }
 
   setAudioStream(stream) {
-    if(this.__audioIem) {
+    if(this.__audioItem) {
       return;
     }
-    this.__audioIem = new AudioItem('audio', stream);
+    this.__audioItem = new AudioItem('audio', stream);
     const head = this.__treeItem.getChild(0);
     if (head) {
-      head.addChild(this.__audioIem);
+      head.addChild(this.__audioItem);
     }
   }
 
@@ -44,8 +44,8 @@ export default class Avatar {
     const geomXfo = new Visualive.Xfo();
     geomItem.setGeomOffsetXfo(geomXfo);
 
-    if (this.__audioIem) {
-      geomItem.addChild(this.__audioIem);
+    if (this.__audioItem) {
+      geomItem.addChild(this.__audioItem);
     }
 
     this.__treeItem.addChild(geomItem);
@@ -56,8 +56,8 @@ export default class Avatar {
   setViveRepresentation() {
     this.__treeItem.removeAllChildren();
     const hmdHolder = new Visualive.TreeItem("hmdHolder");
-    if (this.__audioIem) {
-      hmdHolder.addChild(this.__audioIem);
+    if (this.__audioItem) {
+      hmdHolder.addChild(this.__audioItem);
     }
     this.__treeItem.addChild(hmdHolder);
 
@@ -103,7 +103,7 @@ export default class Avatar {
             ] 
           }));
         controllerTree.setLocalXfo(xfo);
-        treeItem.addChild(controllerTree);
+        treeItem.addChild(controllerTree, false);
       }
 
       this.__viveAsset.geomsLoaded.connect(() => {
@@ -111,7 +111,7 @@ export default class Avatar {
         setupControllerGeom(sharedControllerTree);
       });
 
-      this.__treeItem.addChild(treeItem);
+      this.__treeItem.addChild(treeItem, false);
       this.__controllers[i] = treeItem;
     }
 

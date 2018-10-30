@@ -1,6 +1,8 @@
 import VisualiveApiClient, { getParameterFromUrl } from './VisualiveApiClient.js';
 
 import UndoRedoManager from './undoredo/UndoRedoManager.js';
+import Change from './undoredo/Change.js';
+import ParameterValueChange from './undoredo/ParameterValueChange.js';
 import ActionRegistry from './ActionRegistry.js';
 import SelectionManager from './SelectionManager.js';
 import LoaderRegistry from './LoaderRegistry.js';
@@ -54,6 +56,8 @@ export {
   getParameterFromUrl,
 
   UndoRedoManager,
+  Change, 
+  ParameterValueChange, 
   ActionRegistry,
   SelectionManager,
   LoaderRegistry,
