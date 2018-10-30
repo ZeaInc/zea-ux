@@ -113,9 +113,7 @@ class VisualiveApiClient {
     }
     return new Promise((resolve, reject) => {
       collectedProjects.push(projectId);
-      const res = this.getProjectData(projectId);
-      res
-        .then(data => {
+      this.getProjectData(projectId).then(data => {
           console.log(projectId, data);
           let resources = data.filesPlain;
           if (data.dependencies.length == 0) {
