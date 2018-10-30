@@ -84,8 +84,8 @@ class CreateFreehandLineChange extends CreateGeomChange {
 UndoRedoManager.registerChange('CreateFreehandLineChange', CreateFreehandLineChange)
 
 export default class CreateFreehandLineTool extends CreateLineTool {
-  constructor(undoRedoManager) {
-    super(undoRedoManager);
+  constructor(appData) {
+    super(appData);
 
     this.mp = this.addParameter(new Visualive.BooleanParameter('Modulate Thickness By Stroke Speed', false));
   }
@@ -95,7 +95,7 @@ export default class CreateFreehandLineTool extends CreateLineTool {
     const color = this.cp.getValue();
     const lineThickness = this.tp.getValue();
     const change = new CreateFreehandLineChange(parentItem, xfo, color, lineThickness);
-    this.undoRedoManager.addChange(change);
+    this.appData.undoRedoManager.addChange(change);
 
     this.xfo = xfo;
     this.invxfo = xfo.inverse();
@@ -108,7 +108,7 @@ export default class CreateFreehandLineTool extends CreateLineTool {
     const p = this.invxfo.transformVec3(pt);
     const vel = p.subtract(this.prevP).length();
 
-    this.undoRedoManager.updateChange({
+    this.appData.undoRedoManager.updateChange({
       point: p
     });
 
@@ -118,7 +118,7 @@ export default class CreateFreehandLineTool extends CreateLineTool {
 
   createRelease(pt) {
     if (this.length == 0) {
-      this.undoRedoManager.undo(false);
+      this.appData.undoRedoManager.undo(false);
     }
     this.stage = 0;
   }

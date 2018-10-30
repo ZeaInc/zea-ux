@@ -3,18 +3,19 @@ import Gizmo from '../gizmos/Gizmo.js';
 
 
 export default class GizmoTool extends BaseTool {
-  constructor(undoRedoManager) {
-    super(undoRedoManager);
+  constructor(appData) {
+    super(appData);
 
     this.activeGizmo = undefined;
   }
 
-  activateTool(renderer) {
+  activateTool() {
+    super.activateTool();
     console.log("activateTool.GizmoTool")
 
-    renderer.getDiv().style.cursor = "crosshair";
+    this.appData.renderer.getDiv().style.cursor = "crosshair";
 
-    const vrviewport = renderer.getVRViewport();
+    const vrviewport = this.appData.renderer.getVRViewport();
     if (vrviewport) {
       if(!this.vrControllerToolTip) {
         this.vrControllerToolTip = new Visualive.Cross(0.03);
@@ -32,11 +33,12 @@ export default class GizmoTool extends BaseTool {
     }
   }
 
-  deactivateTool(renderer) {
+  deactivateTool() {
+    super.deactivateTool();
 
-    const vrviewport = renderer.getVRViewport();
-    if(this.vrviewport && this.vrControllerToolTip) {
-      const addIconToController = (controller) => {
+    const vrviewport = this.appData.renderer.getVRViewport();
+    if(vrviewport && this.vrControllerToolTip) {
+      const removeIconFromController = (controller) => {
         controller.getTipItem().removeAllChildren();
       }
       for(let controller of this.vrviewport.getControllers()) {

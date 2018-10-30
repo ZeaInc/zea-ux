@@ -2,8 +2,8 @@
 import BaseTool from './BaseTool.js';
 
 export default class ViewTool extends BaseTool {
-  constructor() {
-    super();
+  constructor(appData) {
+    super(appData);
 
     this.__defaultMode = 'orbit';
     this.__mode = this.__defaultMode;
@@ -27,10 +27,10 @@ export default class ViewTool extends BaseTool {
 
   ///////////////////////////////////////
   // 
-  activateTool(renderer) {
+  activateTool() {
+    super.activateTool();
     console.log("activateTool.ViewTool")
-    renderer.getDiv().style.cursor = "default";
-    super.activateTool(renderer);
+    this.appData.renderer.getDiv().style.cursor = "default";
   }
 
   deactivateTool(renderer) {}

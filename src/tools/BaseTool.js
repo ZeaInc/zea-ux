@@ -1,8 +1,10 @@
 
 export default class BaseTool extends Visualive.ParameterOwner {
-  constructor(undoRedoManager) {
+  constructor(appData) {
     super();
-    this.undoRedoManager = undoRedoManager;
+    if(!appData)
+      console.error("App data not provided to tool")
+    this.appData = appData;
 
     this.actionFinished = new Visualive.Signal();
 
@@ -11,12 +13,18 @@ export default class BaseTool extends Visualive.ParameterOwner {
 
   /////////////////////////////////////
 
-
-  activateTool(renderer) {
+  pushed(index) {
+    this.index = index;
   }
 
-  deactivateTool(renderer) {
+  popped() {
+  }
 
+  activateTool() {
+    this.index = index;
+  }
+
+  deactivateTool() {
   }
 
   /////////////////////////////////////

@@ -31,6 +31,7 @@ import CreateLineTool from './src/tools/CreateTools/CreateLineTool.js';
 import CreateSphereTool from './src/tools/CreateTools/CreateSphereTool.js';
 import CreateCuboidTool from './src/tools/CreateTools/CreateCuboidTool.js';
 import CreateFreehandLineTool from './src/tools/CreateTools/CreateFreehandLineTool.js';
+import OpenVRUITool from './src/tools/CreateTools/OpenVRUITool.js';
 
 export {
   VisualiveApiClient,
@@ -64,4 +65,5 @@ export {
   CreateSphereTool,
   CreateCuboidTool,
   CreateFreehandLineTool,
+  OpenVRUITool
 };

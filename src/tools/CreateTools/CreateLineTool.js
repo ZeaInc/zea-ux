@@ -57,51 +57,57 @@ class CreateLineChange extends CreateGeomChange {
 UndoRedoManager.registerChange('CreateLineChange', CreateLineChange)
 
 export default class CreateLineTool extends CreateGeomTool {
-  constructor(undoRedoManager) {
-    super(undoRedoManager);
+  constructor(appData) {
+    super(appData);
 
     this.cp = this.addParameter(new Visualive.ColorParameter('Line Color', new Visualive.Color(.7, .2, .2)));
     this.tp = this.addParameter(new Visualive.NumberParameter('Line Thickness', 0.01, [0, 0.1])); // 1cm.
   }
 
-  activateTool(renderer) {
+  activateTool() {
+    super.activateTool();
 
-    renderer.getDiv().style.cursor = "crosshair";
+    this.appData.renderer.getDiv().style.cursor = "crosshair";
 
-    renderer.vrViewportSetup.connect((vrviewport)=>{
-      if(!this.vrControllerToolTip) {
-        this.vrControllerToolTip = new Visualive.Sphere(this.tp.getValue(), 64);
-        this.vrControllerToolTipMat = new Visualive.Material('marker', 'FlatSurfaceShader');
-        this.vrControllerToolTipMat.getParameter('BaseColor').setValue(this.cp.getValue());
-      }
-      const addIconToController = (id, controller) => {
-        const geomItem = new Visualive.GeomItem('VRControllerTip', this.vrControllerToolTip, this.vrControllerToolTipMat);
-        controller.getTip().addChild(geomItem);
-      }
-      for(let controller of vrviewport.getControllers()) {
-        addIconToController(controller)
-      }
-      this.addIconToControllerId = vrviewport.controllerAdded.connect(addIconToController);
-    });
+    if(this.__id == undefined) {
+      this.__id = this.appData.renderer.vrViewportSetup.connect((vrviewport)=>{
+        if(!this.vrControllerToolTip) {
+          this.vrControllerToolTip = new Visualive.Sphere(this.tp.getValue(), 64);
+          this.vrControllerToolTipMat = new Visualive.Material('marker', 'FlatSurfaceShader');
+          this.vrControllerToolTipMat.getParameter('BaseColor').setValue(this.cp.getValue());
+        }
+        const addIconToController = (id, controller) => {
+          const geomItem = new Visualive.GeomItem('VRControllerTip', this.vrControllerToolTip, this.vrControllerToolTipMat);
+          controller.getTip().addChild(geomItem);
+        }
+        for(let controller of vrviewport.getControllers()) {
+          addIconToController(controller)
+        }
+        this.addIconToControllerId = vrviewport.controllerAdded.connect(addIconToController);
+      });
+    }
 
   }
 
-  deactivateTool(renderer) {
+  deactivateTool() {
+    super.deactivateTool();
 
-    renderer.getDiv().style.cursor = "pointer";
+    this.appData.renderer.getDiv().style.cursor = "pointer";
 
-    const vrviewport = renderer.getVRViewport();
-    if (vrviewport) {
-      for(let controller of vrviewport.getControllers()) {
-        controller.getTip().removeAllChildren();
+    if(this.__id != undefined) {
+      const vrviewport = this.appData.renderer.getVRViewport();
+      if (vrviewport) {
+        for(let controller of vrviewport.getControllers()) {
+          controller.getTip().removeAllChildren();
+        }
+        vrviewport.controllerAdded.disconnectId(this.addIconToControllerId);
       }
-      vrviewport.controllerAdded.disconnectId(this.addIconToControllerId);
     }
   }
 
   createStart(xfo, parentItem) {
     const change = new CreateLineChange(parentItem, xfo);
-    this.undoRedoManager.addChange(change);
+    this.appData.undoRedoManager.addChange(change);
     
     this.xfo = xfo.inverse();
     this.stage = 1;
@@ -111,12 +117,12 @@ export default class CreateLineTool extends CreateGeomTool {
   createMove(pt) {
     const offet = this.xfo.transformVec3(pt)
     this.length = offet.length();
-    this.undoRedoManager.updateChange({ p1: offet });
+    this.appData.undoRedoManager.updateChange({ p1: offet });
   }
 
   createRelease(pt) {
     if (this.length == 0) {
-      this.undoRedoManager.undo(false);
+      this.appData.undoRedoManager.undo(false);
     }
     this.stage = 0;
   }

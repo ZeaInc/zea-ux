@@ -18,16 +18,19 @@ export default class SelectionTool extends BaseTool {
     this.selectionRectXfo.sc.set(0,0,0)
   }
 
-  activateTool(renderer) {
+  activateTool() {
+    super.activateTool();
+
     if(!this.rectItem) {
       this.rectItem = new Visualive.GeomItem('selectionRect', this.selectionRect, this.selectionRectMat);
       this.rectItem.getParameter('Visible').setValue(false);
-      renderer.getCollector().addTreeItem(this.rectItem);
+      this.appData.renderer.getCollector().addTreeItem(this.rectItem);
     }
 
   }
 
-  deactivateTool(renderer) {
+  deactivateTool() {
+    super.deactivateTool();
     this.selectionRectXfo.sc.set(0,0,0)
     this.rectItem.setGlobalXfo(this.selectionRectXfo)
   }

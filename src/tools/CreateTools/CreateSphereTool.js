@@ -37,13 +37,13 @@ class CreateSphereChange extends CreateGeomChange {
 UndoRedoManager.registerChange('CreateSphereChange', CreateSphereChange)
 
 export default class CreateSphereTool extends CreateGeomTool {
-  constructor(undoRedoManager) {
-    super(undoRedoManager);
+  constructor(appData) {
+    super(appData);
   }
 
   createStart(xfo, parentItem) {
     const change = new CreateSphereChange(parentItem, xfo);
-    this.undoRedoManager.addChange(change);
+    this.appData.undoRedoManager.addChange(change);
 
     this.xfo = xfo;
     this.stage = 1;
@@ -52,12 +52,12 @@ export default class CreateSphereTool extends CreateGeomTool {
 
   createMove(pt) {
     this.radius = pt.distanceTo(this.xfo.tr);
-    this.undoRedoManager.updateChange({ radius: this.radius });
+    this.appData.undoRedoManager.updateChange({ radius: this.radius });
   }
 
   createRelease(pt) {
     if (this.radius == 0) {
-      this.undoRedoManager.undo(false);
+      this.appData.undoRedoManager.undo(false);
     }
     this.stage = 0;
   }

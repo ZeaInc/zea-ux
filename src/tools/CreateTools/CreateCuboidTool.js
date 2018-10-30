@@ -37,15 +37,15 @@ UndoRedoManager.registerChange('CreateCuboidChange', CreateCuboidChange)
 
 
 export default class CreateCuboidTool extends CreateGeomTool {
-  constructor(undoRedoManager) {
-    super(undoRedoManager);
+  constructor(appData) {
+    super(appData);
     console.log("Create Cuboid");
   }
 
   createStart(xfo, parentItem) {
 
     const change = new CreateCuboidChange(parentItem, xfo);
-    this.undoRedoManager.addChange(change);
+    this.appData.undoRedoManager.addChange(change);
 
     this.xfo = xfo;
     this.invxfo = xfo.inverse();
@@ -58,14 +58,14 @@ export default class CreateCuboidTool extends CreateGeomTool {
       const delta = this.invxfo.transformVec3(pt);
 
       // const delta = pt.subtract(this.xfo.tr)
-      this.undoRedoManager.updateChange({ 
+      this.appData.undoRedoManager.updateChange({ 
         baseSize: [Math.abs(delta.x), Math.abs(delta.y)],
         tr: this.xfo.tr.add(delta.scale(0.5))
         });
     }
     else {
       const vec = this.invxfo.transformVec3(pt);
-      this.undoRedoManager.updateChange({ height: vec.y });
+      this.appData.undoRedoManager.updateChange({ height: vec.y });
     }
   }
 

@@ -1,8 +1,8 @@
 export default class ToolManager {
-  constructor(renderer){
+  constructor(appData){
     this.__toolStack = [];
-
-    this.bind(renderer);
+    this.appData = appData;
+    this.bind(this.appData.renderer);
   }
 
   insertTool(tool, index) {
@@ -21,24 +21,31 @@ export default class ToolManager {
         return;
       }
       else {
-        prevTool.deactivateTool(this.renderer);
+        // Note: only the lead tool is 'active' and displaying an icon. 
+        // A tool can recieve events even if not active, if it is on 
+        // the stack.
+        prevTool.deactivateTool();
       }
     }
 
     this.__toolStack.push(tool);
-    tool.activateTool(this.renderer);
+    tool.pushed(this.__toolStack.length-1);
+    tool.activateTool();
 
-    console.log("ToolManager.pushTool:", tool.constructor.name)
+    console.log("ToolManager.pushTool:", tool.constructor.name);
+
+    return this.__toolStack.length - 1; 
   }
 
   popTool() {
     if(this.__toolStack.length > 0) {
-      const prevTool = this.currTool();
-      prevTool.deactivateTool(this.renderer);
-      this.__toolStack.pop();
+      const prevTool = this.__toolStack.pop();
+      prevTool.deactivateTool();
+      prevTool.popped();
+      
       const tool = this.currTool();
-      if(tool)
-        tool.activateTool(this.renderer);
+      // if(tool)
+      //   tool.activateTool();
       console.log("ToolManager.popTool:", prevTool.constructor.name, (tool ? tool.constructor.name : ''))
     }
   }
@@ -50,8 +57,7 @@ export default class ToolManager {
 
   bind(renderer) {
 
-    this.renderer = renderer;
-    const viewport = this.renderer.getViewport();
+    const viewport = renderer.getViewport();
 
     this.mouseDownId = viewport.mouseDown.connect(this.onMouseDown.bind(this))
     this.mouseMovedId = viewport.mouseMoved.connect(this.onMouseMove.bind(this))
@@ -219,7 +225,7 @@ export default class ToolManager {
 
 
   destroy() {
-    const viewport = this.renderer.getViewport();
+    const viewport = this.appData.renderer.getViewport();
 
     viewport.mouseDown.disconnectId(this.mouseDownId)
     viewport.mouseMoved.disconnectId(this.mouseMovedId)
@@ -239,14 +245,15 @@ export default class ToolManager {
     viewport.touchEnd.disconnectId(this.touchEndId)
     viewport.touchCancel.disconnectId(this.touchCancelId)
 
-    if (renderer.supportsVR()) {
-      renderer.vrViewportSetup.connect(vrvp => {
+    if (this.appData.renderer.supportsVR()) {
+      const vrviewport = this.appData.renderer.getVRViewport();
+      if(vrviewport) {
         /////////////////////////////////////
         // VRController events
         viewport.controllerDown.disconnectId(this.controllerDownId)
         viewport.controllerUp.disconnectId(this.controllerUpId)
         viewport.viewChanged.disconnectId(this.onVRPoseChangedId)
-      });
+      };
     }
 
   }
