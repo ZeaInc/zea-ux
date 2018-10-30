@@ -1,4 +1,4 @@
-import BaseTool from './BaseTool.js';
+import BaseTool from '../BaseTool.js';
 import VRUITool from './VRUITool.js';
 
 export default class OpenVRUITool extends BaseTool {

@@ -1,4 +1,4 @@
-import BaseTool from './BaseTool.js';
+import BaseTool from '../BaseTool.js';
 
 export default class VRUITool extends BaseTool {
   constructor(appData) {
