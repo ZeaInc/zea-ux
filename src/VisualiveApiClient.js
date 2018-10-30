@@ -36,6 +36,7 @@ class VisualiveApiClient {
         case 'development':
           return 'http://localhost:7070/api/v1/';
         case 'stage':
+        case 'local_stage':
           return 'https://apistage.visualive.io/api/v1/';
         case 'production':
           return 'https://api.visualive.io/api/v1/';

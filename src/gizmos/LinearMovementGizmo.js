@@ -36,20 +36,20 @@ export default class LinearMovementGizmo extends Gizmo {
   // VRController events
 
   onVRControllerButtonDown(event) {
-    const gizmoRay = this.getManipulationRay();
+    this.gizmoRay = this.getManipulationRay();
     // const grabDist = event.controllerRay.intersectRayVector(gizmoRay)[1];
     // const grabPos = this.gizmoRay.start.add(this.gizmoRay.dir.scale(this.grabDist));
     
     this.activeController = event.controller;
     const xfo = this.activeController.getTipXfo();
-    this.grabDist = xfo.tr.subtract(gizmoRay.start).dot(gizmoRay.dir);
+    this.grabDist = xfo.tr.subtract(this.gizmoRay.start).dot(this.gizmoRay.dir);
     this.onDragStart();
     return true;
   }
 
   onVRPoseChanged(event) {
     const xfo = this.activeController.getTipXfo()
-    const dist = xfo.tr.subtract(gizmoRay.start).dot(gizmoRay.dir);
+    const dist = xfo.tr.subtract(this.gizmoRay.start).dot(this.gizmoRay.dir);
     const dragPos = this.gizmoRay.start.add(this.gizmoRay.dir.scale(dist));
     this.onDrag({ value: dist, delta: (dist-this.grabDist)  });
     return true;

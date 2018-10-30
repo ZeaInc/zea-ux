@@ -104,7 +104,7 @@ export default class VRUITool extends BaseTool {
     }
 
     if(!this.__triggerHeld) {
-      this.checkControllers();
+      checkControllers();
 
     }
 

@@ -6,10 +6,15 @@ export default class ToolManager {
 
   insertTool(tool, index) {
     this.__toolStack.splice(index, 0, tool);
+    tool.installed(index);
   }
 
   removeTool(index) {
+    const tool = this.__toolStack[index]
     this.__toolStack.splice(index, 1);
+    tool.uninstalled();
+    if(index == this.__toolStack.length)
+        tool.deactivateTool();
   }
 
   pushTool(tool){
@@ -28,7 +33,7 @@ export default class ToolManager {
     }
 
     this.__toolStack.push(tool);
-    tool.pushed(this.__toolStack.length-1);
+    tool.installed(this.__toolStack.length-1);
     tool.activateTool();
 
     console.log("ToolManager.pushTool:", tool.constructor.name);
@@ -40,7 +45,7 @@ export default class ToolManager {
     if(this.__toolStack.length > 0) {
       const prevTool = this.__toolStack.pop();
       prevTool.deactivateTool();
-      prevTool.popped();
+      prevTool.uninstalled();
       
       const tool = this.currTool();
       if(tool)

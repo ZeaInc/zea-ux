@@ -15,21 +15,30 @@ export default class GizmoTool extends BaseTool {
 
     this.appData.renderer.getDiv().style.cursor = "crosshair";
 
-    const vrviewport = this.appData.renderer.getVRViewport();
-    if (vrviewport) {
+    const addIconToController = (controller) => {
       if(!this.vrControllerToolTip) {
         this.vrControllerToolTip = new Visualive.Cross(0.03);
         this.vrControllerToolTipMat = new Visualive.Material('Cross', 'ToolIconShader');
         this.vrControllerToolTipMat.getParameter('BaseColor').setValue(new Visualive.Color("#03E3AC"));
       }
-      const addIconToController = (controller) => {
-        const geomItem = new Visualive.GeomItem('GizmoToolTip', this.vrControllerToolTip, this.vrControllerToolTipMat);
-        controller.getTipItem().addChild(geomItem, false);
-      }
+      const geomItem = new Visualive.GeomItem('GizmoToolTip', this.vrControllerToolTip, this.vrControllerToolTipMat);
+      controller.getTipItem().addChild(geomItem, false);
+    }
+    const addIconToControllers = (vrviewport)=>{
       for(let controller of vrviewport.getControllers()) {
         addIconToController(controller)
       }
-      this.addIconToControllerId = vrviewport.controllerAdded.connect(addIconToController);
+    }
+
+    const vrviewport = this.appData.renderer.getVRViewport();
+    if (vrviewport) {
+      addIconToControllers(vrviewport);
+    }
+    else {
+      this.appData.renderer.vrViewportSetup.connect((vrviewport)=>{
+        addIconToControllers(vrviewport);
+        this.addIconToControllerId = vrviewport.controllerAdded.connect(addIconToController);
+      });
     }
   }
 
@@ -41,7 +50,7 @@ export default class GizmoTool extends BaseTool {
       const removeIconFromController = (controller) => {
         controller.getTipItem().removeAllChildren();
       }
-      for(let controller of this.vrviewport.getControllers()) {
+      for(let controller of vrviewport.getControllers()) {
         removeIconFromController(controller)
       }
     }
@@ -102,8 +111,10 @@ export default class GizmoTool extends BaseTool {
   onVRControllerButtonDown(event) {
     if (!this.activeGizmo) {
       const intersectionData = event.controller.getGeomItemAtTip();
-      if (intersectionData != undefined && intersectionData.geomItem instanceof Gizmo) {
-        const gizmo = intersectionData.geomItem;
+      if (intersectionData == undefined) 
+        return;
+      if (intersectionData.geomItem.getOwner() instanceof Gizmo) {
+        const gizmo = intersectionData.geomItem.getOwner();
         this.activeGizmo = gizmo;
         this.activeGizmo.onVRControllerButtonDown(event);
         return true;

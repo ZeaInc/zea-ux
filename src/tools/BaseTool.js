@@ -14,11 +14,11 @@ export default class BaseTool extends Visualive.ParameterOwner {
   /////////////////////////////////////
   // Tools on the tool stack.
 
-  pushed(index) {
+  installed(index) {
     this.index = index;
   }
 
-  popped() {
+  uninstalled() {
   }
 
   activateTool() {

@@ -27,14 +27,44 @@ export default class ViewTool extends BaseTool {
 
   ///////////////////////////////////////
   // 
+
   activateTool() {
     super.activateTool();
     console.log("activateTool.ViewTool")
+
     this.appData.renderer.getDiv().style.cursor = "default";
+
+    const vrviewport = this.appData.renderer.getVRViewport();
+    if (vrviewport) {
+      if(!this.vrControllerToolTip) {
+        this.vrControllerToolTip = new Visualive.Cross(0.03);
+        this.vrControllerToolTipMat = new Visualive.Material('Cross', 'ToolIconShader');
+        this.vrControllerToolTipMat.getParameter('BaseColor').setValue(new Visualive.Color("#03E3AC"));
+      }
+      const addIconToController = (controller) => {
+        const geomItem = new Visualive.GeomItem('GizmoToolTip', this.vrControllerToolTip, this.vrControllerToolTipMat);
+        controller.getTipItem().addChild(geomItem, false);
+      }
+      for(let controller of vrviewport.getControllers()) {
+        addIconToController(controller)
+      }
+      this.addIconToControllerId = vrviewport.controllerAdded.connect(addIconToController);
+    }
   }
 
-  deactivateTool(renderer) {}
+  deactivateTool() {
+    super.deactivateTool();
 
+    const vrviewport = this.appData.renderer.getVRViewport();
+    if(vrviewport && this.vrControllerToolTip) {
+      const removeIconFromController = (controller) => {
+        controller.getTipItem().removeAllChildren();
+      }
+      for(let controller of vrviewport.getControllers()) {
+        removeIconFromController(controller)
+      }
+    }
+  }
   ///////////////////////////////////////
   // 
   setDefaultMode(mode) {
