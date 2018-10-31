@@ -74,7 +74,7 @@ export default class SessionSync {
     /////////////////////////////////////////////
     // Pose Changes
 
-    // const otherAvatar = new Avatar(appData, { userId });
+    // const ourAvatar = new Avatar(appData, { userId });
 
     let tick = 0;
 

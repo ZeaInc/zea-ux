@@ -5,7 +5,9 @@ export default class Avatar {
   constructor(appData, userData) {
     this.__appData = appData;
     this.__userData = userData;
-    this.__userData.color = new Visualive.Color(1, 0, 1, 1)
+
+    if(!this.__userData.avatarColor)
+      this.__userData.avatarColor = new Visualive.Color.random(0.25);
 
     this.__controllers = [];
 
@@ -17,7 +19,7 @@ export default class Avatar {
     // this.__treeItem.setSelectable(false);
 
     this.__material = new Visualive.Material('user' + userData.id + 'Material', 'SimpleSurfaceShader');
-    this.__material.getParameter('BaseColor').setValue(this.__userData.color);
+    this.__material.getParameter('BaseColor').setValue(this.__userData.avatarColor);
   }
 
   setAudioStream(stream) {
@@ -37,11 +39,13 @@ export default class Avatar {
 
   setCameraAndPointer() {
     this.__treeItem.removeAllChildren();
-    const shape = new Visualive.Cuboid(0.2, 0.6, 1.0)
-    shape.getVertex(0).scaleInPlace(0.1);
-    shape.getVertex(1).scaleInPlace(0.1);
-    shape.getVertex(2).scaleInPlace(0.1);
-    shape.getVertex(3).scaleInPlace(0.1);
+    const sc = 0.02;
+    const shape = new Visualive.Cuboid(16*sc, 9*sc, 0.25);// 16:9
+    const pinch = new Visualive.Vec3(0.1, 0.1, 1);
+    shape.getVertex(0).multiplyInPlace(pinch);
+    shape.getVertex(1).multiplyInPlace(pinch);
+    shape.getVertex(2).multiplyInPlace(pinch);
+    shape.getVertex(3).multiplyInPlace(pinch);
     // const shape = new Visualive.Cone(0.2, 0.6, 4, true);
     shape.computeVertexNormals();
     const geomItem = new Visualive.GeomItem('camera', shape, this.__material);
@@ -72,6 +76,7 @@ export default class Avatar {
         const materialLibrary = this.__viveAsset.getMaterialLibrary();
         const materialNames = materialLibrary.getMaterialNames();
         for(let name of materialNames) {
+          console.log(name)
           const material = materialLibrary.getMaterial(name, false);
           if(material)
             material.setShaderName('SimpleSurfaceShader');
@@ -79,14 +84,13 @@ export default class Avatar {
 
 
         const sharedGeomItem = this.__viveAsset.getChildByName('HTC_Vive_HMD');
-        // sharedGeomItem.geomAssigned.connect(() => {
-          const hmdGeomItem = sharedGeomItem.clone();
-          const xfo = hmdGeomItem.getLocalXfo();
-          xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0, 1, 0), Math.PI);
-          hmdGeomItem.setLocalXfo(xfo);
+        const hmdGeomItem = sharedGeomItem.clone();
+        const xfo = hmdGeomItem.getLocalXfo();
+        xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0, 1, 0), Math.PI);
+        hmdGeomItem.setLocalXfo(xfo);
 
-          hmdHolder.addChild(hmdGeomItem, false);
-        // })
+        hmdGeomItem.setMaterial(this.__material)
+        hmdHolder.addChild(hmdGeomItem, false);
       });
     }
     this.__currentViewMode = 'Vive';
@@ -98,6 +102,14 @@ export default class Avatar {
       const treeItem = new Visualive.TreeItem("handleHolder" + i);
       const setupControllerGeom = (sharedControllerTree)=>{
         const controllerTree = sharedControllerTree.clone();
+
+        const filter = ['TriggerMaterial', 'Touchpad Material', 'Metal']
+        controllerTree.traverse((subTreeItem)=>{
+          if(subTreeItem instanceof Visualive.GeomItem){
+            if(filter.indexOf(subTreeItem.getMaterial().getName()) == -1)
+              subTreeItem.setMaterial(this.__material)
+          }
+        })
         const xfo = new Visualive.Xfo(
           new Visualive.Vec3(0, -0.035, 0.01), 
           new Visualive.Quat({ 
