@@ -78,7 +78,6 @@ export default class Avatar {
           const materialLibrary = this.__viveAsset.getMaterialLibrary();
           const materialNames = materialLibrary.getMaterialNames();
           for(let name of materialNames) {
-            console.log(name)
             const material = materialLibrary.getMaterial(name, false);
             if(material)
               material.setShaderName('SimpleSurfaceShader');
@@ -88,6 +87,7 @@ export default class Avatar {
           const sharedGeomItem = this.__viveAsset.getChildByName('HTC_Vive_HMD');
           const hmdGeomItem = sharedGeomItem.clone();
           const xfo = hmdGeomItem.getLocalXfo();
+          xfo.tr.set(0, -0.03, -0.03);
           xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0, 1, 0), Math.PI);
           hmdGeomItem.setLocalXfo(xfo);
 
@@ -106,7 +106,6 @@ export default class Avatar {
 
   updateViveControllers(data) {
     const setupController = (i)=>{
-      console.log("setupController:", i)
       if(this.__controllerTrees[i]) {
         this.__treeItem.addChild(this.__controllerTrees[i], false);
       }
