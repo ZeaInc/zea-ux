@@ -53,9 +53,9 @@ class HoldObjectsChange extends Change {
     const j = super.toJSON(appData);
 
     const itemPaths = [];
-    for (let treeItem of this.__selection){
-        if(treeItem){
-          itemPaths.push(treeItem.getPath())
+    for (let i=0; i<this.__selection.length; i++){
+        if(this.__selection[i]){
+          itemPaths[i] = this.__selection[i].getPath();
         }
         else{
           itemPaths.push(null)
