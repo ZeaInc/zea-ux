@@ -7,7 +7,7 @@ export default class Avatar {
     this.__userData = userData;
 
     if(!this.__userData.avatarColor)
-      this.__userData.avatarColor = new Visualive.Color.random(0.25);
+      this.__userData.avatarColor = Visualive.Color.random(0.25);
 
     this.__controllers = [];
 
