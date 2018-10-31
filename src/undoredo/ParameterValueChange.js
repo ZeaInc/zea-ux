@@ -36,6 +36,7 @@ class ParameterValueChange extends Change {
   update(updateData) {
     this.__nextValue = updateData.value;
     this.__param.setValue(this.__nextValue);
+    this.updated.emit(updateData);
   }
 
   toJSON(appData) {

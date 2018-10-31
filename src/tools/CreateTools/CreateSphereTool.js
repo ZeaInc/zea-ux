@@ -21,6 +21,7 @@ class CreateSphereChange extends CreateGeomChange {
 
   update(updateData) {
     this.sphere.radius = updateData.radius;
+    this.updated.emit(updateData);
   }
 
   toJSON() {
@@ -42,8 +43,8 @@ export default class CreateSphereTool extends CreateGeomTool {
   }
 
   createStart(xfo, parentItem) {
-    const change = new CreateSphereChange(parentItem, xfo);
-    this.appData.undoRedoManager.addChange(change);
+    this.change = new CreateSphereChange(parentItem, xfo);
+    this.appData.undoRedoManager.addChange(this.change);
 
     this.xfo = xfo;
     this.stage = 1;
@@ -52,7 +53,7 @@ export default class CreateSphereTool extends CreateGeomTool {
 
   createMove(pt) {
     this.radius = pt.distanceTo(this.xfo.tr);
-    this.appData.undoRedoManager.updateChange({ radius: this.radius });
+    this.change.update({ radius: this.radius });
   }
 
   createRelease(pt) {

@@ -24,6 +24,7 @@ class CreateConeChange extends CreateGeomChange {
       this.geomItem.getGeometry().setRadius(updateData.radius)
     if(updateData.height)
       this.geomItem.getGeometry().setHeight(updateData.height)
+    this.updated.emit(updateData);
   }
 }
 UndoRedoManager.registerChange('CreateCircleChange', CreateCircleChange)
@@ -38,8 +39,8 @@ export default class CreateConeTool extends CreateGeomTool {
     this.xfo = xfo;
 
     const scene = viewport.getRenderer().getScene();
-    const change = new CreateConeChange(scene.getRoot(), xfo);
-    this.appData.undoRedoManager.addChange(change);
+    this.change = new CreateConeChange(scene.getRoot(), xfo);
+    this.appData.undoRedoManager.addChange(this.change);
 
     this.stage = 1;
     this._radius = 0.0;
@@ -51,12 +52,12 @@ export default class CreateConeTool extends CreateGeomTool {
       const vec = pt.subtract(this.xfo.tr)
       // TODO: Rotate the cone so the base is aligned with the vector towards the controller
       this._radius = vec.subtract(vec.dot(this.xfo.ori.getZAxis())).length();
-      this.appData.undoRedoManager.updateChange({ radius: this._radius });
+      this.change.update({ radius: this._radius });
     }
     else {
       const vec = pt.subtract(this.xfo.tr)
       this._height = vec.dot(this.xfo.ori.getZAxis()).length();
-      this.appData.undoRedoManager.updateChange({ height: this._height });
+      this.change.update({ height: this._height });
     }
   }
 

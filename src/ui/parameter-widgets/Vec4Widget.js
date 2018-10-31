@@ -96,7 +96,7 @@ export default class Vec4Widget extends BaseWidget {
         change = new ParameterValueChange(parameter, value);
         undoRedoManager.addChange(change);
       } else {
-        undoRedoManager.updateChange({ value });
+        change.update({ value });
       }
     };
 

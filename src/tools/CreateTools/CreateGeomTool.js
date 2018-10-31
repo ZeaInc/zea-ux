@@ -17,10 +17,6 @@ class CreateGeomChange extends Change {
     this.geomItem.addRef(this);// keep a ref to stop it being destroyed
   }
 
-  update(updateData) {
-
-  }
-
   undo() {
     this.parentItem.removeChild(this.childIndex)
   }
@@ -74,8 +70,8 @@ class CreateGeomTool extends BaseCreateTool {
     const vrviewport = this.appData.renderer.getVRViewport();
     if (vrviewport) {
       if(this.vrControllerToolTip) {
-        this.vrControllerToolTip = new Cross(0.05);
-        this.vrControllerToolTipMat = new Material('VRController Cross', 'LinesShader');
+        this.vrControllerToolTip = new Visualive.Cross(0.05);
+        this.vrControllerToolTipMat = new Visualive.Material('VRController Cross', 'LinesShader');
         this.vrControllerToolTipMat.getParameter('BaseColor').setValue(this.cp.getValue());
       }
       const addIconToController = (id, controller) => {

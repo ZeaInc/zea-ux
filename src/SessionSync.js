@@ -21,12 +21,14 @@ const convertValuesToJSON = (value) => {
     for (let key in value)
       dict[key] = convertValuesToJSON(value[key]);
     return dict;
+  } else if (value instanceof Visualive.BaseItem) {
+    return '::' + value.getPath();
   } else {
     return value;
   }
 }
 
-const convertValuesFromJSON = (value) => {
+const convertValuesFromJSON = (value, scene) => {
   if (value == undefined) {
     return undefined;
   } else if (value.typeName) {
@@ -36,13 +38,15 @@ const convertValuesFromJSON = (value) => {
   } else if (Array.isArray(value)) {
     const arr = [];
     for (const element of value)
-      arr.push(convertValuesFromJSON(element));
+      arr.push(convertValuesFromJSON(element, scene));
     return arr;
   } else if (typeof value === "object") {
     const dict = {};
     for (let key in value)
-      dict[key] = convertValuesFromJSON(value[key]);
+      dict[key] = convertValuesFromJSON(value[key], scene);
     return dict;
+  } else if(typeof value === 'string' && value.startsWith('::') ) {
+    return scene.getRoot().resolvePath(value);
   } else {
     return value;
   }
@@ -157,7 +161,7 @@ export default class SessionSync {
       }
       const undoRedoManager = userDatas[userId].undoRedoManager;
       const changeData = convertValuesFromJSON(data);
-      undoRedoManager.updateChange(changeData);
+      undoRedoManager.getCurrentChange().update(changeData);
     })
 
   }

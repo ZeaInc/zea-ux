@@ -1,5 +1,5 @@
 import UndoRedoManager from '../undoredo/UndoRedoManager.js';
-import  BaseTool from './BaseTool.js';
+import BaseTool from './BaseTool.js';
 import Gizmo from '../gizmos/Gizmo.js';
 
 export default class SelectionTool extends BaseTool {

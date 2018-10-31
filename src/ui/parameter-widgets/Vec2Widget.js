@@ -65,7 +65,7 @@ export default class Vec2Widget extends BaseWidget {
         undoRedoManager.addChange(change);
       }
       else {
-        undoRedoManager.updateChange({ value });
+        change.update({ value });
       }
     };
     const valueChangeEnd = () => {

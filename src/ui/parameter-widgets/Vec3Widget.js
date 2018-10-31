@@ -82,7 +82,7 @@ export default class Vec3Widget extends BaseWidget {
         undoRedoManager.addChange(change);
       }
       else {
-        undoRedoManager.updateChange({ value });
+        change.update({ value });
       }
     };
 

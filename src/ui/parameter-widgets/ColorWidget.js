@@ -57,7 +57,7 @@ export default class ColorWidget extends BaseWidget {
         change = new ParameterValueChange(parameter, value);
         undoRedoManager.addChange(change);
       } else {
-        undoRedoManager.updateChange({ value });
+        change.update({ value });
       }
     });
   }

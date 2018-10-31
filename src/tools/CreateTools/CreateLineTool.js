@@ -37,6 +37,7 @@ class CreateLineChange extends CreateGeomChange {
       this.line.getVertex(1).setFromOther(updateData.p1)
       this.line.geomDataChanged.emit();
     }
+    this.updated.emit(updateData);
   }
 
   fromJSON(j, appData) {
@@ -61,7 +62,7 @@ export default class CreateLineTool extends CreateGeomTool {
     super(appData);
 
     this.cp = this.addParameter(new Visualive.ColorParameter('Line Color', new Visualive.Color(.7, .2, .2)));
-    this.tp = this.addParameter(new Visualive.NumberParameter('Line Thickness', 0.01, [0, 0.1])); // 1cm.
+    this.tp = this.addParameter(new Visualive.NumberParameter('Line Thickness', 0.06, [0, 0.1])); // 1cm.
   }
 
   activateTool() {
@@ -77,6 +78,9 @@ export default class CreateLineTool extends CreateGeomTool {
           this.vrControllerToolTipMat.getParameter('BaseColor').setValue(this.cp.getValue());
         }
         const addIconToController = (id, controller) => {
+          // The tool might already be deactivated.
+          if(!this.__activated)
+            return;
           const geomItem = new Visualive.GeomItem('VRControllerTip', this.vrControllerToolTip, this.vrControllerToolTipMat);
           controller.getTip().addChild(geomItem);
         }
@@ -100,14 +104,13 @@ export default class CreateLineTool extends CreateGeomTool {
         for(let controller of vrviewport.getControllers()) {
           controller.getTip().removeAllChildren();
         }
-        vrviewport.controllerAdded.disconnectId(this.addIconToControllerId);
       }
     }
   }
 
   createStart(xfo, parentItem) {
-    const change = new CreateLineChange(parentItem, xfo);
-    this.appData.undoRedoManager.addChange(change);
+    this.change = new CreateLineChange(parentItem, xfo);
+    this.appData.undoRedoManager.addChange(this.change);
     
     this.xfo = xfo.inverse();
     this.stage = 1;
@@ -117,7 +120,7 @@ export default class CreateLineTool extends CreateGeomTool {
   createMove(pt) {
     const offet = this.xfo.transformVec3(pt)
     this.length = offet.length();
-    this.appData.undoRedoManager.updateChange({ p1: offet });
+    this.change.update({ p1: offet });
   }
 
   createRelease(pt) {
