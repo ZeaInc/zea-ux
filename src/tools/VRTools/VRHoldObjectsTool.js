@@ -33,10 +33,9 @@ class HoldObjectsChange extends Change {
   }
 
   update(updateData) {
-    if(updateData.newItemPath) {
-      const newItem = appData.scene.getRoot().resolvePath(updateData.newItemPath, 1)
-      this.__selection[updateData.newItemId] = newItem;
-      this.__prevXfos[updateData.newItemId] = newItem.getGlobalXfo();
+    if(updateData.newItem) {
+      this.__selection[updateData.newItemId] = updateData.newItem;
+      this.__prevXfos[updateData.newItemId] = updateData.newItem.getGlobalXfo();
     }
     else if(updateData.changeXfos) {
       for(let i=0; i<updateData.changeXfoIds.length; i++){
@@ -220,7 +219,7 @@ export default class VRHoldObjectsTool extends BaseTool {
         this.__heldGeomItemRefs[gidx] = [id];
         this.__heldGeomItemIds[id] = gidx;
 
-        const changeData = { newItemPath: intersectionData.geomItem.getPath(), newItemId: gidx }
+        const changeData = { newItem: intersectionData.geomItem, newItemId: gidx }
         if(!this.change) {
           this.change = new HoldObjectsChange(changeData);
           this.appData.undoRedoManager.addChange(this.change);

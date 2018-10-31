@@ -7,6 +7,8 @@ import Avatar from './Avatar.js';
 const convertValuesToJSON = (value) => {
   if (value == undefined) {
     return undefined;
+  } else if (value instanceof Visualive.BaseItem) {
+    return '::' + value.getPath();
   } else if (value.toJSON) {
     const result = value.toJSON();
     result.typeName = Visualive.typeRegistry.getTypeName(value);
@@ -21,8 +23,6 @@ const convertValuesToJSON = (value) => {
     for (let key in value)
       dict[key] = convertValuesToJSON(value[key]);
     return dict;
-  } else if (value instanceof Visualive.BaseItem) {
-    return '::' + value.getPath();
   } else {
     return value;
   }
@@ -31,6 +31,8 @@ const convertValuesToJSON = (value) => {
 const convertValuesFromJSON = (value, scene) => {
   if (value == undefined) {
     return undefined;
+  } else if(typeof value === 'string' && value.startsWith('::') ) {
+    return scene.getRoot().resolvePath(value, 1);
   } else if (value.typeName) {
     const newval = Visualive.typeRegistry.getType(value.typeName).create();
     newval.fromJSON(value);
@@ -45,8 +47,6 @@ const convertValuesFromJSON = (value, scene) => {
     for (let key in value)
       dict[key] = convertValuesFromJSON(value[key], scene);
     return dict;
-  } else if(typeof value === 'string' && value.startsWith('::') ) {
-    return scene.getRoot().resolvePath(value);
   } else {
     return value;
   }
@@ -108,7 +108,7 @@ export default class SessionSync {
 
       visualiveSession.pub(VisualiveSession.actions.POSE_CHANGED, j);
 
-      // const otherData = convertValuesFromJSON(j);
+      // const otherData = convertValuesFromJSON(j, appData.scene);
       // otherAvatar.updatePose(otherData);
     });
 
@@ -117,7 +117,7 @@ export default class SessionSync {
         console.warn("User id not in session:", userId);
         return;
       }
-      const data = convertValuesFromJSON(j);
+      const data = convertValuesFromJSON(j, appData.scene);
       const avatar = userDatas[userId].avatar;
       avatar.updatePose(data);
     })
@@ -140,7 +140,12 @@ export default class SessionSync {
     })
 
     appData.undoRedoManager.changeUpdated.connect((data) => {
-      visualiveSession.pub(VisualiveSession.actions.COMMAND_UPDATED, convertValuesToJSON(data))
+      const jsonData = convertValuesToJSON(data)
+      visualiveSession.pub(VisualiveSession.actions.COMMAND_UPDATED, jsonData)
+
+
+      // const changeData2 = convertValuesFromJSON(jsonData, appData.scene);
+      // otherUndoStack.getCurrentChange().update(changeData2);
     })
 
     visualiveSession.sub(VisualiveSession.actions.COMMAND_ADDED, (data, userId) => {
@@ -160,7 +165,7 @@ export default class SessionSync {
         return;
       }
       const undoRedoManager = userDatas[userId].undoRedoManager;
-      const changeData = convertValuesFromJSON(data);
+      const changeData = convertValuesFromJSON(data, appData.scene);
       undoRedoManager.getCurrentChange().update(changeData);
     })
 
