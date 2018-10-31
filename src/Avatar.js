@@ -37,8 +37,12 @@ export default class Avatar {
 
   setCameraAndPointer() {
     this.__treeItem.removeAllChildren();
-
-    const shape = new Visualive.Cone(0.2, 0.6, 4, true);
+    const shape = new Visualive.Cuboid(0.2, 0.6, 1.0)
+    shape.getVertex(0).scaleInPlace(0.1);
+    shape.getVertex(1).scaleInPlace(0.1);
+    shape.getVertex(2).scaleInPlace(0.1);
+    shape.getVertex(3).scaleInPlace(0.1);
+    // const shape = new Visualive.Cone(0.2, 0.6, 4, true);
     shape.computeVertexNormals();
     const geomItem = new Visualive.GeomItem('camera', shape, this.__material);
     const geomXfo = new Visualive.Xfo();
