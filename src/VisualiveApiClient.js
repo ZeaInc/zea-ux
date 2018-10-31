@@ -36,6 +36,7 @@ class VisualiveApiClient {
         case 'development':
           return 'http://localhost:7070/api/v1/';
         case 'stage':
+        case 'local_stage':
           return 'https://apistage.visualive.io/api/v1/';
         case 'production':
           return 'https://api.visualive.io/api/v1/';
@@ -112,9 +113,7 @@ class VisualiveApiClient {
     }
     return new Promise((resolve, reject) => {
       collectedProjects.push(projectId);
-      const res = this.getProjectData(projectId);
-      res
-        .then(data => {
+      this.getProjectData(projectId).then(data => {
           console.log(projectId, data);
           let resources = data.filesPlain;
           if (data.dependencies.length == 0) {

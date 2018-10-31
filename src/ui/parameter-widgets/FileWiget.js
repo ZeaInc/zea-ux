@@ -26,7 +26,7 @@ class FileWidget extends BaseWidget {
         undoRedoManager.addChange(change);
       }
       else
-        undoRedoManager.updateChange({ value: input.valueAsNumber });
+        change.update({ value: input.valueAsNumber });
     });
     input.addEventListener('change', () => {
       if (!change) {
@@ -34,7 +34,7 @@ class FileWidget extends BaseWidget {
         undoRedoManager.addChange(change);
       }
       else
-        undoRedoManager.updateChange({ value: input.valueAsNumber });
+        change.update({ value: input.valueAsNumber });
       change = undefined;
     });
   }

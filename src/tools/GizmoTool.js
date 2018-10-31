@@ -3,43 +3,56 @@ import Gizmo from '../gizmos/Gizmo.js';
 
 
 export default class GizmoTool extends BaseTool {
-  constructor(undoRedoManager) {
-    super(undoRedoManager);
+  constructor(appData) {
+    super(appData);
 
     this.activeGizmo = undefined;
   }
 
-  activateTool(renderer) {
+  activateTool() {
+    super.activateTool();
     console.log("activateTool.GizmoTool")
 
-    renderer.getDiv().style.cursor = "crosshair";
+    this.appData.renderer.getDiv().style.cursor = "crosshair";
 
-    const vrviewport = renderer.getVRViewport();
-    if (vrviewport) {
-      if(!this.vrControllerToolTip) {
-        this.vrControllerToolTip = new Visualive.Cross(0.03);
-        this.vrControllerToolTipMat = new Visualive.Material('Cross', 'ToolIconShader');
-        this.vrControllerToolTipMat.getParameter('BaseColor').setValue(new Visualive.Color("#03E3AC"));
-      }
-      const addIconToController = (controller) => {
-        const geomItem = new Visualive.GeomItem('GizmoToolTip', this.vrControllerToolTip, this.vrControllerToolTipMat);
-        controller.getTipItem().addChild(geomItem, false);
-      }
+    const addIconToController = (controller) => {
+      // The tool might already be deactivated.
+      if(!this.__activated)
+        return;
+      const cross = new Visualive.Cross(0.03);
+      const mat = new Visualive.Material('Cross', 'ToolIconShader');
+      mat.getParameter('BaseColor').setValue(new Visualive.Color("#03E3AC"));
+      const geomItem = new Visualive.GeomItem('GizmoToolTip', cross, mat);
+      controller.getTipItem().addChild(geomItem, false);
+    }
+    const addIconToControllers = (vrviewport)=>{
       for(let controller of vrviewport.getControllers()) {
         addIconToController(controller)
       }
-      this.addIconToControllerId = vrviewport.controllerAdded.connect(addIconToController);
+      if(!this.addIconToControllerId)
+        this.addIconToControllerId = vrviewport.controllerAdded.connect(addIconToController);
+    }
+
+    const vrviewport = this.appData.renderer.getVRViewport();
+    if (vrviewport) {
+      addIconToControllers(vrviewport);
+    }
+    else {
+      this.appData.renderer.vrViewportSetup.connect((vrviewport)=>{
+        addIconToControllers(vrviewport);
+      });
     }
   }
 
-  deactivateTool(renderer) {
+  deactivateTool() {
+    super.deactivateTool();
 
-    const vrviewport = renderer.getVRViewport();
-    if(this.vrviewport && this.vrControllerToolTip) {
-      const addIconToController = (controller) => {
+    const vrviewport = this.appData.renderer.getVRViewport();
+    if(vrviewport) {
+      const removeIconFromController = (controller) => {
         controller.getTipItem().removeAllChildren();
       }
-      for(let controller of this.vrviewport.getControllers()) {
+      for(let controller of vrviewport.getControllers()) {
         removeIconFromController(controller)
       }
     }
@@ -56,19 +69,8 @@ export default class GizmoTool extends BaseTool {
       if (intersectionData == undefined) 
         return;
       if(intersectionData.geomItem.getOwner() instanceof Gizmo) {
-        // const gizmo = intersectionData.geomItem.getOwner() ;
-        // this.gizmoPlane = gizmo.getManipulationPlane();
-        // const mouseDownDist = intersectionData.mouseRay.intersectRayVector(this.gizmoPlane);
-        // if (mouseDownDist > 0) {
-        //   const grabPos = intersectionData.mouseRay.dir.scale(mouseDownDist);
-        //   this.activeGizmo = gizmo;
-        //   this.activeGizmo.onDragStart(event, grabPos);
-        //   return true;
-        // }
-
-
         this.activeGizmo = intersectionData.geomItem.getOwner();
-        this.activeGizmo.handleMouseDown(Object.assign(event, {intersectionData, mouseRay:intersectionData.mouseRay}), mousePos);
+        this.activeGizmo.handleMouseDown(Object.assign(event, {intersectionData, mouseRay:intersectionData.mouseRay}), mousePos, viewport);
         return true;
       }
     }
@@ -76,10 +78,6 @@ export default class GizmoTool extends BaseTool {
 
   onMouseMove(event, mousePos, viewport) {
     if (this.activeGizmo) {
-      // const mouseRay = viewport.calcRayFromScreenPos(mousePos);
-      // const dist = mouseRay.intersectRayVector(this.gizmoPlane)[0];
-      // const dragPos = mouseRay.dir.scale(dist);
-      // this.activeGizmo.onDragStart(event, dragPos);
       this.activeGizmo.handleMouseMove(event, mousePos, viewport);
       return true;
     }
@@ -87,11 +85,6 @@ export default class GizmoTool extends BaseTool {
 
   onMouseUp(event, mousePos, viewport) {
     if (this.activeGizmo) {
-      // const mouseRay = viewport.calcRayFromScreenPos(mousePos);
-      // const dist = mouseRay.intersectRayVector(this.gizmoPlane)[0];
-      // const releasePos = mouseRay.dir.scale(dist);
-      // this.activeGizmo.onDragEnd(event, releasePos);
-      // this.activeGizmo = undefined;
       this.activeGizmo.handleMouseUp(event, mousePos, viewport);
       this.activeGizmo = undefined;
       return true;
@@ -120,8 +113,10 @@ export default class GizmoTool extends BaseTool {
   onVRControllerButtonDown(event) {
     if (!this.activeGizmo) {
       const intersectionData = event.controller.getGeomItemAtTip();
-      if (intersectionData != undefined && intersectionData.geomItem instanceof Gizmo) {
-        const gizmo = intersectionData.geomItem;
+      if (intersectionData == undefined) 
+        return;
+      if (intersectionData.geomItem.getOwner() instanceof Gizmo) {
+        const gizmo = intersectionData.geomItem.getOwner();
         this.activeGizmo = gizmo;
         this.activeGizmo.onVRControllerButtonDown(event);
         return true;

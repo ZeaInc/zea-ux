@@ -5,14 +5,21 @@ import UndoRedoManager from './UndoRedoManager.js';
 export default class Change {
   constructor(name) {
     this.name = name ? name : UndoRedoManager.getChangeClassName(this);
+
+    this.updated = new Visualive.Signal();
   }
 
-  undo() {}
+  undo() {
+    throw("Implement me");
+  }
 
-  redo() {}
+  redo() {
+    throw("Implement me");
+  }
 
-
-  update(updateData) {}
+  update(updateData) {
+    throw("Implement me");
+  }
 
   toJSON(appData) { 
     return {

@@ -17,8 +17,8 @@ class CreateFreehandLineChange extends CreateGeomChange {
     this.line.vertices.setValue(0, new Visualive.Vec3());
 
     // const material = new Visualive.Material('freeHandLine', 'LinesShader');
-    this.line.lineThickness = 0.05;
-    // const material = new Visualive.Material('circle', 'LinesShader');
+    // this.line.lineThickness = 0.5;
+    // const material = new Visualive.Material('freeHandLine', 'LinesShader');
     const material = new Visualive.Material('freeHandLine', 'FatLinesShader');
 
     this.geomItem = new Visualive.GeomItem("freeHandLine");
@@ -65,6 +65,13 @@ class CreateFreehandLineChange extends CreateGeomChange {
         'indicesChanged': true
       });
     }
+    this.updated.emit(updateData);
+  }
+
+  toJSON(appData) {
+    const j = super.toJSON();
+    j.lineThickness = this.line.lineThickness;
+    return j;
   }
 
   fromJSON(j, appData) {
@@ -75,8 +82,8 @@ class CreateFreehandLineChange extends CreateGeomChange {
       material.getParameter('Color').setValue(color);
     }
 
-    if (j.thickness) {
-      this.line.lineThickness = j.thickness;
+    if (j.lineThickness) {
+      this.line.lineThickness = j.lineThickness;
       // this.line.addVertexAttribute('lineThickness', Visualive.Float32, 0.0);
     }
   }
@@ -84,8 +91,8 @@ class CreateFreehandLineChange extends CreateGeomChange {
 UndoRedoManager.registerChange('CreateFreehandLineChange', CreateFreehandLineChange)
 
 export default class CreateFreehandLineTool extends CreateLineTool {
-  constructor(undoRedoManager) {
-    super(undoRedoManager);
+  constructor(appData) {
+    super(appData);
 
     this.mp = this.addParameter(new Visualive.BooleanParameter('Modulate Thickness By Stroke Speed', false));
   }
@@ -94,8 +101,8 @@ export default class CreateFreehandLineTool extends CreateLineTool {
 
     const color = this.cp.getValue();
     const lineThickness = this.tp.getValue();
-    const change = new CreateFreehandLineChange(parentItem, xfo, color, lineThickness);
-    this.undoRedoManager.addChange(change);
+    this.change = new CreateFreehandLineChange(parentItem, xfo, color, lineThickness);
+    this.appData.undoRedoManager.addChange(this.change);
 
     this.xfo = xfo;
     this.invxfo = xfo.inverse();
@@ -108,7 +115,7 @@ export default class CreateFreehandLineTool extends CreateLineTool {
     const p = this.invxfo.transformVec3(pt);
     const vel = p.subtract(this.prevP).length();
 
-    this.undoRedoManager.updateChange({
+    this.change.update({
       point: p
     });
 
@@ -118,7 +125,7 @@ export default class CreateFreehandLineTool extends CreateLineTool {
 
   createRelease(pt) {
     if (this.length == 0) {
-      this.undoRedoManager.undo(false);
+      this.appData.undoRedoManager.undo(false);
     }
     this.stage = 0;
   }

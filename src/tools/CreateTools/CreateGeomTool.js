@@ -17,10 +17,6 @@ class CreateGeomChange extends Change {
     this.geomItem.addRef(this);// keep a ref to stop it being destroyed
   }
 
-  update(updateData) {
-
-  }
-
   undo() {
     this.parentItem.removeChild(this.childIndex)
   }
@@ -59,22 +55,23 @@ class CreateGeomChange extends Change {
 }
 
 class CreateGeomTool extends BaseCreateTool {
-  constructor(undoRedoManager) {
-    super(undoRedoManager);
+  constructor(appData) {
+    super(appData);
 
     this.stage = 0;
 
   }
 
-  activateTool(renderer) {
+  activateTool() {
+    super.activateTool();
 
-    renderer.getDiv().style.cursor = "crosshair";
+    this.appData.renderer.getDiv().style.cursor = "crosshair";
 
-    const vrviewport = renderer.getVRViewport();
+    const vrviewport = this.appData.renderer.getVRViewport();
     if (vrviewport) {
       if(this.vrControllerToolTip) {
-        this.vrControllerToolTip = new Cross(0.05);
-        this.vrControllerToolTipMat = new Material('VRController Cross', 'LinesShader');
+        this.vrControllerToolTip = new Visualive.Cross(0.05);
+        this.vrControllerToolTipMat = new Visualive.Material('VRController Cross', 'LinesShader');
         this.vrControllerToolTipMat.getParameter('BaseColor').setValue(this.cp.getValue());
       }
       const addIconToController = (id, controller) => {
@@ -89,11 +86,12 @@ class CreateGeomTool extends BaseCreateTool {
 
   }
 
-  deactivateTool(renderer) {
+  deactivateTool() {
+    super.deactivateTool();
 
-    renderer.getDiv().style.cursor = "pointer";
+    this.appData.renderer.getDiv().style.cursor = "pointer";
 
-    const vrviewport = renderer.getVRViewport();
+    const vrviewport = this.appData.renderer.getVRViewport();
     if (vrviewport) {
       for(let controller of vrviewport.getControllers()) {
         controller.getTip().removeAllChildren();
@@ -151,7 +149,7 @@ class CreateGeomTool extends BaseCreateTool {
       return true;
     }
     else if(event.button == 2) {
-      this.undoRedoManager.undo(false);
+      this.appData.undoRedoManager.undo(false);
       this.stage = 0;
       return true;
     }

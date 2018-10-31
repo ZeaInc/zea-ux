@@ -45,7 +45,7 @@ export default class NumberWidget extends BaseWidget {
         undoRedoManager.addChange(change);
       }
       else {
-        undoRedoManager.updateChange({ value });
+        change.update({ value });
       }
     };
 

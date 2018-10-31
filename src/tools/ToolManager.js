@@ -1,16 +1,25 @@
 export default class ToolManager {
-  constructor(renderer){
+  constructor(appData){
     this.__toolStack = [];
-
-    this.bind(renderer);
+    this.appData = appData;
   }
 
   insertTool(tool, index) {
     this.__toolStack.splice(index, 0, tool);
+    tool.installed(index);
   }
 
   removeTool(index) {
+    const tool = this.__toolStack[index]
     this.__toolStack.splice(index, 1);
+    tool.uninstalled();
+    if(index == this.__toolStack.length){
+      tool.deactivateTool();
+
+      const nextTool = this.currTool();
+      if(nextTool)
+        nextTool.activateTool();
+    }
   }
 
   pushTool(tool){
@@ -21,24 +30,31 @@ export default class ToolManager {
         return;
       }
       else {
-        prevTool.deactivateTool(this.renderer);
+        // Note: only the lead tool is 'active' and displaying an icon. 
+        // A tool can recieve events even if not active, if it is on 
+        // the stack.
+        prevTool.deactivateTool();
       }
     }
 
     this.__toolStack.push(tool);
-    tool.activateTool(this.renderer);
+    tool.installed(this.__toolStack.length-1);
+    tool.activateTool();
 
-    console.log("ToolManager.pushTool:", tool.constructor.name)
+    console.log("ToolManager.pushTool:", tool.constructor.name);
+
+    return this.__toolStack.length - 1; 
   }
 
   popTool() {
     if(this.__toolStack.length > 0) {
-      const prevTool = this.currTool();
-      prevTool.deactivateTool(this.renderer);
-      this.__toolStack.pop();
+      const prevTool = this.__toolStack.pop();
+      prevTool.deactivateTool();
+      prevTool.uninstalled();
+      
       const tool = this.currTool();
       if(tool)
-        tool.activateTool(this.renderer);
+        tool.activateTool();
       console.log("ToolManager.popTool:", prevTool.constructor.name, (tool ? tool.constructor.name : ''))
     }
   }
@@ -50,8 +66,7 @@ export default class ToolManager {
 
   bind(renderer) {
 
-    this.renderer = renderer;
-    const viewport = this.renderer.getViewport();
+    const viewport = renderer.getViewport();
 
     this.mouseDownId = viewport.mouseDown.connect(this.onMouseDown.bind(this))
     this.mouseMovedId = viewport.mouseMoved.connect(this.onMouseMove.bind(this))
@@ -75,9 +90,12 @@ export default class ToolManager {
       renderer.vrViewportSetup.connect(vrvp => {
         /////////////////////////////////////
         // VRController events
-        this.controllerDownId = vrvp.controllerButtonDown.connect(this.onVRControllerButtonDown.bind(this))
-        this.controllerUpId = vrvp.controllerButtonUp.connect(this.onVRControllerButtonUp.bind(this))
-        this.onVRPoseChangedId = vrvp.viewChanged.connect(this.onVRPoseChanged.bind(this))
+        if(!vrvp != this.__vrvp) {
+          this.__vrvp = vrvp;
+          this.controllerDownId = vrvp.controllerButtonDown.connect(this.onVRControllerButtonDown.bind(this));
+          this.controllerUpId = vrvp.controllerButtonUp.connect(this.onVRControllerButtonUp.bind(this));
+          this.onVRPoseChangedId = vrvp.viewChanged.connect(this.onVRPoseChanged.bind(this));
+        }
       });
     }
   }
@@ -216,7 +234,7 @@ export default class ToolManager {
 
 
   destroy() {
-    const viewport = this.renderer.getViewport();
+    const viewport = this.appData.renderer.getViewport();
 
     viewport.mouseDown.disconnectId(this.mouseDownId)
     viewport.mouseMoved.disconnectId(this.mouseMovedId)
@@ -236,14 +254,15 @@ export default class ToolManager {
     viewport.touchEnd.disconnectId(this.touchEndId)
     viewport.touchCancel.disconnectId(this.touchCancelId)
 
-    if (renderer.supportsVR()) {
-      renderer.vrViewportSetup.connect(vrvp => {
+    if (this.appData.renderer.supportsVR()) {
+      const vrviewport = this.appData.renderer.getVRViewport();
+      if(vrviewport) {
         /////////////////////////////////////
         // VRController events
         viewport.controllerDown.disconnectId(this.controllerDownId)
         viewport.controllerUp.disconnectId(this.controllerUpId)
         viewport.viewChanged.disconnectId(this.onVRPoseChangedId)
-      });
+      };
     }
 
   }

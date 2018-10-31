@@ -2,8 +2,8 @@
 import BaseTool from './BaseTool.js';
 
 export default class ViewTool extends BaseTool {
-  constructor() {
-    super();
+  constructor(appData) {
+    super(appData);
 
     this.__defaultMode = 'orbit';
     this.__mode = this.__defaultMode;
@@ -27,14 +27,44 @@ export default class ViewTool extends BaseTool {
 
   ///////////////////////////////////////
   // 
-  activateTool(renderer) {
+
+  activateTool() {
+    super.activateTool();
     console.log("activateTool.ViewTool")
-    renderer.getDiv().style.cursor = "default";
-    super.activateTool(renderer);
+
+    this.appData.renderer.getDiv().style.cursor = "default";
+
+    const vrviewport = this.appData.renderer.getVRViewport();
+    if (vrviewport) {
+      if(!this.vrControllerToolTip) {
+        this.vrControllerToolTip = new Visualive.Cross(0.03);
+        this.vrControllerToolTipMat = new Visualive.Material('Cross', 'ToolIconShader');
+        this.vrControllerToolTipMat.getParameter('BaseColor').setValue(new Visualive.Color("#03E3AC"));
+      }
+      const addIconToController = (controller) => {
+        const geomItem = new Visualive.GeomItem('GizmoToolTip', this.vrControllerToolTip, this.vrControllerToolTipMat);
+        controller.getTipItem().addChild(geomItem, false);
+      }
+      for(let controller of vrviewport.getControllers()) {
+        addIconToController(controller)
+      }
+      this.addIconToControllerId = vrviewport.controllerAdded.connect(addIconToController);
+    }
   }
 
-  deactivateTool(renderer) {}
+  deactivateTool() {
+    super.deactivateTool();
 
+    const vrviewport = this.appData.renderer.getVRViewport();
+    if(vrviewport && this.vrControllerToolTip) {
+      const removeIconFromController = (controller) => {
+        controller.getTipItem().removeAllChildren();
+      }
+      for(let controller of vrviewport.getControllers()) {
+        removeIconFromController(controller)
+      }
+    }
+  }
   ///////////////////////////////////////
   // 
   setDefaultMode(mode) {
@@ -367,6 +397,7 @@ export default class ViewTool extends BaseTool {
       this.__startTouch(touches[i]);
     }
     this.initDrag(viewport);
+    return true;
   }
 
   onTouchMove(event, viewport) {
@@ -387,6 +418,7 @@ export default class ViewTool extends BaseTool {
       } else {
         this.orbit(dragVec, viewport);
       }
+      return true;
     } else if (touches.length == 2) {
       let touch0 = touches[0];
       let touchData0 = this.__ongoingTouches[touch0.identifier];
@@ -406,6 +438,7 @@ export default class ViewTool extends BaseTool {
       dragVec.scaleInPlace(0.5);
       this.panAndZoom(dragVec, separationDist * 0.002, viewport);
       this.__manipMode = "panAndZoom";
+      return true;
     }
   }
 
@@ -423,6 +456,7 @@ export default class ViewTool extends BaseTool {
     for (let i = 0; i < touches.length; i++) {
       this.__endTouch(touches[i]);
     }
+    return true;
   }
 
   onTouchCancel(event, viewport) {
@@ -432,6 +466,7 @@ export default class ViewTool extends BaseTool {
     for (let i = 0; i < touches.length; i++) {
       this.__endTouch(touches[i]);
     }
+    return true;
   }
 
 
@@ -463,6 +498,7 @@ export default class ViewTool extends BaseTool {
       return;
     this.__controllerTriggersHeld.push(event.controller);
     this.__initMoveStage(vrviewport);
+    return true;
   }
 
   onVRControllerButtonUp(event, vrviewport) {
@@ -471,6 +507,7 @@ export default class ViewTool extends BaseTool {
     const index = this.__controllerTriggersHeld.indexOf(event.controller);
     this.__controllerTriggersHeld.splice(index, 1);
     this.__initMoveStage(vrviewport);
+    return true;
   }
 
   onVRPoseChanged(event, vrviewport) {
@@ -485,6 +522,7 @@ export default class ViewTool extends BaseTool {
       // Update the stage Xfo
       const stageXfo = this.stageXfo__GrabStart.multiply(deltaXfo);
       vrviewport.setXfo(stageXfo);
+      return true;
     }
     else if(this.__controllerTriggersHeld.length == 2) {
 
@@ -539,6 +577,8 @@ export default class ViewTool extends BaseTool {
       // Update the stage Xfo
       const stageXfo = this.stageXfo__GrabStart.multiply(deltaXfo);
       vrviewport.setXfo(stageXfo);
+
+      return true;
     }
 
   }

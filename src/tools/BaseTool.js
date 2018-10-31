@@ -1,22 +1,38 @@
 
 export default class BaseTool extends Visualive.ParameterOwner {
-  constructor(undoRedoManager) {
+  constructor(appData) {
     super();
-    this.undoRedoManager = undoRedoManager;
+    if(!appData)
+      console.error("App data not provided to tool")
+    this.appData = appData;
 
     this.actionFinished = new Visualive.Signal();
 
     this.__params = []
+    this.__installed = false;
+    this.__activated = false;
   }
 
   /////////////////////////////////////
+  // Tools on the tool stack.
 
-
-  activateTool(renderer) {
+  installed(index) {
+    this.index = index;
+    this.__installed = true;
   }
 
-  deactivateTool(renderer) {
+  uninstalled() {
+    this.__installed = false;
+  }
 
+  activateTool() {
+    if(this.__activated)
+      throw("Tool already activate")
+    this.__activated = true;
+  }
+
+  deactivateTool() {
+    this.__activated = false;
   }
 
   /////////////////////////////////////

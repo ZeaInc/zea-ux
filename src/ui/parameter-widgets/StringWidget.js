@@ -33,7 +33,7 @@ export default class StringWidget extends BaseWidget {
         undoRedoManager.addChange(change);
       }
       else {
-        undoRedoManager.updateChange({ value });
+        change.update({ value });
       }
     };
 
