@@ -9,8 +9,6 @@ export default class Avatar {
     if(!this.__userData.avatarColor)
       this.__userData.avatarColor = Visualive.Color.random(0.25);
 
-    this.__controllers = [];
-
     this.__treeItem = new Visualive.TreeItem(userData.id);
 
     this.__appData.renderer.getCollector().addTreeItem(this.__treeItem);
@@ -69,80 +67,90 @@ export default class Avatar {
     }
     this.__treeItem.addChild(hmdHolder);
 
-    const resourceLoader = this.__appData.scene.getResourceLoader();
-    if (!Visualive.SystemDesc.isMobileDevice && !this.__viveAsset && resourceLoader.resourceAvailable("VisualiveEngine/Vive.vla")) {
-      this.__viveAsset = this.__appData.scene.loadCommonAssetResource("VisualiveEngine/Vive.vla");
-      this.__viveAsset.geomsLoaded.connect(()=>{
-        const materialLibrary = this.__viveAsset.getMaterialLibrary();
-        const materialNames = materialLibrary.getMaterialNames();
-        for(let name of materialNames) {
-          console.log(name)
-          const material = materialLibrary.getMaterial(name, false);
-          if(material)
-            material.setShaderName('SimpleSurfaceShader');
-        }
-
-
-        const sharedGeomItem = this.__viveAsset.getChildByName('HTC_Vive_HMD');
-        const hmdGeomItem = sharedGeomItem.clone();
-        const xfo = hmdGeomItem.getLocalXfo();
-        xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0, 1, 0), Math.PI);
-        hmdGeomItem.setLocalXfo(xfo);
-
-        hmdGeomItem.setMaterial(this.__material)
-        hmdHolder.addChild(hmdGeomItem, false);
-      });
+    if(this.__hmdGeomItem) {
+      hmdHolder.addChild(this.__hmdGeomItem, false);
     }
+    else {
+      const resourceLoader = this.__appData.scene.getResourceLoader();
+      if (!Visualive.SystemDesc.isMobileDevice && !this.__viveAsset && resourceLoader.resourceAvailable("VisualiveEngine/Vive.vla")) {
+        this.__viveAsset = this.__appData.scene.loadCommonAssetResource("VisualiveEngine/Vive.vla");
+        this.__viveAsset.geomsLoaded.connect(()=>{
+          const materialLibrary = this.__viveAsset.getMaterialLibrary();
+          const materialNames = materialLibrary.getMaterialNames();
+          for(let name of materialNames) {
+            console.log(name)
+            const material = materialLibrary.getMaterial(name, false);
+            if(material)
+              material.setShaderName('SimpleSurfaceShader');
+          }
+
+
+          const sharedGeomItem = this.__viveAsset.getChildByName('HTC_Vive_HMD');
+          const hmdGeomItem = sharedGeomItem.clone();
+          const xfo = hmdGeomItem.getLocalXfo();
+          xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0, 1, 0), Math.PI);
+          hmdGeomItem.setLocalXfo(xfo);
+
+          hmdGeomItem.setMaterial(this.__material);
+          this.__hmdGeomItem = hmdGeomItem;
+          this.__hmdGeomItem.addRef(this);
+
+          hmdHolder.addChild(this.__hmdGeomItem, false);
+        });
+      }
+    }
+
     this.__currentViewMode = 'Vive';
+    this.__controllerTrees = [];
   }
 
   updateViveControllers(data) {
     const setupController = (i)=>{
-
-      const treeItem = new Visualive.TreeItem("handleHolder" + i);
-      const setupControllerGeom = (sharedControllerTree)=>{
-        const controllerTree = sharedControllerTree.clone();
-
-        const filter = ['TriggerMaterial', 'Touchpad Material', 'Metal']
-        controllerTree.traverse((subTreeItem)=>{
-          if(subTreeItem instanceof Visualive.GeomItem){
-            if(filter.indexOf(subTreeItem.getMaterial().getName()) == -1)
-              subTreeItem.setMaterial(this.__material)
-          }
-        })
-        const xfo = new Visualive.Xfo(
-          new Visualive.Vec3(0, -0.035, 0.01), 
-          new Visualive.Quat({ 
-            setFromAxisAndAngle: [
-              new Visualive.Vec3(0, 1, 0), 
-              Math.PI
-            ] 
-          }));
-        controllerTree.setLocalXfo(xfo);
-        treeItem.addChild(controllerTree, false);
+      console.log("setupController:", i)
+      if(this.__controllerTrees[i]) {
+        this.__treeItem.addChild(this.__controllerTrees[i], false);
       }
+      else {
+        const treeItem = new Visualive.TreeItem("handleHolder" + i);
+        const setupControllerGeom = (sharedControllerTree)=>{
+          const controllerTree = sharedControllerTree.clone();
 
-      this.__viveAsset.geomsLoaded.connect(() => {
-        const sharedControllerTree = this.__viveAsset.getChildByName('HTC_Vive_Controller').clone();
-        setupControllerGeom(sharedControllerTree);
-      });
+          const filter = ['TriggerMaterial', 'Touchpad Material', 'Metal']
+          controllerTree.traverse((subTreeItem)=>{
+            if(subTreeItem instanceof Visualive.GeomItem){
+              if(filter.indexOf(subTreeItem.getMaterial().getName()) == -1)
+                subTreeItem.setMaterial(this.__material)
+            }
+          })
+          const xfo = new Visualive.Xfo(
+            new Visualive.Vec3(0, -0.035, 0.01), 
+            new Visualive.Quat({ 
+              setFromAxisAndAngle: [
+                new Visualive.Vec3(0, 1, 0), 
+                Math.PI
+              ] 
+            }));
+          controllerTree.setLocalXfo(xfo);
+          treeItem.addChild(controllerTree, false);
+        }
 
-      this.__treeItem.addChild(treeItem, false);
-      this.__controllers[i] = treeItem;
+        this.__viveAsset.geomsLoaded.connect(() => {
+          const sharedControllerTree = this.__viveAsset.getChildByName('HTC_Vive_Controller').clone();
+          setupControllerGeom(sharedControllerTree);
+        });
+
+        treeItem.addRef(this)
+        this.__controllerTrees[i] = treeItem;
+        this.__treeItem.addChild(this.__controllerTrees[i], false);
+      }
     }
 
     for (let i = 0; i < data.controllers.length; i++) {
-      if (data.controllers[i] && !this.__controllers[i]) {
+      if (data.controllers[i] && !this.__controllerTrees[i]) {
         setupController(i)
       }
-      this.__controllers[i].setGlobalXfo(data.controllers[i].xfo);
+      this.__controllerTrees[i].setGlobalXfo(data.controllers[i].xfo);
     }
-    // Hide any controllers that have turned off
-    // if (this.__controllers.length > data.controllers.length) {
-    //   for (let i = data.controllers.length; i < this.__controllers.length; i++) {
-    //     this.__controllers[i].setVisible(false);
-    //   }
-    // }
   }
 
   updatePose(data) {
