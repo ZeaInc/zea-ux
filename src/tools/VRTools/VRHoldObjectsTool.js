@@ -71,22 +71,30 @@ class HoldObjectsChange extends Change {
 
     const newSelection = [];
     for(let i=0; i<j.itemPaths.length; i++){
-      for (let itemPath of j.itemPaths){
-        if(itemPath)
-          newSelection.push(appData.scene.getRoot().resolvePath(itemPath, 1));
-      }
+      const itemPath = j.itemPaths[i]
+      if(itemPath)
+        newSelection[i] = appData.scene.getRoot().resolvePath(itemPath, 1);
     }
-    this.__newSelection = newSelection;
-
+    this.__selection = newSelection;
   }
 
-  changeFromJSON(j) {
-    if (this.__nextValue.fromJSON)
-      this.__nextValue.fromJSON(j.value);
-    else
-      this.__nextValue = j.value;
-    this.__param.setValue(this.__nextValue);
-  }
+  // changeFromJSON(j) {
+
+  //   if(updateData.newItem) {
+  //     this.__selection[updateData.newItemId] = updateData.newItem;
+  //     this.__prevXfos[updateData.newItemId] = updateData.newItem.getGlobalXfo();
+  //   }
+  //   else if(updateData.changeXfos) {
+  //     for(let i=0; i<updateData.changeXfoIds.length; i++){
+  //       const gidx = updateData.changeXfoIds[i];
+  //       if(!this.__selection[gidx])
+  //         continue;
+  //       this.__selection[gidx].setGlobalXfo(updateData.changeXfos[i]);
+  //       this.__newXfos[gidx] = updateData.changeXfos[i];
+  //     }
+  //   }
+  //   this.updated.emit(updateData);
+  // }
 }
 
 UndoRedoManager.registerChange('HoldObjectsChange', HoldObjectsChange)
