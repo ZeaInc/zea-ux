@@ -1,4 +1,5 @@
 import BaseTool from '../BaseTool.js';
+import Gizmo from '../../gizmos/Gizmo.js';
 
 export default class VRHoldObjectsTool extends BaseTool {
   constructor(appData) {
@@ -7,6 +8,8 @@ export default class VRHoldObjectsTool extends BaseTool {
 
     this.__pressedButtonCount = 0;
 
+    this.__freeIndices = [];
+    this.__vrControllers = [];
     this.__heldObjectCount = 0;
     this.__heldGeomItems = [];
     this.__heldGeomItemIds = []; // controller id to held goem id.
@@ -16,11 +19,14 @@ export default class VRHoldObjectsTool extends BaseTool {
 
   activateTool() {
     super.activateTool();
-    console.log("activateTool.GizmoTool")
+    console.log("activateTool.VRHoldObjectsTool")
 
     this.appData.renderer.getDiv().style.cursor = "crosshair";
 
     const addIconToController = (controller) => {
+      // The tool might already be deactivated.
+      if(!this.__activated)
+        return;
       const cross = new Visualive.Cross(0.03);
       const mat = new Visualive.Material('Cross', 'ToolIconShader');
       mat.getParameter('BaseColor').setValue(new Visualive.Color("#03E3AC"));
@@ -31,6 +37,8 @@ export default class VRHoldObjectsTool extends BaseTool {
       for(let controller of vrviewport.getControllers()) {
         addIconToController(controller)
       }
+      if(!this.addIconToControllerId)
+        this.addIconToControllerId = vrviewport.controllerAdded.connect(addIconToController);
     }
 
     const vrviewport = this.appData.renderer.getVRViewport();
@@ -40,7 +48,6 @@ export default class VRHoldObjectsTool extends BaseTool {
     else {
       this.appData.renderer.vrViewportSetup.connect((vrviewport)=>{
         addIconToControllers(vrviewport);
-        this.addIconToControllerId = vrviewport.controllerAdded.connect(addIconToController);
       });
     }
   }
@@ -49,7 +56,7 @@ export default class VRHoldObjectsTool extends BaseTool {
     super.deactivateTool();
 
     const vrviewport = this.appData.renderer.getVRViewport();
-    if(vrviewport && this.vrControllerToolTip) {
+    if(vrviewport) {
       const removeIconFromController = (controller) => {
         controller.getTipItem().removeAllChildren();
       }
@@ -58,6 +65,7 @@ export default class VRHoldObjectsTool extends BaseTool {
       }
     }
   }
+
   /////////////////////////////////////
   // VRController events
 
@@ -70,7 +78,7 @@ export default class VRHoldObjectsTool extends BaseTool {
           const xfo0 = this.__vrControllers[refs[0]].getTipXfo();
           const xfo1 = this.__vrControllers[refs[1]].getTipXfo();
 
-          grabXfo = new Xfo();
+          grabXfo = new Visualive.Xfo();
           grabXfo.tr = xfo0.tr.lerp(xfo1.tr, 0.5);
           grabXfo.ori = xfo0.ori.lerp(xfo1.ori, 0.5);
 
@@ -84,15 +92,15 @@ export default class VRHoldObjectsTool extends BaseTool {
           if(angle > 0){
               const axis = vec1.cross(vec0);
               axis.normalizeInPlace();
-              const align = new Quat();
+              const align = new Visualive.Quat();
               align.setFromAxisAndAngle(axis, angle);
               grabXfo.ori = align.multiply(grabXfo.ori);
           }
       }
       return grabXfo;
   }
-  initAction() {
 
+  initAction() {
     for (let i=0;i < this.__heldGeomItems.length; i++){
       const heldGeom = this.__heldGeomItems[i];
       if(!heldGeom)
@@ -104,26 +112,28 @@ export default class VRHoldObjectsTool extends BaseTool {
 
   onVRControllerButtonDown(event, vrviewport) {
     const id = event.controller.getId();
+    this.__vrControllers[id] = event.controller;
 
     const intersectionData = event.controller.getGeomItemAtTip();
     if(intersectionData){
-        let gidx = this.__heldGeomItems.indexOf(intersectionData.geomItem);
-        if(gidx == -1){
-            gidx = this.__heldGeomItems.length;
-            this.__heldObjectCount++;
-            this.__heldGeomItems.push(geomItem);
-            this.__heldGeomItemRefs[gidx] = [id];
-            this.__heldGeomItemIds[id] = gidx;
-        }
-        else{
-            this.__heldGeomItemIds[id] = gidx;
-            this.__heldGeomItemRefs[gidx].push(id);
-        }
-        this.initAction();
-    }
+      if (intersectionData.geomItem.getOwner() instanceof Gizmo)
+        return false;
 
-    // While the UI is open, no other tools get events.
-    return true;
+      let gidx = this.__heldGeomItems.indexOf(intersectionData.geomItem);
+      if(gidx == -1){
+        gidx = this.__heldGeomItems.length;
+        this.__heldObjectCount++;
+        this.__heldGeomItems.push(intersectionData.geomItem);
+        this.__heldGeomItemRefs[gidx] = [id];
+        this.__heldGeomItemIds[id] = gidx;
+      }
+      else{
+        this.__heldGeomItemIds[id] = gidx;
+        this.__heldGeomItemRefs[gidx].push(id);
+      }
+      this.initAction();
+      return true;
+    }
   }
 
   onVRControllerButtonUp(event, vrviewport) {
@@ -131,23 +141,22 @@ export default class VRHoldObjectsTool extends BaseTool {
 
     this.__pressedButtonCount--;
     if(this.__heldGeomItemIds[id] !== undefined){
-        const gidx = this.__heldGeomItemIds[id];
-        const refs = this.__heldGeomItemRefs[gidx]
-        refs.splice(refs.indexOf(id), 1);
-        if(refs.length == 0){
-            this.__heldObjectCount--;
-            this.__heldGeomItems[gidx] = undefined;
-        }
-        this.__heldGeomItemIds[id] = undefined;
-        this.initAction();
+      const gidx = this.__heldGeomItemIds[id];
+      const refs = this.__heldGeomItemRefs[gidx]
+      refs.splice(refs.indexOf(id), 1);
+      if(refs.length == 0){
+        this.__heldObjectCount--;
+        this.__heldGeomItems[gidx] = undefined;
+      }
+      this.__heldGeomItemIds[id] = undefined;
+      this.initAction();
+      return true;
     }
-    // While the UI is open, no other tools get events.
-    return true;
   }
 
   onVRPoseChanged(event, vrviewport) {
 
-    if(this.__heldGeomItems.length == 0)
+    if(this.__heldObjectCount == 0)
       return false;
 
     for (let i=0;i < this.__heldGeomItems.length; i++){
@@ -156,9 +165,9 @@ export default class VRHoldObjectsTool extends BaseTool {
           continue;
       const grabXfo = this.computeGrabXfo(this.__heldGeomItemRefs[i]);
       heldGeom.setGlobalXfo(grabXfo.multiply(this.__heldGeomItemOffsets[i]));
+
     }
 
-    // While the UI is open, no other tools get events.
     return true;
   }
 

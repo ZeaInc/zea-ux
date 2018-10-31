@@ -16,6 +16,9 @@ export default class GizmoTool extends BaseTool {
     this.appData.renderer.getDiv().style.cursor = "crosshair";
 
     const addIconToController = (controller) => {
+      // The tool might already be deactivated.
+      if(!this.__activated)
+        return;
       const cross = new Visualive.Cross(0.03);
       const mat = new Visualive.Material('Cross', 'ToolIconShader');
       mat.getParameter('BaseColor').setValue(new Visualive.Color("#03E3AC"));
@@ -26,6 +29,8 @@ export default class GizmoTool extends BaseTool {
       for(let controller of vrviewport.getControllers()) {
         addIconToController(controller)
       }
+      if(!this.addIconToControllerId)
+        this.addIconToControllerId = vrviewport.controllerAdded.connect(addIconToController);
     }
 
     const vrviewport = this.appData.renderer.getVRViewport();
@@ -35,7 +40,6 @@ export default class GizmoTool extends BaseTool {
     else {
       this.appData.renderer.vrViewportSetup.connect((vrviewport)=>{
         addIconToControllers(vrviewport);
-        this.addIconToControllerId = vrviewport.controllerAdded.connect(addIconToController);
       });
     }
   }
@@ -44,7 +48,7 @@ export default class GizmoTool extends BaseTool {
     super.deactivateTool();
 
     const vrviewport = this.appData.renderer.getVRViewport();
-    if(vrviewport && this.vrControllerToolTip) {
+    if(vrviewport) {
       const removeIconFromController = (controller) => {
         controller.getTipItem().removeAllChildren();
       }

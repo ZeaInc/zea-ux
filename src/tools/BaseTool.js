@@ -9,6 +9,8 @@ export default class BaseTool extends Visualive.ParameterOwner {
     this.actionFinished = new Visualive.Signal();
 
     this.__params = []
+    this.__installed = false;
+    this.__activated = false;
   }
 
   /////////////////////////////////////
@@ -16,15 +18,21 @@ export default class BaseTool extends Visualive.ParameterOwner {
 
   installed(index) {
     this.index = index;
+    this.__installed = true;
   }
 
   uninstalled() {
+    this.__installed = false;
   }
 
   activateTool() {
+    if(this.__activated)
+      throw("Tool already activate")
+    this.__activated = true;
   }
 
   deactivateTool() {
+    this.__activated = false;
   }
 
   /////////////////////////////////////
