@@ -1,4 +1,4 @@
-import VisualiveApiClient, { getParameterFromUrl } from './VisualiveApiClient.js';
+import VisualiveApiClient from './VisualiveApiClient.js';
 
 import UndoRedoManager from './undoredo/UndoRedoManager.js';
 import Change from './undoredo/Change.js';
@@ -54,7 +54,6 @@ import AxialRotationGizmo from './gizmos/AxialRotationGizmo.js';
 
 export {
   VisualiveApiClient,
-  getParameterFromUrl,
 
   UndoRedoManager,
   Change, 
