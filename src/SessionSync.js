@@ -31,7 +31,7 @@ const convertValuesToJSON = (value) => {
 const convertValuesFromJSON = (value, scene) => {
   if (value == undefined) {
     return undefined;
-  } else if(typeof value === 'string' && value.startsWith('::') ) {
+  } else if (typeof value === 'string' && value.startsWith('::')) {
     return scene.getRoot().resolvePath(value, 1);
   } else if (value.typeName) {
     const newval = Visualive.typeRegistry.getType(value.typeName).create();
@@ -87,20 +87,20 @@ export default class SessionSync {
       tick++;
 
       const controllers = data.controllers;
-      if(controllers){
+      if (controllers) {
         // only push every second pose of a vr stream. 
-        if(tick % 2 != 0)
+        if (tick % 2 != 0)
           return;
         delete data.controllers;
       }
 
       const j = convertValuesToJSON(data);
 
-      if(controllers){
+      if (controllers) {
         const controllerXfos = [];
         for (let controller of controllers) {
           controllerXfos.push({
-              xfo: convertValuesToJSON(controller.getTreeItem().getGlobalXfo())
+            xfo: convertValuesToJSON(controller.getTreeItem().getGlobalXfo())
           });
         }
         j.controllers = controllerXfos;
@@ -168,6 +168,47 @@ export default class SessionSync {
       const undoRedoManager = userDatas[userId].undoRedoManager;
       const changeData = convertValuesFromJSON(data, appData.scene);
       undoRedoManager.getCurrentChange().update(changeData);
+    })
+
+    /////////////////////////////////////////////
+    // Undostack Changes.
+    // Synchronize undo stacks between users.
+
+    appData.undoRedoManager.changeUndone.connect(() => {
+      visualiveSession.pub("UndoRedoManager_changeUndone", {})
+    })
+
+    visualiveSession.sub("UndoRedoManager_changeUndone", (data, userId) => {
+      const undoRedoManager = userDatas[userId].undoRedoManager;
+      undoRedoManager.undo();
+    })
+
+    appData.undoRedoManager.changeRedone.connect(() => {
+      visualiveSession.pub("UndoRedoManager_changeRedone", {})
+    })
+
+    visualiveSession.sub("UndoRedoManager_changeRedone", (data, userId) => {
+      const undoRedoManager = userDatas[userId].undoRedoManager;
+      undoRedoManager.redo();
+    })
+
+    /////////////////////////////////////////////
+    // State Machine Changes.
+    // Synchronize State Machine changes between users.
+
+    Visualive.sgFactory.registerCallback('StateMachine', (stateMachine) => {
+      stateMachine.stateChanged.connect(name => {
+
+        visualiveSession.pub("StateMachine_stateChanged", {
+          stateMachine: stateMachine.getPath(),
+          stateName: name
+        })
+      })
+    })
+
+    visualiveSession.sub("StateMachine_stateChanged", (data, userId) => {
+      const stateMachine = scene.getRoot().resolvePath(data.stateMachine, 1);
+      stateMachine.activateState(data.stateName)
     })
 
   }

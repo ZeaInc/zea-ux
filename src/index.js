@@ -15,6 +15,7 @@ import SceneTreeView from './ui/scene-tree-view.js';
 import TreeItemInspector from './ui/TreeItemInspector.js';
 import ParameterContainer from './ui/ParameterContainer.js';
 import InspectorContainer from './ui/InspectorContainer.js';
+import ActionTreeView from './ui/action-tree-view.js';
 
 import { UserChip } from './ui/UserChip.js';
 
@@ -72,6 +73,7 @@ export {
   ParameterContainer,
   InspectorContainer,
   UserChip,
+  ActionTreeView,
 
   // Parameter Widgets
   BooleanWidget,
