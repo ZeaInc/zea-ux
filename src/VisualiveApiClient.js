@@ -19,6 +19,7 @@ class VisualiveApiClient {
 
   doRequest(url, method, data, contentType) {
     const urlFullPath = this.apiHostUrl + url;
+    console.log("doRequest", urlFullPath)
     const token = localStorage.getItem('api-token');
     const headers = new Headers();
     headers.append('Content-Type', contentType);
