@@ -91,7 +91,7 @@ export default class Avatar {
           xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0, 1, 0), Math.PI);
           hmdGeomItem.setLocalXfo(xfo);
 
-          hmdGeomItem.setMaterial(this.__material);
+          // hmdGeomItem.setMaterial(this.__material);
           this.__hmdGeomItem = hmdGeomItem;
           this.__hmdGeomItem.addRef(this);
 
@@ -115,12 +115,12 @@ export default class Avatar {
           const controllerTree = sharedControllerTree.clone();
 
           const filter = ['TriggerMaterial', 'Touchpad Material', 'Metal']
-          controllerTree.traverse((subTreeItem)=>{
-            if(subTreeItem instanceof Visualive.GeomItem){
-              if(filter.indexOf(subTreeItem.getMaterial().getName()) == -1)
-                subTreeItem.setMaterial(this.__material)
-            }
-          })
+          // controllerTree.traverse((subTreeItem)=>{
+          //   if(subTreeItem instanceof Visualive.GeomItem){
+          //     if(filter.indexOf(subTreeItem.getMaterial().getName()) == -1)
+          //       subTreeItem.setMaterial(this.__material)
+          //   }
+          // })
           const xfo = new Visualive.Xfo(
             new Visualive.Vec3(0, -0.035, 0.01), 
             new Visualive.Quat({ 
