@@ -35,6 +35,7 @@ import ToolManager from './tools/ToolManager.js';
 import ViewTool from './tools/ViewTool.js';
 import SelectionTool from './tools/SelectionTool.js';
 import OpenVRUITool from './tools/VRTools/OpenVRUITool.js';
+import VRUITool from './src/tools/CreateTools/VRUITool.js';
 import VRHoldObjectsTool from './tools/VRTools/VRHoldObjectsTool.js';
 
 // Create Geom Tools
@@ -91,6 +92,7 @@ export {
 
   // VR Tools
   OpenVRUITool,
+  VRUITool,
   VRHoldObjectsTool,
 
   // Create Geom Tools

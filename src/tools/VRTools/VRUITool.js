@@ -2,9 +2,10 @@ import domtoimage from 'dom-to-image';
 import BaseTool from '../BaseTool.js';
 
 export default class VRUITool extends BaseTool {
-  constructor(appData, vrUIDOMElement) {
+  constructor(appData, vrUIDOMHolderElement, vrUIDOMElement) {
     super(appData);
 
+    this.__vrUIDOMHolderElement = vrUIDOMHolderElement;
     this.__vrUIDOMElement = vrUIDOMElement;
     this.__triggerHeld = false;
 
@@ -73,7 +74,7 @@ export default class VRUITool extends BaseTool {
     this.uiController.getTipItem().addChild(this.__uiGeomItem, false);
     this.pointerController.getTipItem().addChild(this.__uiPointerItem, false);
 
-    this.__vrUIHolderDOMElement.style.display = "block";
+    this.__vrUIDOMHolderElement.style.display = "block";
     this.renderUIToImage();
   }
 
@@ -82,7 +83,7 @@ export default class VRUITool extends BaseTool {
     this.uiController.getTipItem().removeAllChildren();
     this.pointerController.getTipItem().removeAllChildren();
 
-    this.__vrUIHolderDOMElement.style.display = "none";
+    this.__vrUIDOMHolderElement.style.display = "none";
   }
 
   /////////////////////////////////////

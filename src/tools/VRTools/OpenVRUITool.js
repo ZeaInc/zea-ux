@@ -1,11 +1,10 @@
 import BaseTool from '../BaseTool.js';
-import VRUITool from './VRUITool.js';
 
 export default class OpenVRUITool extends BaseTool {
-  constructor(appData) {
+  constructor(appData, vrUITool) {
     super(appData);
 
-    this.vrUITool = new VRUITool(appData);
+    this.vrUITool = vrUITool;
   }
 
 
