@@ -94,23 +94,14 @@ export default class VRUITool extends BaseTool {
     this.__uiPointerItem.setLocalXfo(this.__pointerLocalXfo);
   }
 
-  setUIPixelData(width, height, pixels) {
-    this.__dims = {
-        width,
-        height
-    };
-    let dpm = 0.0005; //dots-per-meter (1 each 1/2mm)
-    this.__uiLocalXfo.sc.set(width * dpm, height * dpm, 1.0);
-    this.__uiGeomItem.setGeomOffsetXfo(this.__uiLocalXfo)
-    this.__uiimage.setData(width, height, pixels);
-  }
-
   renderUIToImage() {
     domtoimage.toPixelData(this.__vrUIDOMElement)
-      .then(function(pixels) {
-        const width = this.__vrUIDOMElement.scrollWidth;
-        const height = this.__vrUIDOMElement.scrollHeight;
-        this.setUIPixelData(width, height, pixels)
+      .then((pixels) => {
+        const rect = this.__vrUIDOMElement.getBoundingClientRect();
+        let dpm = 0.0005; //dots-per-meter (1 each 1/2mm)
+        this.__uiLocalXfo.sc.set(rect.width * dpm, rect.height * dpm, 1.0);
+        this.__uiGeomItem.setGeomOffsetXfo(this.__uiLocalXfo)
+        this.__uiimage.setData(rect.width, rect.height, pixels);
       });
   }
 
@@ -122,7 +113,7 @@ export default class VRUITool extends BaseTool {
     args.offsetX = args.pageX = args.pageX = args.screenX = args.clientX;
     args.offsetY = args.pageY = args.pageY = args.screenY = args.clientY;
 
-    const event = new MouseEvent(eventName, extend({
+    const event = new MouseEvent(eventName, Object.assign({
       'view': window,
       'bubbles': true,
       'composed': true,
