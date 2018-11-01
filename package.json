@@ -1,13 +1,13 @@
 {
   "name": "@visualive/ux",
-  "version": "0.0.23",
+  "version": "0.0.25",
   "description": "",
   "keywords": [],
   "main": "./dist/visualive-ux.js",
   "scripts": {
-    "build": "webpack",
-    "build:dev": "webpack --mode=development --watch",
-    "dist": "webpack && yarn publish"
+    "build": "webpack --config webpack-prod.config.js",
+    "build:dev": "webpack --mode=development --watch --config webpack-dev.config.js",
+    "dist": "webpack --config webpack-prod.config.js && yarn publish"
   },
   "repository": {
     "type": "git",
