@@ -140,7 +140,7 @@ class CreateGeomTool extends BaseCreateTool {
   onMouseDown(event) {
     // 
     if(this.stage == 0) {
-      const scene = viewport.getRenderer().getScene();
+      const scene = event.viewport.getRenderer().getScene();
       this.constructionPlane = new Visualive.Xfo();
 
       this.xfo = this.screenPosToXfo(event.mousePos, event.viewport);

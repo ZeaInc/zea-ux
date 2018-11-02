@@ -80,7 +80,7 @@ export default class SessionSync {
 
     // const ourAvatar = new Avatar(appData, { userId });
 
-    const viewport = renderer.getViewport();
+    const viewport = appData.renderer.getViewport();
     viewport.mouseMoved.connect((event) => {
       const intersectionData = event.viewport.getGeomDataAtPos(event.mousePos, event.mouseRay);
       const rayLength = intersectionData ? intersectionData.dist : 5.0;

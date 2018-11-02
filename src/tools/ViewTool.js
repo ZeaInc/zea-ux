@@ -248,8 +248,8 @@ export default class ViewTool extends BaseTool {
     }
   }
 
-  onDragEnd(event, mouseUpPos, viewport) {
-    viewport.renderGeomDataFbo();
+  onDragEnd(event) {
+    event.viewport.renderGeomDataFbo();
     this.movementFinished.emit();
     return false;
   }
@@ -278,15 +278,15 @@ export default class ViewTool extends BaseTool {
   }
 
   onWheel(event) {
-    const focalDistance = viewport.getCamera().getFocalDistance();
+    const focalDistance = event.viewport.getCamera().getFocalDistance();
     const mouseWheelDollySpeed = this.__mouseWheelDollySpeedParam.getValue();
     const zoomDist = event.deltaY * mouseWheelDollySpeed * focalDistance;
-    const xfo = viewport.getCamera().getGlobalXfo();
+    const xfo = event.viewport.getCamera().getGlobalXfo();
     xfo.tr.addInPlace(xfo.ori.getZaxis().scale(zoomDist));
     if (this.__defaultMode == 'orbit')
-      viewport.getCamera().setFocalDistance( focalDistance + zoomDist);
-    viewport.getCamera().setGlobalXfo(xfo);
-    viewport.renderGeomDataFbo();
+      event.viewport.getCamera().setFocalDistance( focalDistance + zoomDist);
+    event.viewport.getCamera().setGlobalXfo(xfo);
+    event.viewport.renderGeomDataFbo();
     this.movementFinished.emit();
   }
 

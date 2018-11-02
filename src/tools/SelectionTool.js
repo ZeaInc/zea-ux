@@ -59,9 +59,9 @@ export default class SelectionTool extends BaseTool {
 
   onMouseMove(event) {
     if (this.mouseDownPos) {
-      const delta = this.mouseDownPos.subtract(mousePos);
+      const delta = this.mouseDownPos.subtract(event.mousePos);
       if(this.dragging) {
-        this.__resizeRect(viewport, delta);
+        this.__resizeRect(event.viewport, delta);
       }
       const dist = delta.length();
       // dragging only is activated after 4 pixels. 
@@ -70,7 +70,7 @@ export default class SelectionTool extends BaseTool {
         this.dragging = true;
         // Start drawing the selection rectangle on screen.
         this.rectItem.getParameter('Visible').setValue(true);
-        this.__resizeRect(viewport, delta);
+        this.__resizeRect(event.viewport, delta);
       }
 
     }
@@ -80,7 +80,7 @@ export default class SelectionTool extends BaseTool {
   onMouseUp(event) {
 
     if (this.mouseDownPos) {
-      viewport.renderGeomDataFbo();
+      event.viewport.renderGeomDataFbo();
       if (this.dragging) {
         this.rectItem.getParameter('Visible').setValue(false);
         const mouseUpPos = event.mousePos;
@@ -97,7 +97,7 @@ export default class SelectionTool extends BaseTool {
         this.selectionRectXfo.sc.set(0,0,0)
         this.rectItem.setGlobalXfo(this.selectionRectXfo)
       } else {
-        const intersectionData = viewport.getGeomDataAtPos(mousePos);
+        const intersectionData = viewport.getGeomDataAtPos(event.mousePos);
         if (intersectionData != undefined) {
           if (!event.shiftKey) {
             this.appData.selectionManager.toggleItemSelection(intersectionData.geomItem, !event.ctrlKey);

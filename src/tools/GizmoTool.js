@@ -65,7 +65,7 @@ export default class GizmoTool extends BaseTool {
     // 
     if (!this.activeGizmo) {
       event.viewport.renderGeomDataFbo();
-      const intersectionData = viewport.getGeomDataAtPos(mousePos);
+      const intersectionData = event.viewport.getGeomDataAtPos(event.mousePos);
       if (intersectionData == undefined) 
         return;
       if(intersectionData.geomItem.getOwner() instanceof Gizmo) {
