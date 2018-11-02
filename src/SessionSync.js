@@ -80,21 +80,56 @@ export default class SessionSync {
 
     // const ourAvatar = new Avatar(appData, { userId });
 
+    const viewport = renderer.getViewport();
+    viewport.mouseMoved.connect((event) => {
+      const intersectionData = event.viewport.getGeomDataAtPos(event.mousePos, event.mouseRay);
+      const rayLength = intersectionData ? intersectionData.dist : 5.0;
+      visualiveSession.pub(VisualiveSession.actions.POSE_CHANGED, {
+        mouseMoved:{
+          start: event.mouseRay.start,
+          dir: event.mouseRay.dir,
+          length: rayLength
+        }
+      });
+    });
+    viewport.mouseDown.connect((event) => {
+      const intersectionData = event.viewport.getGeomDataAtPos(event.mousePos, event.mouseRay);
+      const rayLength = intersectionData ? intersectionData.dist : 5.0;
+      visualiveSession.pub(VisualiveSession.actions.POSE_CHANGED, {
+        mouseDown:{
+          start: event.mouseRay.start,
+          dir: event.mouseRay.dir,
+          length: rayLength
+        }
+      });
+    });
+    viewport.mouseUp.connect((event) => {
+      const intersectionData = event.viewport.getGeomDataAtPos(event.mousePos, event.mouseRay);
+      const rayLength = intersectionData ? intersectionData.dist : 5.0;
+      visualiveSession.pub(VisualiveSession.actions.POSE_CHANGED, {
+        mouseUp:{
+          start: event.mouseRay.start,
+          dir: event.mouseRay.dir,
+          length: rayLength
+        }
+      });
+    });
+
     let tick = 0;
 
-    appData.renderer.viewChanged.connect((data) => {
+    appData.renderer.viewChanged.connect((event) => {
 
       tick++;
 
-      const controllers = data.controllers;
+      const controllers = event.controllers;
       if (controllers) {
         // only push every second pose of a vr stream. 
         if (tick % 2 != 0)
           return;
-        delete data.controllers;
+        delete event.controllers;
       }
 
-      const j = convertValuesToJSON(data);
+      const jsonData = convertValuesToJSON(event);
 
       if (controllers) {
         const controllerXfos = [];
@@ -103,21 +138,21 @@ export default class SessionSync {
             xfo: convertValuesToJSON(controller.getTreeItem().getGlobalXfo())
           });
         }
-        j.controllers = controllerXfos;
+        jsonData.controllers = controllerXfos;
       }
 
-      visualiveSession.pub(VisualiveSession.actions.POSE_CHANGED, j);
+      visualiveSession.pub(VisualiveSession.actions.POSE_CHANGED, jsonData);
 
-      // const otherData = convertValuesFromJSON(j, appData.scene);
+      // const otherData = convertValuesFromJSON(jsonData, appData.scene);
       // otherAvatar.updatePose(otherData);
     });
 
-    visualiveSession.sub(VisualiveSession.actions.POSE_CHANGED, (j, userId) => {
+    visualiveSession.sub(VisualiveSession.actions.POSE_CHANGED, (jsonData, userId) => {
       if (!userDatas[userId]) {
         console.warn("User id not in session:", userId);
         return;
       }
-      const data = convertValuesFromJSON(j, appData.scene);
+      const data = convertValuesFromJSON(jsonData, appData.scene);
       const avatar = userDatas[userId].avatar;
       avatar.updatePose(data);
     })
