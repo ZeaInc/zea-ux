@@ -195,14 +195,14 @@ export default class ViewTool extends BaseTool {
     this.__mouseDownFocalDist = focalDistance;
   }
 
-  onMouseMove(event, mousePos, viewport) {
+  onMouseMove(event) {
 
   }
 
-  onDragStart(event, mouseDownPos, viewport) {
+  onDragStart(event) {
 
-    this.__mouseDownPos = mouseDownPos;
-    this.initDrag(viewport);
+    this.__mouseDownPos = event.mousePos;
+    this.initDrag(event.viewport);
 
     if (event.button == 2) {
       this.__mode = 'pan';
@@ -215,7 +215,7 @@ export default class ViewTool extends BaseTool {
     }
   }
 
-  onDrag(event, mousePos, viewport) {
+  onDrag(event) {
     // During requestPointerLock, the offsetX/Y values are not updated.
     // Instead we get a relative delta that we use to compute the total
     // delta for the drag.
@@ -228,22 +228,22 @@ export default class ViewTool extends BaseTool {
     //     this.__mouseDragDelta.y += event.movementY;
     // }
     if (this.__keyboardMovement) {
-      this.__mouseDragDelta = mousePos;
+      this.__mouseDragDelta = event.mousePos;
     } else {
-      this.__mouseDragDelta = mousePos.subtract(this.__mouseDownPos);
+      this.__mouseDragDelta = event.mousePos.subtract(this.__mouseDownPos);
     }
     switch (this.__mode) {
       case 'orbit':
-        this.orbit(this.__mouseDragDelta, viewport);
+        this.orbit(this.__mouseDragDelta, event.viewport);
         break;
       case 'look':
-        this.look(this.__mouseDragDelta, viewport);
+        this.look(this.__mouseDragDelta, event.viewport);
         break;
       case 'pan':
-        this.pan(this.__mouseDragDelta, viewport);
+        this.pan(this.__mouseDragDelta, event.viewport);
         break;
       case 'dolly':
-        this.dolly(this.__mouseDragDelta, viewport);
+        this.dolly(this.__mouseDragDelta, event.viewport);
         break;
     }
   }
@@ -255,29 +255,29 @@ export default class ViewTool extends BaseTool {
   }
 
 
-  onMouseDown(event, mousePos, viewport) {
+  onMouseDown(event) {
     this.dragging = true;
-    this.__mouseDownPos = mousePos;
-    this.onDragStart(event, mousePos, viewport)
+    this.__mouseDownPos = event.mousePos;
+    this.onDragStart(event)
     return true;
   }
 
-  onMouseUp(event, mousePos, viewport) {
+  onMouseUp(event) {
       if (this.dragging) {
-          this.onDragEnd(event, mousePos, viewport);
+          this.onDragEnd(event);
           this.dragging = false;
           return true;
       }
   }
 
-  onMouseMove(event, mousePos, viewport) {
+  onMouseMove(event) {
       if (this.dragging) {
-          this.onDrag(event, mousePos, viewport);
+          this.onDrag(event);
           return true; 
       }
   }
 
-  onWheel(event, viewport) {
+  onWheel(event) {
     const focalDistance = viewport.getCamera().getFocalDistance();
     const mouseWheelDollySpeed = this.__mouseWheelDollySpeedParam.getValue();
     const zoomDist = event.deltaY * mouseWheelDollySpeed * focalDistance;
@@ -296,7 +296,7 @@ export default class ViewTool extends BaseTool {
     viewport.getCamera().setGlobalXfo(viewport.getCamera().getGlobalXfo().multiply(delta));
   }
 
-  onKeyPressed(key, event, viewport) {
+  onKeyPressed(key, event) {
     // Note: onKeyPressed is called intiallly only once, and then we 
     // get a series of calls. Here we ignore subsequent events.
     // (TODO: move this logic to a special controller)
@@ -339,9 +339,9 @@ export default class ViewTool extends BaseTool {
     return false;// no keys handled
   }
 
-  onKeyDown(key, event, viewport) {}
+  onKeyDown(key, event) {}
 
-  onKeyUp(key, event, viewport) {
+  onKeyUp(key, event) {
     // (TODO: move this logic to a special controller)
     /*
     switch (key) {
@@ -384,7 +384,7 @@ export default class ViewTool extends BaseTool {
   }
 
 
-  onTouchStart(event, viewport) {
+  onTouchStart(event) {
     // console.log("onTouchStart");
     event.preventDefault();
     event.stopPropagation();
@@ -400,7 +400,7 @@ export default class ViewTool extends BaseTool {
     return true;
   }
 
-  onTouchMove(event, viewport) {
+  onTouchMove(event) {
     event.preventDefault();
     event.stopPropagation();
     // console.log("this.__manipMode:" + this.__manipMode);
@@ -442,7 +442,7 @@ export default class ViewTool extends BaseTool {
     }
   }
 
-  onTouchEnd(event, viewport) {
+  onTouchEnd(event) {
     event.preventDefault();
     event.stopPropagation();
     let touches = event.changedTouches;
@@ -459,7 +459,7 @@ export default class ViewTool extends BaseTool {
     return true;
   }
 
-  onTouchCancel(event, viewport) {
+  onTouchCancel(event) {
     event.preventDefault();
     console.log("touchcancel.");
     let touches = event.changedTouches;

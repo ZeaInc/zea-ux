@@ -137,13 +137,13 @@ class CreateGeomTool extends BaseCreateTool {
   /////////////////////////////////////
   // Mouse events
 
-  onMouseDown(event, mousePos, viewport) {
+  onMouseDown(event) {
     // 
     if(this.stage == 0) {
       const scene = viewport.getRenderer().getScene();
       this.constructionPlane = new Visualive.Xfo();
 
-      this.xfo = this.screenPosToXfo(mousePos, viewport);
+      this.xfo = this.screenPosToXfo(event.mousePos, event.viewport);
 
       this.createStart(this.xfo, scene.getRoot());
       return true;
@@ -156,46 +156,46 @@ class CreateGeomTool extends BaseCreateTool {
     return true;
   }
 
-  onMouseMove(event, mousePos, viewport) {
+  onMouseMove(event) {
     if(this.stage > 0) {
-      const xfo = this.screenPosToXfo(mousePos, viewport);
+      const xfo = this.screenPosToXfo(event.mousePos, event.viewport);
       this.createMove(xfo.tr)
       return true;
     }
   }
 
-  onMouseUp(event, mousePos, viewport) {
+  onMouseUp(event) {
     if(this.stage > 0) {
-      const xfo = this.screenPosToXfo(mousePos, viewport);
-      this.createRelease(xfo.tr, viewport);
+      const xfo = this.screenPosToXfo(event.mousePos, event.viewport);
+      this.createRelease(xfo.tr);
       return true;
     }
   }
 
-  onWheel(event, viewport) {}
+  onWheel(event) {}
 
   /////////////////////////////////////
   // Keyboard events
-  onKeyPressed(key, event, viewport) {}
+  onKeyPressed(key, event) {}
 
-  onKeyDown(key, event, viewport) {}
+  onKeyDown(key, event) {}
 
-  onKeyUp(key, event, viewport) {}
+  onKeyUp(key, event) {}
 
   /////////////////////////////////////
   // Touch events
-  onTouchStart(event, viewport) {}
+  onTouchStart(event) {}
 
-  onTouchMove(event, viewport) {}
+  onTouchMove(event) {}
 
-  onTouchEnd(event, viewport) {}
+  onTouchEnd(event) {}
 
-  onTouchCancel(event, viewport) {}
+  onTouchCancel(event) {}
 
   /////////////////////////////////////
   // VRController events
 
-  onVRControllerButtonDown(event, viewport) {
+  onVRControllerButtonDown(event) {
     if(this.__activeController) {
       // TODO: Snap the Xfo to any nearby construction planes.
       this.__activeController = event.controller;
@@ -205,7 +205,7 @@ class CreateGeomTool extends BaseCreateTool {
     }
   }
 
-  onVRPoseChanged(event, viewport) {
+  onVRPoseChanged(event) {
     if(this.__activeController && this.stage > 0) {
       // TODO: Snap the Xfo to any nearby construction planes.
       const xfo = this.__activeController.getTipXfo();
@@ -214,7 +214,7 @@ class CreateGeomTool extends BaseCreateTool {
     }
   }
 
-  onVRControllerButtonUp(event, viewport) {
+  onVRControllerButtonUp(event) {
     if(this.stage > 0) {
       if(this.__activeController == event.controller){
         const xfo = this.__activeController.getTipXfo();

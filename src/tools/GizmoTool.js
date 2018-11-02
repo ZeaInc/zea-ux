@@ -61,37 +61,37 @@ export default class GizmoTool extends BaseTool {
   /////////////////////////////////////
   // Mouse events
 
-  onMouseDown(event, mousePos, viewport) {
+  onMouseDown(event) {
     // 
     if (!this.activeGizmo) {
-      viewport.renderGeomDataFbo();
+      event.viewport.renderGeomDataFbo();
       const intersectionData = viewport.getGeomDataAtPos(mousePos);
       if (intersectionData == undefined) 
         return;
       if(intersectionData.geomItem.getOwner() instanceof Gizmo) {
         this.activeGizmo = intersectionData.geomItem.getOwner();
-        this.activeGizmo.handleMouseDown(Object.assign(event, {intersectionData, mouseRay:intersectionData.mouseRay}), mousePos, viewport);
+        this.activeGizmo.handleMouseDown(Object.assign(event, { intersectionData } ));
         return true;
       }
     }
   }
 
-  onMouseMove(event, mousePos, viewport) {
+  onMouseMove(event) {
     if (this.activeGizmo) {
-      this.activeGizmo.handleMouseMove(event, mousePos, viewport);
+      this.activeGizmo.handleMouseMove(event);
       return true;
     }
   }
 
-  onMouseUp(event, mousePos, viewport) {
+  onMouseUp(event) {
     if (this.activeGizmo) {
-      this.activeGizmo.handleMouseUp(event, mousePos, viewport);
+      this.activeGizmo.handleMouseUp(event);
       this.activeGizmo = undefined;
       return true;
     }
   }
 
-  onWheel(event, viewport) {
+  onWheel(event) {
     if (this.activeGizmo) {
       this.activeGizmo.onWheel(event);
     }
@@ -99,13 +99,13 @@ export default class GizmoTool extends BaseTool {
 
   /////////////////////////////////////
   // Touch events
-  onTouchStart(event, viewport) {}
+  onTouchStart(event) {}
 
-  onTouchMove(event, viewport) {}
+  onTouchMove(event) {}
 
-  onTouchEnd(event, viewport) {}
+  onTouchEnd(event) {}
 
-  onTouchCancel(event, viewport) {}
+  onTouchCancel(event) {}
 
   /////////////////////////////////////
   // VRController events

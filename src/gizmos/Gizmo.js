@@ -23,28 +23,26 @@ export default class Gizmo extends Visualive.TreeItem {
   /////////////////////////////////////
   // Mouse events
 
-  handleMouseDown(event, mousePos, viewport) {
+  handleMouseDown(event) {
     // 
     this.gizmoRay = this.getManipulationRay();
-    const grabDist = event.intersectionData.mouseRay.intersectRayVector(this.gizmoRay);
+    const grabDist = event.mouseRay.intersectRayVector(this.gizmoRay);
     if (grabDist > 0) {
-      const grabPos = event.intersectionData.mouseRay.dir.scale(grabDist);
+      const grabPos = event.mouseRay.dir.scale(grabDist);
       this.onDragStart(event, grabPos);
       return true;
     }
   }
 
-  handleMouseMove(event, mousePos, viewport) {
-    const mouseRay = viewport.calcRayFromScreenPos(mousePos);
-    const dist = mouseRay.intersectRayVector(this.gizmoRay)[0];
-    const dragPos = mouseRay.dir.scale(dist);
+  handleMouseMove(event) {
+    const dist = event.mouseRay.intersectRayVector(this.gizmoRay)[0];
+    const dragPos = event.mouseRay.dir.scale(dist);
     this.onDragStart(event, dragPos);
   }
 
-  handleMouseUp(event, mousePos, viewport) {
-    const mouseRay = viewport.calcRayFromScreenPos(mousePos);
-    const dist = mouseRay.intersectRayVector(this.gizmoRay)[0];
-    const releasePos = mouseRay.dir.scale(dist);
+  handleMouseUp(event) {
+    const dist = event.mouseRay.intersectRayVector(this.gizmoRay)[0];
+    const releasePos = event.mouseRay.dir.scale(dist);
     this.onDragEnd(event, releasePos);
     return true;
   }

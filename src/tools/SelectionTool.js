@@ -35,10 +35,10 @@ export default class SelectionTool extends BaseTool {
   }
 
 
-  onMouseDown(event, mousePos, viewport) {
+  onMouseDown(event) {
     if(event.button == 0) {
       console.log("onMouseDown")
-      this.mouseDownPos = mousePos;
+      this.mouseDownPos = event.mousePos;
       this.dragging = false;
       return true;
     }
@@ -57,7 +57,7 @@ export default class SelectionTool extends BaseTool {
     this.rectItem.setGlobalXfo(this.selectionRectXfo)
   }
 
-  onMouseMove(event, mousePos, viewport) {
+  onMouseMove(event) {
     if (this.mouseDownPos) {
       const delta = this.mouseDownPos.subtract(mousePos);
       if(this.dragging) {
@@ -77,13 +77,13 @@ export default class SelectionTool extends BaseTool {
     return true;
   }
 
-  onMouseUp(event, mousePos, viewport) {
+  onMouseUp(event) {
 
     if (this.mouseDownPos) {
       viewport.renderGeomDataFbo();
       if (this.dragging) {
         this.rectItem.getParameter('Visible').setValue(false);
-        const mouseUpPos = mousePos;
+        const mouseUpPos = event.mousePos;
         const tl = new Visualive.Vec2(Math.min(this.mouseDownPos.x, mouseUpPos.x), Math.min(this.mouseDownPos.y, mouseUpPos.y))
         const br = new Visualive.Vec2(Math.max(this.mouseDownPos.x, mouseUpPos.x), Math.max(this.mouseDownPos.y, mouseUpPos.y))
         const geomItems = viewport.getGeomItemsInRect(tl, br);
