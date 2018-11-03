@@ -77,42 +77,39 @@ export default class SessionSync {
 
     /////////////////////////////////////////////
     // Pose Changes
-
-    // const ourAvatar = new Avatar(appData, { userId });
-
-    const viewport = appData.renderer.getViewport();
-    viewport.mouseMoved.connect((event) => {
+    appData.toolManager.movePointer.connect((event) => {
       const intersectionData = event.viewport.getGeomDataAtPos(event.mousePos, event.mouseRay);
       const rayLength = intersectionData ? intersectionData.dist : 5.0;
-      visualiveSession.pub(VisualiveSession.actions.POSE_CHANGED, {
-        mouseMoved:{
+      const data = {
+        interfaceType: 'CameraAndPointer',
+        movePointer: {
           start: event.mouseRay.start,
           dir: event.mouseRay.dir,
           length: rayLength
         }
-      });
+      }
+      visualiveSession.pub(VisualiveSession.actions.POSE_CHANGED, convertValuesToJSON(data));
     });
-    viewport.mouseDown.connect((event) => {
-      const intersectionData = event.viewport.getGeomDataAtPos(event.mousePos, event.mouseRay);
-      const rayLength = intersectionData ? intersectionData.dist : 5.0;
-      visualiveSession.pub(VisualiveSession.actions.POSE_CHANGED, {
-        mouseDown:{
-          start: event.mouseRay.start,
-          dir: event.mouseRay.dir,
-          length: rayLength
-        }
-      });
+    appData.toolManager.hidePointer.connect((event) => {
+      const data = {
+        interfaceType: 'CameraAndPointer',
+        hidePointer: {}
+      }
+      visualiveSession.pub(VisualiveSession.actions.POSE_CHANGED, data);
     });
-    viewport.mouseUp.connect((event) => {
-      const intersectionData = event.viewport.getGeomDataAtPos(event.mousePos, event.mouseRay);
-      const rayLength = intersectionData ? intersectionData.dist : 5.0;
-      visualiveSession.pub(VisualiveSession.actions.POSE_CHANGED, {
-        mouseUp:{
-          start: event.mouseRay.start,
-          dir: event.mouseRay.dir,
-          length: rayLength
-        }
-      });
+    appData.toolManager.hilightPointer.connect((event) => {
+      const data = {
+        interfaceType: 'CameraAndPointer',
+        hilightPointer: {}
+      };
+      visualiveSession.pub(VisualiveSession.actions.POSE_CHANGED, data);
+    });
+    appData.toolManager.unhilightPointer.connect((event) => {
+      const data = {
+        interfaceType: 'CameraAndPointer',
+        unhilightPointer: {}
+      }
+      visualiveSession.pub(VisualiveSession.actions.POSE_CHANGED, convertValuesToJSON(data));
     });
 
     let tick = 0;

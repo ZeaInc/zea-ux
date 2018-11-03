@@ -86,7 +86,7 @@ export default class SelectionTool extends BaseTool {
         const mouseUpPos = event.mousePos;
         const tl = new Visualive.Vec2(Math.min(this.mouseDownPos.x, mouseUpPos.x), Math.min(this.mouseDownPos.y, mouseUpPos.y))
         const br = new Visualive.Vec2(Math.max(this.mouseDownPos.x, mouseUpPos.x), Math.max(this.mouseDownPos.y, mouseUpPos.y))
-        const geomItems = viewport.getGeomItemsInRect(tl, br);
+        const geomItems = event.viewport.getGeomItemsInRect(tl, br);
 
         if (!event.shiftKey) {
           this.appData.selectionManager.selectItems(geomItems, !event.ctrlKey);
@@ -97,7 +97,7 @@ export default class SelectionTool extends BaseTool {
         this.selectionRectXfo.sc.set(0,0,0)
         this.rectItem.setGlobalXfo(this.selectionRectXfo)
       } else {
-        const intersectionData = viewport.getGeomDataAtPos(event.mousePos);
+        const intersectionData = event.viewport.getGeomDataAtPos(event.mousePos);
         if (intersectionData != undefined) {
           if (!event.shiftKey) {
             this.appData.selectionManager.toggleItemSelection(intersectionData.geomItem, !event.ctrlKey);

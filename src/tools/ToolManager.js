@@ -1,7 +1,14 @@
 export default class ToolManager {
-  constructor(appData){
+  constructor(appData) {
     this.__toolStack = [];
     this.appData = appData;
+
+    this.movePointer = new Visualive.Signal();
+    this.hilightPointer = new Visualive.Signal();
+    this.unhilightPointer = new Visualive.Signal();
+    this.hidePointer = new Visualive.Signal();
+    this.avatarPointerVisible = false;
+    this.avatarPointerHighlighted = false;
   }
 
   insertTool(tool, index) {
@@ -13,23 +20,22 @@ export default class ToolManager {
     const tool = this.__toolStack[index]
     this.__toolStack.splice(index, 1);
     tool.uninstalled();
-    if(index == this.__toolStack.length){
+    if (index == this.__toolStack.length) {
       tool.deactivateTool();
 
       const nextTool = this.currTool();
-      if(nextTool)
+      if (nextTool)
         nextTool.activateTool();
     }
   }
 
-  pushTool(tool){
+  pushTool(tool) {
     const prevTool = this.currTool();
-    if(prevTool) {
-      if(tool == prevTool) {
+    if (prevTool) {
+      if (tool == prevTool) {
         console.warn("Tool Already Pushed on the stack:", tool.constructor.name);
         return;
-      }
-      else {
+      } else {
         // Note: only the lead tool is 'active' and displaying an icon. 
         // A tool can recieve events even if not active, if it is on 
         // the stack.
@@ -38,28 +44,28 @@ export default class ToolManager {
     }
 
     this.__toolStack.push(tool);
-    tool.installed(this.__toolStack.length-1);
+    tool.installed(this.__toolStack.length - 1);
     tool.activateTool();
 
     console.log("ToolManager.pushTool:", tool.constructor.name);
 
-    return this.__toolStack.length - 1; 
+    return this.__toolStack.length - 1;
   }
 
   popTool() {
-    if(this.__toolStack.length > 0) {
+    if (this.__toolStack.length > 0) {
       const prevTool = this.__toolStack.pop();
       prevTool.deactivateTool();
       prevTool.uninstalled();
-      
+
       const tool = this.currTool();
-      if(tool)
+      if (tool)
         tool.activateTool();
       console.log("ToolManager.popTool:", prevTool.constructor.name, (tool ? tool.constructor.name : ''))
     }
   }
 
-  currTool(){
+  currTool() {
     return this.__toolStack[this.__toolStack.length - 1];
   }
 
@@ -90,7 +96,7 @@ export default class ToolManager {
       renderer.vrViewportSetup.connect(vrvp => {
         /////////////////////////////////////
         // VRController events
-        if(!vrvp != this.__vrvp) {
+        if (!vrvp != this.__vrvp) {
           this.__vrvp = vrvp;
           this.controllerDownId = vrvp.controllerButtonDown.connect(this.onVRControllerButtonDown.bind(this));
           this.controllerUpId = vrvp.controllerButtonUp.connect(this.onVRControllerButtonUp.bind(this));
@@ -101,37 +107,70 @@ export default class ToolManager {
   }
 
   onMouseDown(event) {
+    event.showPointerOnAvatar = true;
     let i = this.__toolStack.length;
-    while(i--) {
+    while (i--) {
       const tool = this.__toolStack[i];
-      if(tool && tool.onMouseDown(event) == true)
+      if (tool && tool.onMouseDown(event) == true)
         break;
+    }
+
+    if (event.showPointerOnAvatar == true) {
+      if (!this.avatarPointerVisible) {
+        this.movePointer.emit(event);
+        this.avatarPointerVisible = true;
+      }
+      if (!this.avatarPointerHighlighted) {
+        this.hilightPointer.emit(event);
+        this.avatarPointerHighlighted = true;
+      }
+    } else if (this.avatarPointerVisible) {
+      this.avatarPointerVisible = false;
+      this.hidePointer.emit();
     }
   }
 
   onMouseMove(event) {
+    event.showPointerOnAvatar = true;
     let i = this.__toolStack.length;
-    while(i--) {
+    while (i--) {
       const tool = this.__toolStack[i];
-      if(tool && tool.onMouseMove(event) == true)
+      if (tool && tool.onMouseMove(event) == true)
         break;
+    }
+    if (event.showPointerOnAvatar == true) {
+      this.movePointer.emit(event);
+      this.avatarPointerVisible = true;
+    } else if (this.avatarPointerVisible) {
+      this.avatarPointerVisible = false;
+      this.hidePointer.emit();
     }
   }
 
   onMouseUp(event) {
+    event.showPointerOnAvatar = true;
     let i = this.__toolStack.length;
-    while(i--) {
+    while (i--) {
       const tool = this.__toolStack[i];
-      if(tool && tool.onMouseUp(event) == true)
+      if (tool && tool.onMouseUp(event) == true)
         break;
+    }
+    if (event.showPointerOnAvatar == true) {
+      if (this.avatarPointerHighlighted) {
+        this.unhilightPointer.emit(event);
+        this.avatarPointerHighlighted = false;
+      }
+    } else if (this.avatarPointerVisible) {
+      this.avatarPointerVisible = false;
+      this.hidePointer.emit();
     }
   }
 
   onWheel(event) {
     let i = this.__toolStack.length;
-    while(i--) {
+    while (i--) {
       const tool = this.__toolStack[i];
-      if(tool && tool.onWheel(event) == true)
+      if (tool && tool.onWheel(event) == true)
         break;
     }
   }
@@ -140,27 +179,27 @@ export default class ToolManager {
   // Keyboard events
   onKeyPressed(key, event) {
     let i = this.__toolStack.length;
-    while(i--) {
+    while (i--) {
       const tool = this.__toolStack[i];
-      if(tool && tool.onKeyPressed(event, event, viewport) == true)
+      if (tool && tool.onKeyPressed(event, event, viewport) == true)
         break;
     }
   }
 
   onKeyDown(key, event) {
     let i = this.__toolStack.length;
-    while(i--) {
+    while (i--) {
       const tool = this.__toolStack[i];
-      if(tool && tool.onKeyDown(key, event) == true)
+      if (tool && tool.onKeyDown(key, event) == true)
         break;
     }
   }
 
   onKeyUp(key, event) {
     let i = this.__toolStack.length;
-    while(i--) {
+    while (i--) {
       const tool = this.__toolStack[i];
-      if(tool && tool.onKeyUp(key, event) == true)
+      if (tool && tool.onKeyUp(key, event) == true)
         break;
     }
   }
@@ -169,36 +208,36 @@ export default class ToolManager {
   // Touch events
   onTouchStart(event) {
     let i = this.__toolStack.length;
-    while(i--) {
+    while (i--) {
       const tool = this.__toolStack[i];
-      if(tool && tool.onTouchStart(event) == true)
+      if (tool && tool.onTouchStart(event) == true)
         break;
     }
   }
 
   onTouchMove(event) {
     let i = this.__toolStack.length;
-    while(i--) {
+    while (i--) {
       const tool = this.__toolStack[i];
-      if(tool && tool.onTouchMove(event) == true)
+      if (tool && tool.onTouchMove(event) == true)
         break;
     }
   }
 
   onTouchEnd(event) {
     let i = this.__toolStack.length;
-    while(i--) {
+    while (i--) {
       const tool = this.__toolStack[i];
-      if(tool && tool.onTouchEnd(event) == true)
+      if (tool && tool.onTouchEnd(event) == true)
         break;
     }
   }
 
   onTouchCancel(event) {
     let i = this.__toolStack.length;
-    while(i--) {
+    while (i--) {
       const tool = this.__toolStack[i];
-      if(tool && tool.onMouseDown(event) == true)
+      if (tool && tool.onMouseDown(event) == true)
         break;
     }
   }
@@ -207,27 +246,27 @@ export default class ToolManager {
   // VRController events
   onVRControllerButtonDown(event) {
     let i = this.__toolStack.length;
-    while(i--) {
+    while (i--) {
       const tool = this.__toolStack[i];
-      if(tool && tool.onVRControllerButtonDown(event) == true)
+      if (tool && tool.onVRControllerButtonDown(event) == true)
         break;
     }
   }
 
   onVRControllerButtonUp(event) {
     let i = this.__toolStack.length;
-    while(i--) {
+    while (i--) {
       const tool = this.__toolStack[i];
-      if(tool && tool.onVRControllerButtonUp(event) == true)
+      if (tool && tool.onVRControllerButtonUp(event) == true)
         break;
     }
   }
 
   onVRPoseChanged(event) {
     let i = this.__toolStack.length;
-    while(i--) {
+    while (i--) {
       const tool = this.__toolStack[i];
-      if(tool && tool.onVRPoseChanged(event) == true)
+      if (tool && tool.onVRPoseChanged(event) == true)
         break;
     }
   }
@@ -256,7 +295,7 @@ export default class ToolManager {
 
     if (this.appData.renderer.supportsVR()) {
       const vrviewport = this.appData.renderer.getVRViewport();
-      if(vrviewport) {
+      if (vrviewport) {
         /////////////////////////////////////
         // VRController events
         viewport.controllerDown.disconnectId(this.controllerDownId)

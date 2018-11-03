@@ -5,10 +5,13 @@ export default class Avatar {
 
   constructor(appData, userData) {
     this.__appData = appData;
-    this.__userData = userData;
+    this.__userData = {userData};
 
     if(!this.__userData.avatarColor)
-      this.__userData.avatarColor = Visualive.Color.random(0.25);
+      this.__userData.avatarColor = Visualive.Color.random(-0.25);
+    this.__pointerColor = this.__userData.avatarColor.clone();
+    this.__pointerColor.a = 0.2;
+    this.__hilightPointerColor = new Visualive.Color(1.2, 0, 0);
 
     this.__treeItem = new Visualive.TreeItem(userData.id);
 
@@ -85,26 +88,30 @@ export default class Avatar {
     line.setNumSegments(1);
     line.setSegment(0, 0, 1);
     line.getVertex(0).set(0.0, 0.0, 0.0);
-    line.getVertex(1).set(0.0, 0.0, -1.0);
+    line.getVertex(1).set(0.0, 0.0, 1.0);
     line.setBoundingBoxDirty();
     this.pointerXfo = new Visualive.Xfo();
-    this.pointerXfo.sc.set(1, 1, 0.5);
+    this.pointerXfo.sc.set(1, 1, 0);
 
-    this.__pointerItem = new Visualive.GeomItem('Pointer', line, pointermat);
+    this.__pointermat = new Visualive.Material('pointermat', 'LinesShader');
+    this.__pointermat.getParameter('Color').setValue(this.__userData.avatarColor);
+
+    this.__pointerItem = new Visualive.GeomItem('Pointer', line, this.__pointermat);
     this.__pointerItem.addRef(this)
-    this.__pointerItem.setLocalXfo(pointerLocalXfo);
+    this.__pointerItem.setLocalXfo(this.pointerXfo);
 
     if (this.__audioItem) {
       geomItem.addChild(this.__audioItem);
     }
+
+    this.__treeItem.addChild(geomItem);
+    this.__treeItem.addChild(this.__pointerItem);
 
     this.__treeItem.addChild(this.__camera);
     if(this.__cameraBound) {
       geomItem.setVisible(false)
     }
 
-    this.__treeItem.addChild(geomItem);
-    this.__treeItem.addChild(this.__pointerItem);
     this.__currentViewMode = 'CameraAndPointer';
   }
 
@@ -114,11 +121,17 @@ export default class Avatar {
       this.pointerXfo.sc.z = 0;
       this.__treeItem.getChild(1).setLocalXfo(this.pointerXfo);
     }
-    else if(data.pointer){
-      this.pointerXfo.tr = data.pointer.start;
-      this.pointerXfo.ori.setFromDirectionAndUpvector(data.pointer.dir, up);
-      this.pointerXfo.sc.z = data.pointer.length;
-      this.__treeItem.getChild(1).setLocalXfo(data.viewXfo);
+    else if(data.movePointer){
+      this.pointerXfo.tr = data.movePointer.start;
+      this.pointerXfo.ori.setFromDirectionAndUpvector(data.movePointer.dir, up);
+      this.pointerXfo.sc.z = data.movePointer.length;
+      this.__treeItem.getChild(1).setLocalXfo(this.pointerXfo);
+    }
+    else if(data.hilightPointer){
+      this.__pointermat.getParameter('Color').setValue(this.__hilightPointerColor);
+    }
+    else if(data.unhilightPointer){
+      this.__pointermat.getParameter('Color').setValue(this.__userData.avatarColor);
     }
     else if(data.pointerOff){
       this.pointerXfo.sc.z = 0;
@@ -236,8 +249,9 @@ export default class Avatar {
     switch (data.interfaceType) {
       case 'CameraAndPointer':
         if (this.__currentViewMode !== 'CameraAndPointer') {
-          this.setCameraAndPointerRepresentation(data);
+          this.setCameraAndPointerRepresentation();
         }
+        this.updateCameraAndPointerPose(data)
         break;
         // case 'TabletAndFinger':
         //     if (this.__currentViewMode !== 'CameraAndPointer') {
@@ -246,7 +260,7 @@ export default class Avatar {
         break;
       case 'Vive':
         if (this.__currentViewMode !== 'Vive') {
-          this.setViveRepresentation(data);
+          this.setViveRepresentation();
         }
         this.updateVivePose(data);
         break;

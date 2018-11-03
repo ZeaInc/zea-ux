@@ -263,18 +263,19 @@ export default class ViewTool extends BaseTool {
   }
 
   onMouseUp(event) {
-      if (this.dragging) {
-          this.onDragEnd(event);
-          this.dragging = false;
-          return true;
-      }
+    if (this.dragging) {
+      this.onDragEnd(event);
+      this.dragging = false;
+      return true;
+    }
   }
 
   onMouseMove(event) {
-      if (this.dragging) {
-          this.onDrag(event);
-          return true; 
-      }
+    if (this.dragging) {
+      this.onDrag(event);
+      event.showPointerOnAvatar = false;
+      return true;
+    }
   }
 
   onWheel(event) {
