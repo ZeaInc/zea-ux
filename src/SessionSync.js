@@ -239,7 +239,7 @@ export default class SessionSync {
     })
 
     visualiveSession.sub("StateMachine_stateChanged", (data, userId) => {
-      const stateMachine = scene.getRoot().resolvePath(data.stateMachine, 1);
+      const stateMachine = appData.scene.getRoot().resolvePath(data.stateMachine, 1);
       stateMachine.activateState(data.stateName)
     })
 
