@@ -77,12 +77,12 @@ export default class CreateLineTool extends CreateGeomTool {
           this.vrControllerToolTipMat = new Visualive.Material('marker', 'FlatSurfaceShader');
           this.vrControllerToolTipMat.getParameter('BaseColor').setValue(this.cp.getValue());
         }
-        const addIconToController = (id, controller) => {
+        const addIconToController = (controller) => {
           // The tool might already be deactivated.
           if(!this.__activated)
             return;
           const geomItem = new Visualive.GeomItem('VRControllerTip', this.vrControllerToolTip, this.vrControllerToolTipMat);
-          controller.getTip().addChild(geomItem);
+          controller.getTip().addChild(geomItem, false);
         }
         for(let controller of vrviewport.getControllers()) {
           addIconToController(controller)

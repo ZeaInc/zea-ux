@@ -494,24 +494,24 @@ export default class ViewTool extends BaseTool {
     }
   }
 
-  onVRControllerButtonDown(event, vrviewport) {
+  onVRControllerButtonDown(event) {
     if(event.button != 1)
       return;
     this.__controllerTriggersHeld.push(event.controller);
-    this.__initMoveStage(vrviewport);
+    this.__initMoveStage(event.vrviewport);
     return true;
   }
 
-  onVRControllerButtonUp(event, vrviewport) {
+  onVRControllerButtonUp(event) {
     if(event.button != 1)
       return;
     const index = this.__controllerTriggersHeld.indexOf(event.controller);
     this.__controllerTriggersHeld.splice(index, 1);
-    this.__initMoveStage(vrviewport);
+    this.__initMoveStage(event.vrviewport);
     return true;
   }
 
-  onVRPoseChanged(event, vrviewport) {
+  onVRPoseChanged(event) {
 
     if(this.__controllerTriggersHeld.length == 1) {
       const grabPos = this.__controllerTriggersHeld[0].getControllerStageLocalXfo().tr;
@@ -522,7 +522,7 @@ export default class ViewTool extends BaseTool {
       ////////////////
       // Update the stage Xfo
       const stageXfo = this.stageXfo__GrabStart.multiply(deltaXfo);
-      vrviewport.setXfo(stageXfo);
+      event.vrviewport.setXfo(stageXfo);
       return true;
     }
     else if(this.__controllerTriggersHeld.length == 2) {
@@ -577,7 +577,7 @@ export default class ViewTool extends BaseTool {
       ////////////////
       // Update the stage Xfo
       const stageXfo = this.stageXfo__GrabStart.multiply(deltaXfo);
-      vrviewport.setXfo(stageXfo);
+      event.vrviewport.setXfo(stageXfo);
 
       return true;
     }

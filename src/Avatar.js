@@ -33,7 +33,7 @@ export default class Avatar {
     this.__audioItem = new AudioItem('audio', stream);
     const head = this.__treeItem.getChild(0);
     if (head) {
-      head.addChild(this.__audioItem);
+      head.addChild(this.__audioItem, false);
     }
   }
 
@@ -101,13 +101,13 @@ export default class Avatar {
     this.__pointerItem.setLocalXfo(this.pointerXfo);
 
     if (this.__audioItem) {
-      geomItem.addChild(this.__audioItem);
+      geomItem.addChild(this.__audioItem, false);
     }
 
-    this.__treeItem.addChild(geomItem);
-    this.__treeItem.addChild(this.__pointerItem);
+    this.__treeItem.addChild(geomItem, false);
+    this.__treeItem.addChild(this.__pointerItem, false);
 
-    this.__treeItem.addChild(this.__camera);
+    this.__treeItem.addChild(this.__camera, false);
     if(this.__cameraBound) {
       geomItem.setVisible(false)
     }

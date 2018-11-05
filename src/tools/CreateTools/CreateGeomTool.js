@@ -12,7 +12,7 @@ class CreateGeomChange extends Change {
     this.geomItem.setGlobalXfo(xfo);
     const name = this.parentItem.generateUniqueName(this.geomItem.getName());
     this.geomItem.setName(name)
-    this.childIndex = this.parentItem.addChild(this.geomItem)
+    this.childIndex = this.parentItem.addChild(this.geomItem, false)
 
     this.geomItem.addRef(this);// keep a ref to stop it being destroyed
   }
@@ -39,7 +39,7 @@ class CreateGeomChange extends Change {
     const xfo = new Visualive.Xfo();
     xfo.fromJSON(j.geomItemXfo)
     this.geomItem.setLocalXfo(xfo);
-    this.childIndex = this.parentItem.addChild(this.geomItem);
+    this.childIndex = this.parentItem.addChild(this.geomItem, false);
   }
 
   // changeFromJSON(j) {
@@ -74,9 +74,9 @@ class CreateGeomTool extends BaseCreateTool {
         this.vrControllerToolTipMat = new Visualive.Material('VRController Cross', 'LinesShader');
         this.vrControllerToolTipMat.getParameter('BaseColor').setValue(this.cp.getValue());
       }
-      const addIconToController = (id, controller) => {
-        const geomItem = new GeomItem('VRControllerTip', this.vrControllerToolTip, this.vrControllerToolTipMat);
-        controller.getTip().addChild(geomItem);
+      const addIconToController = (controller) => {
+        const geomItem = new Visualive.GeomItem('VRControllerTip', this.vrControllerToolTip, this.vrControllerToolTipMat);
+        controller.getTip().addChild(geomItem, false);
       }
       for(let controller of vrviewport.getControllers()) {
         addIconToController(controller)

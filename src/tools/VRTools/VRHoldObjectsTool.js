@@ -210,7 +210,7 @@ export default class VRHoldObjectsTool extends BaseTool {
     }
   }
 
-  onVRControllerButtonDown(event, vrviewport) {
+  onVRControllerButtonDown(event) {
     const id = event.controller.getId();
     this.__vrControllers[id] = event.controller;
 
@@ -245,7 +245,7 @@ export default class VRHoldObjectsTool extends BaseTool {
     }
   }
 
-  onVRControllerButtonUp(event, vrviewport) {
+  onVRControllerButtonUp(event) {
     const id = event.controller.getId();
 
     this.__pressedButtonCount--;
@@ -265,7 +265,7 @@ export default class VRHoldObjectsTool extends BaseTool {
     }
   }
 
-  onVRPoseChanged(event, vrviewport) {
+  onVRPoseChanged(event) {
 
     if(!this.change)
       return false;

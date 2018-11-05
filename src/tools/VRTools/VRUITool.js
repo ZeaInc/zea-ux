@@ -17,14 +17,17 @@ export default class VRUITool extends BaseTool {
     // uimat.getParameter('BaseColor').setValue(new Visualive.Color(0.3, 0.3, 0.3));
 
     this.__uiGeomItem = new Visualive.GeomItem('VRControllerUI', new Visualive.Plane(1, 1), uimat);
+    this.__uiGeomOffsetXfo = new Visualive.Xfo();
+    this.__uiGeomOffsetXfo.sc.set(0, 0, 0.5);
+    // Flip it over so we see the front.
+    this.__uiGeomOffsetXfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0, 1, 0), Math.PI);
+    this.__uiGeomItem.setGeomOffsetXfo(this.__uiGeomOffsetXfo);
     this.__uiLocalXfo = new Visualive.Xfo();
-    this.__uiLocalXfo.sc.set(0.3, 0.2, 1.0);
     this.__uiLocalXfo.ori.setFromAxisAndAngle(new Visualive.Vec3(1, 0, 0), Math.PI * -0.6);
     this.__dims = {
       width: 200,
       height: 300
     };
-    // this.__uiGeomItem.setVisible(false);
     this.__uiGeomItem.addRef(this)
 
 
@@ -40,13 +43,24 @@ export default class VRUITool extends BaseTool {
     line.setBoundingBoxDirty();
     this.__pointerLocalXfo = new Visualive.Xfo();
     this.__pointerLocalXfo.sc.set(1, 1, 0.1);
+    this.__pointerLocalXfo.ori.setFromAxisAndAngle(new Visualive.Vec3(1, 0, 0), Math.PI * -0.2);
 
     this.__uiPointerItem = new Visualive.GeomItem('VRControllerPointer', line, pointermat);
-    this.__uiPointerItem.getLocalXfo().ori.setFromAxisAndAngle(new Visualive.Vec3(1, 0, 0), Math.PI * -0.2);
+    // this.__uiPointerItem.setLocalXfo(this.__pointerLocalXfo);
     this.__uiPointerItem.addRef(this)
-    this.__uiPointerItem.setLocalXfo(this.__pointerLocalXfo);
 
+    this.__triggerDown = false;
 
+    // this.__vrUIDOMHolderElement.style.display = "block";
+    // domtoimage.toPng(this.__vrUIDOMElement)
+    // .then(function (dataUrl) {
+    //     var img = new Image();
+    //     img.src = dataUrl;
+    //     document.body.appendChild(img);
+    // })
+    // .catch(function (error) {
+    //     console.error('oops, something went wrong!', error);
+    // });
   }
 
   /////////////////////////////////////
@@ -56,13 +70,18 @@ export default class VRUITool extends BaseTool {
     this.pointerController = pointerController;
 
     const xfoA = this.uiController.getTreeItem().getGlobalXfo();
-    const xfoB = this.pointerController.getTreeItem().getGlobalXfo();
-    const headToCtrlA = xfoA.tr.subtract(headXfo.tr);
-    const headToCtrlB = xfoB.tr.subtract(headXfo.tr);
-    if (headToCtrlA.cross(headToCtrlB).dot(headXfo.ori.getYaxis()) > 0.0) {
-      this.__uiLocalXfo.tr.set(0.1, -0.07, 0.05);
-    } else {
-      this.__uiLocalXfo.tr.set(-0.1, -0.07, 0.05);
+    if(this.pointerController) {
+      const xfoB = this.pointerController.getTreeItem().getGlobalXfo();
+      const headToCtrlA = xfoA.tr.subtract(headXfo.tr);
+      const headToCtrlB = xfoB.tr.subtract(headXfo.tr);
+      if (headToCtrlA.cross(headToCtrlB).dot(headXfo.ori.getYaxis()) > 0.0) {
+        this.__uiLocalXfo.tr.set(0.1, -0.07, 0.05);
+      } else {
+        this.__uiLocalXfo.tr.set(-0.1, -0.07, 0.05);
+      }
+    }
+    else {
+      this.__uiLocalXfo.tr.set(0, -0.07, 0.05);
     }
 
     this.__uiGeomItem.setLocalXfo(this.__uiLocalXfo);
@@ -71,17 +90,20 @@ export default class VRUITool extends BaseTool {
   activateTool() {
     super.activateTool();
 
-    this.uiController.getTipItem().addChild(this.__uiGeomItem, false);
-    this.pointerController.getTipItem().addChild(this.__uiPointerItem, false);
-
     this.__vrUIDOMHolderElement.style.display = "block";
     this.renderUIToImage();
+
+    this.uiController.getTipItem().addChild(this.__uiGeomItem, false);
+    if(this.pointerController) 
+      this.pointerController.getTipItem().addChild(this.__uiPointerItem, false);
+
   }
 
   deactivateTool() {
     super.deactivateTool();
     this.uiController.getTipItem().removeAllChildren();
-    this.pointerController.getTipItem().removeAllChildren();
+    if(this.pointerController)
+      this.pointerController.getTipItem().removeAllChildren();
 
     this.__vrUIDOMHolderElement.style.display = "none";
   }
@@ -98,93 +120,112 @@ export default class VRUITool extends BaseTool {
     domtoimage.toPixelData(this.__vrUIDOMElement)
       .then((pixels) => {
         const rect = this.__vrUIDOMElement.getBoundingClientRect();
-        let dpm = 0.0005; //dots-per-meter (1 each 1/2mm)
-        this.__uiLocalXfo.sc.set(rect.width * dpm, rect.height * dpm, 1.0);
-        this.__uiGeomItem.setGeomOffsetXfo(this.__uiLocalXfo)
-        this.__uiimage.setData(rect.width, rect.height, pixels);
+        let dpm = 0.0003; //dots-per-meter (1 each 1/2mm)
+        this.__uiGeomOffsetXfo.sc.set(rect.width * dpm, rect.height * dpm, 1.0);
+        this.__uiGeomItem.setGeomOffsetXfo(this.__uiGeomOffsetXfo)
+        this.__uiimage.setData(rect.width, rect.height, new Uint8Array(pixels.buffer));
       });
   }
 
-  sendMouseEvent(eventName, args) {
+  sendMouseEvent(eventName, args, element) {
 
     if (eventName == 'mousedown')
       console.log("clientX:" + args.clientX + " clientY:" + args.clientY);
 
-    args.offsetX = args.pageX = args.pageX = args.screenX = args.clientX;
-    args.offsetY = args.pageY = args.pageY = args.screenY = args.clientY;
-
     const event = new MouseEvent(eventName, Object.assign({
-      'view': window,
-      'bubbles': true,
-      'composed': true,
-      'cancelable': true
+      target: element,
+      view: window,
+      bubbles: true,
+      composed: true,
+      cancelable: true
     }, args));
 
     // Dispatch the event to a leaf item in the DOM tree.
-    const element = document.elementFromPoint(args.clientX, args.clientY);
     element.dispatchEvent(event);
 
     // Update the UI. (this may be too slow.)
-    this.renderUIToImage()
+    // setTimeout(()=>  this.renderUIToImage(), 1);
+
+    return event;
   }
 
-  sendEventToVisibleUIs(eventName, args) {
-    const pointerXfo = this.pointerController.getTipXfo();
-    const pointervec = pointerXfo.ori.getZaxis().negate();
-    const ray = new Ray(pointerXfo.tr, pointervec);
+  calcUIIntersection() {
 
-    const planeXfo = this.__uiGeomItem.getGlobalXfo();
-    const plane = new Ray(planeXfo.tr, planeXfo.ori.getZaxis());
+    const pointerXfo = this.__uiPointerItem.getGlobalXfo();
+    const pointervec = pointerXfo.ori.getZaxis().negate();
+    const ray = new Visualive.Ray(pointerXfo.tr, pointervec);
+
+    const planeXfo = this.__uiGeomItem.getGeomXfo();
+    const plane = new Visualive.Ray(planeXfo.tr, planeXfo.ori.getZaxis());
     const res = ray.intersectRayPlane(plane);
     if (res <= 0) {
-      vrController.setPointerLength(0);
+      // Let the pointer shine right past the UI.
+      this.setPointerLength(0.5);
       return;
     }
-    const hitOffset = xfo.tr.add(pointervec.scale(res)).subtract(plane.start);
+    const hitOffset = pointerXfo.tr.add(pointervec.scale(res)).subtract(plane.start);
     const x = hitOffset.dot(planeXfo.ori.getXaxis()) / planeXfo.sc.x;
     const y = hitOffset.dot(planeXfo.ori.getYaxis()) / planeXfo.sc.y;
     if (Math.abs(x) > 0.5 || Math.abs(y) > 0.5) {
-      vrController.setPointerLength(0);
+      // Let the pointer shine right past the UI.
+      this.setPointerLength(0.5);
       return;
     }
-    vrController.setPointerLength(res);
+    this.setPointerLength(res);
     const rect = this.__vrUIDOMElement.getBoundingClientRect();
-    args.clientX = Math.round((x * rect.width) + (rect.width / 2));
-    args.clientY = Math.round((y * -rect.height) + (rect.height / 2));
-
-    this.sendMouseEvent(eventName, args);
+    return {
+      clientX: Math.round((x * rect.width) + (rect.width / 2)),
+      clientY: Math.round((y * -rect.height) + (rect.height / 2))
+    }
   }
 
-  onVRControllerButtonDown(event, vrviewport) {
+  sendEventToVisibleUIs(eventName, args) {
+    const hit = this.calcUIIntersection();
+    if(hit){
+      hit.offsetX = hit.pageX = hit.pageX = hit.screenX = hit.clientX;
+      hit.offsetY = hit.pageY = hit.pageY = hit.screenY = hit.clientY;
+      const element = document.elementFromPoint(hit.clientX, hit.clientY);
+      return this.sendMouseEvent(eventName, Object.assign(args, hit), element);
+    }
+  }
+
+  onVRControllerButtonDown(event) {
 
     if (event.controller == this.pointerController) {
       this.__triggerHeld = true;
+      const res = this.sendEventToVisibleUIs('mousedown', {
+        button: event.button - 1
+      });
+      if(res) {
+        this.__triggerDownElem = res.target;
+      }
+      else {
+        this.__triggerDownElem = null;
+      }
     }
-
-    this.sendEventToVisibleUIs('mousedown', {
-      button: event.button - 1
-    });
-
 
     // While the UI is open, no other tools get events.
     return true;
   }
 
-  onVRControllerButtonUp(event, vrviewport) {
+  onVRControllerButtonUp(event) {
 
     if (event.controller == this.pointerController) {
       this.__triggerHeld = false;
+      const res = this.sendEventToVisibleUIs('mouseup', {
+        button: event.button - 1
+      });
+      if(res && this.__triggerDownElem == res.target) {
+        this.sendMouseEvent('click', res, res.target);
+      }
+      this.__triggerDownElem = null;
     }
-
-    this.sendEventToVisibleUIs('mouseup', {
-      button: event.button - 1
-    });
 
     // While the UI is open, no other tools get events.
     return true;
   }
 
-  onVRPoseChanged(event, vrviewport) {
+  onVRPoseChanged(event) {
 
     // Controller coordinate system
     // X = Horizontal.
@@ -198,11 +239,15 @@ export default class VRUITool extends BaseTool {
       if (headToCtrlA.angleTo(xfoA.ori.getYaxis()) > (Math.PI * 0.5)) {
         // Remove ourself from the system.
         this.appData.toolManager.removeTool(this.index);
+        return false;
       }
+      return true;
     }
 
     if (!this.__triggerHeld) {
-      checkControllers();
+      if(checkControllers()){
+        this.calcUIIntersection();
+      }
     } else {
       this.sendEventToVisibleUIs('mousemove', {});
     }
