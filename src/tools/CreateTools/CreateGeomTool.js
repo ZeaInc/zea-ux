@@ -9,10 +9,10 @@ class CreateGeomChange extends Change {
 
   setParentAndXfo(parentItem, xfo) {
     this.parentItem = parentItem;
-    this.geomItem.setGlobalXfo(xfo);
     const name = this.parentItem.generateUniqueName(this.geomItem.getName());
     this.geomItem.setName(name)
-    this.childIndex = this.parentItem.addChild(this.geomItem, false)
+    this.geomItem.setGlobalXfo(xfo);
+    this.childIndex = this.parentItem.addChild(this.geomItem, true);
 
     this.geomItem.addRef(this);// keep a ref to stop it being destroyed
   }
@@ -60,6 +60,7 @@ class CreateGeomTool extends BaseCreateTool {
 
     this.stage = 0;
 
+    this.cp = this.addParameter(new Visualive.ColorParameter('Line Color', new Visualive.Color(.7, .2, .2)));
   }
 
   activateTool() {
@@ -69,14 +70,15 @@ class CreateGeomTool extends BaseCreateTool {
 
     const vrviewport = this.appData.renderer.getVRViewport();
     if (vrviewport) {
-      if(this.vrControllerToolTip) {
+      if(!this.vrControllerToolTip) {
         this.vrControllerToolTip = new Visualive.Cross(0.05);
         this.vrControllerToolTipMat = new Visualive.Material('VRController Cross', 'LinesShader');
-        this.vrControllerToolTipMat.getParameter('BaseColor').setValue(this.cp.getValue());
+        this.vrControllerToolTipMat.getParameter('Color').setValue(this.cp.getValue());
       }
       const addIconToController = (controller) => {
-        const geomItem = new Visualive.GeomItem('VRControllerTip', this.vrControllerToolTip, this.vrControllerToolTipMat);
-        controller.getTip().addChild(geomItem, false);
+        const geomItem = new Visualive.GeomItem('CreateGeomToolTip', this.vrControllerToolTip, this.vrControllerToolTipMat);
+        controller.getTipItem().removeAllChildren();
+        controller.getTipItem().addChild(geomItem, false);
       }
       for(let controller of vrviewport.getControllers()) {
         addIconToController(controller)
@@ -94,7 +96,7 @@ class CreateGeomTool extends BaseCreateTool {
     const vrviewport = this.appData.renderer.getVRViewport();
     if (vrviewport) {
       for(let controller of vrviewport.getControllers()) {
-        controller.getTip().removeAllChildren();
+        controller.getTipItem().removeAllChildren();
       }
       vrviewport.controllerAdded.disconnectId(this.addIconToControllerId);
     }
@@ -121,7 +123,7 @@ class CreateGeomTool extends BaseCreateTool {
     return xfo;
   }
 
-  createStart(xfo) {
+  createStart(xfo, parentItem) {
     this.stage = 1;
   }
 
@@ -140,12 +142,10 @@ class CreateGeomTool extends BaseCreateTool {
   onMouseDown(event) {
     // 
     if(this.stage == 0) {
-      const scene = event.viewport.getRenderer().getScene();
       this.constructionPlane = new Visualive.Xfo();
 
-      this.xfo = this.screenPosToXfo(event.mousePos, event.viewport);
-
-      this.createStart(this.xfo, scene.getRoot());
+      const xfo = this.screenPosToXfo(event.mousePos, event.viewport);
+      this.createStart(xfo, this.appData.scene.getRoot());
       return true;
     }
     else if(event.button == 2) {
@@ -196,13 +196,15 @@ class CreateGeomTool extends BaseCreateTool {
   // VRController events
 
   onVRControllerButtonDown(event) {
-    if(this.__activeController) {
+    if(!this.__activeController) {
       // TODO: Snap the Xfo to any nearby construction planes.
       this.__activeController = event.controller;
-      const xfo = this.__activeController.getTipXfo();
-      this.createStart(xfo.tr);
-      return true;
+      this.constructionPlane = new Visualive.Xfo();
+      const xfo = this.constructionPlane.clone();
+      xfo.tr = this.__activeController.getTipXfo().tr
+      this.createStart(xfo, this.appData.scene.getRoot());
     }
+    return true;
   }
 
   onVRPoseChanged(event) {
@@ -219,7 +221,8 @@ class CreateGeomTool extends BaseCreateTool {
       if(this.__activeController == event.controller){
         const xfo = this.__activeController.getTipXfo();
         this.createRelease(xfo.tr);
-        this.__activeController =  undefined;
+        if(this.stage == 0)
+          this.__activeController = undefined;
         return true;
       }
     }

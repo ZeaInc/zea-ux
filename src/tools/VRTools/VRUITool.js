@@ -51,16 +51,17 @@ export default class VRUITool extends BaseTool {
 
     this.__triggerDown = false;
 
-    // this.__vrUIDOMHolderElement.style.display = "block";
-    // domtoimage.toPng(this.__vrUIDOMElement)
-    // .then(function (dataUrl) {
-    //     var img = new Image();
-    //     img.src = dataUrl;
-    //     document.body.appendChild(img);
-    // })
-    // .catch(function (error) {
-    //     console.error('oops, something went wrong!', error);
-    // });
+    this.__vrUIDOMHolderElement.style.display = "block";
+    domtoimage.toPng(this.__vrUIDOMElement)
+    .then( (dataUrl) => {
+        var img = new Image();
+        img.src = dataUrl;
+        document.body.appendChild(img);
+        this.__vrUIDOMHolderElement.style.display = "none";
+    })
+    .catch((error) => {
+        console.error('oops, something went wrong!', error);
+    });
   }
 
   /////////////////////////////////////
@@ -120,7 +121,8 @@ export default class VRUITool extends BaseTool {
     domtoimage.toPixelData(this.__vrUIDOMElement)
       .then((pixels) => {
         const rect = this.__vrUIDOMElement.getBoundingClientRect();
-        let dpm = 0.0003; //dots-per-meter (1 each 1/2mm)
+        // let dpm = 0.0003; //dots-per-meter (1 each 1/2mm)
+        let dpm = 0.001; //dots-per-meter (1 each 1/2mm)
         this.__uiGeomOffsetXfo.sc.set(rect.width * dpm, rect.height * dpm, 1.0);
         this.__uiGeomItem.setGeomOffsetXfo(this.__uiGeomOffsetXfo)
         this.__uiimage.setData(rect.width, rect.height, new Uint8Array(pixels.buffer));
@@ -244,11 +246,12 @@ export default class VRUITool extends BaseTool {
       return true;
     }
 
-    if (!this.__triggerHeld) {
-      if(checkControllers()){
-        this.calcUIIntersection();
-      }
-    } else {
+    // if (!this.__triggerHeld) {
+    //   if(checkControllers()){
+    //     this.calcUIIntersection();
+    //   }
+    // } else {
+    if(checkControllers()){
       this.sendEventToVisibleUIs('mousemove', {});
     }
 

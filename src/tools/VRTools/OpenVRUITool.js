@@ -17,6 +17,9 @@ export default class OpenVRUITool extends BaseTool {
 
   onVRPoseChanged(event) {
 
+    if(this.vrUITool.installed())
+      return;
+
     // Controller coordinate system
     // X = Horizontal.
     // Y = Up.

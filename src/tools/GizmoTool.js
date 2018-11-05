@@ -23,6 +23,7 @@ export default class GizmoTool extends BaseTool {
       const mat = new Visualive.Material('Cross', 'ToolIconShader');
       mat.getParameter('BaseColor').setValue(new Visualive.Color("#03E3AC"));
       const geomItem = new Visualive.GeomItem('GizmoToolTip', cross, mat);
+      controller.getTipItem().removeAllChildren();
       controller.getTipItem().addChild(geomItem, false);
     }
     const addIconToControllers = (vrviewport)=>{

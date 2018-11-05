@@ -61,7 +61,6 @@ export default class CreateLineTool extends CreateGeomTool {
   constructor(appData) {
     super(appData);
 
-    this.cp = this.addParameter(new Visualive.ColorParameter('Line Color', new Visualive.Color(.7, .2, .2)));
     this.tp = this.addParameter(new Visualive.NumberParameter('Line Thickness', 0.06, [0, 0.1])); // 1cm.
   }
 
@@ -82,7 +81,8 @@ export default class CreateLineTool extends CreateGeomTool {
           if(!this.__activated)
             return;
           const geomItem = new Visualive.GeomItem('VRControllerTip', this.vrControllerToolTip, this.vrControllerToolTipMat);
-          controller.getTip().addChild(geomItem, false);
+          controller.getTipItem().removeAllChildren();
+          controller.getTipItem().addChild(geomItem, false);
         }
         for(let controller of vrviewport.getControllers()) {
           addIconToController(controller)
@@ -102,7 +102,7 @@ export default class CreateLineTool extends CreateGeomTool {
       const vrviewport = this.appData.renderer.getVRViewport();
       if (vrviewport) {
         for(let controller of vrviewport.getControllers()) {
-          controller.getTip().removeAllChildren();
+          controller.getTipItem().removeAllChildren();
         }
       }
     }

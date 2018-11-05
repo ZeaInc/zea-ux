@@ -128,7 +128,8 @@ export default class VRHoldObjectsTool extends BaseTool {
       const cross = new Visualive.Cross(0.03);
       const mat = new Visualive.Material('Cross', 'ToolIconShader');
       mat.getParameter('BaseColor').setValue(new Visualive.Color("#03E3AC"));
-      const geomItem = new Visualive.GeomItem('GizmoToolTip', cross, mat);
+      const geomItem = new Visualive.GeomItem('HoldObjectsToolTip', cross, mat);
+      controller.getTipItem().removeAllChildren();
       controller.getTipItem().addChild(geomItem, false);
     }
     const addIconToControllers = (vrviewport)=>{
