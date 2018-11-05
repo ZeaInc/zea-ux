@@ -40,7 +40,6 @@ UndoRedoManager.registerChange('CreateCuboidChange', CreateCuboidChange)
 export default class CreateCuboidTool extends CreateGeomTool {
   constructor(appData) {
     super(appData);
-    console.log("Create Cuboid");
   }
 
   createStart(xfo, parentItem) {

@@ -50,6 +50,7 @@ export default class VRUITool extends BaseTool {
     this.__uiPointerItem.addRef(this)
 
     this.__triggerDown = false;
+    this.__renderRequested = false;
 
     this.__vrUIDOMHolderElement.style.display = "block";
     domtoimage.toPng(this.__vrUIDOMElement)
@@ -146,7 +147,13 @@ export default class VRUITool extends BaseTool {
     element.dispatchEvent(event);
 
     // Update the UI. (this may be too slow.)
-    // setTimeout(()=>  this.renderUIToImage(), 1);
+    if(!this.__renderRequested){
+      this.__renderRequested = true;
+      setTimeout(()=> {
+        this.renderUIToImage();
+        this.__renderRequested = false;
+      }, 100);
+    }
 
     return event;
   }

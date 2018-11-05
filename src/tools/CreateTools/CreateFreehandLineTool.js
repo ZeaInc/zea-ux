@@ -114,9 +114,7 @@ export default class CreateFreehandLineTool extends CreateLineTool {
   createMove(pt) {
     const p = this.invxfo.transformVec3(pt);
     const delta = p.subtract(this.prevP).length();
-    console.log(delta);
     if(delta > 0.001) {
-      console.log(p.toString());
       this.change.update({
         point: p
       });
