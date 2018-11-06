@@ -1,17 +1,17 @@
 import BaseTool from './BaseTool.js';
-import Gizmo from '../gizmos/Gizmo.js';
+import Handle from '../gizmos/Handle.js';
 
 
-export default class GizmoTool extends BaseTool {
+export default class HandleTool extends BaseTool {
   constructor(appData) {
     super(appData);
 
-    this.activeGizmo = undefined;
+    this.activeHandle = undefined;
   }
 
   activateTool() {
     super.activateTool();
-    console.log("activateTool.GizmoTool")
+    console.log("activateTool.HandleTool")
 
     this.appData.renderer.getDiv().style.cursor = "crosshair";
 
@@ -22,7 +22,7 @@ export default class GizmoTool extends BaseTool {
       const cross = new Visualive.Cross(0.03);
       const mat = new Visualive.Material('Cross', 'ToolIconShader');
       mat.getParameter('BaseColor').setValue(new Visualive.Color("#03E3AC"));
-      const geomItem = new Visualive.GeomItem('GizmoToolTip', cross, mat);
+      const geomItem = new Visualive.GeomItem('HandleToolTip', cross, mat);
       controller.getTipItem().addChild(geomItem, false);
     }
     const addIconToControllers = (vrviewport)=>{
@@ -63,37 +63,37 @@ export default class GizmoTool extends BaseTool {
 
   onMouseDown(event) {
     // 
-    if (!this.activeGizmo) {
+    if (!this.activeHandle) {
       event.viewport.renderGeomDataFbo();
       const intersectionData = event.viewport.getGeomDataAtPos(event.mousePos);
       if (intersectionData == undefined) 
         return;
-      if(intersectionData.geomItem.getOwner() instanceof Gizmo) {
-        this.activeGizmo = intersectionData.geomItem.getOwner();
-        this.activeGizmo.handleMouseDown(Object.assign(event, { intersectionData } ));
+      if(intersectionData.geomItem.getOwner() instanceof Handle) {
+        this.activeHandle = intersectionData.geomItem.getOwner();
+        this.activeHandle.handleMouseDown(Object.assign(event, { intersectionData } ));
         return true;
       }
     }
   }
 
   onMouseMove(event) {
-    if (this.activeGizmo) {
-      this.activeGizmo.handleMouseMove(event);
+    if (this.activeHandle) {
+      this.activeHandle.handleMouseMove(event);
       return true;
     }
   }
 
   onMouseUp(event) {
-    if (this.activeGizmo) {
-      this.activeGizmo.handleMouseUp(event);
-      this.activeGizmo = undefined;
+    if (this.activeHandle) {
+      this.activeHandle.handleMouseUp(event);
+      this.activeHandle = undefined;
       return true;
     }
   }
 
   onWheel(event) {
-    if (this.activeGizmo) {
-      this.activeGizmo.onWheel(event);
+    if (this.activeHandle) {
+      this.activeHandle.onWheel(event);
     }
   }
 
@@ -111,64 +111,64 @@ export default class GizmoTool extends BaseTool {
   // VRController events
 
   onVRControllerButtonDown(event) {
-    if (!this.activeGizmo) {
+    if (!this.activeHandle) {
       const intersectionData = event.controller.getGeomItemAtTip();
       if (intersectionData == undefined) 
         return;
-      if (intersectionData.geomItem.getOwner() instanceof Gizmo) {
+      if (intersectionData.geomItem.getOwner() instanceof Handle) {
         const gizmo = intersectionData.geomItem.getOwner();
-        this.activeGizmo = gizmo;
-        this.activeGizmo.onVRControllerButtonDown(event);
+        this.activeHandle = gizmo;
+        this.activeHandle.onVRControllerButtonDown(event);
         return true;
       }
     }
   }
 
   onVRPoseChanged(event) {
-    if (this.activeGizmo) {
-      this.activeGizmo.onVRPoseChanged(event);
+    if (this.activeHandle) {
+      this.activeHandle.onVRPoseChanged(event);
       return true;
     } else {
       // let gizmoHit = false;
       // for (let controller of event.controllers) {
       //   const intersectionData = controller.getGeomItemAtTip();
-      //   if (intersectionData != undefined && intersectionData.geomItem instanceof Gizmo) {
+      //   if (intersectionData != undefined && intersectionData.geomItem instanceof Handle) {
       //     const gizmo = intersectionData.geomItem;
-      //     if (this.__highlightedGizmo)
-      //       this.__highlightedGizmo.unhiglight();
+      //     if (this.__highlightedHandle)
+      //       this.__highlightedHandle.unhiglight();
 
-      //     this.__highlightedGizmo = gizmo;
-      //     this.__highlightedGizmo.higlight();
+      //     this.__highlightedHandle = gizmo;
+      //     this.__highlightedHandle.higlight();
       //     gizmoHit = true;
       //     break;
       //   }
       // }
 
       // if (!gizmoHit) {
-      //   if (this.__highlightedGizmo) {
-      //     this.__highlightedGizmo.unhiglight();
-      //     this.__highlightedGizmo = undefined;
+      //   if (this.__highlightedHandle) {
+      //     this.__highlightedHandle.unhiglight();
+      //     this.__highlightedHandle = undefined;
       //   }
       // }
     }
   }
 
   onVRControllerButtonUp(event) {
-    if (this.activeGizmo) {
-      this.activeGizmo.onDragEnd(event);
-      this.activeGizmo = undefined;
+    if (this.activeHandle) {
+      this.activeHandle.onDragEnd(event);
+      this.activeHandle = undefined;
 
-      if (this.__highlightedGizmo && this.activeController == event.controller) {
+      if (this.__highlightedHandle && this.activeController == event.controller) {
         // Check if by releasing the button, we should immedietly
         // unhilight the gizmo. 
         // It is possible that the higlight is still on for a gizmo
         // we are interacting with, even though the controller is no longer touching
         // it.
         const intersectionData = event.controller.getGeomItemAtTip();
-        if (!intersectionData != undefined || intersectionData.geomItem != this.__highlightedGizmo) {
+        if (!intersectionData != undefined || intersectionData.geomItem != this.__highlightedHandle) {
           const gizmo = intersectionData.geomItem;
-          if (this.__highlightedGizmo)
-            this.__highlightedGizmo.unhiglight();
+          if (this.__highlightedHandle)
+            this.__highlightedHandle.unhiglight();
         }
       }
       return true;

@@ -1,6 +1,6 @@
-import Gizmo  from './Gizmo.js';
+import Handle  from './Handle.js';
 
-export default class LinearMovementGizmo extends Gizmo {
+export default class LinearMovementHandle extends Handle {
   constructor(name) {
     super(name)
 

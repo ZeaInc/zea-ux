@@ -48,11 +48,11 @@ import CreateSphereTool from './tools/CreateTools/CreateSphereTool.js';
 import CreateCuboidTool from './tools/CreateTools/CreateCuboidTool.js';
 
 //////////////////////////////////////
-// Gizmos
-import GizmoTool from './tools/GizmoTool.js';
-import LinearMovementGizmo from './gizmos/LinearMovementGizmo.js';
-import PlanarMovementGizmo from './gizmos/PlanarMovementGizmo.js';
-import AxialRotationGizmo from './gizmos/AxialRotationGizmo.js';
+// Handles
+import HandleTool from './tools/HandleTool.js';
+import LinearMovementHandle from './gizmos/LinearMovementHandle.js';
+import PlanarMovementHandle from './gizmos/PlanarMovementHandle.js';
+import AxialRotationHandle from './gizmos/AxialRotationHandle.js';
 
 export {
   VisualiveApiClient,
@@ -103,9 +103,9 @@ export {
   CreateSphereTool,
   CreateCuboidTool,
 
-  // Gizmos
-  GizmoTool,
-  LinearMovementGizmo,
-  PlanarMovementGizmo,
-  AxialRotationGizmo,
+  // Handles
+  HandleTool,
+  LinearMovementHandle,
+  PlanarMovementHandle,
+  AxialRotationHandle,
 };

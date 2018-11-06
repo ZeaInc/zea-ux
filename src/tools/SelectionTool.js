@@ -1,6 +1,6 @@
 import UndoRedoManager from '../undoredo/UndoRedoManager.js';
 import BaseTool from './BaseTool.js';
-import Gizmo from '../gizmos/Gizmo.js';
+import Handle from '../gizmos/Handle.js';
 
 export default class SelectionTool extends BaseTool {
   constructor(appData) {
@@ -123,7 +123,7 @@ export default class SelectionTool extends BaseTool {
   onVRControllerButtonDown(event) {
     if (event.button == 1) {
       const intersectionData = event.controller.getGeomItemAtTip();
-      if (intersectionData != undefined && !(intersectionData.geomItem instanceof Gizmo)) {
+      if (intersectionData != undefined && !(intersectionData.geomItem instanceof Handle)) {
         this.appData.selectionManager.toggleItemSelection(intersectionData.geomItem);
         return true;
       }
@@ -139,7 +139,7 @@ export default class SelectionTool extends BaseTool {
   //     const controllerUpPos = event.controller.getTipXfo();
   //     if(this.controllerDownPos.distanceTo(controllerUpPos) < 0.1) {
   //       const intersectionData = event.controller.getGeomItemAtTip();
-  //       if (intersectionData != undefined && !(intersectionData.geomItem instanceof Gizmo)) {
+  //       if (intersectionData != undefined && !(intersectionData.geomItem instanceof Handle)) {
   //         this.appData.selectionManager.toggleItemSelection(intersectionData.geomItem);
   //         return true;
   //       }

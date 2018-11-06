@@ -1,6 +1,6 @@
-import Gizmo  from './Gizmo.js';
+import Handle  from './Handle.js';
 
-export default class AxialRotationGizmo extends Gizmo {
+export default class PlanarMovementHandle extends Handle {
   constructor(name) {
     super(name)
   }
@@ -13,18 +13,19 @@ export default class AxialRotationGizmo extends Gizmo {
   onDragStart(event, grabPos) {
     this.manipulateBegin.emit({
       grabPos,
-      manipRay: this.manipRay
+      manipRay: this.manipRay,
+      grabPos
     });
   }
 
   onDrag(event, holdPos) {
-    const dragVec = holdPos.subtract(holdPos.subtract(this.sliderRay.pos).dot(this.sliderRay.dir));
-    const delta = dragVec.subtract(this.grabDist);
+    const dragDist = this.sliderRay.dir.dot(holdPos.subtract(this.sliderRay.pos));
+    const delta = (dragDist - this.mouseDownDist);
     this.manipulate.emit({
       holdPos,
       manipRay: this.manipRay,
       vec: this.manipRay.dir.scale(delta),
-      value: dragVec,
+      value: dragDist,
       delta
     });
   }
@@ -37,4 +38,4 @@ export default class AxialRotationGizmo extends Gizmo {
     });
   }
 
-};
+}
