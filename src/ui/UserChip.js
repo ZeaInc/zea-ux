@@ -10,11 +10,13 @@ export class UserChip {
     this.userNameSpan.className = 'user-name';
     this.userDiv.appendChild(this.userNameSpan);
 
-    this.userImageDiv = document.createElement('div');
     this.userImage = document.createElement('img');
     this.userImage.className = 'user-image br-100 ba b--black-10';
     this.userImage.alt = 'Avatar';
-    this.userImage.src = 'https://placeimg.com/150/150/tech';
+    this.userImage.src = userData.picture;
+    this.userImage.style.borderColor = userData.metadata.avatarColor;
+
+    this.userImageDiv = document.createElement('div');
     this.userImageDiv.appendChild(this.userImage);
     this.userDiv.appendChild(this.userImageDiv);
 
