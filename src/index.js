@@ -1,5 +1,3 @@
-import VisualiveApiClient from './VisualiveApiClient.js';
-
 import UndoRedoManager from './undoredo/UndoRedoManager.js';
 import Change from './undoredo/Change.js';
 import ParameterValueChange from './undoredo/ParameterValueChange.js';
@@ -53,11 +51,9 @@ import PlanarMovementGizmo from './gizmos/PlanarMovementGizmo.js';
 import AxialRotationGizmo from './gizmos/AxialRotationGizmo.js';
 
 export {
-  VisualiveApiClient,
-
   UndoRedoManager,
-  Change, 
-  ParameterValueChange, 
+  Change,
+  ParameterValueChange,
   ActionRegistry,
   SelectionManager,
   LoaderRegistry,

@@ -7,7 +7,7 @@
   "scripts": {
     "build": "webpack --config webpack-prod.config.js",
     "build:dev": "webpack --mode=development --watch --config webpack-dev.config.js",
-    "dist": "webpack --config webpack-prod.config.js && yarn publish"
+    "dist": "webpack --config webpack-prod.config.js && yarn publish --access=public"
   },
   "repository": {
     "type": "git",

@@ -1,5 +1,3 @@
-import VisualiveApiClient, { getParameterFromUrl } from './src/VisualiveApiClient.js';
-
 import UndoRedoManager from './src/undoredo/UndoRedoManager.js';
 import ActionRegistry from './src/ActionRegistry.js';
 import SelectionManager from './src/SelectionManager.js';
@@ -34,8 +32,6 @@ import CreateFreehandLineTool from './src/tools/CreateTools/CreateFreehandLineTo
 import OpenVRUITool from './src/tools/CreateTools/OpenVRUITool.js';
 
 export {
-  VisualiveApiClient,
-  getParameterFromUrl,
   UndoRedoManager,
   ActionRegistry,
   SelectionManager,
