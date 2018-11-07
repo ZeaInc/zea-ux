@@ -1,5 +1,5 @@
 import BaseTool from './BaseTool.js';
-import Handle from '../gizmos/Handle.js';
+import Handle from '../handles/Handle.js';
 
 
 export default class HandleTool extends BaseTool {

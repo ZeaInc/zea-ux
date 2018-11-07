@@ -50,9 +50,9 @@ import CreateCuboidTool from './tools/CreateTools/CreateCuboidTool.js';
 //////////////////////////////////////
 // Handles
 import HandleTool from './tools/HandleTool.js';
-import LinearMovementHandle from './gizmos/LinearMovementHandle.js';
-import PlanarMovementHandle from './gizmos/PlanarMovementHandle.js';
-import AxialRotationHandle from './gizmos/AxialRotationHandle.js';
+import LinearMovementHandle from './handles/LinearMovementHandle.js';
+import PlanarMovementHandle from './handles/PlanarMovementHandle.js';
+import AxialRotationHandle from './handles/AxialRotationHandle.js';
 
 export {
   VisualiveApiClient,
