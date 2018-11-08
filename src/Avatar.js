@@ -28,7 +28,7 @@ export default class Avatar {
       this.__avatarImageMaterial = new Visualive.Material('user' + userData.id + 'AvatarImage', 'FlatSurfaceShader');
       this.__avatarImageMaterial.getParameter('BaseColor').setValue(this.__avatarColor);
       this.__avatarImageMaterial.addRef(this);
-      this.__avatarImageGeomItem = new Visualive.GeomItem('avatarImage', this.__plane, uimat);
+      this.__avatarImageGeomItem = new Visualive.GeomItem('avatarImage', this.__plane, this.__avatarImageMaterial);
       this.__avatarImageGeomItem.addRef(this);
     }
   }
