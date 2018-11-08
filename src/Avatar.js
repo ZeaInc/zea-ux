@@ -3,27 +3,38 @@
 const up = new Visualive.Vec3(0, 0, 1);
 export default class Avatar {
 
-  constructor(appData, userData) {
+  constructor(appData, userData, currentUserAvatar=false) {
     this.__appData = appData;
-    this.__userData = {userData};
-
-    if(!this.__userData.avatarColor)
-      this.__userData.avatarColor = Visualive.Color.random(-0.25);
-    this.__pointerColor = this.__userData.avatarColor.clone();
-    this.__pointerColor.a = 0.2;
-    this.__hilightPointerColor = new Visualive.Color(1.2, 0, 0);
+    this.__userData = userData;
+    this.__currentUserAvatar = currentUserAvatar;
 
     this.__treeItem = new Visualive.TreeItem(userData.id);
-
+    this.__treeItem.addRef(this);
     this.__appData.renderer.getCollector().addTreeItem(this.__treeItem);
 
-    this.__camera = new Visualive.Camera();
-    this.__camera.addRef(this);
-    this.__cameraBound = false;
+    this.__avatarColor = new Visualive.Color(this.__userData.metadata.avatarColor);
+    this.__hilightPointerColor = new Visualive.Color(1.2, 0, 0);
 
     this.__material = new Visualive.Material('user' + userData.id + 'Material', 'SimpleSurfaceShader');
-    this.__material.getParameter('BaseColor').setValue(this.__userData.avatarColor);
+    this.__material.getParameter('BaseColor').setValue(this.__avatarColor);
     this.__material.addRef(this);
+    this.__plane = new Visualive.Plane(1, 1)
+
+    if(!this.__currentUserAvatar) {
+      this.__camera = new Visualive.Camera();
+      this.__camera.addRef(this);
+      this.__cameraBound = false;
+
+      this.__avatarImageMaterial = new Visualive.Material('user' + userData.id + 'AvatarImage', 'FlatSurfaceShader');
+      this.__avatarImageMaterial.getParameter('BaseColor').setValue(this.__avatarColor);
+      this.__avatarImageMaterial.addRef(this);
+      this.__avatarImageGeomItem = new Visualive.GeomItem('avatarImage', this.__plane, uimat);
+      this.__avatarImageGeomItem.addRef(this);
+    }
+  }
+
+  setVideoStream(stream) {
+
   }
 
   setAudioStream(stream) {
@@ -65,10 +76,10 @@ export default class Avatar {
     }
   }
 
-
-
   setCameraAndPointerRepresentation() {
     this.__treeItem.removeAllChildren();
+    if(this.__currentUserAvatar)
+      return;
     const sc = 0.02;
     const shape = new Visualive.Cuboid(16*sc, 9*sc, 0.25);// 16:9
     const pinch = new Visualive.Vec3(0.1, 0.1, 1);
@@ -94,7 +105,7 @@ export default class Avatar {
     this.pointerXfo.sc.set(1, 1, 0);
 
     this.__pointermat = new Visualive.Material('pointermat', 'LinesShader');
-    this.__pointermat.getParameter('Color').setValue(this.__userData.avatarColor);
+    this.__pointermat.getParameter('Color').setValue(this.__avatarColor);
 
     this.__pointerItem = new Visualive.GeomItem('Pointer', line, this.__pointermat);
     this.__pointerItem.addRef(this)
@@ -116,6 +127,9 @@ export default class Avatar {
   }
 
   updateCameraAndPointerPose(data) {
+    if(this.__currentUserAvatar)
+      return;
+
     if(data.viewXfo){
       this.__treeItem.getChild(0).setLocalXfo(data.viewXfo);
       this.pointerXfo.sc.z = 0;
@@ -131,7 +145,7 @@ export default class Avatar {
       this.__pointermat.getParameter('Color').setValue(this.__hilightPointerColor);
     }
     else if(data.unhilightPointer){
-      this.__pointermat.getParameter('Color').setValue(this.__userData.avatarColor);
+      this.__pointermat.getParameter('Color').setValue(this.__avatarColor);
     }
     else if(data.pointerOff){
       this.pointerXfo.sc.z = 0;
@@ -150,7 +164,8 @@ export default class Avatar {
     hmdHolder.addChild(this.__camera, false);
 
     if(this.__hmdGeomItem) {
-      hmdHolder.addChild(this.__hmdGeomItem, false);
+      if(!this.__currentUserAvatar)
+        hmdHolder.addChild(this.__hmdGeomItem, false);
       if(this.__cameraBound) {
         this.__hmdGeomItem.setVisible(false)
       }
@@ -168,22 +183,23 @@ export default class Avatar {
               material.setShaderName('SimpleSurfaceShader');
           }
 
+          if(!this.__currentUserAvatar) {
+            const sharedGeomItem = this.__viveAsset.getChildByName('HTC_Vive_HMD');
+            const hmdGeomItem = sharedGeomItem.clone();
+            const xfo = hmdGeomItem.getLocalXfo();
+            xfo.tr.set(0, -0.03, -0.03);
+            xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0, 1, 0), Math.PI);
+            hmdGeomItem.setLocalXfo(xfo);
 
-          const sharedGeomItem = this.__viveAsset.getChildByName('HTC_Vive_HMD');
-          const hmdGeomItem = sharedGeomItem.clone();
-          const xfo = hmdGeomItem.getLocalXfo();
-          xfo.tr.set(0, -0.03, -0.03);
-          xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0, 1, 0), Math.PI);
-          hmdGeomItem.setLocalXfo(xfo);
+            // hmdGeomItem.setMaterial(this.__material);
+            this.__hmdGeomItem = hmdGeomItem;
+            this.__hmdGeomItem.addRef(this);
 
-          // hmdGeomItem.setMaterial(this.__material);
-          this.__hmdGeomItem = hmdGeomItem;
-          this.__hmdGeomItem.addRef(this);
-
-          if(this.__cameraBound) {
-            this.__hmdGeomItem.setVisible(false)
+            if(this.__cameraBound) {
+              this.__hmdGeomItem.setVisible(false)
+            }
+            hmdHolder.addChild(this.__hmdGeomItem, false);
           }
-          hmdHolder.addChild(this.__hmdGeomItem, false);
         });
       }
     }
@@ -243,6 +259,22 @@ export default class Avatar {
         this.__controllerTrees[i].setGlobalXfo(data.controllers[i].xfo);
       }
     }
+    if (data.showUIPanel) {
+      if(this.__controllerTrees[data.uiPanel.controllerId].getNumChildren() == 1) {
+        const uimat = new Visualive.Material('uimat', 'FlatSurfaceShader');
+        uimat.getParameter('BaseColor').setValue(new Visualive.Color(0.3, 0.3, 0.3));
+
+        const uiGeomItem = new Visualive.GeomItem('VRControllerUI', this.__plane, uimat);
+        uiGeomItem.setGeomOffsetXfo(data.uiPanel.xfo);
+        this.__controllerTrees[data.uiPanel.controllerId].addChild(uiGeomItem, false);
+      } 
+      else {
+        this.__controllerTrees[data.uiPanel.controllerId].getChild(1).setVisible(true);
+      }
+    }
+    if (data.hideUIPanel) {
+      this.__controllerTrees[data.uiPanel.controllerId].getChild(1).setVisible(false);
+    }
   }
 
   updatePose(data) {
@@ -275,5 +307,10 @@ export default class Avatar {
 
   destroy() {
     this.__appData.renderer.getCollector().removeTreeItem(this.__treeItem);
+    this.__treeItem.removeRef(this);
+    if(!this.__camera) {
+      this.__camera.removeRef(this);
+    }
+    this.__material.removeRef(this);
   }
 };

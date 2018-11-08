@@ -52,7 +52,9 @@ const convertValuesFromJSON = (value, scene) => {
   }
 }
 export default class SessionSync {
-  constructor(visualiveSession, appData, userId) {
+  constructor(visualiveSession, appData, currentUser) {
+
+    const currentUserAvatar = new Avatar(appData, currentUser, true);
 
     const userDatas = {};
 
@@ -116,36 +118,31 @@ export default class SessionSync {
 
     appData.renderer.viewChanged.connect((event) => {
 
-      tick++;
       const tmp = Object.assign({}, event);
-      const controllers = tmp.controllers;
-      if (controllers) {
+      if (tmp.controllers) {
+        const controllerXfos = [];
+        for (let controller of controllers) {
+          controllerXfos.push({
+            xfo: controller.getTreeItem().getGlobalXfo()
+          });
+        }
+        tmp.controllers = controllerXfos;
+      }
+
+      currentUserAvatar.updatePose(tmp);
+
+      tick++;
+      if (tmp.controllers) {
         // only push every second pose of a vr stream. 
         if (tick % 2 != 0)
           return;
-        delete tmp.controllers;
       }
       if (tmp.vrviewport)
         delete tmp.vrviewport;
       if (tmp.viewport)
         delete tmp.viewport;
 
-      const jsonData = convertValuesToJSON(tmp);
-
-      if (controllers) {
-        const controllerXfos = [];
-        for (let controller of controllers) {
-          controllerXfos.push({
-            xfo: convertValuesToJSON(controller.getTreeItem().getGlobalXfo())
-          });
-        }
-        jsonData.controllers = controllerXfos;
-      }
-
-      visualiveSession.pub(VisualiveSession.actions.POSE_CHANGED, jsonData);
-
-      // const otherData = convertValuesFromJSON(jsonData, appData.scene);
-      // otherAvatar.updatePose(otherData);
+      visualiveSession.pub(VisualiveSession.actions.POSE_CHANGED, convertValuesToJSON(tmp));
     });
 
     visualiveSession.sub(VisualiveSession.actions.POSE_CHANGED, (jsonData, userId) => {

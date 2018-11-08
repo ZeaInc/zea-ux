@@ -14,7 +14,6 @@ export class UserChip {
     this.userImage.className = 'user-image br-100 ba b--black-10';
     this.userImage.alt = 'Avatar';
     this.userImage.src = userData.picture;
-    this.userImage.style.borderColor = userData.metadata.avatarColor;
 
     this.userImageDiv = document.createElement('div');
     this.userImageDiv.appendChild(this.userImage);
@@ -26,7 +25,13 @@ export class UserChip {
   }
 
   setUserData(userData) {
-    this.userNameSpan.innerHTML = userData.name;
+    console.log(userData);
+    // if(userData.given_name && userData.family_name)
+    //   this.userNameSpan.innerHTML = `${userData.given_name} ${userData.family_name}`;
+    // else
+      this.userNameSpan.innerHTML = userData.name;
+    if(userData.metadata && userData.metadata.avatarColor)
+      this.userImage.style.borderColor = userData.metadata.avatarColor;
   }
 
   clean() {
