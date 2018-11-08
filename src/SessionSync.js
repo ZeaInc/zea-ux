@@ -58,16 +58,19 @@ export default class SessionSync {
 
     const userDatas = {};
 
-    const setupUser = (userData) => {
+    visualiveSession.sub(VisualiveSession.actions.USER_JOINED, userData => {
       if (!(userData.id in userDatas)) {
         userDatas[userData.id] = {
           undoRedoManager: new UndoRedoManager(),
           avatar: new Avatar(appData, userData)
         }
       }
-    }
-
-    visualiveSession.sub(VisualiveSession.actions.USER_JOINED, setupUser)
+    })
+    visualiveSession.sub(VisualiveSession.actions.USER_RTC_CONNECTED, (rtcData, userId) => {
+      if (userId in userDatas) {
+        userDatas[userData.id].setRTCStream(rtcData)
+      }
+    })
     visualiveSession.sub(VisualiveSession.actions.USER_LEFT, userData => {
       if (!userDatas[userData.id]) {
         console.warn("User id not in session:", userData.id);

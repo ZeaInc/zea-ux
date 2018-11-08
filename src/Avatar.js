@@ -33,11 +33,8 @@ export default class Avatar {
     }
   }
 
-  setVideoStream(stream) {
+  setRTCStream(rtcData) {
 
-  }
-
-  setAudioStream(stream) {
     if(this.__audioItem) {
       return;
     }
