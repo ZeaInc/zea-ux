@@ -68,7 +68,7 @@ export default class SessionSync {
     })
     visualiveSession.sub(VisualiveSession.actions.USER_RTC_CONNECTED, (rtcData, userId) => {
       if (userId in userDatas) {
-        userDatas[userData.id].setRTCStream(rtcData)
+        userDatas[userId].setRTCStream(rtcData)
       }
     })
     visualiveSession.sub(VisualiveSession.actions.USER_LEFT, userData => {
