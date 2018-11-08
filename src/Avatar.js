@@ -25,23 +25,36 @@ export default class Avatar {
       this.__camera.addRef(this);
       this.__cameraBound = false;
 
-      this.__avatarImageMaterial = new Visualive.Material('user' + userData.id + 'AvatarImage', 'FlatSurfaceShader');
+      this.__avatarImage = new Visualive.LDRImage('user' + userData.id + 'AvatarImage');
+      this.__avatarImage.setImageURL(userData.picture)
+      this.__avatarImageMaterial = new Visualive.Material('user' + userData.id + 'AvatarImageMaterial', 'FlatSurfaceShader');
       this.__avatarImageMaterial.getParameter('BaseColor').setValue(this.__avatarColor);
+      this.__avatarImageMaterial.getParameter('BaseColor').setImage(this.__avatarImage);
       this.__avatarImageMaterial.addRef(this);
       this.__avatarImageGeomItem = new Visualive.GeomItem('avatarImage', this.__plane, this.__avatarImageMaterial);
       this.__avatarImageGeomItem.addRef(this);
     }
+
+    this.setCameraAndPointerRepresentation()
   }
 
   setRTCStream(rtcData) {
-
-    if(this.__audioItem) {
-      return;
+    if(rtcData.video) {
+      this.__videoItem = new Visualive.VideoStreamImage2D('webcamStream');
+      this.__videoItem.setVideoStream(rtcData.video);
+      this.__avatarImageMaterial.getParameter('BaseColor').setImage(this.__avatarImage);
     }
-    this.__audioItem = new AudioItem('audio', stream);
-    const head = this.__treeItem.getChild(0);
-    if (head) {
-      head.addChild(this.__audioItem, false);
+
+    if(rtcData.audio) {
+      if(this.__audioItem) {
+        return;
+      }
+      this.__audioItem = new AudioItem('audio');
+      this.__audioItem.setAudioStream(rtcData.audio)
+      const head = this.__treeItem.getChild(0);
+      if (head) {
+        head.addChild(this.__audioItem, false);
+      }
     }
   }
 
@@ -78,7 +91,7 @@ export default class Avatar {
     if(this.__currentUserAvatar)
       return;
     const sc = 0.02;
-    const shape = new Visualive.Cuboid(16*sc, 9*sc, 0.25);// 16:9
+    const shape = new Visualive.Cuboid(16*sc, 9*sc, 0.25, true);// 16:9
     const pinch = new Visualive.Vec3(0.1, 0.1, 1);
     shape.getVertex(0).multiplyInPlace(pinch);
     shape.getVertex(1).multiplyInPlace(pinch);
@@ -107,6 +120,16 @@ export default class Avatar {
     this.__pointerItem = new Visualive.GeomItem('Pointer', line, this.__pointermat);
     this.__pointerItem.addRef(this)
     this.__pointerItem.setLocalXfo(this.pointerXfo);
+
+    if(this.__avatarImageGeomItem) {
+
+      const xfo = this.__avatarImageGeomItem.getLocalXfo();
+      xfo.sc.set(9*sc, 9*sc, 1);
+      xfo.tr.set(0, 0, -0.1*sc);
+      this.__avatarImageGeomItem.setLocalXfo(xfo);
+
+      geomItem.addChild(this.__avatarImageGeomItem, false);
+    }
 
     if (this.__audioItem) {
       geomItem.addChild(this.__audioItem, false);
