@@ -1,0 +1,18 @@
+{
+  "session_name": "Visualive UX",
+  "start_directory": "~/workspace/visualive/ux/",
+  "windows": [
+    {
+      "window_name": "nvim",
+      "panes": ["v -S Session.vim"]
+    },
+    {
+      "window_name": "vcs",
+      "panes": [
+        {
+          "shell_command": ["g fetch", "g s"]
+        }
+      ]
+    }
+  ]
+}

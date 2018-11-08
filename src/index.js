@@ -1,5 +1,3 @@
-import VisualiveApiClient from './VisualiveApiClient.js';
-
 import UndoRedoManager from './undoredo/UndoRedoManager.js';
 import Change from './undoredo/Change.js';
 import ParameterValueChange from './undoredo/ParameterValueChange.js';
@@ -56,11 +54,9 @@ import AxialRotationSceneWidget from './sceneWidgets/AxialRotationSceneWidget.js
 import SliderSceneWidget from './sceneWidgets/SliderSceneWidget.js';
 
 export {
-  VisualiveApiClient,
-
   UndoRedoManager,
-  Change, 
-  ParameterValueChange, 
+  Change,
+  ParameterValueChange,
   ActionRegistry,
   SelectionManager,
   LoaderRegistry,
