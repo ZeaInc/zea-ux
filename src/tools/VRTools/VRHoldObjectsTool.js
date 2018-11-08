@@ -1,5 +1,5 @@
 import BaseTool from '../BaseTool.js';
-import Gizmo from '../../gizmos/Gizmo.js';
+import SceneWidget from '../../sceneWidgets/SceneWidget.js';
 import UndoRedoManager from '../../undoredo/UndoRedoManager.js';
 import Change from '../../undoredo/Change.js';
 
@@ -128,7 +128,7 @@ export default class VRHoldObjectsTool extends BaseTool {
       const cross = new Visualive.Cross(0.03);
       const mat = new Visualive.Material('Cross', 'ToolIconShader');
       mat.getParameter('BaseColor').setValue(new Visualive.Color("#03E3AC"));
-      const geomItem = new Visualive.GeomItem('HoldObjectsToolTip', cross, mat);
+      const geomItem = new Visualive.GeomItem('SceneWidgetToolTip', cross, mat);
       controller.getTipItem().removeAllChildren();
       controller.getTipItem().addChild(geomItem, false);
     }
@@ -217,7 +217,7 @@ export default class VRHoldObjectsTool extends BaseTool {
 
     const intersectionData = event.controller.getGeomItemAtTip();
     if(intersectionData){
-      if (intersectionData.geomItem.getOwner() instanceof Gizmo)
+      if (intersectionData.geomItem.getOwner() instanceof SceneWidget)
         return false;
 
       let gidx = this.__heldGeomItems.indexOf(intersectionData.geomItem);

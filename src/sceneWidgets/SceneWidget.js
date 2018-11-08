@@ -1,9 +1,9 @@
 
 
-// A Gizmo is a UI widget that lives in the scene. 
+// A SceneWidget is a UI widget that lives in the scene. 
 // Much like a slider, it translates a series of 
 // mouse events into a higher level interaction.
-export default class Gizmo extends Visualive.TreeItem {
+export default class SceneWidget extends Visualive.TreeItem {
   constructor(name) {
     super(name)
     this.manipulateBegin = new Visualive.Signal();

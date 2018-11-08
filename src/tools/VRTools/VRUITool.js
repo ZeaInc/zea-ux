@@ -18,7 +18,7 @@ export default class VRUITool extends BaseTool {
 
     this.__uiGeomItem = new Visualive.GeomItem('VRControllerUI', new Visualive.Plane(1, 1), uimat);
     this.__uiGeomOffsetXfo = new Visualive.Xfo();
-    this.__uiGeomOffsetXfo.sc.set(0, 0, 0.5);
+    this.__uiGeomOffsetXfo.sc.set(0, 0, 1);
     // Flip it over so we see the front.
     this.__uiGeomOffsetXfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0, 1, 0), Math.PI);
     this.__uiGeomItem.setGeomOffsetXfo(this.__uiGeomOffsetXfo);

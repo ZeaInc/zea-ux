@@ -1,5 +1,3 @@
-import VisualiveApiClient from './VisualiveApiClient.js';
-
 import UndoRedoManager from './undoredo/UndoRedoManager.js';
 import Change from './undoredo/Change.js';
 import ParameterValueChange from './undoredo/ParameterValueChange.js';
@@ -48,18 +46,17 @@ import CreateSphereTool from './tools/CreateTools/CreateSphereTool.js';
 import CreateCuboidTool from './tools/CreateTools/CreateCuboidTool.js';
 
 //////////////////////////////////////
-// Gizmos
-import GizmoTool from './tools/GizmoTool.js';
-import LinearMovementGizmo from './gizmos/LinearMovementGizmo.js';
-import PlanarMovementGizmo from './gizmos/PlanarMovementGizmo.js';
-import AxialRotationGizmo from './gizmos/AxialRotationGizmo.js';
+// SceneWidgets
+import SceneWidgetTool from './tools/SceneWidgetTool.js';
+import LinearMovementSceneWidget from './sceneWidgets/LinearMovementSceneWidget.js';
+import PlanarMovementSceneWidget from './sceneWidgets/PlanarMovementSceneWidget.js';
+import AxialRotationSceneWidget from './sceneWidgets/AxialRotationSceneWidget.js';
+import SliderSceneWidget from './sceneWidgets/SliderSceneWidget.js';
 
 export {
-  VisualiveApiClient,
-
   UndoRedoManager,
-  Change, 
-  ParameterValueChange, 
+  Change,
+  ParameterValueChange,
   ActionRegistry,
   SelectionManager,
   LoaderRegistry,
@@ -103,9 +100,10 @@ export {
   CreateSphereTool,
   CreateCuboidTool,
 
-  // Gizmos
-  GizmoTool,
-  LinearMovementGizmo,
-  PlanarMovementGizmo,
-  AxialRotationGizmo,
+  // SceneWidgets
+  SceneWidgetTool,
+  LinearMovementSceneWidget,
+  PlanarMovementSceneWidget,
+  AxialRotationSceneWidget,
+  SliderSceneWidget
 };

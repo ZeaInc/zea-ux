@@ -16,7 +16,7 @@ export default class BooleanWidget extends BaseWidget {
     parentDomElem.appendChild(input);
 
     /////////////////////////////
-    // Handle Changes.
+    // SceneWidget Changes.
 
     let change;
     parameter.valueChanged.connect(() => {

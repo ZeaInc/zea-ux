@@ -1,6 +1,6 @@
-import Gizmo  from './Gizmo.js';
+import SceneWidget  from './SceneWidget.js';
 
-export default class LinearMovementGizmo extends Gizmo {
+export default class LinearMovementSceneWidget extends SceneWidget {
   constructor(name) {
     super(name)
 
