@@ -71,7 +71,7 @@ export default class Vec4Widget extends BaseWidget {
     parentDomElem.appendChild(container);
 
     /////////////////////////////
-    // Handle Changes.
+    // SceneWidget Changes.
 
     let change = undefined;
 

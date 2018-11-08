@@ -14,7 +14,7 @@ class FileWidget extends BaseWidget {
     parentDomElem.appendChild(inputOwner);
 
     /////////////////////////////
-    // Handle Changes.
+    // SceneWidget Changes.
 
     let change = undefined;
     parameter.valueChanged.connect(() => {

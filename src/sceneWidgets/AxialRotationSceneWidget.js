@@ -1,6 +1,6 @@
-import Handle  from './Handle.js';
+import SceneWidget  from './SceneWidget.js';
 
-export default class AxialRotationHandle extends Handle {
+export default class AxialRotationSceneWidget extends SceneWidget {
   constructor(name) {
     super(name)
   }

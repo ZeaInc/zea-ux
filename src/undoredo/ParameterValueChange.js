@@ -9,7 +9,7 @@ class ParameterValueChange extends Change {
       this.__param = param;
       if(newValue != undefined) {
         this.__nextValue = newValue;
-        this.__param.setValue(this.__nextValue);
+        this.__param.setValue(this.__nextValue, Visualive.ValueSetMode.USER_SETVALUE);
       }
     }
     else {
@@ -26,16 +26,16 @@ class ParameterValueChange extends Change {
 
 
   undo() {
-    this.__param.setValue(this.__prevValue);
+    this.__param.setValue(this.__prevValue, Visualive.ValueSetMode.USER_SETVALUE);
   }
 
   redo() {
-    this.__param.setValue(this.__nextValue);
+    this.__param.setValue(this.__nextValue, Visualive.ValueSetMode.USER_SETVALUE);
   }
 
   update(updateData) {
     this.__nextValue = updateData.value;
-    this.__param.setValue(this.__nextValue);
+    this.__param.setValue(this.__nextValue, Visualive.ValueSetMode.USER_SETVALUE);
     this.updated.emit(updateData);
   }
 
@@ -72,7 +72,7 @@ class ParameterValueChange extends Change {
       this.__nextValue.fromJSON(j.value);
     else
       this.__nextValue = j.value;
-    this.__param.setValue(this.__nextValue);
+    this.__param.setValue(this.__nextValue, Visualive.ValueSetMode.USER_SETVALUE);
   }
 }
 

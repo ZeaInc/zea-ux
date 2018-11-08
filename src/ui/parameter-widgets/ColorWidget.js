@@ -26,7 +26,7 @@ export default class ColorWidget extends BaseWidget {
     });
 
     /////////////////////////////
-    // Handle Changes.
+    // SceneWidget Changes.
 
     let change = undefined;
 

@@ -1,6 +1,6 @@
-import Handle  from './Handle.js';
+import SceneWidget  from './SceneWidget.js';
 
-export default class PlanarMovementHandle extends Handle {
+export default class PlanarMovementSceneWidget extends SceneWidget {
   constructor(name) {
     super(name)
   }

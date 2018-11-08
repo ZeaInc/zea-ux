@@ -48,11 +48,12 @@ import CreateSphereTool from './tools/CreateTools/CreateSphereTool.js';
 import CreateCuboidTool from './tools/CreateTools/CreateCuboidTool.js';
 
 //////////////////////////////////////
-// Handles
-import HandleTool from './tools/HandleTool.js';
-import LinearMovementHandle from './handles/LinearMovementHandle.js';
-import PlanarMovementHandle from './handles/PlanarMovementHandle.js';
-import AxialRotationHandle from './handles/AxialRotationHandle.js';
+// SceneWidgets
+import SceneWidgetTool from './tools/SceneWidgetTool.js';
+import LinearMovementSceneWidget from './sceneWidgets/LinearMovementSceneWidget.js';
+import PlanarMovementSceneWidget from './sceneWidgets/PlanarMovementSceneWidget.js';
+import AxialRotationSceneWidget from './sceneWidgets/AxialRotationSceneWidget.js';
+import SliderSceneWidget from './sceneWidgets/SliderSceneWidget.js';
 
 export {
   VisualiveApiClient,
@@ -103,9 +104,10 @@ export {
   CreateSphereTool,
   CreateCuboidTool,
 
-  // Handles
-  HandleTool,
-  LinearMovementHandle,
-  PlanarMovementHandle,
-  AxialRotationHandle,
+  // SceneWidgets
+  SceneWidgetTool,
+  LinearMovementSceneWidget,
+  PlanarMovementSceneWidget,
+  AxialRotationSceneWidget,
+  SliderSceneWidget
 };

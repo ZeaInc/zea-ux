@@ -138,13 +138,13 @@ export default class ToolManager {
       if (tool && tool.onMouseMove(event) == true)
         break;
     }
-    if (event.showPointerOnAvatar == true) {
-      this.movePointer.emit(event);
-      this.avatarPointerVisible = true;
-    } else if (this.avatarPointerVisible) {
-      this.avatarPointerVisible = false;
-      this.hidePointer.emit();
-    }
+    // if (event.showPointerOnAvatar == true) {
+    //   this.movePointer.emit(event);
+    //   this.avatarPointerVisible = true;
+    // } else if (this.avatarPointerVisible) {
+    //   this.avatarPointerVisible = false;
+    //   this.hidePointer.emit();
+    // }
   }
 
   onMouseUp(event) {
@@ -155,15 +155,15 @@ export default class ToolManager {
       if (tool && tool.onMouseUp(event) == true)
         break;
     }
-    if (event.showPointerOnAvatar == true) {
-      if (this.avatarPointerHighlighted) {
-        this.unhilightPointer.emit(event);
-        this.avatarPointerHighlighted = false;
-      }
-    } else if (this.avatarPointerVisible) {
-      this.avatarPointerVisible = false;
-      this.hidePointer.emit();
-    }
+    // if (event.showPointerOnAvatar == true) {
+    //   if (this.avatarPointerHighlighted) {
+    //     this.unhilightPointer.emit(event);
+    //     this.avatarPointerHighlighted = false;
+    //   }
+    // } else if (this.avatarPointerVisible) {
+    //   this.avatarPointerVisible = false;
+    //   this.hidePointer.emit();
+    // }
   }
 
   onWheel(event) {

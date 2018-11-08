@@ -1,6 +1,6 @@
 import UndoRedoManager from '../undoredo/UndoRedoManager.js';
 import BaseTool from './BaseTool.js';
-import Handle from '../handles/Handle.js';
+import SceneWidget from '../sceneWidgets/SceneWidget.js';
 
 export default class SelectionTool extends BaseTool {
   constructor(appData) {
@@ -80,7 +80,7 @@ export default class SelectionTool extends BaseTool {
   onMouseUp(event) {
 
     if (this.mouseDownPos) {
-      event.viewport.renderGeomDataFbo();
+      // event.viewport.renderGeomDataFbo();
       if (this.dragging) {
         this.rectItem.getParameter('Visible').setValue(false);
         const mouseUpPos = event.mousePos;
@@ -88,17 +88,22 @@ export default class SelectionTool extends BaseTool {
         const br = new Visualive.Vec2(Math.max(this.mouseDownPos.x, mouseUpPos.x), Math.max(this.mouseDownPos.y, mouseUpPos.y))
         const geomItems = event.viewport.getGeomItemsInRect(tl, br);
 
+        console.log(geomItems)
+
+        // Remove all the scene widgets. (UI elements should not be selectable.)
+        const regularGeomItems = new Set([...geomItems].filter(x => !(x.getOwner() instanceof SceneWidget)));
+
         if (!event.shiftKey) {
-          this.appData.selectionManager.selectItems(geomItems, !event.ctrlKey);
+          this.appData.selectionManager.selectItems(regularGeomItems, !event.ctrlKey);
         } else {
-          this.appData.selectionManager.deselectItems(geomItems);
+          this.appData.selectionManager.deselectItems(regularGeomItems);
         }
         
         this.selectionRectXfo.sc.set(0,0,0)
         this.rectItem.setGlobalXfo(this.selectionRectXfo)
       } else {
         const intersectionData = event.viewport.getGeomDataAtPos(event.mousePos);
-        if (intersectionData != undefined) {
+        if (intersectionData != undefined && !(intersectionData.geomItem.getOwner() instanceof SceneWidget)) {
           if (!event.shiftKey) {
             this.appData.selectionManager.toggleItemSelection(intersectionData.geomItem, !event.ctrlKey);
           } else {
@@ -123,7 +128,7 @@ export default class SelectionTool extends BaseTool {
   onVRControllerButtonDown(event) {
     if (event.button == 1) {
       const intersectionData = event.controller.getGeomItemAtTip();
-      if (intersectionData != undefined && !(intersectionData.geomItem instanceof Handle)) {
+      if (intersectionData != undefined && !(intersectionData.geomItem.getOwner() instanceof SceneWidget)) {
         this.appData.selectionManager.toggleItemSelection(intersectionData.geomItem);
         return true;
       }
@@ -139,7 +144,7 @@ export default class SelectionTool extends BaseTool {
   //     const controllerUpPos = event.controller.getTipXfo();
   //     if(this.controllerDownPos.distanceTo(controllerUpPos) < 0.1) {
   //       const intersectionData = event.controller.getGeomItemAtTip();
-  //       if (intersectionData != undefined && !(intersectionData.geomItem instanceof Handle)) {
+  //       if (intersectionData != undefined && !(intersectionData.geomItem instanceof SceneWidget)) {
   //         this.appData.selectionManager.toggleItemSelection(intersectionData.geomItem);
   //         return true;
   //       }
