@@ -117,16 +117,20 @@ export default class SessionSync {
     appData.renderer.viewChanged.connect((event) => {
 
       tick++;
-
-      const controllers = event.controllers;
+      const tmp = Object.assign({}, event);
+      const controllers = tmp.controllers;
       if (controllers) {
         // only push every second pose of a vr stream. 
         if (tick % 2 != 0)
           return;
-        delete event.controllers;
+        delete tmp.controllers;
       }
+      if (tmp.vrviewport)
+        delete tmp.vrviewport;
+      if (tmp.viewport)
+        delete tmp.viewport;
 
-      const jsonData = convertValuesToJSON(event);
+      const jsonData = convertValuesToJSON(tmp);
 
       if (controllers) {
         const controllerXfos = [];

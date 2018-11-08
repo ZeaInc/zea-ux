@@ -129,6 +129,7 @@ export default class VRHoldObjectsTool extends BaseTool {
       const mat = new Visualive.Material('Cross', 'ToolIconShader');
       mat.getParameter('BaseColor').setValue(new Visualive.Color("#03E3AC"));
       const geomItem = new Visualive.GeomItem('SceneWidgetToolTip', cross, mat);
+      controller.getTipItem().removeAllChildren();
       controller.getTipItem().addChild(geomItem, false);
     }
     const addIconToControllers = (vrviewport)=>{
@@ -210,7 +211,7 @@ export default class VRHoldObjectsTool extends BaseTool {
     }
   }
 
-  onVRControllerButtonDown(event, vrviewport) {
+  onVRControllerButtonDown(event) {
     const id = event.controller.getId();
     this.__vrControllers[id] = event.controller;
 
@@ -245,7 +246,7 @@ export default class VRHoldObjectsTool extends BaseTool {
     }
   }
 
-  onVRControllerButtonUp(event, vrviewport) {
+  onVRControllerButtonUp(event) {
     const id = event.controller.getId();
 
     this.__pressedButtonCount--;
@@ -265,7 +266,7 @@ export default class VRHoldObjectsTool extends BaseTool {
     }
   }
 
-  onVRPoseChanged(event, vrviewport) {
+  onVRPoseChanged(event) {
 
     if(!this.change)
       return false;

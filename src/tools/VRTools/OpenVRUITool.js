@@ -11,11 +11,14 @@ export default class OpenVRUITool extends BaseTool {
   /////////////////////////////////////
   // VRController events
 
-  onVRControllerButtonDown(event, vrviewport) {}
+  onVRControllerButtonDown(event) {}
 
-  onVRControllerButtonUp(event, vrviewport) {}
+  onVRControllerButtonUp(event) {}
 
-  onVRPoseChanged(event, vrviewport) {
+  onVRPoseChanged(event) {
+
+    if(this.vrUITool.installed())
+      return;
 
     // Controller coordinate system
     // X = Horizontal.
@@ -23,6 +26,8 @@ export default class OpenVRUITool extends BaseTool {
     // Z = Towards handle base.
     const headXfo = event.viewXfo;
     const checkControllers = (ctrlA, ctrlB) => {
+      if(!ctrlA)
+        return false;
       const xfoA = ctrlA.getTreeItem().getGlobalXfo();
       const headToCtrlA = xfoA.tr.subtract(headXfo.tr);
       headToCtrlA.normalizeInPlace();
@@ -33,7 +38,7 @@ export default class OpenVRUITool extends BaseTool {
       }
     }
 
-    if (event.controllers.length == 2) {
+    if (event.controllers.length > 0) {
       if(checkControllers(event.controllers[0], event.controllers[1]))
         return true;
       if(checkControllers(event.controllers[1], event.controllers[0]))

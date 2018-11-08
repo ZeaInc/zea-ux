@@ -185,19 +185,19 @@ class ActionTreeView {
 
   _addMenuItem(domElement, action) {
     let parentElement = domElement;
-    for(let i=0; i<action.path.length; i++) {
-      const pathItem = action.path[i];
-      if(!this.__existingItems[pathItem]) {
-        const li = this._addLiTo(parentElement, 'pure-menu-item');
-        li.classList.add('pure-menu-has-children', 'pure-menu-allow-hover');
-        const a = this._addATo(li, 'pure-menu-link', pathItem);
+    // for(let i=0; i<action.path.length; i++) {
+    //   const pathItem = action.path[i];
+    //   if(!this.__existingItems[pathItem]) {
+    //     const li = this._addLiTo(parentElement, 'pure-menu-item');
+    //     li.classList.add('pure-menu-has-children', 'pure-menu-allow-hover');
+    //     const a = this._addATo(li, 'pure-menu-link', pathItem);
 
-        const ul = this._addUlTo(li, 'pure-menu-children shadow-3');
+    //     const ul = this._addUlTo(li, 'pure-menu-children shadow-3');
 
-        this.__existingItems[pathItem] = ul;
-      }
-      // parentElement = this.__existingItems[pathItem]
-    }
+    //     this.__existingItems[pathItem] = ul;
+    //   }
+    //   // parentElement = this.__existingItems[pathItem]
+    // }
 
     const a = this._addATo(parentElement, 'pure-menu-link', null, action.callback);
     this._addSpanTo(a, 'ActionTitle', action.name);

@@ -23,6 +23,7 @@ export default class SceneWidgetTool extends BaseTool {
       const mat = new Visualive.Material('Cross', 'ToolIconShader');
       mat.getParameter('BaseColor').setValue(new Visualive.Color("#03E3AC"));
       const geomItem = new Visualive.GeomItem('SceneWidgetToolTip', cross, mat);
+      controller.getTipItem().removeAllChildren();
       controller.getTipItem().addChild(geomItem, false);
     }
     const addIconToControllers = (vrviewport)=>{
