@@ -32,6 +32,11 @@ export default class Avatar {
       this.__avatarImageMaterial.getParameter('BaseColor').setImage(this.__avatarImage);
       this.__avatarImageMaterial.addRef(this);
       this.__avatarImageGeomItem = new Visualive.GeomItem('avatarImage', this.__plane, this.__avatarImageMaterial);
+
+      this.__avatarImageXfo = new Visualive.Xfo();
+      this.__avatarImageXfo.sc.set(0.2, 0.2, 1);
+      this.__avatarImageGeomItem.setLocalXfo(this.__avatarImageXfo);
+
       this.__avatarImageGeomItem.addRef(this);
     }
 
@@ -42,14 +47,20 @@ export default class Avatar {
     if(rtcData.video) {
       this.__videoItem = new Visualive.VideoStreamImage2D('webcamStream');
       this.__videoItem.setVideoStream(rtcData.video);
-      this.__avatarImageMaterial.getParameter('BaseColor').setImage(this.__avatarImage);
+      this.__avatarImageMaterial.getParameter('BaseColor').setImage(this.__videoItem);
+
+      rtcData.video.addEventListener("loadedmetadata", (e) => {
+          const aspect = rtcData.video.videoWidth / rtcData.video.videoHeight;
+          this.__avatarImageXfo.sc.x = this.__avatarImageXfo.sc.y * aspect;
+          this.__avatarImageGeomItem.setLocalXfo(this.__avatarImageXfo);
+        });
     }
 
     if(rtcData.audio) {
       if(this.__audioItem) {
         return;
       }
-      this.__audioItem = new AudioItem('audio');
+      this.__audioItem = new Visualive.AudioItem('audio');
       this.__audioItem.setAudioStream(rtcData.audio)
       const head = this.__treeItem.getChild(0);
       if (head) {
@@ -91,7 +102,7 @@ export default class Avatar {
     if(this.__currentUserAvatar)
       return;
     const sc = 0.02;
-    const shape = new Visualive.Cuboid(16*sc, 9*sc, 0.25, true);// 16:9
+    const shape = new Visualive.Cuboid(16*sc, 9*sc, 3*sc, true);// 16:9
     const pinch = new Visualive.Vec3(0.1, 0.1, 1);
     shape.getVertex(0).multiplyInPlace(pinch);
     shape.getVertex(1).multiplyInPlace(pinch);
@@ -122,12 +133,9 @@ export default class Avatar {
     this.__pointerItem.setLocalXfo(this.pointerXfo);
 
     if(this.__avatarImageGeomItem) {
-
-      const xfo = this.__avatarImageGeomItem.getLocalXfo();
-      xfo.sc.set(9*sc, 9*sc, 1);
-      xfo.tr.set(0, 0, -0.1*sc);
-      this.__avatarImageGeomItem.setLocalXfo(xfo);
-
+      this.__avatarImageXfo.sc.set(9*sc, 9*sc, 1);
+      this.__avatarImageXfo.tr.set(0, 0, -0.1*sc);
+      this.__avatarImageGeomItem.setLocalXfo(this.__avatarImageXfo);
       geomItem.addChild(this.__avatarImageGeomItem, false);
     }
 
