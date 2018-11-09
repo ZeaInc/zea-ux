@@ -190,7 +190,7 @@ export default class Avatar {
 
     if(this.__avatarImageGeomItem) {
       this.__avatarImageXfo.sc.set(0.12, 0.12, 1);
-      this.__avatarImageXfo.tr.set(0, 0, -0.1);
+      this.__avatarImageXfo.tr.set(0, -0.04, -0.1);
       this.__avatarImageGeomItem.setLocalXfo(this.__avatarImageXfo);
       hmdHolder.addChild(this.__avatarImageGeomItem, false);
     }
@@ -227,8 +227,8 @@ export default class Avatar {
             xfo.tr.set(0, -0.03, -0.03);
             xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0, 1, 0), Math.PI);
             hmdGeomItem.setLocalXfo(xfo);
+            hmdGeomItem.setMaterial(this.__material);
 
-            // hmdGeomItem.setMaterial(this.__material);
             this.__hmdGeomItem = hmdGeomItem;
             this.__hmdGeomItem.addRef(this);
 
@@ -257,12 +257,12 @@ export default class Avatar {
           const controllerTree = sharedControllerTree.clone();
 
           const filter = ['TriggerMaterial', 'Touchpad Material', 'Metal']
-          // controllerTree.traverse((subTreeItem)=>{
-          //   if(subTreeItem instanceof Visualive.GeomItem){
-          //     if(filter.indexOf(subTreeItem.getMaterial().getName()) == -1)
-          //       subTreeItem.setMaterial(this.__material)
-          //   }
-          // })
+          controllerTree.traverse((subTreeItem)=>{
+            if(subTreeItem instanceof Visualive.GeomItem){
+              if(filter.indexOf(subTreeItem.getMaterial().getName()) == -1)
+                subTreeItem.setMaterial(this.__material)
+            }
+          })
           const xfo = new Visualive.Xfo(
             new Visualive.Vec3(0, -0.035, 0.01), 
             new Visualive.Quat({ 
