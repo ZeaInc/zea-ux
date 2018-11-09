@@ -190,14 +190,15 @@ export default class Avatar {
 
     if(this.__avatarImageGeomItem) {
       this.__avatarImageXfo.sc.set(0.12, 0.12, 1);
-      this.__avatarImageXfo.tr.set(0, 0, -0.2);
+      this.__avatarImageXfo.tr.set(0, 0, -0.1);
       this.__avatarImageGeomItem.setLocalXfo(this.__avatarImageXfo);
       hmdHolder.addChild(this.__avatarImageGeomItem, false);
     }
 
     this.__treeItem.addChild(hmdHolder);
 
-    hmdHolder.addChild(this.__camera, false);
+    if(this.__camera)
+      hmdHolder.addChild(this.__camera, false);
 
     if(this.__hmdGeomItem) {
       if(!this.__currentUserAvatar)

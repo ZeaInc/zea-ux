@@ -124,7 +124,7 @@ export default class SessionSync {
       const tmp = Object.assign({}, event);
       if (tmp.controllers) {
         const controllerXfos = [];
-        for (let controller of controllers) {
+        for (let controller of tmp.controllers) {
           controllerXfos.push({
             xfo: controller.getTreeItem().getGlobalXfo()
           });
