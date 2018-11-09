@@ -31,7 +31,7 @@ export default class Avatar {
       this.__avatarImageMaterial.getParameter('BaseColor').setValue(this.__avatarColor);
       this.__avatarImageMaterial.getParameter('BaseColor').setImage(this.__avatarImage);
       this.__avatarImageMaterial.addRef(this);
-      this.__avatarImageGeomItem = new Visualive.GeomItem('avatarImage', this.__plane, this.__avatarImageMaterial);
+      this.__avatarImageGeomItem = new Visualive.GeomItem('avatarImage', new Visualive.Disc(0.5, 64), this.__avatarImageMaterial);
 
       this.__avatarImageXfo = new Visualive.Xfo();
       this.__avatarImageXfo.sc.set(0.2, 0.2, 1);
@@ -44,17 +44,17 @@ export default class Avatar {
   }
 
   setRTCStream(rtcData) {
-    if(rtcData.video) {
-      this.__videoItem = new Visualive.VideoStreamImage2D('webcamStream');
-      this.__videoItem.setVideoStream(rtcData.video);
-      this.__avatarImageMaterial.getParameter('BaseColor').setImage(this.__videoItem);
+    // if(rtcData.video) {
+    //   this.__videoItem = new Visualive.VideoStreamImage2D('webcamStream');
+    //   this.__videoItem.setVideoStream(rtcData.video);
+    //   this.__avatarImageMaterial.getParameter('BaseColor').setImage(this.__videoItem);
 
-      rtcData.video.addEventListener("loadedmetadata", (e) => {
-          const aspect = rtcData.video.videoWidth / rtcData.video.videoHeight;
-          this.__avatarImageXfo.sc.x = this.__avatarImageXfo.sc.y * aspect;
-          this.__avatarImageGeomItem.setLocalXfo(this.__avatarImageXfo);
-        });
-    }
+    //   rtcData.video.addEventListener("loadedmetadata", (e) => {
+    //       const aspect = rtcData.video.videoWidth / rtcData.video.videoHeight;
+    //       this.__avatarImageXfo.sc.x = this.__avatarImageXfo.sc.y * aspect;
+    //       this.__avatarImageGeomItem.setLocalXfo(this.__avatarImageXfo);
+    //     });
+    // }
 
     if(rtcData.audio) {
       if(this.__audioItem) {
@@ -187,6 +187,14 @@ export default class Avatar {
     if (this.__audioItem) {
       hmdHolder.addChild(this.__audioItem);
     }
+
+    if(this.__avatarImageGeomItem) {
+      this.__avatarImageXfo.sc.set(0.12, 0.12, 1);
+      this.__avatarImageXfo.tr.set(0, 0, -0.2);
+      this.__avatarImageGeomItem.setLocalXfo(this.__avatarImageXfo);
+      hmdHolder.addChild(this.__avatarImageGeomItem, false);
+    }
+
     this.__treeItem.addChild(hmdHolder);
 
     hmdHolder.addChild(this.__camera, false);
