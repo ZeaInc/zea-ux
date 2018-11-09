@@ -9,11 +9,18 @@ export default class SliderSceneWidget extends LinearMovementSceneWidget {
     this.__length = length;
     this.__undoRedoManager = undoRedoManager;
 
+    this.colorParam = this.addParameter(new Visualive.ColorParameter('color', new Visualive.Color(1, 1, 0)));
+    const updateColor = ()=>{
+      const color = this.colorParam.getValue();
+      handleMat.getParameter('BaseColor').setValue(color);
+      baseBarMat.getParameter('BaseColor').setValue(color);
+    }
+    updateColor();
+    this.colorParam.valueChanged.connect(updateColor)
+
     const handleMat = new Visualive.Material('handle', 'FlatSurfaceShader');
     const baseBarMat = new Visualive.Material('baseBar', 'FlatSurfaceShader');
     const topBarMat = new Visualive.Material('topBar', 'FlatSurfaceShader');
-    handleMat.getParameter('BaseColor').setValue(color);
-    baseBarMat.getParameter('BaseColor').setValue(color);
     topBarMat.getParameter('BaseColor').setValue(new Visualive.Color(0.5, 0.5, 0.5));
     
     const barGeom = new Visualive.Cylinder(radius * 0.25, 1, 64, 2, true, true);
@@ -31,6 +38,7 @@ export default class SliderSceneWidget extends LinearMovementSceneWidget {
 
     this.__updateSlider(0);
   };
+
 
   setTargetParam(param) {
     this.__param = param;
@@ -77,4 +85,19 @@ export default class SliderSceneWidget extends LinearMovementSceneWidget {
     this.handleXfo.sc.x = this.handleXfo.sc.y = this.handleXfo.sc.z = 1.0;
     this.handle.setLocalXfo(this.handleXfo)
   }
+
+
+  toJSON(context, flags=0) {
+      const json = super.toJSON(context, flags|Visualive.SAVE_FLAG_SKIP_CHILDREN);
+      json.length = this.__length;
+      json.targetParam = this.__param.getPath();
+      return json
+  }
+
+  fromJSON(json, context, flags) {
+    super.fromJSON(json, context, flags);
+
+  }
 };
+
+Visualive.sgFactory.registerClass('SliderSceneWidget', SliderSceneWidget);
