@@ -101,9 +101,11 @@ export default class VRUITool extends BaseTool {
 
 
     this.appData.visualiveSession.pub('pose-message', {
+      interfaceType: 'Vive',
       showUIPanel: {
         controllerId: this.uiController.getId(),
-        xfo: this.__uiLocalXfo
+        localXfo: this.__uiLocalXfo.toJSON(),
+        size: this.__uiGeomOffsetXfo.sc.toJSON()
       }
     });
   }
@@ -117,6 +119,7 @@ export default class VRUITool extends BaseTool {
     this.__vrUIDOMHolderElement.style.display = "none";
 
     this.appData.visualiveSession.pub('pose-message', {
+      interfaceType: 'Vive',
       hideUIPanel: {
         controllerId: this.uiController.getId()
       }
@@ -140,6 +143,13 @@ export default class VRUITool extends BaseTool {
         this.__uiGeomOffsetXfo.sc.set(rect.width * dpm, rect.height * dpm, 1.0);
         this.__uiGeomItem.setGeomOffsetXfo(this.__uiGeomOffsetXfo)
         this.__uiimage.setData(rect.width, rect.height, new Uint8Array(pixels.buffer));
+
+        this.appData.visualiveSession.pub('pose-message', {
+          interfaceType: 'Vive',
+          updateUIPanel: {
+            size: this.__uiGeomOffsetXfo.sc.toJSON()
+          }
+        });
       });
   }
 
