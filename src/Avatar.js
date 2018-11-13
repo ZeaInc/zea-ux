@@ -197,7 +197,7 @@ export default class Avatar {
     else if(data.unhilightPointer){
       this.__pointermat.getParameter('Color').setValue(this.__avatarColor);
     }
-    else if(data.pointerOff){
+    else if(data.hidePointer){
       this.pointerXfo.sc.z = 0;
       this.__treeItem.getChild(1).setLocalXfo(this.pointerXfo);
     }
