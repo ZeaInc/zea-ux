@@ -19,7 +19,7 @@ export default class CollabPanel {
       </form>
 
       <div class="btn-group">
-        <button class="pure-button AudioButton" id="toggleMic">
+        <button class="pure-button AudioButton" disabled id="toggleMic">
           <i class="material-icons">mic</i>
         </button>
 
