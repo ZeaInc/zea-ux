@@ -156,8 +156,13 @@ export default class SessionSync {
       const data = convertValuesFromJSON(jsonData, appData.scene);
       const avatar = userDatas[userId].avatar;
       avatar.updatePose(data);
-    })
+    });
 
+    // Emit a signal to configure remote avatars to the current camera transform.
+    visualiveSession.pub(VisualiveSession.actions.POSE_CHANGED, convertValuesToJSON({
+        interfaceType: 'CameraAndPointer',
+        viewXfo: appData.renderer.getViewport().getCamera().getGlobalXfo()
+    }));
 
     /////////////////////////////////////////////
     // Scene Changes

@@ -117,6 +117,8 @@ export default class Avatar {
 
   setCameraAndPointerRepresentation() {
     this.__treeItem.removeAllChildren();
+    this.__currentViewMode = 'CameraAndPointer';
+
     if(this.__currentUserAvatar)
       return;
     const sc = 0.02;
@@ -174,7 +176,6 @@ export default class Avatar {
       geomItem.setVisible(false)
     }
 
-    this.__currentViewMode = 'CameraAndPointer';
   }
 
   updateCameraAndPointerPose(data) {
@@ -206,6 +207,8 @@ export default class Avatar {
 
   setViveRepresentation() {
     this.__treeItem.removeAllChildren();
+    this.__currentViewMode = 'Vive';
+    
     const hmdHolder = new Visualive.TreeItem("hmdHolder");
     if (this.__audioItem) {
       hmdHolder.addChild(this.__audioItem);
@@ -263,7 +266,6 @@ export default class Avatar {
       }
     }
 
-    this.__currentViewMode = 'Vive';
     this.__controllerTrees = [];
   }
 
