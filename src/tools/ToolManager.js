@@ -114,6 +114,7 @@ export default class ToolManager {
   }
 
   onMouseDown(event) {
+    event.undoRedoManager = this.appData.undoRedoManager;
     event.showPointerOnAvatar = true;
     let i = this.__toolStack.length;
     while (i--) {
@@ -138,6 +139,7 @@ export default class ToolManager {
   }
 
   onMouseMove(event) {
+    event.undoRedoManager = this.appData.undoRedoManager;
     event.showPointerOnAvatar = true;
     let i = this.__toolStack.length;
     while (i--) {
@@ -155,6 +157,7 @@ export default class ToolManager {
   }
 
   onMouseUp(event) {
+    event.undoRedoManager = this.appData.undoRedoManager;
     event.showPointerOnAvatar = true;
     let i = this.__toolStack.length;
     while (i--) {
@@ -174,6 +177,7 @@ export default class ToolManager {
   }
 
   onWheel(event) {
+    event.undoRedoManager = this.appData.undoRedoManager;
     let i = this.__toolStack.length;
     while (i--) {
       const tool = this.__toolStack[i];
@@ -185,6 +189,7 @@ export default class ToolManager {
   /////////////////////////////////////
   // Keyboard events
   onKeyPressed(key, event) {
+    event.undoRedoManager = this.appData.undoRedoManager;
     let i = this.__toolStack.length;
     while (i--) {
       const tool = this.__toolStack[i];
@@ -194,6 +199,7 @@ export default class ToolManager {
   }
 
   onKeyDown(key, event) {
+    event.undoRedoManager = this.appData.undoRedoManager;
     let i = this.__toolStack.length;
     while (i--) {
       const tool = this.__toolStack[i];
@@ -203,6 +209,7 @@ export default class ToolManager {
   }
 
   onKeyUp(key, event) {
+    event.undoRedoManager = this.appData.undoRedoManager;
     let i = this.__toolStack.length;
     while (i--) {
       const tool = this.__toolStack[i];
@@ -214,6 +221,7 @@ export default class ToolManager {
   /////////////////////////////////////
   // Touch events
   onTouchStart(event) {
+    event.undoRedoManager = this.appData.undoRedoManager;
     let i = this.__toolStack.length;
     while (i--) {
       const tool = this.__toolStack[i];
@@ -223,6 +231,7 @@ export default class ToolManager {
   }
 
   onTouchMove(event) {
+    event.undoRedoManager = this.appData.undoRedoManager;
     let i = this.__toolStack.length;
     while (i--) {
       const tool = this.__toolStack[i];
@@ -232,6 +241,7 @@ export default class ToolManager {
   }
 
   onTouchEnd(event) {
+    event.undoRedoManager = this.appData.undoRedoManager;
     let i = this.__toolStack.length;
     while (i--) {
       const tool = this.__toolStack[i];
@@ -241,6 +251,7 @@ export default class ToolManager {
   }
 
   onTouchCancel(event) {
+    event.undoRedoManager = this.appData.undoRedoManager;
     let i = this.__toolStack.length;
     while (i--) {
       const tool = this.__toolStack[i];
@@ -252,6 +263,7 @@ export default class ToolManager {
   /////////////////////////////////////
   // VRController events
   onVRControllerButtonDown(event) {
+    event.undoRedoManager = this.appData.undoRedoManager;
     let i = this.__toolStack.length;
     while (i--) {
       const tool = this.__toolStack[i];
@@ -261,6 +273,7 @@ export default class ToolManager {
   }
 
   onVRControllerButtonUp(event) {
+    event.undoRedoManager = this.appData.undoRedoManager;
     let i = this.__toolStack.length;
     while (i--) {
       const tool = this.__toolStack[i];
@@ -270,6 +283,7 @@ export default class ToolManager {
   }
 
   onVRPoseChanged(event) {
+    event.undoRedoManager = this.appData.undoRedoManager;
     let i = this.__toolStack.length;
     while (i--) {
       const tool = this.__toolStack[i];

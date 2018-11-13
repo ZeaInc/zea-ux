@@ -1,28 +1,22 @@
-import LinearMovementSceneWidget  from './LinearMovementSceneWidget.js';
+import LinearMovementSceneWidget from './LinearMovementSceneWidget.js';
 
 import ParameterValueChange from '../undoredo/ParameterValueChange.js';
 
 export default class SliderSceneWidget extends LinearMovementSceneWidget {
-  constructor(name, length, radius, color, undoRedoManager) {
+  constructor(name, length = 0.5, radius = 0.02, color = new Visualive.Color(1, 1, 0)) {
     super(name)
 
-    this.__length = length;
-    this.__undoRedoManager = undoRedoManager;
-
-    this.colorParam = this.addParameter(new Visualive.ColorParameter('color', new Visualive.Color(1, 1, 0)));
-    const updateColor = ()=>{
-      const color = this.colorParam.getValue();
-      handleMat.getParameter('BaseColor').setValue(color);
-      baseBarMat.getParameter('BaseColor').setValue(color);
-    }
-    updateColor();
-    this.colorParam.valueChanged.connect(updateColor)
+    this.lengthParam = this.addParameter(new Visualive.NumberParameter('length', length));
+    this.radiusParam = this.addParameter(new Visualive.NumberParameter('radius', radius));
+    this.colorParam = this.addParameter(new Visualive.ColorParameter('BaseColor', color));
 
     const handleMat = new Visualive.Material('handle', 'FlatSurfaceShader');
+    handleMat.replaceParameter(this.colorParam);
     const baseBarMat = new Visualive.Material('baseBar', 'FlatSurfaceShader');
+    baseBarMat.replaceParameter(this.colorParam);
     const topBarMat = new Visualive.Material('topBar', 'FlatSurfaceShader');
     topBarMat.getParameter('BaseColor').setValue(new Visualive.Color(0.5, 0.5, 0.5));
-    
+
     const barGeom = new Visualive.Cylinder(radius * 0.25, 1, 64, 2, true, true);
 
     this.handle = new Visualive.GeomItem('handle', new Visualive.Sphere(radius, 64), handleMat);
@@ -44,7 +38,7 @@ export default class SliderSceneWidget extends LinearMovementSceneWidget {
     this.__param = param;
     const range = param.getRange() ? param.getRange() : [0, 1];
     const step = param.getStep();
-    const __updateSlider = ()=>{
+    const __updateSlider = () => {
       this.__updateSlider(Math.remap(param.getValue(), range[0], range[1], 0, 1));
     }
     __updateSlider();
@@ -52,10 +46,11 @@ export default class SliderSceneWidget extends LinearMovementSceneWidget {
   }
 
   __updateSlider(value) {
-    this.baseBarXfo.sc.z = value * this.__length;
-    this.handleXfo.tr.z = value * this.__length;
-    this.topBarXfo.tr.z = value * this.__length;
-    this.topBarXfo.sc.z = (1 - (value)) * this.__length;
+    const length = this.lengthParam.getValue();
+    this.baseBarXfo.sc.z = value * length;
+    this.handleXfo.tr.z = value * length;
+    this.topBarXfo.tr.z = value * length;
+    this.topBarXfo.sc.z = (1 - (value)) * length;
     this.handle.setLocalXfo(this.handleXfo)
     this.baseBar.setLocalXfo(this.baseBarXfo)
     this.topBar.setLocalXfo(this.topBarXfo)
@@ -66,7 +61,7 @@ export default class SliderSceneWidget extends LinearMovementSceneWidget {
 
   onDragStart(event) {
     this.change = new ParameterValueChange(this.__param);
-    this.__undoRedoManager.addChange(this.change);
+    event.undoRedoManager.addChange(this.change);
 
     // Hilight the material.
     this.handleXfo.sc.x = this.handleXfo.sc.y = this.handleXfo.sc.z = 1.5;
@@ -74,9 +69,12 @@ export default class SliderSceneWidget extends LinearMovementSceneWidget {
   }
 
   onDrag(event) {
+    const length = this.lengthParam.getValue();
     const range = this.__param.getRange() ? this.__param.getRange() : [0, 1];
-    const value = Math.remap(event.value, 0, this.__length, range[0], range[1]);
-    this.change.update({ value });
+    const value = Math.remap(event.value, 0, length, range[0], range[1]);
+    this.change.update({
+      value
+    });
   }
 
   onDragEnd(event) {
@@ -87,16 +85,20 @@ export default class SliderSceneWidget extends LinearMovementSceneWidget {
   }
 
 
-  toJSON(context, flags=0) {
-      const json = super.toJSON(context, flags|Visualive.SAVE_FLAG_SKIP_CHILDREN);
-      json.length = this.__length;
-      json.targetParam = this.__param.getPath();
-      return json
+  toJSON(context, flags = 0) {
+    const json = super.toJSON(context, flags | Visualive.SAVE_FLAG_SKIP_CHILDREN);
+    json.targetParam = this.__param.getPath();
+    return json
   }
 
   fromJSON(json, context, flags) {
     super.fromJSON(json, context, flags);
 
+    if (json.targetParam) {
+      context.resolvePath(json.targetParam).then((param) => {
+        this.setTargetParam(param);
+      });
+    }
   }
 };
 

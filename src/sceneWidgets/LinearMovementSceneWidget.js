@@ -13,7 +13,7 @@ export default class LinearMovementSceneWidget extends SceneWidget {
     this.gizmoRay = this.getManipulationRay();
     this.grabDist = event.mouseRay.intersectRayVector(this.gizmoRay)[1];
     const grabPos = this.gizmoRay.start.add(this.gizmoRay.dir.scale(this.grabDist));
-    this.onDragStart({});
+    this.onDragStart({ undoRedoManager: event.undoRedoManager });
     return true;
   }
 
@@ -38,7 +38,7 @@ export default class LinearMovementSceneWidget extends SceneWidget {
     this.activeController = event.controller;
     const xfo = this.activeController.getTipXfo();
     this.grabDist = xfo.tr.subtract(this.gizmoRay.start).dot(this.gizmoRay.dir);
-    this.onDragStart();
+    this.onDragStart({ undoRedoManager: event.undoRedoManager });
     return true;
   }
 
