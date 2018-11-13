@@ -306,8 +306,9 @@ export default class Avatar {
       }
     }
 
+    if(data.viewXfo)
+      this.__treeItem.getChild(0).setGlobalXfo(data.viewXfo);
 
-    this.__treeItem.getChild(0).setGlobalXfo(data.viewXfo);
     if (data.controllers) {
       for (let i = 0; i < data.controllers.length; i++) {
         if (data.controllers[i] && !this.__controllerTrees[i]) {
@@ -317,25 +318,34 @@ export default class Avatar {
       }
     }
     if (data.showUIPanel) {
-      if(this.__controllerTrees[data.uiPanel.controllerId].getNumChildren() == 1) {
+      if(!this.__uiGeomItem) {
         const uimat = new Visualive.Material('uimat', 'FlatSurfaceShader');
         uimat.getParameter('BaseColor').setValue(new Visualive.Color(0.3, 0.3, 0.3));
 
-        const uiGeomItem = new Visualive.GeomItem('VRControllerUI', this.__plane, uimat);
-        const uiGeomOffsetXfo = new Visualive.Xfo();
-        uiGeomOffsetXfo.sc.set(0, 0, 1);
+        this.__uiGeomOffsetXfo = new Visualive.Xfo();
+        this.__uiGeomOffsetXfo.sc.set(data.showUIPanel.size.x, data.showUIPanel.size.y, 1);
         // Flip it over so we see the front.
-        uiGeomOffsetXfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0, 1, 0), Math.PI);
-        uiGeomItem.setGeomOffsetXfo(uiGeomOffsetXfo);
-        uiGeomItem.setGeomOffsetXfo(data.showUIPanel.xfo);
-        this.__controllerTrees[data.showUIPanel.controllerId].addChild(uiGeomItem, false);
-      } 
-      else {
-        this.__controllerTrees[data.showUIPanel.controllerId].getChild(1).setVisible(true);
+        this.__uiGeomOffsetXfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0, 1, 0), Math.PI);
+
+        this.__uiGeomItem = new Visualive.GeomItem('VRControllerUI', this.__plane, uimat);
+        this.__uiGeomItem.addRef(this)
+        this.__uiGeomItem.setGeomOffsetXfo(this.__uiGeomOffsetXfo);
+
+        const localXfo = new Visualive.Xfo();
+        localXfo.fromJSON(data.showUIPanel.localXfo)
+        uiGeomItem.setLocalXfo(localXfo);
+      }
+      this.__controllerTrees[data.showUIPanel.controllerId].addChild(uiGeomItem, false);
+    }
+    if (data.updateUIPanel) {
+      if(this.__uiGeomItem) {
+        this.__uiGeomOffsetXfo.sc.set(data.updateUIPanel.size.x, data.updateUIPanel.size.y, 1);
+        this.__uiGeomItem.setGeomOffsetXfo(this.__uiGeomOffsetXfo);
       }
     }
     if (data.hideUIPanel) {
-      this.__controllerTrees[data.hideUIPanel.controllerId].getChild(1).setVisible(false);
+      if(this.__controllerTrees[data.showUIPanel.controllerId].numChildren() == 2)
+        this.__controllerTrees[data.hideUIPanel.controllerId].removeChild(1);
     }
   }
 
