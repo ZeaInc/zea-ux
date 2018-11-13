@@ -10,21 +10,31 @@ export default class CollabPanel {
       <div class="ba b--light-blue br2 pa2 h5 overflow-y-auto mb2" id="receivedMessages"></div>
 
       <form autocomplete="off" name="formSendMessage">
-        <div class="mb5 flex">
-          <input class="flex-grow-1 mr1" name="messageToSend" required type="text">
+        <div class="mb2 flex">
+          <input class="w-100 mr1" name="messageToSend" required type="text">
           <button class="pure-button">
             <i class="material-icons f4">send</i>
           </button>
         </div>
       </form>
 
+      <div class="btn-group">
+        <button class="pure-button AudioButton" id="toggleMic">
+          <i class="material-icons">mic</i>
+        </button>
+
+        <button class="pure-button CameraButton" id="toggleCam">
+          <i class="material-icons">videocam</i>
+        </button>
+      </div>
+<!--
       <form class="pure-form pure-form-aligned" name="formCreateRoom">
         <legend>Create Room</legend>
         <fieldset>
           <div class="pure-control-group">
             <label for="roomId">Room ID</label>
             <input name="roomId" disabled type="text">
-            <button class="pure-button" type="button">
+            <button class="pure-button" disabled type="button">
               <i class="material-icons f4">file_copy</i>
             </button>
           </div>
@@ -50,20 +60,51 @@ export default class CollabPanel {
           </button>
         </div>
       </form>
+      --!>
     `;
 
     $collabWrapper.innerHTML = collabMarkup;
 
     const $userChips = document.getElementById('userChips');
     const $receivedMessages = document.getElementById('receivedMessages');
-    const $mediaWrapper = document.getElementById('mediaWrapper');
+    // const $mediaWrapper = document.getElementById('mediaWrapper');
 
-    document.formCreateRoom.addEventListener('submit', e => {
-      const $form = e.target;
-      const roomId = visualiveSession.createRoom();
-      $form.roomId.value = roomId;
-      e.preventDefault();
+    const $toggleMic = document.getElementById('toggleMic');
+    let micStarted = false;
+    $toggleMic.addEventListener('click', e => {
+      if(micStarted){
+        visualiveSession.stopCamera();
+        $toggleMic.classList.remove("AudioButton--on");
+        micStarted = false;
+      }
+      else{
+        visualiveSession.startCamera();
+        $toggleMic.classList.add("AudioButton--on");
+        micStarted = true;
+      }
     });
+
+    const $toggleCam = document.getElementById('toggleCam');
+    let cameraStarted = false;
+    $toggleCam.addEventListener('click', e => {
+      if(cameraStarted){
+        visualiveSession.stopCamera();
+        $toggleCam.classList.remove("CameraButton--on");
+        cameraStarted = false;
+      }
+      else{
+        visualiveSession.startCamera();
+        $toggleCam.classList.add("CameraButton--on");
+        cameraStarted = true;
+      }
+    });
+
+    // document.formCreateRoom.addEventListener('submit', e => {
+    //   const $form = e.target;
+    //   const roomId = visualiveSession.createRoom();
+    //   $form.roomId.value = roomId;
+    //   e.preventDefault();
+    // });
 
     document.formSendMessage.addEventListener('submit', e => {
       const $form = e.target;

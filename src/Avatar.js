@@ -30,7 +30,6 @@ export default class Avatar {
       this.__avatarImageMaterial = new Visualive.Material('user' + userData.id + 'AvatarImageMaterial', 'FlatSurfaceShader');
       this.__avatarImageMaterial.getParameter('BaseColor').setValue(this.__avatarColor);
       this.__avatarImageMaterial.getParameter('BaseColor').setImage(this.__avatarImage);
-      this.__avatarImageMaterial.addRef(this);
       this.__avatarImageGeomItem = new Visualive.GeomItem('avatarImage', new Visualive.Disc(0.5, 64), this.__avatarImageMaterial);
 
       this.__avatarImageXfo = new Visualive.Xfo();
@@ -44,17 +43,36 @@ export default class Avatar {
   }
 
   setRTCStream(rtcData) {
-    // if(rtcData.video) {
-    //   this.__videoItem = new Visualive.VideoStreamImage2D('webcamStream');
-    //   this.__videoItem.setVideoStream(rtcData.video);
-    //   this.__avatarImageMaterial.getParameter('BaseColor').setImage(this.__videoItem);
+    if(rtcData.video && !this.__videoItem) {
+      this.__videoItem = new Visualive.VideoStreamImage2D('webcamStream');
+      this.__videoItem.setVideoStream(rtcData.video);
 
-    //   rtcData.video.addEventListener("loadedmetadata", (e) => {
-    //       const aspect = rtcData.video.videoWidth / rtcData.video.videoHeight;
-    //       this.__avatarImageXfo.sc.x = this.__avatarImageXfo.sc.y * aspect;
-    //       this.__avatarImageGeomItem.setLocalXfo(this.__avatarImageXfo);
-    //     });
-    // }
+      this.__avatarCamMaterial = new Visualive.Material('user' + userData.id + 'AvatarImageMaterial', 'FlatSurfaceShader');
+      this.__avatarCamMaterial.getParameter('BaseColor').setValue(this.__avatarColor);
+      this.__avatarCamMaterial.getParameter('BaseColor').setImage(this.__videoItem);
+      this.__avatarCamGeomItem = new Visualive.GeomItem('avatarImage', this.__plane, this.__avatarCamMaterial);
+      this.__avatarCamGeomItem.addRef(this);
+
+      const sc = 0.02;
+      this.__avatarCamXfo = new Visualive.Xfo();
+      this.__avatarCamXfo.sc.set(16*sc, 9*sc, 1);
+      this.__avatarCamXfo.tr.set(0, 0, -0.1*sc);
+      this.__avatarCamGeomItem.setLocalXfo(this.__avatarCamXfo);
+
+      if(this.__currentViewMode == 'CameraAndPointer') {
+        if(this.__avatarImageGeomItem) {
+          this.__treeItem.getChild(0).removeChildByHandle(this.__avatarImageGeomItem);
+          geomItem.addChild(this.__avatarImageGeomItem, false);
+        }
+        this.__treeItem.getChild(0).addChild(this.__avatarCamGeomItem, false);
+      }
+
+      rtcData.video.addEventListener("loadedmetadata", (e) => {
+          const aspect = rtcData.video.videoWidth / rtcData.video.videoHeight;
+          this.__avatarCamXfo.sc.x = this.__avatarCamXfo.sc.y * aspect;
+          this.__avatarImageGeomItem.setLocalXfo(this.__avatarCamXfo);
+        });
+    }
 
     if(rtcData.audio) {
       if(this.__audioItem) {
@@ -132,7 +150,12 @@ export default class Avatar {
     this.__pointerItem.addRef(this)
     this.__pointerItem.setLocalXfo(this.pointerXfo);
 
-    if(this.__avatarImageGeomItem) {
+    // If the webcam stream is available, attach it
+    // else attach the avatar image. (which should always be available)
+    if(this.__avatarCamGeomItem) {
+      geomItem.addChild(this.__avatarCamGeomItem, false);
+    }
+    else if(this.__avatarImageGeomItem) {
       this.__avatarImageXfo.sc.set(9*sc, 9*sc, 1);
       this.__avatarImageXfo.tr.set(0, 0, -0.1*sc);
       this.__avatarImageGeomItem.setLocalXfo(this.__avatarImageXfo);
