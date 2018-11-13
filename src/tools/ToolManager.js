@@ -88,6 +88,7 @@ export default class ToolManager {
     this.mouseDownId = viewport.mouseDown.connect(this.onMouseDown.bind(this))
     this.mouseMovedId = viewport.mouseMoved.connect(this.onMouseMove.bind(this))
     this.mouseUpId = viewport.mouseUp.connect(this.onMouseUp.bind(this))
+    this.mouseLeaveId = viewport.mouseLeave.connect(this.onMouseLeave.bind(this))
     this.mouseWheelId = viewport.mouseWheel.connect(this.onWheel.bind(this))
 
     /////////////////////////////////////
@@ -151,13 +152,13 @@ export default class ToolManager {
       if (tool && tool.onMouseMove(event) == true)
         break;
     }
-    // if (event.showPointerOnAvatar == true) {
-    //   this.movePointer.emit(event);
-    //   this.avatarPointerVisible = true;
-    // } else if (this.avatarPointerVisible) {
-    //   this.avatarPointerVisible = false;
-    //   this.hidePointer.emit();
-    // }
+    if (event.showPointerOnAvatar == true) {
+      this.movePointer.emit(event);
+      this.avatarPointerVisible = true;
+    } else if (this.avatarPointerVisible) {
+      this.avatarPointerVisible = false;
+      this.hidePointer.emit();
+    }
   }
 
   onMouseUp(event) {
@@ -169,15 +170,28 @@ export default class ToolManager {
       if (tool && tool.onMouseUp(event) == true)
         break;
     }
-    // if (event.showPointerOnAvatar == true) {
-    //   if (this.avatarPointerHighlighted) {
-    //     this.unhilightPointer.emit(event);
-    //     this.avatarPointerHighlighted = false;
-    //   }
-    // } else if (this.avatarPointerVisible) {
-    //   this.avatarPointerVisible = false;
-    //   this.hidePointer.emit();
-    // }
+    if (event.showPointerOnAvatar == true) {
+      if (this.avatarPointerHighlighted) {
+        this.unhilightPointer.emit(event);
+        this.avatarPointerHighlighted = false;
+      }
+    } else if (this.avatarPointerVisible) {
+      this.avatarPointerVisible = false;
+      this.hidePointer.emit();
+    }
+  }
+
+  onMouseLeave(event) {
+    let i = this.__toolStack.length;
+    while (i--) {
+      const tool = this.__toolStack[i];
+      if (tool && tool.onMouseLeave && tool.onMouseLeave(event) == true)
+        break;
+    }
+    if (this.avatarPointerVisible) {
+      this.avatarPointerVisible = false;
+      this.hidePointer.emit();
+    }
   }
 
   onWheel(event) {
@@ -303,6 +317,7 @@ export default class ToolManager {
     viewport.mouseDown.disconnectId(this.mouseDownId)
     viewport.mouseMoved.disconnectId(this.mouseMovedId)
     viewport.mouseUp.disconnectId(this.mouseUpId)
+    viewport.mouseLeave.disconnectId(this.mouseUpId)
     viewport.mouseWheel.disconnectId(this.mouseWheelId)
 
     /////////////////////////////////////
