@@ -38,8 +38,6 @@ export default class Avatar {
 
       this.__avatarImageGeomItem.addRef(this);
     }
-
-    this.setCameraAndPointerRepresentation()
   }
 
   setRTCStream(rtcData) {
