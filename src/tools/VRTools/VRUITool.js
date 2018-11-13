@@ -99,6 +99,13 @@ export default class VRUITool extends BaseTool {
     if(this.pointerController) 
       this.pointerController.getTipItem().addChild(this.__uiPointerItem, false);
 
+
+    this.appData.visualiveSession.pub('pose-message', {
+      showUIPanel: {
+        controllerId: this.uiController.getId(),
+        xfo: this.__uiLocalXfo
+      }
+    });
   }
 
   deactivateTool() {
@@ -108,6 +115,12 @@ export default class VRUITool extends BaseTool {
       this.pointerController.getTipItem().removeAllChildren();
 
     this.__vrUIDOMHolderElement.style.display = "none";
+
+    this.appData.visualiveSession.pub('pose-message', {
+      hideUIPanel: {
+        controllerId: this.uiController.getId()
+      }
+    });
   }
 
   /////////////////////////////////////

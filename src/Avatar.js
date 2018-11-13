@@ -244,8 +244,7 @@ export default class Avatar {
           }
 
           if(!this.__currentUserAvatar) {
-            const sharedGeomItem = this.__viveAsset.getChildByName('HTC_Vive_HMD');
-            const hmdGeomItem = sharedGeomItem.clone();
+            const hmdGeomItem = this.__viveAsset.getChildByName('HTC_Vive_HMD').clone();
             const xfo = hmdGeomItem.getLocalXfo();
             xfo.tr.set(0, -0.03, -0.03);
             xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0, 1, 0), Math.PI);
@@ -280,8 +279,8 @@ export default class Avatar {
         this.__controllerTrees[i] = treeItem;
         this.__treeItem.addChild(this.__controllerTrees[i], false);
 
-        const setupControllerGeom = (sharedControllerTree)=>{
-          const controllerTree = sharedControllerTree.clone();
+        const setupControllerGeom = ()=>{
+          const controllerTree = this.__viveAsset.getChildByName('HTC_Vive_Controller').clone();
 
           const filter = ['TriggerMaterial', 'Touchpad Material', 'Metal']
           controllerTree.traverse((subTreeItem)=>{
@@ -301,12 +300,9 @@ export default class Avatar {
           controllerTree.setLocalXfo(xfo);
           treeItem.addChild(controllerTree, false);
         }
-
         this.__viveAsset.geomsLoaded.connect(() => {
-          const sharedControllerTree = this.__viveAsset.getChildByName('HTC_Vive_Controller');
-          setupControllerGeom(sharedControllerTree);
+          setupControllerGeom();
         });
-
       }
     }
 
@@ -326,15 +322,20 @@ export default class Avatar {
         uimat.getParameter('BaseColor').setValue(new Visualive.Color(0.3, 0.3, 0.3));
 
         const uiGeomItem = new Visualive.GeomItem('VRControllerUI', this.__plane, uimat);
+        const uiGeomOffsetXfo = new Visualive.Xfo();
+        uiGeomOffsetXfo.sc.set(0, 0, 1);
+        // Flip it over so we see the front.
+        uiGeomOffsetXfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0, 1, 0), Math.PI);
+        uiGeomItem.setGeomOffsetXfo(uiGeomOffsetXfo);
         uiGeomItem.setGeomOffsetXfo(data.showUIPanel.xfo);
-        this.__controllerTrees[data.uiPanel.controllerId].addChild(uiGeomItem, false);
+        this.__controllerTrees[data.showUIPanel.controllerId].addChild(uiGeomItem, false);
       } 
       else {
-        this.__controllerTrees[data.uiPanel.controllerId].getChild(1).setVisible(true);
+        this.__controllerTrees[data.showUIPanel.controllerId].getChild(1).setVisible(true);
       }
     }
     if (data.hideUIPanel) {
-      this.__controllerTrees[data.uiPanel.controllerId].getChild(1).setVisible(false);
+      this.__controllerTrees[data.hideUIPanel.controllerId].getChild(1).setVisible(false);
     }
   }
 
