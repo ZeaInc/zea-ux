@@ -276,6 +276,10 @@ export default class Avatar {
       }
       else {
         const treeItem = new Visualive.TreeItem("handleHolder" + i);
+        treeItem.addRef(this)
+        this.__controllerTrees[i] = treeItem;
+        this.__treeItem.addChild(this.__controllerTrees[i], false);
+
         const setupControllerGeom = (sharedControllerTree)=>{
           const controllerTree = sharedControllerTree.clone();
 
@@ -287,7 +291,7 @@ export default class Avatar {
             }
           })
           const xfo = new Visualive.Xfo(
-            new Visualive.Vec3(0, -0.035, 0.01), 
+            new Visualive.Vec3(0, -0.035, -0.02), 
             new Visualive.Quat({ 
               setFromAxisAndAngle: [
                 new Visualive.Vec3(0, 1, 0), 
@@ -299,13 +303,10 @@ export default class Avatar {
         }
 
         this.__viveAsset.geomsLoaded.connect(() => {
-          const sharedControllerTree = this.__viveAsset.getChildByName('HTC_Vive_Controller').clone();
+          const sharedControllerTree = this.__viveAsset.getChildByName('HTC_Vive_Controller');
           setupControllerGeom(sharedControllerTree);
         });
 
-        treeItem.addRef(this)
-        this.__controllerTrees[i] = treeItem;
-        this.__treeItem.addChild(this.__controllerTrees[i], false);
       }
     }
 
@@ -325,7 +326,7 @@ export default class Avatar {
         uimat.getParameter('BaseColor').setValue(new Visualive.Color(0.3, 0.3, 0.3));
 
         const uiGeomItem = new Visualive.GeomItem('VRControllerUI', this.__plane, uimat);
-        uiGeomItem.setGeomOffsetXfo(data.uiPanel.xfo);
+        uiGeomItem.setGeomOffsetXfo(data.showUIPanel.xfo);
         this.__controllerTrees[data.uiPanel.controllerId].addChild(uiGeomItem, false);
       } 
       else {
