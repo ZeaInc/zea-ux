@@ -333,9 +333,9 @@ export default class Avatar {
 
         const localXfo = new Visualive.Xfo();
         localXfo.fromJSON(data.showUIPanel.localXfo)
-        uiGeomItem.setLocalXfo(localXfo);
+        this.__uiGeomItem.setLocalXfo(localXfo);
       }
-      this.__controllerTrees[data.showUIPanel.controllerId].addChild(uiGeomItem, false);
+      this.__controllerTrees[data.showUIPanel.controllerId].addChild(this.__uiGeomItem, false);
     }
     if (data.updateUIPanel) {
       if(this.__uiGeomItem) {
@@ -344,7 +344,7 @@ export default class Avatar {
       }
     }
     if (data.hideUIPanel) {
-      if(this.__controllerTrees[data.showUIPanel.controllerId].numChildren() == 2)
+      if(this.__controllerTrees[data.hideUIPanel.controllerId].numChildren() == 2)
         this.__controllerTrees[data.hideUIPanel.controllerId].removeChild(1);
     }
   }
