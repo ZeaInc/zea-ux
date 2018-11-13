@@ -41,7 +41,6 @@ UndoRedoManager.registerChange('CreateRectChange', CreateRectChange)
 export default class CreateRectTool extends CreateGeomTool {
   constructor(appData) {
     super(appData);
-    console.log("Create Rect");
   }
 
   createStart(xfo, parentItem) {

@@ -91,11 +91,6 @@ class TopMenuBar {
     });
   }
 
-  _invokeCallback(callback, event) {
-    event.preventDefault();
-    callback();
-  }
-
   _addSpanTo(domElement, className, innerHTML) {
     const span = document.createElement('span');
     span.className = className;

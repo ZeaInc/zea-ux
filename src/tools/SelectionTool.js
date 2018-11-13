@@ -1,6 +1,6 @@
 import UndoRedoManager from '../undoredo/UndoRedoManager.js';
 import BaseTool from './BaseTool.js';
-import Gizmo from '../gizmos/Gizmo.js';
+import SceneWidget from '../sceneWidgets/SceneWidget.js';
 
 export default class SelectionTool extends BaseTool {
   constructor(appData) {
@@ -35,10 +35,10 @@ export default class SelectionTool extends BaseTool {
   }
 
 
-  onMouseDown(event, mousePos, viewport) {
+  onMouseDown(event) {
     if(event.button == 0) {
       console.log("onMouseDown")
-      this.mouseDownPos = mousePos;
+      this.mouseDownPos = event.mousePos;
       this.dragging = false;
       return true;
     }
@@ -57,11 +57,11 @@ export default class SelectionTool extends BaseTool {
     this.rectItem.setGlobalXfo(this.selectionRectXfo)
   }
 
-  onMouseMove(event, mousePos, viewport) {
+  onMouseMove(event) {
     if (this.mouseDownPos) {
-      const delta = this.mouseDownPos.subtract(mousePos);
+      const delta = this.mouseDownPos.subtract(event.mousePos);
       if(this.dragging) {
-        this.__resizeRect(viewport, delta);
+        this.__resizeRect(event.viewport, delta);
       }
       const dist = delta.length();
       // dragging only is activated after 4 pixels. 
@@ -70,35 +70,40 @@ export default class SelectionTool extends BaseTool {
         this.dragging = true;
         // Start drawing the selection rectangle on screen.
         this.rectItem.getParameter('Visible').setValue(true);
-        this.__resizeRect(viewport, delta);
+        this.__resizeRect(event.viewport, delta);
       }
 
     }
     return true;
   }
 
-  onMouseUp(event, mousePos, viewport) {
+  onMouseUp(event) {
 
     if (this.mouseDownPos) {
-      viewport.renderGeomDataFbo();
+      // event.viewport.renderGeomDataFbo();
       if (this.dragging) {
         this.rectItem.getParameter('Visible').setValue(false);
-        const mouseUpPos = mousePos;
+        const mouseUpPos = event.mousePos;
         const tl = new Visualive.Vec2(Math.min(this.mouseDownPos.x, mouseUpPos.x), Math.min(this.mouseDownPos.y, mouseUpPos.y))
         const br = new Visualive.Vec2(Math.max(this.mouseDownPos.x, mouseUpPos.x), Math.max(this.mouseDownPos.y, mouseUpPos.y))
-        const geomItems = viewport.getGeomItemsInRect(tl, br);
+        const geomItems = event.viewport.getGeomItemsInRect(tl, br);
+
+        console.log(geomItems)
+
+        // Remove all the scene widgets. (UI elements should not be selectable.)
+        const regularGeomItems = new Set([...geomItems].filter(x => !(x.getOwner() instanceof SceneWidget)));
 
         if (!event.shiftKey) {
-          this.appData.selectionManager.selectItems(geomItems, !event.ctrlKey);
+          this.appData.selectionManager.selectItems(regularGeomItems, !event.ctrlKey);
         } else {
-          this.appData.selectionManager.deselectItems(geomItems);
+          this.appData.selectionManager.deselectItems(regularGeomItems);
         }
         
         this.selectionRectXfo.sc.set(0,0,0)
         this.rectItem.setGlobalXfo(this.selectionRectXfo)
       } else {
-        const intersectionData = viewport.getGeomDataAtPos(mousePos);
-        if (intersectionData != undefined) {
+        const intersectionData = event.viewport.getGeomDataAtPos(event.mousePos);
+        if (intersectionData != undefined && !(intersectionData.geomItem.getOwner() instanceof SceneWidget)) {
           if (!event.shiftKey) {
             this.appData.selectionManager.toggleItemSelection(intersectionData.geomItem, !event.ctrlKey);
           } else {
@@ -123,7 +128,7 @@ export default class SelectionTool extends BaseTool {
   onVRControllerButtonDown(event) {
     if (event.button == 1) {
       const intersectionData = event.controller.getGeomItemAtTip();
-      if (intersectionData != undefined && !(intersectionData.geomItem instanceof Gizmo)) {
+      if (intersectionData != undefined && !(intersectionData.geomItem.getOwner() instanceof SceneWidget)) {
         this.appData.selectionManager.toggleItemSelection(intersectionData.geomItem);
         return true;
       }
@@ -139,7 +144,7 @@ export default class SelectionTool extends BaseTool {
   //     const controllerUpPos = event.controller.getTipXfo();
   //     if(this.controllerDownPos.distanceTo(controllerUpPos) < 0.1) {
   //       const intersectionData = event.controller.getGeomItemAtTip();
-  //       if (intersectionData != undefined && !(intersectionData.geomItem instanceof Gizmo)) {
+  //       if (intersectionData != undefined && !(intersectionData.geomItem instanceof SceneWidget)) {
   //         this.appData.selectionManager.toggleItemSelection(intersectionData.geomItem);
   //         return true;
   //       }

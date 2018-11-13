@@ -42,7 +42,7 @@ export default class ViewTool extends BaseTool {
         this.vrControllerToolTipMat.getParameter('BaseColor').setValue(new Visualive.Color("#03E3AC"));
       }
       const addIconToController = (controller) => {
-        const geomItem = new Visualive.GeomItem('GizmoToolTip', this.vrControllerToolTip, this.vrControllerToolTipMat);
+        const geomItem = new Visualive.GeomItem('SceneWidgetToolTip', this.vrControllerToolTip, this.vrControllerToolTipMat);
         controller.getTipItem().addChild(geomItem, false);
       }
       for(let controller of vrviewport.getControllers()) {
@@ -195,14 +195,14 @@ export default class ViewTool extends BaseTool {
     this.__mouseDownFocalDist = focalDistance;
   }
 
-  onMouseMove(event, mousePos, viewport) {
+  onMouseMove(event) {
 
   }
 
-  onDragStart(event, mouseDownPos, viewport) {
+  onDragStart(event) {
 
-    this.__mouseDownPos = mouseDownPos;
-    this.initDrag(viewport);
+    this.__mouseDownPos = event.mousePos;
+    this.initDrag(event.viewport);
 
     if (event.button == 2) {
       this.__mode = 'pan';
@@ -215,7 +215,7 @@ export default class ViewTool extends BaseTool {
     }
   }
 
-  onDrag(event, mousePos, viewport) {
+  onDrag(event) {
     // During requestPointerLock, the offsetX/Y values are not updated.
     // Instead we get a relative delta that we use to compute the total
     // delta for the drag.
@@ -228,65 +228,66 @@ export default class ViewTool extends BaseTool {
     //     this.__mouseDragDelta.y += event.movementY;
     // }
     if (this.__keyboardMovement) {
-      this.__mouseDragDelta = mousePos;
+      this.__mouseDragDelta = event.mousePos;
     } else {
-      this.__mouseDragDelta = mousePos.subtract(this.__mouseDownPos);
+      this.__mouseDragDelta = event.mousePos.subtract(this.__mouseDownPos);
     }
     switch (this.__mode) {
       case 'orbit':
-        this.orbit(this.__mouseDragDelta, viewport);
+        this.orbit(this.__mouseDragDelta, event.viewport);
         break;
       case 'look':
-        this.look(this.__mouseDragDelta, viewport);
+        this.look(this.__mouseDragDelta, event.viewport);
         break;
       case 'pan':
-        this.pan(this.__mouseDragDelta, viewport);
+        this.pan(this.__mouseDragDelta, event.viewport);
         break;
       case 'dolly':
-        this.dolly(this.__mouseDragDelta, viewport);
+        this.dolly(this.__mouseDragDelta, event.viewport);
         break;
     }
   }
 
-  onDragEnd(event, mouseUpPos, viewport) {
-    viewport.renderGeomDataFbo();
+  onDragEnd(event) {
+    // event.viewport.renderGeomDataFbo();
     this.movementFinished.emit();
     return false;
   }
 
 
-  onMouseDown(event, mousePos, viewport) {
+  onMouseDown(event) {
     this.dragging = true;
-    this.__mouseDownPos = mousePos;
-    this.onDragStart(event, mousePos, viewport)
+    this.__mouseDownPos = event.mousePos;
+    this.onDragStart(event)
     return true;
   }
 
-  onMouseUp(event, mousePos, viewport) {
-      if (this.dragging) {
-          this.onDragEnd(event, mousePos, viewport);
-          this.dragging = false;
-          return true;
-      }
+  onMouseUp(event) {
+    if (this.dragging) {
+      this.onDragEnd(event);
+      this.dragging = false;
+      return true;
+    }
   }
 
-  onMouseMove(event, mousePos, viewport) {
-      if (this.dragging) {
-          this.onDrag(event, mousePos, viewport);
-          return true; 
-      }
+  onMouseMove(event) {
+    if (this.dragging) {
+      this.onDrag(event);
+      event.showPointerOnAvatar = false;
+      return true;
+    }
   }
 
-  onWheel(event, viewport) {
-    const focalDistance = viewport.getCamera().getFocalDistance();
+  onWheel(event) {
+    const focalDistance = event.viewport.getCamera().getFocalDistance();
     const mouseWheelDollySpeed = this.__mouseWheelDollySpeedParam.getValue();
     const zoomDist = event.deltaY * mouseWheelDollySpeed * focalDistance;
-    const xfo = viewport.getCamera().getGlobalXfo();
+    const xfo = event.viewport.getCamera().getGlobalXfo();
     xfo.tr.addInPlace(xfo.ori.getZaxis().scale(zoomDist));
     if (this.__defaultMode == 'orbit')
-      viewport.getCamera().setFocalDistance( focalDistance + zoomDist);
-    viewport.getCamera().setGlobalXfo(xfo);
-    viewport.renderGeomDataFbo();
+      event.viewport.getCamera().setFocalDistance( focalDistance + zoomDist);
+    event.viewport.getCamera().setGlobalXfo(xfo);
+    event.viewport.renderGeomDataFbo();
     this.movementFinished.emit();
   }
 
@@ -296,7 +297,7 @@ export default class ViewTool extends BaseTool {
     viewport.getCamera().setGlobalXfo(viewport.getCamera().getGlobalXfo().multiply(delta));
   }
 
-  onKeyPressed(key, event, viewport) {
+  onKeyPressed(key, event) {
     // Note: onKeyPressed is called intiallly only once, and then we 
     // get a series of calls. Here we ignore subsequent events.
     // (TODO: move this logic to a special controller)
@@ -339,9 +340,9 @@ export default class ViewTool extends BaseTool {
     return false;// no keys handled
   }
 
-  onKeyDown(key, event, viewport) {}
+  onKeyDown(key, event) {}
 
-  onKeyUp(key, event, viewport) {
+  onKeyUp(key, event) {
     // (TODO: move this logic to a special controller)
     /*
     switch (key) {
@@ -384,7 +385,7 @@ export default class ViewTool extends BaseTool {
   }
 
 
-  onTouchStart(event, viewport) {
+  onTouchStart(event) {
     // console.log("onTouchStart");
     event.preventDefault();
     event.stopPropagation();
@@ -400,7 +401,7 @@ export default class ViewTool extends BaseTool {
     return true;
   }
 
-  onTouchMove(event, viewport) {
+  onTouchMove(event) {
     event.preventDefault();
     event.stopPropagation();
     // console.log("this.__manipMode:" + this.__manipMode);
@@ -442,7 +443,7 @@ export default class ViewTool extends BaseTool {
     }
   }
 
-  onTouchEnd(event, viewport) {
+  onTouchEnd(event) {
     event.preventDefault();
     event.stopPropagation();
     let touches = event.changedTouches;
@@ -459,7 +460,7 @@ export default class ViewTool extends BaseTool {
     return true;
   }
 
-  onTouchCancel(event, viewport) {
+  onTouchCancel(event) {
     event.preventDefault();
     console.log("touchcancel.");
     let touches = event.changedTouches;
@@ -493,24 +494,24 @@ export default class ViewTool extends BaseTool {
     }
   }
 
-  onVRControllerButtonDown(event, vrviewport) {
+  onVRControllerButtonDown(event) {
     if(event.button != 1)
       return;
     this.__controllerTriggersHeld.push(event.controller);
-    this.__initMoveStage(vrviewport);
+    this.__initMoveStage(event.vrviewport);
     return true;
   }
 
-  onVRControllerButtonUp(event, vrviewport) {
+  onVRControllerButtonUp(event) {
     if(event.button != 1)
       return;
     const index = this.__controllerTriggersHeld.indexOf(event.controller);
     this.__controllerTriggersHeld.splice(index, 1);
-    this.__initMoveStage(vrviewport);
+    this.__initMoveStage(event.vrviewport);
     return true;
   }
 
-  onVRPoseChanged(event, vrviewport) {
+  onVRPoseChanged(event) {
 
     if(this.__controllerTriggersHeld.length == 1) {
       const grabPos = this.__controllerTriggersHeld[0].getControllerStageLocalXfo().tr;
@@ -521,7 +522,7 @@ export default class ViewTool extends BaseTool {
       ////////////////
       // Update the stage Xfo
       const stageXfo = this.stageXfo__GrabStart.multiply(deltaXfo);
-      vrviewport.setXfo(stageXfo);
+      event.vrviewport.setXfo(stageXfo);
       return true;
     }
     else if(this.__controllerTriggersHeld.length == 2) {
@@ -576,7 +577,7 @@ export default class ViewTool extends BaseTool {
       ////////////////
       // Update the stage Xfo
       const stageXfo = this.stageXfo__GrabStart.multiply(deltaXfo);
-      vrviewport.setXfo(stageXfo);
+      event.vrviewport.setXfo(stageXfo);
 
       return true;
     }

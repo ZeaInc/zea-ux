@@ -1,6 +1,6 @@
-import Gizmo  from './Gizmo.js';
+import SceneWidget  from './SceneWidget.js';
 
-export default class LinearMovementGizmo extends Gizmo {
+export default class LinearMovementSceneWidget extends SceneWidget {
   constructor(name) {
     super(name)
 
@@ -9,26 +9,21 @@ export default class LinearMovementGizmo extends Gizmo {
   /////////////////////////////////////
   // Mouse events
 
-  handleMouseDown(event, mousePos, viewport) {
+  handleMouseDown(event) {
     this.gizmoRay = this.getManipulationRay();
-    const mouseRay = viewport.calcRayFromScreenPos(mousePos);
-    this.grabDist = mouseRay.intersectRayVector(this.gizmoRay)[1];
+    this.grabDist = event.mouseRay.intersectRayVector(this.gizmoRay)[1];
     const grabPos = this.gizmoRay.start.add(this.gizmoRay.dir.scale(this.grabDist));
-    this.onDragStart({});
+    this.onDragStart({ undoRedoManager: event.undoRedoManager });
     return true;
   }
 
-  handleMouseMove(event, mousePos, viewport) {
-    const mouseRay = viewport.calcRayFromScreenPos(mousePos);
-    const dist = mouseRay.intersectRayVector(this.gizmoRay)[1];
+  handleMouseMove(event) {
+    const dist = event.mouseRay.intersectRayVector(this.gizmoRay)[1];
     const dragPos = this.gizmoRay.start.add(this.gizmoRay.dir.scale(dist));
     this.onDrag({ value: dist, delta: (dist-this.grabDist)  });
   }
 
-  handleMouseUp(event, mousePos, viewport) {
-    // const mouseRay = viewport.calcRayFromScreenPos(mousePos);
-    // const dist = mouseRay.intersectRayVector(this.gizmoRay)[0];
-    // const releasePos = mouseRay.dir.scale(dist);
+  handleMouseUp(event) {
     this.onDragEnd({});
     return true;
   }
@@ -39,13 +34,11 @@ export default class LinearMovementGizmo extends Gizmo {
 
   onVRControllerButtonDown(event) {
     this.gizmoRay = this.getManipulationRay();
-    // const grabDist = event.controllerRay.intersectRayVector(gizmoRay)[1];
-    // const grabPos = this.gizmoRay.start.add(this.gizmoRay.dir.scale(this.grabDist));
     
     this.activeController = event.controller;
     const xfo = this.activeController.getTipXfo();
     this.grabDist = xfo.tr.subtract(this.gizmoRay.start).dot(this.gizmoRay.dir);
-    this.onDragStart();
+    this.onDragStart({ undoRedoManager: event.undoRedoManager });
     return true;
   }
 

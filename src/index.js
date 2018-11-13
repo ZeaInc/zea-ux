@@ -13,6 +13,7 @@ import SceneTreeView from './ui/scene-tree-view.js';
 import TreeItemInspector from './ui/TreeItemInspector.js';
 import ParameterContainer from './ui/ParameterContainer.js';
 import InspectorContainer from './ui/InspectorContainer.js';
+import ActionTreeView from './ui/action-tree-view.js';
 
 import { UserChip } from './ui/UserChip.js';
 
@@ -32,6 +33,7 @@ import ToolManager from './tools/ToolManager.js';
 import ViewTool from './tools/ViewTool.js';
 import SelectionTool from './tools/SelectionTool.js';
 import OpenVRUITool from './tools/VRTools/OpenVRUITool.js';
+import VRUITool from './tools/VRTools/VRUITool.js';
 import VRHoldObjectsTool from './tools/VRTools/VRHoldObjectsTool.js';
 
 // Create Geom Tools
@@ -44,11 +46,12 @@ import CreateSphereTool from './tools/CreateTools/CreateSphereTool.js';
 import CreateCuboidTool from './tools/CreateTools/CreateCuboidTool.js';
 
 //////////////////////////////////////
-// Gizmos
-import GizmoTool from './tools/GizmoTool.js';
-import LinearMovementGizmo from './gizmos/LinearMovementGizmo.js';
-import PlanarMovementGizmo from './gizmos/PlanarMovementGizmo.js';
-import AxialRotationGizmo from './gizmos/AxialRotationGizmo.js';
+// SceneWidgets
+import SceneWidgetTool from './tools/SceneWidgetTool.js';
+import LinearMovementSceneWidget from './sceneWidgets/LinearMovementSceneWidget.js';
+import PlanarMovementSceneWidget from './sceneWidgets/PlanarMovementSceneWidget.js';
+import AxialRotationSceneWidget from './sceneWidgets/AxialRotationSceneWidget.js';
+import SliderSceneWidget from './sceneWidgets/SliderSceneWidget.js';
 
 export {
   UndoRedoManager,
@@ -67,6 +70,7 @@ export {
   ParameterContainer,
   InspectorContainer,
   UserChip,
+  ActionTreeView,
 
   // Parameter Widgets
   BooleanWidget,
@@ -84,6 +88,7 @@ export {
 
   // VR Tools
   OpenVRUITool,
+  VRUITool,
   VRHoldObjectsTool,
 
   // Create Geom Tools
@@ -95,9 +100,10 @@ export {
   CreateSphereTool,
   CreateCuboidTool,
 
-  // Gizmos
-  GizmoTool,
-  LinearMovementGizmo,
-  PlanarMovementGizmo,
-  AxialRotationGizmo,
+  // SceneWidgets
+  SceneWidgetTool,
+  LinearMovementSceneWidget,
+  PlanarMovementSceneWidget,
+  AxialRotationSceneWidget,
+  SliderSceneWidget
 };

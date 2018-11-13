@@ -31,7 +31,7 @@ const convertValuesToJSON = (value) => {
 const convertValuesFromJSON = (value, scene) => {
   if (value == undefined) {
     return undefined;
-  } else if(typeof value === 'string' && value.startsWith('::') ) {
+  } else if (typeof value === 'string' && value.startsWith('::')) {
     return scene.getRoot().resolvePath(value, 1);
   } else if (value.typeName) {
     const newval = Visualive.typeRegistry.getType(value.typeName).create();
@@ -52,20 +52,25 @@ const convertValuesFromJSON = (value, scene) => {
   }
 }
 export default class SessionSync {
-  constructor(visualiveSession, appData, userId) {
+  constructor(visualiveSession, appData, currentUser) {
+
+    const currentUserAvatar = new Avatar(appData, currentUser, true);
 
     const userDatas = {};
 
-    const setupUser = (userData) => {
+    visualiveSession.sub(VisualiveSession.actions.USER_JOINED, userData => {
       if (!(userData.id in userDatas)) {
         userDatas[userData.id] = {
           undoRedoManager: new UndoRedoManager(),
           avatar: new Avatar(appData, userData)
         }
       }
-    }
-
-    visualiveSession.sub(VisualiveSession.actions.USER_JOINED, setupUser)
+    })
+    visualiveSession.sub(VisualiveSession.actions.USER_RTC_CONNECTED, (rtcData, userId) => {
+      if (userId in userDatas) {
+        userDatas[userId].avatar.setRTCStream(rtcData)
+      }
+    })
     visualiveSession.sub(VisualiveSession.actions.USER_LEFT, userData => {
       if (!userDatas[userData.id]) {
         console.warn("User id not in session:", userData.id);
@@ -77,51 +82,87 @@ export default class SessionSync {
 
     /////////////////////////////////////////////
     // Pose Changes
-
-    // const ourAvatar = new Avatar(appData, { userId });
+    appData.toolManager.movePointer.connect((event) => {
+      const intersectionData = event.viewport.getGeomDataAtPos(event.mousePos, event.mouseRay);
+      const rayLength = intersectionData ? intersectionData.dist : 5.0;
+      const data = {
+        interfaceType: 'CameraAndPointer',
+        movePointer: {
+          start: event.mouseRay.start,
+          dir: event.mouseRay.dir,
+          length: rayLength
+        }
+      }
+      visualiveSession.pub(VisualiveSession.actions.POSE_CHANGED, convertValuesToJSON(data));
+    });
+    appData.toolManager.hidePointer.connect((event) => {
+      const data = {
+        interfaceType: 'CameraAndPointer',
+        hidePointer: {}
+      }
+      visualiveSession.pub(VisualiveSession.actions.POSE_CHANGED, data);
+    });
+    appData.toolManager.hilightPointer.connect((event) => {
+      const data = {
+        interfaceType: 'CameraAndPointer',
+        hilightPointer: {}
+      };
+      visualiveSession.pub(VisualiveSession.actions.POSE_CHANGED, data);
+    });
+    appData.toolManager.unhilightPointer.connect((event) => {
+      const data = {
+        interfaceType: 'CameraAndPointer',
+        unhilightPointer: {}
+      }
+      visualiveSession.pub(VisualiveSession.actions.POSE_CHANGED, convertValuesToJSON(data));
+    });
 
     let tick = 0;
 
-    appData.renderer.viewChanged.connect((data) => {
+    appData.renderer.viewChanged.connect((event) => {
 
-      tick++;
-
-      const controllers = data.controllers;
-      if(controllers){
-        // only push every second pose of a vr stream. 
-        if(tick % 2 != 0)
-          return;
-        delete data.controllers;
-      }
-
-      const j = convertValuesToJSON(data);
-
-      if(controllers){
+      const tmp = Object.assign({}, event);
+      if (tmp.controllers) {
         const controllerXfos = [];
-        for (let controller of controllers) {
+        for (let controller of tmp.controllers) {
           controllerXfos.push({
-              xfo: convertValuesToJSON(controller.getTreeItem().getGlobalXfo())
+            xfo: controller.getTreeItem().getGlobalXfo()
           });
         }
-        j.controllers = controllerXfos;
+        tmp.controllers = controllerXfos;
       }
 
-      visualiveSession.pub(VisualiveSession.actions.POSE_CHANGED, j);
+      currentUserAvatar.updatePose(tmp);
 
-      // const otherData = convertValuesFromJSON(j, appData.scene);
-      // otherAvatar.updatePose(otherData);
+      tick++;
+      if (tmp.controllers) {
+        // only push every second pose of a vr stream. 
+        if (tick % 2 != 0)
+          return;
+      }
+      if (tmp.vrviewport)
+        delete tmp.vrviewport;
+      if (tmp.viewport)
+        delete tmp.viewport;
+
+      visualiveSession.pub(VisualiveSession.actions.POSE_CHANGED, convertValuesToJSON(tmp));
     });
 
-    visualiveSession.sub(VisualiveSession.actions.POSE_CHANGED, (j, userId) => {
+    visualiveSession.sub(VisualiveSession.actions.POSE_CHANGED, (jsonData, userId) => {
       if (!userDatas[userId]) {
         console.warn("User id not in session:", userId);
         return;
       }
-      const data = convertValuesFromJSON(j, appData.scene);
+      const data = convertValuesFromJSON(jsonData, appData.scene);
       const avatar = userDatas[userId].avatar;
       avatar.updatePose(data);
-    })
+    });
 
+    // Emit a signal to configure remote avatars to the current camera transform.
+    visualiveSession.pub(VisualiveSession.actions.POSE_CHANGED, convertValuesToJSON({
+        interfaceType: 'CameraAndPointer',
+        viewXfo: appData.renderer.getViewport().getCamera().getGlobalXfo()
+    }));
 
     /////////////////////////////////////////////
     // Scene Changes
@@ -168,6 +209,47 @@ export default class SessionSync {
       const undoRedoManager = userDatas[userId].undoRedoManager;
       const changeData = convertValuesFromJSON(data, appData.scene);
       undoRedoManager.getCurrentChange().update(changeData);
+    })
+
+    /////////////////////////////////////////////
+    // Undostack Changes.
+    // Synchronize undo stacks between users.
+
+    appData.undoRedoManager.changeUndone.connect(() => {
+      visualiveSession.pub("UndoRedoManager_changeUndone", {})
+    })
+
+    visualiveSession.sub("UndoRedoManager_changeUndone", (data, userId) => {
+      const undoRedoManager = userDatas[userId].undoRedoManager;
+      undoRedoManager.undo();
+    })
+
+    appData.undoRedoManager.changeRedone.connect(() => {
+      visualiveSession.pub("UndoRedoManager_changeRedone", {})
+    })
+
+    visualiveSession.sub("UndoRedoManager_changeRedone", (data, userId) => {
+      const undoRedoManager = userDatas[userId].undoRedoManager;
+      undoRedoManager.redo();
+    })
+
+    /////////////////////////////////////////////
+    // State Machine Changes.
+    // Synchronize State Machine changes between users.
+
+    Visualive.sgFactory.registerCallback('StateMachine', (stateMachine) => {
+      stateMachine.stateChanged.connect(name => {
+
+        visualiveSession.pub("StateMachine_stateChanged", {
+          stateMachine: stateMachine.getPath(),
+          stateName: name
+        })
+      })
+    })
+
+    visualiveSession.sub("StateMachine_stateChanged", (data, userId) => {
+      const stateMachine = appData.scene.getRoot().resolvePath(data.stateMachine, 1);
+      stateMachine.activateState(data.stateName)
     })
 
   }

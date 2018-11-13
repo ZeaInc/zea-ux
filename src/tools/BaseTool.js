@@ -16,12 +16,18 @@ export default class BaseTool extends Visualive.ParameterOwner {
   /////////////////////////////////////
   // Tools on the tool stack.
 
-  installed(index) {
+  installed() {
+    return this.__installed;
+  }
+
+  install(index) {
+    if(this.__installed)
+      throw("Tool already installed")
     this.index = index;
     this.__installed = true;
   }
 
-  uninstalled() {
+  uninstall() {
     this.__installed = false;
   }
 
@@ -38,38 +44,38 @@ export default class BaseTool extends Visualive.ParameterOwner {
   /////////////////////////////////////
   // Mouse events
 
-  onMouseDown(event, mousePos, viewport) {}
+  onMouseDown(event) {}
 
-  onMouseMove(event, mousePos, viewport) {}
+  onMouseMove(event) {}
 
-  onMouseUp(event, mousePos, viewport) {}
+  onMouseUp(event) {}
 
-  onWheel(event, viewport) {}
+  onWheel(event) {}
 
   /////////////////////////////////////
   // Keyboard events
-  onKeyPressed(key, event, viewport) {}
+  onKeyPressed(key, event) {}
 
-  onKeyDown(key, event, viewport) {}
+  onKeyDown(key, event) {}
 
-  onKeyUp(key, event, viewport) {}
+  onKeyUp(key, event) {}
 
   /////////////////////////////////////
   // Touch events
-  onTouchStart(event, viewport) {}
+  onTouchStart(event) {}
 
-  onTouchMove(event, viewport) {}
+  onTouchMove(event) {}
 
-  onTouchEnd(event, viewport) {}
+  onTouchEnd(event) {}
 
-  onTouchCancel(event, viewport) {}
+  onTouchCancel(event) {}
 
   /////////////////////////////////////
   // VRController events
-  onVRControllerButtonDown(event, viewport) {}
+  onVRControllerButtonDown(event) {}
 
-  onVRControllerButtonUp(event, viewport) {}
+  onVRControllerButtonUp(event) {}
 
-  onVRPoseChanged(event, viewport) {}
+  onVRPoseChanged(event) {}
 
 };
