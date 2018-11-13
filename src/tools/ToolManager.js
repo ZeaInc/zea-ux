@@ -23,6 +23,10 @@ export default class ToolManager {
     return index;
   }
 
+  getToolIndex(tool) {
+    return this.__toolStack.indexOf(tool);
+  }
+
   removeTool(index) {
     const tool = this.__toolStack[index]
     this.__toolStack.splice(index, 1);
