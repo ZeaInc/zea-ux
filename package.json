@@ -30,7 +30,7 @@
   "dependencies": {
     "@jaames/iro": "^3.5.3",
     "@visualive/collab": "^0.0.12",
-    "@visualive/engine": "^0.0.29",
+    "@visualive/engine": "^0.0.30",
     "dom-to-image": "^2.6.0"
   }
 }
