@@ -23,19 +23,19 @@
   resolved "https://registry.yarnpkg.com/@jaames/iro/-/iro-3.5.3.tgz#76d4e20981a99568051786102f53df57afb0a869"
   integrity sha512-cQqgNbvErgiaQIGVKwv6o3H0T8j0bXg+YXFO5YTiZhOEGTbvhLYRvnrGQLSHWh45jT6OP3K8iE0p9oXoH4NjGA==
 
-"@visualive/collab@^0.0.12":
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/@visualive/collab/-/collab-0.0.12.tgz#ac19260050607527e23d465f36063906ae628716"
-  integrity sha512-JvsaHH9JzNHrB0AARz+rUUJ8QbAdbS90fdxf9Ym9GdxfeADvZ70qljZ2K6qMlkBKIf+cuhNFD+I80hr5K/Z4jw==
+"@visualive/collab@^0.0.13":
+  version "0.0.13"
+  resolved "https://registry.yarnpkg.com/@visualive/collab/-/collab-0.0.13.tgz#53bbcc0e50aa3d582f97807adb189a7890cf47d7"
+  integrity sha512-jcB0uuzUVLa7qGede7Tr+dk51zYzQWDXzH4MhSdsXaZc3RL3K1YVK/Z/BIGumiQhya2Xo3KIImy4m+FiTWrkog==
   dependencies:
     shortid "^2.2.13"
     socket.io-client "^2.1.1"
     socketio-wildcard "^2.0.0"
 
-"@visualive/engine@^0.0.30":
-  version "0.0.30"
-  resolved "https://registry.yarnpkg.com/@visualive/engine/-/engine-0.0.30.tgz#913d450c85768cabd667dc1a15abcfd21e0f1cc1"
-  integrity sha512-cUW377xbDZCdsDhk1X6t2rs/6aVXMXL0QGv6gPQvzp+Rzcpc63gIijcM4gxTOmMQgVRKlg3T5fuVM7wDBSnwWw==
+"@visualive/engine@^0.0.31":
+  version "0.0.31"
+  resolved "https://registry.yarnpkg.com/@visualive/engine/-/engine-0.0.31.tgz#5e23125a6cbc0d09f7ba1fc014bc3bafd315c0f8"
+  integrity sha512-MQDUiJAy30nNbMrqhTT7GXdiCgtqDHP2XZbRr8J5jY0gLeVVidM19PhcrRDJ4JAXOLbEi+GzOrOsEeIMm/zRog==
 
 "@webassemblyjs/ast@1.7.11":
   version "1.7.11"

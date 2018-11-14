@@ -121,31 +121,29 @@ export default class SessionSync {
 
     appData.renderer.viewChanged.connect((event) => {
 
-      const tmp = Object.assign({}, event);
-      if (tmp.controllers) {
-        const controllerXfos = [];
-        for (let controller of tmp.controllers) {
-          controllerXfos.push({
+      const data = {
+        interfaceType: event.interfaceType,
+        viewXfo: event.viewXfo
+      };
+      if (event.controllers) {
+        data.controllers = [];
+        for (let controller of event.controllers) {
+          data.controllers.push({
             xfo: controller.getTreeItem().getGlobalXfo()
           });
         }
-        tmp.controllers = controllerXfos;
       }
 
-      currentUserAvatar.updatePose(tmp);
+      currentUserAvatar.updatePose(data);
 
       tick++;
-      if (tmp.controllers) {
+      if (data.controllers) {
         // only push every second pose of a vr stream. 
         if (tick % 2 != 0)
           return;
       }
-      if (tmp.vrviewport)
-        delete tmp.vrviewport;
-      if (tmp.viewport)
-        delete tmp.viewport;
 
-      visualiveSession.pub(VisualiveSession.actions.POSE_CHANGED, convertValuesToJSON(tmp));
+      visualiveSession.pub(VisualiveSession.actions.POSE_CHANGED, convertValuesToJSON(data));
     });
 
     visualiveSession.sub(VisualiveSession.actions.POSE_CHANGED, (jsonData, userId) => {
