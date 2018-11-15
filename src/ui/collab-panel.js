@@ -19,7 +19,7 @@ export default class CollabPanel {
       </form>
 
       <div class="btn-group">
-        <button class="pure-button AudioButton" disabled id="toggleMic">
+        <button class="pure-button AudioButton" id="toggleMic">
           <i class="material-icons">mic</i>
         </button>
 
@@ -27,7 +27,7 @@ export default class CollabPanel {
           <i class="material-icons">videocam</i>
         </button>
       </div>
-<!--
+      <!--
       <form class="pure-form pure-form-aligned" name="formCreateRoom">
         <legend>Create Room</legend>
         <fieldset>
@@ -72,14 +72,13 @@ export default class CollabPanel {
     const $toggleMic = document.getElementById('toggleMic');
     let micStarted = false;
     $toggleMic.addEventListener('click', e => {
-      if(micStarted){
-        visualiveSession.stopCamera();
-        $toggleMic.classList.remove("AudioButton--on");
+      if (micStarted) {
+        visualiveSession.muteAudio();
+        $toggleMic.classList.remove('AudioButton--on');
         micStarted = false;
-      }
-      else{
-        visualiveSession.startCamera();
-        $toggleMic.classList.add("AudioButton--on");
+      } else {
+        visualiveSession.unmuteAudio();
+        $toggleMic.classList.add('AudioButton--on');
         micStarted = true;
       }
     });
@@ -87,14 +86,13 @@ export default class CollabPanel {
     const $toggleCam = document.getElementById('toggleCam');
     let cameraStarted = false;
     $toggleCam.addEventListener('click', e => {
-      if(cameraStarted){
+      if (cameraStarted) {
         visualiveSession.stopCamera();
-        $toggleCam.classList.remove("CameraButton--on");
+        $toggleCam.classList.remove('CameraButton--on');
         cameraStarted = false;
-      }
-      else{
+      } else {
         visualiveSession.startCamera();
-        $toggleCam.classList.add("CameraButton--on");
+        $toggleCam.classList.add('CameraButton--on');
         cameraStarted = true;
       }
     });
@@ -149,9 +147,12 @@ export default class CollabPanel {
       $userChips.removeChild(userChipsElements[userData.id]);
     };
 
-    visualiveSession.sub(VisualiveSession.actions.USER_JOINED, (userData, userId) => {
-      addUserChip(userData);
-    });
+    visualiveSession.sub(
+      VisualiveSession.actions.USER_JOINED,
+      (userData, userId) => {
+        addUserChip(userData);
+      }
+    );
 
     visualiveSession.sub(
       VisualiveSession.actions.USER_LEFT,
@@ -160,15 +161,11 @@ export default class CollabPanel {
       }
     );
 
-    visualiveSession.sub(
-      VisualiveSession.actions.LEFT_ROOM,
-      () => {
-        const users = visualiveSession.getUsers();
-        for(let id in users)
-          removeUserChip(users[id]);
-        $receivedMessages.innerHTML = '';
-      }
-    );
+    visualiveSession.sub(VisualiveSession.actions.LEFT_ROOM, () => {
+      const users = visualiveSession.getUsers();
+      for (let id in users) removeUserChip(users[id]);
+      $receivedMessages.innerHTML = '';
+    });
 
     const users = visualiveSession.getUsers();
     for (let id in users) {
