@@ -45,7 +45,7 @@ export default class Avatar {
       this.__videoItem = new Visualive.VideoStreamImage2D('webcamStream');
       this.__videoItem.setVideoStream(rtcData.video);
 
-      this.__avatarCamMaterial = new Visualive.Material('user' + userData.id + 'AvatarImageMaterial', 'FlatSurfaceShader');
+      this.__avatarCamMaterial = new Visualive.Material('user' + this.__userData.id + 'AvatarImageMaterial', 'FlatSurfaceShader');
       this.__avatarCamMaterial.getParameter('BaseColor').setValue(this.__avatarColor);
       this.__avatarCamMaterial.getParameter('BaseColor').setImage(this.__videoItem);
       this.__avatarCamGeomItem = new Visualive.GeomItem('avatarImage', this.__plane, this.__avatarCamMaterial);
@@ -58,10 +58,7 @@ export default class Avatar {
       this.__avatarCamGeomItem.setLocalXfo(this.__avatarCamXfo);
 
       if(this.__currentViewMode == 'CameraAndPointer') {
-        if(this.__avatarImageGeomItem) {
-          this.__treeItem.getChild(0).removeChildByHandle(this.__avatarImageGeomItem);
-          geomItem.addChild(this.__avatarImageGeomItem, false);
-        }
+        this.__treeItem.getChild(0).removeAllChildren();
         this.__treeItem.getChild(0).addChild(this.__avatarCamGeomItem, false);
       }
 

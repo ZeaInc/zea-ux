@@ -11,7 +11,7 @@ const convertValuesToJSON = (value) => {
     return '::' + value.getPath();
   } else if (value.toJSON) {
     const result = value.toJSON();
-    result.typeName = Visualive.typeRegistry.getTypeName(value);
+    result.typeName = Visualive.typeRegistry.getTypeName(value.constructor);
     return result;
   } else if (Array.isArray(value)) {
     const arr = [];
