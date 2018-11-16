@@ -82,7 +82,10 @@ export default class SessionSync {
         console.warn("User id not in session:", userId);
         return;
       }
-      userDatas[userId].avatar.attachRTCStream(visualiveSession.getVideoStream(userId))
+      const video = visualiveSession.getVideoStream(userId);
+      if(video)
+        userDatas[userId].avatar.attachRTCStream(video);
+      
     })
 
     visualiveSession.sub(VisualiveSession.actions.USER_VIDEO_STOPPED, (data, userId)  => {
