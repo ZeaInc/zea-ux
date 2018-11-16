@@ -66,11 +66,6 @@ export default class SessionSync {
         }
       }
     })
-    visualiveSession.sub(VisualiveSession.actions.USER_RTC_CONNECTED, (rtcData, userId) => {
-      if (userId in userDatas) {
-        userDatas[userId].avatar.setRTCStream(rtcData)
-      }
-    })
     visualiveSession.sub(VisualiveSession.actions.USER_LEFT, userData => {
       if (!userDatas[userData.id]) {
         console.warn("User id not in session:", userData.id);
@@ -78,6 +73,26 @@ export default class SessionSync {
       }
       userDatas[userData.id].avatar.destroy();
       delete userDatas[userData.id];
+    })
+
+    /////////////////////////////////////////////
+    // Video Streams
+    visualiveSession.sub(VisualiveSession.actions.USER_VIDEO_STARTED, (data, userId)  => {
+      if (!userDatas[userId]) {
+        console.warn("User id not in session:", userId);
+        return;
+      }
+      userDatas[userId].avatar.attachRTCStream(visualiveSession.getVideoStream(userId))
+    })
+
+    visualiveSession.sub(VisualiveSession.actions.USER_VIDEO_STOPPED, (data, userId)  => {
+      if (!userDatas[userId]) {
+        console.warn("User id not in session:", userId);
+        return;
+      }
+      console.log("USER_VIDEO_STOPPED:", userId, " us:", currentUser.id)
+      if(userDatas[userId].avatar)
+        userDatas[userId].avatar.detachRTCStream(visualiveSession.getVideoStream(userId))
     })
 
     /////////////////////////////////////////////
