@@ -1,6 +1,6 @@
 {
   "name": "@visualive/ux",
-  "version": "0.0.37",
+  "version": "0.0.38",
   "description": "",
   "keywords": [],
   "main": "./dist/visualive-ux.js",
@@ -29,8 +29,8 @@
   },
   "dependencies": {
     "@jaames/iro": "^3.5.3",
-    "@visualive/collab": "^0.0.13",
-    "@visualive/engine": "^0.0.32",
+    "@visualive/collab": "^0.0.14",
+    "@visualive/engine": "^0.0.34",
     "dom-to-image": "^2.6.0"
   }
 }
