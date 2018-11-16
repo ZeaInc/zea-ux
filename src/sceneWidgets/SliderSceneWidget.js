@@ -18,13 +18,20 @@ export default class SliderSceneWidget extends LinearMovementSceneWidget {
     topBarMat.getParameter('BaseColor').setValue(new Visualive.Color(0.5, 0.5, 0.5));
 
     const barGeom = new Visualive.Cylinder(radius * 0.25, 1, 64, 2, true, true);
+    const handleGeom = new Visualive.Sphere(radius, 64);
 
-    this.handle = new Visualive.GeomItem('handle', new Visualive.Sphere(radius, 64), handleMat);
+    this.handle = new Visualive.GeomItem('handle', handleGeom, handleMat);
     this.baseBar = new Visualive.GeomItem('baseBar', barGeom, handleMat);
     this.topBar = new Visualive.GeomItem('topBar', barGeom, topBarMat);
     this.handleXfo = new Visualive.Xfo()
     this.baseBarXfo = new Visualive.Xfo()
     this.topBarXfo = new Visualive.Xfo()
+
+    this.radiusParam.valueChanged.connect(()=>{
+      radius = this.radiusParam.getValue();
+      barGeom.radius = radius * 0.25;
+      handleGeom.radius = radius;
+    })
 
     this.addChild(this.handle);
     this.addChild(this.baseBar);
