@@ -52,17 +52,17 @@ export default class VRUITool extends BaseTool {
     this.__triggerDown = false;
     this.__renderRequested = false;
 
-    this.__vrUIDOMHolderElement.style.display = "block";
-    domtoimage.toPng(this.__vrUIDOMElement)
-    .then( (dataUrl) => {
-        var img = new Image();
-        img.src = dataUrl;
-        document.body.appendChild(img);
-        this.__vrUIDOMHolderElement.style.display = "none";
-    })
-    .catch((error) => {
-        console.error('oops, something went wrong!', error);
-    });
+    // this.__vrUIDOMHolderElement.style.display = "block";
+    // domtoimage.toPng(this.__vrUIDOMElement)
+    // .then( (dataUrl) => {
+    //     var img = new Image();
+    //     img.src = dataUrl;
+    //     document.body.appendChild(img);
+    //     this.__vrUIDOMHolderElement.style.display = "none";
+    // })
+    // .catch((error) => {
+    //     console.error('oops, something went wrong!', error);
+    // });
   }
 
   /////////////////////////////////////
@@ -77,13 +77,13 @@ export default class VRUITool extends BaseTool {
       const headToCtrlA = xfoA.tr.subtract(headXfo.tr);
       const headToCtrlB = xfoB.tr.subtract(headXfo.tr);
       if (headToCtrlA.cross(headToCtrlB).dot(headXfo.ori.getYaxis()) > 0.0) {
-        this.__uiLocalXfo.tr.set(0.1, -0.07, 0.05);
+        this.__uiLocalXfo.tr.set(0.1, -0.05, 0.08);
       } else {
-        this.__uiLocalXfo.tr.set(-0.1, -0.07, 0.05);
+        this.__uiLocalXfo.tr.set(-0.1, -0.05, 0.08);
       }
     }
     else {
-      this.__uiLocalXfo.tr.set(0, -0.07, 0.05);
+      this.__uiLocalXfo.tr.set(0, -0.05, 0.08);
     }
 
     this.__uiGeomItem.setLocalXfo(this.__uiLocalXfo);
@@ -139,7 +139,7 @@ export default class VRUITool extends BaseTool {
       .then((pixels) => {
         const rect = this.__vrUIDOMElement.getBoundingClientRect();
         // let dpm = 0.0003; //dots-per-meter (1 each 1/2mm)
-        let dpm = 0.001; //dots-per-meter (1 each 1/2mm)
+        let dpm = 0.0007; //dots-per-meter (1 each 1/2mm)
         this.__uiGeomOffsetXfo.sc.set(rect.width * dpm, rect.height * dpm, 1.0);
         this.__uiGeomItem.setGeomOffsetXfo(this.__uiGeomOffsetXfo)
         this.__uiimage.setData(rect.width, rect.height, new Uint8Array(pixels.buffer));

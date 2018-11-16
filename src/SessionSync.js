@@ -54,7 +54,7 @@ const convertValuesFromJSON = (value, scene) => {
 export default class SessionSync {
   constructor(visualiveSession, appData, currentUser) {
 
-    const currentUserAvatar = new Avatar(appData, currentUser, true);
+    // const currentUserAvatar = new Avatar(appData, currentUser, true);
 
     const userDatas = {};
 
@@ -139,6 +139,13 @@ export default class SessionSync {
 
     appData.renderer.viewChanged.connect((event) => {
 
+      tick++;
+      if (event.vrviewport) {
+        // only push every second pose of a vr stream. 
+        if (tick % 2 != 0)
+          return;
+      }
+      
       const data = {
         interfaceType: event.interfaceType,
         viewXfo: event.viewXfo
@@ -152,14 +159,8 @@ export default class SessionSync {
         }
       }
 
-      currentUserAvatar.updatePose(data);
+      // currentUserAvatar.updatePose(data);
 
-      tick++;
-      if (data.controllers) {
-        // only push every second pose of a vr stream. 
-        if (tick % 2 != 0)
-          return;
-      }
 
       visualiveSession.pub(VisualiveSession.actions.POSE_CHANGED, convertValuesToJSON(data));
     });

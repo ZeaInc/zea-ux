@@ -26,14 +26,20 @@ class ParameterValueChange extends Change {
 
 
   undo() {
+    if(!this.__param)
+      return;
     this.__param.setValue(this.__prevValue, Visualive.ValueSetMode.USER_SETVALUE);
   }
 
   redo() {
+    if(!this.__param)
+      return;
     this.__param.setValue(this.__nextValue, Visualive.ValueSetMode.USER_SETVALUE);
   }
 
   update(updateData) {
+    if(!this.__param)
+      return;
     this.__nextValue = updateData.value;
     this.__param.setValue(this.__nextValue, Visualive.ValueSetMode.USER_SETVALUE);
     this.updated.emit(updateData);
@@ -55,7 +61,12 @@ class ParameterValueChange extends Change {
   }
 
   fromJSON(j, appData) {
-    this.__param = appData.scene.getRoot().resolvePath(j.paramPath, 1);
+    let param = appData.scene.getRoot().resolvePath(j.paramPath, 1);
+    if(!param || !(param instanceof Visualive.Parameter)) {
+      console.warn("resolvePath is unable to resolve", j.paramPath);
+      return;
+    }
+    this.__param = param;
     this.__prevValue = this.__param.getValue();
     if (this.__prevValue.clone)
       this.__nextValue = this.__prevValue.clone();
@@ -68,6 +79,8 @@ class ParameterValueChange extends Change {
   }
 
   changeFromJSON(j) {
+    if(!this.__param)
+      return;
     if (this.__nextValue.fromJSON)
       this.__nextValue.fromJSON(j.value);
     else
