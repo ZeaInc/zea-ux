@@ -26,7 +26,6 @@ export default class Avatar {
       this.__cameraBound = false;
 
       this.__avatarImage = new Visualive.LDRImage('user' + userData.id + 'AvatarImage');
-      this.__avatarImage.setCrossOrigin(null)
       this.__avatarImage.setImageURL(userData.picture)
       this.__avatarImageMaterial = new Visualive.Material('user' + userData.id + 'AvatarImageMaterial', 'FlatSurfaceShader');
       this.__avatarImageMaterial.getParameter('BaseColor').setValue(this.__avatarColor);

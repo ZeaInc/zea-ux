@@ -65,6 +65,9 @@ class TopMenuBar {
     document.addEventListener('keydown', e => {
       if(keyComboPressed)
         return;
+      // Ignore events intended for input elements.
+      if(e.target instanceof HTMLInputElement)
+        return;
       let keys = (
         this._comboFragment(e.altKey, 'A') +
         this._comboFragment(e.metaKey || e.ctrlKey, 'C') +

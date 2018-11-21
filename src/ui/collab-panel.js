@@ -19,11 +19,11 @@ export default class CollabPanel {
       </form>
 
       <div class="btn-group">
-        <button class="pure-button AudioButton" id="toggleMic">
+        <button class="pure-button AudioButton" disabled id="toggleMic">
           <i class="material-icons">mic</i>
         </button>
 
-        <button class="pure-button CameraButton" id="toggleCam">
+        <button class="pure-button CameraButton" disabled id="toggleCam">
           <i class="material-icons">videocam</i>
         </button>
       </div>
@@ -39,11 +39,6 @@ export default class CollabPanel {
             </button>
           </div>
         </fieldset>
-        <div class="flex justify-center">
-          <button class="pure-button pure-button-primary">
-            Create Room
-          </button>
-        </div>
       </form>
 
       <form class="pure-form pure-form-aligned" name="formJoinRoom">
@@ -61,6 +56,14 @@ export default class CollabPanel {
         </div>
       </form>
       --!>
+      <div class="btn-group tc">
+        <button class="pure-button pure-button-primary ma2" disabled>
+          Create Room
+        </button>
+        <button class="pure-button pure-button-primary ma0" disabled>
+          Join Room
+        </button>
+      </div>
     `;
 
     $collabWrapper.innerHTML = collabMarkup;
@@ -104,8 +107,16 @@ export default class CollabPanel {
     //   e.preventDefault();
     // });
 
+    const addMessage = (user, msg) => {
+      const p = document.createElement('p');
+      p.innerHTML = `<strong>${user}:</strong> ${msg}`;
+      $receivedMessages.appendChild(p);
+      $receivedMessages.scrollTop = $receivedMessages.scrollHeight;
+    }
+
     document.formSendMessage.addEventListener('submit', e => {
       const $form = e.target;
+      addMessage("Me", $form.messageToSend.value);
       visualiveSession.pub(VisualiveSession.actions.TEXT_MESSAGE, {
         text: $form.messageToSend.value,
       });
@@ -116,11 +127,8 @@ export default class CollabPanel {
     visualiveSession.sub(
       VisualiveSession.actions.TEXT_MESSAGE,
       (message, userId) => {
-        const p = document.createElement('p');
         const userData = visualiveSession.getUser(userId);
-        p.innerHTML = `<strong>${userData.name}:</strong> ${message.text}`;
-        $receivedMessages.appendChild(p);
-        $receivedMessages.scrollTop = $receivedMessages.scrollHeight;
+        addMessage(userData.given_name, message.text)
       }
     );
 
