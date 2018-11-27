@@ -12,12 +12,8 @@ export default class Avatar {
     this.__treeItem.addRef(this);
     this.__appData.renderer.getCollector().addTreeItem(this.__treeItem);
 
-    this.__avatarColor = new Visualive.Color(0.3, 0.3, 0.3);
     this.__hilightPointerColor = new Visualive.Color(1.2, 0, 0);
 
-    this.__material = new Visualive.Material('user' + userData.id + 'Material', 'SimpleSurfaceShader');
-    this.__material.getParameter('BaseColor').setValue(this.__avatarColor);
-    this.__material.addRef(this);
     this.__plane = new Visualive.Plane(1, 1)
 
     if (!this.__currentUserAvatar) {
@@ -30,6 +26,7 @@ export default class Avatar {
       this.__avatarImageMaterial = new Visualive.Material('user' + userData.id + 'AvatarImageMaterial', 'FlatSurfaceShader');
       this.__avatarImageMaterial.getParameter('BaseColor').setValue(this.__avatarColor);
       this.__avatarImageMaterial.getParameter('BaseColor').setImage(this.__avatarImage);
+      this.__avatarImageMaterial.visibleInGeomDataBuffer = false;
       this.__avatarImageGeomItem = new Visualive.GeomItem('avatarImage', new Visualive.Disc(0.5, 64), this.__avatarImageMaterial);
 
       this.__avatarImageXfo = new Visualive.Xfo();
@@ -48,6 +45,7 @@ export default class Avatar {
       this.__avatarCamMaterial = new Visualive.Material('user' + this.__userData.id + 'AvatarImageMaterial', 'FlatSurfaceShader');
       this.__avatarCamMaterial.getParameter('BaseColor').setValue(this.__avatarColor);
       this.__avatarCamMaterial.getParameter('BaseColor').setImage(videoItem);
+      this.__avatarCamMaterial.visibleInGeomDataBuffer = false;
       this.__avatarCamGeomItem = new Visualive.GeomItem('avatarImage', this.__plane, this.__avatarCamMaterial);
       this.__avatarCamGeomItem.addRef(this);
 
@@ -123,7 +121,10 @@ export default class Avatar {
     shape.getVertex(3).multiplyInPlace(pinch);
     
     shape.computeVertexNormals();
-    const geomItem = new Visualive.GeomItem('camera', shape, this.__material);
+    const material = new Visualive.Material('user' + userData.id + 'Material', 'SimpleSurfaceShader');
+    material.visibleInGeomDataBuffer = false;
+    material.getParameter('BaseColor').setValue(new Visualive.Color(0.3, 0.3, 0.3));
+    const geomItem = new Visualive.GeomItem('camera', shape, material);
     const geomXfo = new Visualive.Xfo();
     geomItem.setGeomOffsetXfo(geomXfo);
 
@@ -229,8 +230,10 @@ export default class Avatar {
           const materialNames = materialLibrary.getMaterialNames();
           for (let name of materialNames) {
             const material = materialLibrary.getMaterial(name, false);
-            if (material)
+            if (material) {
+              material.visibleInGeomDataBuffer = false;
               material.setShaderName('SimpleSurfaceShader');
+            }
           }
 
           if (!this.__currentUserAvatar) {
@@ -355,6 +358,5 @@ export default class Avatar {
     if (!this.__camera) {
       this.__camera.removeRef(this);
     }
-    this.__material.removeRef(this);
   }
 };
