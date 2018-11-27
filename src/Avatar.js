@@ -8,10 +8,11 @@ export default class Avatar {
     this.__userData = userData;
     this.__currentUserAvatar = currentUserAvatar;
 
-    this.__treeItem = new Visualive.TreeItem(userData.id);
+    this.__treeItem = new Visualive.TreeItem(this.__userData.id);
     this.__treeItem.addRef(this);
     this.__appData.renderer.getCollector().addTreeItem(this.__treeItem);
 
+    this.__avatarColor = new Visualive.Color(0.3, 0.3, 0.3);
     this.__hilightPointerColor = new Visualive.Color(1.2, 0, 0);
 
     this.__plane = new Visualive.Plane(1, 1)
@@ -21,9 +22,9 @@ export default class Avatar {
       this.__camera.addRef(this);
       this.__cameraBound = false;
 
-      this.__avatarImage = new Visualive.LDRImage('user' + userData.id + 'AvatarImage');
-      this.__avatarImage.setImageURL(userData.picture)
-      this.__avatarImageMaterial = new Visualive.Material('user' + userData.id + 'AvatarImageMaterial', 'FlatSurfaceShader');
+      this.__avatarImage = new Visualive.LDRImage('user' + this.__userData.id + 'AvatarImage');
+      this.__avatarImage.setImageURL(this.__userData.picture)
+      this.__avatarImageMaterial = new Visualive.Material('user' + this.__userData.id + 'AvatarImageMaterial', 'FlatSurfaceShader');
       this.__avatarImageMaterial.getParameter('BaseColor').setValue(this.__avatarColor);
       this.__avatarImageMaterial.getParameter('BaseColor').setImage(this.__avatarImage);
       this.__avatarImageMaterial.visibleInGeomDataBuffer = false;
@@ -121,9 +122,9 @@ export default class Avatar {
     shape.getVertex(3).multiplyInPlace(pinch);
     
     shape.computeVertexNormals();
-    const material = new Visualive.Material('user' + userData.id + 'Material', 'SimpleSurfaceShader');
+    const material = new Visualive.Material('user' + this.__userData.id + 'Material', 'SimpleSurfaceShader');
     material.visibleInGeomDataBuffer = false;
-    material.getParameter('BaseColor').setValue(new Visualive.Color(0.3, 0.3, 0.3));
+    material.getParameter('BaseColor').setValue(this.__avatarColor);
     const geomItem = new Visualive.GeomItem('camera', shape, material);
     const geomXfo = new Visualive.Xfo();
     geomItem.setGeomOffsetXfo(geomXfo);
@@ -302,7 +303,7 @@ export default class Avatar {
     if (data.showUIPanel) {
       if (!this.__uiGeomItem) {
         const uimat = new Visualive.Material('uimat', 'FlatSurfaceShader');
-        uimat.getParameter('BaseColor').setValue(new Visualive.Color(0.3, 0.3, 0.3));
+        uimat.getParameter('BaseColor').setValue(this.__avatarColor);
 
         this.__uiGeomOffsetXfo = new Visualive.Xfo();
         this.__uiGeomOffsetXfo.sc.set(data.showUIPanel.size.x, data.showUIPanel.size.y, 1);
