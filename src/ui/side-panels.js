@@ -1,9 +1,6 @@
-
-
 class Panel {
   constructor(domElement, handleElement, panelSide) {
     this.domElement = domElement;
-
 
     handleElement.addEventListener('mousedown', initDrag, false);
 
@@ -21,7 +18,7 @@ class Panel {
 
     function doDrag(e) {
       const delta = e.clientX - startX;
-      let panelWidth = (panelSide==0) ? startWidth + delta : startWidth - delta;
+      let panelWidth = panelSide == 0 ? startWidth + delta : startWidth - delta;
       if (panelWidth < 40) panelWidth = 0;
       domElement.style.width = `${panelWidth}px`;
     }
@@ -33,12 +30,12 @@ class Panel {
   }
 
   setPanelWidget(widget) {
-    if(this.widget) {
+    if (this.widget) {
       this.widget.unMount();
     }
 
     this.widget = widget;
-    this.widget.mount()
+    this.widget.mount();
   }
 }
 
@@ -48,8 +45,7 @@ export default class Panels {
     const panelElements = document.getElementsByClassName('SidePanel');
     const panelHandlers = document.getElementsByClassName('PanelHandler');
 
-    this.leftPanel = new Panel(panelElements[0], panelHandlers[0], 0)
-    this.rightPanel = new Panel(panelElements[1], panelHandlers[1], 1)
+    this.leftPanel = new Panel(panelElements[0], panelHandlers[0], 0);
+    this.rightPanel = new Panel(panelElements[1], panelHandlers[1], 1);
   }
 }
-

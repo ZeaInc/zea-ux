@@ -1,11 +1,14 @@
 import { VisualiveSession } from '@visualive/collab';
-import { UserChip } from './UserChip.js';
+import { UserChip } from './UserChip';
+import { Signal } from '../Signal';
 
 export default class CollabPanel {
   constructor($collabWrapper, visualiveSession) {
+    this.userSelected = new Signal();
+
     const collabMarkup = `
       <div class="ba b--light-blue br2 pa2 h4 overflow-y-auto mb2">
-        <ul id="userChips" class="list pa0"></ul>
+        <ul id="userChips" class="list pa0 ma0"></ul>
       </div>
       <div class="ba b--light-blue br2 pa2 h5 overflow-y-auto mb2" id="receivedMessages"></div>
 
@@ -112,11 +115,11 @@ export default class CollabPanel {
       p.innerHTML = `<strong>${user}:</strong> ${msg}`;
       $receivedMessages.appendChild(p);
       $receivedMessages.scrollTop = $receivedMessages.scrollHeight;
-    }
+    };
 
     document.formSendMessage.addEventListener('submit', e => {
       const $form = e.target;
-      addMessage("Me", $form.messageToSend.value);
+      addMessage('Me', $form.messageToSend.value);
       visualiveSession.pub(VisualiveSession.actions.TEXT_MESSAGE, {
         text: $form.messageToSend.value,
       });
@@ -128,7 +131,7 @@ export default class CollabPanel {
       VisualiveSession.actions.TEXT_MESSAGE,
       (message, userId) => {
         const userData = visualiveSession.getUser(userId);
-        addMessage(userData.given_name, message.text)
+        addMessage(userData.given_name, message.text);
       }
     );
 
@@ -142,6 +145,9 @@ export default class CollabPanel {
       const li = document.createElement('li');
       $userChips.appendChild(li);
       const userChip = new UserChip(li, userData);
+      userChip.userSelected.connect(userData => {
+        this.userSelected.emit(userData);
+      });
 
       userChipsElements[userData.id] = li;
     };
