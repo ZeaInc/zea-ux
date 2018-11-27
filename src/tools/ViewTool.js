@@ -37,9 +37,10 @@ export default class ViewTool extends BaseTool {
     const vrviewport = this.appData.renderer.getVRViewport();
     if (vrviewport) {
       if(!this.vrControllerToolTip) {
-        this.vrControllerToolTip = new Visualive.Cross(0.03);
-        this.vrControllerToolTipMat = new Visualive.Material('Cross', 'ToolIconShader');
+        this.vrControllerToolTip = new Visualive.Sphere(0.02 * 0.75);
+        this.vrControllerToolTipMat = new Visualive.Material('Cross', 'FlatSurfaceShader');
         this.vrControllerToolTipMat.getParameter('BaseColor').setValue(new Visualive.Color("#03E3AC"));
+        this.vrControllerToolTipMat.visibleInGeomDataBuffer = false;
       }
       const addIconToController = (controller) => {
         const geomItem = new Visualive.GeomItem('SceneWidgetToolTip', this.vrControllerToolTip, this.vrControllerToolTipMat);

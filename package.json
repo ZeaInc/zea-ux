@@ -1,6 +1,6 @@
 {
   "name": "@visualive/ux",
-  "version": "0.0.40",
+  "version": "0.0.42",
   "description": "",
   "keywords": [],
   "main": "./dist/visualive-ux.js",
@@ -24,13 +24,13 @@
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.14.0",
     "prettier": "^1.15.2",
-    "webpack": "^4.26.0",
+    "webpack": "^4.26.1",
     "webpack-cli": "^3.1.2"
   },
   "dependencies": {
     "@jaames/iro": "^3.5.3",
     "@visualive/collab": "^0.0.16",
-    "@visualive/engine": "^0.0.39",
+    "@visualive/engine": "^0.0.40",
     "dom-to-image": "^2.6.0"
   }
 }
