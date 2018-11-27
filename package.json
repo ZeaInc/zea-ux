@@ -1,6 +1,6 @@
 {
   "name": "@visualive/ux",
-  "version": "0.0.40",
+  "version": "0.0.41",
   "description": "",
   "keywords": [],
   "main": "./dist/visualive-ux.js",
