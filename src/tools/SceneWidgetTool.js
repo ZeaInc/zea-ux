@@ -19,10 +19,11 @@ export default class SceneWidgetTool extends BaseTool {
       // The tool might already be deactivated.
       if(!this.__activated)
         return;
-      const cross = new Visualive.Cross(0.03);
-      const mat = new Visualive.Material('Cross', 'ToolIconShader');
+      const geon = new Visualive.Sphere(0.02 * 0.75);
+      const mat = new Visualive.Material('Cross', 'FlatSurfaceShader');
       mat.getParameter('BaseColor').setValue(new Visualive.Color("#03E3AC"));
-      const geomItem = new Visualive.GeomItem('SceneWidgetToolTip', cross, mat);
+      mat.visibleInGeomDataBuffer = false;
+      const geomItem = new Visualive.GeomItem('SceneWidgetToolTip', geon, mat);
       controller.getTipItem().removeAllChildren();
       controller.getTipItem().addChild(geomItem, false);
     }

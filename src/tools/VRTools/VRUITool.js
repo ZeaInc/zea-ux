@@ -11,6 +11,7 @@ export default class VRUITool extends BaseTool {
 
 
     const uimat = new Visualive.Material('uimat', 'FlatSurfaceShader');
+    uimat.visibleInGeomDataBuffer = false;
 
     this.__uiimage = new Visualive.DataImage();
     uimat.getParameter('BaseColor').setValue(this.__uiimage);
@@ -32,6 +33,7 @@ export default class VRUITool extends BaseTool {
 
 
     const pointermat = new Visualive.Material('pointermat', 'LinesShader');
+    pointermat.visibleInGeomDataBuffer = false;
     pointermat.getParameter('Color').setValue(new Visualive.Color(1.2, 0, 0));
 
     const line = new Visualive.Lines();

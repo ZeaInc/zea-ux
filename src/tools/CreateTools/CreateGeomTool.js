@@ -74,6 +74,7 @@ class CreateGeomTool extends BaseCreateTool {
         this.vrControllerToolTip = new Visualive.Cross(0.05);
         this.vrControllerToolTipMat = new Visualive.Material('VRController Cross', 'LinesShader');
         this.vrControllerToolTipMat.getParameter('Color').setValue(this.cp.getValue());
+        this.vrControllerToolTipMat.visibleInGeomDataBuffer = false;
       }
       const addIconToController = (controller) => {
         const geomItem = new Visualive.GeomItem('CreateGeomToolTip', this.vrControllerToolTip, this.vrControllerToolTipMat);

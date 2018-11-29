@@ -1,7 +1,4 @@
-import {
-  Signal
-} from './Signal.js'
-
+import { Signal } from './Signal.js';
 
 class ActionRegistry {
   constructor() {
@@ -10,9 +7,7 @@ class ActionRegistry {
   }
 
   registerAction(action) {
-    const {
-      name
-    } = action;
+    const { name } = action;
 
     if (!name) {
       console.warn('A action is missing its name.');
