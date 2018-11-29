@@ -10,7 +10,7 @@ class Signal {
         if (fn == undefined)
             throw("a function callback must be passed to Signal.connect");
         if(this.__slots.indexOf(fn) != -1){
-            console.warn("fn already connected to Signal.")
+            console.warn("fn '"+fn.name+"'  already connected to Signal.")
             return;
         }
         const id = this.__slots.length;

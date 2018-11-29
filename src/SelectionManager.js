@@ -71,6 +71,7 @@ class ToggleSelectionVisibility extends Change {
   }
 }
 
+UndoRedoManager.registerChange('ToggleSelectionVisibility', ToggleSelectionVisibility)
 
 class SelectionManager {
   constructor(undoRedoManager) {

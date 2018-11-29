@@ -1,5 +1,3 @@
-
-
 import UndoRedoManager from './UndoRedoManager.js';
 
 export default class Change {
@@ -10,26 +8,22 @@ export default class Change {
   }
 
   undo() {
-    throw("Implement me");
+    throw ("Implement me");
   }
 
   redo() {
-    throw("Implement me");
+    throw ("Implement me");
   }
 
   update(updateData) {
-    throw("Implement me");
+    throw ("Implement me");
   }
 
-  toJSON(appData) { 
-    return {
-     name: this.name
-   }
+  toJSON(appData) {
+    return {}
   }
 
-  fromJSON(j, appData) {
-    this.name = j.name;
-  }
+  fromJSON(j, appData) {}
 
 
   changeFromJSON(j) {
@@ -37,7 +31,6 @@ export default class Change {
     // in the update method.
     this.update(j);
   }
-  
-  destroy() {
-  }
+
+  destroy() {}
 }
