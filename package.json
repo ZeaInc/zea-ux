@@ -29,8 +29,8 @@
   },
   "dependencies": {
     "@jaames/iro": "^3.5.3",
-    "@visualive/collab": "^0.0.16",
-    "@visualive/engine": "^0.0.40",
+    "@visualive/collab": "^0.0.18",
+    "@visualive/engine": "^0.0.41",
     "dom-to-image": "^2.6.0"
   }
 }

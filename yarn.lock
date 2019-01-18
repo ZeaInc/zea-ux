@@ -25,19 +25,19 @@
   dependencies:
     css-reset-and-normalize "^1.0.1"
 
-"@visualive/collab@^0.0.16":
-  version "0.0.16"
-  resolved "https://registry.yarnpkg.com/@visualive/collab/-/collab-0.0.16.tgz#c6710c402b5ce48c244662a2f1a279ebd2641651"
-  integrity sha512-5gAf+i1ze5eL+2hf21Nega/X8hqp9RY12jMlqDEA6e8EnBj0fr8LwKmyZ5/sNEsKWR5xWUXfCtiCTPpm/w5J/A==
+"@visualive/collab@^0.0.18":
+  version "0.0.18"
+  resolved "https://registry.yarnpkg.com/@visualive/collab/-/collab-0.0.18.tgz#e0a95d1df8826aa5022189b53604661960c9d846"
+  integrity sha512-1Wz4+yfW/Iow46g6YsX7uoaY6593mvwyZJMWak6kxkr1wk/VsKDCccWJ8SUUriN0sh7hKYNHciNlel8pCTb4Ig==
   dependencies:
     shortid "^2.2.13"
     socket.io-client "^2.1.1"
     socketio-wildcard "^2.0.0"
 
-"@visualive/engine@^0.0.40":
-  version "0.0.40"
-  resolved "https://registry.yarnpkg.com/@visualive/engine/-/engine-0.0.40.tgz#de3e0663532bb3692d63e152417c45268a83275c"
-  integrity sha512-Ll6vKjfW3gmw0iNDB1KVuYFR/OgBqJgeM0+84niVMQ2UW4zCN9j61KRy71s1VTlFd9jff7kTohzeOR/r7F4MuQ==
+"@visualive/engine@^0.0.41":
+  version "0.0.41"
+  resolved "https://registry.yarnpkg.com/@visualive/engine/-/engine-0.0.41.tgz#dbb2e76e6edb50a6d5e1362685d69288b0a8b4c2"
+  integrity sha512-0Wa4KEbYzRb3bjh1Q1F+CQJR+YwFpB6gsimnqQNj5hFtfjpfVY3FUI/L9Bq0VDD7NnJttEx6LHT6iv0Kw0tA6w==
 
 "@webassemblyjs/ast@1.7.11":
   version "1.7.11"
