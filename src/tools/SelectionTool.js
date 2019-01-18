@@ -23,7 +23,7 @@ export default class SelectionTool extends BaseTool {
     if(!this.rectItem) {
       this.rectItem = new Visualive.GeomItem('selectionRect', this.selectionRect, this.selectionRectMat);
       this.rectItem.getParameter('Visible').setValue(false);
-      this.appData.renderer.getCollector().addTreeItem(this.rectItem);
+      this.appData.renderer.addTreeItem(this.rectItem);
     }
 
   }

@@ -10,7 +10,7 @@ export default class Avatar {
 
     this.__treeItem = new Visualive.TreeItem(this.__userData.id);
     this.__treeItem.addRef(this);
-    this.__appData.renderer.getCollector().addTreeItem(this.__treeItem);
+    this.__appData.renderer.addTreeItem(this.__treeItem);
 
     this.__avatarColor = new Visualive.Color(0.3, 0.3, 0.3);
     this.__hilightPointerColor = new Visualive.Color(1.2, 0, 0);
@@ -354,7 +354,7 @@ export default class Avatar {
   };
 
   destroy() {
-    this.__appData.renderer.getCollector().removeTreeItem(this.__treeItem);
+    this.__appData.renderer.removeTreeItem(this.__treeItem);
     this.__treeItem.removeRef(this);
     if (!this.__camera) {
       this.__camera.removeRef(this);
