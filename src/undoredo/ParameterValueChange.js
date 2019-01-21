@@ -50,7 +50,7 @@ class ParameterValueChange extends Change {
       name: this.name,
       paramPath: this.__param.getPath()
     }
-    if(this.__nextValue) {
+    if(this.__nextValue != undefined) {
       if (this.__nextValue.toJSON) {
         j.value = this.__nextValue.toJSON();
       } else {
