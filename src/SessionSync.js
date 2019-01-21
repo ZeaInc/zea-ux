@@ -150,7 +150,10 @@ export default class SessionSync {
         interfaceType: event.interfaceType,
         viewXfo: event.viewXfo
       };
-      if (event.controllers) {
+      if (event.focalDistance) {
+        data.focalDistance = event.focalDistance;
+      }
+      else if (event.controllers) {
         data.controllers = [];
         for (let controller of event.controllers) {
           data.controllers.push({

@@ -177,6 +177,12 @@ export default class Avatar {
       return;
 
     if (data.viewXfo) {
+      if(data.focalDistance) {
+        // After 10 meters, the avatar scales to avoid getting too small.
+        const sc = data.focalDistance / 5;
+        if(sc > 1)
+          data.viewXfo.sc.set(sc, sc, sc)
+      }
       this.__treeItem.getChild(0).setLocalXfo(data.viewXfo);
       this.pointerXfo.sc.z = 0;
       this.__treeItem.getChild(1).setLocalXfo(this.pointerXfo);
