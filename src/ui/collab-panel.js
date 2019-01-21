@@ -1,10 +1,9 @@
 import { VisualiveSession } from '@visualive/collab';
 import { UserChip } from './UserChip';
-import { Signal } from '../Signal';
 
 export default class CollabPanel {
   constructor($collabWrapper, visualiveSession) {
-    this.userSelected = new Signal();
+    this.userSelected = new Visualive.Signal();
 
     const collabMarkup = `
       <div class="ba b--light-blue br2 pa2 h4 overflow-y-auto mb2">

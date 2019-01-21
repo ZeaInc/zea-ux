@@ -1,8 +1,8 @@
-import { Signal } from '../Signal';
+
 
 export class UserChip {
   constructor(domElement, userData) {
-    this.userSelected = new Signal();
+    this.userSelected = new Visualive.Signal();
 
     this.domElement = domElement;
     this.clean();

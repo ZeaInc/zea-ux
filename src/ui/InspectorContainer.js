@@ -37,7 +37,7 @@ class InspectorContainer {
   }
 
   unMount(){
-    this.appData.selectionManager.leadSelectionChanged.disconnectID(this._selChangedId);
+    this.appData.selectionManager.leadSelectionChanged.disconnectId(this._selChangedId);
     this.domElement.innerHTML = '';
   }
 }

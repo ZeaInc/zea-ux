@@ -1,9 +1,9 @@
-import { Signal } from './Signal.js';
+
 
 class ActionRegistry {
   constructor() {
     this.actions = [];
-    this.actionAdded = new Signal();
+    this.actionAdded = new Visualive.Signal();
   }
 
   registerAction(action) {
