@@ -34,10 +34,10 @@
     socket.io-client "^2.1.1"
     socketio-wildcard "^2.0.0"
 
-"@visualive/engine@^0.0.43":
-  version "0.0.43"
-  resolved "https://registry.yarnpkg.com/@visualive/engine/-/engine-0.0.43.tgz#12d84c0e42796ff4da810314f952f4b1d4d21bb2"
-  integrity sha512-m91rEmREoG6MeP3rC3Y+Ykxf1B9TDd3ZOEha93lFLmW0wDc4bj0U+YRfJfJBQoZcO4Ft4/GewGdOqHbnBtjspA==
+"@visualive/engine@^0.0.44":
+  version "0.0.44"
+  resolved "https://registry.yarnpkg.com/@visualive/engine/-/engine-0.0.44.tgz#80963e01c9218ba7cb2eed04938760f45e61dc31"
+  integrity sha512-ws8tX54vyd2KnuaeGn8d022xXgZckt1JTBkfOW4Fqckjb804fnXNFf19MSjDnKQ2EKzFLtcqSuvvEAmRCJs40Q==
 
 "@webassemblyjs/ast@1.7.11":
   version "1.7.11"
@@ -3338,9 +3338,9 @@ static-extend@^0.1.1:
     object-copy "^0.1.0"
 
 stream-browserify@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/stream-browserify/-/stream-browserify-2.0.1.tgz#66266ee5f9bdb9940a4e4514cafb43bb71e5c9db"
-  integrity sha1-ZiZu5fm9uZQKTkUUyvtDu3Hlyds=
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/stream-browserify/-/stream-browserify-2.0.2.tgz#87521d38a44aa7ee91ce1cd2a47df0cb49dd660b"
+  integrity sha512-nX6hmklHs/gr2FuxYDltq8fJA1GDlxKQCz8O/IM4atRqBH8OORmBNgfvW5gG10GT/qQ9u0CzIvr2X5Pkt6ntqg==
   dependencies:
     inherits "~2.0.1"
     readable-stream "^2.0.2"
