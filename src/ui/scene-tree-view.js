@@ -29,6 +29,8 @@ class TreeItemElement {
       this.appData.undoRedoManager.addChange(change);
     });
 
+
+
     const updateVisibility = () => {
       const visible = this.treeItem.getVisible();
       visible
@@ -44,6 +46,11 @@ class TreeItemElement {
     this.titleElement = document.createElement('span');
     this.titleElement.className = 'TreeNodesListItem__Title';
     this.titleElement.textContent = treeItem.getName();
+    const updateName = () => {
+      this.titleElement.textContent = treeItem.getName();
+    }
+    this.treeItem.nameChanged.connect(updateVisibility);
+    
     this.li.appendChild(this.titleElement);
 
     const selectedParam = this.treeItem.getParameter('Selected');

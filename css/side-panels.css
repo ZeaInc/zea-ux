@@ -39,7 +39,7 @@
   border-color: #bbb;
   overflow: auto;
   width: 100%;
-  height: 10px;
+  height: 200px;
   flex-grow: 0;
   display: flex;
 }

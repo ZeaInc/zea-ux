@@ -2,7 +2,7 @@
 
 .MainWrapper {
   display: grid;
-  grid-template-rows: auto 1fr 40px;
+  grid-template-rows: auto 1fr 0px;
 
   -moz-user-select: none;
   -webkit-user-select: none;
@@ -20,4 +20,5 @@
 
 .Header__logo {
   width: 70px;
+  margin-left: 10px
 }
