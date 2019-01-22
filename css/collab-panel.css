@@ -1,0 +1,13 @@
+/* collab-panel.css */
+
+.CameraButton {
+}
+.CameraButton--on {
+  color: red;
+}
+
+.AudioButton {
+}
+.AudioButton--on {
+  color: red;
+}

@@ -1,3 +1,5 @@
+/* tree-view.css */
+
 .TreeNodesList {
   border-left: 1px dotted;
   list-style-type: none;
@@ -64,7 +66,7 @@
 }
 
 .TreeNodesListItem--isSelected > .TreeNodesListItem__Title {
-  background-color: #4fc3f7;
+  background-color: #76d2bb;
 }
 
 .TreeNodesListItem--isHidden > .TreeNodesListItem__Title {

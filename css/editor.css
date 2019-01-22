@@ -1,0 +1,23 @@
+/* editor.css */
+
+.MainWrapper {
+  display: grid;
+  grid-template-rows: auto 1fr 40px;
+
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -o-user-select: none;
+}
+
+.HeaderWrapper {
+  align-items: center;
+  border-color: #bbb;
+  display: flex;
+}
+
+
+.Header__logo {
+  width: 70px;
+}
