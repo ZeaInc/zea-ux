@@ -34,8 +34,7 @@ export default class ViewTool extends BaseTool {
 
     this.appData.renderer.getDiv().style.cursor = "default";
 
-    const vrviewport = this.appData.renderer.getVRViewport();
-    if (vrviewport) {
+    this.appData.renderer.getXRViewport().then(xrvp => {
       if(!this.vrControllerToolTip) {
         this.vrControllerToolTip = new Visualive.Sphere(0.02 * 0.75);
         this.vrControllerToolTipMat = new Visualive.Material('Cross', 'FlatSurfaceShader');
@@ -46,26 +45,28 @@ export default class ViewTool extends BaseTool {
         const geomItem = new Visualive.GeomItem('SceneWidgetToolTip', this.vrControllerToolTip, this.vrControllerToolTipMat);
         controller.getTipItem().addChild(geomItem, false);
       }
-      for(let controller of vrviewport.getControllers()) {
+      for(let controller of xrvp.getControllers()) {
         addIconToController(controller)
       }
-      this.addIconToControllerId = vrviewport.controllerAdded.connect(addIconToController);
-    }
+      this.addIconToControllerId = xrvp.controllerAdded.connect(addIconToController);
+    });
   }
 
   deactivateTool() {
     super.deactivateTool();
 
-    const vrviewport = this.appData.renderer.getVRViewport();
-    if(vrviewport && this.vrControllerToolTip) {
-      const removeIconFromController = (controller) => {
-        controller.getTipItem().removeAllChildren();
+    this.appData.renderer.getXRViewport().then(xrvp => {
+      if(this.vrControllerToolTip) {
+        const removeIconFromController = (controller) => {
+          controller.getTipItem().removeAllChildren();
+        }
+        for(let controller of xrvp.getControllers()) {
+          removeIconFromController(controller)
+        }
       }
-      for(let controller of vrviewport.getControllers()) {
-        removeIconFromController(controller)
-      }
-    }
+    })
   }
+  
   ///////////////////////////////////////
   // 
   setDefaultMode(mode) {

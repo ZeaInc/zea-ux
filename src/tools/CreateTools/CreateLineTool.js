@@ -99,12 +99,11 @@ export default class CreateLineTool extends CreateGeomTool {
     this.appData.renderer.getDiv().style.cursor = "pointer";
 
     if(this.__id != undefined) {
-      const vrviewport = this.appData.renderer.getVRViewport();
-      if (vrviewport) {
-        for(let controller of vrviewport.getControllers()) {
+      this.appData.renderer.getXRViewport().then(xrvp => {
+        for(let controller of xrvp.getControllers()) {
           controller.getTipItem().removeAllChildren();
         }
-      }
+      });
     }
   }
 

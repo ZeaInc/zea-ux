@@ -27,37 +27,30 @@ export default class SceneWidgetTool extends BaseTool {
       controller.getTipItem().removeAllChildren();
       controller.getTipItem().addChild(geomItem, false);
     }
-    const addIconToControllers = (vrviewport)=>{
-      for(let controller of vrviewport.getControllers()) {
+    const addIconToControllers = (xrvp)=>{
+      for(let controller of xrvp.getControllers()) {
         addIconToController(controller)
       }
       if(!this.addIconToControllerId)
-        this.addIconToControllerId = vrviewport.controllerAdded.connect(addIconToController);
+        this.addIconToControllerId = xrvp.controllerAdded.connect(addIconToController);
     }
 
-    const vrviewport = this.appData.renderer.getVRViewport();
-    if (vrviewport) {
-      addIconToControllers(vrviewport);
-    }
-    else {
-      this.appData.renderer.vrViewportSetup.connect((vrviewport)=>{
-        addIconToControllers(vrviewport);
-      });
-    }
+    this.appData.renderer.getXRViewport().then(xrvp => {
+        addIconToControllers(xrvp);
+    });
   }
 
   deactivateTool() {
     super.deactivateTool();
 
-    const vrviewport = this.appData.renderer.getVRViewport();
-    if(vrviewport) {
+    this.appData.renderer.getXRViewport().then(xrvp => {
       const removeIconFromController = (controller) => {
         controller.getTipItem().removeAllChildren();
       }
-      for(let controller of vrviewport.getControllers()) {
+      for(let controller of xrvp.getControllers()) {
         removeIconFromController(controller)
       }
-    }
+    })
   }
 
   /////////////////////////////////////

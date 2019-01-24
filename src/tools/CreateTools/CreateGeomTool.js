@@ -68,8 +68,7 @@ class CreateGeomTool extends BaseCreateTool {
 
     this.appData.renderer.getDiv().style.cursor = "crosshair";
 
-    const vrviewport = this.appData.renderer.getVRViewport();
-    if (vrviewport) {
+    this.appData.renderer.getXRViewport().then(xrvp => {
       if(!this.vrControllerToolTip) {
         this.vrControllerToolTip = new Visualive.Cross(0.05);
         this.vrControllerToolTipMat = new Visualive.Material('VRController Cross', 'LinesShader');
@@ -81,11 +80,11 @@ class CreateGeomTool extends BaseCreateTool {
         controller.getTipItem().removeAllChildren();
         controller.getTipItem().addChild(geomItem, false);
       }
-      for(let controller of vrviewport.getControllers()) {
+      for(let controller of xrvp.getControllers()) {
         addIconToController(controller)
       }
-      this.addIconToControllerId = vrviewport.controllerAdded.connect(addIconToController);
-    }
+      this.addIconToControllerId = xrvp.controllerAdded.connect(addIconToController);
+    });
 
   }
 
@@ -94,13 +93,12 @@ class CreateGeomTool extends BaseCreateTool {
 
     this.appData.renderer.getDiv().style.cursor = "pointer";
 
-    const vrviewport = this.appData.renderer.getVRViewport();
-    if (vrviewport) {
-      for(let controller of vrviewport.getControllers()) {
+    this.appData.renderer.getXRViewport().then(xrvp => {
+      for(let controller of xrvp.getControllers()) {
         controller.getTipItem().removeAllChildren();
       }
-      vrviewport.controllerAdded.disconnectId(this.addIconToControllerId);
-    }
+      xrvp.controllerAdded.disconnectId(this.addIconToControllerId);
+    });
   }
 
   screenPosToXfo(screenPos, viewport) {
