@@ -37,7 +37,16 @@ export default class ToolManager {
       const nextTool = this.currTool();
       if (nextTool)
         nextTool.activateTool();
+      else {
+        // Make sure to reset the pointer in case any tool 
+        // didn't close correctly.
+        this.appData.renderer.getDiv().style.cursor = "pointer";
+      }
     }
+  }
+
+  removeToolByHandle(tool) {
+    this.removeTool(this.getToolIndex(tool));
   }
 
   pushTool(tool) {

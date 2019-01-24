@@ -31,8 +31,7 @@ export default class SceneWidgetTool extends BaseTool {
       for(let controller of xrvp.getControllers()) {
         addIconToController(controller)
       }
-      if(!this.addIconToControllerId)
-        this.addIconToControllerId = xrvp.controllerAdded.connect(addIconToController);
+      this.addIconToControllerId = xrvp.controllerAdded.connect(addIconToController);
     }
 
     this.appData.renderer.getXRViewport().then(xrvp => {
@@ -44,12 +43,10 @@ export default class SceneWidgetTool extends BaseTool {
     super.deactivateTool();
 
     this.appData.renderer.getXRViewport().then(xrvp => {
-      const removeIconFromController = (controller) => {
-        controller.getTipItem().removeAllChildren();
-      }
-      for(let controller of xrvp.getControllers()) {
-        removeIconFromController(controller)
-      }
+      // for(let controller of xrvp.getControllers()) {
+      //   controller.getTipItem().removeAllChildren();
+      // }
+      xrvp.controllerAdded.disconnectId(this.addIconToControllerId);
     })
   }
 

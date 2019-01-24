@@ -94,9 +94,9 @@ class CreateGeomTool extends BaseCreateTool {
     this.appData.renderer.getDiv().style.cursor = "pointer";
 
     this.appData.renderer.getXRViewport().then(xrvp => {
-      for(let controller of xrvp.getControllers()) {
-        controller.getTipItem().removeAllChildren();
-      }
+      // for(let controller of xrvp.getControllers()) {
+      //   controller.getTipItem().removeAllChildren();
+      // }
       xrvp.controllerAdded.disconnectId(this.addIconToControllerId);
     });
   }
@@ -141,10 +141,16 @@ class CreateGeomTool extends BaseCreateTool {
   onMouseDown(event) {
     // 
     if(this.stage == 0) {
-      this.constructionPlane = new Visualive.Xfo();
+      if(event.button == 0) {
+        this.constructionPlane = new Visualive.Xfo();
 
-      const xfo = this.screenPosToXfo(event.mousePos, event.viewport);
-      this.createStart(xfo, this.appData.scene.getRoot());
+        const xfo = this.screenPosToXfo(event.mousePos, event.viewport);
+        this.createStart(xfo, this.appData.scene.getRoot());
+      }
+      else if(event.button == 2) {
+        // Cancel the tool. 
+        this.appData.toolManager.removeTool(this.index);
+      }
       return true;
     }
     else if(event.button == 2) {

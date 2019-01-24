@@ -64,48 +64,45 @@ export default class CreateLineTool extends CreateGeomTool {
     this.tp = this.addParameter(new Visualive.NumberParameter('Line Thickness', 0.06, [0, 0.1])); // 1cm.
   }
 
-  activateTool() {
-    super.activateTool();
+  // activateTool() {
+  //   super.activateTool();
 
-    this.appData.renderer.getDiv().style.cursor = "crosshair";
+  //   this.appData.renderer.getDiv().style.cursor = "crosshair";
 
-    if(this.__id == undefined) {
-      this.__id = this.appData.renderer.vrViewportSetup.connect((vrviewport)=>{
-        if(!this.vrControllerToolTip) {
-          this.vrControllerToolTip = new Visualive.Sphere(this.tp.getValue(), 64);
-          this.vrControllerToolTipMat = new Visualive.Material('marker', 'FlatSurfaceShader');
-          this.vrControllerToolTipMat.getParameter('BaseColor').setValue(this.cp.getValue());
-        }
-        const addIconToController = (controller) => {
-          // The tool might already be deactivated.
-          if(!this.__activated)
-            return;
-          const geomItem = new Visualive.GeomItem('VRControllerTip', this.vrControllerToolTip, this.vrControllerToolTipMat);
-          controller.getTipItem().removeAllChildren();
-          controller.getTipItem().addChild(geomItem, false);
-        }
-        for(let controller of vrviewport.getControllers()) {
-          addIconToController(controller)
-        }
-        this.addIconToControllerId = vrviewport.controllerAdded.connect(addIconToController);
-      });
-    }
+  //   this.appData.renderer.getXRViewport().then(xrvp => {
+  //     if(!this.vrControllerToolTip) {
+  //       this.vrControllerToolTip = new Visualive.Sphere(this.tp.getValue(), 64);
+  //       this.vrControllerToolTipMat = new Visualive.Material('marker', 'FlatSurfaceShader');
+  //       this.vrControllerToolTipMat.getParameter('BaseColor').setValue(this.cp.getValue());
+  //     }
+  //     const addIconToController = (controller) => {
+  //       // The tool might already be deactivated.
+  //       if(!this.__activated)
+  //         return;
+  //       const geomItem = new Visualive.GeomItem('VRControllerTip', this.vrControllerToolTip, this.vrControllerToolTipMat);
+  //       controller.getTipItem().removeAllChildren();
+  //       controller.getTipItem().addChild(geomItem, false);
+  //     }
+  //     for(let controller of xrvp.getControllers()) {
+  //       addIconToController(controller)
+  //     }
+  //     this.addIconToControllerId = xrvp.controllerAdded.connect(addIconToController);
+  //   });
 
-  }
+  // }
 
-  deactivateTool() {
-    super.deactivateTool();
+  // deactivateTool() {
+  //   super.deactivateTool();
 
-    this.appData.renderer.getDiv().style.cursor = "pointer";
+  //   this.appData.renderer.getDiv().style.cursor = "pointer";
 
-    if(this.__id != undefined) {
-      this.appData.renderer.getXRViewport().then(xrvp => {
-        for(let controller of xrvp.getControllers()) {
-          controller.getTipItem().removeAllChildren();
-        }
-      });
-    }
-  }
+  //   this.appData.renderer.getXRViewport().then(xrvp => {
+  //     // for(let controller of xrvp.getControllers()) {
+  //     //   controller.getTipItem().removeAllChildren();
+  //     // }
+  //     xrvp.controllerAdded.disconnectId(this.addIconToControllerId);
+  //   });
+  // }
 
   createStart(xfo, parentItem) {
     this.change = new CreateLineChange(parentItem, xfo);

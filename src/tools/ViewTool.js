@@ -43,6 +43,7 @@ export default class ViewTool extends BaseTool {
       }
       const addIconToController = (controller) => {
         const geomItem = new Visualive.GeomItem('SceneWidgetToolTip', this.vrControllerToolTip, this.vrControllerToolTipMat);
+        controller.getTipItem().removeAllChildren();
         controller.getTipItem().addChild(geomItem, false);
       }
       for(let controller of xrvp.getControllers()) {
@@ -56,14 +57,12 @@ export default class ViewTool extends BaseTool {
     super.deactivateTool();
 
     this.appData.renderer.getXRViewport().then(xrvp => {
-      if(this.vrControllerToolTip) {
-        const removeIconFromController = (controller) => {
-          controller.getTipItem().removeAllChildren();
-        }
-        for(let controller of xrvp.getControllers()) {
-          removeIconFromController(controller)
-        }
-      }
+      // if(this.vrControllerToolTip) {
+      //   // for(let controller of xrvp.getControllers()) {
+      //   //   controller.getTipItem().removeAllChildren();
+      //   // }
+      // }
+      xrvp.controllerAdded.disconnectId(this.addIconToControllerId);
     })
   }
   

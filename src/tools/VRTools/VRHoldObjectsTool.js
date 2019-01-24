@@ -135,11 +135,9 @@ export default class VRHoldObjectsTool extends BaseTool {
     }
 
     this.appData.renderer.getXRViewport().then(xrvp => {
-      for(let controller of xrvp.getControllers()) {
-        addIconToController(controller)
-      }
-      if(!this.addIconToControllerId)
-        this.addIconToControllerId = xrvp.controllerAdded.connect(addIconToController);
+      for(let controller of xrvp.getControllers()) 
+        addIconToController(controller);
+      this.addIconToControllerId = xrvp.controllerAdded.connect(addIconToController);
     });
   }
 
@@ -147,12 +145,10 @@ export default class VRHoldObjectsTool extends BaseTool {
     super.deactivateTool();
 
     this.appData.renderer.getXRViewport().then(xrvp => {
-      const removeIconFromController = (controller) => {
-        controller.getTipItem().removeAllChildren();
-      }
-      for(let controller of xrvp.getControllers()) {
-        removeIconFromController(controller)
-      }
+      // for(let controller of xrvp.getControllers()) {
+      //   controller.getTipItem().removeAllChildren();
+      // }
+      xrvp.controllerAdded.disconnectId(this.addIconToControllerId);
     });
   }
 
