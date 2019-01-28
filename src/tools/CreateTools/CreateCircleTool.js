@@ -66,6 +66,7 @@ export default class CreateCircleTool extends CreateGeomTool {
     }
     this.change = null;
     this.stage = 0;
+    this.actionFinished.emit();
   }
 }
 

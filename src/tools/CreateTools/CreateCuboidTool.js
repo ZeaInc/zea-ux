@@ -82,8 +82,10 @@ export default class CreateCuboidTool extends CreateGeomTool {
       this.invxfo = this.constructionPlane.inverse();
 
     }
-    else if(this.stage == 2)
+    else if(this.stage == 2) {
       this.stage = 0;
+      this.actionFinished.emit();
+    }
   }
 
 }

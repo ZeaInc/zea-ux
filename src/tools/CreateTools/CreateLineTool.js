@@ -124,5 +124,6 @@ export default class CreateLineTool extends CreateGeomTool {
       this.appData.undoRedoManager.undo(false);
     }
     this.stage = 0;
+    this.actionFinished.emit();
   }
 }

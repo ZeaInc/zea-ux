@@ -21,12 +21,6 @@ class ActionTreeView {
     })
   }
 
-  _addMenuItem(domElement, action) {
-    const parentElement = domElement;
-    const a = this._addActionTo(parentElement, 'pure-menu-link', null, action.callback);
-    this._addSpanTo(a, 'ActionTitle', action.name);
-  }
-
   _addSpanTo(domElement, className, innerHTML) {
     const span = document.createElement('span');
     span.className = className;
@@ -37,29 +31,45 @@ class ActionTreeView {
     return span;
   }
 
-  _addActionTo(domElement, className, innerHTML, onClick) {
+  _addMenuItem(domElement, action) {
     const a = document.createElement('a');
     a.href = '#';
-    a.className = className;
-    if (innerHTML) {
-      a.innerHTML = innerHTML;
+
+    let classes = 'pure-menu-link VRUIElement';
+    let hilighted = false;
+    let toggled = false;
+    a.className = classes;
+
+    a.addEventListener('mouseenter', e => {
+      if(!toggled)
+        a.className = classes + " HighlightedMenu";
+    });
+    a.addEventListener('mouseleave', e => {
+      if(toggled)
+        a.className = classes + " pure-menu-selected";
+      else
+        a.className = classes;
+    });
+
+    if (action.activatedChanged) {
+      action.activatedChanged.connect((activated)=>{
+        if(activated)
+          a.className = classes + " pure-menu-selected";
+        else
+          a.className = classes;
+        toggled = activated;
+      })
     }
-    if (onClick) {
+
+    if (action.callback) {
       a.addEventListener('click', e => {
         e.preventDefault();
-        onClick();
-      });
-
-      let classes;
-      a.addEventListener('mouseenter', e => {
-        classes = a.className;
-        a.className += " HighlightedMenu";
-      });
-      a.addEventListener('mouseleave', e => {
-        a.className = classes;
+        action.callback();
       });
     }
+
     domElement.appendChild(a);
+    this._addSpanTo(a, 'ActionTitle', action.name);
     return a;
   }
 

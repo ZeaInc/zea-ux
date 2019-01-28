@@ -149,13 +149,15 @@ class CreateGeomTool extends BaseCreateTool {
       }
       else if(event.button == 2) {
         // Cancel the tool. 
-        this.appData.toolManager.removeTool(this.index);
+        // this.appData.toolManager.removeTool(this.index);
+        this.actionFinished.emit();
       }
       return true;
     }
     else if(event.button == 2) {
       this.appData.undoRedoManager.undo(false);
       this.stage = 0;
+      this.actionFinished.emit();
       return true;
     }
     return true;

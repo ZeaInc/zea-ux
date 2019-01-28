@@ -6,6 +6,8 @@ export default class BaseTool extends Visualive.ParameterOwner {
       console.error("App data not provided to tool")
     this.appData = appData;
 
+    // When the tool becomes active ready 
+    this.activatedChanged = new Visualive.Signal();
     this.actionFinished = new Visualive.Signal();
 
     this.__params = []
@@ -35,10 +37,12 @@ export default class BaseTool extends Visualive.ParameterOwner {
     if(this.__activated)
       throw("Tool already activate")
     this.__activated = true;
+    this.activatedChanged.emit(true)
   }
 
   deactivateTool() {
     this.__activated = false;
+    this.activatedChanged.emit(false)
   }
 
   /////////////////////////////////////
