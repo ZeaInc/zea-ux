@@ -37,27 +37,27 @@ class ActionTreeView {
 
     let classes = 'pure-menu-link VRUIElement';
     let hilighted = false;
-    let toggled = false;
+    let activated = false;
     a.className = classes;
 
     a.addEventListener('mouseenter', e => {
-      if(!toggled)
+      if(!activated)
         a.className = classes + " HighlightedMenu";
     });
     a.addEventListener('mouseleave', e => {
-      if(toggled)
-        a.className = classes + " pure-menu-selected";
+      if(activated)
+        a.className = classes + " ActionedMenu";
       else
         a.className = classes;
     });
 
     if (action.activatedChanged) {
-      action.activatedChanged.connect((activated)=>{
-        if(activated)
-          a.className = classes + " pure-menu-selected";
+      action.activatedChanged.connect((state)=>{
+        if(state)
+          a.className = classes + " ActionedMenu";
         else
           a.className = classes;
-        toggled = activated;
+        activated = state;
       })
     }
 

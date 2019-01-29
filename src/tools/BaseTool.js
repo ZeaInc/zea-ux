@@ -7,12 +7,21 @@ export default class BaseTool extends Visualive.ParameterOwner {
     this.appData = appData;
 
     // When the tool becomes active ready 
+    this.installChanged = new Visualive.Signal();
     this.activatedChanged = new Visualive.Signal();
     this.actionFinished = new Visualive.Signal();
 
     this.__params = []
     this.__installed = false;
     this.__activated = false;
+  }
+
+  getName() {
+    return this.constructor.name;
+  }
+
+  isPrimaryTool() {
+    return false;
   }
 
   /////////////////////////////////////
@@ -27,10 +36,12 @@ export default class BaseTool extends Visualive.ParameterOwner {
       throw("Tool already installed")
     this.index = index;
     this.__installed = true;
+    this.installChanged.emit(true)
   }
 
   uninstall() {
     this.__installed = false;
+    this.installChanged.emit(false)
   }
 
   activateTool() {

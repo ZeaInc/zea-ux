@@ -25,8 +25,6 @@ export default class VRControllerUI extends Visualive.GeomItem {
     // Flip it over so we see the front.
     this.__uiGeomOffsetXfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0, 1, 0), Math.PI);
     this.setGeomOffsetXfo(this.__uiGeomOffsetXfo);
-    this.__uiLocalXfo = new Visualive.Xfo();
-    this.__uiLocalXfo.ori.setFromAxisAndAngle(new Visualive.Vec3(1, 0, 0), Math.PI * -0.6);
 
     const vrui_elements = this.__vrUIDOMElement.getElementsByClassName(VR_UI_ELEM_CLASS);
 
@@ -35,27 +33,33 @@ export default class VRControllerUI extends Visualive.GeomItem {
         this.renderUIToImage();
         return;
       }
-      const mutatedVRUIElements = new Set();
+      let mutatedElems = [];
       // console.log("mutations:", mutations.length)
       mutations.some((mutation) => {
-        let result = true;
-        // Find the nearest ancestor element that has our special class assigned.
         let elem = mutation.target;
+        // if(elem == this.__vrUIDOMElement) {
+        //   this.renderUIToImage();
+        //   mutatedElems = [];
+        //   return false;
+        // }
+        // mutatedElems.push(elem);
+
         while(elem.parentNode) {
           if(elem == this.__vrUIDOMElement) {
             this.renderUIToImage();
-            mutatedVRUIElements.clear();
+            mutatedElems = [];
             return false;
             break;
           }
           // console.log(elem.classList)
           if(elem.classList.contains(VR_UI_ELEM_CLASS) || elem == this.__vrUIDOMElement) {
-            mutatedVRUIElements.add(elem);
+            if(mutatedElems.indexOf(elem) == -1)
+              mutatedElems.push(elem);
             break;
           }
           elem = elem.parentNode;
         }
-        return result;
+        return true;
       });
 
       // Update the UI. (this may be too slow.)
@@ -66,13 +70,14 @@ export default class VRControllerUI extends Visualive.GeomItem {
       //     this.__renderRequested = false;
       //   }, 1);
       // }
-      // console.log("mutatedVRUIElements:", mutatedVRUIElements.size)
-      const promises = [];
-      mutatedVRUIElements.forEach(elem => {
-        promises.push(this.updateElemInAtlas(elem))
+      // console.log("mutatedElems:", mutatedElems.size);
+      const start = performance.now();
+      const promises = mutatedElems.map(elem => {
+        return this.updateElemInAtlas(elem);
       });
       Promise.all(promises).then(()=>{
         this.updateUIImage();
+        console.log("Update Time:", performance.now() - start);
       });
 
     });
@@ -119,6 +124,8 @@ export default class VRControllerUI extends Visualive.GeomItem {
             return;
           }
           // console.log(rect.width, rect.height, rect.x, rect.y)
+          // this.mainCtx.clearRect(rect.x, rect.y, rect.width, rect.height);
+          this.mainCtx.fillRect(rect.x, rect.y, rect.width, rect.height);
           this.mainCtx.drawImage(canvas, rect.x, rect.y);
           resolve()
         });
@@ -134,6 +141,7 @@ export default class VRControllerUI extends Visualive.GeomItem {
      domtoimage.toCanvas(this.__vrUIDOMElement)
       .then((canvas) => {
         this.mainCtx = canvas.getContext('2d');
+        this.mainCtx.fillStyle = "#FFFFFF";
 
         const rect = this.__vrUIDOMElement.getBoundingClientRect();
         // Sometimes a rendeer request occurs as the UI is being hidden.
@@ -147,12 +155,20 @@ export default class VRControllerUI extends Visualive.GeomItem {
           this.__uiGeomOffsetXfo.sc.set(this.__rect.width * dpm, this.__rect.height * dpm, 1.0);
           this.setGeomOffsetXfo(this.__uiGeomOffsetXfo)
 
-          this.appData.visualiveSession.pub('pose-message', {
-            interfaceType: 'Vive',
-            updateUIPanel: {
-              size: this.__uiGeomOffsetXfo.sc.toJSON()
-            }
-          });
+          // this.appData.visualiveSession.pub('pose-message', {
+          //   interfaceType: 'Vive',
+          //   updateUIPanel: {
+          //     size: this.__uiGeomOffsetXfo.sc.toJSON()
+          //   }
+          // });
+          // this.appData.visualiveSession.pub('pose-message', {
+          //   interfaceType: 'Vive',
+          //   showUIPanel: {
+          //     controllerId: this.uiController.getId(),
+          //     localXfo: this.getLocalXfo().toJSON(),
+          //     size: this.__uiGeomOffsetXfo.sc.toJSON()
+          //   }
+          // });
         }
         this.updateUIImage();
       });
@@ -165,7 +181,7 @@ export default class VRControllerUI extends Visualive.GeomItem {
       console.log("clientX:" + args.clientX + " clientY:" + args.clientY);
 
     const event = new MouseEvent(eventName, Object.assign({
-      // target: element,
+      target: element,
       view: window,
       bubbles: true,
       // composed: true,
@@ -184,7 +200,8 @@ export default class VRControllerUI extends Visualive.GeomItem {
     //   }, 1);
     // }
 
-    // return event;
+    // The event is re-cycled to generate a click.
+    return event;
   }
 
 };

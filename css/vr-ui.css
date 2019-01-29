@@ -12,6 +12,7 @@
   overflow: auto; /* Enable scroll if needed */
   background-color: rgb(0, 0, 0); /* Fallback color */
   background-color: rgba(0, 0, 0, 0.1); /* Black w/ opacity */
+  /*pointer-events: none*/
 }
 
 /* Modal Content/Box */
@@ -26,9 +27,12 @@
 
 
 .HighlightedMenu {
-  background-color: #03E3AC;
+  /*background-color: #03E3AC;*/
+  border: 2px solid #03E3AC;
+  border-radius: 4px;
 }
 
 .ActionedMenu {
   background-color: #03E3AC;
+  border-radius: 4px;
 }

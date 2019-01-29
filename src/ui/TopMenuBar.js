@@ -54,6 +54,21 @@ class TopMenuBar {
         (action.key || '')).toLowerCase();
       this.__hotkeysToActions[keyComboExpected] = action;
     }
+
+    if (action.callback) {
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        action.callback.call(action);
+      });
+    }
+    if (action.activatedChanged) {
+      action.activatedChanged.connect((state)=>{
+        if(state)
+          a.className = "pure-menu-link ActionedMenu";
+        else
+          a.className = "pure-menu-link";
+      })
+    }
   }
 
   _addKeyListener() {
@@ -104,18 +119,12 @@ class TopMenuBar {
     return span;
   }
 
-  _addATo(domElement, className, innerHTML, onClick) {
+  _addATo(domElement, className, innerHTML) {
     const a = document.createElement('a');
     a.href = '#';
     a.className = className;
     if (innerHTML) {
       a.innerHTML = innerHTML;
-    }
-    if (onClick) {
-      a.addEventListener('click', e => {
-        e.preventDefault();
-        onClick();
-      });
     }
     domElement.appendChild(a);
     return a;

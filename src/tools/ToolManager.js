@@ -16,10 +16,24 @@ export default class ToolManager {
     tool.install(index);
   }
 
+  insertToolBefore(tool, beforeTool) {
+    // Note: when activating new tools in VR, we
+    // can insert the new tool below the VRUI tool, 
+    // so that once the VR UI is closed, it becomes
+    // the new active tool.
+    const index = this.__toolStack.indexOf(beforeTool)+1;
+    this.__toolStack.splice(index-1, 0, tool);
+    tool.install(index);
+    return index;
+  }
+
   insertToolAfter(tool, afterTool) {
     const index = this.__toolStack.indexOf(afterTool)+1;
     this.__toolStack.splice(index, 0, tool);
     tool.install(index);
+    if (index == this.__toolStack.length) {
+      tool.activateTool();
+    }
     return index;
   }
 
@@ -71,22 +85,35 @@ export default class ToolManager {
 
     return this.__toolStack.length - 1;
   }
-
-  popTool() {
+  __removeCurrTool() {
     if (this.__toolStack.length > 0) {
       const prevTool = this.__toolStack.pop();
       prevTool.deactivateTool();
       prevTool.uninstall();
-
-      const tool = this.currTool();
-      if (tool)
-        tool.activateTool();
-      console.log("ToolManager.popTool:", prevTool.constructor.name, (tool ? tool.constructor.name : ''))
     }
+  }
+
+  popTool() {
+    this.__removeCurrTool();
+    const tool = this.currTool();
+    if (tool)
+      tool.activateTool();
+    // console.log("ToolManager.popTool:", prevTool.constructor.name, (tool ? tool.constructor.name : ''))
+  }
+
+  replaceCurrentTool(tool) {
+    this.__removeCurrTool();
+    this.__toolStack.push(tool);
+    tool.install(this.__toolStack.length - 1);
+    tool.activateTool();
   }
 
   currTool() {
     return this.__toolStack[this.__toolStack.length - 1];
+  }
+
+  currToolName() {
+    return this.__toolStack[this.__toolStack.length - 1].getName();
   }
 
 

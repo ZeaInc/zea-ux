@@ -59,6 +59,7 @@ class CreateGeomTool extends BaseCreateTool {
     super(appData);
 
     this.stage = 0;
+    this.removeToolOnRightClick = true;
 
     this.cp = this.addParameter(new Visualive.ColorParameter('Line Color', new Visualive.Color(.7, .2, .2)));
   }
@@ -148,16 +149,15 @@ class CreateGeomTool extends BaseCreateTool {
         this.createStart(xfo, this.appData.scene.getRoot());
       }
       else if(event.button == 2) {
-        // Cancel the tool. 
-        // this.appData.toolManager.removeTool(this.index);
-        this.actionFinished.emit();
+        // Cancel the tool.
+        if(this.removeToolOnRightClick)
+          this.appData.toolManager.removeTool(this.index);
       }
       return true;
     }
     else if(event.button == 2) {
       this.appData.undoRedoManager.undo(false);
       this.stage = 0;
-      this.actionFinished.emit();
       return true;
     }
     return true;
