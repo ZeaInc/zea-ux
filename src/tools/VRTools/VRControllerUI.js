@@ -38,7 +38,7 @@ export default class VRControllerUI extends Visualive.GeomItem {
       });
       Promise.all(promises).then(()=>{
         this.updateUIImage();
-        console.log("Update Time:", performance.now() - start, mutatedElems.length);
+        // console.log("Update Time:", performance.now() - start, mutatedElems.length);
         mutatedElems = [];
       });
     }
@@ -161,8 +161,8 @@ export default class VRControllerUI extends Visualive.GeomItem {
   sendMouseEvent(eventName, args, element) {
     // console.log(eventName, element)
 
-    if (eventName == 'mousedown')
-      console.log("clientX:" + args.clientX + " clientY:" + args.clientY);
+    // if (eventName == 'mousedown')
+    //   console.log("clientX:" + args.clientX + " clientY:" + args.clientY);
 
     const event = new MouseEvent(eventName, Object.assign({
       target: element,
@@ -175,16 +175,7 @@ export default class VRControllerUI extends Visualive.GeomItem {
     // Dispatch the event to a leaf item in the DOM tree.
     element.dispatchEvent(event);
 
-    // // Update the UI. (this may be too slow.)
-    // if(!this.__renderRequested){
-    //   this.__renderRequested = true;
-    //   setTimeout(()=> {
-    //     this.renderUIToImage();
-    //     this.__renderRequested = false;
-    //   }, 1);
-    // }
-
-    // The event is re-cycled to generate a click.
+    // The event is re-cycled to generate a 'click' event on mouse down.
     return event;
   }
 

@@ -13,27 +13,8 @@ export default class VRUITool extends BaseTool {
 
     appData.renderer.addTreeItem(this.controllerUI);
 
-
-    // const uimat = new Visualive.Material('uimat', 'FlatSurfaceShader');
-    // uimat.visibleInGeomDataBuffer = false;
-
-    // this.__uiimage = new Visualive.DataImage();
-    // uimat.getParameter('BaseColor').setValue(this.__uiimage);
-    // // uimat.getParameter('BaseColor').setValue(new Visualive.Color(0.3, 0.3, 0.3));
-
-    // this.__uiGeomItem = new Visualive.GeomItem('VRControllerUI', new Visualive.Plane(1, 1), uimat);
-    // this.__uiGeomOffsetXfo = new Visualive.Xfo();
-    // this.__uiGeomOffsetXfo.sc.set(0, 0, 1);
-    // // Flip it over so we see the front.
-    // this.__uiGeomOffsetXfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0, 1, 0), Math.PI);
-    // this.__uiGeomItem.setGeomOffsetXfo(this.__uiGeomOffsetXfo);
     this.__uiLocalXfo = new Visualive.Xfo();
     this.__uiLocalXfo.ori.setFromAxisAndAngle(new Visualive.Vec3(1, 0, 0), Math.PI * -0.6);
-    // this.__dims = {
-    //   width: 200,
-    //   height: 300
-    // };
-    // this.__uiGeomItem.addRef(this)
 
     const pointermat = new Visualive.Material('pointermat', 'LinesShader');
     pointermat.visibleInGeomDataBuffer = false;
@@ -54,7 +35,6 @@ export default class VRUITool extends BaseTool {
     this.__uiPointerItem.addRef(this)
 
     this.__triggerHeld = false;
-    // this.__renderRequested = false;
   }
 
 
@@ -75,9 +55,9 @@ export default class VRUITool extends BaseTool {
       const headToCtrlA = xfoA.tr.subtract(headXfo.tr);
       const headToCtrlB = xfoB.tr.subtract(headXfo.tr);
       if (headToCtrlA.cross(headToCtrlB).dot(headXfo.ori.getYaxis()) > 0.0) {
-        this.__uiLocalXfo.tr.set(0.1, -0.05, 0.08);
+        this.__uiLocalXfo.tr.set(0.05, -0.05, 0.08);
       } else {
-        this.__uiLocalXfo.tr.set(-0.1, -0.05, 0.08);
+        this.__uiLocalXfo.tr.set(-0.05, -0.05, 0.08);
       }
     }
     else {
@@ -135,58 +115,6 @@ export default class VRUITool extends BaseTool {
     this.__pointerLocalXfo.sc.set(1, 1, length);
     this.__uiPointerItem.setLocalXfo(this.__pointerLocalXfo);
   }
-
-  // renderUIToImage() {
-  //   domtoimage.toPixelData(this.__vrUIDOMElement)
-  //     .then((pixels) => {
-  //       const rect = this.__vrUIDOMElement.getBoundingClientRect();
-  //       // Sometimes a rendeer request occurs as the UI is being hidden.
-  //       if((rect.width * rect.height) == 0)
-  //         return;
-
-  //       // let dpm = 0.0003; //dots-per-meter (1 each 1/2mm)
-  //       let dpm = 0.0007; //dots-per-meter (1 each 1/2mm)
-  //       this.__uiGeomOffsetXfo.sc.set(rect.width * dpm, rect.height * dpm, 1.0);
-  //       this.controllerUI.setGeomOffsetXfo(this.__uiGeomOffsetXfo)
-  //       this.__uiimage.setData(rect.width, rect.height, new Uint8Array(pixels.buffer));
-
-  //       this.appData.visualiveSession.pub('pose-message', {
-  //         interfaceType: 'Vive',
-  //         updateUIPanel: {
-  //           size: this.__uiGeomOffsetXfo.sc.toJSON()
-  //         }
-  //       });
-  //     });
-  // }
-
-  // sendMouseEvent(eventName, args, element) {
-  //   // console.log(eventName, element)
-
-  //   if (eventName == 'mousedown')
-  //     console.log("clientX:" + args.clientX + " clientY:" + args.clientY);
-
-  //   const event = new MouseEvent(eventName, Object.assign({
-  //     // target: element,
-  //     view: window,
-  //     bubbles: true,
-  //     // composed: true,
-  //     cancelable: true
-  //   }, args));
-
-  //   // Dispatch the event to a leaf item in the DOM tree.
-  //   element.dispatchEvent(event);
-
-  //   // Update the UI. (this may be too slow.)
-  //   if(!this.__renderRequested){
-  //     this.__renderRequested = true;
-  //     setTimeout(()=> {
-  //       this.renderUIToImage();
-  //       this.__renderRequested = false;
-  //     }, 1);
-  //   }
-
-  //   return event;
-  // }
 
   calcUIIntersection() {
 

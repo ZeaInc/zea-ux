@@ -51,6 +51,7 @@ class ActionTreeView {
         a.className = classes;
     });
 
+
     if (action.activatedChanged) {
       action.activatedChanged.connect((state)=>{
         if(state)
@@ -59,6 +60,14 @@ class ActionTreeView {
           a.className = classes;
         activated = state;
       })
+    }
+    else {
+      a.addEventListener('mousedown', e => {
+          a.className = classes + " ActionedMenu";
+      });
+      a.addEventListener('mouseup', e => {
+        a.className = classes + " HighlightedMenu";
+      });
     }
 
     if (action.callback) {
