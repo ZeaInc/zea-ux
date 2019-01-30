@@ -20,26 +20,15 @@
   position: relative;
 }
 
-.FooterWrapper {
+/*.FooterWrapper {
   border-color: #bbb;
-}
-
-
-.BottomPanelWrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-
+}*/
 
 .BottomPanel {
   border-color: #bbb;
   overflow: auto;
   width: 100%;
-  height: 200px;
+  height: 2px;
   flex-grow: 0;
   display: flex;
 }

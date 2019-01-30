@@ -478,19 +478,20 @@ export default class ViewTool extends BaseTool {
   __initMoveStage(vrviewport){
 
     if(this.__controllerTriggersHeld.length == 1) {
-      this.__grabPos = this.__controllerTriggersHeld[0].getControllerStageLocalXfo().tr.clone();
+      this.__grabPos = this.__controllerTriggersHeld[0].getControllerTipStageLocalXfo().tr.clone();
       this.stageXfo__GrabStart = vrviewport.getXfo().clone();
       this.__invOri = this.stageXfo__GrabStart.ori.inverse();
     }
     else if(this.__controllerTriggersHeld.length == 2) {
-      const p0 = this.__controllerTriggersHeld[0].getControllerStageLocalXfo().tr;
-      const p1 = this.__controllerTriggersHeld[1].getControllerStageLocalXfo().tr;
+      const p0 = this.__controllerTriggersHeld[0].getControllerTipStageLocalXfo().tr;
+      const p1 = this.__controllerTriggersHeld[1].getControllerTipStageLocalXfo().tr;
       this.__grabDir = p1.subtract(p0);
       this.__grabPos = p0.lerp(p1, 0.5);
-      this.__grabDist = this.__grabDir.length();
       this.__grabDir.y = 0.0;
-      this.__grabDir.normalizeInPlace();
+      this.__grabDist = this.__grabDir.length();
+      this.__grabDir.scaleInPlace(1/this.__grabDist);
       this.stageXfo__GrabStart = vrviewport.getXfo().clone();
+      this.angle = 0;
       this.__grab_to_stage = this.__grabPos.subtract(this.stageXfo__GrabStart.tr);
     }
   }
@@ -515,7 +516,7 @@ export default class ViewTool extends BaseTool {
   onVRPoseChanged(event) {
 
     if(this.__controllerTriggersHeld.length == 1) {
-      const grabPos = this.__controllerTriggersHeld[0].getControllerStageLocalXfo().tr;
+      const grabPos = this.__controllerTriggersHeld[0].getControllerTipStageLocalXfo().tr;
 
       const deltaXfo = new Visualive.Xfo();
       deltaXfo.tr = this.__grabPos.subtract(grabPos);
@@ -528,31 +529,32 @@ export default class ViewTool extends BaseTool {
     }
     else if(this.__controllerTriggersHeld.length == 2) {
 
-      const p0 = this.__controllerTriggersHeld[0].getControllerStageLocalXfo().tr;
-      const p1 = this.__controllerTriggersHeld[1].getControllerStageLocalXfo().tr;
+      const p0 = this.__controllerTriggersHeld[0].getControllerTipStageLocalXfo().tr;
+      const p1 = this.__controllerTriggersHeld[1].getControllerTipStageLocalXfo().tr;
 
       const grabPos = p0.lerp(p1, 0.5);
       const grabDir = p1.subtract(p0);
+      grabDir.y = 0.0;
+      const grabDist = grabDir.length();
+      grabDir.scaleInPlace(1/grabDist);
+
 
       const deltaXfo = new Visualive.Xfo();
 
       ////////////////
       // Compute sc
       // Limit to a 10x change in scale per grab.
-      const sc = Math.max(Math.min(this.__grabDist / grabDir.length(), 10.0), 0.1);
+      const sc = Math.max(Math.min(this.__grabDist / grabDist, 10.0), 0.1);
 
       // Avoid causing a scale that would make the user < 1.0 scale factor.
       const stageSc = this.stageXfo__GrabStart.sc.x * sc;
       // if(stageSc < 1.0){
       //     sc = 1.0 / this.stageXfo__GrabStart.sc.x;
       // }
-
       deltaXfo.sc.set(sc, sc, sc);
 
       ////////////////
       // Compute ori
-      grabDir.y = 0.0;
-      grabDir.normalizeInPlace();
       let angle = this.__grabDir.angleTo(grabDir);
       if(this.__grabDir.cross(grabDir).y > 0.0){
         angle = -angle;
