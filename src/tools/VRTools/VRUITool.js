@@ -97,14 +97,14 @@ export default class VRUITool extends BaseTool {
       if(this.pointerController) 
         this.pointerController.getTipItem().addChild(this.__uiPointerItem, false);
 
-      // this.appData.visualiveSession.pub('pose-message', {
-      //   interfaceType: 'Vive',
-      //   showUIPanel: {
-      //     controllerId: this.uiController.getId(),
-      //     localXfo: this.__uiLocalXfo.toJSON(),
-      //     size: this.__uiGeomOffsetXfo.sc.toJSON()
-      //   }
-      // });
+      this.appData.visualiveSession.pub('pose-message', {
+        interfaceType: 'Vive',
+        showUIPanel: {
+          controllerId: this.uiController.getId(),
+          localXfo: this.__uiLocalXfo.toJSON(),
+          size: this.controllerUI.getGeomOffsetXfo().sc.toJSON()
+        }
+      });
     }
   }
 
@@ -114,22 +114,10 @@ export default class VRUITool extends BaseTool {
     this.controllerUI.deactivate();
 
     if(this.uiController) {
-      // this.uiController.getTipItem().removeAllChildren();
       this.uiController.getTipItem().removeChildByHandle(this.controllerUI)
       if(this.pointerController) {
-        // this.pointerController.getTipItem().removeAllChildren();
         this.pointerController.getTipItem().removeChildByHandle(this.__uiPointerItem)
       }
-      // Note: the UI is closing because of an interaction
-      // on the UI panel. this means we don't want it to 
-      // re-open again.
-      // No longer needed, as the new tool is inserted below
-      // the VRUI tool. Once the UI is closed, the new tool
-      // becomes active.
-      // if(this.__triggerDownElem) {
-      //   this.openUITool.stayClosed();
-      //   this.__triggerDownElem = null;
-      // }
 
       this.appData.visualiveSession.pub('pose-message', {
         interfaceType: 'Vive',

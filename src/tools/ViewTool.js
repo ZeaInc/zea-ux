@@ -491,7 +491,6 @@ export default class ViewTool extends BaseTool {
       this.__grabDist = this.__grabDir.length();
       this.__grabDir.scaleInPlace(1/this.__grabDist);
       this.stageXfo__GrabStart = vrviewport.getXfo().clone();
-      this.angle = 0;
       this.__grab_to_stage = this.__grabPos.subtract(this.stageXfo__GrabStart.tr);
     }
   }

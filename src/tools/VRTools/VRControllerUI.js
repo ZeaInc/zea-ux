@@ -28,22 +28,28 @@ export default class VRControllerUI extends Visualive.GeomItem {
 
     const vrui_elements = this.__vrUIDOMElement.getElementsByClassName(VR_UI_ELEM_CLASS);
 
+    let renderRequestedId;
+    let mutatedElems = [];
+    const processMutatedElems = ()=>{
+      renderRequestedId = null;
+      const start = performance.now();
+      const promises = mutatedElems.map(elem => {
+        return this.updateElemInAtlas(elem);
+      });
+      Promise.all(promises).then(()=>{
+        this.updateUIImage();
+        console.log("Update Time:", performance.now() - start, mutatedElems.length);
+        mutatedElems = [];
+      });
+    }
     this.__mutationObserver = new MutationObserver((mutations) => {
       if(!this.mainCtx) {
         this.renderUIToImage();
         return;
       }
-      let mutatedElems = [];
       // console.log("mutations:", mutations.length)
       mutations.some((mutation) => {
         let elem = mutation.target;
-        // if(elem == this.__vrUIDOMElement) {
-        //   this.renderUIToImage();
-        //   mutatedElems = [];
-        //   return false;
-        // }
-        // mutatedElems.push(elem);
-
         while(elem.parentNode) {
           if(elem == this.__vrUIDOMElement) {
             this.renderUIToImage();
@@ -62,24 +68,10 @@ export default class VRControllerUI extends Visualive.GeomItem {
         return true;
       });
 
-      // Update the UI. (this may be too slow.)
-      // if(!this.__renderRequested){
-      //   this.__renderRequested = true;
-      //   setTimeout(()=> {
-      //     this.renderUIToImage();
-      //     this.__renderRequested = false;
-      //   }, 1);
-      // }
-      // console.log("mutatedElems:", mutatedElems.size);
-      const start = performance.now();
-      const promises = mutatedElems.map(elem => {
-        return this.updateElemInAtlas(elem);
-      });
-      Promise.all(promises).then(()=>{
-        this.updateUIImage();
-        console.log("Update Time:", performance.now() - start);
-      });
-
+      // Batch the changes.
+      if(renderRequestedId)
+        clearTimeout(renderRequestedId);
+      renderRequestedId = setTimeout(processMutatedElems, 50);
     });
 
     this.__active = false;
@@ -155,20 +147,12 @@ export default class VRControllerUI extends Visualive.GeomItem {
           this.__uiGeomOffsetXfo.sc.set(this.__rect.width * dpm, this.__rect.height * dpm, 1.0);
           this.setGeomOffsetXfo(this.__uiGeomOffsetXfo)
 
-          // this.appData.visualiveSession.pub('pose-message', {
-          //   interfaceType: 'Vive',
-          //   updateUIPanel: {
-          //     size: this.__uiGeomOffsetXfo.sc.toJSON()
-          //   }
-          // });
-          // this.appData.visualiveSession.pub('pose-message', {
-          //   interfaceType: 'Vive',
-          //   showUIPanel: {
-          //     controllerId: this.uiController.getId(),
-          //     localXfo: this.getLocalXfo().toJSON(),
-          //     size: this.__uiGeomOffsetXfo.sc.toJSON()
-          //   }
-          // });
+          this.appData.visualiveSession.pub('pose-message', {
+            interfaceType: 'Vive',
+            updateUIPanel: {
+              size: this.__uiGeomOffsetXfo.sc.toJSON()
+            }
+          });
         }
         this.updateUIImage();
       });
