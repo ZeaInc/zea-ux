@@ -20,17 +20,17 @@
   "author": "Visualive",
   "license": "ISC",
   "devDependencies": {
-    "eslint": "^5.9.0",
+    "eslint": "^5.14.1",
     "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-plugin-import": "^2.15.0",
-    "prettier": "^1.16.1",
-    "webpack": "^4.29.0",
-    "webpack-cli": "^3.1.2"
+    "eslint-plugin-import": "^2.16.0",
+    "prettier": "^1.16.4",
+    "webpack": "^4.29.5",
+    "webpack-cli": "^3.2.3"
   },
   "dependencies": {
-    "@jaames/iro": "^3.5.3",
+    "@jaames/iro": "^4.0.1",
     "@visualive/collab": "^0.0.18",
-    "@visualive/engine": "^0.0.44",
+    "@visualive/engine": "^0.0.45",
     "dom-to-image": "^2.6.0"
   }
 }
