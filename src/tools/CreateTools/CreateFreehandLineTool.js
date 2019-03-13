@@ -129,5 +129,6 @@ export default class CreateFreehandLineTool extends CreateLineTool {
       this.appData.undoRedoManager.undo(false);
     }
     this.stage = 0;
+    this.actionFinished.emit();
   }
 }

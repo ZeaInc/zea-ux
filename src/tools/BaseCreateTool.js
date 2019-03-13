@@ -5,4 +5,9 @@ export default class BaseCreateTool extends BaseTool {
   constructor(appData) {
     super(appData);
   }
+
+  isPrimaryTool() {
+    return true;
+  }
+
 };

@@ -61,6 +61,7 @@ export default class CreateSphereTool extends CreateGeomTool {
       this.appData.undoRedoManager.undo(false);
     }
     this.stage = 0;
+    this.actionFinished.emit();
   }
 }
 
