@@ -201,9 +201,9 @@ export default class Avatar {
     }
   }
 
-  setViveRepresentation() {
+  setVRRepresentation(data) {
     this.__treeItem.removeAllChildren();
-    this.__currentViewMode = 'Vive';
+    this.__currentViewMode = 'VR';
 
     const hmdHolder = new Visualive.TreeItem("hmdHolder");
     if (this.__audioItem) {
@@ -230,10 +230,24 @@ export default class Avatar {
       }
     } else {
       const resourceLoader = this.__appData.scene.getResourceLoader();
-      if (!Visualive.SystemDesc.isMobileDevice && !this.__viveAsset && resourceLoader.resourceAvailable("VisualiveEngine/Vive.vla")) {
-        this.__viveAsset = this.__appData.scene.loadCommonAssetResource("VisualiveEngine/Vive.vla");
-        this.__viveAsset.geomsLoaded.connect(() => {
-          const materialLibrary = this.__viveAsset.getMaterialLibrary();
+
+      let assetPath;
+      switch(data.hmd){
+      case 'Vive': 
+          assetPath = "VisualiveEngine/Vive.vla";
+          break;
+      case 'Oculus': 
+          assetPath = "VisualiveEngine/Oculus.vla";
+          break;
+      default:
+          assetPath = "VisualiveEngine/Vive.vla";
+          break;
+      }
+
+      if (!this.__vrAsset && resourceLoader.resourceAvailable(assetPath)) {
+        this.__vrAsset = this.__appData.scene.loadCommonAssetResource(assetPath);
+        this.__vrAsset.geomsLoaded.connect(() => {
+          const materialLibrary = this.__vrAsset.getMaterialLibrary();
           const materialNames = materialLibrary.getMaterialNames();
           for (let name of materialNames) {
             const material = materialLibrary.getMaterial(name, false);
@@ -244,10 +258,11 @@ export default class Avatar {
           }
 
           if (!this.__currentUserAvatar) {
-            const hmdGeomItem = this.__viveAsset.getChildByName('HTC_Vive_HMD').clone();
+            const hmdGeomItem = this.__vrAsset.getChildByName('HMD').clone();
             const xfo = hmdGeomItem.getLocalXfo();
             xfo.tr.set(0, -0.03, -0.03);
             xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0, 1, 0), Math.PI);
+            xfo.sc.set(0.001); //convert mm to meters
             hmdGeomItem.setLocalXfo(xfo);
 
             this.__hmdGeomItem = hmdGeomItem;
@@ -265,7 +280,7 @@ export default class Avatar {
     this.__controllerTrees = [];
   }
 
-  updateVivePose(data) {
+  updateVRPose(data) {
 
     const setupController = (i) => {
       if (this.__controllerTrees[i]) {
@@ -277,7 +292,14 @@ export default class Avatar {
         this.__treeItem.addChild(this.__controllerTrees[i], false);
 
         const setupControllerGeom = () => {
-          const controllerTree = this.__viveAsset.getChildByName('HTC_Vive_Controller').clone();
+          let srcControllerTree;
+          if(i==0)
+            srcControllerTree = this.__vrAsset.getChildByName('LeftController');
+          else if(i==1)
+            srcControllerTree = this.__vrAsset.getChildByName('RightController');
+          if(!srcControllerTree)
+            srcControllerTree = this.__vrAsset.getChildByName('Controller');
+          const controllerTree = srcControllerTree.clone();
           const xfo = new Visualive.Xfo(
             new Visualive.Vec3(0, -0.035, -0.02),
             new Visualive.Quat({
@@ -285,11 +307,12 @@ export default class Avatar {
                 new Visualive.Vec3(0, 1, 0),
                 Math.PI
               ]
-            }));
+            }),
+            new Vec3(0.001, 0.001, 0.001));
           controllerTree.setLocalXfo(xfo);
           treeItem.addChild(controllerTree, false);
         }
-        this.__viveAsset.geomsLoaded.connect(() => {
+        this.__vrAsset.geomsLoaded.connect(() => {
           setupControllerGeom();
         });
       }
@@ -346,15 +369,11 @@ export default class Avatar {
         }
         this.updateCameraAndPointerPose(data)
         break;
-      case 'Vive':
-        if (this.__currentViewMode !== 'Vive') {
-          this.setViveRepresentation();
+      case 'VR':
+        if (this.__currentViewMode !== 'VR') {
+          this.setVRRepresentation();
         }
-        this.updateVivePose(data);
-        break;
-      case 'Daydream':
-        break;
-      case 'Occulus':
+        this.updateVRPose(data);
         break;
     }
   };
