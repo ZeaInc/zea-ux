@@ -244,10 +244,11 @@ export default class Avatar {
           }
 
           if (!this.__currentUserAvatar) {
-            const hmdGeomItem = this.__viveAsset.getChildByName('HTC_Vive_HMD').clone();
+            const hmdGeomItem = this.__viveAsset.getChildByName('HMD').clone();
             const xfo = hmdGeomItem.getLocalXfo();
             xfo.tr.set(0, -0.03, -0.03);
             xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0, 1, 0), Math.PI);
+            xfo.sc.set(1)
             hmdGeomItem.setLocalXfo(xfo);
 
             this.__hmdGeomItem = hmdGeomItem;
@@ -277,7 +278,14 @@ export default class Avatar {
         this.__treeItem.addChild(this.__controllerTrees[i], false);
 
         const setupControllerGeom = () => {
-          const controllerTree = this.__viveAsset.getChildByName('HTC_Vive_Controller').clone();
+          let srcControllerTree;
+          if(i==0)
+              srcControllerTree = this.__viveAsset.getChildByName('LeftController');
+          else if(i==1)
+              srcControllerTree = this.__viveAsset.getChildByName('RightController');
+          if(!srcControllerTree)
+              srcControllerTree = this.__viveAsset.getChildByName('Controller');
+          const controllerTree = srcControllerTree.clone();
           const xfo = new Visualive.Xfo(
             new Visualive.Vec3(0, -0.035, -0.02),
             new Visualive.Quat({
@@ -285,7 +293,8 @@ export default class Avatar {
                 new Visualive.Vec3(0, 1, 0),
                 Math.PI
               ]
-            }));
+            }),
+            new Visualive.Vec3(0.01, 0.01, 0.01));
           controllerTree.setLocalXfo(xfo);
           treeItem.addChild(controllerTree, false);
         }
