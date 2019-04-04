@@ -16,10 +16,24 @@ export default class ToolManager {
     tool.install(index);
   }
 
+  insertToolBefore(tool, beforeTool) {
+    // Note: when activating new tools in VR, we
+    // can insert the new tool below the VRUI tool, 
+    // so that once the VR UI is closed, it becomes
+    // the new active tool.
+    const index = this.__toolStack.indexOf(beforeTool)+1;
+    this.__toolStack.splice(index-1, 0, tool);
+    tool.install(index);
+    return index;
+  }
+
   insertToolAfter(tool, afterTool) {
     const index = this.__toolStack.indexOf(afterTool)+1;
     this.__toolStack.splice(index, 0, tool);
     tool.install(index);
+    if (index == this.__toolStack.length) {
+      tool.activateTool();
+    }
     return index;
   }
 
@@ -37,7 +51,16 @@ export default class ToolManager {
       const nextTool = this.currTool();
       if (nextTool)
         nextTool.activateTool();
+      else {
+        // Make sure to reset the pointer in case any tool 
+        // didn't close correctly.
+        this.appData.renderer.getDiv().style.cursor = "pointer";
+      }
     }
+  }
+
+  removeToolByHandle(tool) {
+    this.removeTool(this.getToolIndex(tool));
   }
 
   pushTool(tool) {
@@ -62,22 +85,35 @@ export default class ToolManager {
 
     return this.__toolStack.length - 1;
   }
-
-  popTool() {
+  __removeCurrTool() {
     if (this.__toolStack.length > 0) {
       const prevTool = this.__toolStack.pop();
       prevTool.deactivateTool();
       prevTool.uninstall();
-
-      const tool = this.currTool();
-      if (tool)
-        tool.activateTool();
-      console.log("ToolManager.popTool:", prevTool.constructor.name, (tool ? tool.constructor.name : ''))
     }
+  }
+
+  popTool() {
+    this.__removeCurrTool();
+    const tool = this.currTool();
+    if (tool)
+      tool.activateTool();
+    // console.log("ToolManager.popTool:", prevTool.constructor.name, (tool ? tool.constructor.name : ''))
+  }
+
+  replaceCurrentTool(tool) {
+    this.__removeCurrTool();
+    this.__toolStack.push(tool);
+    tool.install(this.__toolStack.length - 1);
+    tool.activateTool();
   }
 
   currTool() {
     return this.__toolStack[this.__toolStack.length - 1];
+  }
+
+  currToolName() {
+    return this.__toolStack[this.__toolStack.length - 1].getName();
   }
 
 
@@ -104,18 +140,13 @@ export default class ToolManager {
     this.touchEndId = viewport.touchEnd.connect(this.onTouchEnd.bind(this))
     this.touchCancelId = viewport.touchCancel.connect(this.onTouchCancel.bind(this))
 
-    if (renderer.supportsVR()) {
-      renderer.vrViewportSetup.connect(vrvp => {
-        /////////////////////////////////////
-        // VRController events
-        if (!vrvp != this.__vrvp) {
-          this.__vrvp = vrvp;
-          this.controllerDownId = vrvp.controllerButtonDown.connect(this.onVRControllerButtonDown.bind(this));
-          this.controllerUpId = vrvp.controllerButtonUp.connect(this.onVRControllerButtonUp.bind(this));
-          this.onVRPoseChangedId = vrvp.viewChanged.connect(this.onVRPoseChanged.bind(this));
-        }
-      });
-    }
+    this.appData.renderer.getXRViewport().then(xrvp => {
+      /////////////////////////////////////
+      // VRController events
+      this.controllerDownId = xrvp.controllerButtonDown.connect(this.onVRControllerButtonDown.bind(this));
+      this.controllerUpId = xrvp.controllerButtonUp.connect(this.onVRControllerButtonUp.bind(this));
+      this.onVRPoseChangedId = xrvp.viewChanged.connect(this.onVRPoseChanged.bind(this));
+    });
   }
 
   onMouseDown(event) {
@@ -333,16 +364,13 @@ export default class ToolManager {
     viewport.touchEnd.disconnectId(this.touchEndId)
     viewport.touchCancel.disconnectId(this.touchCancelId)
 
-    if (this.appData.renderer.supportsVR()) {
-      const vrviewport = this.appData.renderer.getVRViewport();
-      if (vrviewport) {
-        /////////////////////////////////////
-        // VRController events
-        viewport.controllerDown.disconnectId(this.controllerDownId)
-        viewport.controllerUp.disconnectId(this.controllerUpId)
-        viewport.viewChanged.disconnectId(this.onVRPoseChangedId)
-      };
-    }
+    this.appData.renderer.getXRViewport().then(xrvp => {
+      /////////////////////////////////////
+      // VRController events
+      viewport.controllerDown.disconnectId(this.controllerDownId)
+      viewport.controllerUp.disconnectId(this.controllerUpId)
+      viewport.viewChanged.disconnectId(this.onVRPoseChangedId)
+    });
 
   }
 }

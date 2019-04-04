@@ -308,7 +308,7 @@ export default class Avatar {
                 Math.PI
               ]
             }),
-            new Vec3(0.001, 0.001, 0.001));
+            new Visualive.Vec3(0.001, 0.001, 0.001));
           controllerTree.setLocalXfo(xfo);
           treeItem.addChild(controllerTree, false);
         }

@@ -6,6 +6,9 @@ import SelectionManager from './SelectionManager.js';
 import LoaderRegistry from './LoaderRegistry.js';
 import SessionSync from './SessionSync.js';
 
+import Action from './Action.js';
+import ToolAction from './ToolAction.js';
+
 import TopMenuBar from './ui/TopMenuBar.js';
 import Panels from './ui/side-panels.js';
 import CollabPanel from './ui/collab-panel.js';
@@ -61,6 +64,8 @@ export {
   SelectionManager,
   LoaderRegistry,
   SessionSync,
+
+  ToolAction,
 
   TopMenuBar,
   Panels,

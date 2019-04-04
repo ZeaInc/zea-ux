@@ -59,6 +59,7 @@ class CreateGeomTool extends BaseCreateTool {
     super(appData);
 
     this.stage = 0;
+    this.removeToolOnRightClick = true;
 
     this.cp = this.addParameter(new Visualive.ColorParameter('Line Color', new Visualive.Color(.7, .2, .2)));
   }
@@ -68,8 +69,7 @@ class CreateGeomTool extends BaseCreateTool {
 
     this.appData.renderer.getDiv().style.cursor = "crosshair";
 
-    const vrviewport = this.appData.renderer.getVRViewport();
-    if (vrviewport) {
+    this.appData.renderer.getXRViewport().then(xrvp => {
       if(!this.vrControllerToolTip) {
         this.vrControllerToolTip = new Visualive.Cross(0.05);
         this.vrControllerToolTipMat = new Visualive.Material('VRController Cross', 'LinesShader');
@@ -81,11 +81,11 @@ class CreateGeomTool extends BaseCreateTool {
         controller.getTipItem().removeAllChildren();
         controller.getTipItem().addChild(geomItem, false);
       }
-      for(let controller of vrviewport.getControllers()) {
+      for(let controller of xrvp.getControllers()) {
         addIconToController(controller)
       }
-      this.addIconToControllerId = vrviewport.controllerAdded.connect(addIconToController);
-    }
+      this.addIconToControllerId = xrvp.controllerAdded.connect(addIconToController);
+    });
 
   }
 
@@ -94,13 +94,12 @@ class CreateGeomTool extends BaseCreateTool {
 
     this.appData.renderer.getDiv().style.cursor = "pointer";
 
-    const vrviewport = this.appData.renderer.getVRViewport();
-    if (vrviewport) {
-      for(let controller of vrviewport.getControllers()) {
-        controller.getTipItem().removeAllChildren();
-      }
-      vrviewport.controllerAdded.disconnectId(this.addIconToControllerId);
-    }
+    this.appData.renderer.getXRViewport().then(xrvp => {
+      // for(let controller of xrvp.getControllers()) {
+      //   controller.getTipItem().removeAllChildren();
+      // }
+      xrvp.controllerAdded.disconnectId(this.addIconToControllerId);
+    });
   }
 
   screenPosToXfo(screenPos, viewport) {
@@ -143,10 +142,17 @@ class CreateGeomTool extends BaseCreateTool {
   onMouseDown(event) {
     // 
     if(this.stage == 0) {
-      this.constructionPlane = new Visualive.Xfo();
+      if(event.button == 0) {
+        this.constructionPlane = new Visualive.Xfo();
 
-      const xfo = this.screenPosToXfo(event.mousePos, event.viewport);
-      this.createStart(xfo, this.appData.scene.getRoot());
+        const xfo = this.screenPosToXfo(event.mousePos, event.viewport);
+        this.createStart(xfo, this.appData.scene.getRoot());
+      }
+      else if(event.button == 2) {
+        // Cancel the tool.
+        if(this.removeToolOnRightClick)
+          this.appData.toolManager.removeTool(this.index);
+      }
       return true;
     }
     else if(event.button == 2) {

@@ -5,8 +5,17 @@ export default class OpenVRUITool extends BaseTool {
     super(appData);
 
     this.vrUITool = vrUITool;
+    this.uiToolIndex = -1;
+    this.__stayClosed = false;
   }
 
+  uninstall() {
+    super.uninstall();
+
+    // Also remove the UI tool
+    if(this.uiToolIndex > 0)
+      this.appData.toolManager.removeToolByHandle(this.vrUITool);
+  }
 
   /////////////////////////////////////
   // VRController events
@@ -14,6 +23,10 @@ export default class OpenVRUITool extends BaseTool {
   onVRControllerButtonDown(event) {}
 
   onVRControllerButtonUp(event) {}
+
+  stayClosed(){
+    this.__stayClosed = true;
+  }
 
   onVRPoseChanged(event) {
 
@@ -32,8 +45,13 @@ export default class OpenVRUITool extends BaseTool {
       const headToCtrlA = xfoA.tr.subtract(headXfo.tr);
       headToCtrlA.normalizeInPlace();
       if (headToCtrlA.angleTo(xfoA.ori.getYaxis()) < (Math.PI * 0.25)) {
-        this.vrUITool.setUIControllers(ctrlA, ctrlB, headXfo);
-        this.appData.toolManager.pushTool(this.vrUITool);
+
+        // Stay closed as a subsequent tool has just caused the UI to be 
+        // closed while interacting with the UI. (see: VRUITool.deactivateTool)
+        if(!this.__stayClosed) {
+          this.vrUITool.setUIControllers(this, ctrlA, ctrlB, headXfo);
+          this.uiToolIndex = this.appData.toolManager.pushTool(this.vrUITool);
+        }
         return true;
       }
     }
@@ -44,6 +62,8 @@ export default class OpenVRUITool extends BaseTool {
       if(checkControllers(event.controllers[1], event.controllers[0]))
         return true;
     }
+    this.uiToolIndex = -1;
+    this.__stayClosed = false;
   }
 
 };
