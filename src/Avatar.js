@@ -244,36 +244,40 @@ export default class Avatar {
           break;
       }
 
-      if (!this.__vrAsset && resourceLoader.resourceAvailable(assetPath)) {
-        this.__vrAsset = this.__appData.scene.loadCommonAssetResource(assetPath);
-        this.__vrAsset.geomsLoaded.connect(() => {
-          const materialLibrary = this.__vrAsset.getMaterialLibrary();
-          const materialNames = materialLibrary.getMaterialNames();
-          for (let name of materialNames) {
-            const material = materialLibrary.getMaterial(name, false);
-            if (material) {
-              material.visibleInGeomDataBuffer = false;
-              material.setShaderName('SimpleSurfaceShader');
+      if (!this.__vrAsset){
+
+        const hmdAssetId = resourceLoader.resolveFilePathToId(assetPath);
+        if(hmdAssetId) {
+          this.__vrAsset = this.__appData.scene.loadCommonAssetResource(hmdAssetId);
+          this.__vrAsset.geomsLoaded.connect(() => {
+            const materialLibrary = this.__vrAsset.getMaterialLibrary();
+            const materialNames = materialLibrary.getMaterialNames();
+            for (let name of materialNames) {
+              const material = materialLibrary.getMaterial(name, false);
+              if (material) {
+                material.visibleInGeomDataBuffer = false;
+                material.setShaderName('SimpleSurfaceShader');
+              }
             }
-          }
 
-          if (!this.__currentUserAvatar) {
-            const hmdGeomItem = this.__vrAsset.getChildByName('HMD').clone();
-            const xfo = hmdGeomItem.getLocalXfo();
-            xfo.tr.set(0, -0.03, -0.03);
-            xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0, 1, 0), Math.PI);
-            xfo.sc.set(0.001); //convert mm to meters
-            hmdGeomItem.setLocalXfo(xfo);
+            if (!this.__currentUserAvatar) {
+              const hmdGeomItem = this.__vrAsset.getChildByName('HMD').clone();
+              const xfo = hmdGeomItem.getLocalXfo();
+              xfo.tr.set(0, -0.03, -0.03);
+              xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0, 1, 0), Math.PI);
+              xfo.sc.set(0.01); //convert mm to meters
+              hmdGeomItem.setLocalXfo(xfo);
 
-            this.__hmdGeomItem = hmdGeomItem;
-            this.__hmdGeomItem.addRef(this);
+              this.__hmdGeomItem = hmdGeomItem;
+              this.__hmdGeomItem.addRef(this);
 
-            if (this.__cameraBound) {
-              this.__hmdGeomItem.setVisible(false)
+              if (this.__cameraBound) {
+                this.__hmdGeomItem.setVisible(false)
+              }
+              hmdHolder.addChild(this.__hmdGeomItem, false);
             }
-            hmdHolder.addChild(this.__hmdGeomItem, false);
-          }
-        });
+          });
+        }
       }
     }
 
@@ -308,7 +312,7 @@ export default class Avatar {
                 Math.PI
               ]
             }),
-            new Visualive.Vec3(0.001, 0.001, 0.001));
+            new Visualive.Vec3(0.01, 0.01, 0.01));
           controllerTree.setLocalXfo(xfo);
           treeItem.addChild(controllerTree, false);
         }
@@ -371,7 +375,7 @@ export default class Avatar {
         break;
       case 'VR':
         if (this.__currentViewMode !== 'VR') {
-          this.setVRRepresentation();
+          this.setVRRepresentation(data);
         }
         this.updateVRPose(data);
         break;

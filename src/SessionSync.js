@@ -153,7 +153,8 @@ export default class SessionSync {
       if (event.focalDistance) {
         data.focalDistance = event.focalDistance;
       }
-      else if (event.controllers) {
+      else if (event.hmd) {
+        data.hmd = event.hmd;
         data.controllers = [];
         for (let controller of event.controllers) {
           data.controllers.push({
