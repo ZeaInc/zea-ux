@@ -265,7 +265,7 @@ export default class Avatar {
               const xfo = hmdGeomItem.getLocalXfo();
               xfo.tr.set(0, -0.03, -0.03);
               xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0, 1, 0), Math.PI);
-              xfo.sc.set(0.01); //convert mm to meters
+              xfo.sc.set(0.001); // VRAsset units are in mm. convert meters
               hmdGeomItem.setLocalXfo(xfo);
 
               this.__hmdGeomItem = hmdGeomItem;
@@ -312,7 +312,8 @@ export default class Avatar {
                 Math.PI
               ]
             }),
-            new Visualive.Vec3(0.01, 0.01, 0.01));
+            new Visualive.Vec3(0.001, 0.001, 0.001) // VRAsset units are in mm. convert meters 
+          );
           controllerTree.setLocalXfo(xfo);
           treeItem.addChild(controllerTree, false);
         }
@@ -373,6 +374,7 @@ export default class Avatar {
         }
         this.updateCameraAndPointerPose(data)
         break;
+      case 'Vive': // Old recordings.
       case 'VR':
         if (this.__currentViewMode !== 'VR') {
           this.setVRRepresentation(data);
