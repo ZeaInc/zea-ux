@@ -22,15 +22,15 @@
   "devDependencies": {
     "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-plugin-import": "^2.17.1",
+    "eslint-plugin-import": "^2.17.2",
     "prettier": "^1.17.0",
     "webpack": "^4.30.0",
-    "webpack-cli": "^3.3.0"
+    "webpack-cli": "^3.3.2"
   },
   "dependencies": {
     "@jaames/iro": "^4.3.3",
     "@visualive/collab": "^0.0.25",
-    "@visualive/engine": "^0.0.49",
+    "@visualive/engine": "^0.0.50",
     "dom-to-image": "^2.6.0"
   }
 }
