@@ -18,10 +18,10 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@jaames/iro@^4.3.3":
-  version "4.3.3"
-  resolved "https://registry.yarnpkg.com/@jaames/iro/-/iro-4.3.3.tgz#d34192cb86c4e6f46627e4c7d9c5d147d0b8a3cd"
-  integrity sha512-2AAvgLzOK6KRTx8BYDaUFdOByQIfqK1jfemPxPe5n8UIFalISK5JzhLlcfYAPR/wWq4IB33KMnvHGpNa23qS8A==
+"@jaames/iro@^4.4.0":
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/@jaames/iro/-/iro-4.4.0.tgz#55f59ca290c51887b29d4296751a82383ea0480b"
+  integrity sha512-EybLSquCyi1o1C441PDAoKpvlWkG1iH32oLSbSRKPUxHeRq/ZK9fKzcBgj8tbcz3QcWOJ+ytj+/dt6EoyY29Cg==
 
 "@visualive/collab@^0.0.25":
   version "0.0.25"
@@ -32,10 +32,10 @@
     socket.io-client "^2.1.1"
     socketio-wildcard "^2.0.0"
 
-"@visualive/engine@^0.0.50":
-  version "0.0.50"
-  resolved "https://registry.yarnpkg.com/@visualive/engine/-/engine-0.0.50.tgz#3654b12cc41e5b8c6fe7b02206fd82df45744768"
-  integrity sha512-DDgs4i6YbmNtWRvMUD2FnFE3RFvK+5V204B0ab57J0OHK/1dOnvzeRmL8ateXaEuxcMN3lLmGO0pp7dLttIw2g==
+"@visualive/engine@^0.0.51":
+  version "0.0.51"
+  resolved "https://registry.yarnpkg.com/@visualive/engine/-/engine-0.0.51.tgz#24c2a82e9b55130cfbdc8579cfde75c4f3c155e2"
+  integrity sha512-r/hGs2KdXIUAlljWinVJ+a+yiWY7O/qJHBdtuYhm7Npg2mvLxcjcN3HcMq3joOMZDgj69UO+XxxAuVUxvctSTg==
 
 "@webassemblyjs/ast@1.8.5":
   version "1.8.5"
@@ -336,10 +336,11 @@ asn1.js@^4.0.0:
     minimalistic-assert "^1.0.0"
 
 assert@^1.1.1:
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/assert/-/assert-1.4.1.tgz#99912d591836b5a6f5b345c0f07eefc08fc65d91"
-  integrity sha1-mZEtWRg2tab1s0XA8H7vwI/GXZE=
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/assert/-/assert-1.5.0.tgz#55c109aaf6e0aefdb3dc4b71240c70bf574b18eb"
+  integrity sha512-EDsgawzwoun2CZkCgtxJbv392v4nbk9XDD06zI+kQYoBM/3RBWLlEyJARDOmhAAosBjWACEkKL6S+lIZtcAubA==
   dependencies:
+    object-assign "^4.1.1"
     util "0.10.3"
 
 assign-symbols@^1.0.0:
@@ -2456,7 +2457,7 @@ number-is-nan@^1.0.0:
   resolved "https://registry.yarnpkg.com/number-is-nan/-/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
   integrity sha1-CXtgK1NCKlIsGvuHkDGDNpQaAR0=
 
-object-assign@^4.1.0:
+object-assign@^4.1.0, object-assign@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-4.1.1.tgz#2109adc7965887cfc05cbbd442cac8bfbb360863"
   integrity sha1-IQmtx5ZYh8/AXLvUQsrIv7s2CGM=
@@ -3050,9 +3051,9 @@ run-queue@^1.0.0, run-queue@^1.0.3:
     aproba "^1.1.1"
 
 rxjs@^6.4.0:
-  version "6.5.1"
-  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.5.1.tgz#f7a005a9386361921b8524f38f54cbf80e5d08f4"
-  integrity sha512-y0j31WJc83wPu31vS1VlAFW5JGrnGC+j+TtGAa1fRQphy48+fDYiDmX8tjGloToEsMkxnouOg/1IzXGKkJnZMg==
+  version "6.5.2"
+  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.5.2.tgz#2e35ce815cd46d84d02a209fb4e5921e051dbec7"
+  integrity sha512-HUb7j3kvb7p7eCUHE3FqjoDsC1xfZQ4AHFWfTKSpZ+sAhhz5X1WX0ZuUqWbzB2QhSLp3DoLUG+hMdEDKqWo2Zg==
   dependencies:
     tslib "^1.9.0"
 
@@ -3440,9 +3441,9 @@ supports-color@^5.3.0, supports-color@^5.5.0:
     has-flag "^3.0.0"
 
 table@^5.2.3:
-  version "5.2.3"
-  resolved "https://registry.yarnpkg.com/table/-/table-5.2.3.tgz#cde0cc6eb06751c009efab27e8c820ca5b67b7f2"
-  integrity sha512-N2RsDAMvDLvYwFcwbPyF3VmVSSkuF+G1e+8inhBLtHpvwXGw4QRPEZhihQNeEN0i1up6/f6ObCJXNdlRG3YVyQ==
+  version "5.3.2"
+  resolved "https://registry.yarnpkg.com/table/-/table-5.3.2.tgz#3aab56a41b2905bf66a6a006bd716fa1e78d4702"
+  integrity sha512-gDBrfla2z1JiBio5BE7nudwkjTjPOTduCzJC94fc1JjnuzI+tUsMiDskxFQCskxAtMB2c/ZwD6R2lg65zCptdQ==
   dependencies:
     ajv "^6.9.1"
     lodash "^4.17.11"
@@ -3714,10 +3715,10 @@ webpack-sources@^1.1.0, webpack-sources@^1.3.0:
     source-list-map "^2.0.0"
     source-map "~0.6.1"
 
-webpack@^4.30.0:
-  version "4.30.0"
-  resolved "https://registry.yarnpkg.com/webpack/-/webpack-4.30.0.tgz#aca76ef75630a22c49fcc235b39b4c57591d33a9"
-  integrity sha512-4hgvO2YbAFUhyTdlR4FNyt2+YaYBYHavyzjCMbZzgglo02rlKi/pcsEzwCuCpsn1ryzIl1cq/u8ArIKu8JBYMg==
+webpack@^4.31.0:
+  version "4.31.0"
+  resolved "https://registry.yarnpkg.com/webpack/-/webpack-4.31.0.tgz#ae201d45f0571336e42d1c2b5c8ab56c4d3b0c63"
+  integrity sha512-n6RVO3X0LbbipoE62akME9K/JI7qYrwwufs20VvgNNpqUoH4860KkaxJTbGq5bgkVZF9FqyyTG/0WPLH3PVNJA==
   dependencies:
     "@webassemblyjs/ast" "1.8.5"
     "@webassemblyjs/helper-module-context" "1.8.5"
