@@ -280,16 +280,32 @@ export default class ViewTool extends BaseTool {
   }
 
   onWheel(event) {
-    const focalDistance = event.viewport.getCamera().getFocalDistance();
-    const mouseWheelDollySpeed = this.__mouseWheelDollySpeedParam.getValue();
-    const zoomDist = event.deltaY * mouseWheelDollySpeed * focalDistance;
-    const xfo = event.viewport.getCamera().getGlobalXfo();
-    xfo.tr.addInPlace(xfo.ori.getZaxis().scale(zoomDist));
-    if (this.__defaultMode == 'orbit')
-      event.viewport.getCamera().setFocalDistance( focalDistance + zoomDist);
-    event.viewport.getCamera().setGlobalXfo(xfo);
-    event.viewport.renderGeomDataFbo();
-    this.movementFinished.emit();
+    const viewport = event.viewport;
+    const xfo = viewport.getCamera().getGlobalXfo();
+    const vec = xfo.ori.getZaxis();
+    if(this.__mouseWheelZoomIntervalId)
+      clearInterval(this.__mouseWheelZoomIntervalId);
+    let count = 0;
+    const applyMovement = ()=>{
+      const focalDistance = viewport.getCamera().getFocalDistance();
+      const mouseWheelDollySpeed = this.__mouseWheelDollySpeedParam.getValue();
+      const zoomDist = event.deltaY * mouseWheelDollySpeed * focalDistance * 0.2;
+      xfo.tr.addInPlace(vec.scale(zoomDist));
+      if (this.__defaultMode == 'orbit')
+        viewport.getCamera().setFocalDistance( focalDistance + zoomDist);
+      viewport.getCamera().setGlobalXfo(xfo);
+
+      count++;
+      if(count < 5){
+        this.__mouseWheelZoomIntervalId = setTimeout(applyMovement, 20);
+      } else {
+        this.__mouseWheelZoomIntervalId = undefined;
+        this.movementFinished.emit();
+        event.viewport.renderGeomDataFbo();
+      }
+    }
+    applyMovement();
+
   }
 
   __integrateVelocityChange(velChange, viewport) {
