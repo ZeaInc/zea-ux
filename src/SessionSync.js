@@ -211,7 +211,7 @@ export default class SessionSync {
     })
 
     visualiveSession.sub(VisualiveSession.actions.COMMAND_ADDED, (data, userId) => {
-      console.log("Remote Command added:", data.changeClass, userId)
+      // console.log("Remote Command added:", data.changeClass, userId)
       if (!userDatas[userId]) {
         console.warn("User id not in session:", userId);
         return;
