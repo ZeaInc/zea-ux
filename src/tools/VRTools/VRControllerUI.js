@@ -148,7 +148,7 @@ export default class VRControllerUI extends Visualive.GeomItem {
           this.setGeomOffsetXfo(this.__uiGeomOffsetXfo)
 
           this.appData.visualiveSession.pub('pose-message', {
-            interfaceType: 'Vive',
+            interfaceType: 'VR',
             updateUIPanel: {
               size: this.__uiGeomOffsetXfo.sc.toJSON()
             }

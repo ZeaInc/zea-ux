@@ -78,7 +78,7 @@ export default class VRUITool extends BaseTool {
         this.pointerController.getTipItem().addChild(this.__uiPointerItem, false);
 
       this.appData.visualiveSession.pub('pose-message', {
-        interfaceType: 'Vive',
+        interfaceType: 'VR',
         showUIPanel: {
           controllerId: this.uiController.getId(),
           localXfo: this.__uiLocalXfo.toJSON(),
@@ -100,7 +100,7 @@ export default class VRUITool extends BaseTool {
       }
 
       this.appData.visualiveSession.pub('pose-message', {
-        interfaceType: 'Vive',
+        interfaceType: 'VR',
         hideUIPanel: {
           controllerId: this.uiController.getId()
         }

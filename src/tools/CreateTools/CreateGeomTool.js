@@ -35,7 +35,7 @@ class CreateGeomChange extends Change {
 
   fromJSON(j, appData) {
     this.parentItem = appData.scene.getRoot().resolvePath(j.parentItemPath, 1);
-    this.geomItem.setName(j.geomItemName);
+    this.geomItem.setName(this.parentItem.generateUniqueName(j.geomItemName));
     const xfo = new Visualive.Xfo();
     xfo.fromJSON(j.geomItemXfo)
     this.geomItem.setLocalXfo(xfo);

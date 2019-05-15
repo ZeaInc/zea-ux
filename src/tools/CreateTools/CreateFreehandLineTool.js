@@ -71,21 +71,24 @@ class CreateFreehandLineChange extends CreateGeomChange {
   toJSON(appData) {
     const j = super.toJSON();
     j.lineThickness = this.line.lineThickness;
-    return j;
+    j.color = this.geomItem.getMaterial().getParameter('Color').getValue();
   }
 
   fromJSON(j, appData) {
-    super.fromJSON(j, appData);
-    if (j.color) {
-      const color = new Visualive.Color();
-      color.fromJSON(j.color);
-      material.getParameter('Color').setValue(color);
-    }
-
+    // Need to set line thickness before the geom is added to the tree.
     if (j.lineThickness) {
       this.line.lineThickness = j.lineThickness;
       // this.line.addVertexAttribute('lineThickness', Visualive.Float32, 0.0);
     }
+
+    const color = new Visualive.Color(.7, .2, .2)
+    if (j.color) {
+      color.fromJSON(j.color);
+    }
+    this.geomItem.getMaterial().getParameter('Color').setValue(color);
+
+    super.fromJSON(j, appData);
+
   }
 }
 UndoRedoManager.registerChange('CreateFreehandLineChange', CreateFreehandLineChange)

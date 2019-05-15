@@ -16,6 +16,7 @@ export default class Avatar {
     this.__hilightPointerColor = new Visualive.Color(1.2, 0, 0);
 
     this.__plane = new Visualive.Plane(1, 1)
+    this.__uiGeomIndex = -1;
 
     if (!this.__currentUserAvatar) {
       this.__camera = new Visualive.Camera();
@@ -352,17 +353,19 @@ export default class Avatar {
         localXfo.fromJSON(data.showUIPanel.localXfo)
         this.__uiGeomItem.setLocalXfo(localXfo);
       }
-      this.__controllerTrees[data.showUIPanel.controllerId].addChild(this.__uiGeomItem, false);
+      this.__uiGeomIndex = this.__controllerTrees[data.showUIPanel.controllerId].addChild(this.__uiGeomItem, false);
     }
-    if (data.updateUIPanel) {
+    else if (data.updateUIPanel) {
       if (this.__uiGeomItem) {
         this.__uiGeomOffsetXfo.sc.set(data.updateUIPanel.size.x, data.updateUIPanel.size.y, 1);
         this.__uiGeomItem.setGeomOffsetXfo(this.__uiGeomOffsetXfo);
       }
     }
-    if (data.hideUIPanel) {
-      if (this.__controllerTrees[data.hideUIPanel.controllerId].numChildren() == 2)
-        this.__controllerTrees[data.hideUIPanel.controllerId].removeChild(1);
+    else if (data.hideUIPanel) {
+      if (this.__uiGeomIndex >= 0) {
+        this.__controllerTrees[data.hideUIPanel.controllerId].removeChild(this.__uiGeomIndex);
+        this.__uiGeomIndex = -1;
+      }
     }
   }
 
