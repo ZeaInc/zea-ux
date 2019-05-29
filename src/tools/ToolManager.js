@@ -304,7 +304,7 @@ export default class ToolManager {
     let i = this.__toolStack.length;
     while (i--) {
       const tool = this.__toolStack[i];
-      if (tool && tool.onMouseDown(event) == true)
+      if (tool && tool.onTouchCancel(event) == true)
         break;
     }
   }

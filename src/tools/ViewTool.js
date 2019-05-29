@@ -392,7 +392,7 @@ export default class ViewTool extends BaseTool {
   __startTouch(touch, viewport) {
     this.__ongoingTouches[touch.identifier] = {
       identifier: touch.identifier,
-      pos: new Vec2(touch.pageX, touch.pageY)
+      pos: new Visualive.Vec2(touch.pageX, touch.pageY)
     };
   }
   __endTouch(touch, viewport) {
@@ -414,7 +414,7 @@ export default class ViewTool extends BaseTool {
     for (let i = 0; i < touches.length; i++) {
       this.__startTouch(touches[i]);
     }
-    this.initDrag(viewport);
+    this.initDrag(event.viewport);
     return true;
   }
 
@@ -426,15 +426,15 @@ export default class ViewTool extends BaseTool {
     let touches = event.changedTouches;
     if (touches.length == 1 && this.__manipMode != "panAndZoom") {
       let touch = touches[0];
-      let touchPos = new Vec2(touch.pageX, touch.pageY);
+      let touchPos = new Visualive.Vec2(touch.pageX, touch.pageY);
       let touchData = this.__ongoingTouches[touch.identifier];
       let dragVec = touchData.pos.subtract(touchPos);
       if (this.__defaultMode == 'look') {
         // TODO: scale panning here.
         dragVec.scaleInPlace(6.0);
-        this.look(dragVec, viewport);
+        this.look(dragVec, event.viewport);
       } else {
-        this.orbit(dragVec, viewport);
+        this.orbit(dragVec, event.viewport);
       }
       return true;
     } else if (touches.length == 2) {
@@ -443,8 +443,8 @@ export default class ViewTool extends BaseTool {
       let touch1 = touches[1];
       let touchData1 = this.__ongoingTouches[touch1.identifier];
 
-      let touch0Pos = new Vec2(touch0.pageX, touch0.pageY);
-      let touch1Pos = new Vec2(touch1.pageX, touch1.pageY);
+      let touch0Pos = new Visualive.Vec2(touch0.pageX, touch0.pageY);
+      let touch1Pos = new Visualive.Vec2(touch1.pageX, touch1.pageY);
       let startSeparation = touchData1.pos.subtract(touchData0.pos).length();
       let dragSeparation = touch1Pos.subtract(touch0Pos).length();
       let separationDist = startSeparation - dragSeparation;
@@ -454,7 +454,7 @@ export default class ViewTool extends BaseTool {
       let dragVec = touch0Drag.add(touch1Drag);
       // TODO: scale panning here.
       dragVec.scaleInPlace(0.5);
-      this.panAndZoom(dragVec, separationDist * 0.002, viewport);
+      this.panAndZoom(dragVec, separationDist * 0.002, event.viewport);
       this.__manipMode = "panAndZoom";
       return true;
     }
@@ -467,8 +467,8 @@ export default class ViewTool extends BaseTool {
     // switch (this.__manipMode) {
     // case 'camera-manipulation':
     //     let touch = touches[0];
-    //     let releasePos = new Vec2(touch.pageX, touch.pageY);
-    //     viewport.getCamera().onDragEnd(event, releasePos, viewport);
+    //     let releasePos = new Visualive.Vec2(touch.pageX, touch.pageY);
+    //     viewport.getCamera().onDragEnd(event, releasePos, event.viewport);
     //     break;
     // }
     for (let i = 0; i < touches.length; i++) {
@@ -478,7 +478,6 @@ export default class ViewTool extends BaseTool {
   }
 
   onTouchCancel(event) {
-    event.preventDefault();
     console.log("touchcancel.");
     let touches = event.changedTouches;
     for (let i = 0; i < touches.length; i++) {
