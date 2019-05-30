@@ -16,7 +16,7 @@ export default class ViewTool extends BaseTool {
 
     this.__ongoingTouches = {};
 
-    this.__orbitRateParam = this.addParameter(new Visualive.NumberParameter('orbitRate', Visualive.SystemDesc.isMobileDevice ? -0.002 : 0.01));
+    this.__orbitRateParam = this.addParameter(new Visualive.NumberParameter('orbitRate', Visualive.SystemDesc.isMobileDevice ? -0.003 : 0.01));
     this.__dollySpeedParam = this.addParameter(new Visualive.NumberParameter('dollySpeed', 0.02));
     this.__mouseWheelDollySpeedParam = this.addParameter(new Visualive.NumberParameter('mouseWheelDollySpeed', 0.002));
 
