@@ -196,6 +196,73 @@ export default class ViewTool extends BaseTool {
     this.__mouseDownFocalDist = focalDistance;
   }
 
+  aimFocus(camera, pos) {
+    if(this.__focusIntervalId)
+      clearInterval(this.__focusIntervalId);
+
+      const count = 20;
+      let i = 0;
+      const applyMovement = ()=>{
+
+      const initlalGlobalXfo = camera.getGlobalXfo();
+      const initlalDist = camera.getFocalDistance();
+      const dir = pos.subtract(initlalGlobalXfo.tr)
+      const dist = dir.normalizeInPlace();
+
+      const orbit = new Visualive.Quat();
+      const pitch = new Visualive.Quat();
+
+      // Orbit
+      {
+        const currDir = initlalGlobalXfo.ori.getZaxis().clone();
+        currDir.z = 0;
+        const newDir = dir.negate();
+        newDir.z = 0;
+
+        orbit.setFrom2Vectors(currDir, newDir)
+      }
+
+      // Pitch
+      {
+        const currDir = initlalGlobalXfo.ori.getZaxis().clone();
+        const newDir = dir.negate();
+        currDir.x = newDir.x;
+        currDir.y = newDir.y;
+        currDir.normalizeInPlace();
+
+        if(currDir.cross(newDir).dot(initlalGlobalXfo.ori.getXaxis()) > 0.0)
+          pitch.rotateX(currDir.angleTo(newDir));
+        else
+          pitch.rotateX(-currDir.angleTo(newDir));
+      }
+
+      const targetGlobalXfo = initlalGlobalXfo.clone();
+      targetGlobalXfo.ori = orbit.multiply(targetGlobalXfo.ori);
+      targetGlobalXfo.ori.multiplyInPlace(pitch);
+
+      // With each iteraction we get closer to our goal
+      // and on the final iteration we should aim perfectly at 
+      // the target.
+      const t = Math.pow(i / count, 2);
+      const globalXfo = initlalGlobalXfo.clone();
+      globalXfo.ori = initlalGlobalXfo.ori.lerp(targetGlobalXfo.ori, t);
+
+      camera.setFocalDistance(initlalDist + ((dist - initlalDist) * t));
+      camera.setGlobalXfo(globalXfo);
+
+      i++;
+      if(i <= count){
+        this.__focusIntervalId = setTimeout(applyMovement, 20);
+      } else {
+        this.__focusIntervalId = undefined;
+        this.movementFinished.emit();
+      }
+    }
+    applyMovement();
+
+    this.__manipulationState = "focussing";
+  }
+
   onMouseMove(event) {
 
   }
@@ -278,6 +345,16 @@ export default class ViewTool extends BaseTool {
       return true;
     }
   }
+
+  onDoubleClick(event) {
+    if(event.intersectionData) {
+      const viewport = event.viewport;
+      const camera = viewport.getCamera();
+      const pos = camera.getGlobalXfo().tr.add(event.intersectionData.mouseRay.dir.scale(event.intersectionData.dist))
+      this.aimFocus(camera, pos);
+    }
+  }
+
 
   onWheel(event) {
     const viewport = event.viewport;
@@ -396,7 +473,7 @@ export default class ViewTool extends BaseTool {
     };
   }
   __endTouch(touch, viewport) {
-    // let idx = this.__ongoingTouchIndexById(touch.identifier);
+    // const idx = this.__ongoingTouchIndexById(touch.identifier);
     // this.__ongoingTouches.splice(idx, 1); // remove it; we're done
     delete this.__ongoingTouches[touch.identifier];
   }
@@ -410,7 +487,7 @@ export default class ViewTool extends BaseTool {
     if (Object.keys(this.__ongoingTouches).length == 0)
       this.__manipMode = undefined;
 
-    let touches = event.changedTouches;
+    const touches = event.changedTouches;
     for (let i = 0; i < touches.length; i++) {
       this.__startTouch(touches[i]);
     }
@@ -423,12 +500,12 @@ export default class ViewTool extends BaseTool {
     event.stopPropagation();
     // console.log("this.__manipMode:" + this.__manipMode);
 
-    let touches = event.changedTouches;
+    const touches = event.changedTouches;
     if (touches.length == 1 && this.__manipMode != "panAndZoom") {
-      let touch = touches[0];
-      let touchPos = new Visualive.Vec2(touch.pageX, touch.pageY);
-      let touchData = this.__ongoingTouches[touch.identifier];
-      let dragVec = touchData.pos.subtract(touchPos);
+      const touch = touches[0];
+      const touchPos = new Visualive.Vec2(touch.pageX, touch.pageY);
+      const touchData = this.__ongoingTouches[touch.identifier];
+      const dragVec = touchData.pos.subtract(touchPos);
       if (this.__defaultMode == 'look') {
         // TODO: scale panning here.
         dragVec.scaleInPlace(6.0);
@@ -436,22 +513,23 @@ export default class ViewTool extends BaseTool {
       } else {
         this.orbit(dragVec, event.viewport);
       }
+      this.__manipMode = "orbit";
       return true;
     } else if (touches.length == 2) {
-      let touch0 = touches[0];
-      let touchData0 = this.__ongoingTouches[touch0.identifier];
-      let touch1 = touches[1];
-      let touchData1 = this.__ongoingTouches[touch1.identifier];
+      const touch0 = touches[0];
+      const touchData0 = this.__ongoingTouches[touch0.identifier];
+      const touch1 = touches[1];
+      const touchData1 = this.__ongoingTouches[touch1.identifier];
 
-      let touch0Pos = new Visualive.Vec2(touch0.pageX, touch0.pageY);
-      let touch1Pos = new Visualive.Vec2(touch1.pageX, touch1.pageY);
-      let startSeparation = touchData1.pos.subtract(touchData0.pos).length();
-      let dragSeparation = touch1Pos.subtract(touch0Pos).length();
-      let separationDist = startSeparation - dragSeparation;
+      const touch0Pos = new Visualive.Vec2(touch0.pageX, touch0.pageY);
+      const touch1Pos = new Visualive.Vec2(touch1.pageX, touch1.pageY);
+      const startSeparation = touchData1.pos.subtract(touchData0.pos).length();
+      const dragSeparation = touch1Pos.subtract(touch0Pos).length();
+      const separationDist = startSeparation - dragSeparation;
 
-      let touch0Drag = touch0Pos.subtract(touchData0.pos);
-      let touch1Drag = touch1Pos.subtract(touchData1.pos);
-      let dragVec = touch0Drag.add(touch1Drag);
+      const touch0Drag = touch0Pos.subtract(touchData0.pos);
+      const touch1Drag = touch1Pos.subtract(touchData1.pos);
+      const dragVec = touch0Drag.add(touch1Drag);
       // TODO: scale panning here.
       dragVec.scaleInPlace(0.5);
       this.panAndZoom(dragVec, separationDist * 0.002, event.viewport);
@@ -463,27 +541,42 @@ export default class ViewTool extends BaseTool {
   onTouchEnd(event) {
     event.preventDefault();
     event.stopPropagation();
-    let touches = event.changedTouches;
-    // switch (this.__manipMode) {
-    // case 'camera-manipulation':
-    //     let touch = touches[0];
-    //     let releasePos = new Visualive.Vec2(touch.pageX, touch.pageY);
-    //     viewport.getCamera().onDragEnd(event, releasePos, event.viewport);
-    //     break;
-    // }
+    const touches = event.changedTouches;
+    switch (this.__manipMode) {
+    case 'orbit':
+    case 'panAndZoom':
+      this.movementFinished.emit();
+      break;
+    }
+    for (let i = 0; i < touches.length; i++) {
+      this.__endTouch(touches[i]);
+    }
+    if (Object.keys(this.__ongoingTouches).length == 0)
+      this.__manipMode = undefined;
+    return true;
+  }
+
+  onTouchCancel(event) {
+    console.log("touchcancel.");
+    const touches = event.changedTouches;
     for (let i = 0; i < touches.length; i++) {
       this.__endTouch(touches[i]);
     }
     return true;
   }
 
-  onTouchCancel(event) {
-    console.log("touchcancel.");
-    let touches = event.changedTouches;
+
+  onDoubleTap(event) {
+    const touches = event.changedTouches;
     for (let i = 0; i < touches.length; i++) {
-      this.__endTouch(touches[i]);
+      this.__startTouch(touches[i]);
     }
-    return true;
+    if(event.intersectionData) {
+      const viewport = event.viewport;
+      const camera = viewport.getCamera();
+      const pos = camera.getGlobalXfo().tr.add(event.intersectionData.mouseRay.dir.scale(event.intersectionData.dist))
+      this.aimFocus(camera, pos);
+    }
   }
 
 

@@ -64,8 +64,11 @@ export default class BaseTool extends Visualive.ParameterOwner {
   onMouseMove(event) {}
 
   onMouseUp(event) {}
+  
+  onDoubleClick(event) {}
 
   onWheel(event) {}
+
 
   /////////////////////////////////////
   // Keyboard events
@@ -85,11 +88,15 @@ export default class BaseTool extends Visualive.ParameterOwner {
 
   onTouchCancel(event) {}
 
+  onDoubleTap(event) {}
+
   /////////////////////////////////////
   // VRController events
   onVRControllerButtonDown(event) {}
 
   onVRControllerButtonUp(event) {}
+
+  onVRControllerDoubleClicked(event) {}
 
   onVRPoseChanged(event) {}
 

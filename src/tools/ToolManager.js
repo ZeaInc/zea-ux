@@ -125,6 +125,7 @@ export default class ToolManager {
     this.mouseMovedId = viewport.mouseMoved.connect(this.onMouseMove.bind(this))
     this.mouseUpId = viewport.mouseUp.connect(this.onMouseUp.bind(this))
     this.mouseLeaveId = viewport.mouseLeave.connect(this.onMouseLeave.bind(this))
+    this.mouseDoubleClickedId = viewport.mouseDoubleClicked.connect(this.onDoubleClick.bind(this))
     this.mouseWheelId = viewport.mouseWheel.connect(this.onWheel.bind(this))
 
     /////////////////////////////////////
@@ -139,12 +140,14 @@ export default class ToolManager {
     this.touchMoveId = viewport.touchMove.connect(this.onTouchMove.bind(this))
     this.touchEndId = viewport.touchEnd.connect(this.onTouchEnd.bind(this))
     this.touchCancelId = viewport.touchCancel.connect(this.onTouchCancel.bind(this))
+    this.doubleTappedId = viewport.doubleTapped.connect(this.onDoubleTap.bind(this))
 
     this.appData.renderer.getXRViewport().then(xrvp => {
       /////////////////////////////////////
       // VRController events
       this.controllerDownId = xrvp.controllerButtonDown.connect(this.onVRControllerButtonDown.bind(this));
       this.controllerUpId = xrvp.controllerButtonUp.connect(this.onVRControllerButtonUp.bind(this));
+      this.controllerDoubleClickId = xrvp.controllerDoubleClicked.connect(this.onVRControllerDoubleClicked.bind(this));
       this.onVRPoseChangedId = xrvp.viewChanged.connect(this.onVRPoseChanged.bind(this));
     });
   }
@@ -222,6 +225,15 @@ export default class ToolManager {
     if (this.avatarPointerVisible) {
       this.avatarPointerVisible = false;
       this.hidePointer.emit();
+    }
+  }
+
+  onDoubleClick(event) {
+    let i = this.__toolStack.length;
+    while (i--) {
+      const tool = this.__toolStack[i];
+      if (tool && tool.onDoubleClick(event) == true)
+        break;
     }
   }
 
@@ -309,6 +321,16 @@ export default class ToolManager {
     }
   }
 
+  onDoubleTap(event) {
+    event.undoRedoManager = this.appData.undoRedoManager;
+    let i = this.__toolStack.length;
+    while (i--) {
+      const tool = this.__toolStack[i];
+      if (tool && tool.onDoubleTap(event) == true)
+        break;
+    }
+  }
+
   /////////////////////////////////////
   // VRController events
   onVRControllerButtonDown(event) {
@@ -327,6 +349,16 @@ export default class ToolManager {
     while (i--) {
       const tool = this.__toolStack[i];
       if (tool && tool.onVRControllerButtonUp(event) == true)
+        break;
+    }
+  }
+
+  onVRControllerDoubleClicked(event) {
+    event.undoRedoManager = this.appData.undoRedoManager;
+    let i = this.__toolStack.length;
+    while (i--) {
+      const tool = this.__toolStack[i];
+      if (tool && tool.onVRControllerDoubleClicked(event) == true)
         break;
     }
   }
