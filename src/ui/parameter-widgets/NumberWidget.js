@@ -13,11 +13,16 @@ export default class NumberWidget extends BaseWidget {
       input.className = 'mdl-slider mdl-js-slider';
       input.setAttribute('id', parameter.getName());
       input.setAttribute('type', 'range');
-      input.setAttribute('min', range[0]);
-      input.setAttribute('max', range[1]);
-      input.setAttribute('value', parameter.getValue());
+      input.setAttribute('min', 0);
+      input.setAttribute('max', 200);
+      console.log("value:", parameter.getValue())
+      const value = ((parameter.getValue() - range[0]) / (range[1] - range[0]) * 200)
+      input.setAttribute('value', value);
       const step = parameter.getStep();
       if (step) input.setAttribute('step', step);
+      else {
+        input.setAttribute('step', 1);
+      }
       input.setAttribute('tabindex', 0);
     } else {
       input.className = 'mdl-textfield__input';
@@ -35,11 +40,18 @@ export default class NumberWidget extends BaseWidget {
     let change = undefined;
 
     parameter.valueChanged.connect(() => {
-      if (!change) input.value = parameter.getValue();
+      if (!change){
+        if (range)
+          input.value = ((parameter.getValue() - range[0]) / (range[1] - range[0]) * 200)
+        else
+          input.value = parameter.getValue();
+      } 
     });
 
     const valueChange = () => {
-      const value = input.valueAsNumber
+      let value = input.valueAsNumber;
+      if (range)
+        value = range[0] + ((value / 200) * (range[1] - range[0]));
       if (!change) {
         change = new ParameterValueChange(parameter, value);
         undoRedoManager.addChange(change);
