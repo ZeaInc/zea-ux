@@ -5,6 +5,7 @@
     <title>Parameters</title>
 
     <script src="http://localhost:3150/VisualiveEngineClient/lib/Visualive.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jaames/iro/dist/iro.min.js"></script>
 
     <!-- Use https://tachyons.io to normalize styles and add useful classes -->
     <link rel="stylesheet" href="https://unpkg.com/tachyons@4/css/tachyons.min.css"/>
@@ -49,9 +50,34 @@ parameterOwner.addParameter(
 parameterOwner.addParameter(
   new Visualive.XfoParameter('Xfo Parameter', new Visualive.Xfo())
 );
-// parameterOwner.addParameter(
-//   new Visualive.ColorParameter('Color', new Visualive.Color(1, 1, 0, 1))
-// );
+parameterOwner.addParameter(
+  new Visualive.ColorParameter('Color', new Visualive.Color(1, 1, 0, 1))
+);
+
+parameterOwner.addParameter(
+  new Visualive.MaterialParameter('Material', new Visualive.Material("Foo", "StandardSurfaceShader"))
+);
+parameterOwner.addParameter(
+  new Visualive.GeometryParameter('Geometry_Circle', new Visualive.Circle())
+);
+parameterOwner.addParameter(
+  new Visualive.GeometryParameter('Geometry_Cone', new Visualive.Cone())
+);
+parameterOwner.addParameter(
+  new Visualive.GeometryParameter('Geometry_Cross', new Visualive.Cross())
+);
+parameterOwner.addParameter(
+  new Visualive.GeometryParameter('Geometry_Cuboid', new Visualive.Cuboid())
+);
+parameterOwner.addParameter(
+  new Visualive.GeometryParameter('Geometry_Cylinder', new Visualive.Cylinder())
+);
+parameterOwner.addParameter(
+  new Visualive.GeometryParameter('Geometry_Disc', new Visualive.Disc())
+);
+parameterOwner.addParameter(
+  new Visualive.GeometryParameter('Geometry_Grid', new Visualive.Grid())
+);
 
 const parameterContainer = new ParameterContainer(
   parameterOwner,

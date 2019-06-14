@@ -1,5 +1,8 @@
 import BaseWidget from './BaseWidget.js';
 
+import visualiveUxFactory from '../VisualiveUxFactory.js';
+import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
+
 class FileWidget extends BaseWidget {
   constructor(parameter, parentDomElem, undoRedoManager) {
     super(parameter);

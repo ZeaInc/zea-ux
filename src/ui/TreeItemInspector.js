@@ -9,7 +9,7 @@ class NameParam {
   }
 
   getName() {
-  	return "Name"
+    return "Name"
   }
 
   getValue() {
@@ -31,7 +31,7 @@ export default class TreeItemInspector {
     domElement.appendChild(ul);
     ul.appendChild(linameWidget);
     ul.appendChild(liparameterContainer);
-  	this.nameWidget = new StringWidget(new NameParam(treeItem), linameWidget, undoRedoManager);
+    this.nameWidget = new StringWidget(new NameParam(treeItem), linameWidget, undoRedoManager);
     this.parameterContainer = new ParameterContainer(treeItem, liparameterContainer, undoRedoManager);
   }
 

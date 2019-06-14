@@ -1,17 +1,33 @@
 
 
-// import iro from '@jaames/iro';
-// import iro from '../../../node_modules/@jaames/iro/dist/iro.es.js';
-// import iro from 'https://rawgit.com/jaames/iro.js/master/dist/iro.es.js';
-
 import BaseWidget from './BaseWidget.js';
+import StringWidget from './StringWidget.js';
+import FileWiget from './FileWiget.js';
 
 import visualiveUxFactory from '../VisualiveUxFactory.js';
 import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 
-export default class ColorWidget extends BaseWidget {
+// class TexParam {
+//   constructor(parameter, parentDomElem, undoRedoManager) {
+//     this.valueChanged = parameter.textureConnected;
+//   }
+
+//   getName() {
+//     return "Name"
+//   }
+
+//   getValue() {
+//     const image = this._parameter.getImage();
+//   }
+
+//   setValue(name) {
+//     return this._parameter.setImage(name);
+//   }
+// }
+
+export default class MaterialColorWidget extends BaseWidget {
   constructor(parameter, parentDomElem, undoRedoManager) {
-    console.log('ColorWidget');
+    console.log('MaterialColorWidget');
     super(parameter);
     
     const colorPicker = new iro.ColorPicker(parentDomElem, {
@@ -24,6 +40,8 @@ export default class ColorWidget extends BaseWidget {
       borderWidth: 1,
       borderColor: '#fff',
     });
+
+    // this.textureWidget = new FileWiget(new TexParam(parameter), parentDomElem, undoRedoManager);
 
     /////////////////////////////
     // SceneWidget Changes.
@@ -66,6 +84,6 @@ export default class ColorWidget extends BaseWidget {
 }
 
 visualiveUxFactory.registerWidget(
-  ColorWidget,
-  p => p.constructor.name == 'ColorParameter'
+  MaterialColorWidget,
+  p => p.constructor.name == 'MaterialColorParam'
 );
