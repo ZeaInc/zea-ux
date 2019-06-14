@@ -28,3 +28,6 @@ class ActionRegistry {
 }
 
 export default ActionRegistry;
+export {
+  ActionRegistry
+}

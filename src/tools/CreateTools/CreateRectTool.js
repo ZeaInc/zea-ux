@@ -82,3 +82,8 @@ export default class CreateRectTool extends CreateGeomTool {
 
 }
 
+
+
+export {
+  CreateRectTool
+};

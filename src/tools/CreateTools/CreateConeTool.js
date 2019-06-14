@@ -29,8 +29,7 @@ class CreateConeChange extends CreateGeomChange {
 }
 UndoRedoManager.registerChange('CreateCircleChange', CreateCircleChange)
 
-
-export default class CreateConeTool extends CreateGeomTool {
+class CreateConeTool extends CreateGeomTool {
   constructor(appData) {
     super(appData);
   }
@@ -78,3 +77,7 @@ export default class CreateConeTool extends CreateGeomTool {
 
 }
 
+
+export {
+  CreateConeTool
+};

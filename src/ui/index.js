@@ -12,4 +12,5 @@ export * from './TreeItemInspector.js';
 export * from './ParameterContainer.js';
 export * from './InspectorContainer.js';
 export * from './action-tree-view.js';
+export * from './UserChip.js';
 

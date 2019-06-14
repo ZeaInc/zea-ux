@@ -167,7 +167,7 @@ class BottomPanel {
 }
 
 
-export default class Panels {
+class Panels {
   constructor() {
     this.viewportElement = document.getElementById('viewport');
     const panelElements = document.getElementsByClassName('SidePanel');
@@ -183,4 +183,7 @@ export default class Panels {
       this.bottomPanel = new BottomPanel(bottomPanel, bottomPanelHandler[0]);
     }
   }
+}
+export {
+  Panels
 }

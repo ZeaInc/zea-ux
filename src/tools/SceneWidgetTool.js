@@ -2,7 +2,7 @@ import BaseTool from './BaseTool.js';
 import SceneWidget from '../sceneWidgets/SceneWidget.js';
 
 
-export default class SceneWidgetTool extends BaseTool {
+class SceneWidgetTool extends BaseTool {
   constructor(appData) {
     super(appData);
 
@@ -169,3 +169,8 @@ export default class SceneWidgetTool extends BaseTool {
   }
 
 };
+
+
+export {
+  SceneWidgetTool
+}

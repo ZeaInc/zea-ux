@@ -1,6 +1,6 @@
 
 
-export class UserChip {
+class UserChip {
   constructor(domElement, userData) {
     this.userSelected = new Visualive.Signal();
 
@@ -61,4 +61,9 @@ export class UserChip {
   unmount() {
     this.clean();
   }
+}
+
+
+export {
+  UserChip
 }

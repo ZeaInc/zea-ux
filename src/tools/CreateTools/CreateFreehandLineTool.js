@@ -94,7 +94,7 @@ class CreateFreehandLineChange extends CreateGeomChange {
 }
 UndoRedoManager.registerChange('CreateFreehandLineChange', CreateFreehandLineChange)
 
-export default class CreateFreehandLineTool extends CreateLineTool {
+class CreateFreehandLineTool extends CreateLineTool {
   constructor(appData) {
     super(appData);
 
@@ -136,3 +136,6 @@ export default class CreateFreehandLineTool extends CreateLineTool {
     this.actionFinished.emit();
   }
 }
+export {
+  CreateFreehandLineTool
+};

@@ -1,7 +1,7 @@
 
 import BaseTool from './BaseTool.js';
 
-export default class ViewTool extends BaseTool {
+class ViewTool extends BaseTool {
   constructor(appData) {
     super(appData);
 
@@ -695,3 +695,7 @@ export default class ViewTool extends BaseTool {
   }
 
 };
+
+export {
+  ViewTool
+}

@@ -172,4 +172,6 @@ class TopMenuBar {
   }
 }
 
-export default TopMenuBar;
+export {
+  TopMenuBar
+} ;

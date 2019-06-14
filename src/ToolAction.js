@@ -1,6 +1,6 @@
 import Action from './Action.js'
 
-export default class ToolAction extends Action {
+class ToolAction extends Action {
   constructor(name, path, availableInVR, toolManager, tool) {
     super(name, path, availableInVR)
     this.toolManager = toolManager;
@@ -41,4 +41,8 @@ export default class ToolAction extends Action {
     }
     // this.activatedChanged.emit(this.state)
   }
+}
+
+export {
+  ToolAction
 }

@@ -65,3 +65,7 @@ export default class CreateSphereTool extends CreateGeomTool {
   }
 }
 
+
+export {
+  CreateSphereTool
+};

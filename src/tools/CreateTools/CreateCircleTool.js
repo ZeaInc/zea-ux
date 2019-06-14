@@ -71,3 +71,7 @@ export default class CreateCircleTool extends CreateGeomTool {
 }
 
 
+
+export {
+  CreateCircleTool
+};

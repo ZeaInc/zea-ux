@@ -22,3 +22,6 @@ class LoaderRegistry {
 }
 
 export default LoaderRegistry;
+export {
+  LoaderRegistry
+}

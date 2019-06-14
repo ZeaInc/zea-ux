@@ -1,7 +1,7 @@
 import { VisualiveSession } from '@visualive/collab';
 import { UserChip } from './UserChip';
 
-export default class CollabPanel {
+class CollabPanel {
   constructor($collabWrapper, visualiveSession) {
     this.userSelected = new Visualive.Signal();
 
@@ -189,4 +189,8 @@ export default class CollabPanel {
   mount() {}
 
   unMount() {}
+}
+
+export {
+  CollabPanel
 }

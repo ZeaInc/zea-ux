@@ -277,3 +277,7 @@ class SelectionManager {
 }
 
 export default SelectionManager;
+
+export {
+  SelectionManager
+}

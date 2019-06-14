@@ -51,7 +51,8 @@ const convertValuesFromJSON = (value, scene) => {
     return value;
   }
 }
-export default class SessionSync {
+
+class SessionSync {
   constructor(visualiveSession, appData, currentUser) {
 
     // const currentUserAvatar = new Avatar(appData, currentUser, true);
@@ -274,4 +275,8 @@ export default class SessionSync {
     })
 
   }
+}
+
+export {
+  SessionSync
 }

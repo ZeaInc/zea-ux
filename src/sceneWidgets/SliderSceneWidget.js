@@ -2,7 +2,7 @@ import LinearMovementSceneWidget from './LinearMovementSceneWidget.js';
 
 import ParameterValueChange from '../undoredo/ParameterValueChange.js';
 
-export default class SliderSceneWidget extends LinearMovementSceneWidget {
+class SliderSceneWidget extends LinearMovementSceneWidget {
   constructor(name, length = 0.5, radius = 0.02, color = new Visualive.Color(1, 1, 0)) {
     super(name)
 
@@ -110,3 +110,7 @@ export default class SliderSceneWidget extends LinearMovementSceneWidget {
 };
 
 Visualive.sgFactory.registerClass('SliderSceneWidget', SliderSceneWidget);
+
+export {
+  SliderSceneWidget
+}

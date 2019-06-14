@@ -42,4 +42,6 @@ class InspectorContainer {
   }
 }
 
-export default InspectorContainer;
+export {
+  InspectorContainer
+} ;

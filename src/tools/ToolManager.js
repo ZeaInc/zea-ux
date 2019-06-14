@@ -1,4 +1,4 @@
-export default class ToolManager {
+class ToolManager {
   constructor(appData) {
     this.__toolStack = [];
     this.appData = appData;
@@ -405,4 +405,9 @@ export default class ToolManager {
     });
 
   }
+}
+
+
+export {
+  ToolManager
 }

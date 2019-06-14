@@ -2,7 +2,7 @@ import UndoRedoManager from '../undoredo/UndoRedoManager.js';
 import BaseTool from './BaseTool.js';
 import SceneWidget from '../sceneWidgets/SceneWidget.js';
 
-export default class SelectionTool extends BaseTool {
+class SelectionTool extends BaseTool {
   constructor(appData) {
     super(appData);
 
@@ -156,3 +156,7 @@ export default class SelectionTool extends BaseTool {
 
 
 UndoRedoManager.registerChange('SelectionTool', SelectionTool)
+
+export {
+  SelectionTool
+}

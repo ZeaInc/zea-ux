@@ -127,3 +127,6 @@ export default class CreateLineTool extends CreateGeomTool {
     this.actionFinished.emit();
   }
 }
+export {
+  CreateLineTool
+}

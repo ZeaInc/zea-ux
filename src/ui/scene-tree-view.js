@@ -199,4 +199,6 @@ class SceneTreeView {
   }
 }
 
-export default SceneTreeView;
+export {
+  SceneTreeView
+} ;

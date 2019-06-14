@@ -90,3 +90,7 @@ export default class CreateCuboidTool extends CreateGeomTool {
 
 }
 
+
+export {
+  CreateCuboidTool
+};
