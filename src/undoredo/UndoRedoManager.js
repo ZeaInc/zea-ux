@@ -88,3 +88,6 @@ class UndoRedoManager {
 }
 
 export default UndoRedoManager;
+export {
+  UndoRedoManager
+};

@@ -1,114 +1,15 @@
-import UndoRedoManager from './undoredo/UndoRedoManager.js';
-import Change from './undoredo/Change.js';
-import ParameterValueChange from './undoredo/ParameterValueChange.js';
-import ActionRegistry from './ActionRegistry.js';
-import SelectionManager from './SelectionManager.js';
-import LoaderRegistry from './LoaderRegistry.js';
-import SessionSync from './SessionSync.js';
 
-import Action from './Action.js';
-import ToolAction from './ToolAction.js';
+export * from './ActionRegistry.js';
+export * from './SelectionManager.js';
+export * from './LoaderRegistry.js';
+export * from './SessionSync.js';
 
-import TopMenuBar from './ui/TopMenuBar.js';
-import Panels from './ui/side-panels.js';
-import CollabPanel from './ui/collab-panel.js';
-import SceneTreeView from './ui/scene-tree-view.js';
-import TreeItemInspector from './ui/TreeItemInspector.js';
-import ParameterContainer from './ui/ParameterContainer.js';
-import InspectorContainer from './ui/InspectorContainer.js';
-import ActionTreeView from './ui/action-tree-view.js';
+export * from './Action.js';
+export * from './ToolAction.js';
 
-import { UserChip } from './ui/UserChip.js';
+export * from './undoredo';
+export * from './ui';
+export * from './tools';
+export * from './sceneWidgets';
 
-//////////////////////////////////////
-// Parameter Widgets
-import BooleanWidget from './ui/parameter-widgets/BooleanWidget.js';
-import ColorWidget from './ui/parameter-widgets/ColorWidget.js';
-import NumberWidget from './ui/parameter-widgets/NumberWidget.js';
-import StringWidget from './ui/parameter-widgets/StringWidget.js';
-import Vec2Widget from './ui/parameter-widgets/Vec2Widget.js';
-import Vec3Widget from './ui/parameter-widgets/Vec3Widget.js';
-import Vec4Widget from './ui/parameter-widgets/Vec4Widget.js';
 
-//////////////////////////////////////
-// Tools
-import ToolManager from './tools/ToolManager.js';
-import ViewTool from './tools/ViewTool.js';
-import SelectionTool from './tools/SelectionTool.js';
-import OpenVRUITool from './tools/VRTools/OpenVRUITool.js';
-import VRUITool from './tools/VRTools/VRUITool.js';
-import VRHoldObjectsTool from './tools/VRTools/VRHoldObjectsTool.js';
-
-// Create Geom Tools
-import CreateLineTool from './tools/CreateTools/CreateLineTool.js';
-import CreateCircleTool from './tools/CreateTools/CreateCircleTool.js';
-import CreateRectTool from './tools/CreateTools/CreateRectTool.js';
-import CreateFreehandLineTool from './tools/CreateTools/CreateFreehandLineTool.js';
-
-import CreateSphereTool from './tools/CreateTools/CreateSphereTool.js';
-import CreateCuboidTool from './tools/CreateTools/CreateCuboidTool.js';
-
-//////////////////////////////////////
-// SceneWidgets
-import SceneWidgetTool from './tools/SceneWidgetTool.js';
-import LinearMovementSceneWidget from './sceneWidgets/LinearMovementSceneWidget.js';
-import PlanarMovementSceneWidget from './sceneWidgets/PlanarMovementSceneWidget.js';
-import AxialRotationSceneWidget from './sceneWidgets/AxialRotationSceneWidget.js';
-import SliderSceneWidget from './sceneWidgets/SliderSceneWidget.js';
-
-export {
-  UndoRedoManager,
-  Change,
-  ParameterValueChange,
-  ActionRegistry,
-  SelectionManager,
-  LoaderRegistry,
-  SessionSync,
-
-  ToolAction,
-
-  TopMenuBar,
-  Panels,
-  CollabPanel,
-  SceneTreeView,
-  TreeItemInspector,
-  ParameterContainer,
-  InspectorContainer,
-  UserChip,
-  ActionTreeView,
-
-  // Parameter Widgets
-  BooleanWidget,
-  ColorWidget,
-  NumberWidget,
-  StringWidget,
-  Vec2Widget,
-  Vec3Widget,
-  Vec4Widget,
-
-  // Tools
-  ToolManager,
-  ViewTool,
-  SelectionTool,
-
-  // VR Tools
-  OpenVRUITool,
-  VRUITool,
-  VRHoldObjectsTool,
-
-  // Create Geom Tools
-  CreateLineTool,
-  CreateCircleTool,
-  CreateRectTool,
-  CreateFreehandLineTool,
-
-  CreateSphereTool,
-  CreateCuboidTool,
-
-  // SceneWidgets
-  SceneWidgetTool,
-  LinearMovementSceneWidget,
-  PlanarMovementSceneWidget,
-  AxialRotationSceneWidget,
-  SliderSceneWidget
-};

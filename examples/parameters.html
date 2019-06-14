@@ -18,10 +18,12 @@
     <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css">
 
     
+    <script src="../dist/visualive-ux.js"></script>
     <link rel="stylesheet" href="../css/parameters.css">
     <script type="module">
       
-import { UndoRedoManager, ParameterContainer } from '../index.js';
+// import { UndoRedoManager, ParameterContainer } from '../src/index.js';
+const { UndoRedoManager, ParameterContainer } = visualiveUx;
 
 const undoRedoManager = new UndoRedoManager();
 const parameterOwner = new Visualive.ParameterOwner();

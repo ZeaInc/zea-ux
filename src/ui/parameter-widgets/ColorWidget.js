@@ -13,7 +13,7 @@ export default class ColorWidget extends BaseWidget {
   constructor(parameter, parentDomElem, undoRedoManager) {
     console.log('ColorWidget');
     super(parameter);
-
+    
     const colorPicker = new iro.ColorPicker(parentDomElem, {
       // Color picker options:
       // https://rakujira.jp/projects/iro/docs/guide.html#Color-Picker-Options

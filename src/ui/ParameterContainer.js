@@ -65,3 +65,6 @@ class ParameterContainer {
 }
 
 export default ParameterContainer;
+export {
+  ParameterContainer
+};
