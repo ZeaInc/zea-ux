@@ -15,7 +15,8 @@ export default class NumberWidget extends BaseWidget {
       input.setAttribute('type', 'range');
       input.setAttribute('min', 0);
       input.setAttribute('max', 200);
-      console.log("value:", parameter.getValue())
+      // Note: range sliders only work with integer numbers
+      // so convert our value to an integer between 0 .. 200
       const value = ((parameter.getValue() - range[0]) / (range[1] - range[0]) * 200)
       input.setAttribute('value', value);
       const step = parameter.getStep();
@@ -50,8 +51,11 @@ export default class NumberWidget extends BaseWidget {
 
     const valueChange = () => {
       let value = input.valueAsNumber;
-      if (range)
+      if (range) {
+        // Renmap from the 0..200 integer to the floating point
+        // range specified in the parameter.
         value = range[0] + ((value / 200) * (range[1] - range[0]));
+      }
       if (!change) {
         change = new ParameterValueChange(parameter, value);
         undoRedoManager.addChange(change);
