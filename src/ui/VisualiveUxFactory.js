@@ -57,6 +57,15 @@ class VisualiveUxFactory {
     this.widgetFactories.push({ widget, rule });
   }
 
+  findWidgetReg(param) {
+    for (let i = this.widgetFactories.length; i-- > 0; ) {
+      const reg = this.widgetFactories[i];
+      if (reg.rule(param)) {
+        return reg;
+      }
+    }
+  }
+
   constructWidget(...args) {
     // Note: Iterate over the widgetFactories in reverse order.
     // This allows widgets to override existing widgets in special cases.

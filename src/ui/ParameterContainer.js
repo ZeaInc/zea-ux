@@ -46,6 +46,11 @@ class ParameterContainer {
 
   addParameterWidget(parameter) {
     const parameterName = parameter.getName();
+    const reg = visualiveUxFactory.findWidgetReg(parameter);
+    if (!reg) {
+      console.warn(`Unable to display parameter '${parameterName}'`);
+      return;
+    }
 
     const li = document.createElement('li');
     this.ul.appendChild(li);
@@ -55,12 +60,26 @@ class ParameterContainer {
     labelElem.appendChild(document.createTextNode(parameterName));
     li.appendChild(labelElem);
 
-    const widget = visualiveUxFactory.constructWidget(parameter, li, this.undoRedoManager);
-    if (!widget) {
-      console.warn(`Unable to display parameter '${parameterName}'`);
-      return;
-    }
+    const widget = new reg.widget(parameter, li, this.undoRedoManager);
     this.widgets.push(widget);
+
+
+    // const parameterName = parameter.getName();
+
+    // const li = document.createElement('li');
+    // this.ul.appendChild(li);
+
+    // const labelElem = document.createElement('label');
+    // labelElem.setAttribute('for', parameterName);
+    // labelElem.appendChild(document.createTextNode(parameterName));
+    // li.appendChild(labelElem);
+
+    // const widget = visualiveUxFactory.constructWidget(parameter, li, this.undoRedoManager);
+    // if (!widget) {
+    //   console.warn(`Unable to display parameter '${parameterName}'`);
+    //   return;
+    // }
+    // this.widgets.push(widget);
   }
 }
 

@@ -9,3 +9,4 @@ export * from './StringWidget.js';
 export * from './Vec2Widget.js';
 export * from './Vec3Widget.js';
 export * from './Vec4Widget.js';
+export * from './XfoWidget.js';
