@@ -30,13 +30,18 @@ const {
 }  = visualiveUx;
 
 const undoRedoManager = new UndoRedoManager();
+const selectionManager = new SelectionManager(undoRedoManager);
+
+const appData = {
+  undoRedoManager,
+  selectionManager
+}
 
 const rootItem = new Visualive.TreeItem('Root Tree Item');
 
 const addChildrenToRoot = i => {
-  const firstLevelChild = rootItem.addChild(
-    new Visualive.TreeItem(`Child Tree Item ${i}`)
-  );
+  const firstLevelChild = new Visualive.TreeItem(`Child Tree Item ${i}`);
+  rootItem.addChild(firstLevelChild);
 
   window.setTimeout(() => {
     for (let ii = 0; ++ii <= 5; ) {
@@ -52,12 +57,11 @@ for (let i = 0; ++i <= 4; ) {
 const sceneTreeView = new SceneTreeView(
   document.getElementById('vlw-tree'),
   rootItem,
-  undoRedoManager
+  appData
 );
 
-const selectionManager = new SelectionManager(rootItem);
 
-selectionManager.leadSelectionChange.connect(selectedTreeItem =>
+selectionManager.leadSelectionChanged.connect(selectedTreeItem =>
   console.log('Received', selectedTreeItem ? selectedTreeItem.getName() : "None")
 );
 
