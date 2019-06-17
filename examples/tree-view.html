@@ -18,15 +18,16 @@
     <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css">
 
   
+    <script src="../dist/visualive-ux.js"></script>
     <link rel="stylesheet" href="../css/tree-view.css">
     <script type="module">
       
-import {
+const {
   ParameterContainer,
   SceneTreeView,
   UndoRedoManager,
   SelectionManager,
-} from '../index.js';
+}  = visualiveUx;
 
 const undoRedoManager = new UndoRedoManager();
 

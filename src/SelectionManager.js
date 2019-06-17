@@ -53,20 +53,20 @@ class ToggleSelectionVisibility extends Change {
     super('Selection Visibility Change');
     this.selection = selection;
     this.state = state;
-    this.do();
+    this.do(this.state);
   }
 
   undo() {
-    this.do()
+    this.do(!this.state)
   }
 
   redo() {
-    this.do()
+    this.do(this.state)
   }
 
-  do() {
+  do(state) {
     for (let treeItem of this.selection){
-        treeItem.getParameter('Visible').setValue(this.state);
+        treeItem.getParameter('Visible').setValue(state);
     }
   }
 }

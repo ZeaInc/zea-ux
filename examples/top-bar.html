@@ -18,14 +18,16 @@
     <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css">
 
   
+    <script src="../dist/visualive-ux.js"></script>
     <link rel="stylesheet" href="../css/top-bar.css">
     <script type="module">
       
-import {
+    
+const {
   UndoRedoManager,
   ActionRegistry,
   TopMenuBar,
-} from '../index.js';
+} = visualiveUx;
 
 const actionRegistry = new ActionRegistry()
 const undoRedoManager = new UndoRedoManager();

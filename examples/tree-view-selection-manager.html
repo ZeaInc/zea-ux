@@ -18,15 +18,16 @@
     <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css">
 
   
+    <script src="../dist/visualive-ux.js"></script>
     <link rel="stylesheet" href="../css/tree-view.css">
     <script type="module">
       
-import {
+const {
   ParameterContainer,
   SceneTreeView,
   UndoRedoManager,
   SelectionManager,
-} from '../index.js';
+}  = visualiveUx;
 
 const undoRedoManager = new UndoRedoManager();
 const selectionManager = new SelectionManager(undoRedoManager);
@@ -39,9 +40,8 @@ const appData = {
 const rootItem = new Visualive.TreeItem('Root Tree Item');
 
 const addChildrenToRoot = i => {
-  const firstLevelChild = rootItem.addChild(
-    new Visualive.TreeItem(`Child Tree Item ${i}`)
-  );
+  const firstLevelChild = new Visualive.TreeItem(`Child Tree Item ${i}`);
+  rootItem.addChild(firstLevelChild);
 
   for (let ii = 0; ++ii <= 5; ) {
     firstLevelChild.addChild(new Visualive.GeomItem(`Geom Item ${ii}`));

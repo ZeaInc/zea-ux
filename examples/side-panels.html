@@ -4,15 +4,14 @@
     <meta charset="UTF-8">
     <title>Side Panels</title>
 
+    <script src="http://localhost:3150/VisualiveEngineClient/lib/Visualive.js"></script>
     <link rel="stylesheet" href="../css/side-panels.css">
     <link rel="stylesheet" href="https://unpkg.com/tachyons/css/tachyons.min.css"/>
 
+    <script src="../dist/visualive-ux.js"></script>
     <script type="module">
-      import {
-        setupPanels
-      } from '../index.js';
-
-      setupPanels()
+      const { Panels } = visualiveUx;
+      const panels = new Panels();
     </script>
   </head>
   <body class="vh-100 flex overflow-hidden">
