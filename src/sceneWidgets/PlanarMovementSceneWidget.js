@@ -1,6 +1,6 @@
 import SceneWidget  from './SceneWidget.js';
 
-export default class PlanarMovementSceneWidget extends SceneWidget {
+class PlanarMovementSceneWidget extends SceneWidget {
   constructor(name) {
     super(name)
   }
@@ -38,4 +38,7 @@ export default class PlanarMovementSceneWidget extends SceneWidget {
     });
   }
 
+}
+export {
+  PlanarMovementSceneWidget
 }

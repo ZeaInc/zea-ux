@@ -6,7 +6,6 @@ import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 export default class BooleanWidget extends BaseWidget {
   constructor(parameter, parentDomElem, undoRedoManager) {
     super(parameter);
-    console.log("BooleanWidget", parameter.getName(), parameter.getValue())
     const input = document.createElement('input');
     input.setAttribute('id', parameter.getName());
     input.setAttribute('type', 'checkbox');

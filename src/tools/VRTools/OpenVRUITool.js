@@ -1,6 +1,6 @@
 import BaseTool from '../BaseTool.js';
 
-export default class OpenVRUITool extends BaseTool {
+class OpenVRUITool extends BaseTool {
   constructor(appData, vrUITool) {
     super(appData);
 
@@ -67,3 +67,6 @@ export default class OpenVRUITool extends BaseTool {
   }
 
 };
+export {
+  OpenVRUITool
+}

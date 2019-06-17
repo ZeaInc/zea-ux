@@ -1,6 +1,6 @@
 import SceneWidget  from './SceneWidget.js';
 
-export default class AxialRotationSceneWidget extends SceneWidget {
+class AxialRotationSceneWidget extends SceneWidget {
   constructor(name) {
     super(name)
   }
@@ -38,3 +38,6 @@ export default class AxialRotationSceneWidget extends SceneWidget {
   }
 
 };
+export {
+  AxialRotationSceneWidget
+}

@@ -38,7 +38,7 @@ class CreateRectChange extends CreateGeomChange {
 UndoRedoManager.registerChange('CreateRectChange', CreateRectChange)
 
 
-export default class CreateRectTool extends CreateGeomTool {
+class CreateRectTool extends CreateGeomTool {
   constructor(appData) {
     super(appData);
   }

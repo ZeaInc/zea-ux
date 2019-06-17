@@ -41,7 +41,7 @@ class CreateCircleChange extends CreateGeomChange {
 }
 UndoRedoManager.registerChange('CreateCircleChange', CreateCircleChange)
 
-export default class CreateCircleTool extends CreateGeomTool {
+class CreateCircleTool extends CreateGeomTool {
   constructor(appData) {
     super(appData);
   }

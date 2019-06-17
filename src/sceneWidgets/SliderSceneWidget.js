@@ -1,4 +1,4 @@
-import LinearMovementSceneWidget from './LinearMovementSceneWidget.js';
+import { LinearMovementSceneWidget } from './LinearMovementSceneWidget.js';
 
 import ParameterValueChange from '../undoredo/ParameterValueChange.js';
 

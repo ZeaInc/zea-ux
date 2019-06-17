@@ -37,7 +37,7 @@ class CreateSphereChange extends CreateGeomChange {
 }
 UndoRedoManager.registerChange('CreateSphereChange', CreateSphereChange)
 
-export default class CreateSphereTool extends CreateGeomTool {
+class CreateSphereTool extends CreateGeomTool {
   constructor(appData) {
     super(appData);
   }

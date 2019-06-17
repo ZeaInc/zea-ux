@@ -37,7 +37,7 @@ class CreateCuboidChange extends CreateGeomChange {
 UndoRedoManager.registerChange('CreateCuboidChange', CreateCuboidChange)
 
 
-export default class CreateCuboidTool extends CreateGeomTool {
+class CreateCuboidTool extends CreateGeomTool {
   constructor(appData) {
     super(appData);
   }
