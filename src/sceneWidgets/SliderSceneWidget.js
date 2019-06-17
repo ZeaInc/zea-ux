@@ -29,8 +29,8 @@ class SliderSceneWidget extends LinearMovementSceneWidget {
 
     this.radiusParam.valueChanged.connect(()=>{
       radius = this.radiusParam.getValue();
-      barGeom.radius = radius * 0.25;
-      handleGeom.radius = radius;
+      barGeom.getParameter('radius').setValue(radius * 0.25);
+      handleGeom.getParameter('radius').setValue(radius);
     })
 
     this.addChild(this.handle);
@@ -39,7 +39,6 @@ class SliderSceneWidget extends LinearMovementSceneWidget {
 
     this.__updateSlider(0);
   };
-
 
   setTargetParam(param) {
     this.__param = param;
@@ -77,7 +76,7 @@ class SliderSceneWidget extends LinearMovementSceneWidget {
 
   onDrag(event) {
     const length = this.lengthParam.getValue();
-    const range = this.__param.getRange() ? this.__param.getRange() : [0, 1];
+    const range = (this.__param && this.__param.getRange()) ? this.__param.getRange() : [0, 1];
     const value = Math.remap(event.value, 0, length, range[0], range[1]);
     this.change.update({
       value

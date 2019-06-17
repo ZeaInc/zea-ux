@@ -24,26 +24,23 @@ export default class SceneWidget extends Visualive.TreeItem {
   // Mouse events
 
   handleMouseDown(event) {
-    // 
     this.gizmoRay = this.getManipulationRay();
-    const grabDist = event.mouseRay.intersectRayVector(this.gizmoRay);
-    if (grabDist > 0) {
-      const grabPos = event.mouseRay.dir.scale(grabDist);
-      this.onDragStart(event, grabPos);
-      return true;
-    }
+    const dist = event.mouseRay.intersectRayPlane(this.gizmoRay);
+    event.grabPos = event.mouseRay.pointAtDist(dist);
+    this.onDragStart(event);
+    return true;
   }
 
   handleMouseMove(event) {
-    const dist = event.mouseRay.intersectRayVector(this.gizmoRay)[0];
-    const dragPos = event.mouseRay.dir.scale(dist);
-    this.onDragStart(event, dragPos);
+    const dist = event.mouseRay.intersectRayPlane(this.gizmoRay);
+    event.holdPos = event.mouseRay.pointAtDist(dist);
+    this.onDrag(event);
   }
 
   handleMouseUp(event) {
-    const dist = event.mouseRay.intersectRayVector(this.gizmoRay)[0];
-    const releasePos = event.mouseRay.dir.scale(dist);
-    this.onDragEnd(event, releasePos);
+    const dist = event.mouseRay.intersectRayPlane(this.gizmoRay);
+    event.releasePos = event.mouseRay.pointAtDist(dist);
+    this.onDragEnd(event);
     return true;
   }
 
@@ -54,7 +51,7 @@ export default class SceneWidget extends Visualive.TreeItem {
     const gizmoRay = this.getManipulationRay();
     const grabDist = event.controllerRay.intersectRayVector(gizmoRay);
     if (grabDist > 0) {
-      const grabPos = event.controllerRay.dir.scale(grabDist);
+      const grabPos = event.controllerRay.pointAtDist(grabDist);
       this.activeController = event.controller;
       this.onDragStart(event, grabPos);
       return true;
@@ -62,14 +59,14 @@ export default class SceneWidget extends Visualive.TreeItem {
   }
 
   onVRPoseChanged(event) {
-    const xfo = this.activeController.getTiipXfo()
+    const xfo = this.activeController.getTipXfo()
     this.onDrag(event, xfo.tr);
     return true;
   }
 
   onVRControllerButtonUp(event) {
     if (this.activeController == event.controller) {
-      const xfo = this.activeController.getTiipXfo()
+      const xfo = this.activeController.getTipXfo()
       this.onDragEnd(event, xfo.tr);
       this.activeController = undefined;
       return true;

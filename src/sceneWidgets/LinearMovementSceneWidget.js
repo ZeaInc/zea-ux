@@ -6,28 +6,35 @@ class LinearMovementSceneWidget extends SceneWidget {
 
   };
 
+
   /////////////////////////////////////
   // Mouse events
 
   handleMouseDown(event) {
     this.gizmoRay = this.getManipulationRay();
     this.grabDist = event.mouseRay.intersectRayVector(this.gizmoRay)[1];
-    const grabPos = this.gizmoRay.start.add(this.gizmoRay.dir.scale(this.grabDist));
-    this.onDragStart({ undoRedoManager: event.undoRedoManager });
+    const grabPos = this.gizmoRay.pointAtDist(this.grabDist);
+    event.grabPos = grabPos;
+    this.onDragStart(event);
     return true;
   }
 
   handleMouseMove(event) {
     const dist = event.mouseRay.intersectRayVector(this.gizmoRay)[1];
-    const dragPos = this.gizmoRay.start.add(this.gizmoRay.dir.scale(dist));
-    this.onDrag({ value: dist, delta: (dist-this.grabDist)  });
+    const holdPos = this.gizmoRay.pointAtDist(dist);
+    event.holdPos = holdPos;
+    event.value = dist;
+    event.delta = dist-this.grabDist;
+    this.onDrag(event);
   }
 
   handleMouseUp(event) {
-    this.onDragEnd({});
+    const dist = event.mouseRay.intersectRayVector(this.gizmoRay)[1];
+    const releasePos = this.gizmoRay.pointAtDist(dist);
+    event.releasePos = releasePos;
+    this.onDragEnd(event);
     return true;
   }
-
 
   /////////////////////////////////////
   // VRController events
@@ -38,21 +45,23 @@ class LinearMovementSceneWidget extends SceneWidget {
     this.activeController = event.controller;
     const xfo = this.activeController.getTipXfo();
     this.grabDist = xfo.tr.subtract(this.gizmoRay.start).dot(this.gizmoRay.dir);
-    this.onDragStart({ undoRedoManager: event.undoRedoManager });
+    this.onDragStart(event);
     return true;
   }
 
   onVRPoseChanged(event) {
     const xfo = this.activeController.getTipXfo()
     const dist = xfo.tr.subtract(this.gizmoRay.start).dot(this.gizmoRay.dir);
-    const dragPos = this.gizmoRay.start.add(this.gizmoRay.dir.scale(dist));
-    this.onDrag({ value: dist, delta: (dist-this.grabDist)  });
+    const holdPos = this.gizmoRay.start.add(this.gizmoRay.dir.scale(dist));
+    event.value = dist;
+    event.delta = dist-this.grabDist;
+    this.onDrag(event);
     return true;
   }
 
   onVRControllerButtonUp(event) {
     if (this.activeController == event.controller) {
-      // const xfo = this.activeController.getTiipXfo()
+      // const xfo = this.activeController.getTipXfo()
       this.onDragEnd();
       this.activeController = undefined;
       return true;
