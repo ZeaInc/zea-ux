@@ -29,10 +29,10 @@ export default class XfoWidget extends BaseWidget {
         tr_xField.value = xfo.tr.x;
         tr_yField.value = xfo.tr.y;
         tr_zField.value = xfo.tr.z;
-        ori_wField.value = xfo.ori.w;
         ori_xField.value = xfo.ori.x;
         ori_yField.value = xfo.ori.y;
         ori_zField.value = xfo.ori.z;
+        ori_wField.value = xfo.ori.w;
         sc_xField.value = xfo.sc.x;
         sc_yField.value = xfo.sc.y;
         sc_zField.value = xfo.sc.z;
@@ -42,6 +42,7 @@ export default class XfoWidget extends BaseWidget {
     parameter.valueChanged.connect(updateDisplayedValue);
 
     const valueChange = () => {
+      console.log("valueChange")
       const xfo = new Visualive.Xfo();
       xfo.tr.set(
         tr_xField.valueAsNumber,
@@ -49,11 +50,11 @@ export default class XfoWidget extends BaseWidget {
         tr_zField.valueAsNumber
       )
       xfo.ori.set(
-        ori_wField.valueAsNumber,
         ori_xField.valueAsNumber,
         ori_yField.valueAsNumber,
-        ori_zField.valueAsNumber
-      )
+        ori_zField.valueAsNumber,
+        ori_wField.valueAsNumber 
+      )/*value order is xyzw*/
       xfo.ori.normalizeInPlace()
       xfo.sc.set(
         sc_xField.valueAsNumber,
@@ -104,10 +105,10 @@ export default class XfoWidget extends BaseWidget {
     const tr_yField = addNumberField("tr.y", ul, xfo.tr.y, 1)
     const tr_zField = addNumberField("tr.z", ul, xfo.tr.z, 2)
 
-    const ori_wField = addNumberField("ori.w", ul, xfo.ori.w, 3)
-    const ori_xField = addNumberField("ori.x", ul, xfo.ori.x, 4)
-    const ori_yField = addNumberField("ori.y", ul, xfo.ori.y, 5)
-    const ori_zField = addNumberField("ori.z", ul, xfo.ori.z, 6)
+    const ori_xField = addNumberField("ori.x", ul, xfo.ori.x, 3)
+    const ori_yField = addNumberField("ori.y", ul, xfo.ori.y, 4)
+    const ori_zField = addNumberField("ori.z", ul, xfo.ori.z, 5)
+    const ori_wField = addNumberField("ori.w", ul, xfo.ori.w, 6)
 
     const sc_xField = addNumberField("sc.x", ul, xfo.sc.x, 7)
     const sc_yField = addNumberField("sc.y", ul, xfo.sc.y, 8)
