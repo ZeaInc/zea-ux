@@ -23,7 +23,9 @@ export default class StringWidget extends BaseWidget {
 
     let change;
     parameter.valueChanged.connect(() => {
-      if (!change) input.value = parameter.getValue();
+      if (!change){
+        input.value = parameter.getValue();
+      } 
     });
 
     const valueChange = () => {

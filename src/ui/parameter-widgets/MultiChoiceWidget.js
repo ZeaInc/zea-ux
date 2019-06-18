@@ -7,25 +7,16 @@ export default class MultiChoiceWidget extends BaseWidget {
   constructor(parameter, parentDomElem, undoRedoManager) {
     super(parameter);
 
-    let value = parameter.getValue();
     const range = parameter.getRange();
     const choices = parameter.getChoices();
-    let select = document.createElement('select');
-    const options = [];
-    const optionsMap = {};
+    const select = document.createElement('select');
     for (let i=0; i < choices.length; i++) {
       const choice = choices[i];
-      let option = document.createElement('option');
-      option.setAttribute('value', choice);
-      if(value == i)
-        option.setAttribute('selected', true);
-
-
+      const option = document.createElement('option');
       option.appendChild(document.createTextNode(choice));
       select.appendChild(option);
-      options.push(option)
-      optionsMap[choice] = i;
     }
+    select.selectedIndex = parameter.getValue();
 
     parentDomElem.appendChild(select);
 
@@ -36,20 +27,13 @@ export default class MultiChoiceWidget extends BaseWidget {
 
     parameter.valueChanged.connect(() => {
       if (!changing){
-        options[value].removeAttribute('selected');
-        value = parameter.getValue(); 
-        options[value].setAttribute('selected', true);
+        select.selectedIndex = parameter.getValue()
       } 
     });
 
     const valueChange = (event) => {
-      console.log(event.target.value, value)
-      options[value].removeAttribute('selected');
-      value = optionsMap[event.target.value]
-      options[value].setAttribute('selected', true);
-
       changing = true;
-      const change = new ParameterValueChange(parameter, value);
+      const change = new ParameterValueChange(parameter, select.selectedIndex);
       undoRedoManager.addChange(change);
       changing = false;
     };

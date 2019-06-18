@@ -12,5 +12,8 @@ export * from './Vec4Widget.js';
 export * from './XfoWidget.js';
 export * from './BBoxWidget.js';
 export * from './MaterialColorWidget.js';
-export * from './ParameterOwnerWidget.js';
 export * from './MultiChoiceWidget.js';
+
+export * from './ParameterOwnerWidget.js';
+export * from './ItemWidget.js';
+export * from './ItemSetWidget.js';
