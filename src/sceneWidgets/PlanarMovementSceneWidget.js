@@ -14,7 +14,6 @@ class PlanarMovementSceneWidget extends SceneWidget {
 
     const handleGeom = new Visualive.Cuboid(size, size, size * 0.02);
     this.handle = new Visualive.GeomItem('handle', handleGeom, handleMat);
-    this.handleXfo = new Visualive.Xfo()
 
     this.sizeParam.valueChanged.connect(()=>{
       size = this.sizeParam.getValue();

@@ -1,8 +1,8 @@
-import { LinearMovementSceneWidget } from './LinearMovementSceneWidget.js';
+import { BaseLinearMovementSceneWidget } from './BaseLinearMovementSceneWidget.js';
 
 import ParameterValueChange from '../undoredo/ParameterValueChange.js';
 
-class SliderSceneWidget extends LinearMovementSceneWidget {
+class SliderSceneWidget extends BaseLinearMovementSceneWidget {
   constructor(name, length = 0.5, radius = 0.02, color = new Visualive.Color(1, 1, 0)) {
     super(name)
 

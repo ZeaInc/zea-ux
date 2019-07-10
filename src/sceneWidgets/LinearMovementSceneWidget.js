@@ -1,72 +1,47 @@
-import SceneWidget  from './SceneWidget.js';
+import {BaseLinearMovementSceneWidget} from './BaseLinearMovementSceneWidget.js';
 
-class LinearMovementSceneWidget extends SceneWidget {
-  constructor(name) {
+class LinearMovementSceneWidget extends BaseLinearMovementSceneWidget {
+  constructor(name, length, radius, color) {
     super(name)
 
+    this.__color = color;
+    // this.radiusParam = this.addParameter(new Visualive.NumberParameter('radius', radius));
+    // this.colorParam = this.addParameter(new Visualive.ColorParameter('BaseColor', color));
+
+    // const handleMat = new Visualive.Material('handle', 'FlatSurfaceShader');
+    // // handleMat.replaceParameter(this.colorParam);
+    // handleMat.getParameter('BaseColor').setValue(color);
+
+    // const handleGeom = new Visualive.Cylinder(radius * 0.01, length, 64);
+    // const tipGeom = new Visualive.Cone(radius, length * 0.05, 64, true);
+    // this.handle = new Visualive.GeomItem('handle', handleGeom, handleMat);
+    // this.tip = new Visualive.GeomItem('tip', tipGeom, handleMat);
+    // const tipXfo = new Visualive.Xfo()
+    // tipXfo.tr.set(0,0,length)
+    // this.tip.getParameter('LocalXfo').setValue(tipXfo);
+
+    // this.radiusParam.valueChanged.connect(()=>{
+    //   radius = this.radiusParam.getValue();
+    //   handleGeom.getParameter('radius').setValue(radius);
+    //   handleGeom.getParameter('height').setValue(radius * 0.02);
+    // })
+
+    // this.addChild(this.handle);
+    // this.addChild(this.tip);
   };
 
-
-  /////////////////////////////////////
-  // Mouse events
-
-  handleMouseDown(event) {
-    this.gizmoRay = this.getManipulationRay();
-    this.grabDist = event.mouseRay.intersectRayVector(this.gizmoRay)[1];
-    const grabPos = this.gizmoRay.pointAtDist(this.grabDist);
-    event.grabPos = grabPos;
-    this.onDragStart(event);
-    return true;
-  }
-
-  handleMouseMove(event) {
-    const dist = event.mouseRay.intersectRayVector(this.gizmoRay)[1];
-    const holdPos = this.gizmoRay.pointAtDist(dist);
-    event.holdPos = holdPos;
-    event.value = dist;
-    event.delta = dist-this.grabDist;
-    this.onDrag(event);
-  }
-
-  handleMouseUp(event) {
-    const dist = event.mouseRay.intersectRayVector(this.gizmoRay)[1];
-    const releasePos = this.gizmoRay.pointAtDist(dist);
-    event.releasePos = releasePos;
-    this.onDragEnd(event);
-    return true;
-  }
-
-  /////////////////////////////////////
-  // VRController events
-
-  onVRControllerButtonDown(event) {
-    this.gizmoRay = this.getManipulationRay();
-    
-    this.activeController = event.controller;
-    const xfo = this.activeController.getTipXfo();
-    this.grabDist = xfo.tr.subtract(this.gizmoRay.start).dot(this.gizmoRay.dir);
-    this.onDragStart(event);
-    return true;
-  }
-
-  onVRPoseChanged(event) {
-    const xfo = this.activeController.getTipXfo()
-    const dist = xfo.tr.subtract(this.gizmoRay.start).dot(this.gizmoRay.dir);
-    const holdPos = this.gizmoRay.start.add(this.gizmoRay.dir.scale(dist));
-    event.value = dist;
-    event.delta = dist-this.grabDist;
-    this.onDrag(event);
-    return true;
-  }
-
-  onVRControllerButtonUp(event) {
-    if (this.activeController == event.controller) {
-      // const xfo = this.activeController.getTipXfo()
-      this.onDragEnd();
-      this.activeController = undefined;
-      return true;
+  setTargetParam(param, track=true) {
+    this.__param = param;
+    if(track) {
+      const __updateGizmo = () => {
+        this.setGlobalXfo(param.getValue())
+      }
+      __updateGizmo();
+      param.valueChanged.connect(__updateGizmo)
     }
   }
+
+
 };
 
 export {

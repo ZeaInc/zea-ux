@@ -4,6 +4,7 @@ import UndoRedoManager from './undoredo/UndoRedoManager.js';
 import Change from './undoredo/Change.js';
 import { 
   AxialRotationSceneWidget,
+  LinearMovementSceneWidget,
   PlanarMovementSceneWidget
 } from './sceneWidgets';
 
@@ -127,6 +128,45 @@ class SelectionManager {
       );
       this.selectionGroup.addChild(rotationZWidget);
       rotationZWidget.setTargetParam(this.selectionGroup.getParameter('GlobalXfo'), false);
+    }
+
+    //////////////////////////////////
+    // LinearMovementSceneWidget
+    {
+      const linearXWidget = new LinearMovementSceneWidget(
+        'linearX',
+        0.5,
+        new Visualive.Color('red'),
+        undoRedoManager
+      );
+      const xfo = new Visualive.Xfo();
+      xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0,1,0), Math.PI * 0.5);
+      linearXWidget.getParameter('LocalXfo').setValue(xfo)
+      this.selectionGroup.addChild(linearXWidget);
+      linearXWidget.setTargetParam(this.selectionGroup.getParameter('GlobalXfo'), false);
+    }
+    {
+      const linearYWidget = new LinearMovementSceneWidget(
+        'linearY',
+        0.5,
+        new Visualive.Color('green'),
+        undoRedoManager
+      );
+      const xfo = new Visualive.Xfo();
+      xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(1,0,0), Math.PI * 0.5);
+      linearYWidget.getParameter('LocalXfo').setValue(xfo)
+      this.selectionGroup.addChild(linearYWidget);
+      linearYWidget.setTargetParam(this.selectionGroup.getParameter('GlobalXfo'), false);
+    }
+    {
+      const linearZWidget = new LinearMovementSceneWidget(
+        'linearZ',
+        0.5,
+        new Visualive.Color('blue'),
+        undoRedoManager
+      );
+      this.selectionGroup.addChild(linearZWidget);
+      linearZWidget.setTargetParam(this.selectionGroup.getParameter('GlobalXfo'), false);
     }
 
     //////////////////////////////////
