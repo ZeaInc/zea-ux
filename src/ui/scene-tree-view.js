@@ -182,20 +182,29 @@ visualiveUxFactory.registerTreeItemElement(
 );
 
 class SceneTreeView {
-  constructor(parentDomElement, rootTreeItem, appData) {
-    this.parentDomElement = parentDomElement;
+  constructor(rootTreeItem, appData) {
     this.appData = appData;
 
     this.ul = document.createElement('ul');
     this.ul.className = 'TreeNodesList TreeNodesList--root';
 
-    this.parentDomElement.appendChild(this.ul);
 
     this.rootElement = new TreeItemElement(rootTreeItem, this.ul, appData, true);
   }
 
   getDomElement() {
     return this.container;
+  }
+
+
+  mount(parentElement) {
+    this.parentDomElement = parentElement;
+    this.parentDomElement.appendChild(this.ul);
+
+  }
+
+  unMount(parentElement) {
+    this.parentDomElement.removeChild(this.ul);
   }
 }
 

@@ -117,11 +117,16 @@ class SidePanel {
 
   setPanelWidget(widget) {
     if (this.widget) {
-      this.widget.unMount();
+      // Clean up the DOM in case a mess was lefft behind.
+      while (this.domElement.firstChild) {
+        this.domElement.removeChild(this.domElement.firstChild);
+      }
+      
+      this.widget.unMount(this.domElement);
     }
 
     this.widget = widget;
-    this.widget.mount();
+    this.widget.mount(this.domElement);
   }
 }
 
@@ -158,11 +163,16 @@ class BottomPanel {
 
   setPanelWidget(widget) {
     if (this.widget) {
-      this.widget.unMount();
+      this.widget.unMount(this.domElement);
+
+      // Clean up the DOM in case a mess was lefft behind.
+      while (this.domElement.firstChild) {
+        this.domElement.removeChild(this.domElement.firstChild);
+      }
     }
 
     this.widget = widget;
-    this.widget.mount();
+    this.widget.mount(this.domElement);
   }
 }
 

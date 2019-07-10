@@ -2,8 +2,13 @@ import { VisualiveSession } from '@visualive/collab';
 import { UserChip } from './UserChip';
 
 class CollabPanel {
-  constructor($collabWrapper, visualiveSession) {
+  constructor(visualiveSession) {
     this.userSelected = new Visualive.Signal();
+    this.visualiveSession = visualiveSession;
+  }
+
+  mount(parentElement) {
+
 
     const collabMarkup = `
       <div class="ba b--light-blue br2 pa2 h4 overflow-y-auto mb2">
@@ -68,7 +73,7 @@ class CollabPanel {
       </div>
     `;
 
-    $collabWrapper.innerHTML = collabMarkup;
+    parentElement.innerHTML = collabMarkup;
 
     const $userChips = document.getElementById('userChips');
     const $receivedMessages = document.getElementById('receivedMessages');
@@ -78,11 +83,11 @@ class CollabPanel {
     let micStarted = false;
     $toggleMic.addEventListener('click', e => {
       if (micStarted) {
-        visualiveSession.muteAudio();
+        this.visualiveSession.muteAudio();
         $toggleMic.classList.remove('AudioButton--on');
         micStarted = false;
       } else {
-        visualiveSession.unmuteAudio();
+        this.visualiveSession.unmuteAudio();
         $toggleMic.classList.add('AudioButton--on');
         micStarted = true;
       }
@@ -92,11 +97,11 @@ class CollabPanel {
     let cameraStarted = false;
     $toggleCam.addEventListener('click', e => {
       if (cameraStarted) {
-        visualiveSession.stopCamera();
+        this.visualiveSession.stopCamera();
         $toggleCam.classList.remove('CameraButton--on');
         cameraStarted = false;
       } else {
-        visualiveSession.startCamera();
+        this.visualiveSession.startCamera();
         $toggleCam.classList.add('CameraButton--on');
         cameraStarted = true;
       }
@@ -104,7 +109,7 @@ class CollabPanel {
 
     // document.formCreateRoom.addEventListener('submit', e => {
     //   const $form = e.target;
-    //   const roomId = visualiveSession.createRoom();
+    //   const roomId = this.visualiveSession.createRoom();
     //   $form.roomId.value = roomId;
     //   e.preventDefault();
     // });
@@ -119,17 +124,17 @@ class CollabPanel {
     document.formSendMessage.addEventListener('submit', e => {
       const $form = e.target;
       addMessage('Me', $form.messageToSend.value);
-      visualiveSession.pub(VisualiveSession.actions.TEXT_MESSAGE, {
+      this.visualiveSession.pub(VisualiveSession.actions.TEXT_MESSAGE, {
         text: $form.messageToSend.value,
       });
       e.preventDefault();
       $form.reset();
     });
 
-    visualiveSession.sub(
+    this.visualiveSession.sub(
       VisualiveSession.actions.TEXT_MESSAGE,
       (message, userId) => {
-        const userData = visualiveSession.getUser(userId);
+        const userData = this.visualiveSession.getUser(userId);
         addMessage(userData.given_name, message.text);
       }
     );
@@ -160,35 +165,36 @@ class CollabPanel {
       $userChips.removeChild(userChipsElements[userData.id]);
     };
 
-    visualiveSession.sub(
+    this.visualiveSession.sub(
       VisualiveSession.actions.USER_JOINED,
       (userData, userId) => {
         addUserChip(userData);
       }
     );
 
-    visualiveSession.sub(
+    this.visualiveSession.sub(
       VisualiveSession.actions.USER_LEFT,
       (userData, userId) => {
         removeUserChip(userData);
       }
     );
 
-    visualiveSession.sub(VisualiveSession.actions.LEFT_ROOM, () => {
-      const users = visualiveSession.getUsers();
+    this.visualiveSession.sub(VisualiveSession.actions.LEFT_ROOM, () => {
+      const users = this.visualiveSession.getUsers();
       for (let id in users) removeUserChip(users[id]);
       $receivedMessages.innerHTML = '';
     });
 
-    const users = visualiveSession.getUsers();
+    const users = this.visualiveSession.getUsers();
     for (let id in users) {
       addUserChip(users[id]);
     }
   }
 
-  mount() {}
+  unMount(parentElement) {
 
-  unMount() {}
+
+  }
 }
 
 export {
