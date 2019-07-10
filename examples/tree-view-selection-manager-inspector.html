@@ -5,6 +5,7 @@
     <title>TreeView SelectionManager Parameters</title>
 
     <script src="http://localhost:3150/VisualiveEngineClient/lib/Visualive.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jaames/iro/dist/iro.min.js"></script>
 
     <!-- Use https://tachyons.io to normalize styles and add useful classes -->
     <link rel="stylesheet" href="https://unpkg.com/tachyons@4/css/tachyons.min.css"/>
@@ -40,13 +41,24 @@ const addChildrenToRoot = i => {
   rootItem.addChild(firstLevelChild);
 
   for (let ii = 0; ++ii <= 5; ) {
-    firstLevelChild.addChild(new Visualive.GeomItem(`Geom Item ${ii}`));
+    const geom = new Visualive.Cuboid(0.5, 0.2, 0.6, true)
+    const material = new Visualive.Material(
+      'material',
+      'SimpleSurfaceShader'
+    );
+    const geomItem = new Visualive.GeomItem(`Geom Item ${ii}`, geom, material);
+    firstLevelChild.addChild(geomItem);
   }
 };
 
 for (let i = 0; ++i <= 4; ) {
   addChildrenToRoot(i);
 }
+
+const group = new Visualive.Group('group');
+group.addItem(rootItem.getChild(2))
+group.addItem(rootItem.getChild(3))
+rootItem.addChild(group);
 
 const sceneTreeView = new SceneTreeView(
   document.getElementById('vlw-tree'),

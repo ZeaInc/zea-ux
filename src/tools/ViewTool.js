@@ -1,10 +1,17 @@
 
 import BaseTool from './BaseTool.js';
 
-class ViewTool extends BaseTool {
-  constructor(appData) {
-    super(appData);
+const VIEW_TOOL_MODELS = {
+  VIEWER: 0,
+  DCC: 1
+}
 
+class ViewTool extends BaseTool {
+  constructor(appData, maipulationModel=VIEW_TOOL_MODELS.VIEWER) {
+    super(appData);
+    console.log("ViewTool:", maipulationModel)
+
+    this.__maipulationModel = maipulationModel;
     this.__defaultMode = 'orbit';
     this.__mode = this.__defaultMode;
 
@@ -324,6 +331,9 @@ class ViewTool extends BaseTool {
 
 
   onMouseDown(event) {
+    if(this.__maipulationModel == VIEW_TOOL_MODELS.DCC && !event.altKey)
+      return false;
+
     this.dragging = true;
     this.__mouseDownPos = event.mousePos;
     this.onDragStart(event)
@@ -357,6 +367,9 @@ class ViewTool extends BaseTool {
 
 
   onWheel(event) {
+    if(this.__maipulationModel == VIEW_TOOL_MODELS.DCC && !event.altKey)
+      return false;
+
     const viewport = event.viewport;
     const xfo = viewport.getCamera().getGlobalXfo();
     const vec = xfo.ori.getZaxis();
@@ -697,5 +710,6 @@ class ViewTool extends BaseTool {
 };
 
 export {
+  VIEW_TOOL_MODELS,
   ViewTool
 }

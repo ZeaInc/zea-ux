@@ -25,13 +25,15 @@ class PlanarMovementSceneWidget extends SceneWidget {
     this.addChild(this.handle);
   }
 
-  setTargetParam(param) {
+  setTargetParam(param, track=true) {
     this.__param = param;
-    const __updateGizmo = () => {
-      this.setGlobalXfo(param.getValue())
+    if(track) {
+      const __updateGizmo = () => {
+        this.setGlobalXfo(param.getValue())
+      }
+      __updateGizmo();
+      param.valueChanged.connect(__updateGizmo)
     }
-    __updateGizmo();
-    param.valueChanged.connect(__updateGizmo)
   }
 
   onDragStart(event) {
@@ -41,6 +43,7 @@ class PlanarMovementSceneWidget extends SceneWidget {
     event.undoRedoManager.addChange(this.change);
 
     this.baseXfo = this.getGlobalXfo();
+    this.offsetXfo = this.baseXfo.inverse().multiply(this.__param.getValue());
 
     // Hilight the material.
     this.colorParam.setValue(new Visualive.Color(1,1,1));
@@ -56,20 +59,24 @@ class PlanarMovementSceneWidget extends SceneWidget {
 
     const newXfo = this.baseXfo.clone();
     newXfo.tr.addInPlace(dragVec);
+    const value = newXfo.multiply(this.offsetXfo);
 
     this.change.update({
-      value: newXfo
+      value
     });
 
     this.manipulate.emit({
       holdPos: event.holdPos,
       manipRay: this.gizmoRay,
       deltaXfo: this.deltaXfo, 
-      newXfo
+      newXfo: value
     });
   }
 
   onDragEnd(event) {
+    this.change = null;
+    this.colorParam.setValue(this.__color);
+
     this.manipulateEnd.emit({
       releasePos: event.releasePos,
       manipRay: this.manipRay

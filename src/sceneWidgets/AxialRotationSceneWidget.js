@@ -13,7 +13,7 @@ class AxialRotationSceneWidget extends SceneWidget {
     handleMat.replaceParameter(this.colorParam);
 
     // const handleGeom = new Visualive.Cylinder(radius, radius * 0.05, 64, 2, false);
-    const handleGeom = new Visualive.Torus(radius * 0.02, radius, 64);
+    const handleGeom = new Visualive.Torus(radius * 0.01, radius, 64);
     this.handle = new Visualive.GeomItem('handle', handleGeom, handleMat);
     this.handleXfo = new Visualive.Xfo()
 
@@ -26,13 +26,15 @@ class AxialRotationSceneWidget extends SceneWidget {
     this.addChild(this.handle);
   }
 
-  setTargetParam(param) {
+  setTargetParam(param, track=true) {
     this.__param = param;
-    const __updateGizmo = () => {
-      this.setGlobalXfo(param.getValue())
+    if(track) {
+      const __updateGizmo = () => {
+        this.setGlobalXfo(param.getValue())
+      }
+      __updateGizmo();
+      param.valueChanged.connect(__updateGizmo)
     }
-    __updateGizmo();
-    param.valueChanged.connect(__updateGizmo)
   }
 
   onDragStart(event) {
@@ -44,6 +46,7 @@ class AxialRotationSceneWidget extends SceneWidget {
 
     this.baseXfo = this.getGlobalXfo();
     this.deltaXfo = new Visualive.Xfo();
+    this.offsetXfo = this.baseXfo.inverse().multiply(this.__param.getValue());
 
     // Hilight the material.
     this.colorParam.setValue(new Visualive.Color(1,1,1));
@@ -65,10 +68,12 @@ class AxialRotationSceneWidget extends SceneWidget {
     this.deltaXfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0, 0, 1), angle);
 
     const newXfo = this.baseXfo.multiply(this.deltaXfo);
+    const value = newXfo.multiply(this.offsetXfo);
+
     // this.__param.setValue(newXfo)
 
     this.change.update({
-      value: newXfo
+      value
     });
 
     this.manipulate.emit({
@@ -76,7 +81,7 @@ class AxialRotationSceneWidget extends SceneWidget {
       manipRay: this.gizmoRay,
       angle, 
       deltaXfo: this.deltaXfo, 
-      newXfo
+      newXfo: value
     });
   }
 

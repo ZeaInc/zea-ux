@@ -29,7 +29,7 @@ const { UndoRedoManager, ParameterContainer } = visualiveUx;
 const undoRedoManager = new UndoRedoManager();
 const parameterOwner = new Visualive.ParameterOwner();
 
-/*
+
 parameterOwner.addParameter(new Visualive.BooleanParameter('Toggle', false));
 
 parameterOwner.addParameter(new Visualive.StringParameter('Name', 'Foo'));
@@ -83,7 +83,7 @@ parameterOwner.addParameter(
 parameterOwner.addParameter(
   new Visualive.GeometryParameter('Geometry_Grid', new Visualive.Grid())
 );
-*/
+
 const treeItemParam = parameterOwner.addParameter(
   new Visualive.TreeItemParameter('Item', (item) => item instanceof Visualive.TreeItem )
 );

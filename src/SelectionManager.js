@@ -2,6 +2,10 @@
 
 import UndoRedoManager from './undoredo/UndoRedoManager.js';
 import Change from './undoredo/Change.js';
+import { 
+  AxialRotationSceneWidget,
+  PlanarMovementSceneWidget
+} from './sceneWidgets';
 
 class SelectionChange extends Change {
   constructor(selectionManager, prevSelection, newSelection) {
@@ -80,6 +84,110 @@ class SelectionManager {
     this.leadSelection = undefined;
     this.selectionChanged = new Visualive.Signal();
     this.leadSelectionChanged = new Visualive.Signal();
+
+    this.selectionGroup = new Visualive.Group('selection');
+    this.selectionGroup.getParameter('InitialXfoMode').setValue(Visualive.Group.INITIAL_XFO_MODES.average);
+    // this.selectionGroup.setVisible(false)
+
+    const size = 0.3
+    //////////////////////////////////
+    // AxialRotationSceneWidget
+    {
+      const rotationXWidget = new AxialRotationSceneWidget(
+        'rotationX',
+        0.5,
+        new Visualive.Color('red'),
+        undoRedoManager
+      );
+      const xfo = new Visualive.Xfo();
+      xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0,1,0), Math.PI * 0.5);
+      rotationXWidget.getParameter('LocalXfo').setValue(xfo)
+      this.selectionGroup.addChild(rotationXWidget);
+      rotationXWidget.setTargetParam(this.selectionGroup.getParameter('GlobalXfo'), false);
+    }
+    {
+      const rotationYWidget = new AxialRotationSceneWidget(
+        'rotationY',
+        0.5,
+        new Visualive.Color('green'),
+        undoRedoManager
+      );
+      const xfo = new Visualive.Xfo();
+      xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(1,0,0), Math.PI * 0.5);
+      rotationYWidget.getParameter('LocalXfo').setValue(xfo)
+      this.selectionGroup.addChild(rotationYWidget);
+      rotationYWidget.setTargetParam(this.selectionGroup.getParameter('GlobalXfo'), false);
+    }
+    {
+      const rotationZWidget = new AxialRotationSceneWidget(
+        'rotationZ',
+        0.5,
+        new Visualive.Color('blue'),
+        undoRedoManager
+      );
+      this.selectionGroup.addChild(rotationZWidget);
+      rotationZWidget.setTargetParam(this.selectionGroup.getParameter('GlobalXfo'), false);
+    }
+
+    //////////////////////////////////
+    // planarXYWidget
+    {
+      const planarXYWidget = new PlanarMovementSceneWidget(
+        'planarXY',
+        size,
+        new Visualive.Color('green'),
+        undoRedoManager
+      );
+      const xfo = new Visualive.Xfo();
+      xfo.tr.set(size*0.5, size*0.5, 0.0)
+      planarXYWidget.getParameter('LocalXfo').setValue(xfo)
+      this.selectionGroup.addChild(planarXYWidget);
+      planarXYWidget.setTargetParam(this.selectionGroup.getParameter('GlobalXfo'), false);
+    }
+    {
+      const planarYZWidget = new PlanarMovementSceneWidget(
+        'planarYZ',
+        size,
+        new Visualive.Color('red'),
+        undoRedoManager
+      );
+      const xfo = new Visualive.Xfo();
+      xfo.tr.set(0.0, size*0.5, size*0.5)
+      xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0,1,0), Math.PI * 0.5);
+      planarYZWidget.getParameter('LocalXfo').setValue(xfo)
+      this.selectionGroup.addChild(planarYZWidget);
+      planarYZWidget.setTargetParam(this.selectionGroup.getParameter('GlobalXfo'), false);
+     
+    }
+    {
+      const planarXZWidget = new PlanarMovementSceneWidget(
+        'planarXZ',
+        size,
+        new Visualive.Color('blue'),
+        undoRedoManager
+      );
+      const xfo = new Visualive.Xfo();
+      xfo.tr.set(size*0.5, 0.0, size*0.5)
+      xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(1,0,0), Math.PI * 0.5);
+      planarXZWidget.getParameter('LocalXfo').setValue(xfo)
+      this.selectionGroup.addChild(planarXZWidget);
+      planarXZWidget.setTargetParam(this.selectionGroup.getParameter('GlobalXfo'), false);
+    }
+
+  }
+  setRenderer(renderer) {
+    this.__renderer = renderer;
+    this.__renderer.addTreeItem(this.selectionGroup);
+  }
+
+  updateGizmos(){
+    const selection = this.selectionGroup.getParameter('Items').getValue();
+    const visible = Array.from(selection).length > 0;
+    if(Array.from(selection).length > 0)
+      this.selectionGroup.recalcInitialXfo();
+    this.selectionGroup.traverse( item => {
+      item.setVisible(visible)
+    })
   }
 
   getSelection(){
@@ -91,17 +199,21 @@ class SelectionManager {
       if(!this.__selection.has(treeItem)) {
         treeItem.getParameter('Selected').setValue(true);
         this.__selection.add(treeItem);
+        this.selectionGroup.addItem(treeItem);
       }
     }
     for (let treeItem of this.__selection){
       if(!selection.has(treeItem)) {
         treeItem.getParameter('Selected').setValue(false);
         this.__selection.delete(treeItem);
+        this.selectionGroup.removeItem(treeItem);
       }
     }
+
+    this.updateGizmos();
   }
 
-  setLeadSelection(treeItem) {
+  __setLeadSelection(treeItem) {
     if(this.leadSelection != treeItem) {
       this.leadSelection = treeItem;
       this.leadSelectionChanged.emit(treeItem);
@@ -127,7 +239,7 @@ class SelectionManager {
         // Note: In some cases, the item is currently selected, and
         // its children make up all the selected items. In that case
         // the user intends to deselect the item and all its children.
-        // Avoid clearning here, so the deselection can occur.
+        // Avoid cleaning here, so the deselection can occur.
         clear = count != this.__selection.size;
       }
 
@@ -139,16 +251,18 @@ class SelectionManager {
     if(!this.__selection.has(treeItem)) {
       treeItem.getParameter('Selected').setValue(true);
       this.__selection.add(treeItem);
+      this.selectionGroup.addItem(treeItem);
       sel = true;
     }
     else {
       treeItem.getParameter('Selected').setValue(false);
       this.__selection.delete(treeItem);
+      this.selectionGroup.removeItem(treeItem);
       sel = false;
     }
 
     if (sel && this.__selection.size === 1) {
-      this.setLeadSelection(treeItem);
+      this.__setLeadSelection(treeItem);
     }
 
     treeItem.traverse((subTreeItem)=>{
@@ -156,12 +270,14 @@ class SelectionManager {
         if(!this.__selection.has(subTreeItem)) {
           subTreeItem.getParameter('Selected').setValue(true);
           this.__selection.add(subTreeItem);
+          this.selectionGroup.addItem(treeItem);
         }
       }
       else {
         if(this.__selection.has(subTreeItem)) {
           subTreeItem.getParameter('Selected').setValue(false);
           this.__selection.delete(subTreeItem);
+          this.selectionGroup.removeItem(treeItem);
         }
       }
     })
@@ -169,14 +285,15 @@ class SelectionManager {
 
     if (!sel) {
       if(this.__selection.size === 1)
-        this.setLeadSelection(this.__selection.values().next().value);
+        this.__setLeadSelection(this.__selection.values().next().value);
       else if(this.__selection.size === 0)
-        this.setLeadSelection();
+        this.__setLeadSelection();
     }
 
     const change = new SelectionChange(this, prevSelection, new Set(this.__selection));
     this.undoRedoManager.addChange(change);
 
+    this.updateGizmos();
     this.selectionChanged.emit(this.__selection);
   }
 
@@ -188,8 +305,9 @@ class SelectionManager {
        prevSelection = new Set(this.__selection);
     }
     for (let treeItem of this.__selection){
-        treeItem.getParameter('Selected').setValue(false);
+      treeItem.getParameter('Selected').setValue(false);
     }
+    this.selectionGroup.clearItems();
     this.__selection.clear();
     if (newChange){
       const change = new SelectionChange(this, prevSelection, this.__selection);
@@ -212,6 +330,7 @@ class SelectionManager {
 
       if (!selectedParam.getValue()) {
         selectedParam.setValue(true);
+        this.selectionGroup.addItem(treeItem);
         this.__selection.add(treeItem);
 
         treeItem.traverse((subTreeItem)=>{
@@ -227,11 +346,12 @@ class SelectionManager {
     this.undoRedoManager.addChange(change);
 
     if (this.__selection.size === 1) {
-      this.setLeadSelection(this.__selection.values().next().value);
+      this.__setLeadSelection(this.__selection.values().next().value);
     }
     else if (this.__selection.size === 0) {
-      this.setLeadSelection();
+      this.__setLeadSelection();
     }
+    this.updateGizmos();
     this.selectionChanged.emit(this.__selection);
   }
 
@@ -258,11 +378,12 @@ class SelectionManager {
     this.undoRedoManager.addChange(change);
 
     if (this.__selection.size === 1) {
-      this.setLeadSelection(this.__selection.values().next().value);
+      this.__setLeadSelection(this.__selection.values().next().value);
     }
     else if (this.__selection.size === 0) {
-      this.setLeadSelection();
+      this.__setLeadSelection();
     }
+    this.updateGizmos();
     this.selectionChanged.emit(this.__selection);
   }
 

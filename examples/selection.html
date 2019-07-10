@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
-    <title>Manipulators</title>
+    <title>Selection</title>
 
     <script src="http://localhost:3150/VisualiveEngineClient/lib/Visualive.js"></script>
 
@@ -38,10 +38,11 @@ const {
 }  = visualiveUx;
 
 const undoRedoManager = new UndoRedoManager();
-// const selectionManager = new SelectionManager(undoRedoManager);
+const selectionManager = new SelectionManager(undoRedoManager);
 
 const appData = {
-  undoRedoManager
+  undoRedoManager,
+  selectionManager
 }
 
 ////////////////////////////////////////////////////
@@ -71,57 +72,24 @@ const cylinder = addShape(
   new Visualive.Vec3(1, 0, 0),
   standardMaterial
 );
-const cuboid = addShape(
-  'Cuboid',
+const cuboid0 = addShape(
+  'Cuboid0',
   new Visualive.Cuboid(0.5, 0.2, 0.6, true),
-  new Visualive.Vec3(-1, 0, 0),
+  new Visualive.Vec3(-1, 1, 0),
   standardMaterial
 );
-
-
-//////////////////////////////////
-// SliderSceneWidget
-const slider = new SliderSceneWidget(
-  'slider',
-  0.5,
-  0.02,
-  new Visualive.Color('#8A2BE2'),
-  undoRedoManager
+const cuboid1 = addShape(
+  'Cuboid1',
+  new Visualive.Cuboid(0.5, 0.2, 0.6, true),
+  new Visualive.Vec3(-1, -1, 0),
+  standardMaterial
 );
-scene.getRoot().addChild(slider);
-
-const param = new Visualive.NumberParameter('param', 0.0, [-0.5, 1.0]);
-slider.setTargetParam(param);
-param.valueChanged.connect(() => {
-  const xfo = cylinder.getGlobalXfo();
-  xfo.tr.z = param.getValue();
-  cylinder.setGlobalXfo(xfo);
-});
-scene.getRoot().addParameter(param);
-
-
-//////////////////////////////////
-// AxialRotationSceneWidget
-const rotationWidget = new AxialRotationSceneWidget(
-  'rotation',
-  0.5,
-  new Visualive.Color('#8A2BE2'),
-  undoRedoManager
+const cuboid2 = addShape(
+  'Cuboid2',
+  new Visualive.Cuboid(0.2, 0.2, 0.6, true),
+  new Visualive.Vec3(0, 0, 0),
+  standardMaterial
 );
-scene.getRoot().addChild(rotationWidget);
-rotationWidget.setTargetParam(cuboid.getParameter('GlobalXfo'));
-
-
-//////////////////////////////////
-// PlanarMovementSceneWidget
-const planarWidget = new PlanarMovementSceneWidget(
-  'planar',
-  0.5,
-  new Visualive.Color('#8A2BE2'),
-  undoRedoManager
-);
-scene.getRoot().addChild(planarWidget);
-planarWidget.setTargetParam(cylinder.getParameter('GlobalXfo'));
 
 
 //////////////////////////////////
@@ -137,7 +105,7 @@ renderer
   .getViewport()
   .getCamera()
   .setPositionAndTarget(
-    new Visualive.Vec3(2, 2, 1.7),
+    new Visualive.Vec3(3, 3, 1.7),
     new Visualive.Vec3(0, 0, 0.4)
   );
 renderer.resumeDrawing();
@@ -145,7 +113,7 @@ renderer.resumeDrawing();
 appData.scene = scene;
 appData.renderer = renderer;
 
-
+selectionManager.setRenderer(renderer)
 
 const toolManager = new ToolManager(appData);
 appData.toolManager = toolManager;
@@ -153,8 +121,10 @@ appData.toolManager = toolManager;
 renderer.getViewport().setManipulator(null);
 toolManager.bind(renderer);
 
-const viewTool = new ViewTool(appData, visualiveUx.VIEW_TOOL_MODELS.VIEWER);
+const viewTool = new ViewTool(appData, visualiveUx.VIEW_TOOL_MODELS.DCC);
 const handleTool = new SceneWidgetTool(appData);
+const selectionTool = new SelectionTool(appData);
+toolManager.pushTool(selectionTool);
 toolManager.pushTool(viewTool);
 toolManager.pushTool(handleTool);
 
