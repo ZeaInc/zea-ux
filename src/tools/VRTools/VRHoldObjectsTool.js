@@ -99,7 +99,7 @@ class HoldObjectsChange extends Change {
 
 UndoRedoManager.registerChange('HoldObjectsChange', HoldObjectsChange)
 
-export default class VRHoldObjectsTool extends BaseTool {
+class VRHoldObjectsTool extends BaseTool {
   constructor(appData) {
     super(appData);
 
@@ -207,6 +207,14 @@ export default class VRHoldObjectsTool extends BaseTool {
       if (intersectionData.geomItem.getOwner() instanceof SceneWidget)
         return false;
 
+
+      // console.log("onMouseDown on Geom"); // + " Material:" + geomItem.getMaterial().name);
+      // console.log(intersectionData.geomItem.getPath()); // + " Material:" + geomItem.getMaterial().name);
+      event.intersectionData = intersectionData;
+      intersectionData.geomItem.onMouseDown(event, intersectionData);
+      if (event.vleStopPropagation == true)
+        return false;
+
       let gidx = this.__heldGeomItems.indexOf(intersectionData.geomItem);
       if(gidx == -1){
         gidx = this.__heldGeomItems.length;
@@ -274,4 +282,7 @@ export default class VRHoldObjectsTool extends BaseTool {
     return true;
   }
 
+};
+export {
+  VRHoldObjectsTool
 };

@@ -103,4 +103,6 @@ class ActionTreeView {
   }
 }
 
-export default ActionTreeView;
+export {
+  ActionTreeView
+} ;

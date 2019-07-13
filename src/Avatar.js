@@ -395,3 +395,7 @@ export default class Avatar {
     }
   }
 };
+
+export {
+  Avatar
+};

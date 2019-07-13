@@ -633,6 +633,17 @@ class ViewTool extends BaseTool {
     return true;
   }
 
+  onVRControllerDoubleClicked(event) {
+    console.log("onVRControllerDoubleClicked:", this.__controllerTriggersHeld.length);
+
+    const grabPos = event.controller.getControllerTipStageLocalXfo().tr;
+    const stageXfo = event.vrviewport.getXfo().clone();
+    const sc = stageXfo.sc.x;
+    stageXfo.sc.set(1, 1, 1)
+    event.vrviewport.setXfo(stageXfo);
+
+  }
+
   onVRPoseChanged(event) {
 
     if(this.__controllerTriggersHeld.length == 1) {

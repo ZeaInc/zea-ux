@@ -2,7 +2,7 @@
 import BaseTool from '../BaseTool.js';
 import VRControllerUI from './VRControllerUI.js';
 
-export default class VRUITool extends BaseTool {
+class VRUITool extends BaseTool {
   constructor(appData, vrUIDOMHolderElement, vrUIDOMElement) {
     super(appData);
 
@@ -237,4 +237,9 @@ export default class VRUITool extends BaseTool {
     return true;
   }
 
+};
+
+
+export {
+  VRUITool
 };

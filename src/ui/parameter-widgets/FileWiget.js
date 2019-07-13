@@ -14,7 +14,7 @@ class FileWidget extends BaseWidget {
     input.setAttribute('value', parameter.getFilepath());
     input.setAttribute('tabindex', 0);
 
-    parentDomElem.appendChild(inputOwner);
+    parentDomElem.appendChild(input);
 
     /////////////////////////////
     // SceneWidget Changes.

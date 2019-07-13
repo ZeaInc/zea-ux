@@ -174,4 +174,4 @@ class TopMenuBar {
 
 export {
   TopMenuBar
-} ;
+};

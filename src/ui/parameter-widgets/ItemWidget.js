@@ -44,8 +44,5 @@ export default class ItemWidget extends BaseWidget {
 
 visualiveUxFactory.registerWidget(
   ItemWidget,
-  p => {
-    console.log(p)
-    return p instanceof Visualive.TreeItemParameter
-  } 
+  p => p instanceof Visualive.TreeItemParameter
 );
