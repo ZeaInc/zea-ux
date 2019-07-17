@@ -237,19 +237,19 @@ class Panels {
     this.sidePanelsWrapper.className = 'PanelsWrapper flex overflow-hidden';
     parentDomElement.appendChild(this.sidePanelsWrapper);
 
-    // this.leftPanel = new SidePanel(0);
-    // this.leftPanel.mount(this.sidePanelsWrapper);
+    this.leftPanel = new SidePanel(0);
+    this.leftPanel.mount(this.sidePanelsWrapper);
 
     this.viewportElement = document.createElement("div");
     this.viewportElement.className = 'Viewport flex-grow-1 bg-moon-gray overflow-hidden';
     this.viewportElement.id = 'viewport';
     this.sidePanelsWrapper.appendChild(this.viewportElement);
 
-    // this.rightPanel = new SidePanel(1);
-    // this.rightPanel.mount(this.sidePanelsWrapper);
+    this.rightPanel = new SidePanel(1);
+    this.rightPanel.mount(this.sidePanelsWrapper);
 
-    // this.bottomPanel = new BottomPanel();
-    // this.bottomPanel.mount(parentDomElement);
+    this.bottomPanel = new BottomPanel();
+    this.bottomPanel.mount(parentDomElement);
   }
 }
 export {
