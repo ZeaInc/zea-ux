@@ -11,7 +11,8 @@
 }
 
 .SidePanel {
-  width: 200px;
+  width: 0px;
+  display: none;
 }
 
 
@@ -28,7 +29,8 @@
   border-color: #bbb;
   overflow: auto;
   width: 100%;
-  height: 2px;
+  height: 0px;
+  display: none;
   flex-grow: 0;
   display: flex;
 }

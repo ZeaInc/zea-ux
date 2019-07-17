@@ -2,6 +2,9 @@ class SidePanel {
   constructor(domElement, handleElement, panelSide) {
     this.domElement = domElement;
 
+    // Side panels are collapsed by default.
+    this.domElement.style.width = `0px`;
+
     let startX, startWidth;
     function initDrag(event) {
       startX = event.clientX;
@@ -124,8 +127,11 @@ class SidePanel {
       
       this.widget.unMount(this.domElement);
     }
-
     this.widget = widget;
+
+    this.domElement.style.display = "block";
+    this.domElement.style.width = (widget.getDefaultWidth ? widget.getDefaultWidth() :  220)+'px';
+
     this.widget.mount(this.domElement);
   }
 }
@@ -133,6 +139,7 @@ class SidePanel {
 class BottomPanel {
   constructor(domElement, handleElement) {
     this.domElement = domElement;
+    this.domElement.style.height = `0px`;
 
     let startY, startHeight;
 
@@ -172,6 +179,10 @@ class BottomPanel {
     }
 
     this.widget = widget;
+
+    this.domElement.style.display = "block";
+    this.domElement.style.height = (widget.getDefaultHeight ? widget.getDefaultHeight() :  180)+'px';
+
     this.widget.mount(this.domElement);
   }
 }
