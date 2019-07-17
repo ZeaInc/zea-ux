@@ -1,40 +1,52 @@
 class SidePanel {
-  constructor(domElement, handleElement, panelSide) {
-    this.domElement = domElement;
+  constructor(panelSide) {
+    this.panelSide = panelSide;
+
+    if (panelSide == 0) {
+      this.domElement = document.createElement("div");
+      this.domElement.className = 'SidePanel SidePanel--left overflow-auto pa2';
+      this.handleElement = document.createElement("div");
+      this.handleElement.className = 'PanelHandler bg-center bg-white';
+    } else {
+      this.handleElement = document.createElement("div");
+      this.handleElement.className = 'PanelHandler bg-center bg-white';
+      this.domElement = document.createElement("div");
+      this.domElement.className = 'SidePanel SidePanel--right overflow-auto pa2';
+    }
 
     // Side panels are collapsed by default.
     this.domElement.style.width = `0px`;
 
     let startX, startWidth;
-    function initDrag(event) {
+
+    const initDrag = (event) => {
       startX = event.clientX;
       startWidth = parseInt(
-        document.defaultView.getComputedStyle(domElement).width,
+        document.defaultView.getComputedStyle(this.domElement).width,
         10
       ) * window.devicePixelRatio;
       document.addEventListener('mousemove', doDrag, false);
       document.addEventListener('mouseup', stopDrag, false);
     }
 
-    function doDrag(event) {
+    const doDrag = (event) => {
       const delta = (event.clientX - startX) * window.devicePixelRatio;
       const panelWidth = panelSide == 0 ? startWidth + delta : startWidth - delta;
-      if (panelWidth < 40){
-        domElement.style.display = "none";
-        domElement.style.width = `0px`;
-      } 
-      else {
-        domElement.style.display = "block";
-        domElement.style.width = `${panelWidth}px`;
+      if (panelWidth < 40) {
+        this.domElement.style.display = "none";
+        this.domElement.style.width = `0px`;
+      } else {
+        this.domElement.style.display = "block";
+        this.domElement.style.width = `${panelWidth}px`;
       }
     }
 
-    function stopDrag(event) {
+    const stopDrag = (event) => {
       document.removeEventListener('mousemove', doDrag, false);
       document.removeEventListener('mouseup', stopDrag, false);
     }
 
-    handleElement.addEventListener('mousedown', initDrag, false);
+    this.handleElement.addEventListener('mousedown', initDrag, false);
 
 
     /////////////////////////////////////
@@ -53,13 +65,13 @@ class SidePanel {
     }
 
 
-    handleElement.addEventListener("touchstart", (event) => {
+    this.handleElement.addEventListener("touchstart", (event) => {
       // console.log("onTouchStart");
       event.preventDefault();
       event.stopPropagation();
 
       startWidth = parseInt(
-        document.defaultView.getComputedStyle(domElement).width,
+        document.defaultView.getComputedStyle(this.domElement).width,
         10
       ) * window.devicePixelRatio;
       const touches = event.changedTouches;
@@ -72,20 +84,19 @@ class SidePanel {
       }
 
     }, false);
-    handleElement.addEventListener("touchmove", (event) => {
+    this.handleElement.addEventListener("touchmove", (event) => {
       const touches = event.changedTouches;
       if (touches.length == 1) {
         const touch = touches[0];
         // To get pixel values, we must take into account the devicePixelRatio
-        const delta = (touch.clientX - startX) * window.devicePixelRatio; 
+        const delta = (touch.clientX - startX) * window.devicePixelRatio;
         const panelWidth = panelSide == 0 ? startWidth + delta : startWidth - delta;
-        if (panelWidth < 40){
-          domElement.style.display = "none";
-          domElement.style.width = `0px`;
-        } 
-        else {
-          domElement.style.display = "block";
-          domElement.style.width = `${panelWidth}px`;
+        if (panelWidth < 40) {
+          this.domElement.style.display = "none";
+          this.domElement.style.width = `0px`;
+        } else {
+          this.domElement.style.display = "block";
+          this.domElement.style.width = `${panelWidth}px`;
         }
 
         // const touchPos = new Visualive.Vec2(touch.pageX, touch.pageY);
@@ -94,12 +105,12 @@ class SidePanel {
 
         // let panelWidth = panelSide == 0 ? startWidth + dragVec.x : startWidth - dragVec.x;
         // if (panelWidth < 40) panelWidth = 0;
-        // domElement.style.width = `${panelWidth}px`;
+        // this.domElement.style.width = `${panelWidth}px`;
 
         event.stopPropagation();
       }
     }, false);
-    handleElement.addEventListener("touchend", (event) => {
+    this.handleElement.addEventListener("touchend", (event) => {
       event.preventDefault();
       event.stopPropagation();
       let touches = event.changedTouches;
@@ -108,15 +119,33 @@ class SidePanel {
       }
       event.stopPropagation();
     }, false);
-    handleElement.addEventListener("touchcancel", (event) => {
+    this.handleElement.addEventListener("touchcancel", (event) => {
       let touches = event.changedTouches;
       for (let i = 0; i < touches.length; i++) {
         __endTouch(touches[i]);
       }
-        event.stopPropagation();
+      event.stopPropagation();
     }, false);
 
   }
+
+
+  mount(parentElement) {
+    this.parentDomElement = parentElement;
+    if (this.panelSide == 0) {
+      this.parentDomElement.appendChild(this.domElement);
+      this.parentDomElement.appendChild(this.handleElement);
+    }
+    else {
+      this.parentDomElement.appendChild(this.handleElement);
+      this.parentDomElement.appendChild(this.domElement);
+    }
+  }
+
+  unMount(parentElement) {
+    this.parentDomElement.removeChild(this.domElement);
+  }
+
 
   setPanelWidget(widget) {
     if (this.widget) {
@@ -124,48 +153,62 @@ class SidePanel {
       while (this.domElement.firstChild) {
         this.domElement.removeChild(this.domElement.firstChild);
       }
-      
+
       this.widget.unMount(this.domElement);
     }
     this.widget = widget;
 
     this.domElement.style.display = "block";
-    this.domElement.style.width = (widget.getDefaultWidth ? widget.getDefaultWidth() :  220)+'px';
+    this.domElement.style.width = (widget.getDefaultWidth ? widget.getDefaultWidth() : 220) + 'px';
 
     this.widget.mount(this.domElement);
   }
 }
 
 class BottomPanel {
-  constructor(domElement, handleElement) {
-    this.domElement = domElement;
+  constructor() {
+
+    this.handleElement = document.createElement("div");
+    this.handleElement.className = 'BottomPanelHandler bg-center bg-white z-1 bt';
+    this.domElement = document.createElement("div");
+    this.domElement.className = 'BottomPanel overflow-auto pa2';
     this.domElement.style.height = `0px`;
 
     let startY, startHeight;
 
-    function initDrag(event) {
+    const initDrag = (event) => {
       startY = event.clientY;
       startHeight = parseInt(
-        document.defaultView.getComputedStyle(domElement).height,
+        document.defaultView.getComputedStyle(this.domElement).height,
         10
       );
       document.addEventListener('mousemove', doDrag, false);
       document.addEventListener('mouseup', stopDrag, false);
     }
 
-    function doDrag(event) {
+    const doDrag = (event) => {
       const delta = event.clientY - startY;
       let panelHeight = startHeight - delta;
-      if (panelHeight < 10) panelHeight = 0;
-      domElement.style.height = `${panelHeight}px`;
+      if (panelHeight < 40) panelHeight = 0;
+      this.domElement.style.height = `${panelHeight}px`;
     }
 
-    function stopDrag(event) {
+    const stopDrag = (event) => {
       document.removeEventListener('mousemove', doDrag, false);
       document.removeEventListener('mouseup', stopDrag, false);
     }
 
-    handleElement.addEventListener('mousedown', initDrag, false);
+    this.handleElement.addEventListener('mousedown', initDrag, false);
+  }
+
+  mount(parentElement) {
+    this.parentDomElement = parentElement;
+    this.parentDomElement.appendChild(this.handleElement);
+    this.parentDomElement.appendChild(this.domElement);
+  }
+
+  unMount(parentElement) {
+    this.parentDomElement.removeChild(this.domElement);
   }
 
   setPanelWidget(widget) {
@@ -181,7 +224,7 @@ class BottomPanel {
     this.widget = widget;
 
     this.domElement.style.display = "block";
-    this.domElement.style.height = (widget.getDefaultHeight ? widget.getDefaultHeight() :  180)+'px';
+    this.domElement.style.height = (widget.getDefaultHeight ? widget.getDefaultHeight() : 180) + 'px';
 
     this.widget.mount(this.domElement);
   }
@@ -189,20 +232,24 @@ class BottomPanel {
 
 
 class Panels {
-  constructor() {
-    this.viewportElement = document.getElementById('viewport');
-    const panelElements = document.getElementsByClassName('SidePanel');
-    const panelHandlers = document.getElementsByClassName('PanelHandler');
+  constructor(parentDomElement) {
+    this.sidePanelsWrapper = document.createElement("div");
+    this.sidePanelsWrapper.className = 'PanelsWrapper flex overflow-hidden';
+    parentDomElement.appendChild(this.sidePanelsWrapper);
 
-    this.leftPanel = new SidePanel(panelElements[0], panelHandlers[0], 0);
-    this.rightPanel = new SidePanel(panelElements[1], panelHandlers[1], 1);
+    // this.leftPanel = new SidePanel(0);
+    // this.leftPanel.mount(this.sidePanelsWrapper);
 
+    this.viewportElement = document.createElement("div");
+    this.viewportElement.className = 'Viewport flex-grow-1 bg-moon-gray overflow-hidden';
+    this.viewportElement.id = 'viewport';
+    this.sidePanelsWrapper.appendChild(this.viewportElement);
 
-    const bottomPanelHandler = document.getElementsByClassName('BottomPanelHandler');
-    const bottomPanel = document.getElementById('bottomPanel');
-    if(bottomPanelHandler && bottomPanel) {
-      this.bottomPanel = new BottomPanel(bottomPanel, bottomPanelHandler[0]);
-    }
+    // this.rightPanel = new SidePanel(1);
+    // this.rightPanel.mount(this.sidePanelsWrapper);
+
+    // this.bottomPanel = new BottomPanel();
+    // this.bottomPanel.mount(parentDomElement);
   }
 }
 export {

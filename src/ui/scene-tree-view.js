@@ -200,7 +200,6 @@ class SceneTreeView {
   mount(parentElement) {
     this.parentDomElement = parentElement;
     this.parentDomElement.appendChild(this.ul);
-
   }
 
   unMount(parentElement) {

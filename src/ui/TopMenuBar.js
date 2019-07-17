@@ -1,8 +1,29 @@
 
 class TopMenuBar {
-  constructor(actionRegistry, domElement) {
+  constructor(parentDomElement, actionRegistry) {
     this.actionRegistry = actionRegistry;
-    this.domElement = domElement;
+
+
+    this.headerWrapper = document.createElement("div");
+    this.headerWrapper.className = 'HeaderWrapper bg-white pa0 bb';
+    parentDomElement.appendChild(this.headerWrapper);
+
+    this.logo = document.createElement("img");
+    this.logo.className = 'Header__logo pl2'
+    this.logo.src = './img/Zea_Logo_RGB_320x132.png';
+    this.headerWrapper.appendChild(this.logo);
+
+
+    this.topMenuItems = document.createElement("div");
+    this.topMenuItems.id = 'TopMenuWrapper';
+    this.topMenuItems.className = 'pure-menu pure-menu-horizontal ml3';
+    this.headerWrapper.appendChild(this.topMenuItems);
+
+
+    this.userProfileWrapper = document.createElement("div");
+    this.userProfileWrapper.id = 'UserProfileWrapper';
+    this.headerWrapper.appendChild(this.userProfileWrapper);
+
     this.__existingItems = {};
     this.__hotkeysToActions = {};
 
@@ -11,9 +32,9 @@ class TopMenuBar {
   }
 
   _buildTopBar() {
-    this.domElement.innerHTML = '';
+    this.topMenuItems.innerHTML = '';
 
-    const ul = this._addUlTo(this.domElement, 'pure-menu-list');
+    const ul = this._addUlTo(this.topMenuItems, 'pure-menu-list');
 
     const actions = this.actionRegistry.getActions();
     actions.forEach(action => {

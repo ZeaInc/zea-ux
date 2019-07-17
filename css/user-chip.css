@@ -1,8 +1,10 @@
 /* user-chip.css */
 
 .user-chip {
-  display: flex;
-  align-items: center;
+  /*display: flex;*/
+  /*align-items: center;*/
+  position: relative;
+  display: inline-block;
 }
 
 .user-chip--selected {
@@ -14,10 +16,60 @@
   max-width: 30px;
   height: 30px;
   max-height: 30px;
-  border-width: 0px;
+  border-width: 3px;
   display: inline-block;
+  border-color: transparent;
+}
+
+.user-image--selected {
+  border-color: #76d2bb;
 }
 
 .UserAvatar {
   width: 40px;
 }
+
+
+
+/* Tooltip text */
+.user-chip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+
+  /* Position the tooltip text */
+  position: absolute;
+  z-index: 1;
+ /* bottom: 125%;
+  left: 50%;
+  margin-left: -60px;*/
+  top: 10px;
+  right: 105%; 
+
+  /* Fade in tooltip */
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+/* Tooltip arrow */
+.user-chip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 100%; /* To the right of the tooltip */
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent transparent black;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.user-chip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
