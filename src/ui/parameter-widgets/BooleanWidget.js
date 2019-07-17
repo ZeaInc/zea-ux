@@ -1,10 +1,10 @@
 import BaseWidget from './BaseWidget.js';
 
-import visualiveUxFactory from '../VisualiveUxFactory.js';
+import uxFactory from '../UxFactory.js';
 import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 
 export default class BooleanWidget extends BaseWidget {
-  constructor(parameter, parentDomElem, undoRedoManager) {
+  constructor(parameter, parentDomElem, appData) {
     super(parameter);
     const input = document.createElement('input');
     input.setAttribute('id', parameter.getName());
@@ -24,13 +24,13 @@ export default class BooleanWidget extends BaseWidget {
     });
     input.addEventListener('input', () => {
       change = new ParameterValueChange(parameter, input.checked);
-      undoRedoManager.addChange(change);
+      appData.undoRedoManager.addChange(change);
       change = undefined;
     });
   }
 }
 
-visualiveUxFactory.registerWidget(
+uxFactory.registerWidget(
   BooleanWidget,
-  p => p.constructor.name == 'BooleanParameter'
+  p => p instanceof Visualive.BooleanParameter
 );

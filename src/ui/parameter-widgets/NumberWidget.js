@@ -1,10 +1,10 @@
 import BaseWidget from './BaseWidget.js';
 
-import visualiveUxFactory from '../VisualiveUxFactory.js';
+import uxFactory from '../UxFactory.js';
 import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 
 export default class NumberWidget extends BaseWidget {
-  constructor(parameter, parentDomElem, undoRedoManager) {
+  constructor(parameter, parentDomElem, appData) {
     super(parameter);
 
     const range = parameter.getRange();
@@ -58,7 +58,7 @@ export default class NumberWidget extends BaseWidget {
       }
       if (!change) {
         change = new ParameterValueChange(parameter, value);
-        undoRedoManager.addChange(change);
+        appData.undoRedoManager.addChange(change);
       }
       else {
         change.update({ value });
@@ -75,7 +75,7 @@ export default class NumberWidget extends BaseWidget {
   }
 }
 
-visualiveUxFactory.registerWidget(
+uxFactory.registerWidget(
   NumberWidget,
   p => p instanceof Visualive.NumberParameter
 );

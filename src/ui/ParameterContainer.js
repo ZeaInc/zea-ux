@@ -1,10 +1,10 @@
-import visualiveUxFactory from '../ui/VisualiveUxFactory.js';
+import uxFactory from '../ui/UxFactory.js';
 
 class ParameterContainer {
-  constructor(parameterOwner, domElement, undoRedoManager) {
+  constructor(parameterOwner, domElement, appData) {
     this.domElement = domElement;
     this.clean();
-    this.undoRedoManager = undoRedoManager;
+    this.appData = appData;
 
     this.container = document.createElement('div');
     this.container.className = 'container';
@@ -46,9 +46,10 @@ class ParameterContainer {
 
   addParameterWidget(parameter) {
     const parameterName = parameter.getName();
-    const reg = visualiveUxFactory.findWidgetReg(parameter);
+    const reg = uxFactory.findWidgetReg(parameter);
     if (!reg) {
-      console.warn(`Unable to display parameter '${parameterName}'`);
+      console.warn(`Unable to display parameter '${parameterName}', value:${parameter.getValue()}`);
+      const reg = uxFactory.findWidgetReg(parameter);
       return;
     }
 
@@ -60,26 +61,8 @@ class ParameterContainer {
     labelElem.appendChild(document.createTextNode(parameterName));
     li.appendChild(labelElem);
 
-    const widget = new reg.widget(parameter, li, this.undoRedoManager);
+    const widget = new reg.widget(parameter, li, this.appData);
     this.widgets.push(widget);
-
-
-    // const parameterName = parameter.getName();
-
-    // const li = document.createElement('li');
-    // this.ul.appendChild(li);
-
-    // const labelElem = document.createElement('label');
-    // labelElem.setAttribute('for', parameterName);
-    // labelElem.appendChild(document.createTextNode(parameterName));
-    // li.appendChild(labelElem);
-
-    // const widget = visualiveUxFactory.constructWidget(parameter, li, this.undoRedoManager);
-    // if (!widget) {
-    //   console.warn(`Unable to display parameter '${parameterName}'`);
-    //   return;
-    // }
-    // this.widgets.push(widget);
   }
 }
 

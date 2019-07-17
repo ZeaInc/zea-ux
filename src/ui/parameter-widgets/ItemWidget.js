@@ -1,10 +1,10 @@
 import BaseWidget from './BaseWidget.js';
 
-import visualiveUxFactory from '../VisualiveUxFactory.js';
+import uxFactory from '../UxFactory.js';
 import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 
 export default class ItemWidget extends BaseWidget {
-  constructor(parameter, parentDomElem, undoRedoManager) {
+  constructor(parameter, parentDomElem, appData) {
     super(parameter);
 
     const value = parameter.getValue();
@@ -42,7 +42,7 @@ export default class ItemWidget extends BaseWidget {
   }
 }
 
-visualiveUxFactory.registerWidget(
+uxFactory.registerWidget(
   ItemWidget,
   p => p instanceof Visualive.TreeItemParameter
 );

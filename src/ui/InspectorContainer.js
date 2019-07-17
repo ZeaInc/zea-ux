@@ -1,4 +1,4 @@
-import visualiveUxFactory from './VisualiveUxFactory.js';
+import uxFactory from './UxFactory.js';
 
 class InspectorContainer {
   constructor(domElement, appData) {
@@ -25,10 +25,10 @@ class InspectorContainer {
       this.domElement.innerHTML = '';
     }
     if(baseItem) {
-      this.inspector = visualiveUxFactory.constructInspector(
+      this.inspector = uxFactory.constructInspector(
         baseItem,
         this.domElement,
-        this.appData.undoRedoManager
+        this.appData
       );
     }
   }

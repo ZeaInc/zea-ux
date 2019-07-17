@@ -3,7 +3,7 @@
 import BaseWidget from './BaseWidget.js';
 import StringWidget from './StringWidget.js';
 
-import visualiveUxFactory from '../VisualiveUxFactory.js';
+import uxFactory from '../UxFactory.js';
 import ParameterContainer from '../ParameterContainer.js';  
 
 class NameParam {
@@ -26,7 +26,7 @@ class NameParam {
 }
 
 export default class ParameterOwnerWidget extends BaseWidget {
-  constructor(parameter, parentDomElem, undoRedoManager) {
+  constructor(parameter, parentDomElem, appData) {
     super(parameter);
 
     const parameteOwner = parameter.getValue();
@@ -39,8 +39,8 @@ export default class ParameterOwnerWidget extends BaseWidget {
     ul.appendChild(linameWidget);
     ul.appendChild(liparameterContainer);
     if(parameteOwner instanceof Visualive.BaseItem)
-      this.nameWidget = new StringWidget(new NameParam(parameteOwner), linameWidget, undoRedoManager);
-    this.parameterContainer = new ParameterContainer(parameteOwner, liparameterContainer, undoRedoManager);
+      this.nameWidget = new StringWidget(new NameParam(parameteOwner), linameWidget, appData);
+    this.parameterContainer = new ParameterContainer(parameteOwner, liparameterContainer, appData);
 
     parameter.valueChanged.connect(() => {
       this.parameterContainer.setParameterOwner(parameter.getValue());
@@ -48,7 +48,7 @@ export default class ParameterOwnerWidget extends BaseWidget {
   }
 }
 
-visualiveUxFactory.registerWidget(
+uxFactory.registerWidget(
   ParameterOwnerWidget,
   p => p.getValue() instanceof Visualive.ParameterOwner
 );

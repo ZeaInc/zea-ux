@@ -1,10 +1,10 @@
 import BaseWidget from './BaseWidget.js';
 
-import visualiveUxFactory from '../VisualiveUxFactory.js';
+import uxFactory from '../UxFactory.js';
 import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 
 export default class MultiChoiceWidget extends BaseWidget {
-  constructor(parameter, parentDomElem, undoRedoManager) {
+  constructor(parameter, parentDomElem, appData) {
     super(parameter);
 
     const range = parameter.getRange();
@@ -34,7 +34,7 @@ export default class MultiChoiceWidget extends BaseWidget {
     const valueChange = (event) => {
       changing = true;
       const change = new ParameterValueChange(parameter, select.selectedIndex);
-      undoRedoManager.addChange(change);
+      appData.undoRedoManager.addChange(change);
       changing = false;
     };
     select.addEventListener('change', valueChange);
@@ -42,7 +42,7 @@ export default class MultiChoiceWidget extends BaseWidget {
   }
 }
 
-visualiveUxFactory.registerWidget(
+uxFactory.registerWidget(
   MultiChoiceWidget,
   p => p instanceof Visualive.MultiChoiceParameter
 );

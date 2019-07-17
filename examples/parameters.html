@@ -98,13 +98,14 @@ for (let ii = 0; ++ii <= 5; ) {
   firstLevelChild.addChild(geomItem);
   itemSetParam.addItem(geomItem)
 }
+itemSetParam.setValue(-1);// Clear the selection
 
 treeItemParam.setValue(firstLevelChild.getChild(2))
 
 const parameterContainer = new ParameterContainer(
   parameterOwner,
   document.getElementById('parameters'),
-  undoRedoManager
+  { undoRedoManager }
 );
 
 document.addEventListener('keydown', e => {

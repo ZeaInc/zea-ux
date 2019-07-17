@@ -1,10 +1,10 @@
 import BaseWidget from './BaseWidget.js';
 
-import visualiveUxFactory from '../VisualiveUxFactory.js';
+import uxFactory from '../UxFactory.js';
 import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 
 class FileWidget extends BaseWidget {
-  constructor(parameter, parentDomElem, undoRedoManager) {
+  constructor(parameter, parentDomElem, appData) {
     super(parameter);
 
     const input = document.createElement('input');
@@ -26,7 +26,7 @@ class FileWidget extends BaseWidget {
     input.addEventListener('input', () => {
       if (!change) {
         change = new ParameterValueChange(parameter, input.valueAsNumber);
-        undoRedoManager.addChange(change);
+        appData.undoRedoManager.addChange(change);
       }
       else
         change.update({ value: input.valueAsNumber });
@@ -34,7 +34,7 @@ class FileWidget extends BaseWidget {
     input.addEventListener('change', () => {
       if (!change) {
         change = new ParameterValueChange(parameter);
-        undoRedoManager.addChange(change);
+        appData.undoRedoManager.addChange(change);
       }
       else
         change.update({ value: input.valueAsNumber });
@@ -43,7 +43,7 @@ class FileWidget extends BaseWidget {
   }
 }
 
-visualiveUxFactory.registerWidget(
+uxFactory.registerWidget(
   FileWidget,
-  p => p.constructor.name == 'FilePathParameter'
+  p => p instanceof Visualive.FilePathParameter
 );

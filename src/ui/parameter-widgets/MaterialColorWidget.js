@@ -4,11 +4,11 @@ import BaseWidget from './BaseWidget.js';
 import StringWidget from './StringWidget.js';
 import FileWiget from './FileWiget.js';
 
-import visualiveUxFactory from '../VisualiveUxFactory.js';
+import uxFactory from '../UxFactory.js';
 import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 
 // class TexParam {
-//   constructor(parameter, parentDomElem, undoRedoManager) {
+//   constructor(parameter, parentDomElem, appData) {
 //     this.valueChanged = parameter.textureConnected;
 //   }
 
@@ -26,8 +26,7 @@ import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 // }
 
 export default class MaterialColorWidget extends BaseWidget {
-  constructor(parameter, parentDomElem, undoRedoManager) {
-    console.log('MaterialColorWidget');
+  constructor(parameter, parentDomElem, appData) {
     super(parameter);
     
     const colorPicker = new iro.ColorPicker(parentDomElem, {
@@ -41,7 +40,7 @@ export default class MaterialColorWidget extends BaseWidget {
       borderColor: '#fff',
     });
 
-    // this.textureWidget = new FileWiget(new TexParam(parameter), parentDomElem, undoRedoManager);
+    // this.textureWidget = new FileWiget(new TexParam(parameter), parentDomElem, appData);
 
     /////////////////////////////
     // SceneWidget Changes.
@@ -59,7 +58,7 @@ export default class MaterialColorWidget extends BaseWidget {
 
     colorPicker.on('input:start', () => {
       change = new ParameterValueChange(parameter);
-      undoRedoManager.addChange(change);
+      appData.undoRedoManager.addChange(change);
     });
 
     colorPicker.on('input:end', () => {
@@ -73,7 +72,7 @@ export default class MaterialColorWidget extends BaseWidget {
       value.setFromRGBDict(colorPicker.color.rgb);
       if (!change) {
         change = new ParameterValueChange(parameter, value);
-        undoRedoManager.addChange(change);
+        appData.undoRedoManager.addChange(change);
       } else {
         change.update({ value });
       }
@@ -83,7 +82,7 @@ export default class MaterialColorWidget extends BaseWidget {
   setParentDomElem(parentDomElem) {}
 }
 
-visualiveUxFactory.registerWidget(
+uxFactory.registerWidget(
   MaterialColorWidget,
-  p => p.constructor.name == 'MaterialColorParam'
+  p => p instanceof Visualive.MaterialColorParam
 );

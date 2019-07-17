@@ -2,11 +2,11 @@
 
 import BaseWidget from './BaseWidget.js';
 
-import visualiveUxFactory from '../VisualiveUxFactory.js';
+import uxFactory from '../UxFactory.js';
 import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 
 export default class Vec3Widget extends BaseWidget {
-  constructor(parameter, parentDomElem, undoRedoManager) {
+  constructor(parameter, parentDomElem, appData) {
     super(parameter);
 
     const container = document.createElement('div');
@@ -79,7 +79,7 @@ export default class Vec3Widget extends BaseWidget {
         )
       if (!change) {
         change = new ParameterValueChange(parameter, value);
-        undoRedoManager.addChange(change);
+        appData.undoRedoManager.addChange(change);
       }
       else {
         change.update({ value });
@@ -101,7 +101,7 @@ export default class Vec3Widget extends BaseWidget {
   }
 }
 
-visualiveUxFactory.registerWidget(
+uxFactory.registerWidget(
   Vec3Widget,
-  p => p.constructor.name == 'Vec3Parameter'
+  p => p instanceof Visualive.Vec3Parameter
 );

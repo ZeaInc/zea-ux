@@ -1,4 +1,4 @@
-import visualiveUxFactory from './VisualiveUxFactory.js';
+import uxFactory from './UxFactory.js';
 import ParameterValueChange from '../undoredo/ParameterValueChange.js';
 
 
@@ -122,7 +122,7 @@ class TreeItemElement {
 
   addChild(treeItem, expanded = false) {
     if(this._expanded) {
-      const childTreeItem = visualiveUxFactory.constructTreeItemElement(
+      const childTreeItem = uxFactory.constructTreeItemElement(
         treeItem,
         this.ul,
         this.appData,
@@ -162,7 +162,7 @@ class TreeItemElement {
   }
 }
 
-visualiveUxFactory.registerTreeItemElement(
+uxFactory.registerTreeItemElement(
   TreeItemElement,
   p => p instanceof Visualive.TreeItem
 );
@@ -176,7 +176,7 @@ class GeomItemElement extends TreeItemElement {
   }
 }
 
-visualiveUxFactory.registerTreeItemElement(
+uxFactory.registerTreeItemElement(
   GeomItemElement,
   p => p instanceof Visualive.GeomItem
 );

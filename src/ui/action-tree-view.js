@@ -1,4 +1,4 @@
-import visualiveUxFactory from './VisualiveUxFactory.js';
+import uxFactory from './UxFactory.js';
 import ParameterValueChange from '../undoredo/ParameterValueChange.js';
 
 class ActionTreeView {

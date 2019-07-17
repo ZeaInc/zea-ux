@@ -6,12 +6,11 @@
 
 import BaseWidget from './BaseWidget.js';
 
-import visualiveUxFactory from '../VisualiveUxFactory.js';
+import uxFactory from '../UxFactory.js';
 import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 
 export default class ColorWidget extends BaseWidget {
-  constructor(parameter, parentDomElem, undoRedoManager) {
-    console.log('ColorWidget');
+  constructor(parameter, parentDomElem, appData) {
     super(parameter);
     
     const colorPicker = new iro.ColorPicker(parentDomElem, {
@@ -42,7 +41,7 @@ export default class ColorWidget extends BaseWidget {
     colorPicker.on('input:start', () => {
       console.log('input:start', parameter.getValue().getAsRGBDict())
       change = new ParameterValueChange(parameter);
-      undoRedoManager.addChange(change);
+      appData.undoRedoManager.addChange(change);
     });
 
     colorPicker.on('input:end', () => {
@@ -58,7 +57,7 @@ export default class ColorWidget extends BaseWidget {
       value.setFromRGBDict(colorPicker.color.rgb);
       if (!change) {
         change = new ParameterValueChange(parameter, value);
-        undoRedoManager.addChange(change);
+        appData.undoRedoManager.addChange(change);
       } else {
         change.update({ value });
       }
@@ -68,7 +67,7 @@ export default class ColorWidget extends BaseWidget {
   setParentDomElem(parentDomElem) {}
 }
 
-visualiveUxFactory.registerWidget(
+uxFactory.registerWidget(
   ColorWidget,
-  p => p.constructor.name == 'ColorParameter'
+  p => p instanceof Visualive.ColorParameter
 );

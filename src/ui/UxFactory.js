@@ -1,4 +1,4 @@
-class VisualiveUxFactory {
+class UxFactory {
   constructor() {
     this.treeItemFactories = [];
     this.widgetFactories = [];
@@ -87,6 +87,6 @@ class VisualiveUxFactory {
   }
 }
 
-const visualiveUxFactory = new VisualiveUxFactory();
+const uxFactory = new UxFactory();
 
-export default visualiveUxFactory;
+export default uxFactory;

@@ -14,3 +14,5 @@ export * from './InspectorContainer.js';
 export * from './action-tree-view.js';
 export * from './UserChip.js';
 
+import uxFactory from './UxFactory.js';
+export { uxFactory };

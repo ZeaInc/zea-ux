@@ -1,12 +1,12 @@
 import BaseWidget from './BaseWidget.js';
 
 import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
-import visualiveUxFactory from '../VisualiveUxFactory.js';
+import uxFactory from '../UxFactory.js';
 
 
 
 export default class StringWidget extends BaseWidget {
-  constructor(parameter, parentDomElem, undoRedoManager) {
+  constructor(parameter, parentDomElem, appData) {
     super(parameter);
 
     const input = document.createElement('input');
@@ -32,7 +32,7 @@ export default class StringWidget extends BaseWidget {
       const value = input.value
       if (!change) {
         change = new ParameterValueChange(parameter, value);
-        undoRedoManager.addChange(change);
+        appData.undoRedoManager.addChange(change);
       }
       else {
         change.update({ value });
@@ -49,7 +49,7 @@ export default class StringWidget extends BaseWidget {
   }
 }
 
-visualiveUxFactory.registerWidget(
+uxFactory.registerWidget(
   StringWidget,
-  p => p.constructor.name == 'StringParameter'
+  p => p instanceof Visualive.StringParameter
 );

@@ -2,11 +2,11 @@
 
 import BaseWidget from './BaseWidget.js';
 
-import visualiveUxFactory from '../VisualiveUxFactory.js';
+import uxFactory from '../UxFactory.js';
 import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 
 export default class XfoWidget extends BaseWidget {
-  constructor(parameter, parentDomElem, undoRedoManager) {
+  constructor(parameter, parentDomElem, appData) {
     super(parameter);
 
     const container = document.createElement('div');
@@ -63,7 +63,7 @@ export default class XfoWidget extends BaseWidget {
       )
       if (!change) {
         change = new ParameterValueChange(parameter, xfo);
-        undoRedoManager.addChange(change);
+        appData.undoRedoManager.addChange(change);
       }
       else {
         change.update({ value:xfo });
@@ -117,7 +117,7 @@ export default class XfoWidget extends BaseWidget {
   }
 }
 
-visualiveUxFactory.registerWidget(
+uxFactory.registerWidget(
   XfoWidget,
-  p => p.constructor.name == 'XfoParameter'
+  p => p instanceof Visualive.XfoParameter
 );

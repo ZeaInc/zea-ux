@@ -1,5 +1,5 @@
 import ParameterContainer from './ParameterContainer.js';
-import visualiveUxFactory from './VisualiveUxFactory.js';
+import uxFactory from './UxFactory.js';
 import StringWidget from './parameter-widgets/StringWidget.js';
 
 class NameParam {
@@ -22,7 +22,7 @@ class NameParam {
 }
 
 export default class TreeItemInspector {
-  constructor(treeItem, domElement, undoRedoManager) {
+  constructor(treeItem, domElement, appData) {
 
     const ul = document.createElement('ul');
     ul.className = 'list pa0'
@@ -31,8 +31,8 @@ export default class TreeItemInspector {
     domElement.appendChild(ul);
     ul.appendChild(linameWidget);
     ul.appendChild(liparameterContainer);
-    this.nameWidget = new StringWidget(new NameParam(treeItem), linameWidget, undoRedoManager);
-    this.parameterContainer = new ParameterContainer(treeItem, liparameterContainer, undoRedoManager);
+    this.nameWidget = new StringWidget(new NameParam(treeItem), linameWidget, appData);
+    this.parameterContainer = new ParameterContainer(treeItem, liparameterContainer, appData);
   }
 
   destroy() {
@@ -40,7 +40,7 @@ export default class TreeItemInspector {
   }
 }
 
-visualiveUxFactory.registerInpector(
+uxFactory.registerInpector(
   TreeItemInspector,
   p => p instanceof Visualive.TreeItem
 );
