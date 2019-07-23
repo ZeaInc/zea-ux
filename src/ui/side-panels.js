@@ -147,7 +147,7 @@ class SidePanel {
 
     if(this.widget) {
       this.domElement.style.display = "block";
-      this.domElement.style.width = (widget.getDefaultWidth ? widget.getDefaultWidth() : 220) + 'px';
+      this.domElement.style.width = (widget.getDefaultWidth ? widget.getDefaultWidth() : 300) + 'px';
 
       this.widget.mount(this.domElement);
     }
