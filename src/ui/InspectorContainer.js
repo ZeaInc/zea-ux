@@ -1,9 +1,7 @@
 import uxFactory from './UxFactory.js';
 
 class InspectorContainer {
-  constructor(domElement, appData) {
-    this.domElement = domElement;
-    this.domElement.innerHTML = '';
+  constructor(appData) {
     this.appData = appData;
 
     if(this.appData.selectionManager.leadSelection) {
@@ -33,7 +31,9 @@ class InspectorContainer {
     }
   }
 
-  mount(){
+  mount(parentElement){
+    this.domElement = parentElement;
+    this.domElement.innerHTML = '';
   }
 
   unMount(){

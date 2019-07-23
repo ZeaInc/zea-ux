@@ -17,7 +17,6 @@ export default class BBoxWidget extends BaseWidget {
     container.appendChild(ul);
 
     const bbox = parameter.getValue();
-    console.log(bbox.toJSON())
 
     /////////////////////////////
     // SceneWidget Changes.

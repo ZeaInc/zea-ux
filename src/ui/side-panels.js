@@ -129,6 +129,34 @@ class SidePanel {
 
   }
 
+  getPanelWidget(){
+    return this.widget;
+  }
+
+  setPanelWidget(widget) {
+    if (this.widget) {
+      this.widget.unMount(this.domElement);
+
+      // Clean up the DOM in case a mess was lefft behind.
+      while (this.domElement.firstChild) {
+        this.domElement.removeChild(this.domElement.firstChild);
+      }
+    }
+
+    this.widget = widget;
+
+    if(this.widget) {
+      this.domElement.style.display = "block";
+      this.domElement.style.width = (widget.getDefaultWidth ? widget.getDefaultWidth() : 220) + 'px';
+
+      this.widget.mount(this.domElement);
+    }
+    else {
+      this.domElement.style.display = "none";
+      this.domElement.style.width = `0px`;
+    }
+  }
+
 
   mount(parentElement) {
     this.parentDomElement = parentElement;
@@ -144,24 +172,6 @@ class SidePanel {
 
   unMount(parentElement) {
     this.parentDomElement.removeChild(this.domElement);
-  }
-
-
-  setPanelWidget(widget) {
-    if (this.widget) {
-      // Clean up the DOM in case a mess was lefft behind.
-      while (this.domElement.firstChild) {
-        this.domElement.removeChild(this.domElement.firstChild);
-      }
-
-      this.widget.unMount(this.domElement);
-    }
-    this.widget = widget;
-
-    this.domElement.style.display = "block";
-    this.domElement.style.width = (widget.getDefaultWidth ? widget.getDefaultWidth() : 220) + 'px';
-
-    this.widget.mount(this.domElement);
   }
 }
 
@@ -201,14 +211,8 @@ class BottomPanel {
     this.handleElement.addEventListener('mousedown', initDrag, false);
   }
 
-  mount(parentElement) {
-    this.parentDomElement = parentElement;
-    this.parentDomElement.appendChild(this.handleElement);
-    this.parentDomElement.appendChild(this.domElement);
-  }
-
-  unMount(parentElement) {
-    this.parentDomElement.removeChild(this.domElement);
+  getPanelWidget(){
+    return this.widget;
   }
 
   setPanelWidget(widget) {
@@ -223,11 +227,28 @@ class BottomPanel {
 
     this.widget = widget;
 
-    this.domElement.style.display = "block";
-    this.domElement.style.height = (widget.getDefaultHeight ? widget.getDefaultHeight() : 180) + 'px';
+    if(this.widget) {
+      this.domElement.style.display = "block";
+      this.domElement.style.height = (widget.getDefaultHeight ? widget.getDefaultHeight() : 180) + 'px';
 
-    this.widget.mount(this.domElement);
+      this.widget.mount(this.domElement);
+    }
+    else {
+      this.domElement.style.display = "none";
+      this.domElement.style.height = `0px`;
+    }
   }
+
+  mount(parentElement) {
+    this.parentDomElement = parentElement;
+    this.parentDomElement.appendChild(this.handleElement);
+    this.parentDomElement.appendChild(this.domElement);
+  }
+
+  unMount(parentElement) {
+    this.parentDomElement.removeChild(this.domElement);
+  }
+
 }
 
 
