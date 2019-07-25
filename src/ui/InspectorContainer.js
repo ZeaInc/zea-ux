@@ -17,14 +17,18 @@ class InspectorContainer {
     });
   }
 
-  inspect(baseItem) {
+  inspect(inspectedItem) {
+    this.inspectedItem = inspectedItem;
+    if(!this.domElement)
+      return;
+
     if (this.inspector) {
       this.inspector.destroy();
       this.domElement.innerHTML = '';
     }
-    if(baseItem) {
+    if(this.inspectedItem) {
       this.inspector = uxFactory.constructInspector(
-        baseItem,
+        inspectedItem,
         this.domElement,
         this.appData
       );
@@ -34,6 +38,8 @@ class InspectorContainer {
   mount(parentElement){
     this.domElement = parentElement;
     this.domElement.innerHTML = '';
+    if(this.inspectedItem)
+      this.inspect(this.inspectedItem);
   }
 
   unMount(){
