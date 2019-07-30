@@ -1,28 +1,34 @@
+import { UserChip } from './UserChip.js';
 
 class TopMenuBar {
-  constructor(parentDomElement, actionRegistry) {
-    this.actionRegistry = actionRegistry;
+  constructor(parentDomElement, appData, isOverlay) {
+    this.appData = appData;
 
+    const headerWrapper = document.createElement("div");
+    headerWrapper.className = 'HeaderWrapper bg-white pa0 bb';
+    parentDomElement.appendChild(headerWrapper);
 
-    this.headerWrapper = document.createElement("div");
-    this.headerWrapper.className = 'HeaderWrapper bg-white pa0 bb';
-    parentDomElement.appendChild(this.headerWrapper);
-
-    this.logo = document.createElement("img");
-    this.logo.className = 'Header__logo pl2'
-    this.logo.src = './img/Zea_Logo_RGB_320x132.png';
-    this.headerWrapper.appendChild(this.logo);
-
+    if(!isOverlay) {
+      this.logo = document.createElement("img");
+      this.logo.className = 'Header__logo pl2'
+      this.logo.src = './img/Zea_Logo_RGB_320x132.png';
+      headerWrapper.appendChild(this.logo);
+    }
 
     this.topMenuItems = document.createElement("div");
     this.topMenuItems.id = 'TopMenuWrapper';
     this.topMenuItems.className = 'pure-menu pure-menu-horizontal ml3';
-    this.headerWrapper.appendChild(this.topMenuItems);
+    headerWrapper.appendChild(this.topMenuItems);
 
+    if(!isOverlay) {
+      const userProfileWrapper = document.createElement("div");
+      headerWrapper.appendChild(userProfileWrapper);
 
-    this.userProfileWrapper = document.createElement("div");
-    this.userProfileWrapper.id = 'UserProfileWrapper';
-    this.headerWrapper.appendChild(this.userProfileWrapper);
+      this.currentUserChip = new UserChip(
+        userProfileWrapper,
+        this.appData.currentUser
+      );
+    }
 
     this.__existingItems = {};
     this.__hotkeysToActions = {};
@@ -36,12 +42,12 @@ class TopMenuBar {
 
     const ul = this._addUlTo(this.topMenuItems, 'pure-menu-list');
 
-    const actions = this.actionRegistry.getActions();
+    const actions = this.appData.actionRegistry.getActions();
     actions.forEach(action => {
       this._addMenuItem(ul, action);
     });
 
-    this.actionRegistry.actionAdded.connect((action)=>{
+    this.appData.actionRegistry.actionAdded.connect((action)=>{
       this._addMenuItem(ul, action);
     })
   }
