@@ -3,11 +3,16 @@ import BaseTool from '../BaseTool.js';
 import VRControllerUI from './VRControllerUI.js';
 
 class VRUITool extends BaseTool {
-  constructor(appData, vrUIDOMHolderElement, vrUIDOMElement) {
+  constructor(appData) {
     super(appData);
 
-    this.__vrUIDOMHolderElement = vrUIDOMHolderElement;
-    this.__vrUIDOMElement = vrUIDOMElement;
+
+    this.__vrUIDOMHolderElement = document.createElement("div");
+    this.__vrUIDOMHolderElement.className = 'vrUIHolder';
+    this.__vrUIDOMElement = document.createElement("div");
+    this.__vrUIDOMElement.className = 'vrUI';
+    document.body.appendChild(this.__vrUIDOMHolderElement);
+
     this.controllerUI = new VRControllerUI(appData, vrUIDOMHolderElement, vrUIDOMElement);
     this.controllerUI.addRef(this)
 
