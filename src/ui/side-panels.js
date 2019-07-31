@@ -254,6 +254,12 @@ class BottomPanel {
 
 class Panels {
   constructor(parentDomElement) {
+    if(parentDomElement)
+      this.mount(parentDomElement);
+  }
+
+  mount(parentDomElement) {
+
     this.sidePanelsWrapper = document.createElement("div");
     this.sidePanelsWrapper.className = 'PanelsWrapper flex overflow-hidden';
     parentDomElement.appendChild(this.sidePanelsWrapper);
@@ -261,16 +267,22 @@ class Panels {
     this.leftPanel = new SidePanel(0);
     this.leftPanel.mount(this.sidePanelsWrapper);
 
-    this.viewportElement = document.createElement("div");
-    this.viewportElement.className = 'Viewport flex-grow-1 bg-moon-gray overflow-hidden';
-    this.viewportElement.id = 'viewport';
-    this.sidePanelsWrapper.appendChild(this.viewportElement);
+    this.centerDomElement = document.createElement("div");
+    this.centerDomElement.className = 'Viewport flex-grow-1 bg-moon-gray overflow-hidden';
+    this.centerDomElement.id = 'viewport';
+    this.sidePanelsWrapper.appendChild(this.centerDomElement);
 
     this.rightPanel = new SidePanel(1);
     this.rightPanel.mount(this.sidePanelsWrapper);
 
     this.bottomPanel = new BottomPanel();
     this.bottomPanel.mount(parentDomElement);
+  }
+
+  unMount(parentElement) {
+    // while (parentElement.firstChild) {
+    //   parentElement.removeChild(parentElement.firstChild);
+    // }
   }
 }
 export {
