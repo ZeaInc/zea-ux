@@ -1,4 +1,4 @@
-import ParameterContainer from './ParameterContainer.js';
+import ParameterContainer from './parameter-container.js';
 import uxFactory from './UxFactory.js';
 import StringWidget from './parameter-widgets/StringWidget.js';
 

@@ -4,7 +4,7 @@ import BaseWidget from './BaseWidget.js';
 import StringWidget from './StringWidget.js';
 
 import uxFactory from '../UxFactory.js';
-import ParameterContainer from '../ParameterContainer.js';  
+import ParameterContainer from '../parameter-container.js';  
 
 class NameParam {
   constructor(treeItem) {

@@ -1,4 +1,4 @@
-import { UserChip } from './UserChip.js';
+import { UserChip } from './user-chip.js';
 
 class TopMenuBar {
   constructor(parentDomElement, appData, isOverlay) {

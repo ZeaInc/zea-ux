@@ -1,5 +1,5 @@
 import { VisualiveSession } from '@visualive/collab';
-import { UserChip } from './UserChip';
+import { UserChip } from './user-chip.js';
 
 class CollabPanel {
   constructor(visualiveSession) {
