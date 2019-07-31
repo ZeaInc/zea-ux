@@ -11,22 +11,20 @@
 }
 
 .SidePanel {
+  background-color: #fff;
   width: 0px;
   display: none;
 }
 
-
-.Viewport {
+.PanelsCenter {
+  background-color: #a6a6a6;
   min-width: 40px;
   position: relative;
 }
 
-/*.FooterWrapper {
-  border-color: #bbb;
-}*/
-
 .BottomPanel {
   border-color: #bbb;
+  background-color: #fff;
   overflow: auto;
   width: 100%;
   height: 0px;

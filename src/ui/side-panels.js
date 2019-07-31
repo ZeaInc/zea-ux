@@ -268,7 +268,7 @@ class Panels {
     this.leftPanel.mount(this.sidePanelsWrapper);
 
     this.centerDomElement = document.createElement("div");
-    this.centerDomElement.className = 'Viewport flex-grow-1 bg-moon-gray overflow-hidden';
+    this.centerDomElement.className = 'PanelsCenter flex-grow-1 overflow-hidden';
     this.centerDomElement.id = 'viewport';
     this.sidePanelsWrapper.appendChild(this.centerDomElement);
 
