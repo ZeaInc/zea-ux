@@ -84,8 +84,8 @@ class SelectionManager {
     this.selectionGroup = new Visualive.Group('selection');
     this.selectionGroup.getParameter('InitialXfoMode').setValue(Visualive.Group.INITIAL_XFO_MODES.average);
 
-    const size = 0.5
-    const thickness = size * 0.01
+    const size = 0.25
+    const thickness = size * 0.02
     this.xfoHandle = new XfoHandle(size, thickness);
     this.xfoHandle.setTargetParam(this.selectionGroup.getParameter('GlobalXfo'), false);
     this.xfoHandle.setVisible(false)

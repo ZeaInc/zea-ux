@@ -13,11 +13,9 @@ import {
 } from './LinearScaleSceneWidget.js';
 
 export default class XfoHandle extends Visualive.TreeItem {
-  constructor(name) {
+  constructor(size, thickness) {
     super(name)
 
-    const size = 0.4
-    const thickness = 0.005
     //////////////////////////////////
     // LinearMovementSceneWidget
     
@@ -136,6 +134,13 @@ export default class XfoHandle extends Visualive.TreeItem {
         blue
       );
       rotationHandles.addChild(rotationZWidget);
+    } {
+
+      const maskMat = new Visualive.Material('handle', 'HandleShader');
+      maskMat.getParameter('BaseColor').setValue(new Visualive.Color(1, 1, 1, 0.8));
+      const maskGeom = new Visualive.Sphere(size-thickness, 64);
+      const maskGeomItem = new Visualive.GeomItem('handle', maskGeom, maskMat);
+      rotationHandles.addChild(maskGeomItem);
     }
 
     //////////////////////////////////
