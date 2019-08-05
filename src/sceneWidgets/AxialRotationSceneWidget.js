@@ -10,10 +10,10 @@ class AxialRotationSceneWidget extends SceneWidget {
     this.radiusParam = this.addParameter(new Visualive.NumberParameter('radius', radius));
     this.colorParam = this.addParameter(new Visualive.ColorParameter('BaseColor', color));
 
-    const handleMat = new Visualive.Material('handle', 'FlatSurfaceShader');
+    const handleMat = new Visualive.Material('handle', 'HandleShader');
     handleMat.replaceParameter(this.colorParam);
 
-    // const handleGeom = new Visualive.Cylinder(radius, radius * 0.05, 64, 2, false);
+    // const handleGeom = new Visualive.Cylinder(radius, thickness * 2, 64, 2, false);
     const handleGeom = new Visualive.Torus(thickness, radius, 64);
     this.handle = new Visualive.GeomItem('handle', handleGeom, handleMat);
     this.handleXfo = new Visualive.Xfo()
@@ -68,7 +68,7 @@ class AxialRotationSceneWidget extends SceneWidget {
 
   onDrag(event) {
     const dragVec = event.holdPos.subtract(this.grabPos);
-    let angle = dragVec.length();
+    let angle = dragVec.length() * 2.0;
 
     const vec1 = event.holdPos.subtract(this.getGlobalXfo().tr);
     if(this.vec0.cross(vec1).dot(this.getGlobalXfo().ori.getZaxis()) < 0)

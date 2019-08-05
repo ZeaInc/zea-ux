@@ -3,7 +3,7 @@ import {
 } from './BaseLinearMovementSceneWidget.js';
 import ParameterValueChange from '../undoredo/ParameterValueChange.js';
 
-class LinearMovementSceneWidget extends BaseLinearMovementSceneWidget {
+class LinearScaleSceneWidget extends BaseLinearMovementSceneWidget {
   constructor(name, length, thickness, color) {
     super(name)
 
@@ -15,7 +15,7 @@ class LinearMovementSceneWidget extends BaseLinearMovementSceneWidget {
     handleMat.replaceParameter(this.colorParam);
     const handleGeom = new Visualive.Cylinder(thickness, length - (thickness * 10), 64);
     handleGeom.getParameter('baseZAtZero').setValue(true)
-    const tipGeom = new Visualive.Cone(thickness * 4, thickness * 10, 64, true);
+    const tipGeom = new Visualive.Cuboid((thickness * 10), (thickness * 10), (thickness * 10));
     const handle = new Visualive.GeomItem('handle', handleGeom, handleMat);
 
     const tip = new Visualive.GeomItem('tip', tipGeom, handleMat);
@@ -58,8 +58,11 @@ class LinearMovementSceneWidget extends BaseLinearMovementSceneWidget {
     this.change = new ParameterValueChange(this.__param);
     event.undoRedoManager.addChange(this.change);
 
-    this.grabPos = event.grabPos;
+    this.grabDist = event.grabDist;
+    console.log(this.grabDist)
+    this.oriXfo = this.getGlobalXfo();
     this.baseXfo = this.__param.getValue();
+    this.sc = (this.baseXfo.sc.x + this.baseXfo.sc.y + this.baseXfo.sc.z) / 3.0;
 
     this.manipulateBegin.emit({
       grabPos: event.grabPos,
@@ -69,10 +72,18 @@ class LinearMovementSceneWidget extends BaseLinearMovementSceneWidget {
 
   onDrag(event) {
 
-    const dragVec = event.holdPos.subtract(this.grabPos);
+    // const dragVec = event.holdPos.subtract(this.grabPos);
 
     const newXfo = this.baseXfo.clone();
-    newXfo.tr.addInPlace(dragVec);
+    const sc = event.holdDist / this.grabDist;
+    if(sc < 0.0001)
+      return;
+    // const scX = this.oriXfo.ori.getZaxis().dot(newXfo.ori.getXaxis());
+    // const scY = this.oriXfo.ori.getZaxis().dot(newXfo.ori.getYaxis());
+    // const scZ = this.oriXfo.ori.getZaxis().dot(newXfo.ori.getZaxis());
+    // console.log("sc:", sc, " scX", scX, " scY:", scY, " scZ:", scZ)
+    // newXfo.sc.set(scX, scY, scZ);
+    newXfo.sc.set(this.sc * sc, this.sc * sc, this.sc * sc);
 
     this.change.update({
       value: newXfo
@@ -98,5 +109,5 @@ class LinearMovementSceneWidget extends BaseLinearMovementSceneWidget {
 };
 
 export {
-  LinearMovementSceneWidget
+  LinearScaleSceneWidget
 }

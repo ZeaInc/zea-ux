@@ -8,6 +8,9 @@ import {
 import {
   AxialRotationSceneWidget
 } from './AxialRotationSceneWidget.js';
+import {
+  LinearScaleSceneWidget
+} from './LinearScaleSceneWidget.js';
 
 export default class XfoHandle extends Visualive.TreeItem {
   constructor(name) {
@@ -17,16 +20,22 @@ export default class XfoHandle extends Visualive.TreeItem {
     const thickness = 0.005
     //////////////////////////////////
     // LinearMovementSceneWidget
-    const translationHandles = new Visualive.TreeItem('Translation');
-    // translationHandles.setVisible(false);
+    
+    const translationHandles = new Visualive.TreeItem('Translate');
+    translationHandles.setVisible(false);
     this.addChild(translationHandles); 
+
+
+    const red = new Visualive.Color(1, 0.1, 0.1);
+    const green = new Visualive.Color('#32CD32'); // limegreen https://www.rapidtables.com/web/color/green-color.html
+    const blue = new Visualive.Color('#1E90FF'); // dodgerblue https://www.rapidtables.com/web/color/blue-color.html
 
     {
       const linearXWidget = new LinearMovementSceneWidget(
         'linearX',
         size,
         thickness,
-        new Visualive.Color('red')
+        red
       );
       const xfo = new Visualive.Xfo();
       xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0, 1, 0), Math.PI * 0.5);
@@ -37,7 +46,7 @@ export default class XfoHandle extends Visualive.TreeItem {
         'linearY',
         size,
         thickness,
-        new Visualive.Color('green')
+        green
       );
       const xfo = new Visualive.Xfo();
       xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(1, 0, 0), Math.PI * -0.5);
@@ -48,7 +57,7 @@ export default class XfoHandle extends Visualive.TreeItem {
         'linearZ',
         size,
         thickness,
-        new Visualive.Color('blue')
+        blue
       );
       translationHandles.addChild(linearZWidget);
     }
@@ -60,7 +69,7 @@ export default class XfoHandle extends Visualive.TreeItem {
       const planarXYWidget = new PlanarMovementSceneWidget(
         'planarXY',
         planarSize,
-        new Visualive.Color('green')
+        green
       );
       const xfo = new Visualive.Xfo();
       xfo.tr.set(planarSize * 0.5, planarSize * 0.5, 0.0)
@@ -70,7 +79,7 @@ export default class XfoHandle extends Visualive.TreeItem {
       const planarYZWidget = new PlanarMovementSceneWidget(
         'planarYZ',
         planarSize,
-        new Visualive.Color('red')
+        red
       );
       const xfo = new Visualive.Xfo();
       xfo.tr.set(0.0, planarSize * 0.5, planarSize * 0.5)
@@ -82,7 +91,7 @@ export default class XfoHandle extends Visualive.TreeItem {
       const planarXZWidget = new PlanarMovementSceneWidget(
         'planarXZ',
         planarSize,
-        new Visualive.Color('blue')
+        blue
       );
       const xfo = new Visualive.Xfo();
       xfo.tr.set(planarSize * 0.5, 0.0, planarSize * 0.5)
@@ -93,7 +102,8 @@ export default class XfoHandle extends Visualive.TreeItem {
 
     //////////////////////////////////
     // Rotation
-    const rotationHandles = new Visualive.TreeItem('Rotation');
+    const rotationHandles = new Visualive.TreeItem('Rotate');
+    rotationHandles.setVisible(false);
     this.addChild(rotationHandles); 
 
     {
@@ -101,7 +111,7 @@ export default class XfoHandle extends Visualive.TreeItem {
         'rotationX',
         size,
         thickness,
-        new Visualive.Color('red')
+        red
       );
       const xfo = new Visualive.Xfo();
       xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0, 1, 0), Math.PI * 0.5);
@@ -112,7 +122,7 @@ export default class XfoHandle extends Visualive.TreeItem {
         'rotationY',
         size,
         thickness,
-        new Visualive.Color('green')
+        green
       );
       const xfo = new Visualive.Xfo();
       xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(1, 0, 0), Math.PI * 0.5);
@@ -123,17 +133,52 @@ export default class XfoHandle extends Visualive.TreeItem {
         'rotationZ',
         size,
         thickness,
-        new Visualive.Color('blue')
+        blue
       );
       rotationHandles.addChild(rotationZWidget);
     }
+
     //////////////////////////////////
-    // Rotation
+    // Scale - Not supported
     const scaleHandles = new Visualive.TreeItem('Scale');
-    this.addChild(scaleHandles)
+    scaleHandles.setVisible(false);
+    this.addChild(scaleHandles);
+
+    const scaleHandleLength = size * 0.95;
+    {
+      const scaleXWidget = new LinearScaleSceneWidget(
+        'scaleX',
+        scaleHandleLength,
+        thickness,
+        red
+      );
+      const xfo = new Visualive.Xfo();
+      xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0, 1, 0), Math.PI * 0.5);
+      scaleXWidget.getParameter('LocalXfo').setValue(xfo)
+      scaleHandles.addChild(scaleXWidget);
+    } {
+      const scaleYWidget = new LinearScaleSceneWidget(
+        'scaleY',
+        scaleHandleLength,
+        thickness,
+        green
+      );
+      const xfo = new Visualive.Xfo();
+      xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(1, 0, 0), Math.PI * -0.5);
+      scaleYWidget.getParameter('LocalXfo').setValue(xfo)
+      scaleHandles.addChild(scaleYWidget);
+    } {
+      const scaleZWidget = new LinearScaleSceneWidget(
+        'scaleZ',
+        scaleHandleLength,
+        thickness,
+        blue
+      );
+      scaleHandles.addChild(scaleZWidget);
+    }
   }
 
-  showHandles(handles) {
+  showHandles(name) {
     this.traverse(item => {
       if(item != this) {
         item.setVisible(false)
@@ -141,7 +186,7 @@ export default class XfoHandle extends Visualive.TreeItem {
       }
     })
 
-    const child = this.getChildByName(handles);
+    const child = this.getChildByName(name);
     if(child)
       child.setVisible(true);
   }

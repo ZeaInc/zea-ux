@@ -75,65 +75,105 @@ class ToggleSelectionVisibility extends Change {
 UndoRedoManager.registerChange('ToggleSelectionVisibility', ToggleSelectionVisibility)
 
 class SelectionManager {
-  constructor(undoRedoManager) {
-    this.undoRedoManager = undoRedoManager;
-    this.__selection = new Set();
+  constructor(appData) {
+    this.appData = appData;
     this.leadSelection = undefined;
     this.selectionChanged = new Visualive.Signal();
     this.leadSelectionChanged = new Visualive.Signal();
 
     this.selectionGroup = new Visualive.Group('selection');
     this.selectionGroup.getParameter('InitialXfoMode').setValue(Visualive.Group.INITIAL_XFO_MODES.average);
-    // this.selectionGroup.setVisible(false)
 
     const size = 0.5
     const thickness = size * 0.01
     this.xfoHandle = new XfoHandle(size, thickness);
     this.xfoHandle.setTargetParam(this.selectionGroup.getParameter('GlobalXfo'), false);
-    // this.xfoHandle.showHandles('Translation')
-    this.xfoHandle.showHandles('Rotation')
-    this.selectionGroup.addChild(this.xfoHandle)
+    this.xfoHandle.setVisible(false)
+    // this.xfoHandle.showHandles('Translate')
+    // this.xfoHandle.showHandles('Rotate')
+    // this.xfoHandle.showHandles('Scale')
+    this.selectionGroup.addChild(this.xfoHandle);
+
+
+    const handleGroup = {
+      Translate: new Visualive.Signal(),
+      Rotate: new Visualive.Signal(),
+      Scale: new Visualive.Signal(),
+    };
+    let currMode = '';
+    const showHandles = mode => {
+      if (currMode != mode) {
+        currMode = mode;
+        for (let key in handleGroup) {
+          handleGroup[key].emit(mode == key);
+        }
+        this.xfoHandle.showHandles(mode)
+      }
+    };
+    appData.actionRegistry.registerAction({
+      name: 'Translate',
+      path: ['Edit'],
+      callback: () => {
+        showHandles('Translate')
+      },
+      activatedChanged: handleGroup.Translate
+    });
+    appData.actionRegistry.registerAction({
+      name: 'Rotate',
+      path: ['Edit'],
+      callback: () => {
+        showHandles('Rotate')
+      },
+      activatedChanged: handleGroup.Rotate
+    });
+    appData.actionRegistry.registerAction({
+      name: 'Scale',
+      path: ['Edit'],
+      callback: () => {
+        showHandles('Scale')
+      },
+      activatedChanged: handleGroup.Scale
+    });
+
+    // Translate Activated by default.
+    // showHandles('Translate')
   }
 
   setRenderer(renderer) {
-    console.log("SelectionManager.setRenderer")
     this.__renderer = renderer;
     this.__renderer.addTreeItem(this.selectionGroup);
   }
 
   updateGizmos(){
-    const selection = this.selectionGroup.getParameter('Items').getValue();
+    const selection = this.selectionGroup.getItems();
     const visible = Array.from(selection).length > 0;
-    console.log("updateGizmos:", visible)
     if(Array.from(selection).length > 0)
       this.selectionGroup.recalcInitialXfo();
 
-    // Set the visiblity of the children of the Selection Group
-    this.selectionGroup.traverse( item => {
-      item.setVisible(visible)
-    })
+    this.xfoHandle.setVisible(visible)
+    this.__renderer.requestRedraw();
   }
 
   getSelection(){
-    return this.__selection
+    return this.selectionGroup.getItems();
   }
 
-  setSelection(selection) {
-    for (let treeItem of selection){
-      if(!this.__selection.has(treeItem)) {
+  setSelection(newSelection) {
+    const selection = this.selectionGroup.getItems();
+    for (let treeItem of newSelection){
+      if(!selection.has(treeItem)) {
         treeItem.getParameter('Selected').setValue(true);
-        this.__selection.add(treeItem);
-        this.selectionGroup.addItem(treeItem);
+        selection.add(treeItem);
       }
     }
-    for (let treeItem of this.__selection){
-      if(!selection.has(treeItem)) {
+    for (let treeItem of selection){
+      if(!newSelection.has(treeItem)) {
         treeItem.getParameter('Selected').setValue(false);
-        this.__selection.delete(treeItem);
-        this.selectionGroup.removeItem(treeItem);
+        selection.delete(treeItem);
       }
     }
 
+    this.selectionGroup.setItems(treeItem);
     this.updateGizmos();
   }
 
@@ -145,18 +185,20 @@ class SelectionManager {
   }
 
   toggleItemSelection(treeItem, replaceSelection = true) {
-    const prevSelection = new Set(this.__selection);
+
+    const selection = this.selectionGroup.getItems();
+    const prevSelection = new Set(selection);
 
     // Avoid clearing the selection when we have the
     // item already selected and are deselecting it.
     // (to clear all selection)
-    if (replaceSelection && !(this.__selection.size == 1 && this.__selection.has(treeItem))) {
+    if (replaceSelection && !(selection.size == 1 && selection.has(treeItem))) {
 
       let clear = true;
-      if(this.__selection.has(treeItem)) {
+      if(selection.has(treeItem)) {
         let count = 1;
         treeItem.traverse((subTreeItem)=>{
-          if(this.__selection.has(subTreeItem)) {
+          if(selection.has(subTreeItem)) {
             count++;
           }
         })
@@ -164,89 +206,92 @@ class SelectionManager {
         // its children make up all the selected items. In that case
         // the user intends to deselect the item and all its children.
         // Avoid cleaning here, so the deselection can occur.
-        clear = count != this.__selection.size;
+        clear = count != selection.size;
       }
 
-      if(clear)
-        this.clearSelection(false);
+      if(clear) {
+        selection.clear();
+      }
     }
 
     let sel;
-    if(!this.__selection.has(treeItem)) {
+    if(!selection.has(treeItem)) {
       treeItem.getParameter('Selected').setValue(true);
-      this.__selection.add(treeItem);
-      this.selectionGroup.addItem(treeItem);
+      selection.add(treeItem);
       sel = true;
     }
     else {
       treeItem.getParameter('Selected').setValue(false);
-      this.__selection.delete(treeItem);
-      this.selectionGroup.removeItem(treeItem);
+      selection.delete(treeItem);
       sel = false;
     }
 
-    if (sel && this.__selection.size === 1) {
+    this.selectionGroup.setItems(selection);
+    if (sel && selection.size === 1) {
       this.__setLeadSelection(treeItem);
     }
 
     treeItem.traverse((subTreeItem)=>{
       if (sel) {
-        if(!this.__selection.has(subTreeItem)) {
+        if(!selection.has(subTreeItem)) {
           subTreeItem.getParameter('Selected').setValue(true);
-          this.__selection.add(subTreeItem);
+          selection.add(subTreeItem);
           this.selectionGroup.addItem(treeItem);
         }
       }
       else {
-        if(this.__selection.has(subTreeItem)) {
+        if(selection.has(subTreeItem)) {
           subTreeItem.getParameter('Selected').setValue(false);
-          this.__selection.delete(subTreeItem);
+          selection.delete(subTreeItem);
           this.selectionGroup.removeItem(treeItem);
         }
       }
     })
 
+    this.selectionGroup.setItems(selection);
 
     if (!sel) {
-      if(this.__selection.size === 1)
-        this.__setLeadSelection(this.__selection.values().next().value);
-      else if(this.__selection.size === 0)
+      if(selection.size === 1)
+        this.__setLeadSelection(selection.values().next().value);
+      else if(selection.size === 0)
         this.__setLeadSelection();
     }
 
-    const change = new SelectionChange(this, prevSelection, new Set(this.__selection));
-    this.undoRedoManager.addChange(change);
+    const change = new SelectionChange(this, selection, prevSelection);
+    this.appData.undoRedoManager.addChange(change);
 
     this.updateGizmos();
-    this.selectionChanged.emit(this.__selection);
+    this.selectionChanged.emit(prevSelection);
   }
 
   clearSelection(newChange = true) {
-    if (this.__selection.size == 0)
+    const selection = this.selectionGroup.getItems();
+    if (selection.size == 0)
         return false;
     let prevSelection;
     if(newChange) {
-       prevSelection = new Set(this.__selection);
+       prevSelection = new Set(selection);
     }
-    for (let treeItem of this.__selection){
+    for (let treeItem of selection){
       treeItem.getParameter('Selected').setValue(false);
     }
-    this.selectionGroup.clearItems();
-    this.__selection.clear();
+    selection.clear();
+    this.selectionGroup.setItems(selection);
     if (newChange){
-      const change = new SelectionChange(this, prevSelection, this.__selection);
-      this.undoRedoManager.addChange(change);
-      this.selectionChanged.emit(this.__selection);
+      const change = new SelectionChange(this, prevSelection, selection);
+      this.appData.undoRedoManager.addChange(change);
+      this.selectionChanged.emit(selection);
     }
     return true;
   }
 
 
   selectItems(treeItems, replaceSelection=true) {
-    const prevSelection = new Set(this.__selection);
+    const selection = this.selectionGroup.getItems();
+    const prevSelection = new Set(selection);
 
     if (replaceSelection) {
-      this.clearSelection(false);
+      prevSelection.clear();
     }
 
     for(let treeItem of treeItems) {
@@ -254,68 +299,71 @@ class SelectionManager {
 
       if (!selectedParam.getValue()) {
         selectedParam.setValue(true);
-        this.selectionGroup.addItem(treeItem);
-        this.__selection.add(treeItem);
+        selection.add(treeItem);
 
         treeItem.traverse((subTreeItem)=>{
-          if(!this.__selection.has(subTreeItem)) {
+          if(!selection.has(subTreeItem)) {
             subTreeItem.getParameter('Selected').setValue(true);
-            this.__selection.add(subTreeItem);
+            selection.add(subTreeItem);
           }
         })
       }
     }
 
-    const change = new SelectionChange(this, prevSelection, new Set(this.__selection));
-    this.undoRedoManager.addChange(change);
+    const change = new SelectionChange(this, selection, prevSelection);
+    this.appData.undoRedoManager.addChange(change);
 
-    if (this.__selection.size === 1) {
-      this.__setLeadSelection(this.__selection.values().next().value);
+    this.selectionGroup.setItems(selection);
+    if (selection.size === 1) {
+      this.__setLeadSelection(selection.values().next().value);
     }
-    else if (this.__selection.size === 0) {
+    else if (selection.size === 0) {
       this.__setLeadSelection();
     }
     this.updateGizmos();
-    this.selectionChanged.emit(this.__selection);
+    this.selectionChanged.emit(selection);
   }
 
   deselectItems(treeItems) {
-    const prevSelection = new Set(this.__selection);
+    const selection = this.selectionGroup.getItems();
+    const prevSelection = new Set(selection);
 
     for(let treeItem of treeItems) {
       const selectedParam = treeItem.getParameter('Selected');
 
       if (selectedParam.getValue()) {
         selectedParam.setValue(false);
-        this.__selection.delete(selectedParam);
+        selection.delete(selectedParam);
         treeItem.traverse((subTreeItem)=>{
           const selectedParam = subTreeItem.getParameter('Selected');
-          if(!this.__selection.has(subTreeItem)) {
+          if(!selection.has(subTreeItem)) {
             selectedParam.setValue(true);
-            this.__selection.delete(treeItem);
+            selection.delete(treeItem);
           }
         })
       }
     }
 
-    const change = new SelectionChange(this, prevSelection, new Set(this.__selection));
-    this.undoRedoManager.addChange(change);
+    this.selectionGroup.setItems(selection);
+    const change = new SelectionChange(this, prevSelection, selection);
+    this.appData.undoRedoManager.addChange(change);
 
-    if (this.__selection.size === 1) {
-      this.__setLeadSelection(this.__selection.values().next().value);
+    if (selection.size === 1) {
+      this.__setLeadSelection(selection.values().next().value);
     }
-    else if (this.__selection.size === 0) {
+    else if (selection.size === 0) {
       this.__setLeadSelection();
     }
     this.updateGizmos();
-    this.selectionChanged.emit(this.__selection);
+    this.selectionChanged.emit(selection);
   }
 
   toggleSelectionVisiblity(){
     if(this.leadSelection) {
+      const selection = this.selectionGroup.getItems();
       const state = !this.leadSelection.getVisible();
-      const change = new ToggleSelectionVisibility(this.__selection, state);
-      this.undoRedoManager.addChange(change);
+      const change = new ToggleSelectionVisibility(selection, state);
+      this.appData.undoRedoManager.addChange(change);
     }
   }
 

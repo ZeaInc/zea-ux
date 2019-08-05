@@ -10,7 +10,7 @@ class PlanarMovementSceneWidget extends SceneWidget {
     this.sizeParam = this.addParameter(new Visualive.NumberParameter('size', size));
     this.colorParam = this.addParameter(new Visualive.ColorParameter('BaseColor', color));
 
-    const handleMat = new Visualive.Material('handle', 'FlatSurfaceShader');
+    const handleMat = new Visualive.Material('handle', 'HandleShader');
     handleMat.replaceParameter(this.colorParam);
 
     const handleGeom = new Visualive.Cuboid(size, size, size * 0.02);

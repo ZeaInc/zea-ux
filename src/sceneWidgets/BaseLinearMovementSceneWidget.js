@@ -13,6 +13,7 @@ class BaseLinearMovementSceneWidget extends SceneWidget {
     this.gizmoRay = this.getManipulationRay();
     this.grabDist = event.mouseRay.intersectRayVector(this.gizmoRay)[1];
     const grabPos = this.gizmoRay.pointAtDist(this.grabDist);
+    event.grabDist = this.grabDist;
     event.grabPos = grabPos;
     this.onDragStart(event);
     return true;
@@ -21,6 +22,7 @@ class BaseLinearMovementSceneWidget extends SceneWidget {
   handleMouseMove(event) {
     const dist = event.mouseRay.intersectRayVector(this.gizmoRay)[1];
     const holdPos = this.gizmoRay.pointAtDist(dist);
+    event.holdDist = dist;
     event.holdPos = holdPos;
     event.value = dist;
     event.delta = dist-this.grabDist;
