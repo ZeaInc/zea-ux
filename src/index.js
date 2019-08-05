@@ -1,7 +1,6 @@
 
 export * from './ActionRegistry.js';
 export * from './SelectionManager.js';
-export * from './LoaderRegistry.js';
 export * from './SessionSync.js';
 
 export * from './Action.js';

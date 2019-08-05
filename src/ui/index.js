@@ -13,6 +13,7 @@ export * from './parameter-container.js';
 export * from './inspector-container.js';
 export * from './action-tree-view.js';
 export * from './user-chip.js';
+export * from './publish-dialog.js';
 
 import uxFactory from './UxFactory.js';
 export { uxFactory };
