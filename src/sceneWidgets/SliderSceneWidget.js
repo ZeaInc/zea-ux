@@ -6,14 +6,17 @@ class SliderSceneWidget extends BaseLinearMovementSceneWidget {
   constructor(name, length = 0.5, radius = 0.02, color = new Visualive.Color(1, 1, 0)) {
     super(name)
 
+    this.__color = color;
+    this.__hilightedColor = new Visualive.Color(1, 1, 1);
+    
     this.lengthParam = this.addParameter(new Visualive.NumberParameter('length', length));
     this.radiusParam = this.addParameter(new Visualive.NumberParameter('radius', radius));
     this.colorParam = this.addParameter(new Visualive.ColorParameter('BaseColor', color));
 
     const handleMat = new Visualive.Material('handle', 'FlatSurfaceShader');
     handleMat.replaceParameter(this.colorParam);
-    const baseBarMat = new Visualive.Material('baseBar', 'FlatSurfaceShader');
-    baseBarMat.replaceParameter(this.colorParam);
+    // const baseBarMat = new Visualive.Material('baseBar', 'FlatSurfaceShader');
+    // baseBarMat.replaceParameter(this.colorParam);
     const topBarMat = new Visualive.Material('topBar', 'FlatSurfaceShader');
     topBarMat.getParameter('BaseColor').setValue(new Visualive.Color(0.5, 0.5, 0.5));
 
@@ -39,6 +42,14 @@ class SliderSceneWidget extends BaseLinearMovementSceneWidget {
 
     this.__updateSlider(0);
   };
+
+  highlight() {
+    this.colorParam.setValue(this.__hilightedColor)
+  }
+
+  unhighlight() {
+    this.colorParam.setValue(this.__color)
+  }
 
   setTargetParam(param) {
     this.__param = param;

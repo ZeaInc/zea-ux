@@ -2,10 +2,11 @@ import SceneWidget  from './SceneWidget.js';
 import ParameterValueChange from '../undoredo/ParameterValueChange.js';
 
 class AxialRotationSceneWidget extends SceneWidget {
-  constructor(name, radius, color) {
+  constructor(name, radius, thickness, color) {
     super(name);
 
     this.__color = color;
+    this.__hilightedColor = new Visualive.Color(1, 1, 1);
     this.radiusParam = this.addParameter(new Visualive.NumberParameter('radius', radius));
     this.colorParam = this.addParameter(new Visualive.ColorParameter('BaseColor', color));
 
@@ -13,7 +14,7 @@ class AxialRotationSceneWidget extends SceneWidget {
     handleMat.replaceParameter(this.colorParam);
 
     // const handleGeom = new Visualive.Cylinder(radius, radius * 0.05, 64, 2, false);
-    const handleGeom = new Visualive.Torus(radius * 0.01, radius, 64);
+    const handleGeom = new Visualive.Torus(thickness, radius, 64);
     this.handle = new Visualive.GeomItem('handle', handleGeom, handleMat);
     this.handleXfo = new Visualive.Xfo()
 
@@ -24,6 +25,14 @@ class AxialRotationSceneWidget extends SceneWidget {
     })
 
     this.addChild(this.handle);
+  }
+
+  highlight() {
+    this.colorParam.setValue(this.__hilightedColor)
+  }
+
+  unhighlight() {
+    this.colorParam.setValue(this.__color)
   }
 
   setTargetParam(param, track=true) {

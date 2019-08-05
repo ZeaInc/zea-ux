@@ -44,6 +44,8 @@ class BaseLinearMovementSceneWidget extends SceneWidget {
     this.activeController = event.controller;
     const xfo = this.activeController.getTipXfo();
     this.grabDist = xfo.tr.subtract(this.gizmoRay.start).dot(this.gizmoRay.dir);
+    const grabPos = this.gizmoRay.start.add(this.gizmoRay.dir.scale(this.grabDist));
+    event.grabPos = grabPos;
     this.onDragStart(event);
     return true;
   }
@@ -53,6 +55,7 @@ class BaseLinearMovementSceneWidget extends SceneWidget {
     const dist = xfo.tr.subtract(this.gizmoRay.start).dot(this.gizmoRay.dir);
     const holdPos = this.gizmoRay.start.add(this.gizmoRay.dir.scale(dist));
     event.value = dist;
+    event.holdPos = holdPos;
     event.delta = dist-this.grabDist;
     this.onDrag(event);
     return true;

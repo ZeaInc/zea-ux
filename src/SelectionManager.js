@@ -2,11 +2,7 @@
 
 import UndoRedoManager from './undoredo/UndoRedoManager.js';
 import Change from './undoredo/Change.js';
-import { 
-  AxialRotationSceneWidget,
-  LinearMovementSceneWidget,
-  PlanarMovementSceneWidget
-} from './sceneWidgets';
+import XfoHandle from './sceneWidgets/XfoHandle.js';
 
 class SelectionChange extends Change {
   constructor(selectionManager, prevSelection, newSelection) {
@@ -90,132 +86,17 @@ class SelectionManager {
     this.selectionGroup.getParameter('InitialXfoMode').setValue(Visualive.Group.INITIAL_XFO_MODES.average);
     // this.selectionGroup.setVisible(false)
 
-    const size = 0.3
-    //////////////////////////////////
-    // AxialRotationSceneWidget
-    {
-      const rotationXWidget = new AxialRotationSceneWidget(
-        'rotationX',
-        0.5,
-        new Visualive.Color('red'),
-        undoRedoManager
-      );
-      const xfo = new Visualive.Xfo();
-      xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0,1,0), Math.PI * 0.5);
-      rotationXWidget.getParameter('LocalXfo').setValue(xfo)
-      this.selectionGroup.addChild(rotationXWidget);
-      rotationXWidget.setTargetParam(this.selectionGroup.getParameter('GlobalXfo'), false);
-    }
-    {
-      const rotationYWidget = new AxialRotationSceneWidget(
-        'rotationY',
-        0.5,
-        new Visualive.Color('green'),
-        undoRedoManager
-      );
-      const xfo = new Visualive.Xfo();
-      xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(1,0,0), Math.PI * 0.5);
-      rotationYWidget.getParameter('LocalXfo').setValue(xfo)
-      this.selectionGroup.addChild(rotationYWidget);
-      rotationYWidget.setTargetParam(this.selectionGroup.getParameter('GlobalXfo'), false);
-    }
-    {
-      const rotationZWidget = new AxialRotationSceneWidget(
-        'rotationZ',
-        0.5,
-        new Visualive.Color('blue'),
-        undoRedoManager
-      );
-      this.selectionGroup.addChild(rotationZWidget);
-      rotationZWidget.setTargetParam(this.selectionGroup.getParameter('GlobalXfo'), false);
-    }
-
-    //////////////////////////////////
-    // LinearMovementSceneWidget
-    {
-      const linearXWidget = new LinearMovementSceneWidget(
-        'linearX',
-        0.5,
-        new Visualive.Color('red'),
-        undoRedoManager
-      );
-      const xfo = new Visualive.Xfo();
-      xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0,1,0), Math.PI * 0.5);
-      linearXWidget.getParameter('LocalXfo').setValue(xfo)
-      this.selectionGroup.addChild(linearXWidget);
-      linearXWidget.setTargetParam(this.selectionGroup.getParameter('GlobalXfo'), false);
-    }
-    {
-      const linearYWidget = new LinearMovementSceneWidget(
-        'linearY',
-        0.5,
-        new Visualive.Color('green'),
-        undoRedoManager
-      );
-      const xfo = new Visualive.Xfo();
-      xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(1,0,0), Math.PI * 0.5);
-      linearYWidget.getParameter('LocalXfo').setValue(xfo)
-      this.selectionGroup.addChild(linearYWidget);
-      linearYWidget.setTargetParam(this.selectionGroup.getParameter('GlobalXfo'), false);
-    }
-    {
-      const linearZWidget = new LinearMovementSceneWidget(
-        'linearZ',
-        0.5,
-        new Visualive.Color('blue'),
-        undoRedoManager
-      );
-      this.selectionGroup.addChild(linearZWidget);
-      linearZWidget.setTargetParam(this.selectionGroup.getParameter('GlobalXfo'), false);
-    }
-
-    //////////////////////////////////
-    // planarXYWidget
-    {
-      const planarXYWidget = new PlanarMovementSceneWidget(
-        'planarXY',
-        size,
-        new Visualive.Color('green'),
-        undoRedoManager
-      );
-      const xfo = new Visualive.Xfo();
-      xfo.tr.set(size*0.5, size*0.5, 0.0)
-      planarXYWidget.getParameter('LocalXfo').setValue(xfo)
-      this.selectionGroup.addChild(planarXYWidget);
-      planarXYWidget.setTargetParam(this.selectionGroup.getParameter('GlobalXfo'), false);
-    }
-    {
-      const planarYZWidget = new PlanarMovementSceneWidget(
-        'planarYZ',
-        size,
-        new Visualive.Color('red'),
-        undoRedoManager
-      );
-      const xfo = new Visualive.Xfo();
-      xfo.tr.set(0.0, size*0.5, size*0.5)
-      xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0,1,0), Math.PI * 0.5);
-      planarYZWidget.getParameter('LocalXfo').setValue(xfo)
-      this.selectionGroup.addChild(planarYZWidget);
-      planarYZWidget.setTargetParam(this.selectionGroup.getParameter('GlobalXfo'), false);
-     
-    }
-    {
-      const planarXZWidget = new PlanarMovementSceneWidget(
-        'planarXZ',
-        size,
-        new Visualive.Color('blue'),
-        undoRedoManager
-      );
-      const xfo = new Visualive.Xfo();
-      xfo.tr.set(size*0.5, 0.0, size*0.5)
-      xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(1,0,0), Math.PI * 0.5);
-      planarXZWidget.getParameter('LocalXfo').setValue(xfo)
-      this.selectionGroup.addChild(planarXZWidget);
-      planarXZWidget.setTargetParam(this.selectionGroup.getParameter('GlobalXfo'), false);
-    }
-
+    const size = 0.5
+    const thickness = size * 0.01
+    this.xfoHandle = new XfoHandle(size, thickness);
+    this.xfoHandle.setTargetParam(this.selectionGroup.getParameter('GlobalXfo'), false);
+    // this.xfoHandle.showHandles('Translation')
+    this.xfoHandle.showHandles('Rotation')
+    this.selectionGroup.addChild(this.xfoHandle)
   }
+
   setRenderer(renderer) {
+    console.log("SelectionManager.setRenderer")
     this.__renderer = renderer;
     this.__renderer.addTreeItem(this.selectionGroup);
   }
@@ -223,8 +104,11 @@ class SelectionManager {
   updateGizmos(){
     const selection = this.selectionGroup.getParameter('Items').getValue();
     const visible = Array.from(selection).length > 0;
+    console.log("updateGizmos:", visible)
     if(Array.from(selection).length > 0)
       this.selectionGroup.recalcInitialXfo();
+
+    // Set the visiblity of the children of the Selection Group
     this.selectionGroup.traverse( item => {
       item.setVisible(visible)
     })

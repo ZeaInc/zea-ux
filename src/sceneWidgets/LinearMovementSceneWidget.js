@@ -1,24 +1,27 @@
-import {BaseLinearMovementSceneWidget} from './BaseLinearMovementSceneWidget.js';
+import {
+  BaseLinearMovementSceneWidget
+} from './BaseLinearMovementSceneWidget.js';
+import ParameterValueChange from '../undoredo/ParameterValueChange.js';
 
 class LinearMovementSceneWidget extends BaseLinearMovementSceneWidget {
-  constructor(name, length, radius, color) {
+  constructor(name, length, thickness, color) {
     super(name)
 
     this.__color = color;
-    // this.radiusParam = this.addParameter(new Visualive.NumberParameter('radius', radius));
-    // this.colorParam = this.addParameter(new Visualive.ColorParameter('BaseColor', color));
+    this.__hilightedColor = new Visualive.Color(1, 1, 1);
+    this.colorParam = this.addParameter(new Visualive.ColorParameter('BaseColor', color));
 
-    // const handleMat = new Visualive.Material('handle', 'FlatSurfaceShader');
-    // // handleMat.replaceParameter(this.colorParam);
-    // handleMat.getParameter('BaseColor').setValue(color);
+    const handleMat = new Visualive.Material('handle', 'FlatSurfaceShader');
+    handleMat.replaceParameter(this.colorParam);
+    const handleGeom = new Visualive.Cylinder(thickness, length - (thickness * 10), 64);
+    handleGeom.getParameter('baseZAtZero').setValue(true)
+    const tipGeom = new Visualive.Cone(thickness * 4, thickness * 10, 64, true);
+    const handle = new Visualive.GeomItem('handle', handleGeom, handleMat);
 
-    // const handleGeom = new Visualive.Cylinder(radius * 0.01, length, 64);
-    // const tipGeom = new Visualive.Cone(radius, length * 0.05, 64, true);
-    // this.handle = new Visualive.GeomItem('handle', handleGeom, handleMat);
-    // this.tip = new Visualive.GeomItem('tip', tipGeom, handleMat);
-    // const tipXfo = new Visualive.Xfo()
-    // tipXfo.tr.set(0,0,length)
-    // this.tip.getParameter('LocalXfo').setValue(tipXfo);
+    const tip = new Visualive.GeomItem('tip', tipGeom, handleMat);
+    const tipXfo = new Visualive.Xfo()
+    tipXfo.tr.set(0, 0, length - (thickness * 10))
+    tip.getParameter('LocalXfo').setValue(tipXfo);
 
     // this.radiusParam.valueChanged.connect(()=>{
     //   radius = this.radiusParam.getValue();
@@ -26,13 +29,22 @@ class LinearMovementSceneWidget extends BaseLinearMovementSceneWidget {
     //   handleGeom.getParameter('height').setValue(radius * 0.02);
     // })
 
-    // this.addChild(this.handle);
-    // this.addChild(this.tip);
+    this.addChild(handle);
+    this.addChild(tip);
   };
 
-  setTargetParam(param, track=true) {
+
+  highlight() {
+    this.colorParam.setValue(this.__hilightedColor)
+  }
+
+  unhighlight() {
+    this.colorParam.setValue(this.__color)
+  }
+
+  setTargetParam(param, track = true) {
     this.__param = param;
-    if(track) {
+    if (track) {
       const __updateGizmo = () => {
         this.setGlobalXfo(param.getValue())
       }
@@ -41,6 +53,47 @@ class LinearMovementSceneWidget extends BaseLinearMovementSceneWidget {
     }
   }
 
+
+  onDragStart(event) {
+    this.change = new ParameterValueChange(this.__param);
+    event.undoRedoManager.addChange(this.change);
+
+    this.grabPos = event.grabPos;
+    this.baseXfo = this.__param.getValue();
+
+    this.manipulateBegin.emit({
+      grabPos: event.grabPos,
+      manipRay: this.manipRay
+    });
+  }
+
+  onDrag(event) {
+
+    const dragVec = event.holdPos.subtract(this.grabPos);
+
+    const newXfo = this.baseXfo.clone();
+    newXfo.tr.addInPlace(dragVec);
+
+    this.change.update({
+      value: newXfo
+    });
+
+    this.manipulate.emit({
+      holdPos: event.holdPos,
+      manipRay: this.gizmoRay,
+      deltaXfo: this.deltaXfo,
+      newXfo: newXfo
+    });
+  }
+
+  onDragEnd(event) {
+    this.change = null;
+
+    this.manipulateEnd.emit({
+      releasePos: event.releasePos,
+      manipRay: this.manipRay
+    });
+  }
 
 };
 
