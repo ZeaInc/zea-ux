@@ -83,15 +83,15 @@ class SelectionManager {
     this.leadSelectionChanged = new Visualive.Signal();
 
     this.selectionGroup = new Visualive.Group('selection');
-    this.selectionGroup.getParameter('InitialXfoMode').setValue(Visualive.Group.INITIAL_XFO_MODES.average);
+    this.selectionGroup.getParameter('XfoMode').setValue(Visualive.Group.INITIAL_XFO_MODES.average);
     this.selectionGroup.propagateSelectionChangesFromItems = false;
     this.selectionGroup.setSelected(true);
 
-    const size = 0.3
+    const size = 0.1
     const thickness = size * 0.02
     this.xfoHandle = new XfoHandle(size, thickness);
     this.xfoHandle.setTargetParam(this.selectionGroup.getParameter('GlobalXfo'), false);
-    // this.xfoHandle.setVisible(false)
+    this.xfoHandle.setVisible(false)
     // this.xfoHandle.showHandles('Translate')
     // this.xfoHandle.showHandles('Rotate')
     // this.xfoHandle.showHandles('Scale')

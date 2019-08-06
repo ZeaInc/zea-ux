@@ -21,7 +21,7 @@ class LinearMovementSceneWidget extends BaseLinearMovementSceneWidget {
     const tip = new Visualive.GeomItem('tip', tipGeom, handleMat);
     const tipXfo = new Visualive.Xfo()
     tipXfo.tr.set(0, 0, length)
-    tip.getParameter('LocalXfo').setValue(tipXfo);
+    tipGeom.transformVertices(tipXfo);
 
     // this.radiusParam.valueChanged.connect(()=>{
     //   radius = this.radiusParam.getValue();

@@ -109,6 +109,8 @@ export default class ItemSetWidget extends BaseWidget {
     select.style.width='100%';
 
     const ul = document.createElement('ul');
+    ul.style.width='100%';
+    ul.style['padding-inline-start']='0px';
     const li = document.createElement('li');
     li.style.display='block';
     ul.appendChild(li);

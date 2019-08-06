@@ -2,7 +2,7 @@ import SceneWidget from './SceneWidget.js';
 import ParameterValueChange from '../undoredo/ParameterValueChange.js';
 
 class PlanarMovementSceneWidget extends SceneWidget {
-  constructor(name, size, color) {
+  constructor(name, size, color, offset) {
     super(name);
 
     this.__color = color;
@@ -14,6 +14,10 @@ class PlanarMovementSceneWidget extends SceneWidget {
     handleMat.replaceParameter(this.colorParam);
 
     const handleGeom = new Visualive.Cuboid(size, size, size * 0.02);
+
+    const handleGeomXfo = new Visualive.Xfo()
+    handleGeomXfo.tr = offset;
+    handleGeom.transformVertices(handleGeomXfo);
     this.handle = new Visualive.GeomItem('handle', handleGeom, handleMat);
 
     this.sizeParam.valueChanged.connect(() => {

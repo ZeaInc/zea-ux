@@ -70,20 +70,20 @@ export default class XfoHandle extends Visualive.TreeItem {
       const planarXYWidget = new PlanarMovementSceneWidget(
         'planarXY',
         planarSize,
-        green
+        green,
+        new Visualive.Vec3(planarSize * 0.5, planarSize * 0.5, 0.0)
       );
       const xfo = new Visualive.Xfo();
-      xfo.tr.set(planarSize * 0.5, planarSize * 0.5, 0.0)
       planarXYWidget.getParameter('LocalXfo').setValue(xfo)
       translationHandles.addChild(planarXYWidget);
     } {
       const planarYZWidget = new PlanarMovementSceneWidget(
         'planarYZ',
         planarSize,
-        red
+        red,
+        new Visualive.Vec3(planarSize * -0.5, planarSize * 0.5, 0.0)
       );
       const xfo = new Visualive.Xfo();
-      xfo.tr.set(0.0, planarSize * 0.5, planarSize * 0.5)
       xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0, 1, 0), Math.PI * 0.5);
       planarYZWidget.getParameter('LocalXfo').setValue(xfo)
       translationHandles.addChild(planarYZWidget);
@@ -92,10 +92,10 @@ export default class XfoHandle extends Visualive.TreeItem {
       const planarXZWidget = new PlanarMovementSceneWidget(
         'planarXZ',
         planarSize,
-        blue
+        blue,
+        new Visualive.Vec3(planarSize * 0.5, planarSize * 0.5, 0.0)
       );
       const xfo = new Visualive.Xfo();
-      xfo.tr.set(planarSize * 0.5, 0.0, planarSize * 0.5)
       xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(1, 0, 0), Math.PI * 0.5);
       planarXZWidget.getParameter('LocalXfo').setValue(xfo)
       translationHandles.addChild(planarXZWidget);
