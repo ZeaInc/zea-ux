@@ -14,7 +14,7 @@ import {
 
 export default class XfoHandle extends Visualive.TreeItem {
   constructor(size, thickness) {
-    super(name)
+    super("XfoHandle")
 
     //////////////////////////////////
     // LinearMovementSceneWidget
@@ -27,6 +27,9 @@ export default class XfoHandle extends Visualive.TreeItem {
     const red = new Visualive.Color(1, 0.1, 0.1);
     const green = new Visualive.Color('#32CD32'); // limegreen https://www.rapidtables.com/web/color/green-color.html
     const blue = new Visualive.Color('#1E90FF'); // dodgerblue https://www.rapidtables.com/web/color/blue-color.html
+    red.a = 0.8;
+    green.a = 0.8;
+    blue.a = 0.8;
 
     {
       const linearXWidget = new LinearMovementSceneWidget(
@@ -62,7 +65,7 @@ export default class XfoHandle extends Visualive.TreeItem {
 
     //////////////////////////////////
     // planarXYWidget
-    const planarSize = size * 0.25;
+    const planarSize = size * 0.35;
     {
       const planarXYWidget = new PlanarMovementSceneWidget(
         'planarXY',
@@ -103,7 +106,14 @@ export default class XfoHandle extends Visualive.TreeItem {
     const rotationHandles = new Visualive.TreeItem('Rotate');
     rotationHandles.setVisible(false);
     this.addChild(rotationHandles); 
+    {
 
+      const maskMat = new Visualive.Material('mask', 'HandleShader');
+      maskMat.getParameter('BaseColor').setValue(new Visualive.Color(1, 1, 1, 0.4));
+      const maskGeom = new Visualive.Sphere(size-thickness, 64);
+      const maskGeomItem = new Visualive.GeomItem('mask', maskGeom, maskMat);
+      rotationHandles.addChild(maskGeomItem);
+    }
     {
       const rotationXWidget = new AxialRotationSceneWidget(
         'rotationX',
@@ -134,13 +144,6 @@ export default class XfoHandle extends Visualive.TreeItem {
         blue
       );
       rotationHandles.addChild(rotationZWidget);
-    } {
-
-      const maskMat = new Visualive.Material('handle', 'HandleShader');
-      maskMat.getParameter('BaseColor').setValue(new Visualive.Color(1, 1, 1, 0.8));
-      const maskGeom = new Visualive.Sphere(size-thickness, 64);
-      const maskGeomItem = new Visualive.GeomItem('handle', maskGeom, maskMat);
-      rotationHandles.addChild(maskGeomItem);
     }
 
     //////////////////////////////////

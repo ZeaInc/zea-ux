@@ -3,6 +3,7 @@
 import UndoRedoManager from './undoredo/UndoRedoManager.js';
 import Change from './undoredo/Change.js';
 import XfoHandle from './sceneWidgets/XfoHandle.js';
+import {SelectionTool} from './tools/SelectionTool.js';
 
 class SelectionChange extends Change {
   constructor(selectionManager, prevSelection, newSelection) {
@@ -84,16 +85,54 @@ class SelectionManager {
     this.selectionGroup = new Visualive.Group('selection');
     this.selectionGroup.getParameter('InitialXfoMode').setValue(Visualive.Group.INITIAL_XFO_MODES.average);
 
-    const size = 0.25
+    const size = 0.3
     const thickness = size * 0.02
     this.xfoHandle = new XfoHandle(size, thickness);
     this.xfoHandle.setTargetParam(this.selectionGroup.getParameter('GlobalXfo'), false);
-    this.xfoHandle.setVisible(false)
+    // this.xfoHandle.setVisible(false)
     // this.xfoHandle.showHandles('Translate')
     // this.xfoHandle.showHandles('Rotate')
     // this.xfoHandle.showHandles('Scale')
     this.selectionGroup.addChild(this.xfoHandle);
 
+    ///////////////////////////////////
+    // UI and Hotkeys
+    /*
+    let selectItemsActivatedTime;
+    let selectItemsActivated = false;
+    const selectionTool = new SelectionTool(appData);
+    appData.actionRegistry.registerAction({
+      path: ['Edit'],
+      name: 'Select Items',
+      callback: () => {
+        // if (renderer.isXRViewportPresenting())
+        //   return;
+
+        if (selectItemsActivated) {
+          appData.toolManager.popTool();
+          selectItemsActivated = false;
+        } else {
+          appData.toolManager.pushTool(selectionTool);
+          selectItemsActivated = true;
+          selectItemsActivatedTime = performance.now();
+        }
+      },
+      hotkeyReleaseCallback: () => {
+        // if (renderer.isXRViewportPresenting())
+        //   return;
+
+        if (selectItemsActivated) {
+          const t = performance.now() - selectItemsActivatedTime;
+          if (t > 400) {
+            appData.toolManager.popTool();
+            selectItemsActivated = false;
+          }
+        }
+      },
+      key: 'q',
+      availableInVR: true,
+    });
+    */
 
     const handleGroup = {
       Translate: new Visualive.Signal(),
@@ -116,6 +155,7 @@ class SelectionManager {
       callback: () => {
         showHandles('Translate')
       },
+      key: 'w',
       activatedChanged: handleGroup.Translate
     });
     appData.actionRegistry.registerAction({
@@ -124,6 +164,7 @@ class SelectionManager {
       callback: () => {
         showHandles('Rotate')
       },
+      key: 'e',
       activatedChanged: handleGroup.Rotate
     });
     appData.actionRegistry.registerAction({
@@ -132,6 +173,7 @@ class SelectionManager {
       callback: () => {
         showHandles('Scale')
       },
+      key: 'r',
       activatedChanged: handleGroup.Scale
     });
 

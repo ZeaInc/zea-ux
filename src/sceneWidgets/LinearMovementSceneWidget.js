@@ -13,14 +13,14 @@ class LinearMovementSceneWidget extends BaseLinearMovementSceneWidget {
 
     const handleMat = new Visualive.Material('handle', 'HandleShader');
     handleMat.replaceParameter(this.colorParam);
-    const handleGeom = new Visualive.Cylinder(thickness, length - (thickness * 10), 64);
+    const handleGeom = new Visualive.Cylinder(thickness, length, 64);
     handleGeom.getParameter('baseZAtZero').setValue(true)
     const tipGeom = new Visualive.Cone(thickness * 4, thickness * 10, 64, true);
     const handle = new Visualive.GeomItem('handle', handleGeom, handleMat);
 
     const tip = new Visualive.GeomItem('tip', tipGeom, handleMat);
     const tipXfo = new Visualive.Xfo()
-    tipXfo.tr.set(0, 0, length - (thickness * 10))
+    tipXfo.tr.set(0, 0, length)
     tip.getParameter('LocalXfo').setValue(tipXfo);
 
     // this.radiusParam.valueChanged.connect(()=>{
