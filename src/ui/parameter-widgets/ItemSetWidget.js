@@ -135,6 +135,8 @@ export default class ItemSetWidget extends BaseWidget {
     }); 
     select.addEventListener('dblclick', (event) => {
       console.log("dblclick", select.selectedIndex)
+      const item = parameter.getItem(select.selectedIndex);
+      appData.selectionManager.setSelection(new Set([item]));
       this.selectionDoubleClicked.emit(select.selectedIndex)
     }); 
 

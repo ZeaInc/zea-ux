@@ -84,6 +84,8 @@ class SelectionManager {
 
     this.selectionGroup = new Visualive.Group('selection');
     this.selectionGroup.getParameter('InitialXfoMode').setValue(Visualive.Group.INITIAL_XFO_MODES.average);
+    this.selectionGroup.propagateSelectionChangesFromItems = false;
+    this.selectionGroup.setSelected(true);
 
     const size = 0.3
     const thickness = size * 0.02
@@ -201,10 +203,11 @@ class SelectionManager {
   }
 
   setSelection(newSelection) {
-    const selection = this.selectionGroup.getItems();
+    const selection = new Set(this.selectionGroup.getItems());
+    const prevSelection = new Set(selection);
     for (let treeItem of newSelection){
       if(!selection.has(treeItem)) {
-        treeItem.getParameter('Selected').setValue(true);
+        // treeItem.getParameter('Selected').setValue(true);
         selection.add(treeItem);
       }
     }
@@ -215,8 +218,17 @@ class SelectionManager {
       }
     }
 
-    this.selectionGroup.setItems(treeItem);
+    this.selectionGroup.setItems(selection);
     this.updateGizmos();
+
+    // Deselecting can change the lead selected item.
+    if(selection.size > 0)
+      this.__setLeadSelection(selection.values().next().value);
+    else
+      this.__setLeadSelection();
+
+    const change = new SelectionChange(this, selection, prevSelection);
+    this.appData.undoRedoManager.addChange(change);
   }
 
   __setLeadSelection(treeItem) {
@@ -228,7 +240,7 @@ class SelectionManager {
 
   toggleItemSelection(treeItem, replaceSelection = true) {
 
-    const selection = this.selectionGroup.getItems();
+    const selection = new Set(this.selectionGroup.getItems());
     const prevSelection = new Set(selection);
 
     // Avoid clearing the selection when we have the
@@ -252,13 +264,16 @@ class SelectionManager {
       }
 
       if(clear) {
+        Array.from(selection).forEach(item => {
+          item.getParameter('Selected').setValue(false);
+        })
         selection.clear();
       }
     }
 
     let sel;
     if(!selection.has(treeItem)) {
-      treeItem.getParameter('Selected').setValue(true);
+      // treeItem.getParameter('Selected').setValue(true);
       selection.add(treeItem);
       sel = true;
     }
@@ -268,31 +283,33 @@ class SelectionManager {
       sel = false;
     }
 
-    this.selectionGroup.setItems(selection);
-    if (sel && selection.size === 1) {
-      this.__setLeadSelection(treeItem);
-    }
+    const preExpandSelSize = selection.size
 
+    // Now expand the selection to the subtree.
     treeItem.traverse((subTreeItem)=>{
       if (sel) {
         if(!selection.has(subTreeItem)) {
-          subTreeItem.getParameter('Selected').setValue(true);
+          // subTreeItem.getParameter('Selected').setValue(true);
           selection.add(subTreeItem);
-          this.selectionGroup.addItem(treeItem);
+          // this.selectionGroup.addItem(treeItem);
         }
       }
       else {
         if(selection.has(subTreeItem)) {
           subTreeItem.getParameter('Selected').setValue(false);
           selection.delete(subTreeItem);
-          this.selectionGroup.removeItem(treeItem);
+          // this.selectionGroup.removeItem(treeItem);
         }
       }
     })
 
     this.selectionGroup.setItems(selection);
 
-    if (!sel) {
+    if (sel && preExpandSelSize === 1) {
+      this.__setLeadSelection(treeItem);
+    }
+    else if (!sel) {
+      // Deselecting can change the lead selected item.
       if(selection.size === 1)
         this.__setLeadSelection(selection.values().next().value);
       else if(selection.size === 0)
