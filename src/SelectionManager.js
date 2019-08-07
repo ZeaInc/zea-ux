@@ -207,13 +207,13 @@ class SelectionManager {
     const prevSelection = new Set(selection);
     for (let treeItem of newSelection){
       if(!selection.has(treeItem)) {
-        // treeItem.getParameter('Selected').setValue(true);
+        // treeItem.setSelected(true);
         selection.add(treeItem);
       }
     }
     for (let treeItem of selection){
       if(!newSelection.has(treeItem)) {
-        treeItem.getParameter('Selected').setValue(false);
+        treeItem.setSelected(false);
         selection.delete(treeItem);
       }
     }
@@ -265,7 +265,7 @@ class SelectionManager {
 
       if(clear) {
         Array.from(selection).forEach(item => {
-          item.getParameter('Selected').setValue(false);
+          item.setSelected(false);
         })
         selection.clear();
       }
@@ -273,12 +273,12 @@ class SelectionManager {
 
     let sel;
     if(!selection.has(treeItem)) {
-      // treeItem.getParameter('Selected').setValue(true);
+      // treeItem.setSelected(true);
       selection.add(treeItem);
       sel = true;
     }
     else {
-      treeItem.getParameter('Selected').setValue(false);
+      treeItem.setSelected(false);
       selection.delete(treeItem);
       sel = false;
     }
@@ -286,22 +286,22 @@ class SelectionManager {
     const preExpandSelSize = selection.size
 
     // Now expand the selection to the subtree.
-    treeItem.traverse((subTreeItem)=>{
-      if (sel) {
-        if(!selection.has(subTreeItem)) {
-          // subTreeItem.getParameter('Selected').setValue(true);
-          selection.add(subTreeItem);
-          // this.selectionGroup.addItem(treeItem);
-        }
-      }
-      else {
-        if(selection.has(subTreeItem)) {
-          subTreeItem.getParameter('Selected').setValue(false);
-          selection.delete(subTreeItem);
-          // this.selectionGroup.removeItem(treeItem);
-        }
-      }
-    })
+    // treeItem.traverse((subTreeItem)=>{
+    //   if (sel) {
+    //     if(!selection.has(subTreeItem)) {
+    //       // subTreeItem.setSelected(true);
+    //       selection.add(subTreeItem);
+    //       // this.selectionGroup.addItem(treeItem);
+    //     }
+    //   }
+    //   else {
+    //     if(selection.has(subTreeItem)) {
+    //       subTreeItem.setSelected(false);
+    //       selection.delete(subTreeItem);
+    //       // this.selectionGroup.removeItem(treeItem);
+    //     }
+    //   }
+    // })
 
     this.selectionGroup.setItems(selection);
 
@@ -332,7 +332,7 @@ class SelectionManager {
        prevSelection = new Set(selection);
     }
     for (let treeItem of selection){
-      treeItem.getParameter('Selected').setValue(false);
+      treeItem.setSelected(false);
     }
     selection.clear();
     this.selectionGroup.setItems(selection);
@@ -354,18 +354,16 @@ class SelectionManager {
     }
 
     for(let treeItem of treeItems) {
-      const selectedParam = treeItem.getParameter('Selected');
-
-      if (!selectedParam.getValue()) {
-        selectedParam.setValue(true);
+      if (!treeItem.getSelected()) {
+        // treeItem.getSelected(true);
         selection.add(treeItem);
 
-        treeItem.traverse((subTreeItem)=>{
-          if(!selection.has(subTreeItem)) {
-            subTreeItem.getParameter('Selected').setValue(true);
-            selection.add(subTreeItem);
-          }
-        })
+        // treeItem.traverse((subTreeItem)=>{
+        //   if(!selection.has(subTreeItem)) {
+        //     // subTreeItem.setSelected(true);
+        //     selection.add(subTreeItem);
+        //   }
+        // })
       }
     }
 
@@ -388,18 +386,15 @@ class SelectionManager {
     const prevSelection = new Set(selection);
 
     for(let treeItem of treeItems) {
-      const selectedParam = treeItem.getParameter('Selected');
-
-      if (selectedParam.getValue()) {
-        selectedParam.setValue(false);
+      if (treeItem.getSelected()) {
+        treeItem.setSelected(false);
         selection.delete(selectedParam);
-        treeItem.traverse((subTreeItem)=>{
-          const selectedParam = subTreeItem.getParameter('Selected');
-          if(!selection.has(subTreeItem)) {
-            selectedParam.setValue(true);
-            selection.delete(treeItem);
-          }
-        })
+        // treeItem.traverse((subTreeItem)=>{
+        //   if(!selection.has(subTreeItem)) {
+        //     subTreeItem.setSelected(false);
+        //     selection.delete(treeItem);
+        //   }
+        // })
       }
     }
 

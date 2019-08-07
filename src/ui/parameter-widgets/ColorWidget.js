@@ -52,7 +52,7 @@ export default class ColorWidget extends BaseWidget {
     colorPicker.on('color:change', (color, changes) => {
       if(undoing)
         return;
-      console.log('input:change', colorPicker.color.rgb, !change)
+      // console.log('input:change', colorPicker.color.rgb, !change)
       const value = new Visualive.Color();
       value.setFromRGBDict(colorPicker.color.rgb);
       if (!change) {

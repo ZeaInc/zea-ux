@@ -98,7 +98,7 @@ export default class ItemSetWidget extends BaseWidget {
     super(parameter);
     const items = Array.from(parameter.getValue());
     const select = document.createElement('select');
-    select.setAttribute('size', items.length);
+    select.setAttribute('size', items.length+1);
     for (let i=0; i < items.length; i++) {
       const item = items[i];
       const option = document.createElement('option');

@@ -53,19 +53,17 @@ class TreeItemElement {
     
     this.li.appendChild(this.titleElement);
 
-    const selectedParam = this.treeItem.getParameter('Selected');
-
     this.titleElement.addEventListener('click', (e) => {
       appData.selectionManager.toggleItemSelection(this.treeItem, !e.ctrlKey);
     });
 
     const updateSelected = ()=>{
-      const selected = selectedParam.getValue();
+      const selected = this.treeItem.getSelected();
       selected
         ? this.li.classList.add('TreeNodesListItem--isSelected')
         : this.li.classList.remove('TreeNodesListItem--isSelected');
     }
-    selectedParam.valueChanged.connect(updateSelected);
+    this.treeItem.selectedChanged.connect(updateSelected);
     updateSelected()
 
     this.parentDomElement.appendChild(this.li);
