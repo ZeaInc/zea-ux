@@ -83,7 +83,8 @@ class SelectionManager {
     this.leadSelectionChanged = new Visualive.Signal();
 
     this.selectionGroup = new Visualive.Group('selection');
-    this.selectionGroup.getParameter('XfoMode').setValue(Visualive.Group.INITIAL_XFO_MODES.average);
+    this.selectionGroup.getParameter('InitialXfoMode').setValue(Visualive.Group.INITIAL_XFO_MODES.average);
+    this.selectionGroup.propagateSelectionToItems = true;
     this.selectionGroup.propagateSelectionChangesFromItems = false;
     this.selectionGroup.setSelected(true);
 

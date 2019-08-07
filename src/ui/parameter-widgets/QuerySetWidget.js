@@ -5,7 +5,7 @@ import BaseWidget from './BaseWidget.js';
 import uxFactory from '../UxFactory.js';
 import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 
-const addQueryWidget = (parameter, parentDomElem, tabindex) => {
+const addQueryWidget = (parameter, parentDomElem, appData) => {
 
     // const container = document.createElement('div');
     // container.className = 'container';
@@ -144,41 +144,31 @@ const addQueryWidget = (parameter, parentDomElem, tabindex) => {
     // Input
     {
       const input = document.createElement('input');
-      // input.className = 'mdl-textfield__input'
       input.setAttribute('type', 'text');
       input.setAttribute('value', parameter.getValue());
-      input.setAttribute('tabindex', tabindex);
+      // input.setAttribute('tabindex', tabindex);
       input.style.width = '100%';
+
+      // TODO: Please put these into a CSS file.
+      input.style['background-color'] = '#EFEFEF';
+      input.style['border-color'] = 'darkgrey';
+      input.style['border-style'] = 'solid';
+      input.style['border-width'] = 'thin';
+      input.style['padding'] = '2px';
 
       const li = document.createElement('li');
       li.appendChild(input);
       ul.appendChild(li);
       
-      let change;
       parameter.valueChanged.connect(() => {
-        if (!change){
-          input.value = parameter.getValue();
-        } 
+        input.value = parameter.getValue();
       });
 
-      const valueChange = () => {
+      input.addEventListener('change', () => {
         const value = input.value
-        if (!change) {
-          change = new ParameterValueChange(parameter, value);
-          appData.undoRedoManager.addChange(change);
-        }
-        else {
-          change.update({ value });
-        }
-      };
-
-      const valueChangeEnd = () => {
-        valueChange();
-        change = undefined;
-      };
-
-      input.addEventListener('input', valueChange);
-      input.addEventListener('change', valueChangeEnd);
+        const change = new ParameterValueChange(parameter, value);
+        appData.undoRedoManager.addChange(change);
+      });
     }
 
 
@@ -186,43 +176,25 @@ const addQueryWidget = (parameter, parentDomElem, tabindex) => {
     // Prop Name
 
     {
-      const propNameInput = document.createElement('input');
-      // input.className = 'mdl-textfield__input'
-      propNameInput.setAttribute('type', 'text');
-      propNameInput.setAttribute('value', parameter.getPropertyName());
-      propNameInput.setAttribute('tabindex', tabindex);
-      propNameInput.style.width = '100%';
+      const input = document.createElement('input');
+      input.setAttribute('type', 'text');
+      input.setAttribute('value', parameter.getPropertyName());
+      // input.setAttribute('tabindex', tabindex);
+      input.style.width = '100%';
 
       const li = document.createElement('li');
-      li.appendChild(propNameInput);
+      li.appendChild(input);
       ul.appendChild(li);
 
-      let change;
       parameter.valueChanged.connect(() => {
-        if (!change){
-          propNameInput.value = parameter.getPropertyName();
-        } 
+        input.value = parameter.getPropertyName();
       });
 
-      const valueChange = () => {
-        const value = propNameInput.value
-        // if (!change) {
-          // change = new ParameterValueChange(parameter, value);
-          // appData.undoRedoManager.addChange(change);
-          parameter.setPropertyName(value)
-        // }
-        // else {
-        //   change.update({ value });
-        // }
-      };
-
-      const valueChangeEnd = () => {
-        valueChange();
-        change = undefined;
-      };
-
-      propNameInput.addEventListener('input', valueChange);
-      propNameInput.addEventListener('change', valueChangeEnd);
+      input.addEventListener('change', () => {
+        const value = input.value
+        const change = new ParameterValueChange(parameter, value);
+        appData.undoRedoManager.addChange(change);
+      });
     }
 
     // return container;
@@ -267,7 +239,7 @@ export default class QuerySetWidget extends BaseWidget {
 
     const queries = parameter.getValue();
     Array.from(queries).forEach((item, index) => {
-      ul.appendChild(addQueryWidget(item, index));
+      ul.appendChild(addQueryWidget(item, index, appData));
     })
 
     const pickButton = document.createElement('button');

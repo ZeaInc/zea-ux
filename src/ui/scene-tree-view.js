@@ -30,7 +30,6 @@ class TreeItemElement {
     });
 
 
-
     const updateVisibility = () => {
       const visible = this.treeItem.getVisible();
       visible
@@ -39,7 +38,6 @@ class TreeItemElement {
     }
     this.treeItem.visibilityChanged.connect(updateVisibility);
     updateVisibility();
-
 
 
     // Title element.
@@ -66,6 +64,17 @@ class TreeItemElement {
     this.treeItem.selectedChanged.connect(updateSelected);
     updateSelected()
 
+    const updateHighlight = () => {
+      const hilighted = this.treeItem.isHighlighted();
+      hilighted
+        ? this.li.classList.add('TreeNodesListItem--isHighlighted')
+        : this.li.classList.remove('TreeNodesListItem--isHighlighted');
+      if(hilighted) {
+        this.titleElement.style['border-color'] = this.treeItem.getHighlight().toHex();
+      }
+    }
+    this.treeItem.highlightChanged.connect(updateHighlight);
+    updateHighlight();
     this.parentDomElement.appendChild(this.li);
 
     this.ul = document.createElement('ul');

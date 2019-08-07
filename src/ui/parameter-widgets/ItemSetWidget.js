@@ -96,15 +96,26 @@ import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 export default class ItemSetWidget extends BaseWidget {
   constructor(parameter, parentDomElem, appData) {
     super(parameter);
-    const items = Array.from(parameter.getValue());
     const select = document.createElement('select');
-    select.setAttribute('size', items.length+1);
-    for (let i=0; i < items.length; i++) {
-      const item = items[i];
-      const option = document.createElement('option');
-      option.appendChild(document.createTextNode(item.getName()));
-      select.appendChild(option);
+
+    const rebuild = ()=>{
+      const items = Array.from(parameter.getValue());
+      select.setAttribute('size', items.length+1);
+      for (let i=0; i < items.length; i++) {
+        const item = items[i];
+        const option = document.createElement('option');
+        option.appendChild(document.createTextNode(item.getName()));
+        select.appendChild(option);
+      }
     }
+    parameter.valueChanged.connect(() => {
+      while (select.firstChild) {
+        select.removeChild(select.firstChild);
+      }
+      rebuild();
+    });
+    rebuild();
+
     select.selectedIndex = -1;
     select.style.width='100%';
 
@@ -124,11 +135,6 @@ export default class ItemSetWidget extends BaseWidget {
     this.selectionDoubleClicked = new Visualive.Signal();
 
     let prevSelection = -1;
-    parameter.valueChanged.connect(() => {
-      if (!changing){
-        select.selectedIndex = parameter.getValue()
-      } 
-    });
 
     select.addEventListener('change', (event) => {
       console.log("valueChange", select.selectedIndex)
