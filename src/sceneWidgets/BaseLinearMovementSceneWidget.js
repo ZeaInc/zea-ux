@@ -13,6 +13,7 @@ class BaseLinearMovementSceneWidget extends SceneWidget {
     this.gizmoRay = this.getManipulationRay();
     this.grabDist = event.mouseRay.intersectRayVector(this.gizmoRay)[1];
     const grabPos = this.gizmoRay.pointAtDist(this.grabDist);
+    event.grabDist = this.grabDist;
     event.grabPos = grabPos;
     this.onDragStart(event);
     return true;
@@ -21,6 +22,7 @@ class BaseLinearMovementSceneWidget extends SceneWidget {
   handleMouseMove(event) {
     const dist = event.mouseRay.intersectRayVector(this.gizmoRay)[1];
     const holdPos = this.gizmoRay.pointAtDist(dist);
+    event.holdDist = dist;
     event.holdPos = holdPos;
     event.value = dist;
     event.delta = dist-this.grabDist;
@@ -44,6 +46,8 @@ class BaseLinearMovementSceneWidget extends SceneWidget {
     this.activeController = event.controller;
     const xfo = this.activeController.getTipXfo();
     this.grabDist = xfo.tr.subtract(this.gizmoRay.start).dot(this.gizmoRay.dir);
+    const grabPos = this.gizmoRay.start.add(this.gizmoRay.dir.scale(this.grabDist));
+    event.grabPos = grabPos;
     this.onDragStart(event);
     return true;
   }
@@ -53,6 +57,7 @@ class BaseLinearMovementSceneWidget extends SceneWidget {
     const dist = xfo.tr.subtract(this.gizmoRay.start).dot(this.gizmoRay.dir);
     const holdPos = this.gizmoRay.start.add(this.gizmoRay.dir.scale(dist));
     event.value = dist;
+    event.holdPos = holdPos;
     event.delta = dist-this.grabDist;
     this.onDrag(event);
     return true;

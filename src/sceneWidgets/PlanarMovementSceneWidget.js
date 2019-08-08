@@ -1,21 +1,26 @@
-import SceneWidget  from './SceneWidget.js';
+import SceneWidget from './SceneWidget.js';
 import ParameterValueChange from '../undoredo/ParameterValueChange.js';
 
 class PlanarMovementSceneWidget extends SceneWidget {
-  constructor(name, size, color) {
+  constructor(name, size, color, offset) {
     super(name);
 
     this.__color = color;
+    this.__hilightedColor = new Visualive.Color(1, 1, 1);
     this.sizeParam = this.addParameter(new Visualive.NumberParameter('size', size));
     this.colorParam = this.addParameter(new Visualive.ColorParameter('BaseColor', color));
 
-    const handleMat = new Visualive.Material('handle', 'FlatSurfaceShader');
+    const handleMat = new Visualive.Material('handle', 'HandleShader');
     handleMat.replaceParameter(this.colorParam);
 
     const handleGeom = new Visualive.Cuboid(size, size, size * 0.02);
+
+    const handleGeomXfo = new Visualive.Xfo()
+    handleGeomXfo.tr = offset;
+    handleGeom.transformVertices(handleGeomXfo);
     this.handle = new Visualive.GeomItem('handle', handleGeom, handleMat);
 
-    this.sizeParam.valueChanged.connect(()=>{
+    this.sizeParam.valueChanged.connect(() => {
       size = this.sizeParam.getValue();
       handleGeom.getParameter('size').setValue(size);
       handleGeom.getParameter('height').setValue(size * 0.02);
@@ -24,9 +29,17 @@ class PlanarMovementSceneWidget extends SceneWidget {
     this.addChild(this.handle);
   }
 
-  setTargetParam(param, track=true) {
+  highlight() {
+    this.colorParam.setValue(this.__hilightedColor)
+  }
+
+  unhighlight() {
+    this.colorParam.setValue(this.__color)
+  }
+
+  setTargetParam(param, track = true) {
     this.__param = param;
-    if(track) {
+    if (track) {
       const __updateGizmo = () => {
         this.setGlobalXfo(param.getValue())
       }
@@ -41,11 +54,7 @@ class PlanarMovementSceneWidget extends SceneWidget {
 
     event.undoRedoManager.addChange(this.change);
 
-    this.baseXfo = this.getGlobalXfo();
-    this.offsetXfo = this.baseXfo.inverse().multiply(this.__param.getValue());
-
-    // Hilight the material.
-    this.colorParam.setValue(new Visualive.Color(1,1,1));
+    this.baseXfo = this.__param.getValue();
 
     this.manipulateBegin.emit({
       grabPos: event.grabPos,
@@ -58,23 +67,21 @@ class PlanarMovementSceneWidget extends SceneWidget {
 
     const newXfo = this.baseXfo.clone();
     newXfo.tr.addInPlace(dragVec);
-    const value = newXfo.multiply(this.offsetXfo);
 
     this.change.update({
-      value
+      value: newXfo
     });
 
     this.manipulate.emit({
       holdPos: event.holdPos,
       manipRay: this.gizmoRay,
-      deltaXfo: this.deltaXfo, 
-      newXfo: value
+      deltaXfo: this.deltaXfo,
+      newXfo: newXfo
     });
   }
 
   onDragEnd(event) {
     this.change = null;
-    this.colorParam.setValue(this.__color);
 
     this.manipulateEnd.emit({
       releasePos: event.releasePos,

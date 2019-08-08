@@ -6,7 +6,7 @@ class SceneWidgetTool extends BaseTool {
   constructor(appData) {
     super(appData);
 
-    this.activeSceneWidget = undefined;
+    this.activeHandle = undefined;
   }
 
   activateTool() {
@@ -55,37 +55,51 @@ class SceneWidgetTool extends BaseTool {
 
   onMouseDown(event) {
     // 
-    if (!this.activeSceneWidget) {
+    if (!this.activeHandle) {
       // event.viewport.renderGeomDataFbo();
       const intersectionData = event.viewport.getGeomDataAtPos(event.mousePos);
       if (intersectionData == undefined) 
         return;
       if(intersectionData.geomItem.getOwner() instanceof SceneWidget) {
-        this.activeSceneWidget = intersectionData.geomItem.getOwner();
-        this.activeSceneWidget.handleMouseDown(Object.assign(event, { intersectionData } ));
+        this.activeHandle = intersectionData.geomItem.getOwner();
+        this.activeHandle.handleMouseDown(Object.assign(event, { intersectionData } ));
         return true;
       }
     }
   }
 
   onMouseMove(event) {
-    if (this.activeSceneWidget) {
-      this.activeSceneWidget.handleMouseMove(event);
+    if (this.activeHandle) {
+      this.activeHandle.handleMouseMove(event);
       return true;
+    }
+    else {
+      const intersectionData = event.viewport.getGeomDataAtPos(event.mousePos);
+      if (intersectionData != undefined && intersectionData.geomItem.getOwner() instanceof SceneWidget) {
+        const handle = intersectionData.geomItem.getOwner();
+        if (this.__highlightedHandle)
+          this.__highlightedHandle.unhighlight();
+
+        this.__highlightedHandle = handle;
+        this.__highlightedHandle.highlight();
+        return true;
+      }
+      else if (this.__highlightedHandle)
+          this.__highlightedHandle.unhighlight();
     }
   }
 
   onMouseUp(event) {
-    if (this.activeSceneWidget) {
-      this.activeSceneWidget.handleMouseUp(event);
-      this.activeSceneWidget = undefined;
+    if (this.activeHandle) {
+      this.activeHandle.handleMouseUp(event);
+      this.activeHandle = undefined;
       return true;
     }
   }
 
   onWheel(event) {
-    if (this.activeSceneWidget) {
-      this.activeSceneWidget.onWheel(event);
+    if (this.activeHandle) {
+      this.activeHandle.onWheel(event);
     }
   }
 
@@ -103,64 +117,65 @@ class SceneWidgetTool extends BaseTool {
   // VRController events
 
   onVRControllerButtonDown(event) {
-    if (!this.activeSceneWidget) {
+    if (!this.activeHandle) {
       const intersectionData = event.controller.getGeomItemAtTip();
       if (intersectionData == undefined) 
         return;
       if (intersectionData.geomItem.getOwner() instanceof SceneWidget) {
-        const gizmo = intersectionData.geomItem.getOwner();
-        this.activeSceneWidget = gizmo;
-        this.activeSceneWidget.onVRControllerButtonDown(event);
+        const handle = intersectionData.geomItem.getOwner();
+        this.activeHandle = handle;
+        this.activeHandle.onVRControllerButtonDown(event);
         return true;
       }
     }
   }
 
   onVRPoseChanged(event) {
-    if (this.activeSceneWidget) {
-      this.activeSceneWidget.onVRPoseChanged(event);
+    if (this.activeHandle) {
+      this.activeHandle.onVRPoseChanged(event);
       return true;
     } else {
-      // let gizmoHit = false;
-      // for (let controller of event.controllers) {
-      //   const intersectionData = controller.getGeomItemAtTip();
-      //   if (intersectionData != undefined && intersectionData.geomItem instanceof SceneWidget) {
-      //     const gizmo = intersectionData.geomItem;
-      //     if (this.__highlightedSceneWidget)
-      //       this.__highlightedSceneWidget.unhiglight();
+      let handleHit = false;
+      for (let controller of event.controllers) {
+        const intersectionData = controller.getGeomItemAtTip();
+        if (intersectionData != undefined && intersectionData.geomItem.getOwner() instanceof SceneWidget) {
+          const handle = intersectionData.geomItem.getOwner();
 
-      //     this.__highlightedSceneWidget = gizmo;
-      //     this.__highlightedSceneWidget.higlight();
-      //     gizmoHit = true;
-      //     break;
-      //   }
-      // }
+          if (this.__highlightedHandle)
+            this.__highlightedHandle.unhighlight();
 
-      // if (!gizmoHit) {
-      //   if (this.__highlightedSceneWidget) {
-      //     this.__highlightedSceneWidget.unhiglight();
-      //     this.__highlightedSceneWidget = undefined;
-      //   }
-      // }
+          this.__highlightedHandle = handle;
+          this.__highlightedHandle.highlight();
+          handleHit = true;
+          break;
+        }
+      }
+
+      if (!handleHit) {
+        if (this.__highlightedHandle) {
+          this.__highlightedHandle.unhighlight();
+          this.__highlightedHandle = undefined;
+        }
+      }
     }
   }
 
   onVRControllerButtonUp(event) {
-    if (this.activeSceneWidget) {
-      this.activeSceneWidget.onDragEnd(event);
-      this.activeSceneWidget = undefined;
+    if (this.activeHandle) {
+      this.activeHandle.onDragEnd(event);
+      this.activeHandle = undefined;
 
-      if (this.__highlightedSceneWidget && this.activeController == event.controller) {
+      if (this.__highlightedHandle && this.activeController == event.controller) {
         // Check if by releasing the button, we should immedietly
-        // unhilight the gizmo. 
-        // It is possible that the higlight is still on for a gizmo
+        // unhilight the handle. 
+        // It is possible that the highlight is still on for a handle
         // we are interacting with, even though the controller is no longer touching
         // it.
         const intersectionData = event.controller.getGeomItemAtTip();
-        if (!intersectionData != undefined || intersectionData.geomItem != this.__highlightedSceneWidget) {
-          const gizmo = intersectionData.geomItem;
-          if (this.__highlightedSceneWidget)
-            this.__highlightedSceneWidget.unhiglight();
+        if (!intersectionData != undefined || intersectionData.geomItem.getOwner() != this.__highlightedHandle) {
+          const handle = intersectionData.geomItem.getOwner();
+          if (this.__highlightedHandle)
+            this.__highlightedHandle.unhighlight();
         }
       }
       return true;
