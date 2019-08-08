@@ -102,7 +102,7 @@ class TopMenuBar {
     let keyComboPressed;
     
     document.addEventListener('keypress', e => {
-      console.log("keypress")
+      // console.log("keypress")
     });
     document.addEventListener('keydown', e => {
       if(keyComboPressed)

@@ -5,7 +5,7 @@ import BaseWidget from './BaseWidget.js';
 import uxFactory from '../UxFactory.js';
 import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 
-const addQueryWidget = (parameter, parentDomElem, appData) => {
+const addQueryWidget = (querySet, query, parentDomElem, appData) => {
 
     // const container = document.createElement('div');
     // container.className = 'container';
@@ -31,22 +31,22 @@ const addQueryWidget = (parameter, parentDomElem, appData) => {
         map[qt[key]] = index;
       });
 
-      selectQueryType.selectedIndex = map[parameter.getQueryType()];
+      selectQueryType.selectedIndex = map[query.getQueryType()];
       selectQueryType.style.width='100%';
 
 
       let changing = false;
-      parameter.valueChanged.connect(() => {
+      query.valueChanged.connect(() => {
         if (!changing){
-          selectQueryType.selectedIndex = map[parameter.getQueryType()];
+          selectQueryType.selectedIndex = map[query.getQueryType()];
         } 
       });
 
       const valueChange = (event) => {
         changing = true;
-        // const change = new ParameterValueChange(parameter, selectQueryType.selectedIndex);
+        // const change = new ParameterValueChange(query, selectQueryType.selectedIndex);
         // appData.undoRedoManager.addChange(change);
-        parameter.setQueryType(selectQueryType.selectedIndex)
+        query.setQueryType(selectQueryType.selectedIndex)
         changing = false;
       };
       selectQueryType.addEventListener('change', valueChange);
@@ -74,22 +74,22 @@ const addQueryWidget = (parameter, parentDomElem, appData) => {
         map[mt[key]] = index;
       });
 
-      selectMatchType.selectedIndex = map[parameter.getMatchType()];
+      selectMatchType.selectedIndex = map[query.getMatchType()];
       selectMatchType.style.width='100%';
 
 
       let changing = false;
-      parameter.valueChanged.connect(() => {
+      query.valueChanged.connect(() => {
         if (!changing){
-          selectMatchType.selectedIndex = map[parameter.getMatchType()];
+          selectMatchType.selectedIndex = map[query.getMatchType()];
         } 
       });
 
       const valueChange = (event) => {
         changing = true;
-        // const change = new ParameterValueChange(parameter, selectMatchType.selectedIndex);
+        // const change = new ParameterValueChange(query, selectMatchType.selectedIndex);
         // appData.undoRedoManager.addChange(change);
-        parameter.setMatchType(selectMatchType.selectedIndex)
+        query.setMatchType(selectMatchType.selectedIndex)
         changing = false;
       };
       selectMatchType.addEventListener('change', valueChange);
@@ -116,21 +116,21 @@ const addQueryWidget = (parameter, parentDomElem, appData) => {
         map[ql[key]] = index;
       });
 
-      selectLogicType.selectedIndex = map[parameter.getLocicalOperator()];
+      selectLogicType.selectedIndex = map[query.getLocicalOperator()];
       selectLogicType.style.width='100%';
 
       let changing = false;
-      parameter.valueChanged.connect(() => {
+      query.valueChanged.connect(() => {
         if (!changing){
-          selectLogicType.selectedIndex = map[parameter.getLocicalOperator()];
+          selectLogicType.selectedIndex = map[query.getLocicalOperator()];
         } 
       });
 
       const valueChange = (event) => {
         changing = true;
-        // const change = new ParameterValueChange(parameter, selectLogicType.selectedIndex);
+        // const change = new ParameterValueChange(query, selectLogicType.selectedIndex);
         // appData.undoRedoManager.addChange(change);
-        parameter.setMatchType(selectLogicType.selectedIndex)
+        query.setLocicalOperator(selectLogicType.selectedIndex)
         changing = false;
       };
       selectLogicType.addEventListener('change', valueChange);
@@ -145,7 +145,7 @@ const addQueryWidget = (parameter, parentDomElem, appData) => {
     {
       const input = document.createElement('input');
       input.setAttribute('type', 'text');
-      input.setAttribute('value', parameter.getValue());
+      input.setAttribute('value', query.getValue());
       // input.setAttribute('tabindex', tabindex);
       input.style.width = '100%';
 
@@ -160,13 +160,13 @@ const addQueryWidget = (parameter, parentDomElem, appData) => {
       li.appendChild(input);
       ul.appendChild(li);
       
-      parameter.valueChanged.connect(() => {
-        input.value = parameter.getValue();
+      query.valueChanged.connect(() => {
+        input.value = query.getValue();
       });
 
       input.addEventListener('change', () => {
         const value = input.value
-        const change = new ParameterValueChange(parameter, value);
+        const change = new ParameterValueChange(query, value);
         appData.undoRedoManager.addChange(change);
       });
     }
@@ -178,7 +178,7 @@ const addQueryWidget = (parameter, parentDomElem, appData) => {
     {
       const input = document.createElement('input');
       input.setAttribute('type', 'text');
-      input.setAttribute('value', parameter.getPropertyName());
+      input.setAttribute('value', query.getPropertyName());
       // input.setAttribute('tabindex', tabindex);
       input.style.width = '100%';
 
@@ -186,16 +186,24 @@ const addQueryWidget = (parameter, parentDomElem, appData) => {
       li.appendChild(input);
       ul.appendChild(li);
 
-      parameter.valueChanged.connect(() => {
-        input.value = parameter.getPropertyName();
+      query.valueChanged.connect(() => {
+        input.value = query.getPropertyName();
       });
 
       input.addEventListener('change', () => {
         const value = input.value
-        const change = new ParameterValueChange(parameter, value);
+        const change = new ParameterValueChange(query, value);
         appData.undoRedoManager.addChange(change);
       });
     }
+
+    const removeButton = document.createElement('button');
+    removeButton.appendChild(document.createTextNode("Remove"));
+    removeButton.addEventListener('click', (e) =>{
+      querySet.removeItem(query);
+    });
+    removeButton.style.margin = '2px';
+    ul.appendChild(removeButton);
 
     // return container;
     return ul;
@@ -208,9 +216,12 @@ export default class QuerySetWidget extends BaseWidget {
     const container = document.createElement('div');
     container.className = 'container';
 
-    const ul = document.createElement('ul');
-    ul.className = 'flex-editvalues';
-    container.appendChild(ul);
+    const ul0 = document.createElement('ul');
+    container.appendChild(ul0);
+
+    const queryList = document.createElement('ul');
+    queryList.className = 'flex-editvalues';
+    ul0.appendChild(queryList);
 
     const xfo = parameter.getValue();
 
@@ -218,28 +229,23 @@ export default class QuerySetWidget extends BaseWidget {
     // SceneWidget Changes.
 
     let change = undefined;
-
+    const queryULs = []
     const updateDisplayedValue = () => {
-      // if (!change) {
-      //   const xfo = parameter.getValue();
-      //   tr_xField.value = xfo.tr.x;
-      //   tr_yField.value = xfo.tr.y;
-      //   tr_zField.value = xfo.tr.z;
-      //   ori_xField.value = xfo.ori.x;
-      //   ori_yField.value = xfo.ori.y;
-      //   ori_zField.value = xfo.ori.z;
-      //   ori_wField.value = xfo.ori.w;
-      //   sc_xField.value = xfo.sc.x;
-      //   sc_yField.value = xfo.sc.y;
-      //   sc_zField.value = xfo.sc.z;
-      // }
+      while (queryList.firstChild) {
+        queryList.removeChild(queryList.firstChild);
+      }
+
+      const queries = parameter.getValue();
+      Array.from(queries).forEach((item, index) => {
+        queryList.appendChild(addQueryWidget(parameter, item, index, appData));
+      })
     }
 
     parameter.valueChanged.connect(updateDisplayedValue);
 
     const queries = parameter.getValue();
     Array.from(queries).forEach((item, index) => {
-      ul.appendChild(addQueryWidget(item, index, appData));
+      queryList.appendChild(addQueryWidget(parameter, item, index, appData));
     })
 
     const pickButton = document.createElement('button');
@@ -249,21 +255,15 @@ export default class QuerySetWidget extends BaseWidget {
     });
     const addButton = document.createElement('button');
     addButton.appendChild(document.createTextNode("Add"));
-    // addButton.addEventListener('click', (e) =>{
-    //   console.log("Start picking mode.")
-    // });
-    const removeButton = document.createElement('button');
-    removeButton.appendChild(document.createTextNode("Remove"));
-    // removeButton.addEventListener('click', (e) =>{
-    //   console.log("Start picking mode.")
-    // });
+    addButton.addEventListener('click', (e) =>{
+      parameter.addItem(new Visualive.QueryParameter());
+    });
+
     const li = document.createElement('li');
     li.style.display='block';
     addButton.style.margin = '2px';
-    removeButton.style.margin = '2px';
     li.appendChild(addButton);
-    li.appendChild(removeButton);
-    ul.appendChild(li);
+    ul0.appendChild(li);
 
     parentDomElem.appendChild(container);
   }
