@@ -20,7 +20,15 @@ export default class ItemWidget extends BaseWidget {
     const button = document.createElement('button');
     button.appendChild(document.createTextNode("Pick"));
     button.addEventListener('click', (e) =>{
-      console.log("Start picking mode.")
+      appData.selectionManager.startPickingMode(
+        `Pick ${parameter.getName()} item.`, 
+        items => {
+          const change = new ParameterValueChange(parameter, items[0]);
+          appData.undoRedoManager.addChange(change);
+        }, 
+        parameter.getFilterFn(), 
+        1
+      );
     });
     button.style.margin = '2px';
 

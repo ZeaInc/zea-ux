@@ -8,7 +8,6 @@ class SelectionTool extends BaseTool {
 
     this.dragging = false;
 
-
     this.selectionRect = new Visualive.Rect(1,1);
     this.selectionRectMat = new Visualive.Material('marker', 'ScreenSpaceShader');
     this.selectionRectMat.getParameter('BaseColor').setValue(new Visualive.Color("#03E3AC"));
@@ -89,27 +88,38 @@ class SelectionTool extends BaseTool {
         const geomItems = event.viewport.getGeomItemsInRect(tl, br);
 
         console.log(geomItems)
-
-        // Remove all the scene widgets. (UI elements should not be selectable.)
-        const regularGeomItems = new Set([...geomItems].filter(x => !(x.getOwner() instanceof SceneWidget)));
-
-        if (!event.shiftKey) {
-          this.appData.selectionManager.selectItems(regularGeomItems, !event.ctrlKey);
-        } else {
-          this.appData.selectionManager.deselectItems(regularGeomItems);
+        if(this.appData.selectionManager.pickingModeActive()) {
+          this.appData.selectionManager.pick(geomItems);
         }
-        
-        this.selectionRectXfo.sc.set(0,0,0)
-        this.rectItem.setGlobalXfo(this.selectionRectXfo)
+        else {
+
+          // Remove all the scene widgets. (UI elements should not be selectable.)
+          const regularGeomItems = new Set([...geomItems].filter(x => !(x.getOwner() instanceof SceneWidget)));
+
+          if (!event.shiftKey) {
+            this.appData.selectionManager.selectItems(regularGeomItems, !event.ctrlKey);
+          } else {
+            this.appData.selectionManager.deselectItems(regularGeomItems);
+          }
+          
+          this.selectionRectXfo.sc.set(0,0,0)
+          this.rectItem.setGlobalXfo(this.selectionRectXfo);
+        }
       } else {
         const intersectionData = event.viewport.getGeomDataAtPos(event.mousePos);
         if (intersectionData != undefined && !(intersectionData.geomItem.getOwner() instanceof SceneWidget)) {
-          if (!event.shiftKey) {
-            this.appData.selectionManager.toggleItemSelection(intersectionData.geomItem, !event.ctrlKey);
-          } else {
-            const items = new Set();
-            items.add(intersectionData.geomItem)
-            this.appData.selectionManager.deselectItems(items);
+
+          if(this.appData.selectionManager.pickingModeActive()) {
+            this.appData.selectionManager.pick(intersectionData.geomItem);
+          }
+          else {
+            if (!event.shiftKey) {
+              this.appData.selectionManager.toggleItemSelection(intersectionData.geomItem, !event.ctrlKey);
+            } else {
+              const items = new Set();
+              items.add(intersectionData.geomItem)
+              this.appData.selectionManager.deselectItems(items);
+            }
           }
         }
         else {

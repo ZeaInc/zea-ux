@@ -47,11 +47,16 @@ class TreeItemElement {
     const updateName = () => {
       this.titleElement.textContent = treeItem.getName();
     }
-    this.treeItem.nameChanged.connect(updateVisibility);
+    this.treeItem.nameChanged.connect(updateName);
     
     this.li.appendChild(this.titleElement);
 
     this.titleElement.addEventListener('click', (e) => {
+      if(appData.selectionManager.pickingModeActive()) {
+        appData.selectionManager.pick(this.treeItem);
+        return;
+      }
+
       appData.selectionManager.toggleItemSelection(this.treeItem, !e.ctrlKey);
     });
 

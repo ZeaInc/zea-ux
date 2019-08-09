@@ -1,6 +1,6 @@
 import ParameterContainer from './parameter-container.js';
 import uxFactory from './UxFactory.js';
-import StringWidget from './parameter-widgets/StringWidget.js';
+import NameWidget from './parameter-widgets/NameWidget.js';
 
 class NameParam {
   constructor(treeItem) {
@@ -31,7 +31,7 @@ export default class TreeItemInspector {
     domElement.appendChild(ul);
     ul.appendChild(linameWidget);
     ul.appendChild(liparameterContainer);
-    this.nameWidget = new StringWidget(new NameParam(treeItem), linameWidget, appData);
+    this.nameWidget = new NameWidget(treeItem, linameWidget, appData);
     this.parameterContainer = new ParameterContainer(treeItem, liparameterContainer, appData);
   }
 

@@ -422,6 +422,49 @@ class SelectionManager {
     }
   }
 
+  //////////////////////////////////////
+  // 
+  startPickingMode(label, fn, filterFn, count) {
+    // Display this in a status bar.
+    console.log(label);
+    this.__pickCB = fn;
+    this.__pickFilter = filterFn;
+    this.__pickCount = count;
+    this.__picked = [];
+  }
+
+  pickingFilter(item) {
+    return this.__pickFilter(item);
+  }
+
+  pickingModeActive() {
+    return this.__pickCB != undefined;
+  }
+
+  cancelPickingMode() {
+    this.__pickCB = undefined;
+  }
+
+  pick(item) {
+    if(this.__pickCB) {
+      if(Array.isArray(item)) {
+        if(this.__pickFilter)
+          this.__picked = this.__picked.concat(item.filter(this.__pickFilter));
+        else
+          this.__picked = this.__picked.concat(item);
+      }
+      else {
+        if(this.__pickFilter && !this.__pickFilter(item))
+          return;
+        this.__picked.push(item);
+      }
+      if(this.__picked.length == this.__pickCount) {
+        this.__pickCB(this.__picked)
+        this.__pickCB = undefined;
+      }
+    }
+  }
+
 }
 
 export default SelectionManager;
