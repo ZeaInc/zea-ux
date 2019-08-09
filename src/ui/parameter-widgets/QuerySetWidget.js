@@ -14,6 +14,36 @@ const addQueryWidget = (querySet, query, parentDomElem, appData) => {
     ul.className = 'flex-editvalues';
     // container.appendChild(ul);
 
+
+    ///////////////////////////////////
+    // Enabled
+    {
+      const input = document.createElement('input');
+      input.setAttribute('id', "Enabled");
+      input.setAttribute('type', 'checkbox');
+      input.setAttribute('tabindex', 0);
+      input.checked = query.getEnabled();
+
+      const li = document.createElement('li');
+      li.textContent = "Enabled: ";
+      li.appendChild(input);
+      ul.appendChild(li);
+
+      /////////////////////////////
+      // SceneWidget Changes.
+
+      let change;
+      query.valueChanged.connect(() => {
+        if (!change)
+          input.checked = query.getEnabled();
+      });
+      input.addEventListener('input', () => {
+        // change = new ParameterValueChange(query, input.checked);
+        // appData.undoRedoManager.addChange(change);
+        // change = undefined;
+        query.setEnabled(input.checked);
+      });
+    }
     ///////////////////////////////////
     // QueryType
     {
@@ -141,6 +171,35 @@ const addQueryWidget = (querySet, query, parentDomElem, appData) => {
     }
 
     ///////////////////////////////////
+    // Negate
+    {
+      const input = document.createElement('input');
+      input.setAttribute('id', "Negate");
+      input.setAttribute('type', 'checkbox');
+      input.setAttribute('tabindex', 0);
+      input.checked = query.getNegate();
+
+      const li = document.createElement('li');
+      li.textContent = "Negate: ";
+      li.appendChild(input);
+      ul.appendChild(li);
+
+      /////////////////////////////
+      // SceneWidget Changes.
+
+      let change;
+      query.valueChanged.connect(() => {
+        if (!change)
+          input.checked = query.getNegate();
+      });
+      input.addEventListener('input', () => {
+        // change = new ParameterValueChange(query, input.checked);
+        // appData.undoRedoManager.addChange(change);
+        // change = undefined;
+        query.setNegate(input.checked);
+      });
+    }
+    ///////////////////////////////////
     // Input
     {
       const input = document.createElement('input');
@@ -159,7 +218,6 @@ const addQueryWidget = (querySet, query, parentDomElem, appData) => {
       const li = document.createElement('li');
       li.appendChild(input);
       ul.appendChild(li);
-      
       query.valueChanged.connect(() => {
         input.value = query.getValue();
       });
@@ -182,12 +240,21 @@ const addQueryWidget = (querySet, query, parentDomElem, appData) => {
       // input.setAttribute('tabindex', tabindex);
       input.style.width = '100%';
 
+      // TODO: Please put these into a CSS file.
+      input.style['background-color'] = '#EFEFEF';
+      input.style['border-color'] = 'darkgrey';
+      input.style['border-style'] = 'solid';
+      input.style['border-width'] = 'thin';
+      input.style['padding'] = '2px';
+      input.disabled = query.getQueryType() != Visualive.QueryParameter.QUERY_TYPES.PROPERTY;
+
       const li = document.createElement('li');
       li.appendChild(input);
       ul.appendChild(li);
 
       query.valueChanged.connect(() => {
         input.value = query.getPropertyName();
+        input.disabled = query.getQueryType() != Visualive.QueryParameter.QUERY_TYPES.PROPERTY;
       });
 
       input.addEventListener('change', () => {
