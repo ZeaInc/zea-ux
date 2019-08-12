@@ -336,7 +336,7 @@ class ViewTool extends BaseTool {
 
     this.dragging = true;
     this.__mouseDownPos = event.mousePos;
-    this.onDragStart(event)
+    this.onDragStart(event);
     return true;
   }
 

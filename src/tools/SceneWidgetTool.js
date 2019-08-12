@@ -74,6 +74,11 @@ class SceneWidgetTool extends BaseTool {
       return true;
     }
     else {
+      // If the buttons are pressed, we know we are not searching
+      // for a handle to drag. (Probably anothet tool in the stack is doing something)
+      if(event.button ==0 && event.buttons == 1)
+        return false;
+
       const intersectionData = event.viewport.getGeomDataAtPos(event.mousePos);
       if (intersectionData != undefined && intersectionData.geomItem.getOwner() instanceof SceneWidget) {
         const handle = intersectionData.geomItem.getOwner();
