@@ -1,20 +1,17 @@
 import UndoRedoManager from '../../undoredo/UndoRedoManager.js';
-import {
-  CreateGeomChange,
-  CreateGeomTool
-} from './CreateGeomTool.js';
+import { CreateGeomChange, CreateGeomTool } from './CreateGeomTool.js';
 
 class CreateLineChange extends CreateGeomChange {
   constructor(parentItem, xfo, color, thickness) {
-    super("Create Line");
+    super('Create Line');
 
     this.line = new Visualive.Lines(0.0);
-    this.line.setNumVertices(2)
+    this.line.setNumVertices(2);
     this.line.setNumSegments(1);
     this.line.setSegment(0, 0, 1);
     const material = new Visualive.Material('Line', 'LinesShader');
-    material.getParameter('Color').setValue(new Visualive.Color(.7, .2, .2));
-    this.geomItem = new Visualive.GeomItem("Line");
+    material.getParameter('Color').setValue(new Visualive.Color(0.7, 0.2, 0.2));
+    this.geomItem = new Visualive.GeomItem('Line');
     this.geomItem.setGeometry(this.line);
     this.geomItem.setMaterial(material);
 
@@ -27,14 +24,14 @@ class CreateLineChange extends CreateGeomChange {
       // this.line.addVertexAttribute('lineThickness', Visualive.Float32, 0.0);
     }
 
-    if(parentItem && xfo) {
+    if (parentItem && xfo) {
       this.setParentAndXfo(parentItem, xfo);
     }
   }
 
   update(updateData) {
-    if(updateData.p1) {
-      this.line.getVertex(1).setFromOther(updateData.p1)
+    if (updateData.p1) {
+      this.line.getVertex(1).setFromOther(updateData.p1);
       this.line.geomDataChanged.emit();
     }
     this.updated.emit(updateData);
@@ -53,15 +50,16 @@ class CreateLineChange extends CreateGeomChange {
       // this.line.addVertexAttribute('lineThickness', Visualive.Float32, 0.0);
     }
   }
-
 }
-UndoRedoManager.registerChange('CreateLineChange', CreateLineChange)
+UndoRedoManager.registerChange('CreateLineChange', CreateLineChange);
 
 export default class CreateLineTool extends CreateGeomTool {
   constructor(appData) {
     super(appData);
 
-    this.tp = this.addParameter(new Visualive.NumberParameter('Line Thickness', 0.06, [0, 0.1])); // 1cm.
+    this.tp = this.addParameter(
+      new Visualive.NumberParameter('Line Thickness', 0.06, [0, 0.1])
+    ); // 1cm.
   }
 
   // activateTool() {
@@ -107,14 +105,14 @@ export default class CreateLineTool extends CreateGeomTool {
   createStart(xfo, parentItem) {
     this.change = new CreateLineChange(parentItem, xfo);
     this.appData.undoRedoManager.addChange(this.change);
-    
+
     this.xfo = xfo.inverse();
     this.stage = 1;
     this.length = 0.0;
   }
 
   createMove(pt) {
-    const offet = this.xfo.transformVec3(pt)
+    const offet = this.xfo.transformVec3(pt);
     this.length = offet.length();
     this.change.update({ p1: offet });
   }
@@ -127,6 +125,4 @@ export default class CreateLineTool extends CreateGeomTool {
     this.actionFinished.emit();
   }
 }
-export {
-  CreateLineTool
-}
+export { CreateLineTool };

@@ -1,5 +1,3 @@
-
-
 class UserChip {
   constructor(domElement, userData) {
     this.userPressed = new Visualive.Signal();
@@ -66,8 +64,7 @@ class UserChip {
 
   setUserData(userData) {
     this.userData = userData;
-    if(this.userNameSpan)
-      this.userNameSpan.innerHTML = userData.name;
+    if (this.userNameSpan) this.userNameSpan.innerHTML = userData.name;
     this.userToolTip.innerHTML = userData.name;
 
     // if (userData.metadata && userData.metadata.avatarColor)
@@ -85,7 +82,4 @@ class UserChip {
   }
 }
 
-
-export {
-  UserChip
-}
+export { UserChip };

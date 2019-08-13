@@ -117,7 +117,4 @@ export default class Vec4Widget extends BaseWidget {
   }
 }
 
-uxFactory.registerWidget(
-  Vec4Widget,
-  p => p instanceof Visualive.Vec4Parameter
-);
+uxFactory.registerWidget(Vec4Widget, p => p instanceof Visualive.Vec4Parameter);

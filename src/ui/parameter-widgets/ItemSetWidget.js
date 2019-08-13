@@ -3,7 +3,6 @@ import BaseWidget from './BaseWidget.js';
 import uxFactory from '../UxFactory.js';
 import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 
-
 // class ItemSetSelectionChange extends Change {
 //   constructor(param, newValue) {
 //     if(param) {
@@ -26,7 +25,6 @@ import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 //   getNextValue() {
 //     return this.__nextValue;
 //   }
-
 
 //   undo() {
 //     if(!this.__param)
@@ -92,22 +90,21 @@ import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 //   }
 // }
 
-
 export default class ItemSetWidget extends BaseWidget {
   constructor(parameter, parentDomElem, appData) {
     super(parameter);
     const select = document.createElement('select');
 
-    const rebuild = ()=>{
+    const rebuild = () => {
       const items = Array.from(parameter.getValue());
-      select.setAttribute('size', items.length+1);
-      for (let i=0; i < items.length; i++) {
+      select.setAttribute('size', items.length + 1);
+      for (let i = 0; i < items.length; i++) {
         const item = items[i];
         const option = document.createElement('option');
         option.appendChild(document.createTextNode(item.getName()));
         select.appendChild(option);
       }
-    }
+    };
     parameter.valueChanged.connect(() => {
       while (select.firstChild) {
         select.removeChild(select.firstChild);
@@ -117,13 +114,13 @@ export default class ItemSetWidget extends BaseWidget {
     rebuild();
 
     select.selectedIndex = -1;
-    select.style.width='100%';
+    select.style.width = '100%';
 
     const ul = document.createElement('ul');
-    ul.style.width='100%';
-    ul.style['padding-inline-start']='0px';
+    ul.style.width = '100%';
+    ul.style['padding-inline-start'] = '0px';
     const li = document.createElement('li');
-    li.style.display='block';
+    li.style.display = 'block';
     ul.appendChild(li);
     li.appendChild(select);
 
@@ -136,34 +133,33 @@ export default class ItemSetWidget extends BaseWidget {
 
     let prevSelection = -1;
 
-    select.addEventListener('change', (event) => {
-      console.log("valueChange", select.selectedIndex)
-      this.selectionChanged.emit(select.selectedIndex, prevSelection)
+    select.addEventListener('change', event => {
+      console.log('valueChange', select.selectedIndex);
+      this.selectionChanged.emit(select.selectedIndex, prevSelection);
       prevSelection = select.selectedIndex;
-    }); 
-    select.addEventListener('dblclick', (event) => {
-      console.log("dblclick", select.selectedIndex)
+    });
+    select.addEventListener('dblclick', event => {
+      console.log('dblclick', select.selectedIndex);
       const item = parameter.getItem(select.selectedIndex);
       appData.selectionManager.setSelection(new Set([item]));
-      this.selectionDoubleClicked.emit(select.selectedIndex)
-    }); 
-
+      this.selectionDoubleClicked.emit(select.selectedIndex);
+    });
 
     /////////////////////////////////
     // Add/Remove buttons.
-    if(parameter.getFilterFn() != undefined) {
+    if (parameter.getFilterFn() != undefined) {
       const addButton = document.createElement('button');
-      addButton.appendChild(document.createTextNode("Add"));
-      addButton.addEventListener('click', (e) =>{
-        console.log("Start picking mode.")
+      addButton.appendChild(document.createTextNode('Add'));
+      addButton.addEventListener('click', e => {
+        console.log('Start picking mode.');
       });
       const removeButton = document.createElement('button');
-      removeButton.appendChild(document.createTextNode("Remove"));
-      removeButton.addEventListener('click', (e) =>{
-        console.log("Start picking mode.")
+      removeButton.appendChild(document.createTextNode('Remove'));
+      removeButton.addEventListener('click', e => {
+        console.log('Start picking mode.');
       });
       const li = document.createElement('li');
-      li.style.display='block';
+      li.style.display = 'block';
       addButton.style.margin = '2px';
       removeButton.style.margin = '2px';
       li.appendChild(addButton);

@@ -37,36 +37,35 @@ export default class XfoWidget extends BaseWidget {
         sc_yField.value = xfo.sc.y;
         sc_zField.value = xfo.sc.z;
       }
-    }
+    };
 
     parameter.valueChanged.connect(updateDisplayedValue);
 
     const valueChange = () => {
-      console.log("valueChange")
+      console.log('valueChange');
       const xfo = new Visualive.Xfo();
       xfo.tr.set(
         tr_xField.valueAsNumber,
         tr_yField.valueAsNumber,
         tr_zField.valueAsNumber
-      )
+      );
       xfo.ori.set(
         ori_xField.valueAsNumber,
         ori_yField.valueAsNumber,
         ori_zField.valueAsNumber,
-        ori_wField.valueAsNumber 
-      )/*value order is xyzw*/
-      xfo.ori.normalizeInPlace()
+        ori_wField.valueAsNumber
+      ); /*value order is xyzw*/
+      xfo.ori.normalizeInPlace();
       xfo.sc.set(
         sc_xField.valueAsNumber,
         sc_yField.valueAsNumber,
         sc_zField.valueAsNumber
-      )
+      );
       if (!change) {
         change = new ParameterValueChange(parameter, xfo);
         appData.undoRedoManager.addChange(change);
-      }
-      else {
-        change.update({ value:xfo });
+      } else {
+        change.update({ value: xfo });
       }
       updateDisplayedValue();
     };
@@ -101,23 +100,20 @@ export default class XfoWidget extends BaseWidget {
 
       return input;
     }
-    const tr_xField = addNumberField("tr.x", ul, xfo.tr.x, 0)
-    const tr_yField = addNumberField("tr.y", ul, xfo.tr.y, 1)
-    const tr_zField = addNumberField("tr.z", ul, xfo.tr.z, 2)
+    const tr_xField = addNumberField('tr.x', ul, xfo.tr.x, 0);
+    const tr_yField = addNumberField('tr.y', ul, xfo.tr.y, 1);
+    const tr_zField = addNumberField('tr.z', ul, xfo.tr.z, 2);
 
-    const ori_xField = addNumberField("ori.x", ul, xfo.ori.x, 3)
-    const ori_yField = addNumberField("ori.y", ul, xfo.ori.y, 4)
-    const ori_zField = addNumberField("ori.z", ul, xfo.ori.z, 5)
-    const ori_wField = addNumberField("ori.w", ul, xfo.ori.w, 6)
+    const ori_xField = addNumberField('ori.x', ul, xfo.ori.x, 3);
+    const ori_yField = addNumberField('ori.y', ul, xfo.ori.y, 4);
+    const ori_zField = addNumberField('ori.z', ul, xfo.ori.z, 5);
+    const ori_wField = addNumberField('ori.w', ul, xfo.ori.w, 6);
 
-    const sc_xField = addNumberField("sc.x", ul, xfo.sc.x, 7)
-    const sc_yField = addNumberField("sc.y", ul, xfo.sc.y, 8)
-    const sc_zField = addNumberField("sc.z", ul, xfo.sc.z, 9)
+    const sc_xField = addNumberField('sc.x', ul, xfo.sc.x, 7);
+    const sc_yField = addNumberField('sc.y', ul, xfo.sc.y, 8);
+    const sc_zField = addNumberField('sc.z', ul, xfo.sc.z, 9);
     parentDomElem.appendChild(container);
   }
 }
 
-uxFactory.registerWidget(
-  XfoWidget,
-  p => p instanceof Visualive.XfoParameter
-);
+uxFactory.registerWidget(XfoWidget, p => p instanceof Visualive.XfoParameter);

@@ -7,15 +7,19 @@ class PlanarMovementSceneWidget extends SceneWidget {
 
     this.__color = color;
     this.__hilightedColor = new Visualive.Color(1, 1, 1);
-    this.sizeParam = this.addParameter(new Visualive.NumberParameter('size', size));
-    this.colorParam = this.addParameter(new Visualive.ColorParameter('BaseColor', color));
+    this.sizeParam = this.addParameter(
+      new Visualive.NumberParameter('size', size)
+    );
+    this.colorParam = this.addParameter(
+      new Visualive.ColorParameter('BaseColor', color)
+    );
 
     const handleMat = new Visualive.Material('handle', 'HandleShader');
     handleMat.replaceParameter(this.colorParam);
 
     const handleGeom = new Visualive.Cuboid(size, size, size * 0.02);
 
-    const handleGeomXfo = new Visualive.Xfo()
+    const handleGeomXfo = new Visualive.Xfo();
     handleGeomXfo.tr = offset;
     handleGeom.transformVertices(handleGeomXfo);
     this.handle = new Visualive.GeomItem('handle', handleGeom, handleMat);
@@ -24,27 +28,27 @@ class PlanarMovementSceneWidget extends SceneWidget {
       size = this.sizeParam.getValue();
       handleGeom.getParameter('size').setValue(size);
       handleGeom.getParameter('height').setValue(size * 0.02);
-    })
+    });
 
     this.addChild(this.handle);
   }
 
   highlight() {
-    this.colorParam.setValue(this.__hilightedColor)
+    this.colorParam.setValue(this.__hilightedColor);
   }
 
   unhighlight() {
-    this.colorParam.setValue(this.__color)
+    this.colorParam.setValue(this.__color);
   }
 
   setTargetParam(param, track = true) {
     this.__param = param;
     if (track) {
       const __updateGizmo = () => {
-        this.setGlobalXfo(param.getValue())
-      }
+        this.setGlobalXfo(param.getValue());
+      };
       __updateGizmo();
-      param.valueChanged.connect(__updateGizmo)
+      param.valueChanged.connect(__updateGizmo);
     }
   }
 
@@ -58,7 +62,7 @@ class PlanarMovementSceneWidget extends SceneWidget {
 
     this.manipulateBegin.emit({
       grabPos: event.grabPos,
-      manipRay: this.manipRay
+      manipRay: this.manipRay,
     });
   }
 
@@ -69,14 +73,14 @@ class PlanarMovementSceneWidget extends SceneWidget {
     newXfo.tr.addInPlace(dragVec);
 
     this.change.update({
-      value: newXfo
+      value: newXfo,
     });
 
     this.manipulate.emit({
       holdPos: event.holdPos,
       manipRay: this.gizmoRay,
       deltaXfo: this.deltaXfo,
-      newXfo: newXfo
+      newXfo: newXfo,
     });
   }
 
@@ -85,11 +89,8 @@ class PlanarMovementSceneWidget extends SceneWidget {
 
     this.manipulateEnd.emit({
       releasePos: event.releasePos,
-      manipRay: this.manipRay
+      manipRay: this.manipRay,
     });
   }
-
 }
-export {
-  PlanarMovementSceneWidget
-}
+export { PlanarMovementSceneWidget };

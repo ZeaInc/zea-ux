@@ -18,17 +18,17 @@ class ToolManager {
 
   insertToolBefore(tool, beforeTool) {
     // Note: when activating new tools in VR, we
-    // can insert the new tool below the VRUI tool, 
+    // can insert the new tool below the VRUI tool,
     // so that once the VR UI is closed, it becomes
     // the new active tool.
-    const index = this.__toolStack.indexOf(beforeTool)+1;
-    this.__toolStack.splice(index-1, 0, tool);
+    const index = this.__toolStack.indexOf(beforeTool) + 1;
+    this.__toolStack.splice(index - 1, 0, tool);
     tool.install(index);
     return index;
   }
 
   insertToolAfter(tool, afterTool) {
-    const index = this.__toolStack.indexOf(afterTool)+1;
+    const index = this.__toolStack.indexOf(afterTool) + 1;
     this.__toolStack.splice(index, 0, tool);
     tool.install(index);
     if (index == this.__toolStack.length) {
@@ -42,19 +42,18 @@ class ToolManager {
   }
 
   removeTool(index) {
-    const tool = this.__toolStack[index]
+    const tool = this.__toolStack[index];
     this.__toolStack.splice(index, 1);
     tool.uninstall();
     if (index == this.__toolStack.length) {
       tool.deactivateTool();
 
       const nextTool = this.currTool();
-      if (nextTool)
-        nextTool.activateTool();
+      if (nextTool) nextTool.activateTool();
       else {
-        // Make sure to reset the pointer in case any tool 
+        // Make sure to reset the pointer in case any tool
         // didn't close correctly.
-        this.appData.renderer.getDiv().style.cursor = "pointer";
+        this.appData.renderer.getDiv().style.cursor = 'pointer';
       }
     }
   }
@@ -67,11 +66,14 @@ class ToolManager {
     const prevTool = this.currTool();
     if (prevTool) {
       if (tool == prevTool) {
-        console.warn("Tool Already Pushed on the stack:", tool.constructor.name);
+        console.warn(
+          'Tool Already Pushed on the stack:',
+          tool.constructor.name
+        );
         return;
       } else {
-        // Note: only the lead tool is 'active' and displaying an icon. 
-        // A tool can recieve events even if not active, if it is on 
+        // Note: only the lead tool is 'active' and displaying an icon.
+        // A tool can recieve events even if not active, if it is on
         // the stack.
         prevTool.deactivateTool();
       }
@@ -81,7 +83,7 @@ class ToolManager {
     tool.install(this.__toolStack.length - 1);
     tool.activateTool();
 
-    console.log("ToolManager.pushTool:", tool.constructor.name);
+    console.log('ToolManager.pushTool:', tool.constructor.name);
 
     return this.__toolStack.length - 1;
   }
@@ -96,8 +98,7 @@ class ToolManager {
   popTool() {
     this.__removeCurrTool();
     const tool = this.currTool();
-    if (tool)
-      tool.activateTool();
+    if (tool) tool.activateTool();
     // console.log("ToolManager.popTool:", prevTool.constructor.name, (tool ? tool.constructor.name : ''))
   }
 
@@ -116,39 +117,59 @@ class ToolManager {
     return this.__toolStack[this.__toolStack.length - 1].getName();
   }
 
-
   bind(renderer) {
-
     const viewport = renderer.getViewport();
 
-    this.mouseDownId = viewport.mouseDown.connect(this.onMouseDown.bind(this))
-    this.mouseMovedId = viewport.mouseMoved.connect(this.onMouseMove.bind(this))
-    this.mouseUpId = viewport.mouseUp.connect(this.onMouseUp.bind(this))
-    this.mouseLeaveId = viewport.mouseLeave.connect(this.onMouseLeave.bind(this))
-    this.mouseDoubleClickedId = viewport.mouseDoubleClicked.connect(this.onDoubleClick.bind(this))
-    this.mouseWheelId = viewport.mouseWheel.connect(this.onWheel.bind(this))
+    this.mouseDownId = viewport.mouseDown.connect(this.onMouseDown.bind(this));
+    this.mouseMovedId = viewport.mouseMoved.connect(
+      this.onMouseMove.bind(this)
+    );
+    this.mouseUpId = viewport.mouseUp.connect(this.onMouseUp.bind(this));
+    this.mouseLeaveId = viewport.mouseLeave.connect(
+      this.onMouseLeave.bind(this)
+    );
+    this.mouseDoubleClickedId = viewport.mouseDoubleClicked.connect(
+      this.onDoubleClick.bind(this)
+    );
+    this.mouseWheelId = viewport.mouseWheel.connect(this.onWheel.bind(this));
 
     /////////////////////////////////////
     // Keyboard events
-    this.keyDownId = viewport.keyDown.connect(this.onKeyDown.bind(this))
-    this.keyUpId = viewport.keyUp.connect(this.onKeyUp.bind(this))
-    this.keyPressedId = viewport.keyPressed.connect(this.onKeyPressed.bind(this))
+    this.keyDownId = viewport.keyDown.connect(this.onKeyDown.bind(this));
+    this.keyUpId = viewport.keyUp.connect(this.onKeyUp.bind(this));
+    this.keyPressedId = viewport.keyPressed.connect(
+      this.onKeyPressed.bind(this)
+    );
 
     /////////////////////////////////////
     // Touch events
-    this.touchStartId = viewport.touchStart.connect(this.onTouchStart.bind(this))
-    this.touchMoveId = viewport.touchMove.connect(this.onTouchMove.bind(this))
-    this.touchEndId = viewport.touchEnd.connect(this.onTouchEnd.bind(this))
-    this.touchCancelId = viewport.touchCancel.connect(this.onTouchCancel.bind(this))
-    this.doubleTappedId = viewport.doubleTapped.connect(this.onDoubleTap.bind(this))
+    this.touchStartId = viewport.touchStart.connect(
+      this.onTouchStart.bind(this)
+    );
+    this.touchMoveId = viewport.touchMove.connect(this.onTouchMove.bind(this));
+    this.touchEndId = viewport.touchEnd.connect(this.onTouchEnd.bind(this));
+    this.touchCancelId = viewport.touchCancel.connect(
+      this.onTouchCancel.bind(this)
+    );
+    this.doubleTappedId = viewport.doubleTapped.connect(
+      this.onDoubleTap.bind(this)
+    );
 
     this.appData.renderer.getXRViewport().then(xrvp => {
       /////////////////////////////////////
       // VRController events
-      this.controllerDownId = xrvp.controllerButtonDown.connect(this.onVRControllerButtonDown.bind(this));
-      this.controllerUpId = xrvp.controllerButtonUp.connect(this.onVRControllerButtonUp.bind(this));
-      this.controllerDoubleClickId = xrvp.controllerDoubleClicked.connect(this.onVRControllerDoubleClicked.bind(this));
-      this.onVRPoseChangedId = xrvp.viewChanged.connect(this.onVRPoseChanged.bind(this));
+      this.controllerDownId = xrvp.controllerButtonDown.connect(
+        this.onVRControllerButtonDown.bind(this)
+      );
+      this.controllerUpId = xrvp.controllerButtonUp.connect(
+        this.onVRControllerButtonUp.bind(this)
+      );
+      this.controllerDoubleClickId = xrvp.controllerDoubleClicked.connect(
+        this.onVRControllerDoubleClicked.bind(this)
+      );
+      this.onVRPoseChangedId = xrvp.viewChanged.connect(
+        this.onVRPoseChanged.bind(this)
+      );
     });
   }
 
@@ -158,8 +179,7 @@ class ToolManager {
     let i = this.__toolStack.length;
     while (i--) {
       const tool = this.__toolStack[i];
-      if (tool && tool.onMouseDown(event) == true)
-        break;
+      if (tool && tool.onMouseDown(event) == true) break;
     }
 
     if (event.showPointerOnAvatar == true) {
@@ -183,8 +203,7 @@ class ToolManager {
     let i = this.__toolStack.length;
     while (i--) {
       const tool = this.__toolStack[i];
-      if (tool && tool.onMouseMove(event) == true)
-        break;
+      if (tool && tool.onMouseMove(event) == true) break;
     }
     if (event.showPointerOnAvatar == true) {
       this.movePointer.emit(event);
@@ -201,8 +220,7 @@ class ToolManager {
     let i = this.__toolStack.length;
     while (i--) {
       const tool = this.__toolStack[i];
-      if (tool && tool.onMouseUp(event) == true)
-        break;
+      if (tool && tool.onMouseUp(event) == true) break;
     }
     if (event.showPointerOnAvatar == true) {
       if (this.avatarPointerHighlighted) {
@@ -219,8 +237,7 @@ class ToolManager {
     let i = this.__toolStack.length;
     while (i--) {
       const tool = this.__toolStack[i];
-      if (tool && tool.onMouseLeave && tool.onMouseLeave(event) == true)
-        break;
+      if (tool && tool.onMouseLeave && tool.onMouseLeave(event) == true) break;
     }
     if (this.avatarPointerVisible) {
       this.avatarPointerVisible = false;
@@ -232,8 +249,7 @@ class ToolManager {
     let i = this.__toolStack.length;
     while (i--) {
       const tool = this.__toolStack[i];
-      if (tool && tool.onDoubleClick(event) == true)
-        break;
+      if (tool && tool.onDoubleClick(event) == true) break;
     }
   }
 
@@ -242,8 +258,7 @@ class ToolManager {
     let i = this.__toolStack.length;
     while (i--) {
       const tool = this.__toolStack[i];
-      if (tool && tool.onWheel(event) == true)
-        break;
+      if (tool && tool.onWheel(event) == true) break;
     }
   }
 
@@ -254,8 +269,7 @@ class ToolManager {
     let i = this.__toolStack.length;
     while (i--) {
       const tool = this.__toolStack[i];
-      if (tool && tool.onKeyPressed(event, event, viewport) == true)
-        break;
+      if (tool && tool.onKeyPressed(event, event, viewport) == true) break;
     }
   }
 
@@ -264,8 +278,7 @@ class ToolManager {
     let i = this.__toolStack.length;
     while (i--) {
       const tool = this.__toolStack[i];
-      if (tool && tool.onKeyDown(key, event) == true)
-        break;
+      if (tool && tool.onKeyDown(key, event) == true) break;
     }
   }
 
@@ -274,8 +287,7 @@ class ToolManager {
     let i = this.__toolStack.length;
     while (i--) {
       const tool = this.__toolStack[i];
-      if (tool && tool.onKeyUp(key, event) == true)
-        break;
+      if (tool && tool.onKeyUp(key, event) == true) break;
     }
   }
 
@@ -286,8 +298,7 @@ class ToolManager {
     let i = this.__toolStack.length;
     while (i--) {
       const tool = this.__toolStack[i];
-      if (tool && tool.onTouchStart(event) == true)
-        break;
+      if (tool && tool.onTouchStart(event) == true) break;
     }
   }
 
@@ -296,8 +307,7 @@ class ToolManager {
     let i = this.__toolStack.length;
     while (i--) {
       const tool = this.__toolStack[i];
-      if (tool && tool.onTouchMove(event) == true)
-        break;
+      if (tool && tool.onTouchMove(event) == true) break;
     }
   }
 
@@ -306,8 +316,7 @@ class ToolManager {
     let i = this.__toolStack.length;
     while (i--) {
       const tool = this.__toolStack[i];
-      if (tool && tool.onTouchEnd(event) == true)
-        break;
+      if (tool && tool.onTouchEnd(event) == true) break;
     }
   }
 
@@ -316,8 +325,7 @@ class ToolManager {
     let i = this.__toolStack.length;
     while (i--) {
       const tool = this.__toolStack[i];
-      if (tool && tool.onTouchCancel(event) == true)
-        break;
+      if (tool && tool.onTouchCancel(event) == true) break;
     }
   }
 
@@ -326,8 +334,7 @@ class ToolManager {
     let i = this.__toolStack.length;
     while (i--) {
       const tool = this.__toolStack[i];
-      if (tool && tool.onDoubleTap(event) == true)
-        break;
+      if (tool && tool.onDoubleTap(event) == true) break;
     }
   }
 
@@ -338,8 +345,7 @@ class ToolManager {
     let i = this.__toolStack.length;
     while (i--) {
       const tool = this.__toolStack[i];
-      if (tool && tool.onVRControllerButtonDown(event) == true)
-        break;
+      if (tool && tool.onVRControllerButtonDown(event) == true) break;
     }
   }
 
@@ -348,8 +354,7 @@ class ToolManager {
     let i = this.__toolStack.length;
     while (i--) {
       const tool = this.__toolStack[i];
-      if (tool && tool.onVRControllerButtonUp(event) == true)
-        break;
+      if (tool && tool.onVRControllerButtonUp(event) == true) break;
     }
   }
 
@@ -358,8 +363,7 @@ class ToolManager {
     let i = this.__toolStack.length;
     while (i--) {
       const tool = this.__toolStack[i];
-      if (tool && tool.onVRControllerDoubleClicked(event) == true)
-        break;
+      if (tool && tool.onVRControllerDoubleClicked(event) == true) break;
     }
   }
 
@@ -368,46 +372,40 @@ class ToolManager {
     let i = this.__toolStack.length;
     while (i--) {
       const tool = this.__toolStack[i];
-      if (tool && tool.onVRPoseChanged(event) == true)
-        break;
+      if (tool && tool.onVRPoseChanged(event) == true) break;
     }
   }
-
 
   destroy() {
     const viewport = this.appData.renderer.getViewport();
 
-    viewport.mouseDown.disconnectId(this.mouseDownId)
-    viewport.mouseMoved.disconnectId(this.mouseMovedId)
-    viewport.mouseUp.disconnectId(this.mouseUpId)
-    viewport.mouseLeave.disconnectId(this.mouseUpId)
-    viewport.mouseWheel.disconnectId(this.mouseWheelId)
+    viewport.mouseDown.disconnectId(this.mouseDownId);
+    viewport.mouseMoved.disconnectId(this.mouseMovedId);
+    viewport.mouseUp.disconnectId(this.mouseUpId);
+    viewport.mouseLeave.disconnectId(this.mouseUpId);
+    viewport.mouseWheel.disconnectId(this.mouseWheelId);
 
     /////////////////////////////////////
     // Keyboard events
-    viewport.keyDown.disconnectId(this.keyDownId)
-    viewport.keyUp.disconnectId(this.keyUpId)
-    viewport.keyPressed.disconnectId(this.keyPressedId)
+    viewport.keyDown.disconnectId(this.keyDownId);
+    viewport.keyUp.disconnectId(this.keyUpId);
+    viewport.keyPressed.disconnectId(this.keyPressedId);
 
     /////////////////////////////////////
     // Touch events
-    viewport.touchStart.disconnectId(this.touchStartId)
-    viewport.touchMove.disconnectId(this.touchMoveId)
-    viewport.touchEnd.disconnectId(this.touchEndId)
-    viewport.touchCancel.disconnectId(this.touchCancelId)
+    viewport.touchStart.disconnectId(this.touchStartId);
+    viewport.touchMove.disconnectId(this.touchMoveId);
+    viewport.touchEnd.disconnectId(this.touchEndId);
+    viewport.touchCancel.disconnectId(this.touchCancelId);
 
     this.appData.renderer.getXRViewport().then(xrvp => {
       /////////////////////////////////////
       // VRController events
-      viewport.controllerDown.disconnectId(this.controllerDownId)
-      viewport.controllerUp.disconnectId(this.controllerUpId)
-      viewport.viewChanged.disconnectId(this.onVRPoseChangedId)
+      viewport.controllerDown.disconnectId(this.controllerDownId);
+      viewport.controllerUp.disconnectId(this.controllerUpId);
+      viewport.viewChanged.disconnectId(this.onVRPoseChangedId);
     });
-
   }
 }
 
-
-export {
-  ToolManager
-}
+export { ToolManager };

@@ -10,7 +10,7 @@ export default class MultiChoiceWidget extends BaseWidget {
     const range = parameter.getRange();
     const choices = parameter.getChoices();
     const select = document.createElement('select');
-    for (let i=0; i < choices.length; i++) {
+    for (let i = 0; i < choices.length; i++) {
       const choice = choices[i];
       const option = document.createElement('option');
       option.appendChild(document.createTextNode(choice));
@@ -26,19 +26,18 @@ export default class MultiChoiceWidget extends BaseWidget {
     let changing = false;
 
     parameter.valueChanged.connect(() => {
-      if (!changing){
-        select.selectedIndex = parameter.getValue()
-      } 
+      if (!changing) {
+        select.selectedIndex = parameter.getValue();
+      }
     });
 
-    const valueChange = (event) => {
+    const valueChange = event => {
       changing = true;
       const change = new ParameterValueChange(parameter, select.selectedIndex);
       appData.undoRedoManager.addChange(change);
       changing = false;
     };
     select.addEventListener('change', valueChange);
-
   }
 }
 

@@ -27,17 +27,13 @@ class FileWidget extends BaseWidget {
       if (!change) {
         change = new ParameterValueChange(parameter, input.valueAsNumber);
         appData.undoRedoManager.addChange(change);
-      }
-      else
-        change.update({ value: input.valueAsNumber });
+      } else change.update({ value: input.valueAsNumber });
     });
     input.addEventListener('change', () => {
       if (!change) {
         change = new ParameterValueChange(parameter);
         appData.undoRedoManager.addChange(change);
-      }
-      else
-        change.update({ value: input.valueAsNumber });
+      } else change.update({ value: input.valueAsNumber });
       change = undefined;
     });
   }

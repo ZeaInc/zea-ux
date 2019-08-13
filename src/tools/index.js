@@ -1,5 +1,3 @@
-
-
 export * from './ToolManager.js';
 export * from './ViewTool.js';
 export * from './SelectionTool.js';

@@ -18,10 +18,10 @@ class ParameterContainer {
       this.setParameterOwner(parameterOwner);
     }
   }
-  
-  clean(){
+
+  clean() {
     while (this.domElement.firstChild) {
-        this.domElement.removeChild(this.domElement.firstChild);
+      this.domElement.removeChild(this.domElement.firstChild);
     }
   }
 
@@ -48,7 +48,9 @@ class ParameterContainer {
     const parameterName = parameter.getName();
     const reg = uxFactory.findWidgetReg(parameter);
     if (!reg) {
-      console.warn(`Unable to display parameter '${parameterName}', value:${parameter.getValue()}`);
+      console.warn(
+        `Unable to display parameter '${parameterName}', value:${parameter.getValue()}`
+      );
       const reg = uxFactory.findWidgetReg(parameter);
       return;
     }
@@ -67,6 +69,4 @@ class ParameterContainer {
 }
 
 export default ParameterContainer;
-export {
-  ParameterContainer
-};
+export { ParameterContainer };

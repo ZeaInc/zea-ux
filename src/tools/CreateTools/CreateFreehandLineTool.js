@@ -1,12 +1,10 @@
 import UndoRedoManager from '../../undoredo/UndoRedoManager.js';
-import {
-  CreateGeomChange
-} from './CreateGeomTool.js';
+import { CreateGeomChange } from './CreateGeomTool.js';
 import CreateLineTool from './CreateLineTool.js';
 
 class CreateFreehandLineChange extends CreateGeomChange {
   constructor(parentItem, xfo, color, thickness) {
-    super("Create Freehand Line");
+    super('Create Freehand Line');
 
     this.used = 0;
     this.vertexCount = 100;
@@ -21,7 +19,7 @@ class CreateFreehandLineChange extends CreateGeomChange {
     // const material = new Visualive.Material('freeHandLine', 'LinesShader');
     const material = new Visualive.Material('freeHandLine', 'FatLinesShader');
 
-    this.geomItem = new Visualive.GeomItem("freeHandLine");
+    this.geomItem = new Visualive.GeomItem('freeHandLine');
     this.geomItem.setGeometry(this.line);
     this.geomItem.setMaterial(material);
 
@@ -58,11 +56,11 @@ class CreateFreehandLineChange extends CreateGeomChange {
 
     if (realloc) {
       this.line.geomDataTopologyChanged.emit({
-        'indicesChanged': true
+        indicesChanged: true,
       });
     } else {
       this.line.geomDataChanged.emit({
-        'indicesChanged': true
+        indicesChanged: true,
       });
     }
     this.updated.emit(updateData);
@@ -71,7 +69,10 @@ class CreateFreehandLineChange extends CreateGeomChange {
   toJSON(appData) {
     const j = super.toJSON();
     j.lineThickness = this.line.lineThickness;
-    j.color = this.geomItem.getMaterial().getParameter('Color').getValue();
+    j.color = this.geomItem
+      .getMaterial()
+      .getParameter('Color')
+      .getValue();
     return j;
   }
 
@@ -82,30 +83,44 @@ class CreateFreehandLineChange extends CreateGeomChange {
       // this.line.addVertexAttribute('lineThickness', Visualive.Float32, 0.0);
     }
 
-    const color = new Visualive.Color(.7, .2, .2)
+    const color = new Visualive.Color(0.7, 0.2, 0.2);
     if (j.color) {
       color.fromJSON(j.color);
     }
-    this.geomItem.getMaterial().getParameter('Color').setValue(color);
+    this.geomItem
+      .getMaterial()
+      .getParameter('Color')
+      .setValue(color);
 
     super.fromJSON(j, appData);
-
   }
 }
-UndoRedoManager.registerChange('CreateFreehandLineChange', CreateFreehandLineChange)
+UndoRedoManager.registerChange(
+  'CreateFreehandLineChange',
+  CreateFreehandLineChange
+);
 
 class CreateFreehandLineTool extends CreateLineTool {
   constructor(appData) {
     super(appData);
 
-    this.mp = this.addParameter(new Visualive.BooleanParameter('Modulate Thickness By Stroke Speed', false));
+    this.mp = this.addParameter(
+      new Visualive.BooleanParameter(
+        'Modulate Thickness By Stroke Speed',
+        false
+      )
+    );
   }
 
   createStart(xfo, parentItem) {
-
     const color = this.cp.getValue();
     const lineThickness = this.tp.getValue();
-    this.change = new CreateFreehandLineChange(parentItem, xfo, color, lineThickness);
+    this.change = new CreateFreehandLineChange(
+      parentItem,
+      xfo,
+      color,
+      lineThickness
+    );
     this.appData.undoRedoManager.addChange(this.change);
 
     this.xfo = xfo;
@@ -118,9 +133,9 @@ class CreateFreehandLineTool extends CreateLineTool {
   createMove(pt) {
     const p = this.invxfo.transformVec3(pt);
     const delta = p.subtract(this.prevP).length();
-    if(delta > 0.001) {
+    if (delta > 0.001) {
       this.change.update({
-        point: p
+        point: p,
       });
     }
 
@@ -136,6 +151,4 @@ class CreateFreehandLineTool extends CreateLineTool {
     this.actionFinished.emit();
   }
 }
-export {
-  CreateFreehandLineTool
-};
+export { CreateFreehandLineTool };

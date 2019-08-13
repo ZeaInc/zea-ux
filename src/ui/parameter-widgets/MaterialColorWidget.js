@@ -1,5 +1,3 @@
-
-
 import BaseWidget from './BaseWidget.js';
 import StringWidget from './StringWidget.js';
 import FileWiget from './FileWiget.js';
@@ -28,7 +26,7 @@ import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 export default class MaterialColorWidget extends BaseWidget {
   constructor(parameter, parentDomElem, appData) {
     super(parameter);
-    
+
     const colorPicker = new iro.ColorPicker(parentDomElem, {
       // Color picker options:
       // https://rakujira.jp/projects/iro/docs/guide.html#Color-Picker-Options
@@ -51,7 +49,7 @@ export default class MaterialColorWidget extends BaseWidget {
     parameter.valueChanged.connect(() => {
       if (!change) {
         undoing = true;
-        colorPicker.color.rgb = parameter.getValue().getAsRGBDict()
+        colorPicker.color.rgb = parameter.getValue().getAsRGBDict();
         undoing = false;
       }
     });
@@ -66,8 +64,7 @@ export default class MaterialColorWidget extends BaseWidget {
     });
 
     colorPicker.on('color:change', (color, changes) => {
-      if(undoing)
-        return;
+      if (undoing) return;
       const value = new Visualive.Color();
       value.setFromRGBDict(colorPicker.color.rgb);
       if (!change) {

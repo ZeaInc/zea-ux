@@ -1,5 +1,3 @@
-
-
 // import iro from '@jaames/iro';
 // import iro from '../../../node_modules/@jaames/iro/dist/iro.es.js';
 // import iro from 'https://rawgit.com/jaames/iro.js/master/dist/iro.es.js';
@@ -12,7 +10,7 @@ import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 export default class ColorWidget extends BaseWidget {
   constructor(parameter, parentDomElem, appData) {
     super(parameter);
-    
+
     const colorPicker = new iro.ColorPicker(parentDomElem, {
       // Color picker options:
       // https://rakujira.jp/projects/iro/docs/guide.html#Color-Picker-Options
@@ -33,25 +31,24 @@ export default class ColorWidget extends BaseWidget {
     parameter.valueChanged.connect(() => {
       if (!change) {
         undoing = true;
-        colorPicker.color.rgb = parameter.getValue().getAsRGBDict()
+        colorPicker.color.rgb = parameter.getValue().getAsRGBDict();
         undoing = false;
       }
     });
 
     colorPicker.on('input:start', () => {
-      console.log('input:start', parameter.getValue().getAsRGBDict())
+      console.log('input:start', parameter.getValue().getAsRGBDict());
       change = new ParameterValueChange(parameter);
       appData.undoRedoManager.addChange(change);
     });
 
     colorPicker.on('input:end', () => {
-      console.log('input:end')
+      console.log('input:end');
       change = undefined;
     });
 
     colorPicker.on('color:change', (color, changes) => {
-      if(undoing)
-        return;
+      if (undoing) return;
       // console.log('input:change', colorPicker.color.rgb, !change)
       const value = new Visualive.Color();
       value.setFromRGBDict(colorPicker.color.rgb);

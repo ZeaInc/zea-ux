@@ -13,27 +13,24 @@ class UndoRedoManager {
     this.changeUndone = new Visualive.Signal();
     this.changeRedone = new Visualive.Signal();
 
-    this.__currChangeUpdated = this.__currChangeUpdated.bind(this)
+    this.__currChangeUpdated = this.__currChangeUpdated.bind(this);
   }
 
-  flush(){
-    for(let change of this.__undoStack)
-      change.destroy()
+  flush() {
+    for (let change of this.__undoStack) change.destroy();
     this.__undoStack = [];
-    for(let change of this.__redoStack)
-      change.destroy()
+    for (let change of this.__redoStack) change.destroy();
     this.__redoStack = [];
   }
 
   addChange(change) {
-    if(this.getCurrentChange())
+    if (this.getCurrentChange())
       this.getCurrentChange().updated.disconnect(this.__currChangeUpdated);
 
     this.__undoStack.push(change);
     change.updated.connect(this.__currChangeUpdated);
 
-    for(let change of this.__redoStack)
-      change.destroy()
+    for (let change of this.__redoStack) change.destroy();
     this.__redoStack = [];
 
     this.changeAdded.emit(change);
@@ -47,11 +44,11 @@ class UndoRedoManager {
     this.changeUpdated.emit(updateData);
   }
 
-  undo(pushOnRedoStack=true) {
+  undo(pushOnRedoStack = true) {
     if (this.__undoStack.length > 0) {
       const change = this.__undoStack.pop();
       change.undo();
-      if(pushOnRedoStack) {
+      if (pushOnRedoStack) {
         this.__redoStack.push(change);
         this.changeUndone.emit();
       }
@@ -74,10 +71,10 @@ class UndoRedoManager {
     return new __changeClasses[claName]();
   }
 
-  static getChangeClassName(inst){
-    if(__classNames[inst.constructor.name])
+  static getChangeClassName(inst) {
+    if (__classNames[inst.constructor.name])
       return __classNames[inst.constructor.name];
-    console.warn("Change not registered:", inst.constructor.name);
+    console.warn('Change not registered:', inst.constructor.name);
     return inst.constructor.name;
   }
 
@@ -88,6 +85,4 @@ class UndoRedoManager {
 }
 
 export default UndoRedoManager;
-export {
-  UndoRedoManager
-};
+export { UndoRedoManager };

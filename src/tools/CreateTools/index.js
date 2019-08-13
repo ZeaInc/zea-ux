@@ -1,5 +1,3 @@
-
-
 // Create Geom Tools
 export * from './CreateLineTool.js';
 export * from './CreateCircleTool.js';

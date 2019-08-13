@@ -12,13 +12,11 @@ class ActionTreeView {
 
     const actions = this.actionRegistry.getActions();
     actions.forEach(action => {
-      if(action.availableInVR == true)
-        this._addMenuItem(ul, action);
+      if (action.availableInVR == true) this._addMenuItem(ul, action);
     });
-    this.actionRegistry.actionAdded.connect((action)=>{
-      if(action.availableInVR == true)
-        this._addMenuItem(ul, action);
-    })
+    this.actionRegistry.actionAdded.connect(action => {
+      if (action.availableInVR == true) this._addMenuItem(ul, action);
+    });
   }
 
   _addSpanTo(domElement, className, innerHTML) {
@@ -41,32 +39,25 @@ class ActionTreeView {
     a.className = classes;
 
     a.addEventListener('mouseenter', e => {
-      if(!activated)
-        a.className = classes + " HighlightedMenu";
+      if (!activated) a.className = classes + ' HighlightedMenu';
     });
     a.addEventListener('mouseleave', e => {
-      if(activated)
-        a.className = classes + " ActionedMenu";
-      else
-        a.className = classes;
+      if (activated) a.className = classes + ' ActionedMenu';
+      else a.className = classes;
     });
 
-
     if (action.activatedChanged) {
-      action.activatedChanged.connect((state)=>{
-        if(state)
-          a.className = classes + " ActionedMenu";
-        else
-          a.className = classes;
+      action.activatedChanged.connect(state => {
+        if (state) a.className = classes + ' ActionedMenu';
+        else a.className = classes;
         activated = state;
-      })
-    }
-    else {
+      });
+    } else {
       a.addEventListener('mousedown', e => {
-          a.className = classes + " ActionedMenu";
+        a.className = classes + ' ActionedMenu';
       });
       a.addEventListener('mouseup', e => {
-        a.className = classes + " HighlightedMenu";
+        a.className = classes + ' HighlightedMenu';
       });
     }
 
@@ -103,6 +94,4 @@ class ActionTreeView {
   }
 }
 
-export {
-  ActionTreeView
-} ;
+export { ActionTreeView };

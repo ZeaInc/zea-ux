@@ -1,5 +1,3 @@
-
-
 //////////////////////////////////////
 // Parameter Widgets
 export * from './BooleanWidget.js';
@@ -18,4 +16,3 @@ export * from './ParameterOwnerWidget.js';
 export * from './ItemWidget.js';
 export * from './ItemSetWidget.js';
 export * from './QuerySetWidget.js';
-

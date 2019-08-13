@@ -12,21 +12,21 @@ export default class ItemWidget extends BaseWidget {
     input.className = 'mdl-textfield__input';
     input.setAttribute('id', parameter.getName());
     input.setAttribute('type', 'text');
-    input.setAttribute('value', value ? value.getPath().join('/') : "<none>");
+    input.setAttribute('value', value ? value.getPath().join('/') : '<none>');
     input.style['outline-color'] = 'grey';
     input.style['outline-width'] = '1px';
     input.style['outline-style'] = 'solid';
 
     const button = document.createElement('button');
-    button.appendChild(document.createTextNode("Pick"));
-    button.addEventListener('click', (e) =>{
+    button.appendChild(document.createTextNode('Pick'));
+    button.addEventListener('click', e => {
       appData.selectionManager.startPickingMode(
-        `Pick ${parameter.getName()} item.`, 
+        `Pick ${parameter.getName()} item.`,
         items => {
           const change = new ParameterValueChange(parameter, items[0]);
           appData.undoRedoManager.addChange(change);
-        }, 
-        parameter.getFilterFn(), 
+        },
+        parameter.getFilterFn(),
         1
       );
     });
@@ -41,12 +41,14 @@ export default class ItemWidget extends BaseWidget {
     let changing = false;
 
     parameter.valueChanged.connect(() => {
-      if (!changing){
+      if (!changing) {
         const value = parameter.getValue();
-        input.setAttribute('value', value ? value.getPath().join('/') : "<none>");
-      } 
+        input.setAttribute(
+          'value',
+          value ? value.getPath().join('/') : '<none>'
+        );
+      }
     });
-
   }
 }
 

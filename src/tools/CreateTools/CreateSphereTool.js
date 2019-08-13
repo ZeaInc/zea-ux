@@ -1,12 +1,9 @@
 import UndoRedoManager from '../../undoredo/UndoRedoManager.js';
-import {
-  CreateGeomChange,
-  CreateGeomTool
-} from './CreateGeomTool.js';
+import { CreateGeomChange, CreateGeomTool } from './CreateGeomTool.js';
 
 class CreateSphereChange extends CreateGeomChange {
   constructor(parentItem, xfo) {
-    super("Create Sphere", parentItem);
+    super('Create Sphere', parentItem);
 
     this.sphere = new Visualive.Sphere(0, 64, 32);
     const material = new Visualive.Material('Sphere', 'SimpleSurfaceShader');
@@ -14,7 +11,7 @@ class CreateSphereChange extends CreateGeomChange {
     this.geomItem.setGeometry(this.sphere);
     this.geomItem.setMaterial(material);
 
-    if(parentItem && xfo) {
+    if (parentItem && xfo) {
       this.setParentAndXfo(parentItem, xfo);
     }
   }
@@ -31,11 +28,10 @@ class CreateSphereChange extends CreateGeomChange {
   }
 
   changeFromJSON(j) {
-    if (j.radius)
-      this.geomItem.getGeometry().radius =j.radius;
+    if (j.radius) this.geomItem.getGeometry().radius = j.radius;
   }
 }
-UndoRedoManager.registerChange('CreateSphereChange', CreateSphereChange)
+UndoRedoManager.registerChange('CreateSphereChange', CreateSphereChange);
 
 class CreateSphereTool extends CreateGeomTool {
   constructor(appData) {
@@ -65,7 +61,4 @@ class CreateSphereTool extends CreateGeomTool {
   }
 }
 
-
-export {
-  CreateSphereTool
-};
+export { CreateSphereTool };

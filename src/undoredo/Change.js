@@ -8,23 +8,22 @@ export default class Change {
   }
 
   undo() {
-    throw ("Implement me");
+    throw 'Implement me';
   }
 
   redo() {
-    throw ("Implement me");
+    throw 'Implement me';
   }
 
   update(updateData) {
-    throw ("Implement me");
+    throw 'Implement me';
   }
 
   toJSON(appData) {
-    return {}
+    return {};
   }
 
   fromJSON(j, appData) {}
-
 
   changeFromJSON(j) {
     // Many change objects can load json directly

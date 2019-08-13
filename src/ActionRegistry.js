@@ -1,5 +1,3 @@
-
-
 class ActionRegistry {
   constructor() {
     this.actions = [];
@@ -28,6 +26,4 @@ class ActionRegistry {
 }
 
 export default ActionRegistry;
-export {
-  ActionRegistry
-}
+export { ActionRegistry };

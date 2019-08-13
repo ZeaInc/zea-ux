@@ -1,45 +1,41 @@
 import UndoRedoManager from '../../undoredo/UndoRedoManager.js';
-import {
-  CreateGeomChange,
-  CreateGeomTool
-} from './CreateGeomTool.js';
+import { CreateGeomChange, CreateGeomTool } from './CreateGeomTool.js';
 
 class CreateCircleChange extends CreateGeomChange {
   constructor(parentItem, xfo) {
-    super("Create Circle", parentItem);
+    super('Create Circle', parentItem);
 
     this.circle = new Visualive.Circle(0, 64);
     this.circle.lineThickness = 0.05;
     // const material = new Visualive.Material('circle', 'LinesShader');
     const material = new Visualive.Material('circle', 'FatLinesShader');
-    material.getParameter('Color').setValue(new Visualive.Color(.7, .2, .2));
+    material.getParameter('Color').setValue(new Visualive.Color(0.7, 0.2, 0.2));
     this.geomItem = new Visualive.GeomItem('Circle');
     this.geomItem.setGeometry(this.circle);
     this.geomItem.setMaterial(material);
 
-    if(parentItem && xfo) {
+    if (parentItem && xfo) {
       this.setParentAndXfo(parentItem, xfo);
     }
   }
 
   update(updateData) {
-    this.circle.getParameter("Radius").setValue(updateData.radius);
+    this.circle.getParameter('Radius').setValue(updateData.radius);
     this.updated.emit(updateData);
   }
 
   toJSON() {
     const j = super.toJSON();
-    j.radius = this.circle.getParameter("Radius").getValue();
+    j.radius = this.circle.getParameter('Radius').getValue();
     return j;
   }
 
   changeFromJSON(j) {
-    console.log("CreateCircleChange:", j)
-    if (j.radius)
-      this.circle.getParameter("Radius").setValue(j.radius);
+    console.log('CreateCircleChange:', j);
+    if (j.radius) this.circle.getParameter('Radius').setValue(j.radius);
   }
 }
-UndoRedoManager.registerChange('CreateCircleChange', CreateCircleChange)
+UndoRedoManager.registerChange('CreateCircleChange', CreateCircleChange);
 
 class CreateCircleTool extends CreateGeomTool {
   constructor(appData) {
@@ -70,8 +66,4 @@ class CreateCircleTool extends CreateGeomTool {
   }
 }
 
-
-
-export {
-  CreateCircleTool
-};
+export { CreateCircleTool };

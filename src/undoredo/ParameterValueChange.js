@@ -3,16 +3,18 @@ import Change from './Change.js';
 
 class ParameterValueChange extends Change {
   constructor(param, newValue) {
-    if(param) {
-      super(param ? (param.getName()+ ' Changed') : 'ParameterValueChange');
+    if (param) {
+      super(param ? param.getName() + ' Changed' : 'ParameterValueChange');
       this.__prevValue = param.getValue();
       this.__param = param;
-      if(newValue != undefined) {
+      if (newValue != undefined) {
         this.__nextValue = newValue;
-        this.__param.setValue(this.__nextValue, Visualive.ValueSetMode.USER_SETVALUE);
+        this.__param.setValue(
+          this.__nextValue,
+          Visualive.ValueSetMode.USER_SETVALUE
+        );
       }
-    }
-    else {
+    } else {
       super();
     }
   }
@@ -24,33 +26,38 @@ class ParameterValueChange extends Change {
     return this.__nextValue;
   }
 
-
   undo() {
-    if(!this.__param)
-      return;
-    this.__param.setValue(this.__prevValue, Visualive.ValueSetMode.USER_SETVALUE);
+    if (!this.__param) return;
+    this.__param.setValue(
+      this.__prevValue,
+      Visualive.ValueSetMode.USER_SETVALUE
+    );
   }
 
   redo() {
-    if(!this.__param)
-      return;
-    this.__param.setValue(this.__nextValue, Visualive.ValueSetMode.USER_SETVALUE);
+    if (!this.__param) return;
+    this.__param.setValue(
+      this.__nextValue,
+      Visualive.ValueSetMode.USER_SETVALUE
+    );
   }
 
   update(updateData) {
-    if(!this.__param)
-      return;
+    if (!this.__param) return;
     this.__nextValue = updateData.value;
-    this.__param.setValue(this.__nextValue, Visualive.ValueSetMode.USER_SETVALUE);
+    this.__param.setValue(
+      this.__nextValue,
+      Visualive.ValueSetMode.USER_SETVALUE
+    );
     this.updated.emit(updateData);
   }
 
   toJSON(appData) {
     const j = {
       name: this.name,
-      paramPath: this.__param.getPath()
-    }
-    if(this.__nextValue != undefined) {
+      paramPath: this.__param.getPath(),
+    };
+    if (this.__nextValue != undefined) {
       if (this.__nextValue.toJSON) {
         j.value = this.__nextValue.toJSON();
       } else {
@@ -62,34 +69,30 @@ class ParameterValueChange extends Change {
 
   fromJSON(j, appData) {
     let param = appData.scene.getRoot().resolvePath(j.paramPath, 1);
-    if(!param || !(param instanceof Visualive.Parameter)) {
-      console.warn("resolvePath is unable to resolve", j.paramPath);
+    if (!param || !(param instanceof Visualive.Parameter)) {
+      console.warn('resolvePath is unable to resolve', j.paramPath);
       return;
     }
     this.__param = param;
     this.__prevValue = this.__param.getValue();
-    if (this.__prevValue.clone)
-      this.__nextValue = this.__prevValue.clone();
-    else
-      this.__nextValue = this.__prevValue;
+    if (this.__prevValue.clone) this.__nextValue = this.__prevValue.clone();
+    else this.__nextValue = this.__prevValue;
 
     this.name = this.__param.getName() + ' Changed';
-    if(j.value != undefined)
-      this.changeFromJSON(j);
+    if (j.value != undefined) this.changeFromJSON(j);
   }
 
   changeFromJSON(j) {
-    if(!this.__param)
-      return;
-    if (this.__nextValue.fromJSON)
-      this.__nextValue.fromJSON(j.value);
-    else
-      this.__nextValue = j.value;
-    this.__param.setValue(this.__nextValue, Visualive.ValueSetMode.USER_SETVALUE);
+    if (!this.__param) return;
+    if (this.__nextValue.fromJSON) this.__nextValue.fromJSON(j.value);
+    else this.__nextValue = j.value;
+    this.__param.setValue(
+      this.__nextValue,
+      Visualive.ValueSetMode.USER_SETVALUE
+    );
   }
 }
 
-
-UndoRedoManager.registerChange('ParameterValueChange', ParameterValueChange)
+UndoRedoManager.registerChange('ParameterValueChange', ParameterValueChange);
 
 export default ParameterValueChange;

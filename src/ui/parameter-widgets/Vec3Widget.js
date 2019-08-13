@@ -73,15 +73,14 @@ export default class Vec3Widget extends BaseWidget {
 
     const valueChange = () => {
       const value = new Visualive.Vec3(
-          xField.valueAsNumber,
-          yField.valueAsNumber,
-          zField.valueAsNumber
-        )
+        xField.valueAsNumber,
+        yField.valueAsNumber,
+        zField.valueAsNumber
+      );
       if (!change) {
         change = new ParameterValueChange(parameter, value);
         appData.undoRedoManager.addChange(change);
-      }
-      else {
+      } else {
         change.update({ value });
       }
     };
@@ -101,7 +100,4 @@ export default class Vec3Widget extends BaseWidget {
   }
 }
 
-uxFactory.registerWidget(
-  Vec3Widget,
-  p => p instanceof Visualive.Vec3Parameter
-);
+uxFactory.registerWidget(Vec3Widget, p => p instanceof Visualive.Vec3Parameter);

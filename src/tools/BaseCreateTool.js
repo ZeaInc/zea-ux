@@ -1,4 +1,3 @@
-
 import BaseTool from './BaseTool.js';
 
 export default class BaseCreateTool extends BaseTool {
@@ -9,5 +8,4 @@ export default class BaseCreateTool extends BaseTool {
   isPrimaryTool() {
     return true;
   }
-
-};
+}

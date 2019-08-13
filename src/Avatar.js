@@ -2,7 +2,6 @@
 
 const up = new Visualive.Vec3(0, 0, 1);
 export default class Avatar {
-
   constructor(appData, userData, currentUserAvatar = false) {
     this.__appData = appData;
     this.__userData = userData;
@@ -15,7 +14,7 @@ export default class Avatar {
     this.__avatarColor = new Visualive.Color(0.3, 0.3, 0.3);
     this.__hilightPointerColor = new Visualive.Color(1.2, 0, 0);
 
-    this.__plane = new Visualive.Plane(1, 1)
+    this.__plane = new Visualive.Plane(1, 1);
     this.__uiGeomIndex = -1;
 
     if (!this.__currentUserAvatar) {
@@ -23,13 +22,26 @@ export default class Avatar {
       this.__camera.addRef(this);
       this.__cameraBound = false;
 
-      this.__avatarImage = new Visualive.LDRImage('user' + this.__userData.id + 'AvatarImage');
-      this.__avatarImage.setImageURL(this.__userData.picture)
-      this.__avatarImageMaterial = new Visualive.Material('user' + this.__userData.id + 'AvatarImageMaterial', 'FlatSurfaceShader');
-      this.__avatarImageMaterial.getParameter('BaseColor').setValue(this.__avatarColor);
-      this.__avatarImageMaterial.getParameter('BaseColor').setImage(this.__avatarImage);
+      this.__avatarImage = new Visualive.LDRImage(
+        'user' + this.__userData.id + 'AvatarImage'
+      );
+      this.__avatarImage.setImageURL(this.__userData.picture);
+      this.__avatarImageMaterial = new Visualive.Material(
+        'user' + this.__userData.id + 'AvatarImageMaterial',
+        'FlatSurfaceShader'
+      );
+      this.__avatarImageMaterial
+        .getParameter('BaseColor')
+        .setValue(this.__avatarColor);
+      this.__avatarImageMaterial
+        .getParameter('BaseColor')
+        .setImage(this.__avatarImage);
       this.__avatarImageMaterial.visibleInGeomDataBuffer = false;
-      this.__avatarImageGeomItem = new Visualive.GeomItem('avatarImage', new Visualive.Disc(0.5, 64), this.__avatarImageMaterial);
+      this.__avatarImageGeomItem = new Visualive.GeomItem(
+        'avatarImage',
+        new Visualive.Disc(0.5, 64),
+        this.__avatarImageMaterial
+      );
 
       this.__avatarImageXfo = new Visualive.Xfo();
       this.__avatarImageXfo.sc.set(0.2, 0.2, 1);
@@ -44,11 +56,20 @@ export default class Avatar {
       const videoItem = new Visualive.VideoStreamImage2D('webcamStream');
       videoItem.setVideoStream(video);
 
-      this.__avatarCamMaterial = new Visualive.Material('user' + this.__userData.id + 'AvatarImageMaterial', 'FlatSurfaceShader');
-      this.__avatarCamMaterial.getParameter('BaseColor').setValue(this.__avatarColor);
+      this.__avatarCamMaterial = new Visualive.Material(
+        'user' + this.__userData.id + 'AvatarImageMaterial',
+        'FlatSurfaceShader'
+      );
+      this.__avatarCamMaterial
+        .getParameter('BaseColor')
+        .setValue(this.__avatarColor);
       this.__avatarCamMaterial.getParameter('BaseColor').setImage(videoItem);
       this.__avatarCamMaterial.visibleInGeomDataBuffer = false;
-      this.__avatarCamGeomItem = new Visualive.GeomItem('avatarImage', this.__plane, this.__avatarCamMaterial);
+      this.__avatarCamGeomItem = new Visualive.GeomItem(
+        'avatarImage',
+        this.__plane,
+        this.__avatarCamMaterial
+      );
       this.__avatarCamGeomItem.addRef(this);
 
       const sc = 0.02;
@@ -90,9 +111,8 @@ export default class Avatar {
     const cameraOwner = this.__camera.getOwner();
     if (cameraOwner) {
       cameraOwner.traverse(subTreeItem => {
-        if (subTreeItem != this.__camera)
-          subTreeItem.setVisible(false)
-      })
+        if (subTreeItem != this.__camera) subTreeItem.setVisible(false);
+      });
     }
   }
 
@@ -102,9 +122,8 @@ export default class Avatar {
     const cameraOwner = this.__camera.getOwner();
     if (cameraOwner) {
       cameraOwner.traverse(subTreeItem => {
-        if (subTreeItem != this.__camera)
-          subTreeItem.setVisible(true)
-      })
+        if (subTreeItem != this.__camera) subTreeItem.setVisible(true);
+      });
     }
   }
 
@@ -112,8 +131,7 @@ export default class Avatar {
     this.__treeItem.removeAllChildren();
     this.__currentViewMode = 'CameraAndPointer';
 
-    if (this.__currentUserAvatar)
-      return;
+    if (this.__currentUserAvatar) return;
     const sc = 0.02;
     const shape = new Visualive.Cuboid(16 * sc, 9 * sc, 3 * sc, true); // 16:9
     const pinch = new Visualive.Vec3(0.1, 0.1, 1);
@@ -121,15 +139,17 @@ export default class Avatar {
     shape.getVertex(1).multiplyInPlace(pinch);
     shape.getVertex(2).multiplyInPlace(pinch);
     shape.getVertex(3).multiplyInPlace(pinch);
-    
+
     shape.computeVertexNormals();
-    const material = new Visualive.Material('user' + this.__userData.id + 'Material', 'SimpleSurfaceShader');
+    const material = new Visualive.Material(
+      'user' + this.__userData.id + 'Material',
+      'SimpleSurfaceShader'
+    );
     material.visibleInGeomDataBuffer = false;
     material.getParameter('BaseColor').setValue(this.__avatarColor);
     const geomItem = new Visualive.GeomItem('camera', shape, material);
     const geomXfo = new Visualive.Xfo();
     geomItem.setGeomOffsetXfo(geomXfo);
-
 
     const line = new Visualive.Lines();
     line.setNumVertices(2);
@@ -144,8 +164,12 @@ export default class Avatar {
     this.__pointermat = new Visualive.Material('pointermat', 'LinesShader');
     this.__pointermat.getParameter('Color').setValue(this.__avatarColor);
 
-    this.__pointerItem = new Visualive.GeomItem('Pointer', line, this.__pointermat);
-    this.__pointerItem.addRef(this)
+    this.__pointerItem = new Visualive.GeomItem(
+      'Pointer',
+      line,
+      this.__pointermat
+    );
+    this.__pointerItem.addRef(this);
     this.__pointerItem.setLocalXfo(this.pointerXfo);
 
     // If the webcam stream is available, attach it
@@ -168,21 +192,18 @@ export default class Avatar {
 
     this.__treeItem.addChild(this.__camera, false);
     if (this.__cameraBound) {
-      geomItem.setVisible(false)
+      geomItem.setVisible(false);
     }
-
   }
 
   updateCameraAndPointerPose(data) {
-    if (this.__currentUserAvatar)
-      return;
+    if (this.__currentUserAvatar) return;
 
     if (data.viewXfo) {
-      if(data.focalDistance) {
+      if (data.focalDistance) {
         // After 10 meters, the avatar scales to avoid getting too small.
         const sc = data.focalDistance / 5;
-        if(sc > 1)
-          data.viewXfo.sc.set(sc, sc, sc)
+        if (sc > 1) data.viewXfo.sc.set(sc, sc, sc);
       }
       this.__treeItem.getChild(0).setLocalXfo(data.viewXfo);
       this.pointerXfo.sc.z = 0;
@@ -193,7 +214,9 @@ export default class Avatar {
       this.pointerXfo.sc.z = data.movePointer.length;
       this.__treeItem.getChild(1).setLocalXfo(this.pointerXfo);
     } else if (data.hilightPointer) {
-      this.__pointermat.getParameter('Color').setValue(this.__hilightPointerColor);
+      this.__pointermat
+        .getParameter('Color')
+        .setValue(this.__hilightPointerColor);
     } else if (data.unhilightPointer) {
       this.__pointermat.getParameter('Color').setValue(this.__avatarColor);
     } else if (data.hidePointer) {
@@ -206,7 +229,7 @@ export default class Avatar {
     this.__treeItem.removeAllChildren();
     this.__currentViewMode = 'VR';
 
-    const hmdHolder = new Visualive.TreeItem("hmdHolder");
+    const hmdHolder = new Visualive.TreeItem('hmdHolder');
     if (this.__audioItem) {
       hmdHolder.addChild(this.__audioItem);
     }
@@ -220,36 +243,36 @@ export default class Avatar {
 
     this.__treeItem.addChild(hmdHolder);
 
-    if (this.__camera)
-      hmdHolder.addChild(this.__camera, false);
+    if (this.__camera) hmdHolder.addChild(this.__camera, false);
 
     if (this.__hmdGeomItem) {
       if (!this.__currentUserAvatar)
         hmdHolder.addChild(this.__hmdGeomItem, false);
       if (this.__cameraBound) {
-        this.__hmdGeomItem.setVisible(false)
+        this.__hmdGeomItem.setVisible(false);
       }
     } else {
       const resourceLoader = this.__appData.scene.getResourceLoader();
 
       let assetPath;
-      switch(data.hmd){
-      case 'Vive': 
-          assetPath = "VisualiveEngine/Vive.vla";
+      switch (data.hmd) {
+        case 'Vive':
+          assetPath = 'VisualiveEngine/Vive.vla';
           break;
-      case 'Oculus': 
-          assetPath = "VisualiveEngine/Oculus.vla";
+        case 'Oculus':
+          assetPath = 'VisualiveEngine/Oculus.vla';
           break;
-      default:
-          assetPath = "VisualiveEngine/Vive.vla";
+        default:
+          assetPath = 'VisualiveEngine/Vive.vla';
           break;
       }
 
-      if (!this.__vrAsset){
-
+      if (!this.__vrAsset) {
         const hmdAssetId = resourceLoader.resolveFilePathToId(assetPath);
-        if(hmdAssetId) {
-          this.__vrAsset = this.__appData.scene.loadCommonAssetResource(hmdAssetId);
+        if (hmdAssetId) {
+          this.__vrAsset = this.__appData.scene.loadCommonAssetResource(
+            hmdAssetId
+          );
           this.__vrAsset.geomsLoaded.connect(() => {
             const materialLibrary = this.__vrAsset.getMaterialLibrary();
             const materialNames = materialLibrary.getMaterialNames();
@@ -273,7 +296,7 @@ export default class Avatar {
               this.__hmdGeomItem.addRef(this);
 
               if (this.__cameraBound) {
-                this.__hmdGeomItem.setVisible(false)
+                this.__hmdGeomItem.setVisible(false);
               }
               hmdHolder.addChild(this.__hmdGeomItem, false);
             }
@@ -286,51 +309,48 @@ export default class Avatar {
   }
 
   updateVRPose(data) {
-
-    const setupController = (i) => {
+    const setupController = i => {
       if (this.__controllerTrees[i]) {
         this.__treeItem.addChild(this.__controllerTrees[i], false);
       } else {
-        const treeItem = new Visualive.TreeItem("handleHolder" + i);
-        treeItem.addRef(this)
+        const treeItem = new Visualive.TreeItem('handleHolder' + i);
+        treeItem.addRef(this);
         this.__controllerTrees[i] = treeItem;
         this.__treeItem.addChild(this.__controllerTrees[i], false);
 
         const setupControllerGeom = () => {
           let srcControllerTree;
-          if(i==0)
+          if (i == 0)
             srcControllerTree = this.__vrAsset.getChildByName('LeftController');
-          else if(i==1)
-            srcControllerTree = this.__vrAsset.getChildByName('RightController');
-          if(!srcControllerTree)
+          else if (i == 1)
+            srcControllerTree = this.__vrAsset.getChildByName(
+              'RightController'
+            );
+          if (!srcControllerTree)
             srcControllerTree = this.__vrAsset.getChildByName('Controller');
           const controllerTree = srcControllerTree.clone();
           const xfo = new Visualive.Xfo(
             new Visualive.Vec3(0, -0.035, -0.02),
             new Visualive.Quat({
-              setFromAxisAndAngle: [
-                new Visualive.Vec3(0, 1, 0),
-                Math.PI
-              ]
+              setFromAxisAndAngle: [new Visualive.Vec3(0, 1, 0), Math.PI],
             }),
-            new Visualive.Vec3(0.001, 0.001, 0.001) // VRAsset units are in mm. convert meters 
+            new Visualive.Vec3(0.001, 0.001, 0.001) // VRAsset units are in mm. convert meters
           );
           controllerTree.setLocalXfo(xfo);
           treeItem.addChild(controllerTree, false);
-        }
+        };
         this.__vrAsset.geomsLoaded.connect(() => {
           setupControllerGeom();
         });
       }
-    }
+    };
 
-    if (data.viewXfo)
-      this.__treeItem.getChild(0).setGlobalXfo(data.viewXfo);
+    if (data.viewXfo) this.__treeItem.getChild(0).setGlobalXfo(data.viewXfo);
 
     if (data.controllers) {
       for (let i = 0; i < data.controllers.length; i++) {
         if (data.controllers[i] && !this.__controllerTrees[i]) {
-          setupController(i)
+          setupController(i);
         }
         this.__controllerTrees[i].setGlobalXfo(data.controllers[i].xfo);
       }
@@ -341,29 +361,46 @@ export default class Avatar {
         uimat.getParameter('BaseColor').setValue(this.__avatarColor);
 
         this.__uiGeomOffsetXfo = new Visualive.Xfo();
-        this.__uiGeomOffsetXfo.sc.set(data.showUIPanel.size.x, data.showUIPanel.size.y, 1);
+        this.__uiGeomOffsetXfo.sc.set(
+          data.showUIPanel.size.x,
+          data.showUIPanel.size.y,
+          1
+        );
         // Flip it over so we see the front.
-        this.__uiGeomOffsetXfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0, 1, 0), Math.PI);
+        this.__uiGeomOffsetXfo.ori.setFromAxisAndAngle(
+          new Visualive.Vec3(0, 1, 0),
+          Math.PI
+        );
 
-        this.__uiGeomItem = new Visualive.GeomItem('VRControllerUI', this.__plane, uimat);
-        this.__uiGeomItem.addRef(this)
+        this.__uiGeomItem = new Visualive.GeomItem(
+          'VRControllerUI',
+          this.__plane,
+          uimat
+        );
+        this.__uiGeomItem.addRef(this);
         this.__uiGeomItem.setGeomOffsetXfo(this.__uiGeomOffsetXfo);
 
         const localXfo = new Visualive.Xfo();
-        localXfo.fromJSON(data.showUIPanel.localXfo)
+        localXfo.fromJSON(data.showUIPanel.localXfo);
         this.__uiGeomItem.setLocalXfo(localXfo);
       }
-      this.__uiGeomIndex = this.__controllerTrees[data.showUIPanel.controllerId].addChild(this.__uiGeomItem, false);
-    }
-    else if (data.updateUIPanel) {
+      this.__uiGeomIndex = this.__controllerTrees[
+        data.showUIPanel.controllerId
+      ].addChild(this.__uiGeomItem, false);
+    } else if (data.updateUIPanel) {
       if (this.__uiGeomItem) {
-        this.__uiGeomOffsetXfo.sc.set(data.updateUIPanel.size.x, data.updateUIPanel.size.y, 1);
+        this.__uiGeomOffsetXfo.sc.set(
+          data.updateUIPanel.size.x,
+          data.updateUIPanel.size.y,
+          1
+        );
         this.__uiGeomItem.setGeomOffsetXfo(this.__uiGeomOffsetXfo);
       }
-    }
-    else if (data.hideUIPanel) {
+    } else if (data.hideUIPanel) {
       if (this.__uiGeomIndex >= 0) {
-        this.__controllerTrees[data.hideUIPanel.controllerId].removeChild(this.__uiGeomIndex);
+        this.__controllerTrees[data.hideUIPanel.controllerId].removeChild(
+          this.__uiGeomIndex
+        );
         this.__uiGeomIndex = -1;
       }
     }
@@ -375,7 +412,7 @@ export default class Avatar {
         if (this.__currentViewMode !== 'CameraAndPointer') {
           this.setCameraAndPointerRepresentation();
         }
-        this.updateCameraAndPointerPose(data)
+        this.updateCameraAndPointerPose(data);
         break;
       case 'Vive': // Old recordings.
       case 'VR':
@@ -385,7 +422,7 @@ export default class Avatar {
         this.updateVRPose(data);
         break;
     }
-  };
+  }
 
   destroy() {
     this.__appData.renderer.removeTreeItem(this.__treeItem);
@@ -394,8 +431,6 @@ export default class Avatar {
       this.__camera.removeRef(this);
     }
   }
-};
+}
 
-export {
-  Avatar
-};
+export { Avatar };

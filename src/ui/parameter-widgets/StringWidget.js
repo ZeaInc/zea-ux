@@ -3,8 +3,6 @@ import BaseWidget from './BaseWidget.js';
 import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 import uxFactory from '../UxFactory.js';
 
-
-
 export default class StringWidget extends BaseWidget {
   constructor(parameter, parentDomElem, appData) {
     super(parameter);
@@ -23,18 +21,17 @@ export default class StringWidget extends BaseWidget {
 
     let change;
     parameter.valueChanged.connect(() => {
-      if (!change){
+      if (!change) {
         input.value = parameter.getValue();
-      } 
+      }
     });
 
     const valueChange = () => {
-      const value = input.value
+      const value = input.value;
       if (!change) {
         change = new ParameterValueChange(parameter, value);
         appData.undoRedoManager.addChange(change);
-      }
-      else {
+      } else {
         change.update({ value });
       }
     };

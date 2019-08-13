@@ -1,4 +1,4 @@
-import SceneWidget  from './SceneWidget.js';
+import SceneWidget from './SceneWidget.js';
 import ParameterValueChange from '../undoredo/ParameterValueChange.js';
 
 class AxialRotationSceneWidget extends SceneWidget {
@@ -7,8 +7,12 @@ class AxialRotationSceneWidget extends SceneWidget {
 
     this.__color = color;
     this.__hilightedColor = new Visualive.Color(1, 1, 1);
-    this.radiusParam = this.addParameter(new Visualive.NumberParameter('radius', radius));
-    this.colorParam = this.addParameter(new Visualive.ColorParameter('BaseColor', color));
+    this.radiusParam = this.addParameter(
+      new Visualive.NumberParameter('radius', radius)
+    );
+    this.colorParam = this.addParameter(
+      new Visualive.ColorParameter('BaseColor', color)
+    );
 
     const handleMat = new Visualive.Material('handle', 'HandleShader');
     handleMat.replaceParameter(this.colorParam);
@@ -16,33 +20,33 @@ class AxialRotationSceneWidget extends SceneWidget {
     // const handleGeom = new Visualive.Cylinder(radius, thickness * 2, 64, 2, false);
     const handleGeom = new Visualive.Torus(thickness, radius, 64);
     this.handle = new Visualive.GeomItem('handle', handleGeom, handleMat);
-    this.handleXfo = new Visualive.Xfo()
+    this.handleXfo = new Visualive.Xfo();
 
-    this.radiusParam.valueChanged.connect(()=>{
+    this.radiusParam.valueChanged.connect(() => {
       radius = this.radiusParam.getValue();
       handleGeom.getParameter('radius').setValue(radius);
       handleGeom.getParameter('height').setValue(radius * 0.02);
-    })
+    });
 
     this.addChild(this.handle);
   }
 
   highlight() {
-    this.colorParam.setValue(this.__hilightedColor)
+    this.colorParam.setValue(this.__hilightedColor);
   }
 
   unhighlight() {
-    this.colorParam.setValue(this.__color)
+    this.colorParam.setValue(this.__color);
   }
 
-  setTargetParam(param, track=true) {
+  setTargetParam(param, track = true) {
     this.__param = param;
-    if(track) {
+    if (track) {
       const __updateGizmo = () => {
-        this.setGlobalXfo(param.getValue())
-      }
+        this.setGlobalXfo(param.getValue());
+      };
       __updateGizmo();
-      param.valueChanged.connect(__updateGizmo)
+      param.valueChanged.connect(__updateGizmo);
     }
   }
 
@@ -58,11 +62,11 @@ class AxialRotationSceneWidget extends SceneWidget {
     this.offsetXfo = this.baseXfo.inverse().multiply(this.__param.getValue());
 
     // Hilight the material.
-    this.colorParam.setValue(new Visualive.Color(1,1,1));
+    this.colorParam.setValue(new Visualive.Color(1, 1, 1));
 
     this.manipulateBegin.emit({
       grabPos: event.grabPos,
-      manipRay: this.manipRay
+      manipRay: this.manipRay,
     });
   }
 
@@ -71,7 +75,7 @@ class AxialRotationSceneWidget extends SceneWidget {
     let angle = dragVec.length() * 2.0;
 
     const vec1 = event.holdPos.subtract(this.getGlobalXfo().tr);
-    if(this.vec0.cross(vec1).dot(this.getGlobalXfo().ori.getZaxis()) < 0)
+    if (this.vec0.cross(vec1).dot(this.getGlobalXfo().ori.getZaxis()) < 0)
       angle = -angle;
 
     this.deltaXfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0, 0, 1), angle);
@@ -82,15 +86,15 @@ class AxialRotationSceneWidget extends SceneWidget {
     // this.__param.setValue(newXfo)
 
     this.change.update({
-      value
+      value,
     });
 
     this.manipulate.emit({
       holdPos: event.holdPos,
       manipRay: this.gizmoRay,
-      angle, 
-      deltaXfo: this.deltaXfo, 
-      newXfo: value
+      angle,
+      deltaXfo: this.deltaXfo,
+      newXfo: value,
     });
   }
 
@@ -101,11 +105,8 @@ class AxialRotationSceneWidget extends SceneWidget {
 
     this.manipulateEnd.emit({
       releasePos: event.releasePos,
-      manipRay: this.manipRay
+      manipRay: this.manipRay,
     });
   }
-
-};
-export {
-  AxialRotationSceneWidget
 }
+export { AxialRotationSceneWidget };

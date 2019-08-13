@@ -19,8 +19,7 @@ export default class BooleanWidget extends BaseWidget {
 
     let change;
     parameter.valueChanged.connect(() => {
-      if (!change)
-        input.checked = parameter.getValue();
+      if (!change) input.checked = parameter.getValue();
     });
     input.addEventListener('input', () => {
       change = new ParameterValueChange(parameter, input.checked);

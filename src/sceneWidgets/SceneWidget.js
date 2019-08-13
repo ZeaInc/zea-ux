@@ -1,11 +1,9 @@
-
-
-// A SceneWidget is a UI widget that lives in the scene. 
-// Much like a slider, it translates a series of 
+// A SceneWidget is a UI widget that lives in the scene.
+// Much like a slider, it translates a series of
 // mouse events into a higher level interaction.
 export default class SceneWidget extends Visualive.TreeItem {
   constructor(name) {
-    super(name)
+    super(name);
     this.manipulateBegin = new Visualive.Signal();
     this.manipulate = new Visualive.Signal();
     this.manipulateEnd = new Visualive.Signal();
@@ -15,7 +13,7 @@ export default class SceneWidget extends Visualive.TreeItem {
 
   unhighlight() {}
 
-  getManipulationRay(viewport){
+  getManipulationRay(viewport) {
     const xfo = this.getGlobalXfo();
     return new Visualive.Ray(xfo.tr, xfo.ori.getZaxis());
   }
@@ -59,14 +57,14 @@ export default class SceneWidget extends Visualive.TreeItem {
   }
 
   onVRPoseChanged(event) {
-    const xfo = this.activeController.getTipXfo()
+    const xfo = this.activeController.getTipXfo();
     this.onDrag(event, xfo.tr);
     return true;
   }
 
   onVRControllerButtonUp(event) {
     if (this.activeController == event.controller) {
-      const xfo = this.activeController.getTipXfo()
+      const xfo = this.activeController.getTipXfo();
       this.onDragEnd(event, xfo.tr);
       this.activeController = undefined;
       return true;
@@ -77,14 +75,14 @@ export default class SceneWidget extends Visualive.TreeItem {
   // Interaction events
 
   onDragStart(event) {
-    console.log('onDragStart', event)
+    console.log('onDragStart', event);
   }
 
   onDrag(event) {
-    console.log('onDrag', event)
+    console.log('onDrag', event);
   }
 
   onDragEnd(event) {
-    console.log('onDragEnd', event)
+    console.log('onDragEnd', event);
   }
-};
+}

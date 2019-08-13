@@ -1,10 +1,9 @@
-import SceneWidget  from './SceneWidget.js';
+import SceneWidget from './SceneWidget.js';
 
 class BaseLinearMovementSceneWidget extends SceneWidget {
   constructor(name) {
-    super(name)
-
-  };
+    super(name);
+  }
 
   /////////////////////////////////////
   // Mouse events
@@ -25,7 +24,7 @@ class BaseLinearMovementSceneWidget extends SceneWidget {
     event.holdDist = dist;
     event.holdPos = holdPos;
     event.value = dist;
-    event.delta = dist-this.grabDist;
+    event.delta = dist - this.grabDist;
     this.onDrag(event);
   }
 
@@ -42,23 +41,25 @@ class BaseLinearMovementSceneWidget extends SceneWidget {
 
   onVRControllerButtonDown(event) {
     this.gizmoRay = this.getManipulationRay();
-    
+
     this.activeController = event.controller;
     const xfo = this.activeController.getTipXfo();
     this.grabDist = xfo.tr.subtract(this.gizmoRay.start).dot(this.gizmoRay.dir);
-    const grabPos = this.gizmoRay.start.add(this.gizmoRay.dir.scale(this.grabDist));
+    const grabPos = this.gizmoRay.start.add(
+      this.gizmoRay.dir.scale(this.grabDist)
+    );
     event.grabPos = grabPos;
     this.onDragStart(event);
     return true;
   }
 
   onVRPoseChanged(event) {
-    const xfo = this.activeController.getTipXfo()
+    const xfo = this.activeController.getTipXfo();
     const dist = xfo.tr.subtract(this.gizmoRay.start).dot(this.gizmoRay.dir);
     const holdPos = this.gizmoRay.start.add(this.gizmoRay.dir.scale(dist));
     event.value = dist;
     event.holdPos = holdPos;
-    event.delta = dist-this.grabDist;
+    event.delta = dist - this.grabDist;
     this.onDrag(event);
     return true;
   }
@@ -71,8 +72,6 @@ class BaseLinearMovementSceneWidget extends SceneWidget {
       return true;
     }
   }
-};
-
-export {
-  BaseLinearMovementSceneWidget
 }
+
+export { BaseLinearMovementSceneWidget };

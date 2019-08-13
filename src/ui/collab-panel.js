@@ -8,8 +8,6 @@ class CollabPanel {
   }
 
   mount(parentElement) {
-
-
     const collabMarkup = `
       <div class="ba b--light-blue br2 pa2 h4 overflow-y-auto mb2">
         <ul id="userChips" class="list pa0 ma0"></ul>
@@ -191,12 +189,7 @@ class CollabPanel {
     }
   }
 
-  unMount(parentElement) {
-
-
-  }
+  unMount(parentElement) {}
 }
 
-export {
-  CollabPanel
-}
+export { CollabPanel };

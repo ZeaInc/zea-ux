@@ -4,24 +4,24 @@ class TopMenuBar {
   constructor(parentDomElement, appData, isOverlay) {
     this.appData = appData;
 
-    const headerWrapper = document.createElement("div");
+    const headerWrapper = document.createElement('div');
     headerWrapper.className = 'HeaderWrapper bg-white pa0 bb';
     parentDomElement.appendChild(headerWrapper);
 
-    if(!isOverlay) {
-      this.logo = document.createElement("img");
-      this.logo.className = 'Header__logo pl2'
+    if (!isOverlay) {
+      this.logo = document.createElement('img');
+      this.logo.className = 'Header__logo pl2';
       this.logo.src = './img/Zea_Logo_RGB_320x132.png';
       headerWrapper.appendChild(this.logo);
     }
 
-    this.topMenuItems = document.createElement("div");
+    this.topMenuItems = document.createElement('div');
     this.topMenuItems.id = 'TopMenuWrapper';
     this.topMenuItems.className = 'pure-menu pure-menu-horizontal ml3';
     headerWrapper.appendChild(this.topMenuItems);
 
-    if(!isOverlay) {
-      const userProfileWrapper = document.createElement("div");
+    if (!isOverlay) {
+      const userProfileWrapper = document.createElement('div');
       headerWrapper.appendChild(userProfileWrapper);
 
       this.currentUserChip = new UserChip(
@@ -47,16 +47,16 @@ class TopMenuBar {
       this._addMenuItem(ul, action);
     });
 
-    this.appData.actionRegistry.actionAdded.connect((action)=>{
+    this.appData.actionRegistry.actionAdded.connect(action => {
       this._addMenuItem(ul, action);
-    })
+    });
   }
 
   _addMenuItem(domElement, action) {
     let parentElement = domElement;
-    for(let i=0; i<action.path.length; i++) {
+    for (let i = 0; i < action.path.length; i++) {
       const pathItem = action.path[i];
-      if(!this.__existingItems[pathItem]) {
+      if (!this.__existingItems[pathItem]) {
         const li = this._addLiTo(parentElement, 'pure-menu-item');
         li.classList.add('pure-menu-has-children', 'pure-menu-allow-hover');
         const a = this._addATo(li, 'pure-menu-link', pathItem);
@@ -65,20 +65,26 @@ class TopMenuBar {
 
         this.__existingItems[pathItem] = ul;
       }
-      parentElement = this.__existingItems[pathItem]
+      parentElement = this.__existingItems[pathItem];
     }
 
-    const a = this._addATo(parentElement, 'pure-menu-link', null, action.callback);
+    const a = this._addATo(
+      parentElement,
+      'pure-menu-link',
+      null,
+      action.callback
+    );
     this._addSpanTo(a, 'ActionTitle', action.name);
     this._addSpanTo(a, 'ActionShortcut', this._keyComboAsText(action));
 
-    if(action.key || action.metaKeys) {
+    if (action.key || action.metaKeys) {
       const metaKeys = action.metaKeys || {};
       const keyComboExpected = (
         this._comboFragment(metaKeys.alt, 'A') +
         this._comboFragment(metaKeys.control, 'C') +
         this._comboFragment(metaKeys.shift, 'S') +
-        (action.key || '')).toLowerCase();
+        (action.key || '')
+      ).toLowerCase();
       this.__hotkeysToActions[keyComboExpected] = action;
     }
 
@@ -89,33 +95,30 @@ class TopMenuBar {
       });
     }
     if (action.activatedChanged) {
-      action.activatedChanged.connect((state)=>{
-        if(state)
-          a.className = "pure-menu-link ActionedMenu";
-        else
-          a.className = "pure-menu-link";
-      })
+      action.activatedChanged.connect(state => {
+        if (state) a.className = 'pure-menu-link ActionedMenu';
+        else a.className = 'pure-menu-link';
+      });
     }
   }
 
   _addKeyListener() {
     let keyComboPressed;
-    
+
     document.addEventListener('keypress', e => {
       // console.log("keypress")
     });
     document.addEventListener('keydown', e => {
-      if(keyComboPressed)
-        return;
+      if (keyComboPressed) return;
       // Ignore events intended for input elements.
-      if(e.target instanceof HTMLInputElement)
-        return;
+      if (e.target instanceof HTMLInputElement) return;
       let keys = (
         this._comboFragment(e.altKey, 'A') +
         this._comboFragment(e.metaKey || e.ctrlKey, 'C') +
         this._comboFragment(e.shiftKey, 'S') +
-        (((e.key != 'Alt') && (e.key != 'Ctrl')) ? e.key : '')).toLowerCase();
-      if(keys in this.__hotkeysToActions){
+        (e.key != 'Alt' && e.key != 'Ctrl' ? e.key : '')
+      ).toLowerCase();
+      if (keys in this.__hotkeysToActions) {
         const action = this.__hotkeysToActions[keys];
         action.callback(event);
         keyComboPressed = keys;
@@ -123,11 +126,10 @@ class TopMenuBar {
       }
     });
     document.addEventListener('keyup', e => {
-      if(!keyComboPressed)
-        return;
-      if(keyComboPressed in this.__hotkeysToActions){
+      if (!keyComboPressed) return;
+      if (keyComboPressed in this.__hotkeysToActions) {
         const action = this.__hotkeysToActions[keyComboPressed];
-        if(action.hotkeyReleaseCallback){
+        if (action.hotkeyReleaseCallback) {
           action.hotkeyReleaseCallback(event);
           event.preventDefault();
         }
@@ -186,19 +188,18 @@ class TopMenuBar {
     if (!key && !metaKeys) {
       return '';
     }
-    if(metaKeys){
-      return 
-        (metaKeys.shift ? this._comboFragment(metaKeys.shift, 'Shift') : '') +
+    if (metaKeys) {
+      return;
+      (metaKeys.shift ? this._comboFragment(metaKeys.shift, 'Shift') : '') +
         (metaKeys.alt ? this._comboFragment(metaKeys.alt, 'Alt') : '') +
-        (metaKeys.control ? this._comboFragment(metaKeys.control, 'Ctrl') : '') +
+        (metaKeys.control
+          ? this._comboFragment(metaKeys.control, 'Ctrl')
+          : '') +
         key;
-    }
-    else {
-      return key
+    } else {
+      return key;
     }
   }
 }
 
-export {
-  TopMenuBar
-};
+export { TopMenuBar };

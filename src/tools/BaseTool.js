@@ -1,17 +1,15 @@
-
 export default class BaseTool extends Visualive.ParameterOwner {
   constructor(appData) {
     super();
-    if(!appData)
-      console.error("App data not provided to tool")
+    if (!appData) console.error('App data not provided to tool');
     this.appData = appData;
 
-    // When the tool becomes active ready 
+    // When the tool becomes active ready
     this.installChanged = new Visualive.Signal();
     this.activatedChanged = new Visualive.Signal();
     this.actionFinished = new Visualive.Signal();
 
-    this.__params = []
+    this.__params = [];
     this.__installed = false;
     this.__activated = false;
   }
@@ -32,28 +30,26 @@ export default class BaseTool extends Visualive.ParameterOwner {
   }
 
   install(index) {
-    if(this.__installed)
-      throw("Tool already installed")
+    if (this.__installed) throw 'Tool already installed';
     this.index = index;
     this.__installed = true;
-    this.installChanged.emit(true)
+    this.installChanged.emit(true);
   }
 
   uninstall() {
     this.__installed = false;
-    this.installChanged.emit(false)
+    this.installChanged.emit(false);
   }
 
   activateTool() {
-    if(this.__activated)
-      throw("Tool already activate")
+    if (this.__activated) throw 'Tool already activate';
     this.__activated = true;
-    this.activatedChanged.emit(true)
+    this.activatedChanged.emit(true);
   }
 
   deactivateTool() {
     this.__activated = false;
-    this.activatedChanged.emit(false)
+    this.activatedChanged.emit(false);
   }
 
   /////////////////////////////////////
@@ -64,11 +60,10 @@ export default class BaseTool extends Visualive.ParameterOwner {
   onMouseMove(event) {}
 
   onMouseUp(event) {}
-  
+
   onDoubleClick(event) {}
 
   onWheel(event) {}
-
 
   /////////////////////////////////////
   // Keyboard events
@@ -99,5 +94,4 @@ export default class BaseTool extends Visualive.ParameterOwner {
   onVRControllerDoubleClicked(event) {}
 
   onVRPoseChanged(event) {}
-
-};
+}

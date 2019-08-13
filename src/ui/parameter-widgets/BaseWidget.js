@@ -1,6 +1,5 @@
 class BaseWidget {
-  constructor(parameter) {
-  }
+  constructor(parameter) {}
 }
 
 export default BaseWidget;
