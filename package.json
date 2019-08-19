@@ -10,6 +10,8 @@
   "scripts": {
     "build": "webpack --config webpack-prod.config.js",
     "build:dev": "webpack --mode=development --watch --config webpack-dev.config.js",
+    "docs": "documentation build src/** -f html -o docs",
+    "docs:serve": "documentation serve --watch src/**",
     "dist": "webpack --config webpack-prod.config.js && yarn publish --access=public"
   },
   "repository": {
@@ -23,6 +25,7 @@
   "author": "Visualive",
   "license": "ISC",
   "devDependencies": {
+    "documentation": "^12.1.1",
     "eslint": "^6.1.0",
     "eslint-config-airbnb-base": "^13.2.0",
     "eslint-plugin-import": "^2.18.2",
