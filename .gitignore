@@ -1,4 +1,5 @@
-.cache/
-node_modules/
-tmuxp.json
 dist/
+node_modules/
+.cache/
+
+.tmuxp.json

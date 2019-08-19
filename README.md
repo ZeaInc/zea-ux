@@ -1,8 +1,17 @@
 # Visualive UX
 
-`npm install @visualive/ux`
+```bash
+npm install @visualive/ux
+```
 
+## Pack without publishing
+
+```bash
+npm pack
+```
 
 ## To build and dist
 
-`yarn dist`
+```bash
+yarn dist
+```

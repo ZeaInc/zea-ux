@@ -2,6 +2,9 @@
   "name": "@visualive/ux",
   "version": "0.0.62",
   "description": "",
+  "files": [
+    "/dist/"
+  ],
   "keywords": [],
   "main": "./dist/visualive-ux.js",
   "scripts": {
