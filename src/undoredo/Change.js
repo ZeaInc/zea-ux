@@ -1,6 +1,11 @@
 import UndoRedoManager from './UndoRedoManager.js';
 
+/** Class representing a change. */
 export default class Change {
+  /**
+   * Create a change.
+   * @param {any} name - The name value.
+   */
   constructor(name) {
     this.name = name ? name : UndoRedoManager.getChangeClassName(this);
 

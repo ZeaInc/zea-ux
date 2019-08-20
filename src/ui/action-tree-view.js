@@ -1,7 +1,13 @@
 import uxFactory from './UxFactory.js';
 import ParameterValueChange from '../undoredo/ParameterValueChange.js';
 
+/** Class representing an action tree view. */
 class ActionTreeView {
+  /**
+   * Create an action tree view.
+   * @param {any} domElement - The domElement value.
+   * @param {any} actionRegistry - The actionRegistry value.
+   */
   constructor(domElement, actionRegistry) {
     this.domElement = domElement;
     this.actionRegistry = actionRegistry;

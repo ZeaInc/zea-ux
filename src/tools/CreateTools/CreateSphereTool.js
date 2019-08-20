@@ -1,7 +1,16 @@
 import UndoRedoManager from '../../undoredo/UndoRedoManager.js';
 import { CreateGeomChange, CreateGeomTool } from './CreateGeomTool.js';
 
+/**
+ * Class representing a create sphere change.
+ * @extends CreateGeomChange
+ */
 class CreateSphereChange extends CreateGeomChange {
+  /**
+   * Create a create sphere change.
+   * @param {any} parentItem - The parentItem value.
+   * @param {any} xfo - The xfo value.
+   */
   constructor(parentItem, xfo) {
     super('Create Sphere', parentItem);
 

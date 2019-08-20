@@ -5,7 +5,16 @@ import Change from './undoredo/Change.js';
 import XfoHandle from './sceneWidgets/XfoHandle.js';
 import { SelectionTool } from './tools/SelectionTool.js';
 
+/** Class representing a selection change.
+ * @extends Change
+ */
 class SelectionChange extends Change {
+  /**
+   * Create a selection change.
+   * @param {any} selectionManager - The selectionManager value.
+   * @param {any} prevSelection - The prevSelection value.
+   * @param {any} newSelection - The newSelection value.
+   */
   constructor(selectionManager, prevSelection, newSelection) {
     super('SelectionChange');
     this.__selectionManager = selectionManager;

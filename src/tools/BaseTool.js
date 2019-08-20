@@ -1,4 +1,12 @@
+/**
+ * Class representing a base tool.
+ * @extends Visualive.ParameterOwner
+ */
 export default class BaseTool extends Visualive.ParameterOwner {
+  /**
+   * Create a base tool.
+   * @param {any} appData - The appData value.
+   */
   constructor(appData) {
     super();
     if (!appData) console.error('App data not provided to tool');

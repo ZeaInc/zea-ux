@@ -3,7 +3,15 @@ import SceneWidget from '../../sceneWidgets/SceneWidget.js';
 import UndoRedoManager from '../../undoredo/UndoRedoManager.js';
 import Change from '../../undoredo/Change.js';
 
+/**
+ * Class representing a hold objects change.
+ * @extends Change
+ */
 class HoldObjectsChange extends Change {
+  /**
+   * Create a hold objects change.
+   * @param {any} data - The data value.
+   */
   constructor(data) {
     super('HoldObjectsChange');
 

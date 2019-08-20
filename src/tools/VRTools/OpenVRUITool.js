@@ -1,6 +1,15 @@
 import BaseTool from '../BaseTool.js';
 
+/**
+ * Class representing an open VR UI tool.
+ * @extends BaseTool
+ */
 class OpenVRUITool extends BaseTool {
+  /**
+   * Create an open VR UI tool.
+   * @param {any} appData - The appData value.
+   * @param {any} vrUITool - The vrUITool value.
+   */
   constructor(appData, vrUITool) {
     super(appData);
 

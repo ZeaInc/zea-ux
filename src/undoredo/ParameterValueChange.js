@@ -1,7 +1,16 @@
 import UndoRedoManager from './UndoRedoManager.js';
 import Change from './Change.js';
 
+/**
+ * Class representing a parameter value change.
+ * @extends Change
+ */
 class ParameterValueChange extends Change {
+  /**
+   * Create a parameter value change.
+   * @param {any} param - The param value.
+   * @param {any} newValue - The newValue value.
+   */
   constructor(param, newValue) {
     if (param) {
       super(param ? param.getName() + ' Changed' : 'ParameterValueChange');

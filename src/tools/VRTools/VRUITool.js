@@ -2,7 +2,15 @@
 import BaseTool from '../BaseTool.js';
 import VRControllerUI from './VRControllerUI.js';
 
+/**
+ * Class representing a VR UI tool.
+ * @extends BaseTool
+ */
 class VRUITool extends BaseTool {
+  /**
+   * Create a VR UI tool.
+   * @param {any} appData - The appData value.
+   */
   constructor(appData) {
     super(appData);
 

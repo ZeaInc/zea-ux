@@ -1,4 +1,8 @@
+/** Class representing a UX factory. */
 class UxFactory {
+  /**
+   * Create a UX factory.
+   */
   constructor() {
     this.treeItemFactories = [];
     this.widgetFactories = [];

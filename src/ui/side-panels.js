@@ -1,4 +1,9 @@
+/** Class representing a side panel. */
 class SidePanel {
+  /**
+   * Create a side panel.
+   * @param {any} panelSide - The panelSide value.
+   */
   constructor(panelSide) {
     this.panelSide = panelSide;
 

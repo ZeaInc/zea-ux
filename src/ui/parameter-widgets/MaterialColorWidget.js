@@ -23,7 +23,17 @@ import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 //   }
 // }
 
+/**
+ * Class representing a material color widget.
+ * @extends BaseWidget
+ */
 export default class MaterialColorWidget extends BaseWidget {
+  /**
+   * Create a material color widget.
+   * @param {any} parameter - The parameter value.
+   * @param {any} parentDomElem - The parentDomElem value.
+   * @param {any} appData - The appData value.
+   */
   constructor(parameter, parentDomElem, appData) {
     super(parameter);
 

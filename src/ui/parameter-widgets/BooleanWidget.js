@@ -3,7 +3,17 @@ import BaseWidget from './BaseWidget.js';
 import uxFactory from '../UxFactory.js';
 import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 
+/**
+ * Class representing a boolean widget.
+ * @extends BaseWidget
+ */
 export default class BooleanWidget extends BaseWidget {
+  /**
+   * Create a boolean widget.
+   * @param {any} parameter - The parameter value.
+   * @param {any} parentDomElem - The parentDomElem value.
+   * @param {any} appData - The appData value.
+   */
   constructor(parameter, parentDomElem, appData) {
     super(parameter);
     const input = document.createElement('input');

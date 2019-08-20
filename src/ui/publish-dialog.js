@@ -1,4 +1,8 @@
+/** Class representing a publish dialog. */
 class PublishDialog {
+  /**
+   * Create a publish dialog.
+   */
   constructor() {
     this.__publishDialogHolder = document.createElement('div');
     this.__publishDialogHolder.className = 'publish-dialog-bg';

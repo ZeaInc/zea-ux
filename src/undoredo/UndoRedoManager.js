@@ -3,7 +3,11 @@
 const __changeClasses = {};
 const __classNames = {};
 
+/** Class representing an undo redo manager. */
 class UndoRedoManager {
+  /**
+   * Create an undo redo manager.
+   */
   constructor() {
     this.__undoStack = [];
     this.__redoStack = [];

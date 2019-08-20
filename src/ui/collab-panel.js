@@ -1,7 +1,12 @@
 import { VisualiveSession } from '@visualive/collab';
 import { UserChip } from './user-chip.js';
 
+/** Class representing a collab panel. */
 class CollabPanel {
+  /**
+   * Create a collab panel.
+   * @param {any} visualiveSession - The visualiveSession value.
+   */
   constructor(visualiveSession) {
     this.userSelected = new Visualive.Signal();
     this.visualiveSession = visualiveSession;

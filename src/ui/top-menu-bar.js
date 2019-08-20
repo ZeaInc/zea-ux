@@ -1,6 +1,13 @@
 import { UserChip } from './user-chip.js';
 
+/** Class representing a top menu bar. */
 class TopMenuBar {
+  /**
+   * Create a top menu bar.
+   * @param {any} parentDomElement - The parentDomElement value.
+   * @param {any} appData - The appData value.
+   * @param {any} isOverlay - The isOverlay value.
+   */
   constructor(parentDomElement, appData, isOverlay) {
     this.appData = appData;
 

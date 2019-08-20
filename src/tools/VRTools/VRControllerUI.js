@@ -2,7 +2,17 @@ import domtoimage from './dom-to-image.js';
 
 const VR_UI_ELEM_CLASS = 'VRUIElement';
 
+/**
+ * Class representing a VR controller UI.
+ * @extends Visualive.GeomItem
+ */
 export default class VRControllerUI extends Visualive.GeomItem {
+  /**
+   * Create a VR controller UI.
+   * @param {any} appData - The appData value.
+   * @param {any} vrUIDOMHolderElement - The vrUIDOMHolderElement value.
+   * @param {any} vrUIDOMElement - The vrUIDOMElement value.
+   */
   constructor(appData, vrUIDOMHolderElement, vrUIDOMElement) {
     const uimat = new Visualive.Material('uimat', 'FlatSurfaceShader');
     uimat.visibleInGeomDataBuffer = false;

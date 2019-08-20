@@ -6,7 +6,17 @@ import NameWidget from './NameWidget.js';
 import uxFactory from '../UxFactory.js';
 import ParameterContainer from '../parameter-container.js';
 
+/**
+ * Class representing a parameter owner widget.
+ * @extends BaseWidget
+ */
 export default class ParameterOwnerWidget extends BaseWidget {
+  /**
+   * Create a parameter owner widget.
+   * @param {any} parameter - The parameter value.
+   * @param {any} parentDomElem - The parentDomElem value.
+   * @param {any} appData - The appData value.
+   */
   constructor(parameter, parentDomElem, appData) {
     super(parameter);
 

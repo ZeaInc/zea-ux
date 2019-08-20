@@ -3,7 +3,17 @@ import BaseWidget from './BaseWidget.js';
 import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 import uxFactory from '../UxFactory.js';
 
+/**
+ * Class representing a string widget.
+ * @extends BaseWidget
+ */
 export default class StringWidget extends BaseWidget {
+  /**
+   * Create a string widget.
+   * @param {any} parameter - The parameter value.
+   * @param {any} parentDomElem - The parentDomElem value.
+   * @param {any} appData - The appData value.
+   */
   constructor(parameter, parentDomElem, appData) {
     super(parameter);
 

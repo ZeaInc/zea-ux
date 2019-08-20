@@ -1,7 +1,17 @@
 import { BaseLinearMovementSceneWidget } from './BaseLinearMovementSceneWidget.js';
 import ParameterValueChange from '../undoredo/ParameterValueChange.js';
 
+/** Class representing a linear movement scene widget.
+ * @extends BaseLinearMovementSceneWidget
+ */
 class LinearMovementSceneWidget extends BaseLinearMovementSceneWidget {
+  /**
+   * Create a linear movement scene widget.
+   * @param {any} name - The name value.
+   * @param {any} length - The length value.
+   * @param {any} thickness - The thickness value.
+   * @param {any} color - The color value.
+   */
   constructor(name, length, thickness, color) {
     super(name);
 

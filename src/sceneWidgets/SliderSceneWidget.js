@@ -2,7 +2,17 @@ import { BaseLinearMovementSceneWidget } from './BaseLinearMovementSceneWidget.j
 
 import ParameterValueChange from '../undoredo/ParameterValueChange.js';
 
+/** Class representing a slider scene widget.
+ * @extends BaseLinearMovementSceneWidget
+ */
 class SliderSceneWidget extends BaseLinearMovementSceneWidget {
+  /**
+   * Create a slider scene widget.
+   * @param {any} name - The name value.
+   * @param {any} length - The length value.
+   * @param {any} radius - The radius value.
+   * @param {any} color - The color value.
+   */
   constructor(
     name,
     length = 0.5,

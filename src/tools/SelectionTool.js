@@ -2,7 +2,15 @@ import UndoRedoManager from '../undoredo/UndoRedoManager.js';
 import BaseTool from './BaseTool.js';
 import SceneWidget from '../sceneWidgets/SceneWidget.js';
 
+/**
+ * Class representing a selection tool.
+ * @extends BaseTool
+ */
 class SelectionTool extends BaseTool {
+  /**
+   * Create a selection tool.
+   * @param {any} appData - The appData value.
+   */
   constructor(appData) {
     super(appData);
 

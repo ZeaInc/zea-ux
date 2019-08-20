@@ -90,7 +90,17 @@ import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 //   }
 // }
 
+/**
+ * Class representing an item set widget.
+ * @extends BaseWidget
+ */
 export default class ItemSetWidget extends BaseWidget {
+  /**
+   * Create an item set widget.
+   * @param {any} parameter - The parameter value.
+   * @param {any} parentDomElem - The parentDomElem value.
+   * @param {any} appData - The appData value.
+   */
   constructor(parameter, parentDomElem, appData) {
     super(parameter);
     const select = document.createElement('select');

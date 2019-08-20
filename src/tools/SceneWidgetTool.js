@@ -1,7 +1,15 @@
 import BaseTool from './BaseTool.js';
 import SceneWidget from '../sceneWidgets/SceneWidget.js';
 
+/**
+ * Class representing a scene widget tool.
+ * @extends BaseTool
+ */
 class SceneWidgetTool extends BaseTool {
+  /**
+   * Create a scene widget tool
+   * @param {any} appData - The appData value.
+   */
   constructor(appData) {
     super(appData);
 

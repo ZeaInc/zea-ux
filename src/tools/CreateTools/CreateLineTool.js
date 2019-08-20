@@ -1,7 +1,18 @@
 import UndoRedoManager from '../../undoredo/UndoRedoManager.js';
 import { CreateGeomChange, CreateGeomTool } from './CreateGeomTool.js';
 
+/**
+ * Class representing a create line change.
+ * @extends CreateGeomChange
+ */
 class CreateLineChange extends CreateGeomChange {
+  /**
+   * Create a create line change.
+   * @param {any} parentItem - The parentItem value.
+   * @param {any} xfo - The xfo value.
+   * @param {any} color - The color value.
+   * @param {any} thickness - The thickness value.
+   */
   constructor(parentItem, xfo, color, thickness) {
     super('Create Line');
 

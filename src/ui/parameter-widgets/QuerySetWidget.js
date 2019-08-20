@@ -270,7 +270,17 @@ const addQueryWidget = (querySet, query, parentDomElem, appData) => {
   return ul;
 };
 
+/**
+ * Class representing a query set widget.
+ * @extends BaseWidget
+ */
 export default class QuerySetWidget extends BaseWidget {
+  /**
+   * Create a query set widget.
+   * @param {any} parameter - The parameter value.
+   * @param {any} parentDomElem - The parentDomElem value.
+   * @param {any} appData - The appData value.
+   */
   constructor(parameter, parentDomElem, appData) {
     super(parameter);
 

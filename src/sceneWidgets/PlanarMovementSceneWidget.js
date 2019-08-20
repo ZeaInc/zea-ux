@@ -1,7 +1,17 @@
 import SceneWidget from './SceneWidget.js';
 import ParameterValueChange from '../undoredo/ParameterValueChange.js';
 
+/** Class representing a planar movement scene widget.
+ * @extends SceneWidget
+ */
 class PlanarMovementSceneWidget extends SceneWidget {
+  /**
+   * Create a planar movement scene widget.
+   * @param {any} name - The name value.
+   * @param {any} size - The size value.
+   * @param {any} color - The color value.
+   * @param {any} offset - The offset value.
+   */
   constructor(name, size, color, offset) {
     super(name);
 

@@ -1,7 +1,15 @@
 import uxFactory from './UxFactory.js';
 import ParameterValueChange from '../undoredo/ParameterValueChange.js';
 
+/** Class representing a tree item element. */
 class TreeItemElement {
+  /**
+   * Create a tree item element.
+   * @param {any} treeItem - The treeItem value.
+   * @param {any} parentDomElement - The parentDomElement value.
+   * @param {any} appData - The appData value.
+   * @param {boolean} expanded - The expanded value.
+   */
   constructor(treeItem, parentDomElement, appData, expanded = false) {
     this.treeItem = treeItem;
     this.parentDomElement = parentDomElement;

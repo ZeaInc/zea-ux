@@ -1,7 +1,18 @@
 import SceneWidget from './SceneWidget.js';
 import ParameterValueChange from '../undoredo/ParameterValueChange.js';
 
+/**
+ * Class representing an axial rotation scene widget.
+ * @extends SceneWidget
+ */
 class AxialRotationSceneWidget extends SceneWidget {
+  /**
+   * Create an axial rotation scene widget.
+   * @param {any} name - The name value.
+   * @param {any} radius - The radius value.
+   * @param {any} thickness - The thickness value.
+   * @param {any} color - The color value.
+   */
   constructor(name, radius, thickness, color) {
     super(name);
 

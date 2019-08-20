@@ -1,4 +1,8 @@
+/** Class representing an action registry. */
 class ActionRegistry {
+  /**
+   * Create an action registry.
+   */
   constructor() {
     this.actions = [];
     this.actionAdded = new Visualive.Signal();

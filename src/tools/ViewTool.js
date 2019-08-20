@@ -5,7 +5,16 @@ const VIEW_TOOL_MODELS = {
   DCC: 1,
 };
 
+/**
+ * Class representing a view tool
+ * @extends BaseTool
+ */
 class ViewTool extends BaseTool {
+  /**
+   * Create an axial rotation scene widget.
+   * @param {any} appData - The appData value.
+   * @param {any} maipulationModel - The maipulationModel value.
+   */
   constructor(appData, maipulationModel = VIEW_TOOL_MODELS.VIEWER) {
     super(appData);
     console.log('ViewTool:', maipulationModel);

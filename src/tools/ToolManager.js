@@ -1,4 +1,9 @@
+/** Class representing a tool manager. */
 class ToolManager {
+  /**
+   * Create a tool manager.
+   * @param {any} appData - The appData value.
+   */
   constructor(appData) {
     this.__toolStack = [];
     this.appData = appData;

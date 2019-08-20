@@ -1,6 +1,13 @@
 import uxFactory from '../ui/UxFactory.js';
 
+/** Class representing a parameter container. */
 class ParameterContainer {
+  /**
+   * Create a parameter container.
+   * @param {any} parameterOwner - The parameterOwner value.
+   * @param {any} domElement - The domElement value.
+   * @param {any} appData - The appData value.
+   */
   constructor(parameterOwner, domElement, appData) {
     this.domElement = domElement;
     this.clean();

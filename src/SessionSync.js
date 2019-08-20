@@ -47,7 +47,14 @@ const convertValuesFromJSON = (value, scene) => {
   }
 };
 
+/** Class representing a session sync. */
 class SessionSync {
+  /**
+   * Create a session sync.
+   * @param {any} visualiveSession - The visualiveSession value.
+   * @param {any} appData - The appData value.
+   * @param {any} currentUser - The currentUser value.
+   */
   constructor(visualiveSession, appData, currentUser) {
     // const currentUserAvatar = new Avatar(appData, currentUser, true);
 

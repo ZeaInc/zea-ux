@@ -1,7 +1,15 @@
 // A SceneWidget is a UI widget that lives in the scene.
 // Much like a slider, it translates a series of
 // mouse events into a higher level interaction.
+
+/** Class representing a scene widget.
+ * @extends Visualive.TreeItem
+ */
 export default class SceneWidget extends Visualive.TreeItem {
+  /**
+   * Create a scene widget.
+   * @param {any} name - The name value.
+   */
   constructor(name) {
     super(name);
     this.manipulateBegin = new Visualive.Signal();

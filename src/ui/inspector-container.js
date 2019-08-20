@@ -1,6 +1,11 @@
 import uxFactory from './UxFactory.js';
 
+/** Class representing an inspector container. */
 class InspectorContainer {
+  /**
+   * Create an inspector container.
+   * @param {any} appData - The appData value.
+   */
   constructor(appData) {
     this.appData = appData;
 

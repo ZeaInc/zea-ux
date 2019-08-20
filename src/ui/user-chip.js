@@ -1,4 +1,10 @@
+/** Class representing a user chip. */
 class UserChip {
+  /**
+   * Create a user chip.
+   * @param {any} domElement - The domElement value.
+   * @param {any} userData - The userData value.
+   */
   constructor(domElement, userData) {
     this.userPressed = new Visualive.Signal();
 

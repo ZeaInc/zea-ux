@@ -1,7 +1,15 @@
 // import * as Visualive from '@visualive/engine';
 
 const up = new Visualive.Vec3(0, 0, 1);
+
+/** Class representing an avatar. */
 export default class Avatar {
+  /**
+   * Create an avatar.
+   * @param {any} appData - The appData value.
+   * @param {any} userData - The userData value.
+   * @param {boolean} currentUserAvatar - The currentUserAvatar value.
+   */
   constructor(appData, userData, currentUserAvatar = false) {
     this.__appData = appData;
     this.__userData = userData;

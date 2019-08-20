@@ -1,7 +1,15 @@
 import BaseCreateTool from '../BaseCreateTool.js';
 import Change from '../../undoredo/Change.js';
 
+/**
+ * Class representing a create geom change.
+ * @extends Change
+ */
 class CreateGeomChange extends Change {
+  /**
+   * Create a create circle change.
+   * @param {any} name - The name value.
+   */
   constructor(name) {
     super(name);
   }

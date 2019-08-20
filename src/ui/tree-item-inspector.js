@@ -2,7 +2,12 @@ import ParameterContainer from './parameter-container.js';
 import uxFactory from './UxFactory.js';
 import NameWidget from './parameter-widgets/NameWidget.js';
 
+/** Class representing a name param. */
 class NameParam {
+  /**
+   * Create a name param.
+   * @param {any} treeItem - The treeItem value.
+   */
   constructor(treeItem) {
     this._treeItem = treeItem;
     this.valueChanged = treeItem.nameChanged;

@@ -1,4 +1,8 @@
+/** Class representing a signal. */
 class Signal {
+  /**
+   * Create a signal.
+   */
   constructor() {
     this.__slots = [];
     this.connect = this.connect.bind(this);

@@ -4,7 +4,16 @@ import { PlanarMovementSceneWidget } from './PlanarMovementSceneWidget.js';
 import { AxialRotationSceneWidget } from './AxialRotationSceneWidget.js';
 import { LinearScaleSceneWidget } from './LinearScaleSceneWidget.js';
 
+/**
+ * Class representing an xfo handle.
+ * @extends Visualive.TreeItem
+ */
 export default class XfoHandle extends Visualive.TreeItem {
+  /**
+   * Create an axial rotation scene widget.
+   * @param {any} size - The size value.
+   * @param {any} thickness - The thickness value.
+   */
   constructor(size, thickness) {
     super('XfoHandle');
 

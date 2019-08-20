@@ -3,7 +3,16 @@ import UndoRedoManager from '../../undoredo/UndoRedoManager.js';
 
 import uxFactory from '../UxFactory.js';
 
+/**
+ * Class representing a name value change.
+ * @extends Change
+ */
 class NameValueChange extends Change {
+  /**
+   * Create a name value change.
+   * @param {any} item - The item value.
+   * @param {any} newValue - The newValue value.
+   */
   constructor(item, newValue) {
     if (item) {
       super(item ? item.getName() + ' Name Changed' : 'NameValueChange');

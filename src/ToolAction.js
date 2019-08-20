@@ -1,6 +1,17 @@
 import Action from './Action.js';
 
+/** Class representing a tool action.
+ * @extends Action
+ */
 class ToolAction extends Action {
+  /**
+   * Create a tool action.
+   * @param {any} name - The name value.
+   * @param {any} path - The path value.
+   * @param {any} availableInVR - The availableInVR value.
+   * @param {any} toolManager - The toolManager value.
+   * @param {any} tool - The tool value.
+   */
   constructor(name, path, availableInVR, toolManager, tool) {
     super(name, path, availableInVR);
     this.toolManager = toolManager;

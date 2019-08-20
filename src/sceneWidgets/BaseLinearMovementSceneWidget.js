@@ -1,6 +1,13 @@
 import SceneWidget from './SceneWidget.js';
 
+/**
+ * Class representing a base linear movement scene widget.
+ * @extends SceneWidget
+ */
 class BaseLinearMovementSceneWidget extends SceneWidget {
+  /**
+   * Create base linear movement scene widget.
+   */
   constructor(name) {
     super(name);
   }
