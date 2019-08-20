@@ -12,6 +12,7 @@
     "build:dev": "webpack --mode=development --watch --config webpack-dev.config.js",
     "docs": "documentation build src/** -f html -o docs",
     "docs:serve": "documentation serve --watch src/**",
+    "docs:lint": "documentation lint src/**",
     "dist": "webpack --config webpack-prod.config.js && yarn publish --access=public"
   },
   "repository": {
