@@ -23,7 +23,8 @@ class SidePanel {
     // Side panels are collapsed by default.
     this.domElement.style.width = `0px`;
 
-    let startX, startWidth;
+    let startX;
+    let startWidth;
 
     const initDrag = event => {
       startX = event.clientX;
@@ -224,7 +225,8 @@ class BottomPanel {
     this.domElement.className = 'BottomPanel overflow-auto pa2';
     this.domElement.style.height = `0px`;
 
-    let startY, startHeight;
+    let startY;
+    let startHeight;
 
     const initDrag = event => {
       startY = event.clientY;

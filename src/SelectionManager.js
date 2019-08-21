@@ -3,7 +3,6 @@
 import UndoRedoManager from './undoredo/UndoRedoManager.js';
 import Change from './undoredo/Change.js';
 import XfoHandle from './sceneWidgets/XfoHandle.js';
-import { SelectionTool } from './tools/SelectionTool.js';
 
 /** Class representing a selection change.
  * @extends Change

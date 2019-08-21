@@ -1,20 +1,20 @@
 (function(global) {
   'use strict';
 
-  var util = newUtil();
-  var inliner = newInliner();
-  var fontFaces = newFontFaces();
-  var images = newImages();
+  const util = newUtil();
+  const inliner = newInliner();
+  const fontFaces = newFontFaces();
+  const images = newImages();
 
   // Default impl options
-  var defaultOptions = {
+  const defaultOptions = {
     // Default is to fail on error, no placeholder
     imagePlaceholder: undefined,
     // Default cache bust is false, it will use the cache
     cacheBust: false,
   };
 
-  var domtoimage = {
+  const domtoimage = {
     toSvg: toSvg,
     toPng: toPng,
     toJpeg: toJpeg,
@@ -158,18 +158,18 @@
       .then(util.makeImage)
       .then(util.delay(100))
       .then(function(image) {
-        var canvas = newCanvas(domNode);
+        const canvas = newCanvas(domNode);
         canvas.getContext('2d').drawImage(image, 0, 0);
         return canvas;
       });
 
     function newCanvas(domNode) {
-      var canvas = document.createElement('canvas');
+      const canvas = document.createElement('canvas');
       canvas.width = options.width || util.width(domNode);
       canvas.height = options.height || util.height(domNode);
 
       if (options.bgcolor) {
-        var ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext('2d');
         ctx.fillStyle = options.bgcolor;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
       }
@@ -197,7 +197,7 @@
     }
 
     function cloneChildren(original, clone, filter) {
-      var children = original.childNodes;
+      const children = original.childNodes;
       if (children.length === 0) return Promise.resolve(clone);
 
       return cloneChildrenInOrder(clone, util.asArray(children), filter).then(
@@ -207,7 +207,7 @@
       );
 
       function cloneChildrenInOrder(parent, children, filter) {
-        var done = Promise.resolve();
+        let done = Promise.resolve();
         children.forEach(function(child) {
           done = done
             .then(function() {
@@ -258,28 +258,28 @@
         });
 
         function clonePseudoElement(element) {
-          var style = window.getComputedStyle(original, element);
-          var content = style.getPropertyValue('content');
+          const style = window.getComputedStyle(original, element);
+          const content = style.getPropertyValue('content');
 
           if (content === '' || content === 'none') return;
 
-          var className = util.uid();
+          const className = util.uid();
           clone.className = clone.className + ' ' + className;
-          var styleElement = document.createElement('style');
+          const styleElement = document.createElement('style');
           styleElement.appendChild(
             formatPseudoElementStyle(className, element, style)
           );
           clone.appendChild(styleElement);
 
           function formatPseudoElementStyle(className, element, style) {
-            var selector = '.' + className + ':' + element;
-            var cssText = style.cssText
+            const selector = '.' + className + ':' + element;
+            const cssText = style.cssText
               ? formatCssText(style)
               : formatCssProperties(style);
             return document.createTextNode(selector + '{' + cssText + '}');
 
             function formatCssText(style) {
-              var content = style.getPropertyValue('content');
+              const content = style.getPropertyValue('content');
               return style.cssText + ' content: ' + content + ';';
             }
 
@@ -317,7 +317,7 @@
 
         if (!(clone instanceof SVGRectElement)) return;
         ['width', 'height'].forEach(function(attribute) {
-          var value = clone.getAttribute(attribute);
+          const value = clone.getAttribute(attribute);
           if (!value) return;
 
           clone.style.setProperty(attribute, value);
@@ -328,7 +328,7 @@
 
   function embedFonts(node) {
     return fontFaces.resolveAll().then(function(cssText) {
-      var styleNode = document.createElement('style');
+      const styleNode = document.createElement('style');
       node.appendChild(styleNode);
       styleNode.appendChild(document.createTextNode(cssText));
       return node;
@@ -395,8 +395,8 @@
        * Only WOFF and EOT mime types for fonts are 'real'
        * see http://www.iana.org/assignments/media-types/media-types.xhtml
        */
-      var WOFF = 'application/font-woff';
-      var JPEG = 'image/jpeg';
+      const WOFF = 'application/font-woff';
+      const JPEG = 'image/jpeg';
 
       return {
         woff: WOFF,
@@ -413,13 +413,13 @@
     }
 
     function parseExtension(url) {
-      var match = /\.([^\.\/]*?)$/g.exec(url);
+      const match = /\.([^\.\/]*?)$/g.exec(url);
       if (match) return match[1];
       else return '';
     }
 
     function mimeType(url) {
-      var extension = parseExtension(url).toLowerCase();
+      const extension = parseExtension(url).toLowerCase();
       return mimes()[extension] || '';
     }
 
@@ -429,11 +429,11 @@
 
     function toBlob(canvas) {
       return new Promise(function(resolve) {
-        var binaryString = window.atob(canvas.toDataURL().split(',')[1]);
-        var length = binaryString.length;
-        var binaryArray = new Uint8Array(length);
+        const binaryString = window.atob(canvas.toDataURL().split(',')[1]);
+        const length = binaryString.length;
+        const binaryArray = new Uint8Array(length);
 
-        for (var i = 0; i < length; i++)
+        for (let i = 0; i < length; i++)
           binaryArray[i] = binaryString.charCodeAt(i);
 
         resolve(
@@ -454,10 +454,10 @@
     }
 
     function resolveUrl(url, baseUrl) {
-      var doc = document.implementation.createHTMLDocument();
-      var base = doc.createElement('base');
+      const doc = document.implementation.createHTMLDocument();
+      const base = doc.createElement('base');
       doc.head.appendChild(base);
-      var a = doc.createElement('a');
+      const a = doc.createElement('a');
       doc.body.appendChild(a);
       base.href = baseUrl;
       a.href = url;
@@ -465,7 +465,7 @@
     }
 
     function uid() {
-      var index = 0;
+      let index = 0;
 
       return function() {
         return 'u' + fourRandomChars() + index++;
@@ -481,7 +481,7 @@
 
     function makeImage(uri) {
       return new Promise(function(resolve, reject) {
-        var image = new Image();
+        const image = new Image();
         image.onload = function() {
           resolve(image);
         };
@@ -491,7 +491,7 @@
     }
 
     function getAndEncode(url) {
-      var TIMEOUT = 30000;
+      const TIMEOUT = 30000;
       if (domtoimage.impl.options.cacheBust) {
         // Cache bypass so we dont have CORS issues with cached images
         // Source: https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest/Using_XMLHttpRequest#Bypassing_the_cache
@@ -499,7 +499,7 @@
       }
 
       return new Promise(function(resolve) {
-        var request = new XMLHttpRequest();
+        const request = new XMLHttpRequest();
 
         request.onreadystatechange = done;
         request.ontimeout = timeout;
@@ -508,9 +508,9 @@
         request.open('GET', url, true);
         request.send();
 
-        var placeholder;
+        let placeholder;
         if (domtoimage.impl.options.imagePlaceholder) {
-          var split = domtoimage.impl.options.imagePlaceholder.split(/,/);
+          const split = domtoimage.impl.options.imagePlaceholder.split(/,/);
           if (split && split[1]) {
             placeholder = split[1];
           }
@@ -531,9 +531,9 @@
             return;
           }
 
-          var encoder = new FileReader();
+          const encoder = new FileReader();
           encoder.onloadend = function() {
-            var content = encoder.result.split(/,/)[1];
+            const content = encoder.result.split(/,/)[1];
             resolve(content);
           };
           encoder.readAsDataURL(request.response);
@@ -578,9 +578,9 @@
     }
 
     function asArray(arrayLike) {
-      var array = [];
-      var length = arrayLike.length;
-      for (var i = 0; i < length; i++) array.push(arrayLike[i]);
+      const array = [];
+      const length = arrayLike.length;
+      for (let i = 0; i < length; i++) array.push(arrayLike[i]);
       return array;
     }
 
@@ -589,25 +589,27 @@
     }
 
     function width(node) {
-      var leftBorder = px(node, 'border-left-width');
-      var rightBorder = px(node, 'border-right-width');
+      const leftBorder = px(node, 'border-left-width');
+      const rightBorder = px(node, 'border-right-width');
       return node.scrollWidth + leftBorder + rightBorder;
     }
 
     function height(node) {
-      var topBorder = px(node, 'border-top-width');
-      var bottomBorder = px(node, 'border-bottom-width');
+      const topBorder = px(node, 'border-top-width');
+      const bottomBorder = px(node, 'border-bottom-width');
       return node.scrollHeight + topBorder + bottomBorder;
     }
 
     function px(node, styleProperty) {
-      var value = window.getComputedStyle(node).getPropertyValue(styleProperty);
+      const value = window
+        .getComputedStyle(node)
+        .getPropertyValue(styleProperty);
       return parseFloat(value.replace('px', ''));
     }
   }
 
   function newInliner() {
-    var URL_REGEX = /url\(['"]?([^'"]+?)['"]?\)/g;
+    const URL_REGEX = /url\(['"]?([^'"]+?)['"]?\)/g;
 
     return {
       inlineAll: inlineAll,
@@ -623,8 +625,8 @@
     }
 
     function readUrls(string) {
-      var result = [];
-      var match;
+      const result = [];
+      let match;
       while ((match = URL_REGEX.exec(string)) !== null) {
         result.push(match[1]);
       }
@@ -660,7 +662,7 @@
       return Promise.resolve(string)
         .then(readUrls)
         .then(function(urls) {
-          var done = Promise.resolve(string);
+          let done = Promise.resolve(string);
           urls.forEach(function(url) {
             done = done.then(function(string) {
               return inline(string, url, baseUrl, get);
@@ -716,7 +718,7 @@
       }
 
       function getCssRules(styleSheets) {
-        var cssRules = [];
+        const cssRules = [];
         styleSheets.forEach(function(sheet) {
           try {
             util
@@ -735,7 +737,7 @@
       function newWebFont(webFontRule) {
         return {
           resolve: function resolve() {
-            var baseUrl = (webFontRule.parentStyleSheet || {}).href;
+            const baseUrl = (webFontRule.parentStyleSheet || {}).href;
             return inliner.inlineAll(webFontRule.cssText, baseUrl);
           },
           src: function() {
@@ -791,7 +793,7 @@
       });
 
       function inlineBackground(node) {
-        var background = node.style.getPropertyValue('background');
+        const background = node.style.getPropertyValue('background');
 
         if (!background) return Promise.resolve(node);
 

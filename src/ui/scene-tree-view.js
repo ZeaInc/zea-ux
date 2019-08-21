@@ -172,7 +172,7 @@ class TreeItemElement {
 
     if (!this.childrenAlreadyCreated) {
       const children = this.treeItem.getChildren();
-      for (let child of children) {
+      for (const child of children) {
         this.addChild(child);
       }
       this.childrenAlreadyCreated = true;
