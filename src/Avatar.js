@@ -59,6 +59,10 @@ export default class Avatar {
     }
   }
 
+  /**
+   * The attachRTCStream method.
+   * @param {any} video - The video param.
+   */
   attachRTCStream(video) {
     if (!this.__avatarCamGeomItem) {
       const videoItem = new Visualive.VideoStreamImage2D('webcamStream');
@@ -109,6 +113,10 @@ export default class Avatar {
     }
   }
 
+  /**
+   * The getCamera method.
+   * @return {any} The return value.
+   */
   getCamera() {
     return this.__camera;
   }
