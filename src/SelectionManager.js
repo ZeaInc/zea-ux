@@ -421,7 +421,7 @@ class SelectionManager {
 
   /**
    * The selectItems method.
-   * @param {any} treeItem - The treeItem param.
+   * @param {any} treeItems - The treeItems param.
    * @param {boolean} replaceSelection - The replaceSelection param.
    */
   selectItems(treeItems, replaceSelection = true) {
@@ -461,7 +461,7 @@ class SelectionManager {
 
   /**
    * The deselectItems method.
-   * @param {any} treeItem - The treeItem param.
+   * @param {any} treeItems - The treeItems param.
    */
   deselectItems(treeItems) {
     const selection = this.selectionGroup.getItems();
