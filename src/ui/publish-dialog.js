@@ -12,8 +12,6 @@ class PublishDialog {
     const dialog = document.createElement('div');
     dialog.className = 'publish-dialog';
 
-    const projectName = 'My Project';
-    const projectOwner = 'Owner';
     const urlParams = new URLSearchParams(window.location.search);
 
     const args = new URLSearchParams();
@@ -56,7 +54,6 @@ class PublishDialog {
     // ///////////////////////////////
     // link
 
-    const linkTextareaDiv = document.createElement('div');
     const linkTextarea = document.createElement('textarea');
     linkTextarea.className = 'embedcode';
     linkTextarea.className = 'publish-dialog-link';

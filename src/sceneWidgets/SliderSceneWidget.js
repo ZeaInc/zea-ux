@@ -87,7 +87,6 @@ class SliderSceneWidget extends BaseLinearMovementSceneWidget {
   setTargetParam(param) {
     this.__param = param;
     const range = param.getRange() ? param.getRange() : [0, 1];
-    const step = param.getStep();
     const __updateSlider = () => {
       this.__updateSlider(
         Math.remap(param.getValue(), range[0], range[1], 0, 1)

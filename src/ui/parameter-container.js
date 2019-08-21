@@ -76,7 +76,6 @@ class ParameterContainer {
       console.warn(
         `Unable to display parameter '${parameterName}', value:${parameter.getValue()}`
       );
-      const reg = uxFactory.findWidgetReg(parameter);
       return;
     }
 

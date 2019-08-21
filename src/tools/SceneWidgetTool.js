@@ -250,7 +250,6 @@ class SceneWidgetTool extends BaseTool {
           !intersectionData != undefined ||
           intersectionData.geomItem.getOwner() != this.__highlightedHandle
         ) {
-          const handle = intersectionData.geomItem.getOwner();
           if (this.__highlightedHandle) this.__highlightedHandle.unhighlight();
         }
       }

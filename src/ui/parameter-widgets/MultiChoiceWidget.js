@@ -17,7 +17,6 @@ export default class MultiChoiceWidget extends BaseWidget {
   constructor(parameter, parentDomElem, appData) {
     super(parameter);
 
-    const range = parameter.getRange();
     const choices = parameter.getChoices();
     const select = document.createElement('select');
     for (let i = 0; i < choices.length; i++) {

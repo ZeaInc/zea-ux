@@ -294,13 +294,9 @@ export default class QuerySetWidget extends BaseWidget {
     queryList.className = 'flex-editvalues';
     ul0.appendChild(queryList);
 
-    const xfo = parameter.getValue();
-
     // ///////////////////////////
     // SceneWidget Changes.
 
-    const change = undefined;
-    const queryULs = [];
     const updateDisplayedValue = () => {
       while (queryList.firstChild) {
         queryList.removeChild(queryList.firstChild);

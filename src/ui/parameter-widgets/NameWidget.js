@@ -1,8 +1,6 @@
 import Change from '../../undoredo/Change.js';
 import UndoRedoManager from '../../undoredo/UndoRedoManager.js';
 
-import uxFactory from '../UxFactory.js';
-
 /**
  * Class representing a name value change.
  * @extends Change

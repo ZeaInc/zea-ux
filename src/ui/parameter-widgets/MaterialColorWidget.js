@@ -1,6 +1,4 @@
 import BaseWidget from './BaseWidget.js';
-import StringWidget from './StringWidget.js';
-import FileWiget from './FileWiget.js';
 
 import uxFactory from '../UxFactory.js';
 import ParameterValueChange from '../../undoredo/ParameterValueChange.js';

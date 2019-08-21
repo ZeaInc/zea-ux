@@ -1,6 +1,3 @@
-import uxFactory from './UxFactory.js';
-import ParameterValueChange from '../undoredo/ParameterValueChange.js';
-
 /** Class representing an action tree view. */
 class ActionTreeView {
   /**
@@ -42,7 +39,6 @@ class ActionTreeView {
     a.href = '#';
 
     const classes = 'pure-menu-link VRUIElement';
-    const hilighted = false;
     let activated = false;
     a.className = classes;
 

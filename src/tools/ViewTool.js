@@ -844,9 +844,7 @@ class ViewTool extends BaseTool {
       this.__controllerTriggersHeld.length
     );
 
-    const grabPos = event.controller.getControllerTipStageLocalXfo().tr;
     const stageXfo = event.vrviewport.getXfo().clone();
-    const sc = stageXfo.sc.x;
     stageXfo.sc.set(1, 1, 1);
     event.vrviewport.setXfo(stageXfo);
   }
@@ -889,7 +887,6 @@ class ViewTool extends BaseTool {
       const sc = Math.max(Math.min(this.__grabDist / grabDist, 10.0), 0.1);
 
       // Avoid causing a scale that would make the user < 1.0 scale factor.
-      const stageSc = this.stageXfo__GrabStart.sc.x * sc;
       // if(stageSc < 1.0){
       //     sc = 1.0 / this.stageXfo__GrabStart.sc.x;
       // }

@@ -38,15 +38,10 @@ export default class VRControllerUI extends Visualive.GeomItem {
     );
     this.setGeomOffsetXfo(this.__uiGeomOffsetXfo);
 
-    const vrui_elements = this.__vrUIDOMElement.getElementsByClassName(
-      VR_UI_ELEM_CLASS
-    );
-
     let renderRequestedId;
     let mutatedElems = [];
     const processMutatedElems = () => {
       renderRequestedId = null;
-      const start = performance.now();
       const promises = mutatedElems.map(elem => {
         return this.updateElemInAtlas(elem);
       });
