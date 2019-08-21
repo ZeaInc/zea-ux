@@ -7,12 +7,13 @@ import SceneWidget from './SceneWidget.js';
 class BaseLinearMovementSceneWidget extends SceneWidget {
   /**
    * Create base linear movement scene widget.
+   * @param {any} name - The name value.
    */
   constructor(name) {
     super(name);
   }
 
-  /////////////////////////////////////
+  // ///////////////////////////////////
   // Mouse events
 
   /**
@@ -57,7 +58,7 @@ class BaseLinearMovementSceneWidget extends SceneWidget {
     return true;
   }
 
-  /////////////////////////////////////
+  // ///////////////////////////////////
   // VRController events
 
   /**

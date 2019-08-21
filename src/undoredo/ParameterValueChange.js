@@ -106,7 +106,7 @@ class ParameterValueChange extends Change {
    * @param {any} appData - The appData param.
    */
   fromJSON(j, appData) {
-    let param = appData.scene.getRoot().resolvePath(j.paramPath, 1);
+    const param = appData.scene.getRoot().resolvePath(j.paramPath, 1);
     if (!param || !(param instanceof Visualive.Parameter)) {
       console.warn('resolvePath is unable to resolve', j.paramPath);
       return;

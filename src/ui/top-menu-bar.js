@@ -44,6 +44,7 @@ class TopMenuBar {
     this._addKeyListener();
   }
 
+  // eslint-disable-next-line require-jsdoc
   _buildTopBar() {
     this.topMenuItems.innerHTML = '';
 
@@ -59,6 +60,7 @@ class TopMenuBar {
     });
   }
 
+  // eslint-disable-next-line require-jsdoc
   _addMenuItem(domElement, action) {
     let parentElement = domElement;
     for (let i = 0; i < action.path.length; i++) {
@@ -109,6 +111,7 @@ class TopMenuBar {
     }
   }
 
+  // eslint-disable-next-line require-jsdoc
   _addKeyListener() {
     let keyComboPressed;
 
@@ -119,7 +122,7 @@ class TopMenuBar {
       if (keyComboPressed) return;
       // Ignore events intended for input elements.
       if (e.target instanceof HTMLInputElement) return;
-      let keys = (
+      const keys = (
         this._comboFragment(e.altKey, 'A') +
         this._comboFragment(e.metaKey || e.ctrlKey, 'C') +
         this._comboFragment(e.shiftKey, 'S') +
@@ -145,6 +148,7 @@ class TopMenuBar {
     });
   }
 
+  // eslint-disable-next-line require-jsdoc
   _addSpanTo(domElement, className, innerHTML) {
     const span = document.createElement('span');
     span.className = className;
@@ -155,6 +159,7 @@ class TopMenuBar {
     return span;
   }
 
+  // eslint-disable-next-line require-jsdoc
   _addATo(domElement, className, innerHTML) {
     const a = document.createElement('a');
     a.href = '#';
@@ -166,6 +171,7 @@ class TopMenuBar {
     return a;
   }
 
+  // eslint-disable-next-line require-jsdoc
   _addUlTo(domElement, className, innerHTML) {
     const ul = document.createElement('ul');
     ul.className = className;
@@ -176,6 +182,7 @@ class TopMenuBar {
     return ul;
   }
 
+  // eslint-disable-next-line require-jsdoc
   _addLiTo(domElement, className, innerHTML) {
     const li = document.createElement('li');
     li.className = className;
@@ -186,10 +193,12 @@ class TopMenuBar {
     return li;
   }
 
+  // eslint-disable-next-line require-jsdoc
   _comboFragment(condition, fragment) {
     return condition ? fragment + '+' : '';
   }
 
+  // eslint-disable-next-line require-jsdoc
   _keyComboAsText(action) {
     const { metaKeys, key } = action;
     if (!key && !metaKeys) {

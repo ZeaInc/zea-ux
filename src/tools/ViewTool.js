@@ -49,7 +49,7 @@ class ViewTool extends BaseTool {
     this.movementFinished = new Visualive.Signal();
   }
 
-  ///////////////////////////////////////
+  // /////////////////////////////////////
   //
 
   /**
@@ -82,7 +82,7 @@ class ViewTool extends BaseTool {
         controller.getTipItem().removeAllChildren();
         controller.getTipItem().addChild(geomItem, false);
       };
-      for (let controller of xrvp.getControllers()) {
+      for (const controller of xrvp.getControllers()) {
         addIconToController(controller);
       }
       this.addIconToControllerId = xrvp.controllerAdded.connect(
@@ -107,7 +107,7 @@ class ViewTool extends BaseTool {
     });
   }
 
-  ///////////////////////////////////////
+  // /////////////////////////////////////
   //
 
   /**
@@ -535,6 +535,7 @@ class ViewTool extends BaseTool {
     applyMovement();
   }
 
+  // eslint-disable-next-line require-jsdoc
   __integrateVelocityChange(velChange, viewport) {
     const delta = new Visualive.Xfo();
     delta.tr = this.__velocity.normalize().scale(this.__maxVel);
@@ -635,9 +636,10 @@ class ViewTool extends BaseTool {
     return true;
   }
 
-  /////////////////////////////////////
+  // ///////////////////////////////////
   // Touch events
 
+  // eslint-disable-next-line require-jsdoc
   __startTouch(touch, viewport) {
     this.__ongoingTouches[touch.identifier] = {
       identifier: touch.identifier,
@@ -645,6 +647,7 @@ class ViewTool extends BaseTool {
     };
   }
 
+  // eslint-disable-next-line require-jsdoc
   __endTouch(touch, viewport) {
     // const idx = this.__ongoingTouchIndexById(touch.identifier);
     // this.__ongoingTouches.splice(idx, 1); // remove it; we're done
@@ -778,9 +781,10 @@ class ViewTool extends BaseTool {
     }
   }
 
-  /////////////////////////////////////
+  // ///////////////////////////////////
   // VRController events
 
+  // eslint-disable-next-line require-jsdoc
   __initMoveStage(vrviewport) {
     if (this.__controllerTriggersHeld.length == 1) {
       this.__grabPos = this.__controllerTriggersHeld[0]
@@ -860,7 +864,7 @@ class ViewTool extends BaseTool {
       const deltaXfo = new Visualive.Xfo();
       deltaXfo.tr = this.__grabPos.subtract(grabPos);
 
-      ////////////////
+      // //////////////
       // Update the stage Xfo
       const stageXfo = this.stageXfo__GrabStart.multiply(deltaXfo);
       event.vrviewport.setXfo(stageXfo);
@@ -879,7 +883,7 @@ class ViewTool extends BaseTool {
 
       const deltaXfo = new Visualive.Xfo();
 
-      ////////////////
+      // //////////////
       // Compute sc
       // Limit to a 10x change in scale per grab.
       const sc = Math.max(Math.min(this.__grabDist / grabDist, 10.0), 0.1);
@@ -891,7 +895,7 @@ class ViewTool extends BaseTool {
       // }
       deltaXfo.sc.set(sc, sc, sc);
 
-      ////////////////
+      // //////////////
       // Compute ori
       let angle = this.__grabDir.angleTo(grabDir);
       if (this.__grabDir.cross(grabDir).y > 0.0) {
@@ -907,13 +911,13 @@ class ViewTool extends BaseTool {
       const deltaSc = this.__grabPos.scale(1.0 - sc);
       deltaXfo.tr.addInPlace(deltaXfo.ori.rotateVec3(deltaSc));
 
-      ////////////////
+      // //////////////
       // Compute tr
       // Not quite working.....
       const deltaTr = this.__grabPos.subtract(grabPos).scale(sc);
       deltaXfo.tr.addInPlace(deltaXfo.ori.rotateVec3(deltaTr));
 
-      ////////////////
+      // //////////////
       // Update the stage Xfo
       const stageXfo = this.stageXfo__GrabStart.multiply(deltaXfo);
       event.vrviewport.setXfo(stageXfo);

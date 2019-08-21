@@ -28,7 +28,7 @@ export default class XfoWidget extends BaseWidget {
 
     const xfo = parameter.getValue();
 
-    /////////////////////////////
+    // ///////////////////////////
     // SceneWidget Changes.
 
     let change = undefined;
@@ -64,7 +64,7 @@ export default class XfoWidget extends BaseWidget {
         ori_yField.valueAsNumber,
         ori_zField.valueAsNumber,
         ori_wField.valueAsNumber
-      ); /*value order is xyzw*/
+      ); /* value order is xyzw*/
       xfo.ori.normalizeInPlace();
       xfo.sc.set(
         sc_xField.valueAsNumber,

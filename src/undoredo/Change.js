@@ -37,6 +37,7 @@ export default class Change {
   /**
    * The toJSON method.
    * @param {any} appData - The appData param.
+   * @return {any} The return value.
    */
   toJSON(appData) {
     return {};

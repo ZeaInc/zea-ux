@@ -50,7 +50,7 @@ export default class MaterialColorWidget extends BaseWidget {
 
     // this.textureWidget = new FileWiget(new TexParam(parameter), parentDomElem, appData);
 
-    /////////////////////////////
+    // ///////////////////////////
     // SceneWidget Changes.
 
     let change = undefined;

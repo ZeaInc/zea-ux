@@ -54,7 +54,7 @@ export default class Vec2Widget extends BaseWidget {
 
     parentDomElem.appendChild(container);
 
-    /////////////////////////////
+    // ///////////////////////////
     // SceneWidget Changes.
 
     let change = undefined;

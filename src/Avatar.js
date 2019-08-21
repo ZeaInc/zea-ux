@@ -312,7 +312,7 @@ export default class Avatar {
           this.__vrAsset.geomsLoaded.connect(() => {
             const materialLibrary = this.__vrAsset.getMaterialLibrary();
             const materialNames = materialLibrary.getMaterialNames();
-            for (let name of materialNames) {
+            for (const name of materialNames) {
               const material = materialLibrary.getMaterial(name, false);
               if (material) {
                 material.visibleInGeomDataBuffer = false;

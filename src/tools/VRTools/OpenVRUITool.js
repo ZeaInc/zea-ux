@@ -29,7 +29,7 @@ class OpenVRUITool extends BaseTool {
       this.appData.toolManager.removeToolByHandle(this.vrUITool);
   }
 
-  /////////////////////////////////////
+  // ///////////////////////////////////
   // VRController events
 
   /**

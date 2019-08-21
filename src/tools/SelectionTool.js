@@ -69,6 +69,7 @@ class SelectionTool extends BaseTool {
     }
   }
 
+  // eslint-disable-next-line require-jsdoc
   __resizeRect(viewport, delta) {
     const sc = new Visualive.Vec2(
       (1 / viewport.getWidth()) * 2,
@@ -183,7 +184,7 @@ class SelectionTool extends BaseTool {
     }
   }
 
-  /////////////////////////////////////
+  // ///////////////////////////////////
   // VRController events
 
   /**

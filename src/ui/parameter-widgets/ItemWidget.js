@@ -45,10 +45,10 @@ export default class ItemWidget extends BaseWidget {
     parentDomElem.appendChild(input);
     parentDomElem.appendChild(button);
 
-    /////////////////////////////
+    // ///////////////////////////
     // SceneWidget Changes.
 
-    let changing = false;
+    const changing = false;
 
     parameter.valueChanged.connect(() => {
       if (!changing) {

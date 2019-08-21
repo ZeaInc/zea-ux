@@ -93,7 +93,7 @@ export default class VRControllerUI extends Visualive.GeomItem {
     this.__renderRequested = false;
   }
 
-  /////////////////////////////////////
+  // ///////////////////////////////////
 
   /**
    * The activate method.
@@ -120,7 +120,7 @@ export default class VRControllerUI extends Visualive.GeomItem {
     this.__mutationObserver.disconnect();
   }
 
-  /////////////////////////////////////
+  // ///////////////////////////////////
   // VRController events
 
   /**
@@ -181,7 +181,7 @@ export default class VRControllerUI extends Visualive.GeomItem {
         rect.height != this.__rect.height
       ) {
         this.__rect = rect;
-        const dpm = 0.0007; //dots-per-meter (1 each 1/2mm)
+        const dpm = 0.0007; // dots-per-meter (1 each 1/2mm)
         this.__uiGeomOffsetXfo.sc.set(
           this.__rect.width * dpm,
           this.__rect.height * dpm,

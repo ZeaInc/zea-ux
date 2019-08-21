@@ -59,7 +59,7 @@ class ParameterContainer {
 
     this.widgets = [];
     if (parameterOwner) {
-      for (let parameter of parameterOwner.getParameters()) {
+      for (const parameter of parameterOwner.getParameters()) {
         this.addParameterWidget(parameter);
       }
     }

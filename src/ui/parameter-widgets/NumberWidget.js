@@ -18,7 +18,7 @@ export default class NumberWidget extends BaseWidget {
     super(parameter);
 
     const range = parameter.getRange();
-    let input = document.createElement('input');
+    const input = document.createElement('input');
     if (range) {
       input.className = 'mdl-slider mdl-js-slider';
       input.setAttribute('id', parameter.getName());
@@ -46,7 +46,7 @@ export default class NumberWidget extends BaseWidget {
     }
     parentDomElem.appendChild(input);
 
-    /////////////////////////////
+    // ///////////////////////////
     // SceneWidget Changes.
 
     let change = undefined;

@@ -71,7 +71,7 @@ class VRUITool extends BaseTool {
     return 'VRUITool';
   }
 
-  /////////////////////////////////////
+  // ///////////////////////////////////
 
   /**
    * The setUIControllers method.
@@ -153,7 +153,7 @@ class VRUITool extends BaseTool {
     }
   }
 
-  /////////////////////////////////////
+  // ///////////////////////////////////
   // VRController events
 
   /**

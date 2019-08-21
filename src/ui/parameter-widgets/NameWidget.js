@@ -96,7 +96,7 @@ class NameValueChange extends Change {
    * @param {any} appData - The appData param.
    */
   fromJSON(j, appData) {
-    let item = appData.scene.getRoot().resolvePath(j.itemPath, 1);
+    const item = appData.scene.getRoot().resolvePath(j.itemPath, 1);
     if (!item || !(item instanceof Visualive.itemeter)) {
       console.warn('resolvePath is unable to resolve', j.itemPath);
       return;
@@ -141,7 +141,7 @@ export default class NameWidget {
 
     parentDomElem.appendChild(input);
 
-    /////////////////////////////
+    // ///////////////////////////
     // SceneWidget Changes.
 
     let change;

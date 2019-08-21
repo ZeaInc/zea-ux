@@ -25,6 +25,7 @@ class ActionTreeView {
     });
   }
 
+  // eslint-disable-next-line require-jsdoc
   _addSpanTo(domElement, className, innerHTML) {
     const span = document.createElement('span');
     span.className = className;
@@ -35,12 +36,13 @@ class ActionTreeView {
     return span;
   }
 
+  // eslint-disable-next-line require-jsdoc
   _addMenuItem(domElement, action) {
     const a = document.createElement('a');
     a.href = '#';
 
-    let classes = 'pure-menu-link VRUIElement';
-    let hilighted = false;
+    const classes = 'pure-menu-link VRUIElement';
+    const hilighted = false;
     let activated = false;
     a.className = classes;
 
@@ -79,6 +81,7 @@ class ActionTreeView {
     return a;
   }
 
+  // eslint-disable-next-line require-jsdoc
   _addUlTo(domElement, className, innerHTML) {
     const ul = document.createElement('ul');
     ul.className = className;
@@ -89,6 +92,7 @@ class ActionTreeView {
     return ul;
   }
 
+  // eslint-disable-next-line require-jsdoc
   _addLiTo(domElement, className, innerHTML) {
     const li = document.createElement('li');
     li.className = className;

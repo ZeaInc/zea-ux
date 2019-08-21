@@ -24,9 +24,9 @@ class UndoRedoManager {
    * The flush method.
    */
   flush() {
-    for (let change of this.__undoStack) change.destroy();
+    for (const change of this.__undoStack) change.destroy();
     this.__undoStack = [];
-    for (let change of this.__redoStack) change.destroy();
+    for (const change of this.__redoStack) change.destroy();
     this.__redoStack = [];
   }
 
@@ -41,7 +41,7 @@ class UndoRedoManager {
     this.__undoStack.push(change);
     change.updated.connect(this.__currChangeUpdated);
 
-    for (let change of this.__redoStack) change.destroy();
+    for (const change of this.__redoStack) change.destroy();
     this.__redoStack = [];
 
     this.changeAdded.emit(change);
@@ -55,6 +55,7 @@ class UndoRedoManager {
     return this.__undoStack[this.__undoStack.length - 1];
   }
 
+  // eslint-disable-next-line require-jsdoc
   __currChangeUpdated(updateData) {
     this.changeUpdated.emit(updateData);
   }
@@ -86,7 +87,7 @@ class UndoRedoManager {
     }
   }
 
-  ////////////////////////////////////
+  // //////////////////////////////////
   // User Synchronization
 
   /**

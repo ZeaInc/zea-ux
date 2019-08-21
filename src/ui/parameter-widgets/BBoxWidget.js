@@ -28,7 +28,7 @@ export default class BBoxWidget extends BaseWidget {
 
     const bbox = parameter.getValue();
 
-    /////////////////////////////
+    // ///////////////////////////
     // SceneWidget Changes.
 
     let change = undefined;

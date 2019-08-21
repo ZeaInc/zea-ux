@@ -17,7 +17,7 @@ export default class XfoHandle extends Visualive.TreeItem {
   constructor(size, thickness) {
     super('XfoHandle');
 
-    //////////////////////////////////
+    // ////////////////////////////////
     // LinearMovementSceneWidget
 
     const translationHandles = new Visualive.TreeItem('Translate');
@@ -65,7 +65,7 @@ export default class XfoHandle extends Visualive.TreeItem {
       translationHandles.addChild(linearZWidget);
     }
 
-    //////////////////////////////////
+    // ////////////////////////////////
     // planarXYWidget
     const planarSize = size * 0.35;
     {
@@ -104,7 +104,7 @@ export default class XfoHandle extends Visualive.TreeItem {
       translationHandles.addChild(planarXZWidget);
     }
 
-    //////////////////////////////////
+    // ////////////////////////////////
     // Rotation
     const rotationHandles = new Visualive.TreeItem('Rotate');
     rotationHandles.setVisible(false);
@@ -152,7 +152,7 @@ export default class XfoHandle extends Visualive.TreeItem {
       rotationHandles.addChild(rotationZWidget);
     }
 
-    //////////////////////////////////
+    // ////////////////////////////////
     // Scale - Not supported
     const scaleHandles = new Visualive.TreeItem('Scale');
     scaleHandles.setVisible(false);

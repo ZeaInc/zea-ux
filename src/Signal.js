@@ -53,7 +53,7 @@ class Signal {
       );
       return;
     }
-    for (let id of ids) {
+    for (const id of ids) {
       this.__slots[id] = undefined;
     }
   }

@@ -137,7 +137,7 @@ class CreateGeomTool extends BaseCreateTool {
         controller.getTipItem().removeAllChildren();
         controller.getTipItem().addChild(geomItem, false);
       };
-      for (let controller of xrvp.getControllers()) {
+      for (const controller of xrvp.getControllers()) {
         addIconToController(controller);
       }
       this.addIconToControllerId = xrvp.controllerAdded.connect(
@@ -219,7 +219,7 @@ class CreateGeomTool extends BaseCreateTool {
    */
   createRelease(pt) {}
 
-  /////////////////////////////////////
+  // ///////////////////////////////////
   // Mouse events
 
   /**
@@ -281,7 +281,7 @@ class CreateGeomTool extends BaseCreateTool {
    */
   onWheel(event) {}
 
-  /////////////////////////////////////
+  // ///////////////////////////////////
   // Keyboard events
 
   /**
@@ -305,7 +305,7 @@ class CreateGeomTool extends BaseCreateTool {
    */
   onKeyUp(key, event) {}
 
-  /////////////////////////////////////
+  // ///////////////////////////////////
   // Touch events
 
   /**
@@ -332,7 +332,7 @@ class CreateGeomTool extends BaseCreateTool {
    */
   onTouchCancel(event) {}
 
-  /////////////////////////////////////
+  // ///////////////////////////////////
   // VRController events
 
   /**

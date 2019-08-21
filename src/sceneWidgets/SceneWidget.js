@@ -37,7 +37,7 @@ export default class SceneWidget extends Visualive.TreeItem {
     return new Visualive.Ray(xfo.tr, xfo.ori.getZaxis());
   }
 
-  /////////////////////////////////////
+  // ///////////////////////////////////
   // Mouse events
 
   /**
@@ -75,7 +75,7 @@ export default class SceneWidget extends Visualive.TreeItem {
     return true;
   }
 
-  /////////////////////////////////////
+  // ///////////////////////////////////
   // VRController events
 
   /**
@@ -119,7 +119,7 @@ export default class SceneWidget extends Visualive.TreeItem {
     }
   }
 
-  /////////////////////////////////////
+  // ///////////////////////////////////
   // Interaction events
 
   /**

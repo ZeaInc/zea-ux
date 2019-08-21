@@ -26,7 +26,7 @@ export default class StringWidget extends BaseWidget {
 
     parentDomElem.appendChild(input);
 
-    /////////////////////////////
+    // ///////////////////////////
     // SceneWidget Changes.
 
     let change;

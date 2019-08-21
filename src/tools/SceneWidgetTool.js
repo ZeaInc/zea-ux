@@ -37,7 +37,7 @@ class SceneWidgetTool extends BaseTool {
       controller.getTipItem().addChild(geomItem, false);
     };
     const addIconToControllers = xrvp => {
-      for (let controller of xrvp.getControllers()) {
+      for (const controller of xrvp.getControllers()) {
         addIconToController(controller);
       }
       this.addIconToControllerId = xrvp.controllerAdded.connect(
@@ -64,7 +64,7 @@ class SceneWidgetTool extends BaseTool {
     });
   }
 
-  /////////////////////////////////////
+  // ///////////////////////////////////
   // Mouse events
 
   /**
@@ -141,7 +141,7 @@ class SceneWidgetTool extends BaseTool {
     }
   }
 
-  /////////////////////////////////////
+  // ///////////////////////////////////
   // Touch events
 
   /**
@@ -168,7 +168,7 @@ class SceneWidgetTool extends BaseTool {
    */
   onTouchCancel(event) {}
 
-  /////////////////////////////////////
+  // ///////////////////////////////////
   // VRController events
 
   /**
@@ -200,7 +200,7 @@ class SceneWidgetTool extends BaseTool {
       return true;
     } else {
       let handleHit = false;
-      for (let controller of event.controllers) {
+      for (const controller of event.controllers) {
         const intersectionData = controller.getGeomItemAtTip();
         if (
           intersectionData != undefined &&

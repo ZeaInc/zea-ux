@@ -128,6 +128,7 @@ class ToolManager {
     return this.__toolStack.length - 1;
   }
 
+  // eslint-disable-next-line require-jsdoc
   __removeCurrTool() {
     if (this.__toolStack.length > 0) {
       const prevTool = this.__toolStack.pop();
@@ -193,7 +194,7 @@ class ToolManager {
     );
     this.mouseWheelId = viewport.mouseWheel.connect(this.onWheel.bind(this));
 
-    /////////////////////////////////////
+    // ///////////////////////////////////
     // Keyboard events
     this.keyDownId = viewport.keyDown.connect(this.onKeyDown.bind(this));
     this.keyUpId = viewport.keyUp.connect(this.onKeyUp.bind(this));
@@ -201,7 +202,7 @@ class ToolManager {
       this.onKeyPressed.bind(this)
     );
 
-    /////////////////////////////////////
+    // ///////////////////////////////////
     // Touch events
     this.touchStartId = viewport.touchStart.connect(
       this.onTouchStart.bind(this)
@@ -216,7 +217,7 @@ class ToolManager {
     );
 
     this.appData.renderer.getXRViewport().then(xrvp => {
-      /////////////////////////////////////
+      // ///////////////////////////////////
       // VRController events
       this.controllerDownId = xrvp.controllerButtonDown.connect(
         this.onVRControllerButtonDown.bind(this)
@@ -346,7 +347,7 @@ class ToolManager {
     }
   }
 
-  /////////////////////////////////////
+  // ///////////////////////////////////
   // Keyboard events
 
   /**
@@ -391,7 +392,7 @@ class ToolManager {
     }
   }
 
-  /////////////////////////////////////
+  // ///////////////////////////////////
   // Touch events
 
   /**
@@ -459,7 +460,7 @@ class ToolManager {
     }
   }
 
-  /////////////////////////////////////
+  // ///////////////////////////////////
   // VRController events
 
   /**
@@ -526,13 +527,13 @@ class ToolManager {
     viewport.mouseLeave.disconnectId(this.mouseUpId);
     viewport.mouseWheel.disconnectId(this.mouseWheelId);
 
-    /////////////////////////////////////
+    // ///////////////////////////////////
     // Keyboard events
     viewport.keyDown.disconnectId(this.keyDownId);
     viewport.keyUp.disconnectId(this.keyUpId);
     viewport.keyPressed.disconnectId(this.keyPressedId);
 
-    /////////////////////////////////////
+    // ///////////////////////////////////
     // Touch events
     viewport.touchStart.disconnectId(this.touchStartId);
     viewport.touchMove.disconnectId(this.touchMoveId);
@@ -540,7 +541,7 @@ class ToolManager {
     viewport.touchCancel.disconnectId(this.touchCancelId);
 
     this.appData.renderer.getXRViewport().then(xrvp => {
-      /////////////////////////////////////
+      // ///////////////////////////////////
       // VRController events
       viewport.controllerDown.disconnectId(this.controllerDownId);
       viewport.controllerUp.disconnectId(this.controllerUpId);

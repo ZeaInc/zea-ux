@@ -97,6 +97,7 @@ class SliderSceneWidget extends BaseLinearMovementSceneWidget {
     param.valueChanged.connect(__updateSlider);
   }
 
+  // eslint-disable-next-line require-jsdoc
   __updateSlider(value) {
     const length = this.lengthParam.getValue();
     this.baseBarXfo.sc.z = value * length;
@@ -108,7 +109,7 @@ class SliderSceneWidget extends BaseLinearMovementSceneWidget {
     this.topBar.setLocalXfo(this.topBarXfo);
   }
 
-  /////////////////////////////////////
+  // ///////////////////////////////////
   // Interaction events
 
   /**

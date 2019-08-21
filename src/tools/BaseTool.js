@@ -38,7 +38,7 @@ export default class BaseTool extends Visualive.ParameterOwner {
     return false;
   }
 
-  /////////////////////////////////////
+  // ///////////////////////////////////
   // Tools on the tool stack.
 
   /**
@@ -85,7 +85,7 @@ export default class BaseTool extends Visualive.ParameterOwner {
     this.activatedChanged.emit(false);
   }
 
-  /////////////////////////////////////
+  // ///////////////////////////////////
   // Mouse events
 
   /**
@@ -118,7 +118,7 @@ export default class BaseTool extends Visualive.ParameterOwner {
    */
   onWheel(event) {}
 
-  /////////////////////////////////////
+  // ///////////////////////////////////
   // Keyboard events
 
   /**
@@ -142,7 +142,7 @@ export default class BaseTool extends Visualive.ParameterOwner {
    */
   onKeyUp(key, event) {}
 
-  /////////////////////////////////////
+  // ///////////////////////////////////
   // Touch events
 
   /**
@@ -175,7 +175,7 @@ export default class BaseTool extends Visualive.ParameterOwner {
    */
   onDoubleTap(event) {}
 
-  /////////////////////////////////////
+  // ///////////////////////////////////
   // VRController events
 
   /**

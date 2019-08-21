@@ -188,12 +188,12 @@ class CollabPanel {
 
     this.visualiveSession.sub(VisualiveSession.actions.LEFT_ROOM, () => {
       const users = this.visualiveSession.getUsers();
-      for (let id in users) removeUserChip(users[id]);
+      for (const id in users) removeUserChip(users[id]);
       $receivedMessages.innerHTML = '';
     });
 
     const users = this.visualiveSession.getUsers();
-    for (let id in users) {
+    for (const id in users) {
       addUserChip(users[id]);
     }
   }

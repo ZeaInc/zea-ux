@@ -17,7 +17,7 @@ const convertValuesToJSON = value => {
     return arr;
   } else if (typeof value === 'object') {
     const dict = {};
-    for (let key in value) dict[key] = convertValuesToJSON(value[key]);
+    for (const key in value) dict[key] = convertValuesToJSON(value[key]);
     return dict;
   } else {
     return value;
@@ -40,7 +40,8 @@ const convertValuesFromJSON = (value, scene) => {
     return arr;
   } else if (typeof value === 'object') {
     const dict = {};
-    for (let key in value) dict[key] = convertValuesFromJSON(value[key], scene);
+    for (const key in value)
+      dict[key] = convertValuesFromJSON(value[key], scene);
     return dict;
   } else {
     return value;
@@ -77,7 +78,7 @@ class SessionSync {
       delete userDatas[userData.id];
     });
 
-    /////////////////////////////////////////////
+    // ///////////////////////////////////////////
     // Video Streams
     visualiveSession.sub(
       VisualiveSession.actions.USER_VIDEO_STARTED,
@@ -106,7 +107,7 @@ class SessionSync {
       }
     );
 
-    /////////////////////////////////////////////
+    // ///////////////////////////////////////////
     // Pose Changes
     appData.toolManager.movePointer.connect(event => {
       const intersectionData = event.viewport.getGeomDataAtPos(
@@ -170,7 +171,7 @@ class SessionSync {
       } else if (event.hmd) {
         data.hmd = event.hmd;
         data.controllers = [];
-        for (let controller of event.controllers) {
+        for (const controller of event.controllers) {
           data.controllers.push({
             xfo: controller.getTreeItem().getGlobalXfo(),
           });
@@ -210,7 +211,7 @@ class SessionSync {
       })
     );
 
-    /////////////////////////////////////////////
+    // ///////////////////////////////////////////
     // Scene Changes
     // const otherUndoStack = new UndoRedoManager();
 
@@ -262,7 +263,7 @@ class SessionSync {
       }
     );
 
-    /////////////////////////////////////////////
+    // ///////////////////////////////////////////
     // Undostack Changes.
     // Synchronize undo stacks between users.
 
@@ -284,7 +285,7 @@ class SessionSync {
       undoRedoManager.redo();
     });
 
-    /////////////////////////////////////////////
+    // ///////////////////////////////////////////
     // State Machine Changes.
     // Synchronize State Machine changes between users.
 

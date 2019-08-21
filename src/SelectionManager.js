@@ -45,7 +45,7 @@ class SelectionChange extends Change {
     const j = super.toJSON(appData);
 
     const itemPaths = [];
-    for (let treeItem of this.__newSelection) {
+    for (const treeItem of this.__newSelection) {
       itemPaths.push(treeItem.getPath());
     }
     j.itemPaths = itemPaths;
@@ -64,7 +64,7 @@ class SelectionChange extends Change {
     this.__prevSelection = new Set(this.__selectionManager.getSelection());
 
     const newSelection = new Set();
-    for (let itemPath of j.itemPaths) {
+    for (const itemPath of j.itemPaths) {
       newSelection.add(appData.scene.getRoot().resolvePath(itemPath, 1));
     }
     this.__newSelection = newSelection;
@@ -110,7 +110,7 @@ class ToggleSelectionVisibility extends Change {
    * @param {any} state - The state param.
    */
   do(state) {
-    for (let treeItem of this.selection) {
+    for (const treeItem of this.selection) {
       treeItem.getParameter('Visible').setValue(state);
     }
   }
@@ -154,7 +154,7 @@ class SelectionManager {
     // this.xfoHandle.showHandles('Scale')
     this.selectionGroup.addChild(this.xfoHandle);
 
-    ///////////////////////////////////
+    // /////////////////////////////////
     // UI and Hotkeys
     /*
     let selectItemsActivatedTime;
@@ -202,7 +202,7 @@ class SelectionManager {
     const showHandles = mode => {
       if (currMode != mode) {
         currMode = mode;
-        for (let key in handleGroup) {
+        for (const key in handleGroup) {
           handleGroup[key].emit(mode == key);
         }
         this.xfoHandle.showHandles(mode);
@@ -277,13 +277,13 @@ class SelectionManager {
   setSelection(newSelection) {
     const selection = new Set(this.selectionGroup.getItems());
     const prevSelection = new Set(selection);
-    for (let treeItem of newSelection) {
+    for (const treeItem of newSelection) {
       if (!selection.has(treeItem)) {
         // treeItem.setSelected(true);
         selection.add(treeItem);
       }
     }
-    for (let treeItem of selection) {
+    for (const treeItem of selection) {
       if (!newSelection.has(treeItem)) {
         treeItem.setSelected(false);
         selection.delete(treeItem);
@@ -302,6 +302,7 @@ class SelectionManager {
     this.appData.undoRedoManager.addChange(change);
   }
 
+  // eslint-disable-next-line require-jsdoc
   __setLeadSelection(treeItem) {
     if (this.leadSelection != treeItem) {
       this.leadSelection = treeItem;
@@ -406,7 +407,7 @@ class SelectionManager {
     if (newChange) {
       prevSelection = new Set(selection);
     }
-    for (let treeItem of selection) {
+    for (const treeItem of selection) {
       treeItem.setSelected(false);
     }
     selection.clear();
@@ -432,7 +433,7 @@ class SelectionManager {
       prevSelection.clear();
     }
 
-    for (let treeItem of treeItems) {
+    for (const treeItem of treeItems) {
       if (!treeItem.getSelected()) {
         // treeItem.getSelected(true);
         selection.add(treeItem);
@@ -467,7 +468,7 @@ class SelectionManager {
     const selection = this.selectionGroup.getItems();
     const prevSelection = new Set(selection);
 
-    for (let treeItem of treeItems) {
+    for (const treeItem of treeItems) {
       if (treeItem.getSelected()) {
         treeItem.setSelected(false);
         selection.delete(selectedParam);
@@ -505,7 +506,7 @@ class SelectionManager {
     }
   }
 
-  //////////////////////////////////////
+  // ////////////////////////////////////
   //
 
   /**

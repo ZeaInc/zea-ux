@@ -32,7 +32,7 @@ export default class ColorWidget extends BaseWidget {
       borderColor: '#fff',
     });
 
-    /////////////////////////////
+    // ///////////////////////////
     // SceneWidget Changes.
 
     let change = undefined;

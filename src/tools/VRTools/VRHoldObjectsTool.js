@@ -167,7 +167,7 @@ class VRHoldObjectsTool extends BaseTool {
     };
 
     this.appData.renderer.getXRViewport().then(xrvp => {
-      for (let controller of xrvp.getControllers())
+      for (const controller of xrvp.getControllers())
         addIconToController(controller);
       this.addIconToControllerId = xrvp.controllerAdded.connect(
         addIconToController
@@ -189,7 +189,7 @@ class VRHoldObjectsTool extends BaseTool {
     });
   }
 
-  /////////////////////////////////////
+  // ///////////////////////////////////
   // VRController events
 
   /**

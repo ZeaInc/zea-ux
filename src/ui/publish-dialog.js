@@ -27,7 +27,7 @@ class PublishDialog {
     const published = false;
     const publishURL = `${window.location.origin}?${args.toString()}`;
 
-    /////////////////////////////////
+    // ///////////////////////////////
     // Public Setting
     const isPublicDiv = document.createElement('div');
     isPublicDiv.className = 'publicToggle';
@@ -53,7 +53,7 @@ class PublishDialog {
     isPublicDiv.appendChild(isPublicCheckboxLabel);
     dialog.appendChild(isPublicDiv);
 
-    /////////////////////////////////
+    // ///////////////////////////////
     // link
 
     const linkTextareaDiv = document.createElement('div');
@@ -68,7 +68,7 @@ class PublishDialog {
     linkTextarea.disabled = !published;
     dialog.appendChild(linkTextarea);
 
-    /////////////////////////////////
+    // ///////////////////////////////
     // embedcode
 
     const embedCodeTextarea = document.createElement('textarea');

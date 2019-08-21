@@ -13,7 +13,7 @@ const addQueryWidget = (querySet, query, parentDomElem, appData) => {
   ul.className = 'flex-editvalues';
   // container.appendChild(ul);
 
-  ///////////////////////////////////
+  // /////////////////////////////////
   // Enabled
   {
     const input = document.createElement('input');
@@ -27,7 +27,7 @@ const addQueryWidget = (querySet, query, parentDomElem, appData) => {
     li.appendChild(input);
     ul.appendChild(li);
 
-    /////////////////////////////
+    // ///////////////////////////
     // SceneWidget Changes.
 
     let change;
@@ -41,7 +41,7 @@ const addQueryWidget = (querySet, query, parentDomElem, appData) => {
       query.setEnabled(input.checked);
     });
   }
-  ///////////////////////////////////
+  // /////////////////////////////////
   // QueryType
   {
     const selectQueryType = document.createElement('select');
@@ -82,7 +82,7 @@ const addQueryWidget = (querySet, query, parentDomElem, appData) => {
     ul.appendChild(li);
   }
 
-  ///////////////////////////////////
+  // /////////////////////////////////
   // QueryType
   {
     const selectMatchType = document.createElement('select');
@@ -123,7 +123,7 @@ const addQueryWidget = (querySet, query, parentDomElem, appData) => {
     ul.appendChild(li);
   }
 
-  ///////////////////////////////////
+  // /////////////////////////////////
   // Logic
   {
     const selectLogicType = document.createElement('select');
@@ -164,7 +164,7 @@ const addQueryWidget = (querySet, query, parentDomElem, appData) => {
     ul.appendChild(li);
   }
 
-  ///////////////////////////////////
+  // /////////////////////////////////
   // Negate
   {
     const input = document.createElement('input');
@@ -178,7 +178,7 @@ const addQueryWidget = (querySet, query, parentDomElem, appData) => {
     li.appendChild(input);
     ul.appendChild(li);
 
-    /////////////////////////////
+    // ///////////////////////////
     // SceneWidget Changes.
 
     let change;
@@ -192,7 +192,7 @@ const addQueryWidget = (querySet, query, parentDomElem, appData) => {
       query.setNegate(input.checked);
     });
   }
-  ///////////////////////////////////
+  // /////////////////////////////////
   // Input
   {
     const input = document.createElement('input');
@@ -222,7 +222,7 @@ const addQueryWidget = (querySet, query, parentDomElem, appData) => {
     });
   }
 
-  ///////////////////////////////////
+  // /////////////////////////////////
   // Prop Name
 
   {
@@ -296,10 +296,10 @@ export default class QuerySetWidget extends BaseWidget {
 
     const xfo = parameter.getValue();
 
-    /////////////////////////////
+    // ///////////////////////////
     // SceneWidget Changes.
 
-    let change = undefined;
+    const change = undefined;
     const queryULs = [];
     const updateDisplayedValue = () => {
       while (queryList.firstChild) {

@@ -14,5 +14,8 @@ export default class Action {
     this.callback = this.callback.bind(this);
   }
 
+  /**
+   * The callback method.
+   */
   callback() {}
 }

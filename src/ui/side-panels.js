@@ -56,7 +56,7 @@ class SidePanel {
 
     this.handleElement.addEventListener('mousedown', initDrag, false);
 
-    /////////////////////////////////////
+    // ///////////////////////////////////
     // Touch events
     const __ongoingTouches = {};
     const __startTouch = (touch, viewport) => {
@@ -130,7 +130,7 @@ class SidePanel {
       event => {
         event.preventDefault();
         event.stopPropagation();
-        let touches = event.changedTouches;
+        const touches = event.changedTouches;
         for (let i = 0; i < touches.length; i++) {
           __endTouch(touches[i]);
         }
@@ -141,7 +141,7 @@ class SidePanel {
     this.handleElement.addEventListener(
       'touchcancel',
       event => {
-        let touches = event.changedTouches;
+        const touches = event.changedTouches;
         for (let i = 0; i < touches.length; i++) {
           __endTouch(touches[i]);
         }

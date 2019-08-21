@@ -136,7 +136,7 @@ export default class ItemSetWidget extends BaseWidget {
 
     parentDomElem.appendChild(ul);
 
-    /////////////////////////////
+    // ///////////////////////////
     // SceneWidget Changes.
     this.selectionChanged = new Visualive.Signal();
     this.selectionDoubleClicked = new Visualive.Signal();
@@ -155,7 +155,7 @@ export default class ItemSetWidget extends BaseWidget {
       this.selectionDoubleClicked.emit(select.selectedIndex);
     });
 
-    /////////////////////////////////
+    // ///////////////////////////////
     // Add/Remove buttons.
     if (parameter.getFilterFn() != undefined) {
       const addButton = document.createElement('button');
