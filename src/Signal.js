@@ -17,7 +17,7 @@ class Signal {
    */
   connect(fn) {
     if (fn == undefined)
-      throw 'a function callback must be passed to Signal.connect';
+      throw new Error('a function callback must be passed to Signal.connect');
     if (this.__slots.indexOf(fn) != -1) {
       console.warn('fn ' + fn.name + ' already connected to Signal.');
       return;
@@ -63,7 +63,7 @@ class Signal {
    * @param {any} id - The id param.
    */
   disconnectID(id) {
-    if (!this.__slots[id]) throw 'Invalid ID';
+    if (!this.__slots[id]) throw new Error('Invalid ID');
     this.__slots[id] = undefined;
   }
 

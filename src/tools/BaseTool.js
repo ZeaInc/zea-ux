@@ -54,7 +54,7 @@ export default class BaseTool extends Visualive.ParameterOwner {
    * @param {any} index - The index param.
    */
   install(index) {
-    if (this.__installed) throw 'Tool already installed';
+    if (this.__installed) throw new Error('Tool already installed');
     this.index = index;
     this.__installed = true;
     this.installChanged.emit(true);
@@ -72,7 +72,7 @@ export default class BaseTool extends Visualive.ParameterOwner {
    * The activateTool method.
    */
   activateTool() {
-    if (this.__activated) throw 'Tool already activate';
+    if (this.__activated) throw new Error('Tool already activate');
     this.__activated = true;
     this.activatedChanged.emit(true);
   }

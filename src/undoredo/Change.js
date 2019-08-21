@@ -16,14 +16,14 @@ export default class Change {
    * The undo method.
    */
   undo() {
-    throw 'Implement me';
+    throw new Error('Implement me');
   }
 
   /**
    * The redo method.
    */
   redo() {
-    throw 'Implement me';
+    throw new Error('Implement me');
   }
 
   /**
@@ -31,7 +31,7 @@ export default class Change {
    * @param {any} updateData - The updateData param.
    */
   update(updateData) {
-    throw 'Implement me';
+    throw new Error('Implement me');
   }
 
   /**
