@@ -40,6 +40,10 @@ class CreateLineChange extends CreateGeomChange {
     }
   }
 
+  /**
+   * The update method.
+   * @param {any} updateData - The updateData param.
+   */
   update(updateData) {
     if (updateData.p1) {
       this.line.getVertex(1).setFromOther(updateData.p1);
@@ -48,6 +52,11 @@ class CreateLineChange extends CreateGeomChange {
     this.updated.emit(updateData);
   }
 
+  /**
+   * The fromJSON method.
+   * @param {any} j - The j param.
+   * @param {any} appData - The appData param.
+   */
   fromJSON(j, appData) {
     super.fromJSON(j, appData);
     if (j.color) {
@@ -64,7 +73,15 @@ class CreateLineChange extends CreateGeomChange {
 }
 UndoRedoManager.registerChange('CreateLineChange', CreateLineChange);
 
+/**
+ * Class representing a create line tool.
+ * @extends CreateGeomTool
+ */
 export default class CreateLineTool extends CreateGeomTool {
+  /**
+   * Create a create line tool.
+   * @param {any} appData - The appData value.
+   */
   constructor(appData) {
     super(appData);
 
@@ -113,6 +130,11 @@ export default class CreateLineTool extends CreateGeomTool {
   //   });
   // }
 
+  /**
+   * The createStart method.
+   * @param {any} xfo - The xfo param.
+   * @param {any} parentItem - The parentItem param.
+   */
   createStart(xfo, parentItem) {
     this.change = new CreateLineChange(parentItem, xfo);
     this.appData.undoRedoManager.addChange(this.change);
@@ -122,12 +144,20 @@ export default class CreateLineTool extends CreateGeomTool {
     this.length = 0.0;
   }
 
+  /**
+   * The createMove method.
+   * @param {any} pt - The pt param.
+   */
   createMove(pt) {
     const offet = this.xfo.transformVec3(pt);
     this.length = offet.length();
     this.change.update({ p1: offet });
   }
 
+  /**
+   * The createRelease method.
+   * @param {any} pt - The pt param.
+   */
   createRelease(pt) {
     if (this.length == 0) {
       this.appData.undoRedoManager.undo(false);

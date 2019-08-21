@@ -10,6 +10,11 @@ class Signal {
     this.emit = this.emit.bind(this);
   }
 
+  /**
+   * The connect method.
+   * @param {any} fn - The fn param.
+   * @return {any} The return value.
+   */
   connect(fn) {
     if (fn == undefined)
       throw 'a function callback must be passed to Signal.connect';
@@ -28,6 +33,10 @@ class Signal {
     return id;
   }
 
+  /**
+   * The disconnect method.
+   * @param {any} fn - The fn param.
+   */
   disconnect(fn) {
     const ids = [];
     this.__slots.forEach(function(item, index) {
@@ -49,12 +58,21 @@ class Signal {
     }
   }
 
+  /**
+   * The disconnectID method.
+   * @param {any} id - The id param.
+   */
   disconnectID(id) {
     if (!this.__slots[id]) throw 'Invalid ID';
     this.__slots[id] = undefined;
   }
 
-  // emit the signal to all slots(observers)
+  /**
+   * The emit method.
+   * Emit the signal to all slots (observers).
+   * @param {...object} ...data - The ...data param.
+   *
+   */
   emit(...data) {
     const len = this.__slots.length;
     for (let i = 0; i < len; i++) {

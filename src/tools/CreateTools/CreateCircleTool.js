@@ -28,17 +28,29 @@ class CreateCircleChange extends CreateGeomChange {
     }
   }
 
+  /**
+   * The update method.
+   * @param {any} updateData - The updateData param.
+   */
   update(updateData) {
     this.circle.getParameter('Radius').setValue(updateData.radius);
     this.updated.emit(updateData);
   }
 
+  /**
+   * The toJSON method.
+   * @return {any} The return value.
+   */
   toJSON() {
     const j = super.toJSON();
     j.radius = this.circle.getParameter('Radius').getValue();
     return j;
   }
 
+  /**
+   * The changeFromJSON method.
+   * @param {any} j - The j param.
+   */
   changeFromJSON(j) {
     console.log('CreateCircleChange:', j);
     if (j.radius) this.circle.getParameter('Radius').setValue(j.radius);
@@ -46,11 +58,24 @@ class CreateCircleChange extends CreateGeomChange {
 }
 UndoRedoManager.registerChange('CreateCircleChange', CreateCircleChange);
 
+/**
+ * Class representing a create circle tool.
+ * @extends CreateGeomTool
+ */
 class CreateCircleTool extends CreateGeomTool {
+  /**
+   * Create a create circle tool.
+   * @param {any} appData - The appData value.
+   */
   constructor(appData) {
     super(appData);
   }
 
+  /**
+   * The createStart method.
+   * @param {any} xfo - The xfo param.
+   * @param {any} parentItem - The parentItem param.
+   */
   createStart(xfo, parentItem) {
     this.change = new CreateCircleChange(parentItem, xfo);
     this.appData.undoRedoManager.addChange(this.change);
@@ -60,11 +85,19 @@ class CreateCircleTool extends CreateGeomTool {
     this.radius = 0.0;
   }
 
+  /**
+   * The createMove method.
+   * @param {any} pt - The pt param.
+   */
   createMove(pt) {
     this.radius = pt.distanceTo(this.xfo.tr);
     this.change.update({ radius: this.radius });
   }
 
+  /**
+   * The createRelease method.
+   * @param {any} pt - The pt param.
+   */
   createRelease(pt) {
     if (this.radius == 0) {
       this.appData.undoRedoManager.undo(false);

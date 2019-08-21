@@ -28,13 +28,25 @@ class ParameterValueChange extends Change {
     }
   }
 
+  /**
+   * The getPrevValue method.
+   * @return {any} The return value.
+   */
   getPrevValue() {
     return this.__prevValue;
   }
+
+  /**
+   * The getNextValue method.
+   * @return {any} The return value.
+   */
   getNextValue() {
     return this.__nextValue;
   }
 
+  /**
+   * The undo method.
+   */
   undo() {
     if (!this.__param) return;
     this.__param.setValue(
@@ -43,6 +55,9 @@ class ParameterValueChange extends Change {
     );
   }
 
+  /**
+   * The redo method.
+   */
   redo() {
     if (!this.__param) return;
     this.__param.setValue(
@@ -51,6 +66,10 @@ class ParameterValueChange extends Change {
     );
   }
 
+  /**
+   * The update method.
+   * @param {any} updateData - The updateData param.
+   */
   update(updateData) {
     if (!this.__param) return;
     this.__nextValue = updateData.value;
@@ -61,6 +80,11 @@ class ParameterValueChange extends Change {
     this.updated.emit(updateData);
   }
 
+  /**
+   * The toJSON method.
+   * @param {any} appData - The appData param.
+   * @return {any} The return value.
+   */
   toJSON(appData) {
     const j = {
       name: this.name,
@@ -76,6 +100,11 @@ class ParameterValueChange extends Change {
     return j;
   }
 
+  /**
+   * The fromJSON method.
+   * @param {any} j - The j param.
+   * @param {any} appData - The appData param.
+   */
   fromJSON(j, appData) {
     let param = appData.scene.getRoot().resolvePath(j.paramPath, 1);
     if (!param || !(param instanceof Visualive.Parameter)) {
@@ -91,6 +120,10 @@ class ParameterValueChange extends Change {
     if (j.value != undefined) this.changeFromJSON(j);
   }
 
+  /**
+   * The changeFromJSON method.
+   * @param {any} j - The j param.
+   */
   changeFromJSON(j) {
     if (!this.__param) return;
     if (this.__nextValue.fromJSON) this.__nextValue.fromJSON(j.value);

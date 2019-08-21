@@ -194,6 +194,11 @@ export default class XfoHandle extends Visualive.TreeItem {
     }
   }
 
+  /**
+   * The showHandles method.
+   * @param {any} name - The name param.
+   * @return {any} The return value.
+   */
   showHandles(name) {
     this.traverse(item => {
       if (item != this) {
@@ -206,6 +211,10 @@ export default class XfoHandle extends Visualive.TreeItem {
     if (child) child.setVisible(true);
   }
 
+  /**
+   * The setTargetParam method.
+   * @param {any} param - The param param.
+   */
   setTargetParam(param) {
     this.__param = param;
     this.traverse(item => {

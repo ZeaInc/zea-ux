@@ -95,6 +95,9 @@ export default class VRControllerUI extends Visualive.GeomItem {
 
   /////////////////////////////////////
 
+  /**
+   * The activate method.
+   */
   activate() {
     this.__vrUIDOMHolderElement.style.display = 'block';
     this.__active = true;
@@ -108,6 +111,9 @@ export default class VRControllerUI extends Visualive.GeomItem {
     this.renderUIToImage();
   }
 
+  /**
+   * The deactivate method.
+   */
   deactivate() {
     this.__vrUIDOMHolderElement.style.display = 'none';
     this.__active = true;
@@ -117,6 +123,11 @@ export default class VRControllerUI extends Visualive.GeomItem {
   /////////////////////////////////////
   // VRController events
 
+  /**
+   * The updateElemInAtlas method.
+   * @param {any} elem - The elem param.
+   * @return {any} The return value.
+   */
   updateElemInAtlas(elem) {
     return new Promise((resolve, reject) => {
       domtoimage.toCanvas(elem).then(canvas => {
@@ -135,6 +146,9 @@ export default class VRControllerUI extends Visualive.GeomItem {
     });
   }
 
+  /**
+   * The updateUIImage method.
+   */
   updateUIImage() {
     const imageData = this.mainCtx.getImageData(
       0,
@@ -149,6 +163,9 @@ export default class VRControllerUI extends Visualive.GeomItem {
     );
   }
 
+  /**
+   * The renderUIToImage method.
+   */
   renderUIToImage() {
     domtoimage.toCanvas(this.__vrUIDOMElement).then(canvas => {
       this.mainCtx = canvas.getContext('2d');
@@ -183,6 +200,13 @@ export default class VRControllerUI extends Visualive.GeomItem {
     });
   }
 
+  /**
+   * The sendMouseEvent method.
+   * @param {any} eventName - The eventName param.
+   * @param {any} args - The args param.
+   * @param {any} element - The element param.
+   * @return {any} The return value.
+   */
   sendMouseEvent(eventName, args, element) {
     // console.log(eventName, element)
 

@@ -52,6 +52,9 @@ class ViewTool extends BaseTool {
   ///////////////////////////////////////
   //
 
+  /**
+   * The activateTool method.
+   */
   activateTool() {
     super.activateTool();
     console.log('activateTool.ViewTool');
@@ -88,6 +91,9 @@ class ViewTool extends BaseTool {
     });
   }
 
+  /**
+   * The deactivateTool method.
+   */
   deactivateTool() {
     super.deactivateTool();
 
@@ -103,10 +109,20 @@ class ViewTool extends BaseTool {
 
   ///////////////////////////////////////
   //
+
+  /**
+   * The setDefaultMode method.
+   * @param {any} mode - The mode param.
+   */
   setDefaultMode(mode) {
     this.__defaultMode = mode;
   }
 
+  /**
+   * The look method.
+   * @param {any} dragVec - The dragVec param.
+   * @param {any} viewport - The viewport param.
+   */
   look(dragVec, viewport) {
     const focalDistance = viewport.getCamera().getFocalDistance();
     const orbitRate = this.__orbitRateParam.getValue();
@@ -142,6 +158,11 @@ class ViewTool extends BaseTool {
     }
   }
 
+  /**
+   * The orbit method.
+   * @param {any} dragVec - The dragVec param.
+   * @param {any} viewport - The viewport param.
+   */
   orbit(dragVec, viewport) {
     const focalDistance = viewport.getCamera().getFocalDistance();
     const orbitRate = this.__orbitRateParam.getValue();
@@ -181,6 +202,11 @@ class ViewTool extends BaseTool {
     }
   }
 
+  /**
+   * The pan method.
+   * @param {any} dragVec - The dragVec param.
+   * @param {any} viewport - The viewport param.
+   */
   pan(dragVec, viewport) {
     const focalDistance = viewport.getCamera().getFocalDistance();
     const fovY = viewport.getCamera().getFov();
@@ -203,6 +229,11 @@ class ViewTool extends BaseTool {
       .setGlobalXfo(this.__mouseDownCameraXfo.multiply(delta));
   }
 
+  /**
+   * The dolly method.
+   * @param {any} dragVec - The dragVec param.
+   * @param {any} viewport - The viewport param.
+   */
   dolly(dragVec, viewport) {
     const dollyDist = dragVec.x * this.__dollySpeedParam.getValue();
     const delta = new Visualive.Xfo();
@@ -212,6 +243,12 @@ class ViewTool extends BaseTool {
       .setGlobalXfo(this.__mouseDownCameraXfo.multiply(delta));
   }
 
+  /**
+   * The panAndZoom method.
+   * @param {any} panDelta - The panDelta param.
+   * @param {any} dragDist - The dragDist param.
+   * @param {any} viewport - The viewport param.
+   */
   panAndZoom(panDelta, dragDist, viewport) {
     const focalDistance = viewport.getCamera().getFocalDistance();
     const fovY = viewport.getCamera().getFov();
@@ -238,6 +275,10 @@ class ViewTool extends BaseTool {
       .setGlobalXfo(this.__mouseDownCameraXfo.multiply(delta));
   }
 
+  /**
+   * The initDrag method.
+   * @param {any} viewport - The viewport param.
+   */
   initDrag(viewport) {
     const focalDistance = viewport.getCamera().getFocalDistance();
     this.__mouseDragDelta.set(0, 0);
@@ -257,6 +298,11 @@ class ViewTool extends BaseTool {
     this.__mouseDownFocalDist = focalDistance;
   }
 
+  /**
+   * The aimFocus method.
+   * @param {any} camera - The camera param.
+   * @param {any} pos - The pos param.
+   */
   aimFocus(camera, pos) {
     if (this.__focusIntervalId) clearInterval(this.__focusIntervalId);
 
@@ -321,8 +367,16 @@ class ViewTool extends BaseTool {
     this.__manipulationState = 'focussing';
   }
 
+  /**
+   * The onMouseMove method.
+   * @param {any} event - The event param.
+   */
   onMouseMove(event) {}
 
+  /**
+   * The onDragStart method.
+   * @param {any} event - The event param.
+   */
   onDragStart(event) {
     this.__mouseDownPos = event.mousePos;
     this.initDrag(event.viewport);
@@ -338,6 +392,10 @@ class ViewTool extends BaseTool {
     }
   }
 
+  /**
+   * The onDrag method.
+   * @param {any} event - The event param.
+   */
   onDrag(event) {
     // During requestPointerLock, the offsetX/Y values are not updated.
     // Instead we get a relative delta that we use to compute the total
@@ -371,12 +429,22 @@ class ViewTool extends BaseTool {
     }
   }
 
+  /**
+   * The onDragEnd method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onDragEnd(event) {
     // event.viewport.renderGeomDataFbo();
     this.movementFinished.emit();
     return false;
   }
 
+  /**
+   * The onMouseDown method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onMouseDown(event) {
     if (this.__maipulationModel == VIEW_TOOL_MODELS.DCC && !event.altKey)
       return false;
@@ -387,6 +455,11 @@ class ViewTool extends BaseTool {
     return true;
   }
 
+  /**
+   * The onMouseUp method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onMouseUp(event) {
     if (this.dragging) {
       this.onDragEnd(event);
@@ -395,6 +468,11 @@ class ViewTool extends BaseTool {
     }
   }
 
+  /**
+   * The onMouseMove method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onMouseMove(event) {
     if (this.dragging) {
       this.onDrag(event);
@@ -403,6 +481,10 @@ class ViewTool extends BaseTool {
     }
   }
 
+  /**
+   * The onDoubleClick method.
+   * @param {any} event - The event param.
+   */
   onDoubleClick(event) {
     if (event.intersectionData) {
       const viewport = event.viewport;
@@ -416,6 +498,11 @@ class ViewTool extends BaseTool {
     }
   }
 
+  /**
+   * The onWheel method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onWheel(event) {
     if (this.__maipulationModel == VIEW_TOOL_MODELS.DCC && !event.altKey)
       return false;
@@ -459,6 +546,12 @@ class ViewTool extends BaseTool {
     );
   }
 
+  /**
+   * The onKeyPressed method.
+   * @param {any} key - The key param.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onKeyPressed(key, event) {
     // Note: onKeyPressed is called intiallly only once, and then we
     // get a series of calls. Here we ignore subsequent events.
@@ -502,8 +595,19 @@ class ViewTool extends BaseTool {
     return false; // no keys handled
   }
 
+  /**
+   * The onKeyDown method.
+   * @param {any} key - The key param.
+   * @param {any} event - The event param.
+   */
   onKeyDown(key, event) {}
 
+  /**
+   * The onKeyUp method.
+   * @param {any} key - The key param.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onKeyUp(key, event) {
     // (TODO: move this logic to a special controller)
     /*
@@ -540,12 +644,18 @@ class ViewTool extends BaseTool {
       pos: new Visualive.Vec2(touch.pageX, touch.pageY),
     };
   }
+
   __endTouch(touch, viewport) {
     // const idx = this.__ongoingTouchIndexById(touch.identifier);
     // this.__ongoingTouches.splice(idx, 1); // remove it; we're done
     delete this.__ongoingTouches[touch.identifier];
   }
 
+  /**
+   * The onTouchStart method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onTouchStart(event) {
     // console.log("onTouchStart");
     event.preventDefault();
@@ -562,6 +672,11 @@ class ViewTool extends BaseTool {
     return true;
   }
 
+  /**
+   * The onTouchMove method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onTouchMove(event) {
     event.preventDefault();
     event.stopPropagation();
@@ -605,6 +720,11 @@ class ViewTool extends BaseTool {
     }
   }
 
+  /**
+   * The onTouchEnd method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onTouchEnd(event) {
     event.preventDefault();
     event.stopPropagation();
@@ -623,6 +743,11 @@ class ViewTool extends BaseTool {
     return true;
   }
 
+  /**
+   * The onTouchCancel method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onTouchCancel(event) {
     console.log('touchcancel.');
     const touches = event.changedTouches;
@@ -632,6 +757,10 @@ class ViewTool extends BaseTool {
     return true;
   }
 
+  /**
+   * The onDoubleTap method.
+   * @param {any} event - The event param.
+   */
   onDoubleTap(event) {
     const touches = event.changedTouches;
     for (let i = 0; i < touches.length; i++) {
@@ -676,6 +805,11 @@ class ViewTool extends BaseTool {
     }
   }
 
+  /**
+   * The onVRControllerButtonDown method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onVRControllerButtonDown(event) {
     if (event.button != 1) return;
     this.__controllerTriggersHeld.push(event.controller);
@@ -683,6 +817,11 @@ class ViewTool extends BaseTool {
     return true;
   }
 
+  /**
+   * The onVRControllerButtonUp method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onVRControllerButtonUp(event) {
     if (event.button != 1) return;
     const index = this.__controllerTriggersHeld.indexOf(event.controller);
@@ -691,6 +830,10 @@ class ViewTool extends BaseTool {
     return true;
   }
 
+  /**
+   * The onVRControllerDoubleClicked method.
+   * @param {any} event - The event param.
+   */
   onVRControllerDoubleClicked(event) {
     console.log(
       'onVRControllerDoubleClicked:',
@@ -704,6 +847,11 @@ class ViewTool extends BaseTool {
     event.vrviewport.setXfo(stageXfo);
   }
 
+  /**
+   * The onVRPoseChanged method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onVRPoseChanged(event) {
     if (this.__controllerTriggersHeld.length == 1) {
       const grabPos = this.__controllerTriggersHeld[0].getControllerTipStageLocalXfo()

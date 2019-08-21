@@ -16,11 +16,22 @@ class ToolManager {
     this.avatarPointerHighlighted = false;
   }
 
+  /**
+   * The insertTool method.
+   * @param {any} tool - The tool param.
+   * @param {any} index - The index param.
+   */
   insertTool(tool, index) {
     this.__toolStack.splice(index, 0, tool);
     tool.install(index);
   }
 
+  /**
+   * The insertToolBefore method.
+   * @param {any} tool - The tool param.
+   * @param {any} beforeTool - The beforeTool param.
+   * @return {any} The return value.
+   */
   insertToolBefore(tool, beforeTool) {
     // Note: when activating new tools in VR, we
     // can insert the new tool below the VRUI tool,
@@ -32,6 +43,12 @@ class ToolManager {
     return index;
   }
 
+  /**
+   * The insertToolAfter method.
+   * @param {any} tool - The tool param.
+   * @param {any} afterTool - The afterTool param.
+   * @return {any} The return value.
+   */
   insertToolAfter(tool, afterTool) {
     const index = this.__toolStack.indexOf(afterTool) + 1;
     this.__toolStack.splice(index, 0, tool);
@@ -42,10 +59,19 @@ class ToolManager {
     return index;
   }
 
+  /**
+   * The getToolIndex method.
+   * @param {any} tool - The tool param.
+   * @return {any} The return value.
+   */
   getToolIndex(tool) {
     return this.__toolStack.indexOf(tool);
   }
 
+  /**
+   * The removeTool method.
+   * @param {any} index - The index param.
+   */
   removeTool(index) {
     const tool = this.__toolStack[index];
     this.__toolStack.splice(index, 1);
@@ -63,10 +89,19 @@ class ToolManager {
     }
   }
 
+  /**
+   * The removeToolByHandle method.
+   * @param {any} tool - The tool param.
+   */
   removeToolByHandle(tool) {
     this.removeTool(this.getToolIndex(tool));
   }
 
+  /**
+   * The pushTool method.
+   * @param {any} tool - The tool param.
+   * @return {any} The return value.
+   */
   pushTool(tool) {
     const prevTool = this.currTool();
     if (prevTool) {
@@ -92,6 +127,7 @@ class ToolManager {
 
     return this.__toolStack.length - 1;
   }
+
   __removeCurrTool() {
     if (this.__toolStack.length > 0) {
       const prevTool = this.__toolStack.pop();
@@ -100,6 +136,9 @@ class ToolManager {
     }
   }
 
+  /**
+   * The popTool method.
+   */
   popTool() {
     this.__removeCurrTool();
     const tool = this.currTool();
@@ -107,6 +146,10 @@ class ToolManager {
     // console.log("ToolManager.popTool:", prevTool.constructor.name, (tool ? tool.constructor.name : ''))
   }
 
+  /**
+   * The replaceCurrentTool method.
+   * @param {any} tool - The tool param.
+   */
   replaceCurrentTool(tool) {
     this.__removeCurrTool();
     this.__toolStack.push(tool);
@@ -114,14 +157,26 @@ class ToolManager {
     tool.activateTool();
   }
 
+  /**
+   * The currTool method.
+   * @return {any} The return value.
+   */
   currTool() {
     return this.__toolStack[this.__toolStack.length - 1];
   }
 
+  /**
+   * The currToolName method.
+   * @return {any} The return value.
+   */
   currToolName() {
     return this.__toolStack[this.__toolStack.length - 1].getName();
   }
 
+  /**
+   * The bind method.
+   * @param {any} renderer - The renderer param.
+   */
   bind(renderer) {
     const viewport = renderer.getViewport();
 
@@ -178,6 +233,10 @@ class ToolManager {
     });
   }
 
+  /**
+   * The onMouseDown method.
+   * @param {any} event - The event param.
+   */
   onMouseDown(event) {
     event.undoRedoManager = this.appData.undoRedoManager;
     event.showPointerOnAvatar = true;
@@ -202,6 +261,10 @@ class ToolManager {
     }
   }
 
+  /**
+   * The onMouseMove method.
+   * @param {any} event - The event param.
+   */
   onMouseMove(event) {
     event.undoRedoManager = this.appData.undoRedoManager;
     event.showPointerOnAvatar = true;
@@ -219,6 +282,10 @@ class ToolManager {
     }
   }
 
+  /**
+   * The onMouseUp method.
+   * @param {any} event - The event param.
+   */
   onMouseUp(event) {
     event.undoRedoManager = this.appData.undoRedoManager;
     event.showPointerOnAvatar = true;
@@ -238,6 +305,10 @@ class ToolManager {
     }
   }
 
+  /**
+   * The onMouseLeave method.
+   * @param {any} event - The event param.
+   */
   onMouseLeave(event) {
     let i = this.__toolStack.length;
     while (i--) {
@@ -250,6 +321,10 @@ class ToolManager {
     }
   }
 
+  /**
+   * The onDoubleClick method.
+   * @param {any} event - The event param.
+   */
   onDoubleClick(event) {
     let i = this.__toolStack.length;
     while (i--) {
@@ -258,6 +333,10 @@ class ToolManager {
     }
   }
 
+  /**
+   * The onWheel method.
+   * @param {any} event - The event param.
+   */
   onWheel(event) {
     event.undoRedoManager = this.appData.undoRedoManager;
     let i = this.__toolStack.length;
@@ -269,6 +348,12 @@ class ToolManager {
 
   /////////////////////////////////////
   // Keyboard events
+
+  /**
+   * The onKeyPressed method.
+   * @param {any} key - The event param.
+   * @param {any} event - The event param.
+   */
   onKeyPressed(key, event) {
     event.undoRedoManager = this.appData.undoRedoManager;
     let i = this.__toolStack.length;
@@ -278,6 +363,11 @@ class ToolManager {
     }
   }
 
+  /**
+   * The onKeyDown method.
+   * @param {any} key - The event param.
+   * @param {any} event - The event param.
+   */
   onKeyDown(key, event) {
     event.undoRedoManager = this.appData.undoRedoManager;
     let i = this.__toolStack.length;
@@ -287,6 +377,11 @@ class ToolManager {
     }
   }
 
+  /**
+   * The onKeyUp method.
+   * @param {any} key - The event param.
+   * @param {any} event - The event param.
+   */
   onKeyUp(key, event) {
     event.undoRedoManager = this.appData.undoRedoManager;
     let i = this.__toolStack.length;
@@ -298,6 +393,11 @@ class ToolManager {
 
   /////////////////////////////////////
   // Touch events
+
+  /**
+   * The onTouchStart method.
+   * @param {any} event - The event param.
+   */
   onTouchStart(event) {
     event.undoRedoManager = this.appData.undoRedoManager;
     let i = this.__toolStack.length;
@@ -307,6 +407,10 @@ class ToolManager {
     }
   }
 
+  /**
+   * The onTouchMove method.
+   * @param {any} event - The event param.
+   */
   onTouchMove(event) {
     event.undoRedoManager = this.appData.undoRedoManager;
     let i = this.__toolStack.length;
@@ -316,6 +420,10 @@ class ToolManager {
     }
   }
 
+  /**
+   * The onTouchEnd method.
+   * @param {any} event - The event param.
+   */
   onTouchEnd(event) {
     event.undoRedoManager = this.appData.undoRedoManager;
     let i = this.__toolStack.length;
@@ -325,6 +433,10 @@ class ToolManager {
     }
   }
 
+  /**
+   * The onTouchCancel method.
+   * @param {any} event - The event param.
+   */
   onTouchCancel(event) {
     event.undoRedoManager = this.appData.undoRedoManager;
     let i = this.__toolStack.length;
@@ -334,6 +446,10 @@ class ToolManager {
     }
   }
 
+  /**
+   * The onDoubleTap method.
+   * @param {any} event - The event param.
+   */
   onDoubleTap(event) {
     event.undoRedoManager = this.appData.undoRedoManager;
     let i = this.__toolStack.length;
@@ -345,6 +461,11 @@ class ToolManager {
 
   /////////////////////////////////////
   // VRController events
+
+  /**
+   * The onVRControllerButtonDown method.
+   * @param {any} event - The event param.
+   */
   onVRControllerButtonDown(event) {
     event.undoRedoManager = this.appData.undoRedoManager;
     let i = this.__toolStack.length;
@@ -354,6 +475,10 @@ class ToolManager {
     }
   }
 
+  /**
+   * The onVRControllerButtonUp method.
+   * @param {any} event - The event param.
+   */
   onVRControllerButtonUp(event) {
     event.undoRedoManager = this.appData.undoRedoManager;
     let i = this.__toolStack.length;
@@ -363,6 +488,10 @@ class ToolManager {
     }
   }
 
+  /**
+   * The onVRControllerDoubleClicked method.
+   * @param {any} event - The event param.
+   */
   onVRControllerDoubleClicked(event) {
     event.undoRedoManager = this.appData.undoRedoManager;
     let i = this.__toolStack.length;
@@ -372,6 +501,10 @@ class ToolManager {
     }
   }
 
+  /**
+   * The onVRPoseChanged method.
+   * @param {any} event - The event param.
+   */
   onVRPoseChanged(event) {
     event.undoRedoManager = this.appData.undoRedoManager;
     let i = this.__toolStack.length;
@@ -381,6 +514,9 @@ class ToolManager {
     }
   }
 
+  /**
+   * The destroy method.
+   */
   destroy() {
     const viewport = this.appData.renderer.getViewport();
 

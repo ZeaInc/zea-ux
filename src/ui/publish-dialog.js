@@ -87,11 +87,17 @@ class PublishDialog {
     this.visible = false;
   }
 
+  /**
+   * The show method.
+   */
   show() {
     this.__publishDialogHolder.style.display = 'block';
     this.visible = true;
   }
 
+  /**
+   * The hide method.
+   */
   hide() {
     this.__publishDialogHolder.style.display = 'none';
     this.visible = false;

@@ -48,6 +48,10 @@ class CreateFreehandLineChange extends CreateGeomChange {
     }
   }
 
+  /**
+   * The update method.
+   * @param {any} updateData - The updateData param.
+   */
   update(updateData) {
     // console.log("update:", this.used)
 
@@ -77,6 +81,11 @@ class CreateFreehandLineChange extends CreateGeomChange {
     this.updated.emit(updateData);
   }
 
+  /**
+   * The toJSON method.
+   * @param {any} appData - The appData param.
+   * @return {any} The return value.
+   */
   toJSON(appData) {
     const j = super.toJSON();
     j.lineThickness = this.line.lineThickness;
@@ -87,6 +96,11 @@ class CreateFreehandLineChange extends CreateGeomChange {
     return j;
   }
 
+  /**
+   * The fromJSON method.
+   * @param {any} j - The j param.
+   * @param {any} appData - The appData param.
+   */
   fromJSON(j, appData) {
     // Need to set line thickness before the geom is added to the tree.
     if (j.lineThickness) {
@@ -111,7 +125,15 @@ UndoRedoManager.registerChange(
   CreateFreehandLineChange
 );
 
+/**
+ * Class representing a create freehand line tool.
+ * @extends CreateLineTool
+ */
 class CreateFreehandLineTool extends CreateLineTool {
+  /**
+   * Create a create freehand line tool.
+   * @param {any} appData - The appData value.
+   */
   constructor(appData) {
     super(appData);
 
@@ -123,6 +145,11 @@ class CreateFreehandLineTool extends CreateLineTool {
     );
   }
 
+  /**
+   * The createStart method.
+   * @param {any} xfo - The xfo param.
+   * @param {any} parentItem - The parentItem param.
+   */
   createStart(xfo, parentItem) {
     const color = this.cp.getValue();
     const lineThickness = this.tp.getValue();
@@ -141,6 +168,10 @@ class CreateFreehandLineTool extends CreateLineTool {
     this.length = 0;
   }
 
+  /**
+   * The createMove method.
+   * @param {any} pt - The pt param.
+   */
   createMove(pt) {
     const p = this.invxfo.transformVec3(pt);
     const delta = p.subtract(this.prevP).length();
@@ -154,6 +185,10 @@ class CreateFreehandLineTool extends CreateLineTool {
     this.prevP = p;
   }
 
+  /**
+   * The createRelease method.
+   * @param {any} pt - The pt param.
+   */
   createRelease(pt) {
     if (this.length == 0) {
       this.appData.undoRedoManager.undo(false);

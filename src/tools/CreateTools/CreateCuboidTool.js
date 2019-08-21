@@ -25,6 +25,10 @@ class CreateCuboidChange extends CreateGeomChange {
     }
   }
 
+  /**
+   * The update method.
+   * @param {any} updateData - The updateData param.
+   */
   update(updateData) {
     if (updateData.baseSize) {
       this.cuboid.setBaseSize(updateData.baseSize[0], updateData.baseSize[1]);
@@ -42,11 +46,24 @@ class CreateCuboidChange extends CreateGeomChange {
 }
 UndoRedoManager.registerChange('CreateCuboidChange', CreateCuboidChange);
 
+/**
+ * Class representing a create cuboid tool.
+ * @extends CreateGeomTool
+ */
 class CreateCuboidTool extends CreateGeomTool {
+  /**
+   * Create a create cuboid tool.
+   * @param {any} appData - The appData value.
+   */
   constructor(appData) {
     super(appData);
   }
 
+  /**
+   * The createStart method.
+   * @param {any} xfo - The xfo param.
+   * @param {any} parentItem - The parentItem param.
+   */
   createStart(xfo, parentItem) {
     this.change = new CreateCuboidChange(parentItem, xfo);
     this.appData.undoRedoManager.addChange(this.change);
@@ -57,6 +74,10 @@ class CreateCuboidTool extends CreateGeomTool {
     this._height = 0.0;
   }
 
+  /**
+   * The createMove method.
+   * @param {any} pt - The pt param.
+   */
   createMove(pt) {
     if (this.stage == 1) {
       const delta = this.invxfo.transformVec3(pt);
@@ -72,6 +93,11 @@ class CreateCuboidTool extends CreateGeomTool {
     }
   }
 
+  /**
+   * The createRelease method.
+   * @param {any} pt - The pt param.
+   * @param {any} viewport - The viewport param.
+   */
   createRelease(pt, viewport) {
     if (this.stage == 1) {
       this.stage = 2;

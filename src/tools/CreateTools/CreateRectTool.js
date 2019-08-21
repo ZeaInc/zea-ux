@@ -28,6 +28,10 @@ class CreateRectChange extends CreateGeomChange {
     }
   }
 
+  /**
+   * The update method.
+   * @param {any} updateData - The updateData param.
+   */
   update(updateData) {
     if (updateData.baseSize) {
       this.rect.setSize(updateData.baseSize[0], updateData.baseSize[1]);
@@ -43,11 +47,24 @@ class CreateRectChange extends CreateGeomChange {
 }
 UndoRedoManager.registerChange('CreateRectChange', CreateRectChange);
 
+/**
+ * Class representing a create rect tool.
+ * @extends CreateGeomTool
+ */
 class CreateRectTool extends CreateGeomTool {
+  /**
+   * Create a create rect tool.
+   * @param {any} appData - The appData value.
+   */
   constructor(appData) {
     super(appData);
   }
 
+  /**
+   * The createStart method.
+   * @param {any} xfo - The xfo param.
+   * @param {any} parentItem - The parentItem param.
+   */
   createStart(xfo, parentItem) {
     this.change = new CreateRectChange(parentItem, xfo);
     this.appData.undoRedoManager.addChange(this.change);
@@ -58,6 +75,10 @@ class CreateRectTool extends CreateGeomTool {
     this._size = 0.0;
   }
 
+  /**
+   * The createMove method.
+   * @param {any} pt - The pt param.
+   */
   createMove(pt) {
     if (this.stage == 1) {
       const delta = this.invxfo.transformVec3(pt);
@@ -75,6 +96,11 @@ class CreateRectTool extends CreateGeomTool {
     }
   }
 
+  /**
+   * The createRelease method.
+   * @param {any} pt - The pt param.
+   * @param {any} viewport - The viewport param.
+   */
   createRelease(pt, viewport) {
     if (this._size == 0) {
       this.appData.undoRedoManager.undo(false);

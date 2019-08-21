@@ -121,6 +121,10 @@ class TreeItemElement {
     });
   }
 
+  /**
+   * The addComponent method.
+   * @param {any} component - The component param.
+   */
   addComponent(component) {
     if (!this.subul) {
       this.subul = document.createElement('ul');
@@ -138,6 +142,11 @@ class TreeItemElement {
     this.subul.appendChild(li);
   }
 
+  /**
+   * The addChild method.
+   * @param {any} treeItem - The treeItem param.
+   * @param {boolean} expanded - The expanded param.
+   */
   addChild(treeItem, expanded = false) {
     if (this._expanded) {
       const childTreeItem = uxFactory.constructTreeItemElement(
@@ -152,6 +161,9 @@ class TreeItemElement {
     }
   }
 
+  /**
+   * The expand method.
+   */
   expand() {
     this._expanded = true;
     this.ul.classList.remove('TreeNodesList--collapsed');
@@ -167,6 +179,9 @@ class TreeItemElement {
     }
   }
 
+  /**
+   * The collapse method.
+   */
   collapse() {
     this.ul.classList.add('TreeNodesList--collapsed');
     this.expandBtn.innerHTML =
@@ -174,6 +189,9 @@ class TreeItemElement {
     this._expanded = false;
   }
 
+  /**
+   * The destroy method.
+   */
   destroy() {
     this.parentDomElement.removeChild(this.li);
   }
@@ -184,7 +202,18 @@ uxFactory.registerTreeItemElement(
   p => p instanceof Visualive.TreeItem
 );
 
+/**
+ * Class representing a geom item element.
+ * @extends TreeItemElement
+ */
 class GeomItemElement extends TreeItemElement {
+  /**
+   * Create a geom item element.
+   * @param {any} treeItem - The treeItem value.
+   * @param {any} parentDomElement - The parentDomElement value.
+   * @param {any} appData - The appData value.
+   * @param {boolean} expanded - The expanded value.
+   */
   constructor(treeItem, parentDomElement, appData, expanded = false) {
     super(treeItem, parentDomElement, appData, expanded);
 
@@ -198,7 +227,13 @@ uxFactory.registerTreeItemElement(
   p => p instanceof Visualive.GeomItem
 );
 
+/** Class representing a scene tree view. */
 class SceneTreeView {
+  /**
+   * Create a scene tree view.
+   * @param {any} rootTreeItem - The rootTreeItem value.
+   * @param {any} appData - The appData value.
+   */
   constructor(rootTreeItem, appData) {
     this.appData = appData;
 
@@ -213,15 +248,27 @@ class SceneTreeView {
     );
   }
 
+  /**
+   * The getDomElement method.
+   * @return {any} The return value.
+   */
   getDomElement() {
     return this.container;
   }
 
+  /**
+   * The mount method.
+   * @param {any} parentElement - The parentElement param.
+   */
   mount(parentElement) {
     this.parentDomElement = parentElement;
     this.parentDomElement.appendChild(this.ul);
   }
 
+  /**
+   * The unMount method.
+   * @param {any} parentElement - The parentElement param.
+   */
   unMount(parentElement) {
     this.parentDomElement.removeChild(this.ul);
   }

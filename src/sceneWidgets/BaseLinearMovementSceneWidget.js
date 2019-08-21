@@ -15,6 +15,11 @@ class BaseLinearMovementSceneWidget extends SceneWidget {
   /////////////////////////////////////
   // Mouse events
 
+  /**
+   * The handleMouseDown method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   handleMouseDown(event) {
     this.gizmoRay = this.getManipulationRay();
     this.grabDist = event.mouseRay.intersectRayVector(this.gizmoRay)[1];
@@ -25,6 +30,10 @@ class BaseLinearMovementSceneWidget extends SceneWidget {
     return true;
   }
 
+  /**
+   * The handleMouseMove method.
+   * @param {any} event - The event param.
+   */
   handleMouseMove(event) {
     const dist = event.mouseRay.intersectRayVector(this.gizmoRay)[1];
     const holdPos = this.gizmoRay.pointAtDist(dist);
@@ -35,6 +44,11 @@ class BaseLinearMovementSceneWidget extends SceneWidget {
     this.onDrag(event);
   }
 
+  /**
+   * The handleMouseUp method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   handleMouseUp(event) {
     const dist = event.mouseRay.intersectRayVector(this.gizmoRay)[1];
     const releasePos = this.gizmoRay.pointAtDist(dist);
@@ -46,6 +60,11 @@ class BaseLinearMovementSceneWidget extends SceneWidget {
   /////////////////////////////////////
   // VRController events
 
+  /**
+   * The onVRControllerButtonDown method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onVRControllerButtonDown(event) {
     this.gizmoRay = this.getManipulationRay();
 
@@ -60,6 +79,11 @@ class BaseLinearMovementSceneWidget extends SceneWidget {
     return true;
   }
 
+  /**
+   * The onVRPoseChanged method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onVRPoseChanged(event) {
     const xfo = this.activeController.getTipXfo();
     const dist = xfo.tr.subtract(this.gizmoRay.start).dot(this.gizmoRay.dir);
@@ -71,6 +95,11 @@ class BaseLinearMovementSceneWidget extends SceneWidget {
     return true;
   }
 
+  /**
+   * The onVRControllerButtonUp method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onVRControllerButtonUp(event) {
     if (this.activeController == event.controller) {
       // const xfo = this.activeController.getTipXfo()

@@ -66,14 +66,24 @@ class SliderSceneWidget extends BaseLinearMovementSceneWidget {
     this.__updateSlider(0);
   }
 
+  /**
+   * The highlight method.
+   */
   highlight() {
     this.colorParam.setValue(this.__hilightedColor);
   }
 
+  /**
+   * The unhighlight method.
+   */
   unhighlight() {
     this.colorParam.setValue(this.__color);
   }
 
+  /**
+   * The setTargetParam method.
+   * @param {any} param - The param param.
+   */
   setTargetParam(param) {
     this.__param = param;
     const range = param.getRange() ? param.getRange() : [0, 1];
@@ -101,6 +111,10 @@ class SliderSceneWidget extends BaseLinearMovementSceneWidget {
   /////////////////////////////////////
   // Interaction events
 
+  /**
+   * The onDragStart method.
+   * @param {any} event - The event param.
+   */
   onDragStart(event) {
     this.change = new ParameterValueChange(this.__param);
     event.undoRedoManager.addChange(this.change);
@@ -110,6 +124,10 @@ class SliderSceneWidget extends BaseLinearMovementSceneWidget {
     this.handle.setLocalXfo(this.handleXfo);
   }
 
+  /**
+   * The onDrag method.
+   * @param {any} event - The event param.
+   */
   onDrag(event) {
     const length = this.lengthParam.getValue();
     const range =
@@ -122,6 +140,10 @@ class SliderSceneWidget extends BaseLinearMovementSceneWidget {
     });
   }
 
+  /**
+   * The onDragEnd method.
+   * @param {any} event - The event param.
+   */
   onDragEnd(event) {
     this.change = null;
     // /unhilight the material.
@@ -129,6 +151,12 @@ class SliderSceneWidget extends BaseLinearMovementSceneWidget {
     this.handle.setLocalXfo(this.handleXfo);
   }
 
+  /**
+   * The toJSON method.
+   * @param {any} context - The context param.
+   * @param {any} flags - The flags param.
+   * @return {any} The return value.
+   */
   toJSON(context, flags = 0) {
     const json = super.toJSON(
       context,
@@ -138,6 +166,12 @@ class SliderSceneWidget extends BaseLinearMovementSceneWidget {
     return json;
   }
 
+  /**
+   * The fromJSON method.
+   * @param {any} json - The json param.
+   * @param {any} context - The context param.
+   * @param {any} flags - The flags param.
+   */
   fromJSON(json, context, flags) {
     super.fromJSON(json, context, flags);
 

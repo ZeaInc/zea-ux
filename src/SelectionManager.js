@@ -22,14 +22,25 @@ class SelectionChange extends Change {
     this.__newSelection = newSelection;
   }
 
+  /**
+   * The undo method.
+   */
   undo() {
     this.__selectionManager.setSelection(this.__prevSelection);
   }
 
+  /**
+   * The redo method.
+   */
   redo() {
     this.__selectionManager.setSelection(this.__newSelection);
   }
 
+  /**
+   * The toJSON method.
+   * @param {any} appData - The appData param.
+   * @return {any} The return value.
+   */
   toJSON(appData) {
     const j = super.toJSON(appData);
 
@@ -41,6 +52,11 @@ class SelectionChange extends Change {
     return j;
   }
 
+  /**
+   * The fromJSON method.
+   * @param {any} j - The j param.
+   * @param {any} appData - The appData param.
+   */
   fromJSON(j, appData) {
     super.fromJSON(j, appData);
 
@@ -59,7 +75,15 @@ class SelectionChange extends Change {
 
 UndoRedoManager.registerChange('SelectionChange', SelectionChange);
 
+/** Class representing a toggle selection visibility.
+ * @extends Change
+ */
 class ToggleSelectionVisibility extends Change {
+  /**
+   * Create a toggle selection visibilit.
+   * @param {any} selection - The selection value.
+   * @param {any} state - The state value.
+   */
   constructor(selection, state) {
     super('Selection Visibility Change');
     this.selection = selection;
@@ -67,14 +91,24 @@ class ToggleSelectionVisibility extends Change {
     this.do(this.state);
   }
 
+  /**
+   * The undo method.
+   */
   undo() {
     this.do(!this.state);
   }
 
+  /**
+   * The redo method.
+   */
   redo() {
     this.do(this.state);
   }
 
+  /**
+   * The do method.
+   * @param {any} state - The state param.
+   */
   do(state) {
     for (let treeItem of this.selection) {
       treeItem.getParameter('Visible').setValue(state);
@@ -87,7 +121,12 @@ UndoRedoManager.registerChange(
   ToggleSelectionVisibility
 );
 
+/** Class representing a selection manager */
 class SelectionManager {
+  /**
+   * Create a selection manager.
+   * @param {any} appData - The appData value.
+   */
   constructor(appData) {
     this.appData = appData;
     this.leadSelection = undefined;
@@ -201,11 +240,18 @@ class SelectionManager {
     // showHandles('Translate')
   }
 
+  /**
+   * The setRenderer method.
+   * @param {any} renderer - The renderer param.
+   */
   setRenderer(renderer) {
     this.__renderer = renderer;
     this.__renderer.addTreeItem(this.selectionGroup);
   }
 
+  /**
+   * The updateGizmos method.
+   */
   updateGizmos() {
     const selection = this.selectionGroup.getItems();
     const visible = Array.from(selection).length > 0;
@@ -216,10 +262,18 @@ class SelectionManager {
     this.__renderer.requestRedraw();
   }
 
+  /**
+   * The getSelection method.
+   * @return {any} The return value.
+   */
   getSelection() {
     return this.selectionGroup.getItems();
   }
 
+  /**
+   * The setSelection method.
+   * @param {any} newSelection - The newSelection param.
+   */
   setSelection(newSelection) {
     const selection = new Set(this.selectionGroup.getItems());
     const prevSelection = new Set(selection);
@@ -255,6 +309,11 @@ class SelectionManager {
     }
   }
 
+  /**
+   * The toggleItemSelection method.
+   * @param {any} treeItem - The treeItem param.
+   * @param {boolean} replaceSelection - The replaceSelection param.
+   */
   toggleItemSelection(treeItem, replaceSelection = true) {
     const selection = new Set(this.selectionGroup.getItems());
     const prevSelection = new Set(selection);
@@ -335,6 +394,11 @@ class SelectionManager {
     this.selectionChanged.emit(prevSelection);
   }
 
+  /**
+   * The clearSelection method.
+   * @param {boolean} newChange - The newChange param.
+   * @return {any} The return value.
+   */
   clearSelection(newChange = true) {
     const selection = this.selectionGroup.getItems();
     if (selection.size == 0) return false;
@@ -355,6 +419,11 @@ class SelectionManager {
     return true;
   }
 
+  /**
+   * The selectItems method.
+   * @param {any} treeItem - The treeItem param.
+   * @param {boolean} replaceSelection - The replaceSelection param.
+   */
   selectItems(treeItems, replaceSelection = true) {
     const selection = this.selectionGroup.getItems();
     const prevSelection = new Set(selection);
@@ -390,6 +459,10 @@ class SelectionManager {
     this.selectionChanged.emit(selection);
   }
 
+  /**
+   * The deselectItems method.
+   * @param {any} treeItem - The treeItem param.
+   */
   deselectItems(treeItems) {
     const selection = this.selectionGroup.getItems();
     const prevSelection = new Set(selection);
@@ -420,6 +493,9 @@ class SelectionManager {
     this.selectionChanged.emit(selection);
   }
 
+  /**
+   * The toggleSelectionVisiblity method.
+   */
   toggleSelectionVisiblity() {
     if (this.leadSelection) {
       const selection = this.selectionGroup.getItems();
@@ -431,6 +507,14 @@ class SelectionManager {
 
   //////////////////////////////////////
   //
+
+  /**
+   * The startPickingMode method.
+   * @param {any} label - The label param.
+   * @param {any} fn - The fn param.
+   * @param {any} filterFn - The filterFn param.
+   * @param {any} count - The count param.
+   */
   startPickingMode(label, fn, filterFn, count) {
     // Display this in a status bar.
     console.log(label);
@@ -440,18 +524,34 @@ class SelectionManager {
     this.__picked = [];
   }
 
+  /**
+   * The pickingFilter method.
+   * @param {any} item - The item param.
+   * @return {any} The return value.
+   */
   pickingFilter(item) {
     return this.__pickFilter(item);
   }
 
+  /**
+   * The pickingModeActive method.
+   * @return {any} The return value.
+   */
   pickingModeActive() {
     return this.__pickCB != undefined;
   }
 
+  /**
+   * The cancelPickingMode method.
+   */
   cancelPickingMode() {
     this.__pickCB = undefined;
   }
 
+  /**
+   * The pick method.
+   * @param {any} item - The item param.
+   */
   pick(item) {
     if (this.__pickCB) {
       if (Array.isArray(item)) {

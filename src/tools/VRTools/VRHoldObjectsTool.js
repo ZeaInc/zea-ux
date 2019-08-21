@@ -22,6 +22,9 @@ class HoldObjectsChange extends Change {
     if (data) this.update(data);
   }
 
+  /**
+   * The undo method.
+   */
   undo() {
     for (let i = 0; i < this.__selection.length; i++) {
       if (this.__selection[i]) {
@@ -30,6 +33,9 @@ class HoldObjectsChange extends Change {
     }
   }
 
+  /**
+   * The redo method.
+   */
   redo() {
     for (let i = 0; i < this.__selection.length; i++) {
       if (this.__selection[i]) {
@@ -38,6 +44,10 @@ class HoldObjectsChange extends Change {
     }
   }
 
+  /**
+   * The update method.
+   * @param {any} updateData - The updateData param.
+   */
   update(updateData) {
     if (updateData.newItem) {
       this.__selection[updateData.newItemId] = updateData.newItem;
@@ -53,6 +63,11 @@ class HoldObjectsChange extends Change {
     this.updated.emit(updateData);
   }
 
+  /**
+   * The toJSON method.
+   * @param {any} appData - The appData param.
+   * @return {any} The return value.
+   */
   toJSON(appData) {
     const j = super.toJSON(appData);
 
@@ -69,6 +84,11 @@ class HoldObjectsChange extends Change {
     return j;
   }
 
+  /**
+   * The fromJSON method.
+   * @param {any} j - The j param.
+   * @param {any} appData - The appData param.
+   */
   fromJSON(j, appData) {
     super.fromJSON(j, appData);
 
@@ -102,7 +122,15 @@ class HoldObjectsChange extends Change {
 
 UndoRedoManager.registerChange('HoldObjectsChange', HoldObjectsChange);
 
+/**
+ * Class representing a VR hold objects tool.
+ * @extends BaseTool
+ */
 class VRHoldObjectsTool extends BaseTool {
+  /**
+   * Create a VR hold objects tool.
+   * @param {any} appData - The appData value.
+   */
   constructor(appData) {
     super(appData);
 
@@ -117,6 +145,9 @@ class VRHoldObjectsTool extends BaseTool {
     this.__heldGeomItemOffsets = [];
   }
 
+  /**
+   * The activateTool method.
+   */
   activateTool() {
     super.activateTool();
     console.log('activateTool.VRHoldObjectsTool');
@@ -144,6 +175,9 @@ class VRHoldObjectsTool extends BaseTool {
     });
   }
 
+  /**
+   * The deactivateTool method.
+   */
   deactivateTool() {
     super.deactivateTool();
 
@@ -158,6 +192,11 @@ class VRHoldObjectsTool extends BaseTool {
   /////////////////////////////////////
   // VRController events
 
+  /**
+   * The computeGrabXfo method.
+   * @param {any} refs - The refs param.
+   * @return {any} The return value.
+   */
   computeGrabXfo(refs) {
     let grabXfo;
     if (refs.length == 1) {
@@ -189,6 +228,9 @@ class VRHoldObjectsTool extends BaseTool {
     return grabXfo;
   }
 
+  /**
+   * The initAction method.
+   */
   initAction() {
     for (let i = 0; i < this.__heldGeomItems.length; i++) {
       const heldGeom = this.__heldGeomItems[i];
@@ -200,6 +242,11 @@ class VRHoldObjectsTool extends BaseTool {
     }
   }
 
+  /**
+   * The onVRControllerButtonDown method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onVRControllerButtonDown(event) {
     const id = event.controller.getId();
     this.__vrControllers[id] = event.controller;
@@ -242,6 +289,11 @@ class VRHoldObjectsTool extends BaseTool {
     }
   }
 
+  /**
+   * The onVRControllerButtonUp method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onVRControllerButtonUp(event) {
     const id = event.controller.getId();
 
@@ -262,6 +314,11 @@ class VRHoldObjectsTool extends BaseTool {
     }
   }
 
+  /**
+   * The onVRPoseChanged method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onVRPoseChanged(event) {
     if (!this.change) return false;
 

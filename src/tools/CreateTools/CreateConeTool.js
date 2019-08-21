@@ -25,6 +25,10 @@ class CreateConeChange extends CreateGeomChange {
     }
   }
 
+  /**
+   * The update method.
+   * @param {any} updateData - The updateData param.
+   */
   update(updateData) {
     if (updateData.radius)
       this.geomItem.getGeometry().setRadius(updateData.radius);
@@ -35,11 +39,23 @@ class CreateConeChange extends CreateGeomChange {
 }
 UndoRedoManager.registerChange('CreateCircleChange', CreateCircleChange);
 
+/**
+ * Class representing a create cone tool.
+ * @extends CreateGeomTool
+ */
 class CreateConeTool extends CreateGeomTool {
+  /**
+   * Create a create cone tool.
+   * @param {any} appData - The appData value.
+   */
   constructor(appData) {
     super(appData);
   }
 
+  /**
+   * The createStart method.
+   * @param {any} xfo - The xfo param.
+   */
   createStart(xfo) {
     this.xfo = xfo;
 
@@ -52,6 +68,10 @@ class CreateConeTool extends CreateGeomTool {
     this._height = 0.0;
   }
 
+  /**
+   * The createMove method.
+   * @param {any} pt - The pt param.
+   */
   createMove(pt) {
     if (this.stage == 1) {
       const vec = pt.subtract(this.xfo.tr);
@@ -65,6 +85,10 @@ class CreateConeTool extends CreateGeomTool {
     }
   }
 
+  /**
+   * The createRelease method.
+   * @param {any} pt - The pt param.
+   */
   createRelease(pt) {
     if (this._radius == 0 || this._height == 0) {
       this.appData.undoRedoManager.undo(false);

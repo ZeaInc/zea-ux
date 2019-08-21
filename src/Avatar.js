@@ -101,6 +101,9 @@ export default class Avatar {
     }
   }
 
+  /**
+   * The detachRTCStream method.
+   */
   detachRTCStream() {
     if (this.__currentViewMode == 'CameraAndPointer') {
       this.__treeItem.getChild(0).removeAllChildren();
@@ -121,6 +124,9 @@ export default class Avatar {
     return this.__camera;
   }
 
+  /**
+   * The bindCamera method.
+   */
   bindCamera() {
     this.__cameraBound = true;
 
@@ -132,6 +138,9 @@ export default class Avatar {
     }
   }
 
+  /**
+   * The unbindCamera method.
+   */
   unbindCamera() {
     this.__cameraBound = false;
 
@@ -143,6 +152,9 @@ export default class Avatar {
     }
   }
 
+  /**
+   * The setCameraAndPointerRepresentation method.
+   */
   setCameraAndPointerRepresentation() {
     this.__treeItem.removeAllChildren();
     this.__currentViewMode = 'CameraAndPointer';
@@ -212,6 +224,10 @@ export default class Avatar {
     }
   }
 
+  /**
+   * The updateCameraAndPointerPose method.
+   * @param {any} data - The data param.
+   */
   updateCameraAndPointerPose(data) {
     if (this.__currentUserAvatar) return;
 
@@ -241,6 +257,10 @@ export default class Avatar {
     }
   }
 
+  /**
+   * The setVRRepresentation method.
+   * @param {any} data - The data param.
+   */
   setVRRepresentation(data) {
     this.__treeItem.removeAllChildren();
     this.__currentViewMode = 'VR';
@@ -324,6 +344,10 @@ export default class Avatar {
     this.__controllerTrees = [];
   }
 
+  /**
+   * The updateVRPose method.
+   * @param {any} data - The data param.
+   */
   updateVRPose(data) {
     const setupController = i => {
       if (this.__controllerTrees[i]) {
@@ -422,6 +446,10 @@ export default class Avatar {
     }
   }
 
+  /**
+   * The updatePose method.
+   * @param {any} data - The data param.
+   */
   updatePose(data) {
     switch (data.interfaceType) {
       case 'CameraAndPointer':
@@ -440,6 +468,9 @@ export default class Avatar {
     }
   }
 
+  /**
+   * The destroy method.
+   */
   destroy() {
     this.__appData.renderer.removeTreeItem(this.__treeItem);
     this.__treeItem.removeRef(this);

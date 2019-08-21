@@ -51,14 +51,25 @@ class LinearScaleSceneWidget extends BaseLinearMovementSceneWidget {
     this.addChild(tip);
   }
 
+  /**
+   * The highlight method.
+   */
   highlight() {
     this.colorParam.setValue(this.__hilightedColor);
   }
 
+  /**
+   * The unhighlight method.
+   */
   unhighlight() {
     this.colorParam.setValue(this.__color);
   }
 
+  /**
+   * The setTargetParam method.
+   * @param {any} param - The param param.
+   * @param {boolean} track - The track param.
+   */
   setTargetParam(param, track = true) {
     this.__param = param;
     if (track) {
@@ -70,6 +81,10 @@ class LinearScaleSceneWidget extends BaseLinearMovementSceneWidget {
     }
   }
 
+  /**
+   * The onDragStart method.
+   * @param {any} event - The event param.
+   */
   onDragStart(event) {
     this.change = new ParameterValueChange(this.__param);
     event.undoRedoManager.addChange(this.change);
@@ -86,6 +101,10 @@ class LinearScaleSceneWidget extends BaseLinearMovementSceneWidget {
     });
   }
 
+  /**
+   * The onDrag method.
+   * @param {any} event - The event param.
+   */
   onDrag(event) {
     // const dragVec = event.holdPos.subtract(this.grabPos);
 
@@ -111,6 +130,10 @@ class LinearScaleSceneWidget extends BaseLinearMovementSceneWidget {
     });
   }
 
+  /**
+   * The onDragEnd method.
+   * @param {any} event - The event param.
+   */
   onDragEnd(event) {
     this.change = null;
 

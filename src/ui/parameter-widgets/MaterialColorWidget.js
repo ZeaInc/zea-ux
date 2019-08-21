@@ -86,6 +86,10 @@ export default class MaterialColorWidget extends BaseWidget {
     });
   }
 
+  /**
+   * The setParentDomElem method.
+   * @param {any} parentDomElem - The parentDomElem param.
+   */
   setParentDomElem(parentDomElem) {}
 }
 

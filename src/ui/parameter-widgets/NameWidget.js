@@ -27,24 +27,42 @@ class NameValueChange extends Change {
     }
   }
 
+  /**
+   * The getPrevValue method.
+   * @return {any} The return value.
+   */
   getPrevValue() {
     return this.__prevName;
   }
 
+  /**
+   * The getNextValue method.
+   * @return {any} The return value.
+   */
   getNextValue() {
     return this.__nextName;
   }
 
+  /**
+   * The undo method.
+   */
   undo() {
     if (!this.__item) return;
     this.__item.setName(this.__prevName);
   }
 
+  /**
+   * The redo method.
+   */
   redo() {
     if (!this.__item) return;
     this.__item.setName(this.__nextName);
   }
 
+  /**
+   * The update method.
+   * @param {any} updateData - The updateData param.
+   */
   update(updateData) {
     if (!this.__item) return;
     this.__nextName = updateData.value;
@@ -52,6 +70,11 @@ class NameValueChange extends Change {
     this.updated.emit(updateData);
   }
 
+  /**
+   * The toJSON method.
+   * @param {any} appData - The appData param.
+   * @return {any} The return value.
+   */
   toJSON(appData) {
     const j = {
       name: this.name,
@@ -67,6 +90,11 @@ class NameValueChange extends Change {
     return j;
   }
 
+  /**
+   * The fromJSON method.
+   * @param {any} j - The j param.
+   * @param {any} appData - The appData param.
+   */
   fromJSON(j, appData) {
     let item = appData.scene.getRoot().resolvePath(j.itemPath, 1);
     if (!item || !(item instanceof Visualive.itemeter)) {
@@ -82,6 +110,10 @@ class NameValueChange extends Change {
     if (j.value != undefined) this.changeFromJSON(j);
   }
 
+  /**
+   * The changeFromJSON method.
+   * @param {any} j - The j param.
+   */
   changeFromJSON(j) {
     if (!this.__item) return;
     if (this.__nextName.fromJSON) this.__nextName.fromJSON(j.value);
@@ -92,7 +124,14 @@ class NameValueChange extends Change {
 
 UndoRedoManager.registerChange('NameValueChange', NameValueChange);
 
+/** Class representing a name widget. */
 export default class NameWidget {
+  /**
+   * Create a name widget.
+   * @param {any} item - The item value.
+   * @param {any} parentDomElem - The parentDomElem value.
+   * @param {any} appData - The appData value.
+   */
   constructor(item, parentDomElem, appData) {
     const input = document.createElement('input');
     input.className = 'mdl-textfield__input';

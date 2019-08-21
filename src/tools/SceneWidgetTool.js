@@ -16,6 +16,9 @@ class SceneWidgetTool extends BaseTool {
     this.activeHandle = undefined;
   }
 
+  /**
+   * The activateTool method.
+   */
   activateTool() {
     super.activateTool();
     console.log('activateTool.SceneWidgetTool');
@@ -47,6 +50,9 @@ class SceneWidgetTool extends BaseTool {
     });
   }
 
+  /**
+   * The deactivateTool method.
+   */
   deactivateTool() {
     super.deactivateTool();
 
@@ -61,6 +67,11 @@ class SceneWidgetTool extends BaseTool {
   /////////////////////////////////////
   // Mouse events
 
+  /**
+   * The onMouseDown method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onMouseDown(event) {
     //
     if (!this.activeHandle) {
@@ -77,6 +88,11 @@ class SceneWidgetTool extends BaseTool {
     }
   }
 
+  /**
+   * The onMouseMove method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onMouseMove(event) {
     if (this.activeHandle) {
       this.activeHandle.handleMouseMove(event);
@@ -102,6 +118,11 @@ class SceneWidgetTool extends BaseTool {
     }
   }
 
+  /**
+   * The onMouseUp method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onMouseUp(event) {
     if (this.activeHandle) {
       this.activeHandle.handleMouseUp(event);
@@ -110,6 +131,10 @@ class SceneWidgetTool extends BaseTool {
     }
   }
 
+  /**
+   * The onWheel method.
+   * @param {any} event - The event param.
+   */
   onWheel(event) {
     if (this.activeHandle) {
       this.activeHandle.onWheel(event);
@@ -118,17 +143,39 @@ class SceneWidgetTool extends BaseTool {
 
   /////////////////////////////////////
   // Touch events
+
+  /**
+   * The onTouchStart method.
+   * @param {any} event - The event param.
+   */
   onTouchStart(event) {}
 
+  /**
+   * The onTouchMove method.
+   * @param {any} event - The event param.
+   */
   onTouchMove(event) {}
 
+  /**
+   * The onTouchEnd method.
+   * @param {any} event - The event param.
+   */
   onTouchEnd(event) {}
 
+  /**
+   * The onTouchCancel method.
+   * @param {any} event - The event param.
+   */
   onTouchCancel(event) {}
 
   /////////////////////////////////////
   // VRController events
 
+  /**
+   * The onVRControllerButtonDown method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onVRControllerButtonDown(event) {
     if (!this.activeHandle) {
       const intersectionData = event.controller.getGeomItemAtTip();
@@ -142,6 +189,11 @@ class SceneWidgetTool extends BaseTool {
     }
   }
 
+  /**
+   * The onVRPoseChanged method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onVRPoseChanged(event) {
     if (this.activeHandle) {
       this.activeHandle.onVRPoseChanged(event);
@@ -174,6 +226,11 @@ class SceneWidgetTool extends BaseTool {
     }
   }
 
+  /**
+   * The onVRControllerButtonUp method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onVRControllerButtonUp(event) {
     if (this.activeHandle) {
       this.activeHandle.onDragEnd(event);

@@ -13,20 +13,40 @@ class NameParam {
     this.valueChanged = treeItem.nameChanged;
   }
 
+  /**
+   * The getName method.
+   * @return {any} The return value.
+   */
   getName() {
     return 'Name';
   }
 
+  /**
+   * The getValue method.
+   * @return {any} The return value.
+   */
   getValue() {
     return this._treeItem.getName();
   }
 
+  /**
+   * The setValue method.
+   * @param {any} name - The name param.
+   * @return {any} The return value.
+   */
   setValue(name) {
     return this._treeItem.setName(name);
   }
 }
 
+/** Class representing a tree item inspector. */
 export default class TreeItemInspector {
+  /**
+   * Create a tree item inspector.
+   * @param {any} treeItem - The treeItem value.
+   * @param {any} domElement - The domElement value.
+   * @param {any} appData - The appData value.
+   */
   constructor(treeItem, domElement, appData) {
     const ul = document.createElement('ul');
     ul.className = 'list pa0 pr3';
@@ -43,6 +63,9 @@ export default class TreeItemInspector {
     );
   }
 
+  /**
+   * The destroy method.
+   */
   destroy() {
     this.parameterContainer.destroy();
   }

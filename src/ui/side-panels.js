@@ -151,10 +151,18 @@ class SidePanel {
     );
   }
 
+  /**
+   * The getPanelWidget method.
+   * @return {any} The return value.
+   */
   getPanelWidget() {
     return this.widget;
   }
 
+  /**
+   * The setPanelWidget method.
+   * @param {any} widget - The widget param.
+   */
   setPanelWidget(widget) {
     if (this.widget) {
       this.widget.unMount(this.domElement);
@@ -179,6 +187,10 @@ class SidePanel {
     }
   }
 
+  /**
+   * The mount method.
+   * @param {any} parentElement - The parentElement param.
+   */
   mount(parentElement) {
     this.parentDomElement = parentElement;
     if (this.panelSide == 0) {
@@ -190,12 +202,20 @@ class SidePanel {
     }
   }
 
+  /**
+   * The unMount method.
+   * @param {any} parentElement - The parentElement param.
+   */
   unMount(parentElement) {
     this.parentDomElement.removeChild(this.domElement);
   }
 }
 
+/** Class representing a bottom panel. */
 class BottomPanel {
+  /**
+   * Create a bottom panel.
+   */
   constructor() {
     this.handleElement = document.createElement('div');
     this.handleElement.className =
@@ -231,10 +251,18 @@ class BottomPanel {
     this.handleElement.addEventListener('mousedown', initDrag, false);
   }
 
+  /**
+   * The getPanelWidget method.
+   * @return {any} The return value.
+   */
   getPanelWidget() {
     return this.widget;
   }
 
+  /**
+   * The setPanelWidget method.
+   * @param {any} widget - The widget param.
+   */
   setPanelWidget(widget) {
     if (this.widget) {
       this.widget.unMount(this.domElement);
@@ -259,22 +287,39 @@ class BottomPanel {
     }
   }
 
+  /**
+   * The mount method.
+   * @param {any} parentElement - The parentElement param.
+   */
   mount(parentElement) {
     this.parentDomElement = parentElement;
     this.parentDomElement.appendChild(this.handleElement);
     this.parentDomElement.appendChild(this.domElement);
   }
 
+  /**
+   * The unMount method.
+   * @param {any} parentElement - The parentElement param.
+   */
   unMount(parentElement) {
     this.parentDomElement.removeChild(this.domElement);
   }
 }
 
+/** Class representing panels. */
 class Panels {
+  /**
+   * Create panels.
+   * @param {any} parentDomElement - The parentDomElement value.
+   */
   constructor(parentDomElement) {
     if (parentDomElement) this.mount(parentDomElement);
   }
 
+  /**
+   * The mount method.
+   * @param {any} parentDomElement - The parentDomElement param.
+   */
   mount(parentDomElement) {
     this.sidePanelsWrapper = document.createElement('div');
     this.sidePanelsWrapper.className = 'PanelsWrapper flex overflow-hidden';
@@ -296,6 +341,10 @@ class Panels {
     this.bottomPanel.mount(parentDomElement);
   }
 
+  /**
+   * The unMount method.
+   * @param {any} parentElement - The parentElement param.
+   */
   unMount(parentElement) {
     // while (parentElement.firstChild) {
     //   parentElement.removeChild(parentElement.firstChild);

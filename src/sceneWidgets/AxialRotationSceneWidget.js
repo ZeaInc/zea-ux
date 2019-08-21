@@ -42,14 +42,25 @@ class AxialRotationSceneWidget extends SceneWidget {
     this.addChild(this.handle);
   }
 
+  /**
+   * The highlight method.
+   */
   highlight() {
     this.colorParam.setValue(this.__hilightedColor);
   }
 
+  /**
+   * The unhighlight method.
+   */
   unhighlight() {
     this.colorParam.setValue(this.__color);
   }
 
+  /**
+   * The setTargetParam method.
+   * @param {any} param - The param param.
+   * @param {boolean} track - The track param.
+   */
   setTargetParam(param, track = true) {
     this.__param = param;
     if (track) {
@@ -61,6 +72,10 @@ class AxialRotationSceneWidget extends SceneWidget {
     }
   }
 
+  /**
+   * The onDragStart method.
+   * @param {any} event - The event param.
+   */
   onDragStart(event) {
     this.vec0 = event.grabPos.subtract(this.getGlobalXfo().tr);
     this.grabPos = event.grabPos;
@@ -81,6 +96,10 @@ class AxialRotationSceneWidget extends SceneWidget {
     });
   }
 
+  /**
+   * The onDrag method.
+   * @param {any} event - The event param.
+   */
   onDrag(event) {
     const dragVec = event.holdPos.subtract(this.grabPos);
     let angle = dragVec.length() * 2.0;
@@ -109,6 +128,10 @@ class AxialRotationSceneWidget extends SceneWidget {
     });
   }
 
+  /**
+   * The onDragEnd method.
+   * @param {any} event - The event param.
+   */
   onDragEnd(event) {
     this.change = null;
 

@@ -63,12 +63,23 @@ class VRUITool extends BaseTool {
     this.__triggerHeld = false;
   }
 
+  /**
+   * The getName method.
+   * @return {any} The return value.
+   */
   getName() {
     return 'VRUITool';
   }
 
   /////////////////////////////////////
 
+  /**
+   * The setUIControllers method.
+   * @param {any} openUITool - The openUITool param.
+   * @param {any} uiController - The uiController param.
+   * @param {any} pointerController - The pointerController param.
+   * @param {any} headXfo - The headXfo param.
+   */
   setUIControllers(openUITool, uiController, pointerController, headXfo) {
     this.openUITool = openUITool;
     this.uiController = uiController;
@@ -91,6 +102,9 @@ class VRUITool extends BaseTool {
     this.controllerUI.setLocalXfo(this.__uiLocalXfo);
   }
 
+  /**
+   * The activateTool method.
+   */
   activateTool() {
     super.activateTool();
 
@@ -114,6 +128,9 @@ class VRUITool extends BaseTool {
     }
   }
 
+  /**
+   * The deactivateTool method.
+   */
   deactivateTool() {
     super.deactivateTool();
 
@@ -139,11 +156,19 @@ class VRUITool extends BaseTool {
   /////////////////////////////////////
   // VRController events
 
+  /**
+   * The setPointerLength method.
+   * @param {any} length - The length param.
+   */
   setPointerLength(length) {
     this.__pointerLocalXfo.sc.set(1, 1, length);
     this.__uiPointerItem.setLocalXfo(this.__pointerLocalXfo);
   }
 
+  /**
+   * The calcUIIntersection method.
+   * @return {any} The return value.
+   */
   calcUIIntersection() {
     const pointerXfo = this.__uiPointerItem.getGlobalXfo();
     const pointervec = pointerXfo.ori.getZaxis().negate();
@@ -175,6 +200,12 @@ class VRUITool extends BaseTool {
     };
   }
 
+  /**
+   * The sendEventToUI method.
+   * @param {any} eventName - The eventName param.
+   * @param {any} args - The args param.
+   * @return {any} The return value.
+   */
   sendEventToUI(eventName, args) {
     const hit = this.calcUIIntersection();
     if (hit) {
@@ -211,6 +242,11 @@ class VRUITool extends BaseTool {
     }
   }
 
+  /**
+   * The onVRControllerButtonDown method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onVRControllerButtonDown(event) {
     if (event.controller == this.pointerController) {
       this.__triggerHeld = true;
@@ -228,6 +264,11 @@ class VRUITool extends BaseTool {
     return true;
   }
 
+  /**
+   * The onVRControllerButtonUp method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onVRControllerButtonUp(event) {
     if (event.controller == this.pointerController) {
       this.__triggerHeld = false;
@@ -246,6 +287,11 @@ class VRUITool extends BaseTool {
     return true;
   }
 
+  /**
+   * The onVRPoseChanged method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onVRPoseChanged(event) {
     // Controller coordinate system
     // X = Horizontal.

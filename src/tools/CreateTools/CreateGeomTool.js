@@ -14,6 +14,11 @@ class CreateGeomChange extends Change {
     super(name);
   }
 
+  /**
+   * The setParentAndXfo method.
+   * @param {any} parentItem - The parentItem param.
+   * @param {any} xfo - The xfo param.
+   */
   setParentAndXfo(parentItem, xfo) {
     this.parentItem = parentItem;
     const name = this.parentItem.generateUniqueName(this.geomItem.getName());
@@ -24,14 +29,25 @@ class CreateGeomChange extends Change {
     this.geomItem.addRef(this); // keep a ref to stop it being destroyed
   }
 
+  /**
+   * The undo method.
+   */
   undo() {
     this.parentItem.removeChild(this.childIndex);
   }
 
+  /**
+   * The redo method.
+   */
   redo() {
     this.parentItem.addChild(this.geomItem, false, false);
   }
 
+  /**
+   * The toJSON method.
+   * @param {any} appData - The appData param.
+   * @return {any} The return value.
+   */
   toJSON(appData) {
     const j = super.toJSON();
     j.parentItemPath = this.parentItem.getPath();
@@ -40,6 +56,11 @@ class CreateGeomChange extends Change {
     return j;
   }
 
+  /**
+   * The fromJSON method.
+   * @param {any} j - The j param.
+   * @param {any} appData - The appData param.
+   */
   fromJSON(j, appData) {
     this.parentItem = appData.scene.getRoot().resolvePath(j.parentItemPath, 1);
     this.geomItem.setName(this.parentItem.generateUniqueName(j.geomItemName));
@@ -56,12 +77,23 @@ class CreateGeomChange extends Change {
   //     this.__newValue = j.value;
   // }
 
+  /**
+   * The destroy method.
+   */
   destroy() {
     this.geomItem.removeRef(this); // remove the tmp ref.
   }
 }
 
+/**
+ * Class representing a create geom tool.
+ * @extends BaseCreateTool
+ */
 class CreateGeomTool extends BaseCreateTool {
+  /**
+   * Create a create geom tool.
+   * @param {any} appData - The appData value.
+   */
   constructor(appData) {
     super(appData);
 
@@ -76,6 +108,9 @@ class CreateGeomTool extends BaseCreateTool {
     );
   }
 
+  /**
+   * The activateTool method.
+   */
   activateTool() {
     super.activateTool();
 
@@ -111,6 +146,9 @@ class CreateGeomTool extends BaseCreateTool {
     });
   }
 
+  /**
+   * The deactivateTool method.
+   */
   deactivateTool() {
     super.deactivateTool();
 
@@ -124,6 +162,12 @@ class CreateGeomTool extends BaseCreateTool {
     });
   }
 
+  /**
+   * The screenPosToXfo method.
+   * @param {any} screenPos - The screenPos param.
+   * @param {any} viewport - The viewport param.
+   * @return {any} The return value.
+   */
   screenPosToXfo(screenPos, viewport) {
     //
 
@@ -148,19 +192,41 @@ class CreateGeomTool extends BaseCreateTool {
     return xfo;
   }
 
+  /**
+   * The createStart method.
+   * @param {any} xfo - The xfo param.
+   * @param {any} parentItem - The parentItem param.
+   */
   createStart(xfo, parentItem) {
     this.stage = 1;
   }
 
+  /**
+   * The createPoint method.
+   * @param {any} pt - The pt param.
+   */
   createPoint(pt) {}
 
+  /**
+   * The createMove method.
+   * @param {any} pt - The pt param.
+   */
   createMove(pt) {}
 
+  /**
+   * The createRelease method.
+   * @param {any} pt - The pt param.
+   */
   createRelease(pt) {}
 
   /////////////////////////////////////
   // Mouse events
 
+  /**
+   * The onMouseDown method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onMouseDown(event) {
     //
     if (this.stage == 0) {
@@ -183,6 +249,11 @@ class CreateGeomTool extends BaseCreateTool {
     return true;
   }
 
+  /**
+   * The onMouseMove method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onMouseMove(event) {
     if (this.stage > 0) {
       const xfo = this.screenPosToXfo(event.mousePos, event.viewport);
@@ -191,6 +262,11 @@ class CreateGeomTool extends BaseCreateTool {
     }
   }
 
+  /**
+   * The onMouseUp method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onMouseUp(event) {
     if (this.stage > 0) {
       const xfo = this.screenPosToXfo(event.mousePos, event.viewport);
@@ -199,29 +275,71 @@ class CreateGeomTool extends BaseCreateTool {
     }
   }
 
+  /**
+   * The onWheel method.
+   * @param {any} event - The event param.
+   */
   onWheel(event) {}
 
   /////////////////////////////////////
   // Keyboard events
+
+  /**
+   * The onKeyPressed method.
+   * @param {any} key - The key param.
+   * @param {any} event - The event param.
+   */
   onKeyPressed(key, event) {}
 
+  /**
+   * The onKeyDown method.
+   * @param {any} key - The key param.
+   * @param {any} event - The event param.
+   */
   onKeyDown(key, event) {}
 
+  /**
+   * The onKeyUp method.
+   * @param {any} key - The key param.
+   * @param {any} event - The event param.
+   */
   onKeyUp(key, event) {}
 
   /////////////////////////////////////
   // Touch events
+
+  /**
+   * The onTouchStart method.
+   * @param {any} event - The event param.
+   */
   onTouchStart(event) {}
 
+  /**
+   * The onTouchMove method.
+   * @param {any} event - The event param.
+   */
   onTouchMove(event) {}
 
+  /**
+   * The onTouchEnd method.
+   * @param {any} event - The event param.
+   */
   onTouchEnd(event) {}
 
+  /**
+   * The onTouchCancel method.
+   * @param {any} event - The event param.
+   */
   onTouchCancel(event) {}
 
   /////////////////////////////////////
   // VRController events
 
+  /**
+   * The onVRControllerButtonDown method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onVRControllerButtonDown(event) {
     if (!this.__activeController) {
       // TODO: Snap the Xfo to any nearby construction planes.
@@ -234,6 +352,11 @@ class CreateGeomTool extends BaseCreateTool {
     return true;
   }
 
+  /**
+   * The onVRPoseChanged method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onVRPoseChanged(event) {
     if (this.__activeController && this.stage > 0) {
       // TODO: Snap the Xfo to any nearby construction planes.
@@ -243,6 +366,11 @@ class CreateGeomTool extends BaseCreateTool {
     }
   }
 
+  /**
+   * The onVRControllerButtonUp method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onVRControllerButtonUp(event) {
     if (this.stage > 0) {
       if (this.__activeController == event.controller) {

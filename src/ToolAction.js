@@ -24,6 +24,9 @@ class ToolAction extends Action {
     });
   }
 
+  /**
+   * The callback method.
+   */
   callback() {
     if (!this.tool.installed()) {
       const currTool = this.toolManager.currTool();

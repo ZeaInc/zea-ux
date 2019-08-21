@@ -68,6 +68,10 @@ class UserChip {
     }
   }
 
+  /**
+   * The setUserData method.
+   * @param {any} userData - The userData param.
+   */
   setUserData(userData) {
     this.userData = userData;
     if (this.userNameSpan) this.userNameSpan.innerHTML = userData.name;
@@ -77,12 +81,18 @@ class UserChip {
     //   this.userImage.style.borderColor = userData.metadata.avatarColor;
   }
 
+  /**
+   * The clean method.
+   */
   clean() {
     while (this.domElement.firstChild) {
       this.domElement.removeChild(this.domElement.firstChild);
     }
   }
 
+  /**
+   * The unmount method.
+   */
   unmount() {
     this.clean();
   }

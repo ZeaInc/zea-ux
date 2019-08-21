@@ -18,6 +18,9 @@ class OpenVRUITool extends BaseTool {
     this.__stayClosed = false;
   }
 
+  /**
+   * The uninstall method.
+   */
   uninstall() {
     super.uninstall();
 
@@ -29,14 +32,30 @@ class OpenVRUITool extends BaseTool {
   /////////////////////////////////////
   // VRController events
 
+  /**
+   * The onVRControllerButtonDown method.
+   * @param {any} event - The event param.
+   */
   onVRControllerButtonDown(event) {}
 
+  /**
+   * The onVRControllerButtonUp method.
+   * @param {any} event - The event param.
+   */
   onVRControllerButtonUp(event) {}
 
+  /**
+   * The stayClosed method.
+   */
   stayClosed() {
     this.__stayClosed = true;
   }
 
+  /**
+   * The onVRPoseChanged method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onVRPoseChanged(event) {
     if (this.vrUITool.installed()) return;
 

@@ -12,6 +12,10 @@ class CollabPanel {
     this.visualiveSession = visualiveSession;
   }
 
+  /**
+   * The mount method.
+   * @param {any} parentElement - The parentElement param.
+   */
   mount(parentElement) {
     const collabMarkup = `
       <div class="ba b--light-blue br2 pa2 h4 overflow-y-auto mb2">
@@ -194,6 +198,10 @@ class CollabPanel {
     }
   }
 
+  /**
+   * The unMount method.
+   * @param {any} parentElement - The parentElement param.
+   */
   unMount(parentElement) {}
 }
 

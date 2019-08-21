@@ -17,10 +17,21 @@ export default class SceneWidget extends Visualive.TreeItem {
     this.manipulateEnd = new Visualive.Signal();
   }
 
+  /**
+   * The highlight method.
+   */
   highlight() {}
 
+  /**
+   * The unhighlight method.
+   */
   unhighlight() {}
 
+  /**
+   * The getManipulationRay method.
+   * @param {any} viewport - The viewport param.
+   * @return {any} The return value.
+   */
   getManipulationRay(viewport) {
     const xfo = this.getGlobalXfo();
     return new Visualive.Ray(xfo.tr, xfo.ori.getZaxis());
@@ -29,6 +40,11 @@ export default class SceneWidget extends Visualive.TreeItem {
   /////////////////////////////////////
   // Mouse events
 
+  /**
+   * The handleMouseDown method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   handleMouseDown(event) {
     this.gizmoRay = this.getManipulationRay();
     const dist = event.mouseRay.intersectRayPlane(this.gizmoRay);
@@ -37,12 +53,21 @@ export default class SceneWidget extends Visualive.TreeItem {
     return true;
   }
 
+  /**
+   * The handleMouseMove method.
+   * @param {any} event - The event param.
+   */
   handleMouseMove(event) {
     const dist = event.mouseRay.intersectRayPlane(this.gizmoRay);
     event.holdPos = event.mouseRay.pointAtDist(dist);
     this.onDrag(event);
   }
 
+  /**
+   * The handleMouseUp method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   handleMouseUp(event) {
     const dist = event.mouseRay.intersectRayPlane(this.gizmoRay);
     event.releasePos = event.mouseRay.pointAtDist(dist);
@@ -53,6 +78,11 @@ export default class SceneWidget extends Visualive.TreeItem {
   /////////////////////////////////////
   // VRController events
 
+  /**
+   * The onVRControllerButtonDown method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onVRControllerButtonDown(event) {
     const gizmoRay = this.getManipulationRay();
     const grabDist = event.controllerRay.intersectRayVector(gizmoRay);
@@ -64,12 +94,22 @@ export default class SceneWidget extends Visualive.TreeItem {
     }
   }
 
+  /**
+   * The onVRPoseChanged method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onVRPoseChanged(event) {
     const xfo = this.activeController.getTipXfo();
     this.onDrag(event, xfo.tr);
     return true;
   }
 
+  /**
+   * The onVRControllerButtonUp method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onVRControllerButtonUp(event) {
     if (this.activeController == event.controller) {
       const xfo = this.activeController.getTipXfo();
@@ -82,14 +122,26 @@ export default class SceneWidget extends Visualive.TreeItem {
   /////////////////////////////////////
   // Interaction events
 
+  /**
+   * The onDragStart method.
+   * @param {any} event - The event param.
+   */
   onDragStart(event) {
     console.log('onDragStart', event);
   }
 
+  /**
+   * The onDrag method.
+   * @param {any} event - The event param.
+   */
   onDrag(event) {
     console.log('onDrag', event);
   }
 
+  /**
+   * The onDragEnd method.
+   * @param {any} event - The event param.
+   */
   onDragEnd(event) {
     console.log('onDragEnd', event);
   }

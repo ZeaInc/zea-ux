@@ -25,28 +25,53 @@ class CreateSphereChange extends CreateGeomChange {
     }
   }
 
+  /**
+   * The update method.
+   * @param {any} updateData - The updateData param.
+   */
   update(updateData) {
     this.sphere.radius = updateData.radius;
     this.updated.emit(updateData);
   }
 
+  /**
+   * The toJSON method.
+   * @return {any} The return value.
+   */
   toJSON() {
     const j = super.toJSON();
     j.radius = this.geomItem.getGeometry().radius;
     return j;
   }
 
+  /**
+   * The changeFromJSON method.
+   * @param {any} j - The j param.
+   */
   changeFromJSON(j) {
     if (j.radius) this.geomItem.getGeometry().radius = j.radius;
   }
 }
 UndoRedoManager.registerChange('CreateSphereChange', CreateSphereChange);
 
+/**
+ * Class representing a create sphere tool.
+ * @extends CreateGeomTool
+ */
 class CreateSphereTool extends CreateGeomTool {
+  /**
+   * Create a create sphere tool.
+   * @param {any} appData - The appData value.
+   */
   constructor(appData) {
     super(appData);
   }
 
+  /**
+   * The createStart method.
+   * @param {any} xfo - The xfo param.
+   * @param {any} parentItem - The parentItem param.
+   */
   createStart(xfo, parentItem) {
     this.change = new CreateSphereChange(parentItem, xfo);
     this.appData.undoRedoManager.addChange(this.change);
@@ -56,11 +81,19 @@ class CreateSphereTool extends CreateGeomTool {
     this.radius = 0.0;
   }
 
+  /**
+   * The createMove method.
+   * @param {any} pt - The pt param.
+   */
   createMove(pt) {
     this.radius = pt.distanceTo(this.xfo.tr);
     this.change.update({ radius: this.radius });
   }
 
+  /**
+   * The createRelease method.
+   * @param {any} pt - The pt param.
+   */
   createRelease(pt) {
     if (this.radius == 0) {
       this.appData.undoRedoManager.undo(false);

@@ -71,6 +71,10 @@ export default class ColorWidget extends BaseWidget {
     });
   }
 
+  /**
+   * The setParentDomElem method.
+   * @param {any} parentDomElem - The parentDomElem param.
+   */
   setParentDomElem(parentDomElem) {}
 }
 

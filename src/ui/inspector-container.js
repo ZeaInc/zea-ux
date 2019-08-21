@@ -24,6 +24,10 @@ class InspectorContainer {
     );
   }
 
+  /**
+   * The inspect method.
+   * @param {any} inspectedItem - The inspectedItem param.
+   */
   inspect(inspectedItem) {
     this.inspectedItem = inspectedItem;
     if (!this.domElement) return;
@@ -41,12 +45,19 @@ class InspectorContainer {
     }
   }
 
+  /**
+   * The mount method.
+   * @param {any} parentElement - The parentElement param.
+   */
   mount(parentElement) {
     this.domElement = parentElement;
     this.domElement.innerHTML = '';
     if (this.inspectedItem) this.inspect(this.inspectedItem);
   }
 
+  /**
+   * The unMount method.
+   */
   unMount() {
     this.appData.selectionManager.leadSelectionChanged.disconnectId(
       this._selChangedId

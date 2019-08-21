@@ -13,6 +13,10 @@ export default class BaseCreateTool extends BaseTool {
     super(appData);
   }
 
+  /**
+   * The isPrimaryTool method.
+   * @return {any} The return value.
+   */
   isPrimaryTool() {
     return true;
   }

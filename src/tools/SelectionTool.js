@@ -29,6 +29,9 @@ class SelectionTool extends BaseTool {
     this.selectionRectXfo.sc.set(0, 0, 0);
   }
 
+  /**
+   * The activateTool method.
+   */
   activateTool() {
     super.activateTool();
 
@@ -43,12 +46,20 @@ class SelectionTool extends BaseTool {
     }
   }
 
+  /**
+   * The deactivateTool method.
+   */
   deactivateTool() {
     super.deactivateTool();
     this.selectionRectXfo.sc.set(0, 0, 0);
     this.rectItem.setGlobalXfo(this.selectionRectXfo);
   }
 
+  /**
+   * The onMouseDown method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onMouseDown(event) {
     if (event.button == 0) {
       console.log('onMouseDown');
@@ -74,6 +85,11 @@ class SelectionTool extends BaseTool {
     this.rectItem.setGlobalXfo(this.selectionRectXfo);
   }
 
+  /**
+   * The onMouseMove method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onMouseMove(event) {
     if (this.mouseDownPos) {
       const delta = this.mouseDownPos.subtract(event.mousePos);
@@ -93,6 +109,11 @@ class SelectionTool extends BaseTool {
     return true;
   }
 
+  /**
+   * The onMouseUp method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onMouseUp(event) {
     if (this.mouseDownPos) {
       // event.viewport.renderGeomDataFbo();
@@ -165,6 +186,11 @@ class SelectionTool extends BaseTool {
   /////////////////////////////////////
   // VRController events
 
+  /**
+   * The onVRControllerButtonDown method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onVRControllerButtonDown(event) {
     if (event.button == 1) {
       const intersectionData = event.controller.getGeomItemAtTip();
