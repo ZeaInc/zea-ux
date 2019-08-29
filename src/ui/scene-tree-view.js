@@ -116,8 +116,10 @@ class TreeItemElement {
     });
 
     this.treeItem.childRemoved.connect((childItem, index) => {
-      this.childElements[index].destroy();
-      this.childElements.splice(index, 1);
+      if(this._expanded) {
+        this.childElements[index].destroy();
+        this.childElements.splice(index, 1);
+      }
     });
   }
 
