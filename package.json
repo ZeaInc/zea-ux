@@ -3,7 +3,8 @@
   "version": "0.0.67",
   "description": "",
   "files": [
-    "/dist/"
+    "/dist/",
+    "/css/"
   ],
   "keywords": [],
   "main": "./dist/visualive-ux.js",
