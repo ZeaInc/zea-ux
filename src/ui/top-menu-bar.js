@@ -68,6 +68,7 @@ class TopMenuBar {
       if (!this.__existingItems[pathItem]) {
         const li = this._addLiTo(parentElement, 'pure-menu-item');
         li.classList.add('pure-menu-has-children', 'pure-menu-allow-hover');
+        this._addATo(li, 'pure-menu-link', pathItem);
 
         const ul = this._addUlTo(li, 'pure-menu-children shadow-3');
 
