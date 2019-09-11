@@ -3,8 +3,8 @@
   "version": "0.0.70",
   "description": "",
   "files": [
-    "/dist/",
-    "/css/"
+    "/dist/zea-ux.js",
+    "/css/**"
   ],
   "keywords": [],
   "main": "./dist/zea-ux.js",
@@ -39,8 +39,7 @@
   },
   "dependencies": {
     "@jaames/iro": "^4.5.1",
-    "@zeainc/zea-collab": "^0.0.32",
-    "@zeainc/zea-engine": "^0.0.75",
+    "@zeainc/zea-collab": "^0.0.35",
     "dom-to-image": "^2.6.0"
   }
 }
