@@ -16,23 +16,23 @@ class PlanarMovementSceneWidget extends SceneWidget {
     super(name);
 
     this.__color = color;
-    this.__hilightedColor = new Visualive.Color(1, 1, 1);
+    this.__hilightedColor = new ZeaEngine.Color(1, 1, 1);
     this.sizeParam = this.addParameter(
-      new Visualive.NumberParameter('size', size)
+      new ZeaEngine.NumberParameter('size', size)
     );
     this.colorParam = this.addParameter(
-      new Visualive.ColorParameter('BaseColor', color)
+      new ZeaEngine.ColorParameter('BaseColor', color)
     );
 
-    const handleMat = new Visualive.Material('handle', 'HandleShader');
+    const handleMat = new ZeaEngine.Material('handle', 'HandleShader');
     handleMat.replaceParameter(this.colorParam);
 
-    const handleGeom = new Visualive.Cuboid(size, size, size * 0.02);
+    const handleGeom = new ZeaEngine.Cuboid(size, size, size * 0.02);
 
-    const handleGeomXfo = new Visualive.Xfo();
+    const handleGeomXfo = new ZeaEngine.Xfo();
     handleGeomXfo.tr = offset;
     handleGeom.transformVertices(handleGeomXfo);
-    this.handle = new Visualive.GeomItem('handle', handleGeom, handleMat);
+    this.handle = new ZeaEngine.GeomItem('handle', handleGeom, handleMat);
 
     this.sizeParam.valueChanged.connect(() => {
       size = this.sizeParam.getValue();

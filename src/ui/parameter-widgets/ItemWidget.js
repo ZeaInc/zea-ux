@@ -64,5 +64,5 @@ export default class ItemWidget extends BaseWidget {
 
 uxFactory.registerWidget(
   ItemWidget,
-  p => p instanceof Visualive.TreeItemParameter
+  p => p instanceof ZeaEngine.TreeItemParameter
 );

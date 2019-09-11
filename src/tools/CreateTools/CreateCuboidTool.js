@@ -14,9 +14,9 @@ class CreateCuboidChange extends CreateGeomChange {
   constructor(parentItem, xfo) {
     super('Create Cuboid');
 
-    this.cuboid = new Visualive.Cuboid(0, 0, 0, true);
-    const material = new Visualive.Material('Cuboid', 'SimpleSurfaceShader');
-    this.geomItem = new Visualive.GeomItem('Cuboid');
+    this.cuboid = new ZeaEngine.Cuboid(0, 0, 0, true);
+    const material = new ZeaEngine.Material('Cuboid', 'SimpleSurfaceShader');
+    this.geomItem = new ZeaEngine.GeomItem('Cuboid');
     this.geomItem.setGeometry(this.cuboid);
     this.geomItem.setMaterial(material);
 
@@ -103,8 +103,8 @@ class CreateCuboidTool extends CreateGeomTool {
       this.stage = 2;
       this.pt1 = pt;
 
-      const quat = new Visualive.Quat();
-      quat.setFromAxisAndAngle(new Visualive.Vec3(1, 0, 0), Math.PI * 0.5);
+      const quat = new ZeaEngine.Quat();
+      quat.setFromAxisAndAngle(new ZeaEngine.Vec3(1, 0, 0), Math.PI * 0.5);
       this.constructionPlane.ori = this.constructionPlane.ori.multiply(quat);
       this.constructionPlane.tr = pt;
       this.invxfo = this.constructionPlane.inverse();

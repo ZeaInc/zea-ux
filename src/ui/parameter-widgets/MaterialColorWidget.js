@@ -73,7 +73,7 @@ export default class MaterialColorWidget extends BaseWidget {
 
     colorPicker.on('color:change', (color, changes) => {
       if (undoing) return;
-      const value = new Visualive.Color();
+      const value = new ZeaEngine.Color();
       value.setFromRGBDict(colorPicker.color.rgb);
       if (!change) {
         change = new ParameterValueChange(parameter, value);
@@ -93,5 +93,5 @@ export default class MaterialColorWidget extends BaseWidget {
 
 uxFactory.registerWidget(
   MaterialColorWidget,
-  p => p instanceof Visualive.MaterialColorParam
+  p => p instanceof ZeaEngine.MaterialColorParam
 );

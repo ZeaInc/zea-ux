@@ -87,5 +87,5 @@ export default class NumberWidget extends BaseWidget {
 
 uxFactory.registerWidget(
   NumberWidget,
-  p => p instanceof Visualive.NumberParameter
+  p => p instanceof ZeaEngine.NumberParameter
 );

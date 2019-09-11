@@ -14,12 +14,12 @@ class CreateCircleChange extends CreateGeomChange {
   constructor(parentItem, xfo) {
     super('Create Circle', parentItem);
 
-    this.circle = new Visualive.Circle(0, 64);
+    this.circle = new ZeaEngine.Circle(0, 64);
     this.circle.lineThickness = 0.05;
-    // const material = new Visualive.Material('circle', 'LinesShader');
-    const material = new Visualive.Material('circle', 'FatLinesShader');
-    material.getParameter('Color').setValue(new Visualive.Color(0.7, 0.2, 0.2));
-    this.geomItem = new Visualive.GeomItem('Circle');
+    // const material = new ZeaEngine.Material('circle', 'LinesShader');
+    const material = new ZeaEngine.Material('circle', 'FatLinesShader');
+    material.getParameter('Color').setValue(new ZeaEngine.Color(0.7, 0.2, 0.2));
+    this.geomItem = new ZeaEngine.GeomItem('Circle');
     this.geomItem.setGeometry(this.circle);
     this.geomItem.setMaterial(material);
 

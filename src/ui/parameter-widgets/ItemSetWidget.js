@@ -10,7 +10,7 @@ import uxFactory from '../UxFactory.js';
 //       this.__param = param;
 //       if(newValue != undefined) {
 //         this.__nextValue = newValue;
-//         this.__param.setValue(this.__nextValue, Visualive.ValueSetMode.USER_SETVALUE);
+//         this.__param.setValue(this.__nextValue, ZeaEngine.ValueSetMode.USER_SETVALUE);
 //       }
 //     }
 //     else {
@@ -28,20 +28,20 @@ import uxFactory from '../UxFactory.js';
 //   undo() {
 //     if(!this.__param)
 //       return;
-//     this.__param.setValue(this.__prevValue, Visualive.ValueSetMode.USER_SETVALUE);
+//     this.__param.setValue(this.__prevValue, ZeaEngine.ValueSetMode.USER_SETVALUE);
 //   }
 
 //   redo() {
 //     if(!this.__param)
 //       return;
-//     this.__param.setValue(this.__nextValue, Visualive.ValueSetMode.USER_SETVALUE);
+//     this.__param.setValue(this.__nextValue, ZeaEngine.ValueSetMode.USER_SETVALUE);
 //   }
 
 //   update(updateData) {
 //     if(!this.__param)
 //       return;
 //     this.__nextValue = updateData.value;
-//     this.__param.setValue(this.__nextValue, Visualive.ValueSetMode.USER_SETVALUE);
+//     this.__param.setValue(this.__nextValue, ZeaEngine.ValueSetMode.USER_SETVALUE);
 //     this.updated.emit(updateData);
 //   }
 
@@ -62,7 +62,7 @@ import uxFactory from '../UxFactory.js';
 
 //   fromJSON(j, appData) {
 //     let param = appData.scene.getRoot().resolvePath(j.paramPath, 1);
-//     if(!param || !(param instanceof Visualive.Parameter)) {
+//     if(!param || !(param instanceof ZeaEngine.Parameter)) {
 //       console.warn("resolvePath is unable to resolve", j.paramPath);
 //       return;
 //     }
@@ -85,7 +85,7 @@ import uxFactory from '../UxFactory.js';
 //       this.__nextValue.fromJSON(j.value);
 //     else
 //       this.__nextValue = j.value;
-//     this.__param.setValue(this.__nextValue, Visualive.ValueSetMode.USER_SETVALUE);
+//     this.__param.setValue(this.__nextValue, ZeaEngine.ValueSetMode.USER_SETVALUE);
 //   }
 // }
 
@@ -137,8 +137,8 @@ export default class ItemSetWidget extends BaseWidget {
 
     // ///////////////////////////
     // SceneWidget Changes.
-    this.selectionChanged = new Visualive.Signal();
-    this.selectionDoubleClicked = new Visualive.Signal();
+    this.selectionChanged = new ZeaEngine.Signal();
+    this.selectionDoubleClicked = new ZeaEngine.Signal();
 
     let prevSelection = -1;
 
@@ -180,5 +180,5 @@ export default class ItemSetWidget extends BaseWidget {
 
 uxFactory.registerWidget(
   ItemSetWidget,
-  p => p instanceof Visualive.ItemSetParameter
+  p => p instanceof ZeaEngine.ItemSetParameter
 );

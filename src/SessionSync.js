@@ -5,11 +5,11 @@ import Avatar from './Avatar.js';
 const convertValuesToJSON = value => {
   if (value == undefined) {
     return undefined;
-  } else if (value instanceof Visualive.BaseItem) {
+  } else if (value instanceof ZeaEngine.BaseItem) {
     return '::' + value.getPath();
   } else if (value.toJSON) {
     const result = value.toJSON();
-    result.typeName = Visualive.typeRegistry.getTypeName(value.constructor);
+    result.typeName = ZeaEngine.typeRegistry.getTypeName(value.constructor);
     return result;
   } else if (Array.isArray(value)) {
     const arr = [];
@@ -30,7 +30,7 @@ const convertValuesFromJSON = (value, scene) => {
   } else if (typeof value === 'string' && value.startsWith('::')) {
     return scene.getRoot().resolvePath(value, 1);
   } else if (value.typeName) {
-    const newval = Visualive.typeRegistry.getType(value.typeName).create();
+    const newval = ZeaEngine.typeRegistry.getType(value.typeName).create();
     newval.fromJSON(value);
     return newval;
   } else if (Array.isArray(value)) {
@@ -289,7 +289,7 @@ class SessionSync {
     // State Machine Changes.
     // Synchronize State Machine changes between users.
 
-    Visualive.sgFactory.registerCallback('StateMachine', stateMachine => {
+    ZeaEngine.sgFactory.registerCallback('StateMachine', stateMachine => {
       stateMachine.stateChanged.connect(name => {
         visualiveSession.pub('StateMachine_stateChanged', {
           stateMachine: stateMachine.getPath(),

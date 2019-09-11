@@ -14,9 +14,9 @@ class CreateConeChange extends CreateGeomChange {
   constructor(parentItem, xfo) {
     super('Create Cone');
 
-    const cone = new Visualive.Cone(0.0, 0.0);
-    const material = new Visualive.Material('Sphere');
-    this.geomItem = new Visualive.GeomItem('Sphere');
+    const cone = new ZeaEngine.Cone(0.0, 0.0);
+    const material = new ZeaEngine.Material('Sphere');
+    this.geomItem = new ZeaEngine.GeomItem('Sphere');
     this.geomItem.setGeometry(cone);
     this.geomItem.setMaterial(material);
 

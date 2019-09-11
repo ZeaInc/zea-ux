@@ -6,7 +6,7 @@ class UserChip {
    * @param {any} userData - The userData value.
    */
   constructor(domElement, userData) {
-    this.userPressed = new Visualive.Signal();
+    this.userPressed = new ZeaEngine.Signal();
 
     this.domElement = domElement;
     this.clean();

@@ -20,7 +20,7 @@ class ParameterValueChange extends Change {
         this.__nextValue = newValue;
         this.__param.setValue(
           this.__nextValue,
-          Visualive.ValueSetMode.USER_SETVALUE
+          ZeaEngine.ValueSetMode.USER_SETVALUE
         );
       }
     } else {
@@ -51,7 +51,7 @@ class ParameterValueChange extends Change {
     if (!this.__param) return;
     this.__param.setValue(
       this.__prevValue,
-      Visualive.ValueSetMode.USER_SETVALUE
+      ZeaEngine.ValueSetMode.USER_SETVALUE
     );
   }
 
@@ -62,7 +62,7 @@ class ParameterValueChange extends Change {
     if (!this.__param) return;
     this.__param.setValue(
       this.__nextValue,
-      Visualive.ValueSetMode.USER_SETVALUE
+      ZeaEngine.ValueSetMode.USER_SETVALUE
     );
   }
 
@@ -75,7 +75,7 @@ class ParameterValueChange extends Change {
     this.__nextValue = updateData.value;
     this.__param.setValue(
       this.__nextValue,
-      Visualive.ValueSetMode.USER_SETVALUE
+      ZeaEngine.ValueSetMode.USER_SETVALUE
     );
     this.updated.emit(updateData);
   }
@@ -107,7 +107,7 @@ class ParameterValueChange extends Change {
    */
   fromJSON(j, appData) {
     const param = appData.scene.getRoot().resolvePath(j.paramPath, 1);
-    if (!param || !(param instanceof Visualive.Parameter)) {
+    if (!param || !(param instanceof ZeaEngine.Parameter)) {
       console.warn('resolvePath is unable to resolve', j.paramPath);
       return;
     }
@@ -130,7 +130,7 @@ class ParameterValueChange extends Change {
     else this.__nextValue = j.value;
     this.__param.setValue(
       this.__nextValue,
-      Visualive.ValueSetMode.USER_SETVALUE
+      ZeaEngine.ValueSetMode.USER_SETVALUE
     );
   }
 }

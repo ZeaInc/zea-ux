@@ -16,15 +16,15 @@ class SelectionTool extends BaseTool {
 
     this.dragging = false;
 
-    this.selectionRect = new Visualive.Rect(1, 1);
-    this.selectionRectMat = new Visualive.Material(
+    this.selectionRect = new ZeaEngine.Rect(1, 1);
+    this.selectionRectMat = new ZeaEngine.Material(
       'marker',
       'ScreenSpaceShader'
     );
     this.selectionRectMat
       .getParameter('BaseColor')
-      .setValue(new Visualive.Color('#03E3AC'));
-    this.selectionRectXfo = new Visualive.Xfo();
+      .setValue(new ZeaEngine.Color('#03E3AC'));
+    this.selectionRectXfo = new ZeaEngine.Xfo();
     this.selectionRectXfo.tr.set(0.5, 0.5, 0);
     this.selectionRectXfo.sc.set(0, 0, 0);
   }
@@ -36,7 +36,7 @@ class SelectionTool extends BaseTool {
     super.activateTool();
 
     if (!this.rectItem) {
-      this.rectItem = new Visualive.GeomItem(
+      this.rectItem = new ZeaEngine.GeomItem(
         'selectionRect',
         this.selectionRect,
         this.selectionRectMat
@@ -71,7 +71,7 @@ class SelectionTool extends BaseTool {
 
   // eslint-disable-next-line require-jsdoc
   __resizeRect(viewport, delta) {
-    const sc = new Visualive.Vec2(
+    const sc = new ZeaEngine.Vec2(
       (1 / viewport.getWidth()) * 2,
       (1 / viewport.getHeight()) * 2
     );
@@ -79,7 +79,7 @@ class SelectionTool extends BaseTool {
     this.selectionRectXfo.sc.set(Math.abs(size.x), Math.abs(size.y), 1);
 
     const center = this.mouseDownPos.subtract(delta.scale(0.5));
-    const tr = center.multiply(sc).subtract(new Visualive.Vec2(1, 1));
+    const tr = center.multiply(sc).subtract(new ZeaEngine.Vec2(1, 1));
 
     this.selectionRectXfo.tr.x = tr.x;
     this.selectionRectXfo.tr.y = -tr.y;
@@ -121,11 +121,11 @@ class SelectionTool extends BaseTool {
       if (this.dragging) {
         this.rectItem.getParameter('Visible').setValue(false);
         const mouseUpPos = event.mousePos;
-        const tl = new Visualive.Vec2(
+        const tl = new ZeaEngine.Vec2(
           Math.min(this.mouseDownPos.x, mouseUpPos.x),
           Math.min(this.mouseDownPos.y, mouseUpPos.y)
         );
-        const br = new Visualive.Vec2(
+        const br = new ZeaEngine.Vec2(
           Math.max(this.mouseDownPos.x, mouseUpPos.x),
           Math.max(this.mouseDownPos.y, mouseUpPos.y)
         );

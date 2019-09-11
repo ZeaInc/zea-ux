@@ -29,31 +29,31 @@ class VRUITool extends BaseTool {
 
     appData.renderer.addTreeItem(this.controllerUI);
 
-    this.__uiLocalXfo = new Visualive.Xfo();
+    this.__uiLocalXfo = new ZeaEngine.Xfo();
     this.__uiLocalXfo.ori.setFromAxisAndAngle(
-      new Visualive.Vec3(1, 0, 0),
+      new ZeaEngine.Vec3(1, 0, 0),
       Math.PI * -0.6
     );
 
-    const pointermat = new Visualive.Material('pointermat', 'LinesShader');
+    const pointermat = new ZeaEngine.Material('pointermat', 'LinesShader');
     pointermat.visibleInGeomDataBuffer = false;
-    pointermat.getParameter('Color').setValue(new Visualive.Color(1.2, 0, 0));
+    pointermat.getParameter('Color').setValue(new ZeaEngine.Color(1.2, 0, 0));
 
-    const line = new Visualive.Lines();
+    const line = new ZeaEngine.Lines();
     line.setNumVertices(2);
     line.setNumSegments(1);
     line.setSegment(0, 0, 1);
     line.getVertex(0).set(0.0, 0.0, 0.0);
     line.getVertex(1).set(0.0, 0.0, -1.0);
     line.setBoundingBoxDirty();
-    this.__pointerLocalXfo = new Visualive.Xfo();
+    this.__pointerLocalXfo = new ZeaEngine.Xfo();
     this.__pointerLocalXfo.sc.set(1, 1, 0.1);
     this.__pointerLocalXfo.ori.setFromAxisAndAngle(
-      new Visualive.Vec3(1, 0, 0),
+      new ZeaEngine.Vec3(1, 0, 0),
       Math.PI * -0.2
     );
 
-    this.__uiPointerItem = new Visualive.GeomItem(
+    this.__uiPointerItem = new ZeaEngine.GeomItem(
       'VRControllerPointer',
       line,
       pointermat
@@ -172,10 +172,10 @@ class VRUITool extends BaseTool {
   calcUIIntersection() {
     const pointerXfo = this.__uiPointerItem.getGlobalXfo();
     const pointervec = pointerXfo.ori.getZaxis().negate();
-    const ray = new Visualive.Ray(pointerXfo.tr, pointervec);
+    const ray = new ZeaEngine.Ray(pointerXfo.tr, pointervec);
 
     const planeXfo = this.controllerUI.getGeomXfo();
-    const plane = new Visualive.Ray(planeXfo.tr, planeXfo.ori.getZaxis());
+    const plane = new ZeaEngine.Ray(planeXfo.tr, planeXfo.ori.getZaxis());
     const res = ray.intersectRayPlane(plane);
     if (res <= 0) {
       // Let the pointer shine right past the UI.

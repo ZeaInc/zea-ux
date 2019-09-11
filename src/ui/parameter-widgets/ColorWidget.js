@@ -60,7 +60,7 @@ export default class ColorWidget extends BaseWidget {
     colorPicker.on('color:change', (color, changes) => {
       if (undoing) return;
       // console.log('input:change', colorPicker.color.rgb, !change)
-      const value = new Visualive.Color();
+      const value = new ZeaEngine.Color();
       value.setFromRGBDict(colorPicker.color.rgb);
       if (!change) {
         change = new ParameterValueChange(parameter, value);
@@ -80,5 +80,5 @@ export default class ColorWidget extends BaseWidget {
 
 uxFactory.registerWidget(
   ColorWidget,
-  p => p instanceof Visualive.ColorParameter
+  p => p instanceof ZeaEngine.ColorParameter
 );

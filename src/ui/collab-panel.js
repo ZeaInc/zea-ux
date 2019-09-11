@@ -8,7 +8,7 @@ class CollabPanel {
    * @param {any} visualiveSession - The visualiveSession value.
    */
   constructor(visualiveSession) {
-    this.userSelected = new Visualive.Signal();
+    this.userSelected = new ZeaEngine.Signal();
     this.visualiveSession = visualiveSession;
   }
 

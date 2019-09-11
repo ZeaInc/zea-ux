@@ -95,7 +95,7 @@ class NameValueChange extends Change {
    */
   fromJSON(j, appData) {
     const item = appData.scene.getRoot().resolvePath(j.itemPath, 1);
-    if (!item || !(item instanceof Visualive.itemeter)) {
+    if (!item || !(item instanceof ZeaEngine.itemeter)) {
       console.warn('resolvePath is unable to resolve', j.itemPath);
       return;
     }

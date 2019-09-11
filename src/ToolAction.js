@@ -17,7 +17,7 @@ class ToolAction extends Action {
     this.toolManager = toolManager;
     this.tool = tool;
     this.state = false;
-    this.activatedChanged = new Visualive.Signal();
+    this.activatedChanged = new ZeaEngine.Signal();
 
     tool.installChanged.connect(state => {
       this.activatedChanged.emit(state);

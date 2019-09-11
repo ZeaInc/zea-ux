@@ -20,17 +20,17 @@ class CreateFreehandLineChange extends CreateGeomChange {
     this.used = 0;
     this.vertexCount = 100;
 
-    this.line = new Visualive.Lines();
+    this.line = new ZeaEngine.Lines();
     this.line.setNumVertices(this.vertexCount);
     this.line.setNumSegments(this.vertexCount - 1);
-    this.line.vertices.setValue(0, new Visualive.Vec3());
+    this.line.vertices.setValue(0, new ZeaEngine.Vec3());
 
-    // const material = new Visualive.Material('freeHandLine', 'LinesShader');
+    // const material = new ZeaEngine.Material('freeHandLine', 'LinesShader');
     // this.line.lineThickness = 0.5;
-    // const material = new Visualive.Material('freeHandLine', 'LinesShader');
-    const material = new Visualive.Material('freeHandLine', 'FatLinesShader');
+    // const material = new ZeaEngine.Material('freeHandLine', 'LinesShader');
+    const material = new ZeaEngine.Material('freeHandLine', 'FatLinesShader');
 
-    this.geomItem = new Visualive.GeomItem('freeHandLine');
+    this.geomItem = new ZeaEngine.GeomItem('freeHandLine');
     this.geomItem.setGeometry(this.line);
     this.geomItem.setMaterial(material);
 
@@ -40,7 +40,7 @@ class CreateFreehandLineChange extends CreateGeomChange {
 
     if (thickness) {
       this.line.lineThickness = thickness;
-      // this.line.addVertexAttribute('lineThickness', Visualive.Float32, 0.0);
+      // this.line.addVertexAttribute('lineThickness', ZeaEngine.Float32, 0.0);
     }
 
     if (parentItem && xfo) {
@@ -105,10 +105,10 @@ class CreateFreehandLineChange extends CreateGeomChange {
     // Need to set line thickness before the geom is added to the tree.
     if (j.lineThickness) {
       this.line.lineThickness = j.lineThickness;
-      // this.line.addVertexAttribute('lineThickness', Visualive.Float32, 0.0);
+      // this.line.addVertexAttribute('lineThickness', ZeaEngine.Float32, 0.0);
     }
 
-    const color = new Visualive.Color(0.7, 0.2, 0.2);
+    const color = new ZeaEngine.Color(0.7, 0.2, 0.2);
     if (j.color) {
       color.fromJSON(j.color);
     }
@@ -138,7 +138,7 @@ class CreateFreehandLineTool extends CreateLineTool {
     super(appData);
 
     this.mp = this.addParameter(
-      new Visualive.BooleanParameter(
+      new ZeaEngine.BooleanParameter(
         'Modulate Thickness By Stroke Speed',
         false
       )

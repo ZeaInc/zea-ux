@@ -1,5 +1,3 @@
-// import * as Visualive from '@visualive/engine';
-
 import UndoRedoManager from './undoredo/UndoRedoManager.js';
 import Change from './undoredo/Change.js';
 import XfoHandle from './sceneWidgets/XfoHandle.js';
@@ -129,13 +127,13 @@ class SelectionManager {
   constructor(appData) {
     this.appData = appData;
     this.leadSelection = undefined;
-    this.selectionChanged = new Visualive.Signal();
-    this.leadSelectionChanged = new Visualive.Signal();
+    this.selectionChanged = new ZeaEngine.Signal();
+    this.leadSelectionChanged = new ZeaEngine.Signal();
 
-    this.selectionGroup = new Visualive.Group('selection');
+    this.selectionGroup = new ZeaEngine.Group('selection');
     this.selectionGroup
       .getParameter('InitialXfoMode')
-      .setValue(Visualive.Group.INITIAL_XFO_MODES.average);
+      .setValue(ZeaEngine.Group.INITIAL_XFO_MODES.average);
     this.selectionGroup.propagateSelectionToItems = true;
     this.selectionGroup.propagateSelectionChangesFromItems = false;
     this.selectionGroup.setSelected(true);
@@ -193,9 +191,9 @@ class SelectionManager {
     */
 
     const handleGroup = {
-      Translate: new Visualive.Signal(),
-      Rotate: new Visualive.Signal(),
-      Scale: new Visualive.Signal(),
+      Translate: new ZeaEngine.Signal(),
+      Rotate: new ZeaEngine.Signal(),
+      Scale: new ZeaEngine.Signal(),
     };
     let currMode = '';
     const showHandles = mode => {

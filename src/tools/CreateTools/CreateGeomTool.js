@@ -64,7 +64,7 @@ class CreateGeomChange extends Change {
   fromJSON(j, appData) {
     this.parentItem = appData.scene.getRoot().resolvePath(j.parentItemPath, 1);
     this.geomItem.setName(this.parentItem.generateUniqueName(j.geomItemName));
-    const xfo = new Visualive.Xfo();
+    const xfo = new ZeaEngine.Xfo();
     xfo.fromJSON(j.geomItemXfo);
     this.geomItem.setLocalXfo(xfo);
     this.childIndex = this.parentItem.addChild(this.geomItem, false);
@@ -101,9 +101,9 @@ class CreateGeomTool extends BaseCreateTool {
     this.removeToolOnRightClick = true;
 
     this.cp = this.addParameter(
-      new Visualive.ColorParameter(
+      new ZeaEngine.ColorParameter(
         'Line Color',
-        new Visualive.Color(0.7, 0.2, 0.2)
+        new ZeaEngine.Color(0.7, 0.2, 0.2)
       )
     );
   }
@@ -118,8 +118,8 @@ class CreateGeomTool extends BaseCreateTool {
 
     this.appData.renderer.getXRViewport().then(xrvp => {
       if (!this.vrControllerToolTip) {
-        this.vrControllerToolTip = new Visualive.Cross(0.05);
-        this.vrControllerToolTipMat = new Visualive.Material(
+        this.vrControllerToolTip = new ZeaEngine.Cross(0.05);
+        this.vrControllerToolTipMat = new ZeaEngine.Material(
           'VRController Cross',
           'LinesShader'
         );
@@ -129,7 +129,7 @@ class CreateGeomTool extends BaseCreateTool {
         this.vrControllerToolTipMat.visibleInGeomDataBuffer = false;
       }
       const addIconToController = controller => {
-        const geomItem = new Visualive.GeomItem(
+        const geomItem = new ZeaEngine.GeomItem(
           'CreateGeomToolTip',
           this.vrControllerToolTip,
           this.vrControllerToolTipMat
@@ -174,7 +174,7 @@ class CreateGeomTool extends BaseCreateTool {
     const ray = viewport.calcRayFromScreenPos(screenPos);
 
     // Raycast any working planes.
-    const planeRay = new Visualive.Ray(
+    const planeRay = new ZeaEngine.Ray(
       this.constructionPlane.tr,
       this.constructionPlane.ori.getZaxis()
     );
@@ -231,7 +231,7 @@ class CreateGeomTool extends BaseCreateTool {
     //
     if (this.stage == 0) {
       if (event.button == 0) {
-        this.constructionPlane = new Visualive.Xfo();
+        this.constructionPlane = new ZeaEngine.Xfo();
 
         const xfo = this.screenPosToXfo(event.mousePos, event.viewport);
         this.createStart(xfo, this.appData.scene.getRoot());
@@ -344,7 +344,7 @@ class CreateGeomTool extends BaseCreateTool {
     if (!this.__activeController) {
       // TODO: Snap the Xfo to any nearby construction planes.
       this.__activeController = event.controller;
-      this.constructionPlane = new Visualive.Xfo();
+      this.constructionPlane = new ZeaEngine.Xfo();
       const xfo = this.constructionPlane.clone();
       xfo.tr = this.__activeController.getTipXfo().tr;
       this.createStart(xfo, this.appData.scene.getRoot());

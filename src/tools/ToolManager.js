@@ -8,10 +8,10 @@ class ToolManager {
     this.__toolStack = [];
     this.appData = appData;
 
-    this.movePointer = new Visualive.Signal();
-    this.hilightPointer = new Visualive.Signal();
-    this.unhilightPointer = new Visualive.Signal();
-    this.hidePointer = new Visualive.Signal();
+    this.movePointer = new ZeaEngine.Signal();
+    this.hilightPointer = new ZeaEngine.Signal();
+    this.unhilightPointer = new ZeaEngine.Signal();
+    this.hidePointer = new ZeaEngine.Signal();
     this.avatarPointerVisible = false;
     this.avatarPointerHighlighted = false;
   }

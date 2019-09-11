@@ -52,5 +52,5 @@ export default class MultiChoiceWidget extends BaseWidget {
 
 uxFactory.registerWidget(
   MultiChoiceWidget,
-  p => p instanceof Visualive.MultiChoiceParameter
+  p => p instanceof ZeaEngine.MultiChoiceParameter
 );

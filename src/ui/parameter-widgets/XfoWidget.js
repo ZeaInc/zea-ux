@@ -1,5 +1,3 @@
-// import * as Visualive from '@visualive/engine';
-
 import BaseWidget from './BaseWidget.js';
 
 import uxFactory from '../UxFactory.js';
@@ -53,7 +51,7 @@ export default class XfoWidget extends BaseWidget {
 
     const valueChange = () => {
       console.log('valueChange');
-      const xfo = new Visualive.Xfo();
+      const xfo = new ZeaEngine.Xfo();
       xfo.tr.set(
         tr_xField.valueAsNumber,
         tr_yField.valueAsNumber,
@@ -126,4 +124,4 @@ export default class XfoWidget extends BaseWidget {
   }
 }
 
-uxFactory.registerWidget(XfoWidget, p => p instanceof Visualive.XfoParameter);
+uxFactory.registerWidget(XfoWidget, p => p instanceof ZeaEngine.XfoParameter);

@@ -28,11 +28,11 @@ class SceneWidgetTool extends BaseTool {
     const addIconToController = controller => {
       // The tool might already be deactivated.
       if (!this.__activated) return;
-      const geon = new Visualive.Sphere(0.02 * 0.75);
-      const mat = new Visualive.Material('Cross', 'FlatSurfaceShader');
-      mat.getParameter('BaseColor').setValue(new Visualive.Color('#03E3AC'));
+      const geon = new ZeaEngine.Sphere(0.02 * 0.75);
+      const mat = new ZeaEngine.Material('Cross', 'FlatSurfaceShader');
+      mat.getParameter('BaseColor').setValue(new ZeaEngine.Color('#03E3AC'));
       mat.visibleInGeomDataBuffer = false;
-      const geomItem = new Visualive.GeomItem('SceneWidgetToolTip', geon, mat);
+      const geomItem = new ZeaEngine.GeomItem('SceneWidgetToolTip', geon, mat);
       controller.getTipItem().removeAllChildren();
       controller.getTipItem().addChild(geomItem, false);
     };

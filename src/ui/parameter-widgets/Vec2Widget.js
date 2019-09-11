@@ -1,5 +1,3 @@
-// import * as Visualive from '@visualive/engine';
-
 import BaseWidget from './BaseWidget.js';
 
 import uxFactory from '../UxFactory.js';
@@ -66,7 +64,7 @@ export default class Vec2Widget extends BaseWidget {
       }
     });
     const valueChange = () => {
-      const value = new Visualive.Vec2(
+      const value = new ZeaEngine.Vec2(
         xField.valueAsNumber,
         yField.valueAsNumber
       );
@@ -88,4 +86,4 @@ export default class Vec2Widget extends BaseWidget {
   }
 }
 
-uxFactory.registerWidget(Vec2Widget, p => p instanceof Visualive.Vec2Parameter);
+uxFactory.registerWidget(Vec2Widget, p => p instanceof ZeaEngine.Vec2Parameter);

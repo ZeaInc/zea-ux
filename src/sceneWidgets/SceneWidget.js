@@ -3,18 +3,18 @@
 // mouse events into a higher level interaction.
 
 /** Class representing a scene widget.
- * @extends Visualive.TreeItem
+ * @extends ZeaEngine.TreeItem
  */
-export default class SceneWidget extends Visualive.TreeItem {
+export default class SceneWidget extends ZeaEngine.TreeItem {
   /**
    * Create a scene widget.
    * @param {any} name - The name value.
    */
   constructor(name) {
     super(name);
-    this.manipulateBegin = new Visualive.Signal();
-    this.manipulate = new Visualive.Signal();
-    this.manipulateEnd = new Visualive.Signal();
+    this.manipulateBegin = new ZeaEngine.Signal();
+    this.manipulate = new ZeaEngine.Signal();
+    this.manipulateEnd = new ZeaEngine.Signal();
   }
 
   /**
@@ -34,7 +34,7 @@ export default class SceneWidget extends Visualive.TreeItem {
    */
   getManipulationRay(viewport) {
     const xfo = this.getGlobalXfo();
-    return new Visualive.Ray(xfo.tr, xfo.ori.getZaxis());
+    return new ZeaEngine.Ray(xfo.tr, xfo.ori.getZaxis());
   }
 
   // ///////////////////////////////////

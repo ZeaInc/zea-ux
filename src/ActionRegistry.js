@@ -5,7 +5,7 @@ class ActionRegistry {
    */
   constructor() {
     this.actions = [];
-    this.actionAdded = new Visualive.Signal();
+    this.actionAdded = new ZeaEngine.Signal();
   }
 
   /**
