@@ -184,7 +184,7 @@ export default class VRControllerUI extends ZeaEngine.GeomItem {
         );
         this.setGeomOffsetXfo(this.__uiGeomOffsetXfo);
 
-        this.appData.visualiveSession.pub('pose-message', {
+        this.appData.session.pub('pose-message', {
           interfaceType: 'VR',
           updateUIPanel: {
             size: this.__uiGeomOffsetXfo.sc.toJSON(),

@@ -117,7 +117,7 @@ class VRUITool extends BaseTool {
           .getTipItem()
           .addChild(this.__uiPointerItem, false);
 
-      this.appData.visualiveSession.pub('pose-message', {
+      this.appData.session.pub('pose-message', {
         interfaceType: 'VR',
         showUIPanel: {
           controllerId: this.uiController.getId(),
@@ -144,7 +144,7 @@ class VRUITool extends BaseTool {
           .removeChildByHandle(this.__uiPointerItem);
       }
 
-      this.appData.visualiveSession.pub('pose-message', {
+      this.appData.session.pub('pose-message', {
         interfaceType: 'VR',
         hideUIPanel: {
           controllerId: this.uiController.getId(),

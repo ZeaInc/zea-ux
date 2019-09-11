@@ -291,13 +291,13 @@ export default class Avatar {
       let assetPath;
       switch (data.hmd) {
         case 'Vive':
-          assetPath = 'VisualiveEngine/Vive.vla';
+          assetPath = 'ZeaEngine/Vive.vla';
           break;
         case 'Oculus':
-          assetPath = 'VisualiveEngine/Oculus.vla';
+          assetPath = 'ZeaEngine/Oculus.vla';
           break;
         default:
-          assetPath = 'VisualiveEngine/Vive.vla';
+          assetPath = 'ZeaEngine/Vive.vla';
           break;
       }
 
