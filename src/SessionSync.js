@@ -1,15 +1,15 @@
-import { VisualiveSession } from '@visualive/collab';
+import { Session } from '@zeainc/zea-collab';
 import UndoRedoManager from './undoredo/UndoRedoManager.js';
 import Avatar from './Avatar.js';
 
 const convertValuesToJSON = value => {
   if (value == undefined) {
     return undefined;
-  } else if (value instanceof Visualive.BaseItem) {
+  } else if (value instanceof ZeaEngine.BaseItem) {
     return '::' + value.getPath();
   } else if (value.toJSON) {
     const result = value.toJSON();
-    result.typeName = Visualive.typeRegistry.getTypeName(value.constructor);
+    result.typeName = ZeaEngine.typeRegistry.getTypeName(value.constructor);
     return result;
   } else if (Array.isArray(value)) {
     const arr = [];
@@ -30,7 +30,7 @@ const convertValuesFromJSON = (value, scene) => {
   } else if (typeof value === 'string' && value.startsWith('::')) {
     return scene.getRoot().resolvePath(value, 1);
   } else if (value.typeName) {
-    const newval = Visualive.typeRegistry.getType(value.typeName).create();
+    const newval = ZeaEngine.typeRegistry.getType(value.typeName).create();
     newval.fromJSON(value);
     return newval;
   } else if (Array.isArray(value)) {
@@ -52,16 +52,16 @@ const convertValuesFromJSON = (value, scene) => {
 class SessionSync {
   /**
    * Create a session sync.
-   * @param {any} visualiveSession - The visualiveSession value.
+   * @param {any} session - The session value.
    * @param {any} appData - The appData value.
    * @param {any} currentUser - The currentUser value.
    */
-  constructor(visualiveSession, appData, currentUser) {
+  constructor(session, appData, currentUser) {
     // const currentUserAvatar = new Avatar(appData, currentUser, true);
 
     const userDatas = {};
 
-    visualiveSession.sub(VisualiveSession.actions.USER_JOINED, userData => {
+    session.sub(Session.actions.USER_JOINED, userData => {
       if (!(userData.id in userDatas)) {
         userDatas[userData.id] = {
           undoRedoManager: new UndoRedoManager(),
@@ -69,7 +69,7 @@ class SessionSync {
         };
       }
     });
-    visualiveSession.sub(VisualiveSession.actions.USER_LEFT, userData => {
+    session.sub(Session.actions.USER_LEFT, userData => {
       if (!userDatas[userData.id]) {
         console.warn('User id not in session:', userData.id);
         return;
@@ -80,20 +80,20 @@ class SessionSync {
 
     // ///////////////////////////////////////////
     // Video Streams
-    visualiveSession.sub(
-      VisualiveSession.actions.USER_VIDEO_STARTED,
+    session.sub(
+      Session.actions.USER_VIDEO_STARTED,
       (data, userId) => {
         if (!userDatas[userId]) {
           console.warn('User id not in session:', userId);
           return;
         }
-        const video = visualiveSession.getVideoStream(userId);
+        const video = session.getVideoStream(userId);
         if (video) userDatas[userId].avatar.attachRTCStream(video);
       }
     );
 
-    visualiveSession.sub(
-      VisualiveSession.actions.USER_VIDEO_STOPPED,
+    session.sub(
+      Session.actions.USER_VIDEO_STOPPED,
       (data, userId) => {
         if (!userDatas[userId]) {
           console.warn('User id not in session:', userId);
@@ -102,7 +102,7 @@ class SessionSync {
         console.log('USER_VIDEO_STOPPED:', userId, ' us:', currentUser.id);
         if (userDatas[userId].avatar)
           userDatas[userId].avatar.detachRTCStream(
-            visualiveSession.getVideoStream(userId)
+            session.getVideoStream(userId)
           );
       }
     );
@@ -123,8 +123,8 @@ class SessionSync {
           length: rayLength,
         },
       };
-      visualiveSession.pub(
-        VisualiveSession.actions.POSE_CHANGED,
+      session.pub(
+        Session.actions.POSE_CHANGED,
         convertValuesToJSON(data)
       );
     });
@@ -133,22 +133,22 @@ class SessionSync {
         interfaceType: 'CameraAndPointer',
         hidePointer: {},
       };
-      visualiveSession.pub(VisualiveSession.actions.POSE_CHANGED, data);
+      session.pub(Session.actions.POSE_CHANGED, data);
     });
     appData.toolManager.hilightPointer.connect(event => {
       const data = {
         interfaceType: 'CameraAndPointer',
         hilightPointer: {},
       };
-      visualiveSession.pub(VisualiveSession.actions.POSE_CHANGED, data);
+      session.pub(Session.actions.POSE_CHANGED, data);
     });
     appData.toolManager.unhilightPointer.connect(event => {
       const data = {
         interfaceType: 'CameraAndPointer',
         unhilightPointer: {},
       };
-      visualiveSession.pub(
-        VisualiveSession.actions.POSE_CHANGED,
+      session.pub(
+        Session.actions.POSE_CHANGED,
         convertValuesToJSON(data)
       );
     });
@@ -180,14 +180,14 @@ class SessionSync {
 
       // currentUserAvatar.updatePose(data);
 
-      visualiveSession.pub(
-        VisualiveSession.actions.POSE_CHANGED,
+      session.pub(
+        Session.actions.POSE_CHANGED,
         convertValuesToJSON(data)
       );
     });
 
-    visualiveSession.sub(
-      VisualiveSession.actions.POSE_CHANGED,
+    session.sub(
+      Session.actions.POSE_CHANGED,
       (jsonData, userId) => {
         if (!userDatas[userId]) {
           console.warn('User id not in session:', userId);
@@ -200,8 +200,8 @@ class SessionSync {
     );
 
     // Emit a signal to configure remote avatars to the current camera transform.
-    visualiveSession.pub(
-      VisualiveSession.actions.POSE_CHANGED,
+    session.pub(
+      Session.actions.POSE_CHANGED,
       convertValuesToJSON({
         interfaceType: 'CameraAndPointer',
         viewXfo: appData.renderer
@@ -220,7 +220,7 @@ class SessionSync {
         changeData: change.toJSON(appData),
         changeClass: UndoRedoManager.getChangeClassName(change),
       };
-      visualiveSession.pub(VisualiveSession.actions.COMMAND_ADDED, data);
+      session.pub(Session.actions.COMMAND_ADDED, data);
 
       // const otherChange = otherUndoStack.constructChange(data.changeClass);
       // otherChange.fromJSON(data.changeData, appData)
@@ -229,14 +229,14 @@ class SessionSync {
 
     appData.undoRedoManager.changeUpdated.connect(data => {
       const jsonData = convertValuesToJSON(data);
-      visualiveSession.pub(VisualiveSession.actions.COMMAND_UPDATED, jsonData);
+      session.pub(Session.actions.COMMAND_UPDATED, jsonData);
 
       // const changeData2 = convertValuesFromJSON(jsonData, appData.scene);
       // otherUndoStack.getCurrentChange().update(changeData2);
     });
 
-    visualiveSession.sub(
-      VisualiveSession.actions.COMMAND_ADDED,
+    session.sub(
+      Session.actions.COMMAND_ADDED,
       (data, userId) => {
         // console.log("Remote Command added:", data.changeClass, userId)
         if (!userDatas[userId]) {
@@ -250,8 +250,8 @@ class SessionSync {
       }
     );
 
-    visualiveSession.sub(
-      VisualiveSession.actions.COMMAND_UPDATED,
+    session.sub(
+      Session.actions.COMMAND_UPDATED,
       (data, userId) => {
         if (!userDatas[userId]) {
           console.warn('User id not in session:', userId);
@@ -268,19 +268,19 @@ class SessionSync {
     // Synchronize undo stacks between users.
 
     appData.undoRedoManager.changeUndone.connect(() => {
-      visualiveSession.pub('UndoRedoManager_changeUndone', {});
+      session.pub('UndoRedoManager_changeUndone', {});
     });
 
-    visualiveSession.sub('UndoRedoManager_changeUndone', (data, userId) => {
+    session.sub('UndoRedoManager_changeUndone', (data, userId) => {
       const undoRedoManager = userDatas[userId].undoRedoManager;
       undoRedoManager.undo();
     });
 
     appData.undoRedoManager.changeRedone.connect(() => {
-      visualiveSession.pub('UndoRedoManager_changeRedone', {});
+      session.pub('UndoRedoManager_changeRedone', {});
     });
 
-    visualiveSession.sub('UndoRedoManager_changeRedone', (data, userId) => {
+    session.sub('UndoRedoManager_changeRedone', (data, userId) => {
       const undoRedoManager = userDatas[userId].undoRedoManager;
       undoRedoManager.redo();
     });
@@ -289,16 +289,16 @@ class SessionSync {
     // State Machine Changes.
     // Synchronize State Machine changes between users.
 
-    Visualive.sgFactory.registerCallback('StateMachine', stateMachine => {
+    ZeaEngine.sgFactory.registerCallback('StateMachine', stateMachine => {
       stateMachine.stateChanged.connect(name => {
-        visualiveSession.pub('StateMachine_stateChanged', {
+        session.pub('StateMachine_stateChanged', {
           stateMachine: stateMachine.getPath(),
           stateName: name,
         });
       });
     });
 
-    visualiveSession.sub('StateMachine_stateChanged', (data, userId) => {
+    session.sub('StateMachine_stateChanged', (data, userId) => {
       const stateMachine = appData.scene
         .getRoot()
         .resolvePath(data.stateMachine, 1);

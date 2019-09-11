@@ -8,10 +8,10 @@ class ToolManager {
     this.__toolStack = [];
     this.appData = appData;
 
-    this.movePointer = new Visualive.Signal();
-    this.hilightPointer = new Visualive.Signal();
-    this.unhilightPointer = new Visualive.Signal();
-    this.hidePointer = new Visualive.Signal();
+    this.movePointer = new ZeaEngine.Signal();
+    this.hilightPointer = new ZeaEngine.Signal();
+    this.unhilightPointer = new ZeaEngine.Signal();
+    this.hidePointer = new ZeaEngine.Signal();
     this.avatarPointerVisible = false;
     this.avatarPointerHighlighted = false;
   }
@@ -182,7 +182,7 @@ class ToolManager {
     const viewport = renderer.getViewport();
 
     this.mouseDownId = viewport.mouseDown.connect(this.onMouseDown.bind(this));
-    this.mouseMovedId = viewport.mouseMoved.connect(
+    this.mouseMoveId = viewport.mouseMove.connect(
       this.onMouseMove.bind(this)
     );
     this.mouseUpId = viewport.mouseUp.connect(this.onMouseUp.bind(this));
@@ -522,7 +522,7 @@ class ToolManager {
     const viewport = this.appData.renderer.getViewport();
 
     viewport.mouseDown.disconnectId(this.mouseDownId);
-    viewport.mouseMoved.disconnectId(this.mouseMovedId);
+    viewport.mouseMove.disconnectId(this.mouseMoveId);
     viewport.mouseUp.disconnectId(this.mouseUpId);
     viewport.mouseLeave.disconnectId(this.mouseUpId);
     viewport.mouseWheel.disconnectId(this.mouseWheelId);

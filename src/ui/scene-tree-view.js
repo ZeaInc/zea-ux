@@ -201,7 +201,7 @@ class TreeItemElement {
 
 uxFactory.registerTreeItemElement(
   TreeItemElement,
-  p => p instanceof Visualive.TreeItem
+  p => p instanceof ZeaEngine.TreeItem
 );
 
 /**
@@ -226,7 +226,7 @@ class GeomItemElement extends TreeItemElement {
 
 uxFactory.registerTreeItemElement(
   GeomItemElement,
-  p => p instanceof Visualive.GeomItem
+  p => p instanceof ZeaEngine.GeomItem
 );
 
 /** Class representing a scene tree view. */

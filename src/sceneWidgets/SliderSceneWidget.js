@@ -17,41 +17,41 @@ class SliderSceneWidget extends BaseLinearMovementSceneWidget {
     name,
     length = 0.5,
     radius = 0.02,
-    color = new Visualive.Color(1, 1, 0)
+    color = new ZeaEngine.Color(1, 1, 0)
   ) {
     super(name);
 
     this.__color = color;
-    this.__hilightedColor = new Visualive.Color(1, 1, 1);
+    this.__hilightedColor = new ZeaEngine.Color(1, 1, 1);
 
     this.lengthParam = this.addParameter(
-      new Visualive.NumberParameter('length', length)
+      new ZeaEngine.NumberParameter('length', length)
     );
     this.radiusParam = this.addParameter(
-      new Visualive.NumberParameter('radius', radius)
+      new ZeaEngine.NumberParameter('radius', radius)
     );
     this.colorParam = this.addParameter(
-      new Visualive.ColorParameter('BaseColor', color)
+      new ZeaEngine.ColorParameter('BaseColor', color)
     );
 
-    const handleMat = new Visualive.Material('handle', 'FlatSurfaceShader');
+    const handleMat = new ZeaEngine.Material('handle', 'FlatSurfaceShader');
     handleMat.replaceParameter(this.colorParam);
-    // const baseBarMat = new Visualive.Material('baseBar', 'FlatSurfaceShader');
+    // const baseBarMat = new ZeaEngine.Material('baseBar', 'FlatSurfaceShader');
     // baseBarMat.replaceParameter(this.colorParam);
-    const topBarMat = new Visualive.Material('topBar', 'FlatSurfaceShader');
+    const topBarMat = new ZeaEngine.Material('topBar', 'FlatSurfaceShader');
     topBarMat
       .getParameter('BaseColor')
-      .setValue(new Visualive.Color(0.5, 0.5, 0.5));
+      .setValue(new ZeaEngine.Color(0.5, 0.5, 0.5));
 
-    const barGeom = new Visualive.Cylinder(radius * 0.25, 1, 64, 2, true, true);
-    const handleGeom = new Visualive.Sphere(radius, 64);
+    const barGeom = new ZeaEngine.Cylinder(radius * 0.25, 1, 64, 2, true, true);
+    const handleGeom = new ZeaEngine.Sphere(radius, 64);
 
-    this.handle = new Visualive.GeomItem('handle', handleGeom, handleMat);
-    this.baseBar = new Visualive.GeomItem('baseBar', barGeom, handleMat);
-    this.topBar = new Visualive.GeomItem('topBar', barGeom, topBarMat);
-    this.handleXfo = new Visualive.Xfo();
-    this.baseBarXfo = new Visualive.Xfo();
-    this.topBarXfo = new Visualive.Xfo();
+    this.handle = new ZeaEngine.GeomItem('handle', handleGeom, handleMat);
+    this.baseBar = new ZeaEngine.GeomItem('baseBar', barGeom, handleMat);
+    this.topBar = new ZeaEngine.GeomItem('topBar', barGeom, topBarMat);
+    this.handleXfo = new ZeaEngine.Xfo();
+    this.baseBarXfo = new ZeaEngine.Xfo();
+    this.topBarXfo = new ZeaEngine.Xfo();
 
     this.radiusParam.valueChanged.connect(() => {
       radius = this.radiusParam.getValue();
@@ -160,7 +160,7 @@ class SliderSceneWidget extends BaseLinearMovementSceneWidget {
   toJSON(context, flags = 0) {
     const json = super.toJSON(
       context,
-      flags | Visualive.SAVE_FLAG_SKIP_CHILDREN
+      flags | ZeaEngine.SAVE_FLAG_SKIP_CHILDREN
     );
     json.targetParam = this.__param.getPath();
     return json;
@@ -183,6 +183,6 @@ class SliderSceneWidget extends BaseLinearMovementSceneWidget {
   }
 }
 
-Visualive.sgFactory.registerClass('SliderSceneWidget', SliderSceneWidget);
+ZeaEngine.sgFactory.registerClass('SliderSceneWidget', SliderSceneWidget);
 
 export { SliderSceneWidget };

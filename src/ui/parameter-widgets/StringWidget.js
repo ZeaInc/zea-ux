@@ -58,5 +58,5 @@ export default class StringWidget extends BaseWidget {
 
 uxFactory.registerWidget(
   StringWidget,
-  p => p instanceof Visualive.StringParameter
+  p => p instanceof ZeaEngine.StringParameter
 );

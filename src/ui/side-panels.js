@@ -63,7 +63,7 @@ class SidePanel {
     const __startTouch = (touch, viewport) => {
       __ongoingTouches[touch.identifier] = {
         identifier: touch.identifier,
-        pos: new Visualive.Vec2(touch.pageX, touch.pageY),
+        pos: new ZeaEngine.Vec2(touch.pageX, touch.pageY),
       };
     };
     const __endTouch = (touch, viewport) => {
@@ -113,7 +113,7 @@ class SidePanel {
             this.domElement.style.width = `${panelWidth}px`;
           }
 
-          // const touchPos = new Visualive.Vec2(touch.pageX, touch.pageY);
+          // const touchPos = new ZeaEngine.Vec2(touch.pageX, touch.pageY);
           // const touchData = __ongoingTouches[touch.identifier];
           // const dragVec = touchData.pos.subtract(touchPos);
 

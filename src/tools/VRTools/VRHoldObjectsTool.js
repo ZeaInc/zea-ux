@@ -157,11 +157,11 @@ class VRHoldObjectsTool extends BaseTool {
     const addIconToController = controller => {
       // The tool might already be deactivated.
       if (!this.__activated) return;
-      const cross = new Visualive.Cross(0.03);
-      const mat = new Visualive.Material('Cross', 'FlatSurfaceShader');
-      mat.getParameter('BaseColor').setValue(new Visualive.Color('#03E3AC'));
+      const cross = new ZeaEngine.Cross(0.03);
+      const mat = new ZeaEngine.Material('Cross', 'FlatSurfaceShader');
+      mat.getParameter('BaseColor').setValue(new ZeaEngine.Color('#03E3AC'));
       mat.visibleInGeomDataBuffer = false;
-      const geomItem = new Visualive.GeomItem('SceneWidgetToolTip', cross, mat);
+      const geomItem = new ZeaEngine.GeomItem('SceneWidgetToolTip', cross, mat);
       controller.getTipItem().removeAllChildren();
       controller.getTipItem().addChild(geomItem, false);
     };
@@ -207,7 +207,7 @@ class VRHoldObjectsTool extends BaseTool {
 
       xfo0.ori.alignWith(xfo1.ori);
 
-      grabXfo = new Visualive.Xfo();
+      grabXfo = new ZeaEngine.Xfo();
       grabXfo.tr = xfo0.tr.lerp(xfo1.tr, 0.5);
       grabXfo.ori = xfo0.ori.lerp(xfo1.ori, 0.5);
 
@@ -220,7 +220,7 @@ class VRHoldObjectsTool extends BaseTool {
       if (angle > 0) {
         const axis = vec1.cross(vec0);
         axis.normalizeInPlace();
-        const align = new Visualive.Quat();
+        const align = new ZeaEngine.Quat();
         align.setFromAxisAndAngle(axis, angle);
         grabXfo.ori = align.multiply(grabXfo.ori);
       }

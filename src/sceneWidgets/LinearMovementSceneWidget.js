@@ -16,20 +16,20 @@ class LinearMovementSceneWidget extends BaseLinearMovementSceneWidget {
     super(name);
 
     this.__color = color;
-    this.__hilightedColor = new Visualive.Color(1, 1, 1);
+    this.__hilightedColor = new ZeaEngine.Color(1, 1, 1);
     this.colorParam = this.addParameter(
-      new Visualive.ColorParameter('BaseColor', color)
+      new ZeaEngine.ColorParameter('BaseColor', color)
     );
 
-    const handleMat = new Visualive.Material('handle', 'HandleShader');
+    const handleMat = new ZeaEngine.Material('handle', 'HandleShader');
     handleMat.replaceParameter(this.colorParam);
-    const handleGeom = new Visualive.Cylinder(thickness, length, 64);
+    const handleGeom = new ZeaEngine.Cylinder(thickness, length, 64);
     handleGeom.getParameter('baseZAtZero').setValue(true);
-    const tipGeom = new Visualive.Cone(thickness * 4, thickness * 10, 64, true);
-    const handle = new Visualive.GeomItem('handle', handleGeom, handleMat);
+    const tipGeom = new ZeaEngine.Cone(thickness * 4, thickness * 10, 64, true);
+    const handle = new ZeaEngine.GeomItem('handle', handleGeom, handleMat);
 
-    const tip = new Visualive.GeomItem('tip', tipGeom, handleMat);
-    const tipXfo = new Visualive.Xfo();
+    const tip = new ZeaEngine.GeomItem('tip', tipGeom, handleMat);
+    const tipXfo = new ZeaEngine.Xfo();
     tipXfo.tr.set(0, 0, length);
     tipGeom.transformVertices(tipXfo);
 

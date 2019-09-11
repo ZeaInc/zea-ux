@@ -1,5 +1,3 @@
-// import * as Visualive from '@visualive/engine';
-
 import BaseWidget from './BaseWidget.js';
 
 import uxFactory from '../UxFactory.js';
@@ -51,7 +49,7 @@ const addQueryWidget = (querySet, query, parentDomElem, appData) => {
       option.appendChild(document.createTextNode(name));
       selectQueryType.appendChild(option);
     };
-    const qt = Visualive.QueryParameter.QUERY_TYPES;
+    const qt = ZeaEngine.QueryParameter.QUERY_TYPES;
     const map = {};
     Object.keys(qt).forEach((key, index) => {
       addQueryTypeOption(key, qt[key]);
@@ -92,7 +90,7 @@ const addQueryWidget = (querySet, query, parentDomElem, appData) => {
       option.appendChild(document.createTextNode(name));
       selectMatchType.appendChild(option);
     };
-    const mt = Visualive.QueryParameter.QUERY_MATCH_TYPE;
+    const mt = ZeaEngine.QueryParameter.QUERY_MATCH_TYPE;
     const map = {};
     Object.keys(mt).forEach((key, index) => {
       addMathTypeOption(key, mt[key]);
@@ -133,7 +131,7 @@ const addQueryWidget = (querySet, query, parentDomElem, appData) => {
       option.appendChild(document.createTextNode(name));
       selectLogicType.appendChild(option);
     };
-    const ql = Visualive.QueryParameter.QUERY_LOGIC;
+    const ql = ZeaEngine.QueryParameter.QUERY_LOGIC;
     const map = {};
     Object.keys(ql).forEach((key, index) => {
       addMathTypeOption(key, ql[key]);
@@ -239,7 +237,7 @@ const addQueryWidget = (querySet, query, parentDomElem, appData) => {
     input.style['border-width'] = 'thin';
     input.style['padding'] = '2px';
     input.disabled =
-      query.getQueryType() != Visualive.QueryParameter.QUERY_TYPES.PROPERTY;
+      query.getQueryType() != ZeaEngine.QueryParameter.QUERY_TYPES.PROPERTY;
 
     const li = document.createElement('li');
     li.appendChild(input);
@@ -248,7 +246,7 @@ const addQueryWidget = (querySet, query, parentDomElem, appData) => {
     query.valueChanged.connect(() => {
       input.value = query.getPropertyName();
       input.disabled =
-        query.getQueryType() != Visualive.QueryParameter.QUERY_TYPES.PROPERTY;
+        query.getQueryType() != ZeaEngine.QueryParameter.QUERY_TYPES.PROPERTY;
     });
 
     input.addEventListener('change', () => {
@@ -323,7 +321,7 @@ export default class QuerySetWidget extends BaseWidget {
     const addButton = document.createElement('button');
     addButton.appendChild(document.createTextNode('Add'));
     addButton.addEventListener('click', e => {
-      parameter.addItem(new Visualive.QueryParameter());
+      parameter.addItem(new ZeaEngine.QueryParameter());
     });
 
     const li = document.createElement('li');
@@ -336,4 +334,4 @@ export default class QuerySetWidget extends BaseWidget {
   }
 }
 
-uxFactory.registerWidget(QuerySetWidget, p => p instanceof Visualive.QuerySet);
+uxFactory.registerWidget(QuerySetWidget, p => p instanceof ZeaEngine.QuerySet);

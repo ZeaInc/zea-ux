@@ -1,5 +1,3 @@
-// import * as Visualive from '@visualive/engine';
-
 import BaseWidget from './BaseWidget.js';
 
 import uxFactory from '../UxFactory.js';
@@ -82,7 +80,7 @@ export default class Vec3Widget extends BaseWidget {
     });
 
     const valueChange = () => {
-      const value = new Visualive.Vec3(
+      const value = new ZeaEngine.Vec3(
         xField.valueAsNumber,
         yField.valueAsNumber,
         zField.valueAsNumber
@@ -110,4 +108,4 @@ export default class Vec3Widget extends BaseWidget {
   }
 }
 
-uxFactory.registerWidget(Vec3Widget, p => p instanceof Visualive.Vec3Parameter);
+uxFactory.registerWidget(Vec3Widget, p => p instanceof ZeaEngine.Vec3Parameter);

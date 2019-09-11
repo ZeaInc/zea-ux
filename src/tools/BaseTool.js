@@ -1,8 +1,8 @@
 /**
  * Class representing a base tool.
- * @extends Visualive.ParameterOwner
+ * @extends ZeaEngine.ParameterOwner
  */
-export default class BaseTool extends Visualive.ParameterOwner {
+export default class BaseTool extends ZeaEngine.ParameterOwner {
   /**
    * Create a base tool.
    * @param {any} appData - The appData value.
@@ -13,9 +13,9 @@ export default class BaseTool extends Visualive.ParameterOwner {
     this.appData = appData;
 
     // When the tool becomes active ready
-    this.installChanged = new Visualive.Signal();
-    this.activatedChanged = new Visualive.Signal();
-    this.actionFinished = new Visualive.Signal();
+    this.installChanged = new ZeaEngine.Signal();
+    this.activatedChanged = new ZeaEngine.Signal();
+    this.actionFinished = new ZeaEngine.Signal();
 
     this.__params = [];
     this.__installed = false;

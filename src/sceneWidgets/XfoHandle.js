@@ -6,9 +6,9 @@ import { LinearScaleSceneWidget } from './LinearScaleSceneWidget.js';
 
 /**
  * Class representing an xfo handle.
- * @extends Visualive.TreeItem
+ * @extends ZeaEngine.TreeItem
  */
-export default class XfoHandle extends Visualive.TreeItem {
+export default class XfoHandle extends ZeaEngine.TreeItem {
   /**
    * Create an axial rotation scene widget.
    * @param {any} size - The size value.
@@ -20,13 +20,13 @@ export default class XfoHandle extends Visualive.TreeItem {
     // ////////////////////////////////
     // LinearMovementSceneWidget
 
-    const translationHandles = new Visualive.TreeItem('Translate');
+    const translationHandles = new ZeaEngine.TreeItem('Translate');
     translationHandles.setVisible(false);
     this.addChild(translationHandles);
 
-    const red = new Visualive.Color(1, 0.1, 0.1);
-    const green = new Visualive.Color('#32CD32'); // limegreen https://www.rapidtables.com/web/color/green-color.html
-    const blue = new Visualive.Color('#1E90FF'); // dodgerblue https://www.rapidtables.com/web/color/blue-color.html
+    const red = new ZeaEngine.Color(1, 0.1, 0.1);
+    const green = new ZeaEngine.Color('#32CD32'); // limegreen https://www.rapidtables.com/web/color/green-color.html
+    const blue = new ZeaEngine.Color('#1E90FF'); // dodgerblue https://www.rapidtables.com/web/color/blue-color.html
     red.a = 0.8;
     green.a = 0.8;
     blue.a = 0.8;
@@ -38,8 +38,8 @@ export default class XfoHandle extends Visualive.TreeItem {
         thickness,
         red
       );
-      const xfo = new Visualive.Xfo();
-      xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0, 1, 0), Math.PI * 0.5);
+      const xfo = new ZeaEngine.Xfo();
+      xfo.ori.setFromAxisAndAngle(new ZeaEngine.Vec3(0, 1, 0), Math.PI * 0.5);
       linearXWidget.getParameter('LocalXfo').setValue(xfo);
       translationHandles.addChild(linearXWidget);
     }
@@ -50,8 +50,8 @@ export default class XfoHandle extends Visualive.TreeItem {
         thickness,
         green
       );
-      const xfo = new Visualive.Xfo();
-      xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(1, 0, 0), Math.PI * -0.5);
+      const xfo = new ZeaEngine.Xfo();
+      xfo.ori.setFromAxisAndAngle(new ZeaEngine.Vec3(1, 0, 0), Math.PI * -0.5);
       linearYWidget.getParameter('LocalXfo').setValue(xfo);
       translationHandles.addChild(linearYWidget);
     }
@@ -73,9 +73,9 @@ export default class XfoHandle extends Visualive.TreeItem {
         'planarXY',
         planarSize,
         green,
-        new Visualive.Vec3(planarSize * 0.5, planarSize * 0.5, 0.0)
+        new ZeaEngine.Vec3(planarSize * 0.5, planarSize * 0.5, 0.0)
       );
-      const xfo = new Visualive.Xfo();
+      const xfo = new ZeaEngine.Xfo();
       planarXYWidget.getParameter('LocalXfo').setValue(xfo);
       translationHandles.addChild(planarXYWidget);
     }
@@ -84,10 +84,10 @@ export default class XfoHandle extends Visualive.TreeItem {
         'planarYZ',
         planarSize,
         red,
-        new Visualive.Vec3(planarSize * -0.5, planarSize * 0.5, 0.0)
+        new ZeaEngine.Vec3(planarSize * -0.5, planarSize * 0.5, 0.0)
       );
-      const xfo = new Visualive.Xfo();
-      xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0, 1, 0), Math.PI * 0.5);
+      const xfo = new ZeaEngine.Xfo();
+      xfo.ori.setFromAxisAndAngle(new ZeaEngine.Vec3(0, 1, 0), Math.PI * 0.5);
       planarYZWidget.getParameter('LocalXfo').setValue(xfo);
       translationHandles.addChild(planarYZWidget);
     }
@@ -96,26 +96,26 @@ export default class XfoHandle extends Visualive.TreeItem {
         'planarXZ',
         planarSize,
         blue,
-        new Visualive.Vec3(planarSize * 0.5, planarSize * 0.5, 0.0)
+        new ZeaEngine.Vec3(planarSize * 0.5, planarSize * 0.5, 0.0)
       );
-      const xfo = new Visualive.Xfo();
-      xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(1, 0, 0), Math.PI * 0.5);
+      const xfo = new ZeaEngine.Xfo();
+      xfo.ori.setFromAxisAndAngle(new ZeaEngine.Vec3(1, 0, 0), Math.PI * 0.5);
       planarXZWidget.getParameter('LocalXfo').setValue(xfo);
       translationHandles.addChild(planarXZWidget);
     }
 
     // ////////////////////////////////
     // Rotation
-    const rotationHandles = new Visualive.TreeItem('Rotate');
+    const rotationHandles = new ZeaEngine.TreeItem('Rotate');
     rotationHandles.setVisible(false);
     this.addChild(rotationHandles);
     {
-      const maskMat = new Visualive.Material('mask', 'HandleShader');
+      const maskMat = new ZeaEngine.Material('mask', 'HandleShader');
       maskMat
         .getParameter('BaseColor')
-        .setValue(new Visualive.Color(1, 1, 1, 0.4));
-      const maskGeom = new Visualive.Sphere(size - thickness, 64);
-      const maskGeomItem = new Visualive.GeomItem('mask', maskGeom, maskMat);
+        .setValue(new ZeaEngine.Color(1, 1, 1, 0.4));
+      const maskGeom = new ZeaEngine.Sphere(size - thickness, 64);
+      const maskGeomItem = new ZeaEngine.GeomItem('mask', maskGeom, maskMat);
       rotationHandles.addChild(maskGeomItem);
     }
     {
@@ -125,8 +125,8 @@ export default class XfoHandle extends Visualive.TreeItem {
         thickness,
         red
       );
-      const xfo = new Visualive.Xfo();
-      xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0, 1, 0), Math.PI * 0.5);
+      const xfo = new ZeaEngine.Xfo();
+      xfo.ori.setFromAxisAndAngle(new ZeaEngine.Vec3(0, 1, 0), Math.PI * 0.5);
       rotationXWidget.getParameter('LocalXfo').setValue(xfo);
       rotationHandles.addChild(rotationXWidget);
     }
@@ -137,8 +137,8 @@ export default class XfoHandle extends Visualive.TreeItem {
         thickness,
         green
       );
-      const xfo = new Visualive.Xfo();
-      xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(1, 0, 0), Math.PI * 0.5);
+      const xfo = new ZeaEngine.Xfo();
+      xfo.ori.setFromAxisAndAngle(new ZeaEngine.Vec3(1, 0, 0), Math.PI * 0.5);
       rotationYWidget.getParameter('LocalXfo').setValue(xfo);
       rotationHandles.addChild(rotationYWidget);
     }
@@ -154,7 +154,7 @@ export default class XfoHandle extends Visualive.TreeItem {
 
     // ////////////////////////////////
     // Scale - Not supported
-    const scaleHandles = new Visualive.TreeItem('Scale');
+    const scaleHandles = new ZeaEngine.TreeItem('Scale');
     scaleHandles.setVisible(false);
     this.addChild(scaleHandles);
 
@@ -166,8 +166,8 @@ export default class XfoHandle extends Visualive.TreeItem {
         thickness,
         red
       );
-      const xfo = new Visualive.Xfo();
-      xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0, 1, 0), Math.PI * 0.5);
+      const xfo = new ZeaEngine.Xfo();
+      xfo.ori.setFromAxisAndAngle(new ZeaEngine.Vec3(0, 1, 0), Math.PI * 0.5);
       scaleXWidget.getParameter('LocalXfo').setValue(xfo);
       scaleHandles.addChild(scaleXWidget);
     }
@@ -178,8 +178,8 @@ export default class XfoHandle extends Visualive.TreeItem {
         thickness,
         green
       );
-      const xfo = new Visualive.Xfo();
-      xfo.ori.setFromAxisAndAngle(new Visualive.Vec3(1, 0, 0), Math.PI * -0.5);
+      const xfo = new ZeaEngine.Xfo();
+      xfo.ori.setFromAxisAndAngle(new ZeaEngine.Vec3(1, 0, 0), Math.PI * -0.5);
       scaleYWidget.getParameter('LocalXfo').setValue(xfo);
       scaleHandles.addChild(scaleYWidget);
     }

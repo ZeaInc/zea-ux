@@ -51,5 +51,5 @@ class FileWidget extends BaseWidget {
 
 uxFactory.registerWidget(
   FileWidget,
-  p => p instanceof Visualive.FilePathParameter
+  p => p instanceof ZeaEngine.FilePathParameter
 );

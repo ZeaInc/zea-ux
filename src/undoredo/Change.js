@@ -9,7 +9,7 @@ export default class Change {
   constructor(name) {
     this.name = name ? name : UndoRedoManager.getChangeClassName(this);
 
-    this.updated = new Visualive.Signal();
+    this.updated = new ZeaEngine.Signal();
   }
 
   /**

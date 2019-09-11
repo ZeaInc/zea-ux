@@ -1,5 +1,3 @@
-// import * as Visualive from '@visualive/engine';
-
 import BaseWidget from './BaseWidget.js';
 
 import uxFactory from '../UxFactory.js';
@@ -48,7 +46,7 @@ export default class BBoxWidget extends BaseWidget {
     parameter.valueChanged.connect(updateDisplayedValue);
 
     const valueChange = () => {
-      const bbox = new Visualive.bbox();
+      const bbox = new ZeaEngine.bbox();
       bbox.p0.set(
         min_xField.valueAsNumber,
         min_yField.valueAsNumber,
@@ -111,5 +109,5 @@ export default class BBoxWidget extends BaseWidget {
 
 uxFactory.registerWidget(
   BBoxWidget,
-  p => p.getValue() instanceof Visualive.Box3
+  p => p.getValue() instanceof ZeaEngine.Box3
 );

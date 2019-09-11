@@ -14,9 +14,9 @@ class CreateSphereChange extends CreateGeomChange {
   constructor(parentItem, xfo) {
     super('Create Sphere', parentItem);
 
-    this.sphere = new Visualive.Sphere(0, 64, 32);
-    const material = new Visualive.Material('Sphere', 'SimpleSurfaceShader');
-    this.geomItem = new Visualive.GeomItem('Sphere');
+    this.sphere = new ZeaEngine.Sphere(0, 64, 32);
+    const material = new ZeaEngine.Material('Sphere', 'SimpleSurfaceShader');
+    this.geomItem = new ZeaEngine.GeomItem('Sphere');
     this.geomItem.setGeometry(this.sphere);
     this.geomItem.setMaterial(material);
 

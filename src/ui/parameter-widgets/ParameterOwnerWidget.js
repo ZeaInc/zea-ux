@@ -1,5 +1,3 @@
-// import * as Visualive from '@visualive/engine';
-
 import BaseWidget from './BaseWidget.js';
 import NameWidget from './NameWidget.js';
 
@@ -29,7 +27,7 @@ export default class ParameterOwnerWidget extends BaseWidget {
     parentDomElem.appendChild(ul);
     ul.appendChild(linameWidget);
     ul.appendChild(liparameterContainer);
-    if (parameteOwner instanceof Visualive.BaseItem)
+    if (parameteOwner instanceof ZeaEngine.BaseItem)
       this.nameWidget = new NameWidget(parameteOwner, linameWidget, appData);
     this.parameterContainer = new ParameterContainer(
       parameteOwner,
@@ -45,5 +43,5 @@ export default class ParameterOwnerWidget extends BaseWidget {
 
 uxFactory.registerWidget(
   ParameterOwnerWidget,
-  p => p.getValue() instanceof Visualive.ParameterOwner
+  p => p.getValue() instanceof ZeaEngine.ParameterOwner
 );

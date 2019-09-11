@@ -17,21 +17,21 @@ class AxialRotationSceneWidget extends SceneWidget {
     super(name);
 
     this.__color = color;
-    this.__hilightedColor = new Visualive.Color(1, 1, 1);
+    this.__hilightedColor = new ZeaEngine.Color(1, 1, 1);
     this.radiusParam = this.addParameter(
-      new Visualive.NumberParameter('radius', radius)
+      new ZeaEngine.NumberParameter('radius', radius)
     );
     this.colorParam = this.addParameter(
-      new Visualive.ColorParameter('BaseColor', color)
+      new ZeaEngine.ColorParameter('BaseColor', color)
     );
 
-    const handleMat = new Visualive.Material('handle', 'HandleShader');
+    const handleMat = new ZeaEngine.Material('handle', 'HandleShader');
     handleMat.replaceParameter(this.colorParam);
 
-    // const handleGeom = new Visualive.Cylinder(radius, thickness * 2, 64, 2, false);
-    const handleGeom = new Visualive.Torus(thickness, radius, 64);
-    this.handle = new Visualive.GeomItem('handle', handleGeom, handleMat);
-    this.handleXfo = new Visualive.Xfo();
+    // const handleGeom = new ZeaEngine.Cylinder(radius, thickness * 2, 64, 2, false);
+    const handleGeom = new ZeaEngine.Torus(thickness, radius, 64);
+    this.handle = new ZeaEngine.GeomItem('handle', handleGeom, handleMat);
+    this.handleXfo = new ZeaEngine.Xfo();
 
     this.radiusParam.valueChanged.connect(() => {
       radius = this.radiusParam.getValue();
@@ -84,11 +84,11 @@ class AxialRotationSceneWidget extends SceneWidget {
     event.undoRedoManager.addChange(this.change);
 
     this.baseXfo = this.getGlobalXfo();
-    this.deltaXfo = new Visualive.Xfo();
+    this.deltaXfo = new ZeaEngine.Xfo();
     this.offsetXfo = this.baseXfo.inverse().multiply(this.__param.getValue());
 
     // Hilight the material.
-    this.colorParam.setValue(new Visualive.Color(1, 1, 1));
+    this.colorParam.setValue(new ZeaEngine.Color(1, 1, 1));
 
     this.manipulateBegin.emit({
       grabPos: event.grabPos,
@@ -108,7 +108,7 @@ class AxialRotationSceneWidget extends SceneWidget {
     if (this.vec0.cross(vec1).dot(this.getGlobalXfo().ori.getZaxis()) < 0)
       angle = -angle;
 
-    this.deltaXfo.ori.setFromAxisAndAngle(new Visualive.Vec3(0, 0, 1), angle);
+    this.deltaXfo.ori.setFromAxisAndAngle(new ZeaEngine.Vec3(0, 0, 1), angle);
 
     const newXfo = this.baseXfo.multiply(this.deltaXfo);
     const value = newXfo.multiply(this.offsetXfo);

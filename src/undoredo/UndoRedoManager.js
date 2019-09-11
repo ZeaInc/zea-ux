@@ -1,5 +1,3 @@
-// import * as Visualive from '@visualive/engine';
-
 const __changeClasses = {};
 const __classNames = {};
 
@@ -12,10 +10,10 @@ class UndoRedoManager {
     this.__undoStack = [];
     this.__redoStack = [];
 
-    this.changeAdded = new Visualive.Signal();
-    this.changeUpdated = new Visualive.Signal();
-    this.changeUndone = new Visualive.Signal();
-    this.changeRedone = new Visualive.Signal();
+    this.changeAdded = new ZeaEngine.Signal();
+    this.changeUpdated = new ZeaEngine.Signal();
+    this.changeUndone = new ZeaEngine.Signal();
+    this.changeRedone = new ZeaEngine.Signal();
 
     this.__currChangeUpdated = this.__currChangeUpdated.bind(this);
   }

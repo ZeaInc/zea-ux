@@ -41,5 +41,5 @@ export default class BooleanWidget extends BaseWidget {
 
 uxFactory.registerWidget(
   BooleanWidget,
-  p => p instanceof Visualive.BooleanParameter
+  p => p instanceof ZeaEngine.BooleanParameter
 );

@@ -1,5 +1,3 @@
-// import * as Visualive from '@visualive/engine';
-
 import BaseWidget from './BaseWidget.js';
 
 import uxFactory from '../UxFactory.js';
@@ -96,7 +94,7 @@ export default class Vec4Widget extends BaseWidget {
     });
 
     const valueChange = () => {
-      const value = new Visualive.Vec4(
+      const value = new ZeaEngine.Vec4(
         xField.valueAsNumber,
         yField.valueAsNumber,
         zField.valueAsNumber,
@@ -127,4 +125,4 @@ export default class Vec4Widget extends BaseWidget {
   }
 }
 
-uxFactory.registerWidget(Vec4Widget, p => p instanceof Visualive.Vec4Parameter);
+uxFactory.registerWidget(Vec4Widget, p => p instanceof ZeaEngine.Vec4Parameter);

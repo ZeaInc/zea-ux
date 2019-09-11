@@ -14,12 +14,12 @@ class CreateRectChange extends CreateGeomChange {
   constructor(parentItem, xfo) {
     super('Create Rect');
 
-    this.rect = new Visualive.Rect(0, 0);
+    this.rect = new ZeaEngine.Rect(0, 0);
     this.rect.lineThickness = 0.05;
-    // const material = new Visualive.Material('rect', 'LinesShader');
-    const material = new Visualive.Material('circle', 'FatLinesShader');
-    material.getParameter('Color').setValue(new Visualive.Color(0.7, 0.2, 0.2));
-    this.geomItem = new Visualive.GeomItem('Rect');
+    // const material = new ZeaEngine.Material('rect', 'LinesShader');
+    const material = new ZeaEngine.Material('circle', 'FatLinesShader');
+    material.getParameter('Color').setValue(new ZeaEngine.Color(0.7, 0.2, 0.2));
+    this.geomItem = new ZeaEngine.GeomItem('Rect');
     this.geomItem.setGeometry(this.rect);
     this.geomItem.setMaterial(material);
 
