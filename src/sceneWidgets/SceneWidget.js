@@ -28,11 +28,10 @@ export default class SceneWidget extends ZeaEngine.TreeItem {
   unhighlight() {}
 
   /**
-   * The getManipulationRay method.
-   * @param {any} viewport - The viewport param.
+   * The getManipulationPlane method.
    * @return {any} The return value.
    */
-  getManipulationRay(viewport) {
+  getManipulationPlane() {
     const xfo = this.getGlobalXfo();
     return new ZeaEngine.Ray(xfo.tr, xfo.ori.getZaxis());
   }
@@ -46,7 +45,7 @@ export default class SceneWidget extends ZeaEngine.TreeItem {
    * @return {any} The return value.
    */
   handleMouseDown(event) {
-    this.gizmoRay = this.getManipulationRay();
+    this.gizmoRay = this.getManipulationPlane();
     const dist = event.mouseRay.intersectRayPlane(this.gizmoRay);
     event.grabPos = event.mouseRay.pointAtDist(dist);
     this.onDragStart(event);
@@ -84,7 +83,7 @@ export default class SceneWidget extends ZeaEngine.TreeItem {
    * @return {any} The return value.
    */
   onVRControllerButtonDown(event) {
-    const gizmoRay = this.getManipulationRay();
+    const gizmoRay = this.getManipulationPlane();
     const grabDist = event.controllerRay.intersectRayVector(gizmoRay);
     if (grabDist > 0) {
       const grabPos = event.controllerRay.pointAtDist(grabDist);

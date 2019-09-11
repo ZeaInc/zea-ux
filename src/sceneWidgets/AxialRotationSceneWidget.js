@@ -77,16 +77,19 @@ class AxialRotationSceneWidget extends SceneWidget {
    * @param {any} event - The event param.
    */
   onDragStart(event) {
-    this.vec0 = event.grabPos.subtract(this.getGlobalXfo().tr);
-    this.grabPos = event.grabPos;
-    this.change = new ParameterValueChange(this.__param);
-
-    event.undoRedoManager.addChange(this.change);
 
     this.baseXfo = this.getGlobalXfo();
     this.baseXfo.sc.set(1, 1, 1);
     this.deltaXfo = new ZeaEngine.Xfo();
     this.offsetXfo = this.baseXfo.inverse().multiply(this.__param.getValue());
+    
+    this.vec0 = event.grabPos.subtract(this.baseXfo.tr);
+    this.grabCircleRadius = this.vec0.length();
+    this.vec0.normalizeInPlace();
+    this.grabPos = event.grabPos;
+    this.change = new ParameterValueChange(this.__param);
+
+    event.undoRedoManager.addChange(this.change);
 
     // Hilight the material.
     this.colorParam.setValue(new ZeaEngine.Color(1, 1, 1));
@@ -102,12 +105,24 @@ class AxialRotationSceneWidget extends SceneWidget {
    * @param {any} event - The event param.
    */
   onDrag(event) {
-    const dragVec = event.holdPos.subtract(this.grabPos);
-    let angle = dragVec.length() * 2.0;
-
     const vec1 = event.holdPos.subtract(this.baseXfo.tr);
+    const dragCircleRadius = vec1.length();
+    vec1.normalizeInPlace();
+
+    // modulate the angle by the radius the mouse moves
+    // away from the center of the handle.
+    // This makes it possible to rotate the object more than
+    // 180 degrees in a single movement.
+    const modulator = dragCircleRadius / this.grabCircleRadius;
+    let angle = this.vec0.angleTo(vec1) * modulator;
     if (this.vec0.cross(vec1).dot(this.baseXfo.ori.getZaxis()) < 0)
       angle = -angle;
+
+    if (event.shiftKey) {
+      // modulat the angle to 5 degree increments.
+      const increment = Math.degToRad(5);
+      angle = Math.floor(angle / increment) * increment;
+    }
 
     this.deltaXfo.ori.setFromAxisAndAngle(new ZeaEngine.Vec3(0, 0, 1), angle);
 

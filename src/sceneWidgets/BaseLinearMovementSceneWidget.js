@@ -22,7 +22,7 @@ class BaseLinearMovementSceneWidget extends SceneWidget {
    * @return {any} The return value.
    */
   handleMouseDown(event) {
-    this.gizmoRay = this.getManipulationRay();
+    this.gizmoRay = this.getManipulationPlane();
     this.grabDist = event.mouseRay.intersectRayVector(this.gizmoRay)[1];
     const grabPos = this.gizmoRay.pointAtDist(this.grabDist);
     event.grabDist = this.grabDist;
@@ -67,7 +67,7 @@ class BaseLinearMovementSceneWidget extends SceneWidget {
    * @return {any} The return value.
    */
   onVRControllerButtonDown(event) {
-    this.gizmoRay = this.getManipulationRay();
+    this.gizmoRay = this.getManipulationPlane();
 
     this.activeController = event.controller;
     const xfo = this.activeController.getTipXfo();

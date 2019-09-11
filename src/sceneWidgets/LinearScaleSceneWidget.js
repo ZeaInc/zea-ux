@@ -39,13 +39,12 @@ class LinearScaleSceneWidget extends BaseLinearMovementSceneWidget {
     const tip = new ZeaEngine.GeomItem('tip', tipGeom, handleMat);
     const tipXfo = new ZeaEngine.Xfo();
     tipXfo.tr.set(0, 0, length - thickness * 10);
+    // tipXfo.tr.set(0, 0, length);
+    // tip.setLocalXfo(tipXfo);
+    // Note: the constant screen size shader
+    // only works if all the handle geometries
+    // are centered on the middle of the XfoHandle. 
     tipGeom.transformVertices(tipXfo);
-
-    // this.radiusParam.valueChanged.connect(()=>{
-    //   radius = this.radiusParam.getValue();
-    //   handleGeom.getParameter('radius').setValue(radius);
-    //   handleGeom.getParameter('height').setValue(radius * 0.02);
-    // })
 
     this.addChild(handle);
     this.addChild(tip);
@@ -111,9 +110,11 @@ class LinearScaleSceneWidget extends BaseLinearMovementSceneWidget {
     const newXfo = this.baseXfo.clone();
     const sc = event.holdDist / this.grabDist;
     if (sc < 0.0001) return;
-    // const scX = this.oriXfo.ori.getZaxis().dot(newXfo.ori.getXaxis());
-    // const scY = this.oriXfo.ori.getZaxis().dot(newXfo.ori.getYaxis());
-    // const scZ = this.oriXfo.ori.getZaxis().dot(newXfo.ori.getZaxis());
+
+    // const scAxis = this.oriXfo.ori.getZaxis();
+    // const scX = this.baseXfo.ori.getXaxis().dot(scAxis);
+    // const scY = this.baseXfo.ori.getYaxis().dot(scAxis);
+    // const scZ = this.baseXfo.ori.getZaxis().dot(scAxis);
     // console.log("sc:", sc, " scX", scX, " scY:", scY, " scZ:", scZ)
     // newXfo.sc.set(scX, scY, scZ);
     newXfo.sc.set(
@@ -126,7 +127,7 @@ class LinearScaleSceneWidget extends BaseLinearMovementSceneWidget {
     // (XfoHandle throws away scale in _cleanGlobalXfo).
     // This means we have to apply it here to see the scale  
     // widget change size.
-    this.tmplocalXfo.sc.set(sc, sc, sc);
+    this.tmplocalXfo.sc.set(1, 1, sc);
     this.setLocalXfo(this.tmplocalXfo);
 
     this.change.update({
@@ -150,6 +151,11 @@ class LinearScaleSceneWidget extends BaseLinearMovementSceneWidget {
 
     this.tmplocalXfo.sc.set(1, 1, 1);
     this.setLocalXfo(this.tmplocalXfo);
+
+    const tip = this.getChildByName('tip');
+    const tipXfo = tip.getLocalXfo();
+    tipXfo.sc.set(1, 1, 1);
+    tip.setLocalXfo(tipXfo);
 
     this.manipulateEnd.emit({
       releasePos: event.releasePos,
