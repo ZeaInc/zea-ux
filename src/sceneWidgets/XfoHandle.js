@@ -3,6 +3,7 @@ import { LinearMovementHandle } from './LinearMovementHandle.js';
 import { PlanarMovementHandle } from './PlanarMovementHandle.js';
 import { AxialRotationHandle } from './AxialRotationHandle.js';
 import { LinearScaleHandle } from './LinearScaleHandle.js';
+import { SphericalRotationHandle } from './SphericalRotationHandle.js';
 
 /**
  * Class representing an xfo handle.
@@ -110,13 +111,19 @@ export default class XfoHandle extends ZeaEngine.TreeItem {
     rotationHandles.setVisible(false);
     this.addChild(rotationHandles);
     {
-      const maskMat = new ZeaEngine.Material('mask', 'HandleShader');
-      maskMat
-        .getParameter('BaseColor')
-        .setValue(new ZeaEngine.Color(1, 1, 1, 0.4));
-      const maskGeom = new ZeaEngine.Sphere(size - thickness, 64);
-      const maskGeomItem = new ZeaEngine.GeomItem('mask', maskGeom, maskMat);
-      rotationHandles.addChild(maskGeomItem);
+      const rotationWidget = new SphericalRotationHandle(
+        'rotation',
+        size - thickness,
+        new ZeaEngine.Color(1, 1, 1, 0.4)
+      );
+      rotationHandles.addChild(rotationWidget);
+      // const maskMat = new ZeaEngine.Material('mask', 'HandleShader');
+      // maskMat
+      //   .getParameter('BaseColor')
+      //   .setValue(new ZeaEngine.Color(1, 1, 1, 0.4));
+      // const maskGeom = new ZeaEngine.Sphere(size - thickness, 64);
+      // const maskGeomItem = new ZeaEngine.GeomItem('mask', maskGeom, maskMat);
+      // rotationHandles.addChild(maskGeomItem);
     }
     {
       const rotationXWidget = new AxialRotationHandle(
