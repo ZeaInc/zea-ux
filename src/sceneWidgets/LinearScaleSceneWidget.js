@@ -92,8 +92,8 @@ class LinearScaleSceneWidget extends BaseLinearMovementSceneWidget {
     this.grabDist = event.grabDist;
     console.log(this.grabDist);
     this.oriXfo = this.getGlobalXfo();
+    this.tmplocalXfo = this.getLocalXfo();
     this.baseXfo = this.__param.getValue();
-    this.sc = (this.baseXfo.sc.x + this.baseXfo.sc.y + this.baseXfo.sc.z) / 3.0;
 
     this.manipulateBegin.emit({
       grabPos: event.grabPos,
@@ -116,7 +116,18 @@ class LinearScaleSceneWidget extends BaseLinearMovementSceneWidget {
     // const scZ = this.oriXfo.ori.getZaxis().dot(newXfo.ori.getZaxis());
     // console.log("sc:", sc, " scX", scX, " scY:", scY, " scZ:", scZ)
     // newXfo.sc.set(scX, scY, scZ);
-    newXfo.sc.set(this.sc * sc, this.sc * sc, this.sc * sc);
+    newXfo.sc.set(
+      this.baseXfo.sc.x * sc,
+      this.baseXfo.sc.y * sc,
+      this.baseXfo.sc.z * sc
+    );
+
+    // Scale inheritance is disabled for handles.
+    // (XfoHandle throws away scale in _cleanGlobalXfo).
+    // This means we have to apply it here to see the scale  
+    // widget change size.
+    this.tmplocalXfo.sc.set(sc, sc, sc);
+    this.setLocalXfo(this.tmplocalXfo);
 
     this.change.update({
       value: newXfo,
@@ -136,6 +147,9 @@ class LinearScaleSceneWidget extends BaseLinearMovementSceneWidget {
    */
   onDragEnd(event) {
     this.change = null;
+
+    this.tmplocalXfo.sc.set(1, 1, 1);
+    this.setLocalXfo(this.tmplocalXfo);
 
     this.manipulateEnd.emit({
       releasePos: event.releasePos,

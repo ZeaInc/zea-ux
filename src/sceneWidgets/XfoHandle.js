@@ -195,6 +195,20 @@ export default class XfoHandle extends ZeaEngine.TreeItem {
   }
 
   /**
+   * Calculate the global Xfo for the handls.
+   */
+  _cleanGlobalXfo(prevValue) {
+    const parentItem = this.getParentItem();
+    if (parentItem !== undefined) {
+      const parentXfo = parentItem.getGlobalXfo().clone();
+      parentXfo.sc.set(1, 1, 1);
+      return parentXfo.multiply(this.__localXfoParam.getValue());
+    }
+    else
+      return this.__localXfoParam.getValue();
+  }
+
+  /**
    * The showHandles method.
    * @param {any} name - The name param.
    * @return {any} The return value.

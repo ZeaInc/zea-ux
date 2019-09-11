@@ -84,6 +84,7 @@ class AxialRotationSceneWidget extends SceneWidget {
     event.undoRedoManager.addChange(this.change);
 
     this.baseXfo = this.getGlobalXfo();
+    this.baseXfo.sc.set(1, 1, 1);
     this.deltaXfo = new ZeaEngine.Xfo();
     this.offsetXfo = this.baseXfo.inverse().multiply(this.__param.getValue());
 
@@ -104,8 +105,8 @@ class AxialRotationSceneWidget extends SceneWidget {
     const dragVec = event.holdPos.subtract(this.grabPos);
     let angle = dragVec.length() * 2.0;
 
-    const vec1 = event.holdPos.subtract(this.getGlobalXfo().tr);
-    if (this.vec0.cross(vec1).dot(this.getGlobalXfo().ori.getZaxis()) < 0)
+    const vec1 = event.holdPos.subtract(this.baseXfo.tr);
+    if (this.vec0.cross(vec1).dot(this.baseXfo.ori.getZaxis()) < 0)
       angle = -angle;
 
     this.deltaXfo.ori.setFromAxisAndAngle(new ZeaEngine.Vec3(0, 0, 1), angle);
