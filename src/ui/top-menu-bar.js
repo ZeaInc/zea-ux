@@ -18,7 +18,7 @@ class TopMenuBar {
     if (!isOverlay) {
       this.logo = document.createElement('img');
       this.logo.className = 'Header__logo pl2';
-      this.logo.src = './img/Zea_Logo_RGB_320x132.png';
+      this.logo.src = './Zea_Logo_RGB_320x132.png';
       headerWrapper.appendChild(this.logo);
     }
 
