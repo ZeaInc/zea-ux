@@ -1,6 +1,6 @@
 import UndoRedoManager from '../undoredo/UndoRedoManager.js';
 import BaseTool from './BaseTool.js';
-import SceneWidget from '../sceneWidgets/SceneWidget.js';
+import Handle from '../sceneWidgets/Handle.js';
 
 /**
  * Class representing a selection tool.
@@ -137,7 +137,7 @@ class SelectionTool extends BaseTool {
         } else {
           // Remove all the scene widgets. (UI elements should not be selectable.)
           const regularGeomItems = new Set(
-            [...geomItems].filter(x => !(x.getOwner() instanceof SceneWidget))
+            [...geomItems].filter(x => !(x.getOwner() instanceof Handle))
           );
 
           if (!event.shiftKey) {
@@ -158,7 +158,7 @@ class SelectionTool extends BaseTool {
         );
         if (
           intersectionData != undefined &&
-          !(intersectionData.geomItem.getOwner() instanceof SceneWidget)
+          !(intersectionData.geomItem.getOwner() instanceof Handle)
         ) {
           if (this.appData.selectionManager.pickingModeActive()) {
             this.appData.selectionManager.pick(intersectionData.geomItem);
@@ -197,7 +197,7 @@ class SelectionTool extends BaseTool {
       const intersectionData = event.controller.getGeomItemAtTip();
       if (
         intersectionData != undefined &&
-        !(intersectionData.geomItem.getOwner() instanceof SceneWidget)
+        !(intersectionData.geomItem.getOwner() instanceof Handle)
       ) {
         this.appData.selectionManager.toggleItemSelection(
           intersectionData.geomItem
@@ -216,7 +216,7 @@ class SelectionTool extends BaseTool {
   //     const controllerUpPos = event.controller.getTipXfo();
   //     if(this.controllerDownPos.distanceTo(controllerUpPos) < 0.1) {
   //       const intersectionData = event.controller.getGeomItemAtTip();
-  //       if (intersectionData != undefined && !(intersectionData.geomItem instanceof SceneWidget)) {
+  //       if (intersectionData != undefined && !(intersectionData.geomItem instanceof Handle)) {
   //         this.appData.selectionManager.toggleItemSelection(intersectionData.geomItem);
   //         return true;
   //       }

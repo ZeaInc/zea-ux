@@ -1,10 +1,10 @@
-import SceneWidget from './SceneWidget.js';
+import Handle from './Handle.js';
 import ParameterValueChange from '../undoredo/ParameterValueChange.js';
 
 /** Class representing a planar movement scene widget.
- * @extends SceneWidget
+ * @extends Handle
  */
-class PlanarMovementSceneWidget extends SceneWidget {
+class PlanarMovementHandle extends Handle {
   /**
    * Create a planar movement scene widget.
    * @param {any} name - The name value.
@@ -126,4 +126,4 @@ class PlanarMovementSceneWidget extends SceneWidget {
     });
   }
 }
-export { PlanarMovementSceneWidget };
+export { PlanarMovementHandle };

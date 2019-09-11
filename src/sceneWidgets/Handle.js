@@ -1,11 +1,11 @@
-// A SceneWidget is a UI widget that lives in the scene.
+// A Handle is a UI widget that lives in the scene.
 // Much like a slider, it translates a series of
 // mouse events into a higher level interaction.
 
 /** Class representing a scene widget.
  * @extends ZeaEngine.TreeItem
  */
-export default class SceneWidget extends ZeaEngine.TreeItem {
+export default class Handle extends ZeaEngine.TreeItem {
   /**
    * Create a scene widget.
    * @param {any} name - The name value.

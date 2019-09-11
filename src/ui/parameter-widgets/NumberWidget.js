@@ -47,7 +47,7 @@ export default class NumberWidget extends BaseWidget {
     parentDomElem.appendChild(input);
 
     // ///////////////////////////
-    // SceneWidget Changes.
+    // Handle Changes.
 
     let change = undefined;
 

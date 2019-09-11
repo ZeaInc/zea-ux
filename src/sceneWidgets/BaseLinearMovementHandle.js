@@ -1,10 +1,10 @@
-import SceneWidget from './SceneWidget.js';
+import Handle from './Handle.js';
 
 /**
  * Class representing a base linear movement scene widget.
- * @extends SceneWidget
+ * @extends Handle
  */
-class BaseLinearMovementSceneWidget extends SceneWidget {
+class BaseLinearMovementHandle extends Handle {
   /**
    * Create base linear movement scene widget.
    * @param {any} name - The name value.
@@ -111,4 +111,4 @@ class BaseLinearMovementSceneWidget extends SceneWidget {
   }
 }
 
-export { BaseLinearMovementSceneWidget };
+export { BaseLinearMovementHandle };

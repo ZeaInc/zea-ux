@@ -1,5 +1,5 @@
 import BaseTool from '../BaseTool.js';
-import SceneWidget from '../../sceneWidgets/SceneWidget.js';
+import Handle from '../../sceneWidgets/Handle.js';
 import UndoRedoManager from '../../undoredo/UndoRedoManager.js';
 import Change from '../../undoredo/Change.js';
 
@@ -161,7 +161,7 @@ class VRHoldObjectsTool extends BaseTool {
       const mat = new ZeaEngine.Material('Cross', 'FlatSurfaceShader');
       mat.getParameter('BaseColor').setValue(new ZeaEngine.Color('#03E3AC'));
       mat.visibleInGeomDataBuffer = false;
-      const geomItem = new ZeaEngine.GeomItem('SceneWidgetToolTip', cross, mat);
+      const geomItem = new ZeaEngine.GeomItem('HandleToolTip', cross, mat);
       controller.getTipItem().removeAllChildren();
       controller.getTipItem().addChild(geomItem, false);
     };
@@ -253,7 +253,7 @@ class VRHoldObjectsTool extends BaseTool {
 
     const intersectionData = event.controller.getGeomItemAtTip();
     if (intersectionData) {
-      if (intersectionData.geomItem.getOwner() instanceof SceneWidget)
+      if (intersectionData.geomItem.getOwner() instanceof Handle)
         return false;
 
       // console.log("onMouseDown on Geom"); // + " Material:" + geomItem.getMaterial().name);

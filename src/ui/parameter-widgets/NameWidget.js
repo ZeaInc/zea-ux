@@ -140,7 +140,7 @@ export default class NameWidget {
     parentDomElem.appendChild(input);
 
     // ///////////////////////////
-    // SceneWidget Changes.
+    // Handle Changes.
 
     let change;
     item.nameChanged.connect(() => {

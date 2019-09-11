@@ -1,11 +1,11 @@
 import BaseTool from './BaseTool.js';
-import SceneWidget from '../sceneWidgets/SceneWidget.js';
+import Handle from '../sceneWidgets/Handle.js';
 
 /**
  * Class representing a scene widget tool.
  * @extends BaseTool
  */
-class SceneWidgetTool extends BaseTool {
+class HandleTool extends BaseTool {
   /**
    * Create a scene widget tool
    * @param {any} appData - The appData value.
@@ -21,7 +21,7 @@ class SceneWidgetTool extends BaseTool {
    */
   activateTool() {
     super.activateTool();
-    console.log('activateTool.SceneWidgetTool');
+    console.log('activateTool.HandleTool');
 
     this.appData.renderer.getDiv().style.cursor = 'crosshair';
 
@@ -32,7 +32,7 @@ class SceneWidgetTool extends BaseTool {
       const mat = new ZeaEngine.Material('Cross', 'FlatSurfaceShader');
       mat.getParameter('BaseColor').setValue(new ZeaEngine.Color('#03E3AC'));
       mat.visibleInGeomDataBuffer = false;
-      const geomItem = new ZeaEngine.GeomItem('SceneWidgetToolTip', geon, mat);
+      const geomItem = new ZeaEngine.GeomItem('HandleToolTip', geon, mat);
       controller.getTipItem().removeAllChildren();
       controller.getTipItem().addChild(geomItem, false);
     };
@@ -78,7 +78,7 @@ class SceneWidgetTool extends BaseTool {
       // event.viewport.renderGeomDataFbo();
       const intersectionData = event.viewport.getGeomDataAtPos(event.mousePos);
       if (intersectionData == undefined) return;
-      if (intersectionData.geomItem.getOwner() instanceof SceneWidget) {
+      if (intersectionData.geomItem.getOwner() instanceof Handle) {
         this.activeHandle = intersectionData.geomItem.getOwner();
         this.activeHandle.handleMouseDown(
           Object.assign(event, { intersectionData })
@@ -105,7 +105,7 @@ class SceneWidgetTool extends BaseTool {
       const intersectionData = event.viewport.getGeomDataAtPos(event.mousePos);
       if (
         intersectionData != undefined &&
-        intersectionData.geomItem.getOwner() instanceof SceneWidget
+        intersectionData.geomItem.getOwner() instanceof Handle
       ) {
         const handle = intersectionData.geomItem.getOwner();
         if (this.__highlightedHandle) this.__highlightedHandle.unhighlight();
@@ -180,7 +180,7 @@ class SceneWidgetTool extends BaseTool {
     if (!this.activeHandle) {
       const intersectionData = event.controller.getGeomItemAtTip();
       if (intersectionData == undefined) return;
-      if (intersectionData.geomItem.getOwner() instanceof SceneWidget) {
+      if (intersectionData.geomItem.getOwner() instanceof Handle) {
         const handle = intersectionData.geomItem.getOwner();
         this.activeHandle = handle;
         this.activeHandle.onVRControllerButtonDown(event);
@@ -204,7 +204,7 @@ class SceneWidgetTool extends BaseTool {
         const intersectionData = controller.getGeomItemAtTip();
         if (
           intersectionData != undefined &&
-          intersectionData.geomItem.getOwner() instanceof SceneWidget
+          intersectionData.geomItem.getOwner() instanceof Handle
         ) {
           const handle = intersectionData.geomItem.getOwner();
 
@@ -258,4 +258,4 @@ class SceneWidgetTool extends BaseTool {
   }
 }
 
-export { SceneWidgetTool };
+export { HandleTool };

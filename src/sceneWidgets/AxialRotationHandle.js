@@ -1,11 +1,11 @@
-import SceneWidget from './SceneWidget.js';
+import Handle from './Handle.js';
 import ParameterValueChange from '../undoredo/ParameterValueChange.js';
 
 /**
  * Class representing an axial rotation scene widget.
- * @extends SceneWidget
+ * @extends Handle
  */
-class AxialRotationSceneWidget extends SceneWidget {
+class AxialRotationHandle extends Handle {
   /**
    * Create an axial rotation scene widget.
    * @param {any} name - The name value.
@@ -159,4 +159,4 @@ class AxialRotationSceneWidget extends SceneWidget {
     });
   }
 }
-export { AxialRotationSceneWidget };
+export { AxialRotationHandle };

@@ -136,7 +136,7 @@ export default class ItemSetWidget extends BaseWidget {
     parentDomElem.appendChild(ul);
 
     // ///////////////////////////
-    // SceneWidget Changes.
+    // Handle Changes.
     this.selectionChanged = new ZeaEngine.Signal();
     this.selectionDoubleClicked = new ZeaEngine.Signal();
 

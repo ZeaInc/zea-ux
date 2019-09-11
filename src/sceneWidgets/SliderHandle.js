@@ -1,11 +1,11 @@
-import { BaseLinearMovementSceneWidget } from './BaseLinearMovementSceneWidget.js';
+import { BaseLinearMovementHandle } from './BaseLinearMovementHandle.js';
 
 import ParameterValueChange from '../undoredo/ParameterValueChange.js';
 
 /** Class representing a slider scene widget.
- * @extends BaseLinearMovementSceneWidget
+ * @extends BaseLinearMovementHandle
  */
-class SliderSceneWidget extends BaseLinearMovementSceneWidget {
+class SliderHandle extends BaseLinearMovementHandle {
   /**
    * Create a slider scene widget.
    * @param {any} name - The name value.
@@ -183,6 +183,6 @@ class SliderSceneWidget extends BaseLinearMovementSceneWidget {
   }
 }
 
-ZeaEngine.sgFactory.registerClass('SliderSceneWidget', SliderSceneWidget);
+ZeaEngine.sgFactory.registerClass('SliderHandle', SliderHandle);
 
-export { SliderSceneWidget };
+export { SliderHandle };
