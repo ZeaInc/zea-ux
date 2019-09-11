@@ -1,5 +1,5 @@
 {
-  "name": "@visualive/ux",
+  "name": "@zeainc/zea-ux",
   "version": "0.0.68",
   "description": "",
   "files": [
@@ -7,7 +7,7 @@
     "/css/"
   ],
   "keywords": [],
-  "main": "./dist/visualive-ux.js",
+  "main": "./dist/zea-ux.js",
   "scripts": {
     "build": "webpack --config webpack-prod.config.js",
     "build:dev": "webpack --mode=development --watch --config webpack-dev.config.js",
@@ -19,13 +19,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/VisualiveIO/visualive-ux.git"
+    "url": "git+ssh://git@github.com/ZeaInc/zea-ux.git"
   },
   "bugs": {
-    "url": "https://github.com/VisualiveIO/visualive-ux/issues"
+    "url": "https://github.com/ZeaInc/zea-ux/issues"
   },
-  "homepage": "https://github.com/VisualiveIO/visualive-ux#readme",
-  "author": "Visualive",
+  "homepage": "https://github.com/ZeaInc/zea-ux#readme",
+  "author": "Zea Inc.",
   "license": "ISC",
   "devDependencies": {
     "documentation": "^12.1.1",
@@ -39,8 +39,8 @@
   },
   "dependencies": {
     "@jaames/iro": "^4.5.1",
-    "@visualive/collab": "^0.0.31",
-    "@visualive/engine": "^0.0.65",
+    "@zeainc/zea-collab": "^0.0.31",
+    "@zeainc/zea-engine": "^0.0.65",
     "dom-to-image": "^2.6.0"
   }
 }
