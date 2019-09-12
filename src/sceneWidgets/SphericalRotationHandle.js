@@ -16,36 +16,12 @@ class SphericalRotationHandle extends Handle {
   constructor(name, radius, color) {
     super(name);
 
+    this.radius = radius;
     const maskMat = new ZeaEngine.Material('mask', 'HandleShader');
     maskMat.getParameter('BaseColor').setValue(color);
     const maskGeom = new ZeaEngine.Sphere(radius, 64);
     const maskGeomItem = new ZeaEngine.GeomItem('mask', maskGeom, maskMat);
     this.addChild(maskGeomItem);
-
-    // this.__color = color;
-    // this.__hilightedColor = new ZeaEngine.Color(1, 1, 1);
-    // this.radiusParam = this.addParameter(
-    //   new ZeaEngine.NumberParameter('radius', radius)
-    // );
-    // this.colorParam = this.addParameter(
-    //   new ZeaEngine.ColorParameter('BaseColor', color)
-    // );
-
-    // const handleMat = new ZeaEngine.Material('handle', 'HandleShader');
-    // handleMat.replaceParameter(this.colorParam);
-
-    // // const handleGeom = new ZeaEngine.Cylinder(radius, thickness * 2, 64, 2, false);
-    // const handleGeom = new ZeaEngine.Torus(thickness, radius, 64);
-    // this.handle = new ZeaEngine.GeomItem('handle', handleGeom, handleMat);
-    // this.handleXfo = new ZeaEngine.Xfo();
-
-    // this.radiusParam.valueChanged.connect(() => {
-    //   radius = this.radiusParam.getValue();
-    //   handleGeom.getParameter('radius').setValue(radius);
-    //   handleGeom.getParameter('height').setValue(radius * 0.02);
-    // });
-
-    // this.addChild(this.handle);
   }
 
   /**
@@ -68,7 +44,7 @@ class SphericalRotationHandle extends Handle {
    * @param {boolean} track - The track param.
    */
   setTargetParam(param, track = true) {
-    this.__param = param;
+    this.param = param;
     if (track) {
       const __updateGizmo = () => {
         this.setGlobalXfo(param.getValue());
@@ -78,32 +54,68 @@ class SphericalRotationHandle extends Handle {
     }
   }
 
+  // ///////////////////////////////////
+  // Mouse events
+
+  /**
+   * The handleMouseDown method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
+  handleMouseDown(event) {
+    // const xfo = this.getGlobalXfo();
+    // this.sphere = {
+    //   tr: xfo,
+    //   radius: this.radius,
+    // };
+    // const dist = event.mouseRay.intersectRaySphere(this.sphere);
+    // event.grabPos = event.mouseRay.pointAtDist(dist);
+    // this.onDragStart(event);
+    return true;
+  }
+
+  /**
+   * The handleMouseMove method.
+   * @param {any} event - The event param.
+   */
+  handleMouseMove(event) {
+    // const dist = event.mouseRay.intersectRaySphere(this.sphere);
+    // event.holdPos = event.mouseRay.pointAtDist(dist);
+    // this.onDrag(event);
+    return true;
+  }
+
+  /**
+   * The handleMouseUp method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
+  handleMouseUp(event) {
+    // const dist = event.mouseRay.intersectRaySphere(this.sphere);
+    // event.releasePos = event.mouseRay.pointAtDist(dist);
+    // this.onDragEnd(event);
+    return true;
+  }
+
+
   /**
    * The onDragStart method.
    * @param {any} event - The event param.
    */
   onDragStart(event) {
+    this.baseXfo = this.getGlobalXfo();
+    this.baseXfo.sc.set(1, 1, 1);
+    this.deltaXfo = new ZeaEngine.Xfo();
+    this.offsetXfo = this.baseXfo.inverse().multiply(this.param.getValue());
 
-    // this.baseXfo = this.getGlobalXfo();
-    // this.baseXfo.sc.set(1, 1, 1);
-    // this.deltaXfo = new ZeaEngine.Xfo();
-    // this.offsetXfo = this.baseXfo.inverse().multiply(this.__param.getValue());
-    
-    // this.vec0 = event.grabPos.subtract(this.baseXfo.tr);
-    // this.grabCircleRadius = this.vec0.length();
-    // this.vec0.normalizeInPlace();
-    // this.grabPos = event.grabPos;
-    // this.change = new ParameterValueChange(this.__param);
+    this.vec0 = event.grabPos.subtract(this.baseXfo.tr);
+    this.vec0.normalizeInPlace();
+    this.change = new ParameterValueChange(this.param);
 
-    // event.undoRedoManager.addChange(this.change);
+    event.undoRedoManager.addChange(this.change);
 
-    // // Hilight the material.
-    // this.colorParam.setValue(new ZeaEngine.Color(1, 1, 1));
-
-    // this.manipulateBegin.emit({
-    //   grabPos: event.grabPos,
-    //   manipRay: this.manipRay,
-    // });
+    // Hilight the material.
+    this.colorParam.setValue(new ZeaEngine.Color(1, 1, 1));
   }
 
   /**
@@ -111,43 +123,22 @@ class SphericalRotationHandle extends Handle {
    * @param {any} event - The event param.
    */
   onDrag(event) {
-    // const vec1 = event.holdPos.subtract(this.baseXfo.tr);
-    // const dragCircleRadius = vec1.length();
-    // vec1.normalizeInPlace();
+    const vec1 = event.holdPos.subtract(this.baseXfo.tr);
+    vec1.normalizeInPlace();
 
-    // // modulate the angle by the radius the mouse moves
-    // // away from the center of the handle.
-    // // This makes it possible to rotate the object more than
-    // // 180 degrees in a single movement.
-    // const modulator = dragCircleRadius / this.grabCircleRadius;
-    // let angle = this.vec0.angleTo(vec1) * modulator;
-    // if (this.vec0.cross(vec1).dot(this.baseXfo.ori.getZaxis()) < 0)
-    //   angle = -angle;
+    const angle = this.vec0.angleTo(vec1) * modulator;
+    const axis = this.vec0.cross(vec1).normalize();
 
-    // if (event.shiftKey) {
-    //   // modulat the angle to 5 degree increments.
-    //   const increment = Math.degToRad(5);
-    //   angle = Math.floor(angle / increment) * increment;
-    // }
+    this.deltaXfo.ori.setFromAxisAndAngle(axis, angle);
 
-    // this.deltaXfo.ori.setFromAxisAndAngle(new ZeaEngine.Vec3(0, 0, 1), angle);
+    const newXfo = this.baseXfo.multiply(this.deltaXfo);
+    const value = newXfo.multiply(this.offsetXfo);
 
-    // const newXfo = this.baseXfo.multiply(this.deltaXfo);
-    // const value = newXfo.multiply(this.offsetXfo);
+    // this.param.setValue(newXfo)
 
-    // // this.__param.setValue(newXfo)
-
-    // this.change.update({
-    //   value,
-    // });
-
-    // this.manipulate.emit({
-    //   holdPos: event.holdPos,
-    //   manipRay: this.gizmoRay,
-    //   angle,
-    //   deltaXfo: this.deltaXfo,
-    //   newXfo: value,
-    // });
+    this.change.update({
+      value,
+    });
   }
 
   /**
@@ -155,14 +146,9 @@ class SphericalRotationHandle extends Handle {
    * @param {any} event - The event param.
    */
   onDragEnd(event) {
-    // this.change = null;
+    this.change = null;
 
-    // this.colorParam.setValue(this.__color);
-
-    // this.manipulateEnd.emit({
-    //   releasePos: event.releasePos,
-    //   manipRay: this.manipRay,
-    // });
+    this.colorParam.setValue(this.__color);
   }
 }
 export { SphericalRotationHandle };

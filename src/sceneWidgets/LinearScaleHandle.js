@@ -70,7 +70,7 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
    * @param {boolean} track - The track param.
    */
   setTargetParam(param, track = true) {
-    this.__param = param;
+    this.param = param;
     if (track) {
       const __updateGizmo = () => {
         this.setGlobalXfo(param.getValue());
@@ -85,19 +85,14 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
    * @param {any} event - The event param.
    */
   onDragStart(event) {
-    this.change = new ParameterValueChange(this.__param);
+    this.change = new ParameterValueChange(this.param);
     event.undoRedoManager.addChange(this.change);
 
     this.grabDist = event.grabDist;
     console.log(this.grabDist);
     this.oriXfo = this.getGlobalXfo();
     this.tmplocalXfo = this.getLocalXfo();
-    this.baseXfo = this.__param.getValue();
-
-    this.manipulateBegin.emit({
-      grabPos: event.grabPos,
-      manipRay: this.manipRay,
-    });
+    this.baseXfo = this.param.getValue();
   }
 
   /**
@@ -133,13 +128,6 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
     this.change.update({
       value: newXfo,
     });
-
-    this.manipulate.emit({
-      holdPos: event.holdPos,
-      manipRay: this.gizmoRay,
-      deltaXfo: this.deltaXfo,
-      newXfo: newXfo,
-    });
   }
 
   /**
@@ -156,11 +144,6 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
     const tipXfo = tip.getLocalXfo();
     tipXfo.sc.set(1, 1, 1);
     tip.setLocalXfo(tipXfo);
-
-    this.manipulateEnd.emit({
-      releasePos: event.releasePos,
-      manipRay: this.manipRay,
-    });
   }
 }
 

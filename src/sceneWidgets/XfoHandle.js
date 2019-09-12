@@ -237,7 +237,7 @@ export default class XfoHandle extends ZeaEngine.TreeItem {
    * @param {any} param - The param param.
    */
   setTargetParam(param) {
-    this.__param = param;
+    this.param = param;
     this.traverse(item => {
       if (item instanceof Handle) item.setTargetParam(param, false);
     });

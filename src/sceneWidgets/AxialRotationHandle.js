@@ -62,7 +62,7 @@ class AxialRotationHandle extends Handle {
    * @param {boolean} track - The track param.
    */
   setTargetParam(param, track = true) {
-    this.__param = param;
+    this.param = param;
     if (track) {
       const __updateGizmo = () => {
         this.setGlobalXfo(param.getValue());
@@ -81,23 +81,17 @@ class AxialRotationHandle extends Handle {
     this.baseXfo = this.getGlobalXfo();
     this.baseXfo.sc.set(1, 1, 1);
     this.deltaXfo = new ZeaEngine.Xfo();
-    this.offsetXfo = this.baseXfo.inverse().multiply(this.__param.getValue());
+    this.offsetXfo = this.baseXfo.inverse().multiply(this.param.getValue());
     
     this.vec0 = event.grabPos.subtract(this.baseXfo.tr);
     this.grabCircleRadius = this.vec0.length();
     this.vec0.normalizeInPlace();
-    this.grabPos = event.grabPos;
-    this.change = new ParameterValueChange(this.__param);
+    this.change = new ParameterValueChange(this.param);
 
     event.undoRedoManager.addChange(this.change);
 
     // Hilight the material.
     this.colorParam.setValue(new ZeaEngine.Color(1, 1, 1));
-
-    this.manipulateBegin.emit({
-      grabPos: event.grabPos,
-      manipRay: this.manipRay,
-    });
   }
 
   /**
@@ -129,18 +123,10 @@ class AxialRotationHandle extends Handle {
     const newXfo = this.baseXfo.multiply(this.deltaXfo);
     const value = newXfo.multiply(this.offsetXfo);
 
-    // this.__param.setValue(newXfo)
+    // this.param.setValue(newXfo)
 
     this.change.update({
       value,
-    });
-
-    this.manipulate.emit({
-      holdPos: event.holdPos,
-      manipRay: this.gizmoRay,
-      angle,
-      deltaXfo: this.deltaXfo,
-      newXfo: value,
     });
   }
 
@@ -152,11 +138,6 @@ class AxialRotationHandle extends Handle {
     this.change = null;
 
     this.colorParam.setValue(this.__color);
-
-    this.manipulateEnd.emit({
-      releasePos: event.releasePos,
-      manipRay: this.manipRay,
-    });
   }
 }
 export { AxialRotationHandle };

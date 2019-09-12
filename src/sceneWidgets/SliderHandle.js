@@ -85,7 +85,7 @@ class SliderHandle extends BaseLinearMovementHandle {
    * @param {any} param - The param param.
    */
   setTargetParam(param) {
-    this.__param = param;
+    this.param = param;
     const range = param.getRange() ? param.getRange() : [0, 1];
     const __updateSlider = () => {
       this.__updateSlider(
@@ -116,7 +116,7 @@ class SliderHandle extends BaseLinearMovementHandle {
    * @param {any} event - The event param.
    */
   onDragStart(event) {
-    this.change = new ParameterValueChange(this.__param);
+    this.change = new ParameterValueChange(this.param);
     event.undoRedoManager.addChange(this.change);
 
     // Hilight the material.
@@ -131,8 +131,8 @@ class SliderHandle extends BaseLinearMovementHandle {
   onDrag(event) {
     const length = this.lengthParam.getValue();
     const range =
-      this.__param && this.__param.getRange()
-        ? this.__param.getRange()
+      this.param && this.param.getRange()
+        ? this.param.getRange()
         : [0, 1];
     const value = Math.remap(event.value, 0, length, range[0], range[1]);
     this.change.update({
@@ -162,7 +162,7 @@ class SliderHandle extends BaseLinearMovementHandle {
       context,
       flags | ZeaEngine.SAVE_FLAG_SKIP_CHILDREN
     );
-    json.targetParam = this.__param.getPath();
+    json.targetParam = this.param.getPath();
     return json;
   }
 

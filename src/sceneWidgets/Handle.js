@@ -12,9 +12,6 @@ export default class Handle extends ZeaEngine.TreeItem {
    */
   constructor(name) {
     super(name);
-    this.manipulateBegin = new ZeaEngine.Signal();
-    this.manipulate = new ZeaEngine.Signal();
-    this.manipulateEnd = new ZeaEngine.Signal();
   }
 
   /**
@@ -60,6 +57,7 @@ export default class Handle extends ZeaEngine.TreeItem {
     const dist = event.mouseRay.intersectRayPlane(this.gizmoRay);
     event.holdPos = event.mouseRay.pointAtDist(dist);
     this.onDrag(event);
+    return true;
   }
 
   /**

@@ -63,7 +63,7 @@ class PlanarMovementHandle extends Handle {
    * @param {boolean} track - The track param.
    */
   setTargetParam(param, track = true) {
-    this.__param = param;
+    this.param = param;
     if (track) {
       const __updateGizmo = () => {
         this.setGlobalXfo(param.getValue());
@@ -79,16 +79,11 @@ class PlanarMovementHandle extends Handle {
    */
   onDragStart(event) {
     this.grabPos = event.grabPos;
-    this.change = new ParameterValueChange(this.__param);
+    this.change = new ParameterValueChange(this.param);
 
     event.undoRedoManager.addChange(this.change);
 
-    this.baseXfo = this.__param.getValue();
-
-    this.manipulateBegin.emit({
-      grabPos: event.grabPos,
-      manipRay: this.manipRay,
-    });
+    this.baseXfo = this.param.getValue();
   }
 
   /**
@@ -104,13 +99,6 @@ class PlanarMovementHandle extends Handle {
     this.change.update({
       value: newXfo,
     });
-
-    this.manipulate.emit({
-      holdPos: event.holdPos,
-      manipRay: this.gizmoRay,
-      deltaXfo: this.deltaXfo,
-      newXfo: newXfo,
-    });
   }
 
   /**
@@ -119,11 +107,6 @@ class PlanarMovementHandle extends Handle {
    */
   onDragEnd(event) {
     this.change = null;
-
-    this.manipulateEnd.emit({
-      releasePos: event.releasePos,
-      manipRay: this.manipRay,
-    });
   }
 }
 export { PlanarMovementHandle };
