@@ -23,14 +23,14 @@ class SelectionChange extends Change {
    * The undo method.
    */
   undo() {
-    this.__selectionManager.setSelection(this.__prevSelection);
+    this.__selectionManager.setSelection(this.__prevSelection, false);
   }
 
   /**
    * The redo method.
    */
   redo() {
-    this.__selectionManager.setSelection(this.__newSelection);
+    this.__selectionManager.setSelection(this.__newSelection, false);
   }
 
   /**
@@ -66,7 +66,7 @@ class SelectionChange extends Change {
     }
     this.__newSelection = newSelection;
 
-    this.__selectionManager.setSelection(this.__newSelection);
+    this.__selectionManager.setSelection(this.__newSelection, false);
   }
 }
 
@@ -271,7 +271,7 @@ class SelectionManager {
    * The setSelection method.
    * @param {any} newSelection - The newSelection param.
    */
-  setSelection(newSelection) {
+  setSelection(newSelection, createUndo=true) {
     const selection = new Set(this.selectionGroup.getItems());
     const prevSelection = new Set(selection);
     for (const treeItem of newSelection) {
@@ -295,8 +295,10 @@ class SelectionManager {
       this.__setLeadSelection(selection.values().next().value);
     else this.__setLeadSelection();
 
-    const change = new SelectionChange(this, selection, prevSelection);
-    this.appData.undoRedoManager.addChange(change);
+    if (createUndo) {
+      const change = new SelectionChange(this, prevSelection, selection);
+      this.appData.undoRedoManager.addChange(change);
+    }
   }
 
   // eslint-disable-next-line require-jsdoc
@@ -385,7 +387,7 @@ class SelectionManager {
       else if (selection.size === 0) this.__setLeadSelection();
     }
 
-    const change = new SelectionChange(this, selection, prevSelection);
+    const change = new SelectionChange(this, prevSelection, selection);
     this.appData.undoRedoManager.addChange(change);
 
     this.updateGizmos();
@@ -436,7 +438,7 @@ class SelectionManager {
       }
     }
 
-    const change = new SelectionChange(this, selection, prevSelection);
+    const change = new SelectionChange(this, prevSelection, selection);
     this.appData.undoRedoManager.addChange(change);
 
     this.selectionGroup.setItems(selection);
