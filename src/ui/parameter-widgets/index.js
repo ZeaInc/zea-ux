@@ -15,4 +15,6 @@ export * from './MultiChoiceWidget.js';
 export * from './ParameterOwnerWidget.js';
 export * from './ItemWidget.js';
 export * from './ItemSetWidget.js';
+export * from './StructWidget.js';
+export * from './ListWidget.js';
 export * from './QuerySetWidget.js';
