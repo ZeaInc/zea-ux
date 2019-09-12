@@ -398,7 +398,7 @@ class SelectionManager {
    * @return {any} The return value.
    */
   clearSelection(newChange = true) {
-    const selection = this.selectionGroup.getItems();
+    const selection = new Set(this.selectionGroup.getItems());
     if (selection.size == 0) return false;
     let prevSelection;
     if (newChange) {
@@ -423,24 +423,16 @@ class SelectionManager {
    * @param {boolean} replaceSelection - The replaceSelection param.
    */
   selectItems(treeItems, replaceSelection = true) {
-    const selection = this.selectionGroup.getItems();
+    const selection = new Set(this.selectionGroup.getItems());
     const prevSelection = new Set(selection);
 
     if (replaceSelection) {
-      prevSelection.clear();
+      selection.clear();
     }
 
     for (const treeItem of treeItems) {
       if (!treeItem.getSelected()) {
-        // treeItem.getSelected(true);
         selection.add(treeItem);
-
-        // treeItem.traverse((subTreeItem)=>{
-        //   if(!selection.has(subTreeItem)) {
-        //     // subTreeItem.setSelected(true);
-        //     selection.add(subTreeItem);
-        //   }
-        // })
       }
     }
 
