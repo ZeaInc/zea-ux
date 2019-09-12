@@ -201,7 +201,7 @@ class TreeItemElement {
 
 uxFactory.registerTreeItemElement(
   TreeItemElement,
-  p => p instanceof ZeaEngine.TreeItem
+  p => p instanceof ZeaEngine.BaseItem
 );
 
 /**
