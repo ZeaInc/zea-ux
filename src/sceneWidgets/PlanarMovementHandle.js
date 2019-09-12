@@ -79,11 +79,11 @@ class PlanarMovementHandle extends Handle {
    */
   onDragStart(event) {
     this.grabPos = event.grabPos;
-    this.change = new ParameterValueChange(this.param);
-
-    event.undoRedoManager.addChange(this.change);
-
     this.baseXfo = this.param.getValue();
+    if (event.undoRedoManager) {
+      this.change = new ParameterValueChange(this.param);
+      event.undoRedoManager.addChange(this.change);
+    }
   }
 
   /**
@@ -96,9 +96,13 @@ class PlanarMovementHandle extends Handle {
     const newXfo = this.baseXfo.clone();
     newXfo.tr.addInPlace(dragVec);
 
-    this.change.update({
-      value: newXfo,
-    });
+    if (this.change) {
+      this.change.update({
+        value: newXfo,
+      });
+    } else {
+      this.param.setValue(newXfo);
+    }
   }
 
   /**

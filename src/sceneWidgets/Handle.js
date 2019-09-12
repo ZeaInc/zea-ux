@@ -12,6 +12,8 @@ export default class Handle extends ZeaEngine.TreeItem {
    */
   constructor(name) {
     super(name);
+
+    this.captured = false;
   }
 
   /**
@@ -35,6 +37,70 @@ export default class Handle extends ZeaEngine.TreeItem {
 
   // ///////////////////////////////////
   // Mouse events
+
+  
+  /**
+   * The onMouseEnter method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
+  onMouseEnter(event) {
+    this.highlight();
+  }
+  
+  /**
+   * The onMouseLeave method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
+  onMouseLeave(event) {
+    this.unhighlight();
+  }
+  
+  /**
+   * The onMouseDown method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
+  onMouseDown(event) {
+    event.viewport.setCapture(this);
+    this.captured = true;
+    this.handleMouseDown(event);
+  }
+
+  /**
+   * The onMouseMove method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
+  onMouseMove(event) {
+    if (this.captured) {
+      this.handleMouseMove(event);
+      event.stopPropagation();
+    } 
+  }
+
+  /**
+   * The onMouseUp method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
+  onMouseUp(event) {
+    if (this.captured) {
+      this.handleMouseUp(event);
+      event.viewport.releaseCapture();
+      event.stopPropagation();
+      this.captured = false;
+    }
+  }
+
+  /**
+   * The onWheel method.
+   * @param {any} event - The event param.
+   */
+  onWheel(event) {
+  }
+
 
   /**
    * The handleMouseDown method.

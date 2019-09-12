@@ -85,14 +85,14 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
    * @param {any} event - The event param.
    */
   onDragStart(event) {
-    this.change = new ParameterValueChange(this.param);
-    event.undoRedoManager.addChange(this.change);
-
     this.grabDist = event.grabDist;
-    console.log(this.grabDist);
     this.oriXfo = this.getGlobalXfo();
     this.tmplocalXfo = this.getLocalXfo();
     this.baseXfo = this.param.getValue();
+    if (event.undoRedoManager) {
+      this.change = new ParameterValueChange(this.param);
+      event.undoRedoManager.addChange(this.change);
+    }
   }
 
   /**
@@ -125,9 +125,13 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
     this.tmplocalXfo.sc.set(1, 1, sc);
     this.setLocalXfo(this.tmplocalXfo);
 
-    this.change.update({
-      value: newXfo,
-    });
+    if (this.change) {
+      this.change.update({
+        value: newXfo,
+      });
+    } else {
+      this.param.setValue(newXfo);
+    }
   }
 
   /**

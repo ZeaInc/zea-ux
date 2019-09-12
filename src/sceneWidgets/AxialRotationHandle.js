@@ -86,9 +86,11 @@ class AxialRotationHandle extends Handle {
     this.vec0 = event.grabPos.subtract(this.baseXfo.tr);
     this.grabCircleRadius = this.vec0.length();
     this.vec0.normalizeInPlace();
-    this.change = new ParameterValueChange(this.param);
 
-    event.undoRedoManager.addChange(this.change);
+    if (event.undoRedoManager) {
+      this.change = new ParameterValueChange(this.param);
+      event.undoRedoManager.addChange(this.change);
+    }
 
     // Hilight the material.
     this.colorParam.setValue(new ZeaEngine.Color(1, 1, 1));
@@ -123,11 +125,13 @@ class AxialRotationHandle extends Handle {
     const newXfo = this.baseXfo.multiply(this.deltaXfo);
     const value = newXfo.multiply(this.offsetXfo);
 
-    // this.param.setValue(newXfo)
-
-    this.change.update({
-      value,
-    });
+    if (this.change) {
+      this.change.update({
+        value,
+      });
+    } else {
+      this.param.setValue(value);
+    }
   }
 
   /**

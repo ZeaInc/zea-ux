@@ -110,12 +110,14 @@ class SphericalRotationHandle extends Handle {
 
     this.vec0 = event.grabPos.subtract(this.baseXfo.tr);
     this.vec0.normalizeInPlace();
-    this.change = new ParameterValueChange(this.param);
-
-    event.undoRedoManager.addChange(this.change);
 
     // Hilight the material.
     this.colorParam.setValue(new ZeaEngine.Color(1, 1, 1));
+
+    if (event.undoRedoManager) {
+      this.change = new ParameterValueChange(this.param);
+      event.undoRedoManager.addChange(this.change);
+    }
   }
 
   /**
@@ -134,11 +136,14 @@ class SphericalRotationHandle extends Handle {
     const newXfo = this.baseXfo.multiply(this.deltaXfo);
     const value = newXfo.multiply(this.offsetXfo);
 
-    // this.param.setValue(newXfo)
+    if (this.change) {
+      this.change.update({
+        value,
+      });
+    } else {
+      this.param.setValue(newXfo);
+    }
 
-    this.change.update({
-      value,
-    });
   }
 
   /**

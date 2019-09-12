@@ -116,12 +116,14 @@ class SliderHandle extends BaseLinearMovementHandle {
    * @param {any} event - The event param.
    */
   onDragStart(event) {
-    this.change = new ParameterValueChange(this.param);
-    event.undoRedoManager.addChange(this.change);
 
     // Hilight the material.
     this.handleXfo.sc.x = this.handleXfo.sc.y = this.handleXfo.sc.z = 1.5;
     this.handle.setLocalXfo(this.handleXfo);
+    if (event.undoRedoManager) {
+      this.change = new ParameterValueChange(this.param);
+      event.undoRedoManager.addChange(this.change);
+    }
   }
 
   /**
@@ -131,13 +133,15 @@ class SliderHandle extends BaseLinearMovementHandle {
   onDrag(event) {
     const length = this.lengthParam.getValue();
     const range =
-      this.param && this.param.getRange()
-        ? this.param.getRange()
-        : [0, 1];
+      this.param && this.param.getRange() ? this.param.getRange() : [0, 1];
     const value = Math.remap(event.value, 0, length, range[0], range[1]);
-    this.change.update({
-      value,
-    });
+    if (this.change) {
+      this.change.update({
+        value,
+      });
+    } else {
+      this.param.setValue(value);
+    }
   }
 
   /**

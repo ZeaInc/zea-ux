@@ -260,7 +260,7 @@ class VRHoldObjectsTool extends BaseTool {
       // console.log(intersectionData.geomItem.getPath()); // + " Material:" + geomItem.getMaterial().name);
       event.intersectionData = intersectionData;
       intersectionData.geomItem.onMouseDown(event, intersectionData);
-      if (event.vleStopPropagation == true) return false;
+      if (!event.propagating) return false;
 
       let gidx = this.__heldGeomItems.indexOf(intersectionData.geomItem);
       if (gidx == -1) {

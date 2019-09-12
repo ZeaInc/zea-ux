@@ -78,11 +78,12 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
    * @param {any} event - The event param.
    */
   onDragStart(event) {
-    this.change = new ParameterValueChange(this.param);
-    event.undoRedoManager.addChange(this.change);
-
     this.grabPos = event.grabPos;
     this.baseXfo = this.param.getValue();
+    if (event.undoRedoManager) {
+      this.change = new ParameterValueChange(this.param);
+      event.undoRedoManager.addChange(this.change);
+    }
   }
 
   /**
@@ -95,9 +96,13 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
     const newXfo = this.baseXfo.clone();
     newXfo.tr.addInPlace(dragVec);
 
-    this.change.update({
-      value: newXfo,
-    });
+    if (this.change) {
+      this.change.update({
+        value: newXfo,
+      });
+    } else {
+      this.param.setValue(newXfo);
+    }
   }
 
   /**
