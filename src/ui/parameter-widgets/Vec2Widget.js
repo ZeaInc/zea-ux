@@ -1,11 +1,19 @@
-// import * as Visualive from '@visualive/engine';
-
 import BaseWidget from './BaseWidget.js';
 
 import uxFactory from '../UxFactory.js';
 import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 
+/**
+ * Class representing a vec2 widget.
+ * @extends BaseWidget
+ */
 export default class Vec2Widget extends BaseWidget {
+  /**
+   * Create a vec2 widget.
+   * @param {any} parameter - The parameter value.
+   * @param {any} parentDomElem - The parentDomElem value.
+   * @param {any} appData - The appData value.
+   */
   constructor(parameter, parentDomElem, appData) {
     super(parameter);
 
@@ -44,7 +52,7 @@ export default class Vec2Widget extends BaseWidget {
 
     parentDomElem.appendChild(container);
 
-    /////////////////////////////
+    // ///////////////////////////
     // SceneWidget Changes.
 
     let change = undefined;
@@ -56,15 +64,14 @@ export default class Vec2Widget extends BaseWidget {
       }
     });
     const valueChange = () => {
-      const value = new Visualive.Vec2(
-          xField.valueAsNumber,
-          yField.valueAsNumber
-        )
+      const value = new ZeaEngine.Vec2(
+        xField.valueAsNumber,
+        yField.valueAsNumber
+      );
       if (!change) {
         change = new ParameterValueChange(parameter, value);
         appData.undoRedoManager.addChange(change);
-      }
-      else {
+      } else {
         change.update({ value });
       }
     };
@@ -79,7 +86,4 @@ export default class Vec2Widget extends BaseWidget {
   }
 }
 
-uxFactory.registerWidget(
-  Vec2Widget,
-  p => p instanceof Visualive.Vec2Parameter
-);
+uxFactory.registerWidget(Vec2Widget, p => p instanceof ZeaEngine.Vec2Parameter);

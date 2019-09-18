@@ -24,15 +24,13 @@
   height: 400px; /* Could be more or less, depending on screen size */
 }
 
-
-
 .HighlightedMenu {
   /*background-color: #03E3AC;*/
-  border: 2px solid #03E3AC;
+  border: 2px solid #03e3ac;
   border-radius: 4px;
 }
 
 .ActionedMenu {
-  background-color: #03E3AC;
+  background-color: #03e3ac;
   border-radius: 4px;
 }

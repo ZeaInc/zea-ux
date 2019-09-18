@@ -1,10 +1,14 @@
 {
-  "session_name": "Visualive UX",
+  "session_name": "Zea UX",
   "start_directory": "~/workspace/visualive/ux/",
   "windows": [
     {
+      "window_name": "services",
+      "panes": ["yarn build:dev"]
+    },
+    {
       "window_name": "nvim",
-      "panes": ["v -S Session.vim"]
+      "panes": ["$EDITOR -S"]
     },
     {
       "window_name": "vcs",

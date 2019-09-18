@@ -1,14 +1,28 @@
+/** Class representing a UX factory. */
 class UxFactory {
+  /**
+   * Create a UX factory.
+   */
   constructor() {
     this.treeItemFactories = [];
     this.widgetFactories = [];
     this.inspectorFactories = [];
   }
 
+  /**
+   * The registerInpector method.
+   * @param {any} inspector - The inspector param.
+   * @param {any} rule - The rule param.
+   */
   registerInpector(inspector, rule) {
     this.inspectorFactories.push({ inspector, rule });
   }
 
+  /**
+   * The constructInspector method.
+   * @param {...object} ...args - The ...args param
+   * @return {any} The return value.
+   */
   constructInspector(...args) {
     // Note: Iterate over the factories in reverse order.
     // This allows widgets to override existing widgets in special cases.
@@ -29,10 +43,20 @@ class UxFactory {
     );
   }
 
+  /**
+   * The registerTreeItemElement method.
+   * @param {any} treeItemElement - The treeItemElement param.
+   * @param {any} rule - The rule param.
+   */
   registerTreeItemElement(treeItemElement, rule) {
     this.treeItemFactories.push({ treeItemElement, rule });
   }
 
+  /**
+   * The constructTreeItemElement method.
+   * @param {...object} ...args - The ...args param
+   * @return {any} The return value.
+   */
   constructTreeItemElement(...args) {
     // Note: Iterate over the factories in reverse order.
     // This allows widgets to override existing widgets in special cases.
@@ -53,10 +77,20 @@ class UxFactory {
     );
   }
 
+  /**
+   * The registerWidget method.
+   * @param {any} widget - The treeItemElement param.
+   * @param {any} rule - The rule param.
+   */
   registerWidget(widget, rule) {
     this.widgetFactories.push({ widget, rule });
   }
 
+  /**
+   * The findWidgetReg method.
+   * @param {any} param - The param param.
+   * @return {any} The return value.
+   */
   findWidgetReg(param) {
     for (let i = this.widgetFactories.length; i-- > 0; ) {
       const reg = this.widgetFactories[i];
@@ -66,6 +100,11 @@ class UxFactory {
     }
   }
 
+  /**
+   * The constructWidget method.
+   * @param {...object} ...args - The ...args param
+   * @return {any} The return value.
+   */
   constructWidget(...args) {
     // Note: Iterate over the widgetFactories in reverse order.
     // This allows widgets to override existing widgets in special cases.

@@ -3,7 +3,17 @@ import BaseWidget from './BaseWidget.js';
 import uxFactory from '../UxFactory.js';
 import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 
+/**
+ * Class representing a file widget.
+ * @extends BaseWidget
+ */
 class FileWidget extends BaseWidget {
+  /**
+   * Create a file widget.
+   * @param {any} parameter - The parameter value.
+   * @param {any} parentDomElem - The parentDomElem value.
+   * @param {any} appData - The appData value.
+   */
   constructor(parameter, parentDomElem, appData) {
     super(parameter);
 
@@ -16,7 +26,7 @@ class FileWidget extends BaseWidget {
 
     parentDomElem.appendChild(input);
 
-    /////////////////////////////
+    // ///////////////////////////
     // SceneWidget Changes.
 
     let change = undefined;
@@ -27,17 +37,13 @@ class FileWidget extends BaseWidget {
       if (!change) {
         change = new ParameterValueChange(parameter, input.valueAsNumber);
         appData.undoRedoManager.addChange(change);
-      }
-      else
-        change.update({ value: input.valueAsNumber });
+      } else change.update({ value: input.valueAsNumber });
     });
     input.addEventListener('change', () => {
       if (!change) {
         change = new ParameterValueChange(parameter);
         appData.undoRedoManager.addChange(change);
-      }
-      else
-        change.update({ value: input.valueAsNumber });
+      } else change.update({ value: input.valueAsNumber });
       change = undefined;
     });
   }
@@ -45,5 +51,5 @@ class FileWidget extends BaseWidget {
 
 uxFactory.registerWidget(
   FileWidget,
-  p => p instanceof Visualive.FilePathParameter
+  p => p instanceof ZeaEngine.FilePathParameter
 );

@@ -1,6 +1,13 @@
 import uxFactory from '../ui/UxFactory.js';
 
+/** Class representing a parameter container. */
 class ParameterContainer {
+  /**
+   * Create a parameter container.
+   * @param {any} parameterOwner - The parameterOwner value.
+   * @param {any} domElement - The domElement value.
+   * @param {any} appData - The appData value.
+   */
   constructor(parameterOwner, domElement, appData) {
     this.domElement = domElement;
     this.clean();
@@ -18,38 +25,57 @@ class ParameterContainer {
       this.setParameterOwner(parameterOwner);
     }
   }
-  
-  clean(){
+
+  /**
+   * The clean method.
+   */
+  clean() {
     while (this.domElement.firstChild) {
-        this.domElement.removeChild(this.domElement.firstChild);
+      this.domElement.removeChild(this.domElement.firstChild);
     }
   }
 
+  /**
+   * The destroy method.
+   */
   destroy() {
     this.clean();
   }
 
+  /**
+   * The getDomElement method.
+   * @return {any} The return value.
+   */
   getDomElement() {
     return this.container;
   }
 
+  /**
+   * The setParameterOwner method.
+   * @param {any} parameterOwner - The parameterOwner param.
+   */
   setParameterOwner(parameterOwner) {
     this.parameterOwner = parameterOwner;
 
     this.widgets = [];
     if (parameterOwner) {
-      for (let parameter of parameterOwner.getParameters()) {
+      for (const parameter of parameterOwner.getParameters()) {
         this.addParameterWidget(parameter);
       }
     }
   }
 
+  /**
+   * The addParameterWidget method.
+   * @param {any} parameter - The parameter param.
+   */
   addParameterWidget(parameter) {
     const parameterName = parameter.getName();
     const reg = uxFactory.findWidgetReg(parameter);
     if (!reg) {
-      console.warn(`Unable to display parameter '${parameterName}', value:${parameter.getValue()}`);
-      const reg = uxFactory.findWidgetReg(parameter);
+      console.warn(
+        `Unable to display parameter '${parameterName}', value:${parameter.getValue()}`
+      );
       return;
     }
 
@@ -67,6 +93,4 @@ class ParameterContainer {
 }
 
 export default ParameterContainer;
-export {
-  ParameterContainer
-};
+export { ParameterContainer };

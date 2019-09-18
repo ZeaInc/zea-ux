@@ -1,8 +1,12 @@
-
-
+/** Class representing a user chip. */
 class UserChip {
+  /**
+   * Create a user chip.
+   * @param {any} domElement - The domElement value.
+   * @param {any} userData - The userData value.
+   */
   constructor(domElement, userData) {
-    this.userPressed = new Visualive.Signal();
+    this.userPressed = new ZeaEngine.Signal();
 
     this.domElement = domElement;
     this.clean();
@@ -64,28 +68,34 @@ class UserChip {
     }
   }
 
+  /**
+   * The setUserData method.
+   * @param {any} userData - The userData param.
+   */
   setUserData(userData) {
     this.userData = userData;
-    if(this.userNameSpan)
-      this.userNameSpan.innerHTML = userData.name;
+    if (this.userNameSpan) this.userNameSpan.innerHTML = userData.name;
     this.userToolTip.innerHTML = userData.name;
 
     // if (userData.metadata && userData.metadata.avatarColor)
     //   this.userImage.style.borderColor = userData.metadata.avatarColor;
   }
 
+  /**
+   * The clean method.
+   */
   clean() {
     while (this.domElement.firstChild) {
       this.domElement.removeChild(this.domElement.firstChild);
     }
   }
 
+  /**
+   * The unmount method.
+   */
   unmount() {
     this.clean();
   }
 }
 
-
-export {
-  UserChip
-}
+export { UserChip };

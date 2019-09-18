@@ -1,7 +1,10 @@
-import uxFactory from './UxFactory.js';
-import ParameterValueChange from '../undoredo/ParameterValueChange.js';
-
+/** Class representing an action tree view. */
 class ActionTreeView {
+  /**
+   * Create an action tree view.
+   * @param {any} domElement - The domElement value.
+   * @param {any} actionRegistry - The actionRegistry value.
+   */
   constructor(domElement, actionRegistry) {
     this.domElement = domElement;
     this.actionRegistry = actionRegistry;
@@ -12,15 +15,14 @@ class ActionTreeView {
 
     const actions = this.actionRegistry.getActions();
     actions.forEach(action => {
-      if(action.availableInVR == true)
-        this._addMenuItem(ul, action);
+      if (action.availableInVR == true) this._addMenuItem(ul, action);
     });
-    this.actionRegistry.actionAdded.connect((action)=>{
-      if(action.availableInVR == true)
-        this._addMenuItem(ul, action);
-    })
+    this.actionRegistry.actionAdded.connect(action => {
+      if (action.availableInVR == true) this._addMenuItem(ul, action);
+    });
   }
 
+  // eslint-disable-next-line require-jsdoc
   _addSpanTo(domElement, className, innerHTML) {
     const span = document.createElement('span');
     span.className = className;
@@ -31,42 +33,35 @@ class ActionTreeView {
     return span;
   }
 
+  // eslint-disable-next-line require-jsdoc
   _addMenuItem(domElement, action) {
     const a = document.createElement('a');
     a.href = '#';
 
-    let classes = 'pure-menu-link VRUIElement';
-    let hilighted = false;
+    const classes = 'pure-menu-link VRUIElement';
     let activated = false;
     a.className = classes;
 
     a.addEventListener('mouseenter', e => {
-      if(!activated)
-        a.className = classes + " HighlightedMenu";
+      if (!activated) a.className = classes + ' HighlightedMenu';
     });
     a.addEventListener('mouseleave', e => {
-      if(activated)
-        a.className = classes + " ActionedMenu";
-      else
-        a.className = classes;
+      if (activated) a.className = classes + ' ActionedMenu';
+      else a.className = classes;
     });
 
-
     if (action.activatedChanged) {
-      action.activatedChanged.connect((state)=>{
-        if(state)
-          a.className = classes + " ActionedMenu";
-        else
-          a.className = classes;
+      action.activatedChanged.connect(state => {
+        if (state) a.className = classes + ' ActionedMenu';
+        else a.className = classes;
         activated = state;
-      })
-    }
-    else {
+      });
+    } else {
       a.addEventListener('mousedown', e => {
-          a.className = classes + " ActionedMenu";
+        a.className = classes + ' ActionedMenu';
       });
       a.addEventListener('mouseup', e => {
-        a.className = classes + " HighlightedMenu";
+        a.className = classes + ' HighlightedMenu';
       });
     }
 
@@ -82,6 +77,7 @@ class ActionTreeView {
     return a;
   }
 
+  // eslint-disable-next-line require-jsdoc
   _addUlTo(domElement, className, innerHTML) {
     const ul = document.createElement('ul');
     ul.className = className;
@@ -92,6 +88,7 @@ class ActionTreeView {
     return ul;
   }
 
+  // eslint-disable-next-line require-jsdoc
   _addLiTo(domElement, className, innerHTML) {
     const li = document.createElement('li');
     li.className = className;
@@ -103,6 +100,4 @@ class ActionTreeView {
   }
 }
 
-export {
-  ActionTreeView
-} ;
+export { ActionTreeView };

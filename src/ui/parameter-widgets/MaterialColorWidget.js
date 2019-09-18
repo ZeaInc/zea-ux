@@ -1,8 +1,4 @@
-
-
 import BaseWidget from './BaseWidget.js';
-import StringWidget from './StringWidget.js';
-import FileWiget from './FileWiget.js';
 
 import uxFactory from '../UxFactory.js';
 import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
@@ -25,10 +21,20 @@ import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 //   }
 // }
 
+/**
+ * Class representing a material color widget.
+ * @extends BaseWidget
+ */
 export default class MaterialColorWidget extends BaseWidget {
+  /**
+   * Create a material color widget.
+   * @param {any} parameter - The parameter value.
+   * @param {any} parentDomElem - The parentDomElem value.
+   * @param {any} appData - The appData value.
+   */
   constructor(parameter, parentDomElem, appData) {
     super(parameter);
-    
+
     const colorPicker = new iro.ColorPicker(parentDomElem, {
       // Color picker options:
       // https://rakujira.jp/projects/iro/docs/guide.html#Color-Picker-Options
@@ -42,7 +48,7 @@ export default class MaterialColorWidget extends BaseWidget {
 
     // this.textureWidget = new FileWiget(new TexParam(parameter), parentDomElem, appData);
 
-    /////////////////////////////
+    // ///////////////////////////
     // SceneWidget Changes.
 
     let change = undefined;
@@ -51,7 +57,7 @@ export default class MaterialColorWidget extends BaseWidget {
     parameter.valueChanged.connect(() => {
       if (!change) {
         undoing = true;
-        colorPicker.color.rgb = parameter.getValue().getAsRGBDict()
+        colorPicker.color.rgb = parameter.getValue().getAsRGBDict();
         undoing = false;
       }
     });
@@ -66,9 +72,8 @@ export default class MaterialColorWidget extends BaseWidget {
     });
 
     colorPicker.on('color:change', (color, changes) => {
-      if(undoing)
-        return;
-      const value = new Visualive.Color();
+      if (undoing) return;
+      const value = new ZeaEngine.Color();
       value.setFromRGBDict(colorPicker.color.rgb);
       if (!change) {
         change = new ParameterValueChange(parameter, value);
@@ -79,10 +84,14 @@ export default class MaterialColorWidget extends BaseWidget {
     });
   }
 
+  /**
+   * The setParentDomElem method.
+   * @param {any} parentDomElem - The parentDomElem param.
+   */
   setParentDomElem(parentDomElem) {}
 }
 
 uxFactory.registerWidget(
   MaterialColorWidget,
-  p => p instanceof Visualive.MaterialColorParam
+  p => p instanceof ZeaEngine.MaterialColorParam
 );

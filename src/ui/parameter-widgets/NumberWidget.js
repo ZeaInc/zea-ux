@@ -3,12 +3,22 @@ import BaseWidget from './BaseWidget.js';
 import uxFactory from '../UxFactory.js';
 import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 
+/**
+ * Class representing a number widget.
+ * @extends BaseWidget
+ */
 export default class NumberWidget extends BaseWidget {
+  /**
+   * Create a number widget.
+   * @param {any} parameter - The parameter value.
+   * @param {any} parentDomElem - The parentDomElem value.
+   * @param {any} appData - The appData value.
+   */
   constructor(parameter, parentDomElem, appData) {
     super(parameter);
 
     const range = parameter.getRange();
-    let input = document.createElement('input');
+    const input = document.createElement('input');
     if (range) {
       input.className = 'mdl-slider mdl-js-slider';
       input.setAttribute('id', parameter.getName());
@@ -17,7 +27,8 @@ export default class NumberWidget extends BaseWidget {
       input.setAttribute('max', 200);
       // Note: range sliders only work with integer numbers
       // so convert our value to an integer between 0 .. 200
-      const value = ((parameter.getValue() - range[0]) / (range[1] - range[0]) * 200)
+      const value =
+        ((parameter.getValue() - range[0]) / (range[1] - range[0])) * 200;
       input.setAttribute('value', value);
       const step = parameter.getStep();
       if (step) input.setAttribute('step', step);
@@ -35,18 +46,18 @@ export default class NumberWidget extends BaseWidget {
     }
     parentDomElem.appendChild(input);
 
-    /////////////////////////////
+    // ///////////////////////////
     // SceneWidget Changes.
 
     let change = undefined;
 
     parameter.valueChanged.connect(() => {
-      if (!change){
+      if (!change) {
         if (range)
-          input.value = ((parameter.getValue() - range[0]) / (range[1] - range[0]) * 200)
-        else
-          input.value = parameter.getValue();
-      } 
+          input.value =
+            ((parameter.getValue() - range[0]) / (range[1] - range[0])) * 200;
+        else input.value = parameter.getValue();
+      }
     });
 
     const valueChange = () => {
@@ -54,13 +65,12 @@ export default class NumberWidget extends BaseWidget {
       if (range) {
         // Renmap from the 0..200 integer to the floating point
         // range specified in the parameter.
-        value = range[0] + ((value / 200) * (range[1] - range[0]));
+        value = range[0] + (value / 200) * (range[1] - range[0]);
       }
       if (!change) {
         change = new ParameterValueChange(parameter, value);
         appData.undoRedoManager.addChange(change);
-      }
-      else {
+      } else {
         change.update({ value });
       }
     };
@@ -77,5 +87,5 @@ export default class NumberWidget extends BaseWidget {
 
 uxFactory.registerWidget(
   NumberWidget,
-  p => p instanceof Visualive.NumberParameter
+  p => p instanceof ZeaEngine.NumberParameter
 );

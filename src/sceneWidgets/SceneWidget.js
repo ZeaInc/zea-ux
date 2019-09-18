@@ -1,28 +1,50 @@
-
-
-// A SceneWidget is a UI widget that lives in the scene. 
-// Much like a slider, it translates a series of 
+// A SceneWidget is a UI widget that lives in the scene.
+// Much like a slider, it translates a series of
 // mouse events into a higher level interaction.
-export default class SceneWidget extends Visualive.TreeItem {
+
+/** Class representing a scene widget.
+ * @extends ZeaEngine.TreeItem
+ */
+export default class SceneWidget extends ZeaEngine.TreeItem {
+  /**
+   * Create a scene widget.
+   * @param {any} name - The name value.
+   */
   constructor(name) {
-    super(name)
-    this.manipulateBegin = new Visualive.Signal();
-    this.manipulate = new Visualive.Signal();
-    this.manipulateEnd = new Visualive.Signal();
+    super(name);
+    this.manipulateBegin = new ZeaEngine.Signal();
+    this.manipulate = new ZeaEngine.Signal();
+    this.manipulateEnd = new ZeaEngine.Signal();
   }
 
+  /**
+   * The highlight method.
+   */
   highlight() {}
 
+  /**
+   * The unhighlight method.
+   */
   unhighlight() {}
 
-  getManipulationRay(viewport){
+  /**
+   * The getManipulationRay method.
+   * @param {any} viewport - The viewport param.
+   * @return {any} The return value.
+   */
+  getManipulationRay(viewport) {
     const xfo = this.getGlobalXfo();
-    return new Visualive.Ray(xfo.tr, xfo.ori.getZaxis());
+    return new ZeaEngine.Ray(xfo.tr, xfo.ori.getZaxis());
   }
 
-  /////////////////////////////////////
+  // ///////////////////////////////////
   // Mouse events
 
+  /**
+   * The handleMouseDown method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   handleMouseDown(event) {
     this.gizmoRay = this.getManipulationRay();
     const dist = event.mouseRay.intersectRayPlane(this.gizmoRay);
@@ -31,12 +53,21 @@ export default class SceneWidget extends Visualive.TreeItem {
     return true;
   }
 
+  /**
+   * The handleMouseMove method.
+   * @param {any} event - The event param.
+   */
   handleMouseMove(event) {
     const dist = event.mouseRay.intersectRayPlane(this.gizmoRay);
     event.holdPos = event.mouseRay.pointAtDist(dist);
     this.onDrag(event);
   }
 
+  /**
+   * The handleMouseUp method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   handleMouseUp(event) {
     const dist = event.mouseRay.intersectRayPlane(this.gizmoRay);
     event.releasePos = event.mouseRay.pointAtDist(dist);
@@ -44,9 +75,14 @@ export default class SceneWidget extends Visualive.TreeItem {
     return true;
   }
 
-  /////////////////////////////////////
+  // ///////////////////////////////////
   // VRController events
 
+  /**
+   * The onVRControllerButtonDown method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onVRControllerButtonDown(event) {
     const gizmoRay = this.getManipulationRay();
     const grabDist = event.controllerRay.intersectRayVector(gizmoRay);
@@ -58,33 +94,55 @@ export default class SceneWidget extends Visualive.TreeItem {
     }
   }
 
+  /**
+   * The onVRPoseChanged method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onVRPoseChanged(event) {
-    const xfo = this.activeController.getTipXfo()
+    const xfo = this.activeController.getTipXfo();
     this.onDrag(event, xfo.tr);
     return true;
   }
 
+  /**
+   * The onVRControllerButtonUp method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
   onVRControllerButtonUp(event) {
     if (this.activeController == event.controller) {
-      const xfo = this.activeController.getTipXfo()
+      const xfo = this.activeController.getTipXfo();
       this.onDragEnd(event, xfo.tr);
       this.activeController = undefined;
       return true;
     }
   }
 
-  /////////////////////////////////////
+  // ///////////////////////////////////
   // Interaction events
 
+  /**
+   * The onDragStart method.
+   * @param {any} event - The event param.
+   */
   onDragStart(event) {
-    console.log('onDragStart', event)
+    console.log('onDragStart', event);
   }
 
+  /**
+   * The onDrag method.
+   * @param {any} event - The event param.
+   */
   onDrag(event) {
-    console.log('onDrag', event)
+    console.log('onDrag', event);
   }
 
+  /**
+   * The onDragEnd method.
+   * @param {any} event - The event param.
+   */
   onDragEnd(event) {
-    console.log('onDragEnd', event)
+    console.log('onDragEnd', event);
   }
-};
+}

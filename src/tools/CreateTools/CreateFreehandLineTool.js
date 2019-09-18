@@ -1,27 +1,36 @@
 import UndoRedoManager from '../../undoredo/UndoRedoManager.js';
-import {
-  CreateGeomChange
-} from './CreateGeomTool.js';
+import { CreateGeomChange } from './CreateGeomTool.js';
 import CreateLineTool from './CreateLineTool.js';
 
+/**
+ * Class representing a create freehand line change.
+ * @extends CreateGeomChange
+ */
 class CreateFreehandLineChange extends CreateGeomChange {
+  /**
+   * Create a create freehand line change.
+   * @param {any} parentItem - The parentItem value.
+   * @param {any} xfo - The xfo value.
+   * @param {any} color - The color value.
+   * @param {any} thickness - The thickness value.
+   */
   constructor(parentItem, xfo, color, thickness) {
-    super("Create Freehand Line");
+    super('Create Freehand Line');
 
     this.used = 0;
     this.vertexCount = 100;
 
-    this.line = new Visualive.Lines();
+    this.line = new ZeaEngine.Lines();
     this.line.setNumVertices(this.vertexCount);
     this.line.setNumSegments(this.vertexCount - 1);
-    this.line.vertices.setValue(0, new Visualive.Vec3());
+    this.line.vertices.setValue(0, new ZeaEngine.Vec3());
 
-    // const material = new Visualive.Material('freeHandLine', 'LinesShader');
+    // const material = new ZeaEngine.Material('freeHandLine', 'LinesShader');
     // this.line.lineThickness = 0.5;
-    // const material = new Visualive.Material('freeHandLine', 'LinesShader');
-    const material = new Visualive.Material('freeHandLine', 'FatLinesShader');
+    // const material = new ZeaEngine.Material('freeHandLine', 'LinesShader');
+    const material = new ZeaEngine.Material('freeHandLine', 'FatLinesShader');
 
-    this.geomItem = new Visualive.GeomItem("freeHandLine");
+    this.geomItem = new ZeaEngine.GeomItem('freeHandLine');
     this.geomItem.setGeometry(this.line);
     this.geomItem.setMaterial(material);
 
@@ -31,7 +40,7 @@ class CreateFreehandLineChange extends CreateGeomChange {
 
     if (thickness) {
       this.line.lineThickness = thickness;
-      // this.line.addVertexAttribute('lineThickness', Visualive.Float32, 0.0);
+      // this.line.addVertexAttribute('lineThickness', ZeaEngine.Float32, 0.0);
     }
 
     if (parentItem && xfo) {
@@ -39,6 +48,10 @@ class CreateFreehandLineChange extends CreateGeomChange {
     }
   }
 
+  /**
+   * The update method.
+   * @param {any} updateData - The updateData param.
+   */
   update(updateData) {
     // console.log("update:", this.used)
 
@@ -58,54 +71,94 @@ class CreateFreehandLineChange extends CreateGeomChange {
 
     if (realloc) {
       this.line.geomDataTopologyChanged.emit({
-        'indicesChanged': true
+        indicesChanged: true,
       });
     } else {
       this.line.geomDataChanged.emit({
-        'indicesChanged': true
+        indicesChanged: true,
       });
     }
     this.updated.emit(updateData);
   }
 
+  /**
+   * The toJSON method.
+   * @param {any} appData - The appData param.
+   * @return {any} The return value.
+   */
   toJSON(appData) {
     const j = super.toJSON();
     j.lineThickness = this.line.lineThickness;
-    j.color = this.geomItem.getMaterial().getParameter('Color').getValue();
+    j.color = this.geomItem
+      .getMaterial()
+      .getParameter('Color')
+      .getValue();
     return j;
   }
 
+  /**
+   * The fromJSON method.
+   * @param {any} j - The j param.
+   * @param {any} appData - The appData param.
+   */
   fromJSON(j, appData) {
     // Need to set line thickness before the geom is added to the tree.
     if (j.lineThickness) {
       this.line.lineThickness = j.lineThickness;
-      // this.line.addVertexAttribute('lineThickness', Visualive.Float32, 0.0);
+      // this.line.addVertexAttribute('lineThickness', ZeaEngine.Float32, 0.0);
     }
 
-    const color = new Visualive.Color(.7, .2, .2)
+    const color = new ZeaEngine.Color(0.7, 0.2, 0.2);
     if (j.color) {
       color.fromJSON(j.color);
     }
-    this.geomItem.getMaterial().getParameter('Color').setValue(color);
+    this.geomItem
+      .getMaterial()
+      .getParameter('Color')
+      .setValue(color);
 
     super.fromJSON(j, appData);
-
   }
 }
-UndoRedoManager.registerChange('CreateFreehandLineChange', CreateFreehandLineChange)
+UndoRedoManager.registerChange(
+  'CreateFreehandLineChange',
+  CreateFreehandLineChange
+);
 
+/**
+ * Class representing a create freehand line tool.
+ * @extends CreateLineTool
+ */
 class CreateFreehandLineTool extends CreateLineTool {
+  /**
+   * Create a create freehand line tool.
+   * @param {any} appData - The appData value.
+   */
   constructor(appData) {
     super(appData);
 
-    this.mp = this.addParameter(new Visualive.BooleanParameter('Modulate Thickness By Stroke Speed', false));
+    this.mp = this.addParameter(
+      new ZeaEngine.BooleanParameter(
+        'Modulate Thickness By Stroke Speed',
+        false
+      )
+    );
   }
 
+  /**
+   * The createStart method.
+   * @param {any} xfo - The xfo param.
+   * @param {any} parentItem - The parentItem param.
+   */
   createStart(xfo, parentItem) {
-
     const color = this.cp.getValue();
     const lineThickness = this.tp.getValue();
-    this.change = new CreateFreehandLineChange(parentItem, xfo, color, lineThickness);
+    this.change = new CreateFreehandLineChange(
+      parentItem,
+      xfo,
+      color,
+      lineThickness
+    );
     this.appData.undoRedoManager.addChange(this.change);
 
     this.xfo = xfo;
@@ -115,12 +168,16 @@ class CreateFreehandLineTool extends CreateLineTool {
     this.length = 0;
   }
 
+  /**
+   * The createMove method.
+   * @param {any} pt - The pt param.
+   */
   createMove(pt) {
     const p = this.invxfo.transformVec3(pt);
     const delta = p.subtract(this.prevP).length();
-    if(delta > 0.001) {
+    if (delta > 0.001) {
       this.change.update({
-        point: p
+        point: p,
       });
     }
 
@@ -128,6 +185,10 @@ class CreateFreehandLineTool extends CreateLineTool {
     this.prevP = p;
   }
 
+  /**
+   * The createRelease method.
+   * @param {any} pt - The pt param.
+   */
   createRelease(pt) {
     if (this.length == 0) {
       this.appData.undoRedoManager.undo(false);
@@ -136,6 +197,4 @@ class CreateFreehandLineTool extends CreateLineTool {
     this.actionFinished.emit();
   }
 }
-export {
-  CreateFreehandLineTool
-};
+export { CreateFreehandLineTool };

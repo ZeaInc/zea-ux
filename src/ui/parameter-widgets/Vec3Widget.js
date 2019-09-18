@@ -1,11 +1,19 @@
-// import * as Visualive from '@visualive/engine';
-
 import BaseWidget from './BaseWidget.js';
 
 import uxFactory from '../UxFactory.js';
 import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 
+/**
+ * Class representing a vec3 widget.
+ * @extends BaseWidget
+ */
 export default class Vec3Widget extends BaseWidget {
+  /**
+   * Create a vec3 widget.
+   * @param {any} parameter - The parameter value.
+   * @param {any} parentDomElem - The parentDomElem value.
+   * @param {any} appData - The appData value.
+   */
   constructor(parameter, parentDomElem, appData) {
     super(parameter);
 
@@ -57,7 +65,7 @@ export default class Vec3Widget extends BaseWidget {
 
     parentDomElem.appendChild(container);
 
-    /////////////////////////////
+    // ///////////////////////////
     // SceneWidget Changes.
 
     let change = undefined;
@@ -72,16 +80,15 @@ export default class Vec3Widget extends BaseWidget {
     });
 
     const valueChange = () => {
-      const value = new Visualive.Vec3(
-          xField.valueAsNumber,
-          yField.valueAsNumber,
-          zField.valueAsNumber
-        )
+      const value = new ZeaEngine.Vec3(
+        xField.valueAsNumber,
+        yField.valueAsNumber,
+        zField.valueAsNumber
+      );
       if (!change) {
         change = new ParameterValueChange(parameter, value);
         appData.undoRedoManager.addChange(change);
-      }
-      else {
+      } else {
         change.update({ value });
       }
     };
@@ -101,7 +108,4 @@ export default class Vec3Widget extends BaseWidget {
   }
 }
 
-uxFactory.registerWidget(
-  Vec3Widget,
-  p => p instanceof Visualive.Vec3Parameter
-);
+uxFactory.registerWidget(Vec3Widget, p => p instanceof ZeaEngine.Vec3Parameter);

@@ -1,22 +1,19 @@
 module.exports = {
-  extends: 'airbnb',
   env: {
-    node: true,
-    es6: true,
     browser: true,
+    es6: true,
   },
+  extends: ['google', 'plugin:prettier/recommended'],
+  globals: {
+    Atomics: 'readonly',
+    SharedArrayBuffer: 'readonly',
+  },
+  parserOptions: {
+    ecmaVersion: 2018,
+    sourceType: 'module',
+  },
+  plugins: ['prettier'],
   rules: {
-    'arrow-parens': ['error', 'as-needed'],
-    'comma-dangle': [
-      'error',
-      {
-        arrays: 'ignore',
-        functions: 'never',
-        imports: 'ignore',
-        objects: 'ignore',
-      },
-    ],
-    'function-paren-newline': ['error', 'consistent'],
-    'object-curly-newline': ['error', { consistent: true }],
+    'prettier/prettier': 'error',
   },
 };

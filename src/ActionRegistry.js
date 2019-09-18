@@ -1,11 +1,17 @@
-
-
+/** Class representing an action registry. */
 class ActionRegistry {
+  /**
+   * Create an action registry.
+   */
   constructor() {
     this.actions = [];
-    this.actionAdded = new Visualive.Signal();
+    this.actionAdded = new ZeaEngine.Signal();
   }
 
+  /**
+   * The registerAction method.
+   * @param {any} action - The action param.
+   */
   registerAction(action) {
     const { name } = action;
 
@@ -17,17 +23,23 @@ class ActionRegistry {
     this._addAction(action);
   }
 
+  /**
+   * The _addAction method.
+   * @param {any} action - The action param.
+   */
   _addAction(action) {
     this.actions.push(action);
     this.actionAdded.emit(action);
   }
 
+  /**
+   * The getActions method.
+   * @return {any} The return value.
+   */
   getActions() {
     return this.actions;
   }
 }
 
 export default ActionRegistry;
-export {
-  ActionRegistry
-}
+export { ActionRegistry };

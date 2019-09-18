@@ -3,7 +3,17 @@ import BaseWidget from './BaseWidget.js';
 import uxFactory from '../UxFactory.js';
 import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 
+/**
+ * Class representing an item widget.
+ * @extends BaseWidget
+ */
 export default class ItemWidget extends BaseWidget {
+  /**
+   * Create an item widget.
+   * @param {any} parameter - The parameter value.
+   * @param {any} parentDomElem - The parentDomElem value.
+   * @param {any} appData - The appData value.
+   */
   constructor(parameter, parentDomElem, appData) {
     super(parameter);
 
@@ -12,21 +22,21 @@ export default class ItemWidget extends BaseWidget {
     input.className = 'mdl-textfield__input';
     input.setAttribute('id', parameter.getName());
     input.setAttribute('type', 'text');
-    input.setAttribute('value', value ? value.getPath().join('/') : "<none>");
+    input.setAttribute('value', value ? value.getPath().join('/') : '<none>');
     input.style['outline-color'] = 'grey';
     input.style['outline-width'] = '1px';
     input.style['outline-style'] = 'solid';
 
     const button = document.createElement('button');
-    button.appendChild(document.createTextNode("Pick"));
-    button.addEventListener('click', (e) =>{
+    button.appendChild(document.createTextNode('Pick'));
+    button.addEventListener('click', e => {
       appData.selectionManager.startPickingMode(
-        `Pick ${parameter.getName()} item.`, 
+        `Pick ${parameter.getName()} item.`,
         items => {
           const change = new ParameterValueChange(parameter, items[0]);
           appData.undoRedoManager.addChange(change);
-        }, 
-        parameter.getFilterFn(), 
+        },
+        parameter.getFilterFn(),
         1
       );
     });
@@ -35,22 +45,24 @@ export default class ItemWidget extends BaseWidget {
     parentDomElem.appendChild(input);
     parentDomElem.appendChild(button);
 
-    /////////////////////////////
+    // ///////////////////////////
     // SceneWidget Changes.
 
-    let changing = false;
+    const changing = false;
 
     parameter.valueChanged.connect(() => {
-      if (!changing){
+      if (!changing) {
         const value = parameter.getValue();
-        input.setAttribute('value', value ? value.getPath().join('/') : "<none>");
-      } 
+        input.setAttribute(
+          'value',
+          value ? value.getPath().join('/') : '<none>'
+        );
+      }
     });
-
   }
 }
 
 uxFactory.registerWidget(
   ItemWidget,
-  p => p instanceof Visualive.TreeItemParameter
+  p => p instanceof ZeaEngine.TreeItemParameter
 );

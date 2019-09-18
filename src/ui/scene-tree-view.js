@@ -1,8 +1,15 @@
 import uxFactory from './UxFactory.js';
 import ParameterValueChange from '../undoredo/ParameterValueChange.js';
 
-
+/** Class representing a tree item element. */
 class TreeItemElement {
+  /**
+   * Create a tree item element.
+   * @param {any} treeItem - The treeItem value.
+   * @param {any} parentDomElement - The parentDomElement value.
+   * @param {any} appData - The appData value.
+   * @param {boolean} expanded - The expanded value.
+   */
   constructor(treeItem, parentDomElement, appData, expanded = false) {
     this.treeItem = treeItem;
     this.parentDomElement = parentDomElement;
@@ -22,23 +29,23 @@ class TreeItemElement {
     this.toggleVisibilityBtn.innerHTML =
       '<i class="material-icons md-15">visibility</i>';
 
-
     this.toggleVisibilityBtn.addEventListener('click', () => {
       const visibleParam = this.treeItem.getParameter('Visible');
-      const change = new ParameterValueChange(visibleParam, !visibleParam.getValue());
+      const change = new ParameterValueChange(
+        visibleParam,
+        !visibleParam.getValue()
+      );
       this.appData.undoRedoManager.addChange(change);
     });
-
 
     const updateVisibility = () => {
       const visible = this.treeItem.getVisible();
       visible
         ? this.li.classList.remove('TreeNodesListItem--isHidden')
         : this.li.classList.add('TreeNodesListItem--isHidden');
-    }
+    };
     this.treeItem.visibilityChanged.connect(updateVisibility);
     updateVisibility();
-
 
     // Title element.
     this.titleElement = document.createElement('span');
@@ -46,13 +53,13 @@ class TreeItemElement {
     this.titleElement.textContent = treeItem.getName();
     const updateName = () => {
       this.titleElement.textContent = treeItem.getName();
-    }
+    };
     this.treeItem.nameChanged.connect(updateName);
-    
+
     this.li.appendChild(this.titleElement);
 
-    this.titleElement.addEventListener('click', (e) => {
-      if(appData.selectionManager.pickingModeActive()) {
+    this.titleElement.addEventListener('click', e => {
+      if (appData.selectionManager.pickingModeActive()) {
         appData.selectionManager.pick(this.treeItem);
         return;
       }
@@ -60,24 +67,26 @@ class TreeItemElement {
       appData.selectionManager.toggleItemSelection(this.treeItem, !e.ctrlKey);
     });
 
-    const updateSelected = ()=>{
+    const updateSelected = () => {
       const selected = this.treeItem.getSelected();
       selected
         ? this.li.classList.add('TreeNodesListItem--isSelected')
         : this.li.classList.remove('TreeNodesListItem--isSelected');
-    }
+    };
     this.treeItem.selectedChanged.connect(updateSelected);
-    updateSelected()
+    updateSelected();
 
     const updateHighlight = () => {
       const hilighted = this.treeItem.isHighlighted();
       hilighted
         ? this.li.classList.add('TreeNodesListItem--isHighlighted')
         : this.li.classList.remove('TreeNodesListItem--isHighlighted');
-      if(hilighted) {
-        this.titleElement.style['border-color'] = this.treeItem.getHighlight().toHex();
+      if (hilighted) {
+        this.titleElement.style[
+          'border-color'
+        ] = this.treeItem.getHighlight().toHex();
       }
-    }
+    };
     this.treeItem.highlightChanged.connect(updateHighlight);
     updateHighlight();
     this.parentDomElement.appendChild(this.li);
@@ -93,8 +102,7 @@ class TreeItemElement {
       this.expand();
     } else {
       const children = this.treeItem.getChildren();
-      if (children.length > 0)
-        this.collapse();
+      if (children.length > 0) this.collapse();
     }
 
     this.expandBtn.addEventListener('click', () => {
@@ -108,15 +116,19 @@ class TreeItemElement {
     });
 
     this.treeItem.childRemoved.connect((childItem, index) => {
-      this.childElements[index].destroy();
-      this.childElements.splice(index, 1);
+      if(this._expanded) {
+        this.childElements[index].destroy();
+        this.childElements.splice(index, 1);
+      }
     });
-
   }
 
+  /**
+   * The addComponent method.
+   * @param {any} component - The component param.
+   */
   addComponent(component) {
-
-    if(!this.subul) {
+    if (!this.subul) {
       this.subul = document.createElement('ul');
       // this.subul.className = 'TreeNodesList';
       this.titleElement.appendChild(this.subul);
@@ -132,8 +144,13 @@ class TreeItemElement {
     this.subul.appendChild(li);
   }
 
+  /**
+   * The addChild method.
+   * @param {any} treeItem - The treeItem param.
+   * @param {boolean} expanded - The expanded param.
+   */
   addChild(treeItem, expanded = false) {
-    if(this._expanded) {
+    if (this._expanded) {
       const childTreeItem = uxFactory.constructTreeItemElement(
         treeItem,
         this.ul,
@@ -141,12 +158,14 @@ class TreeItemElement {
         expanded
       );
       this.childElements.push(childTreeItem);
-    }
-    else {
+    } else {
       this.collapse();
     }
   }
 
+  /**
+   * The expand method.
+   */
   expand() {
     this._expanded = true;
     this.ul.classList.remove('TreeNodesList--collapsed');
@@ -155,13 +174,16 @@ class TreeItemElement {
 
     if (!this.childrenAlreadyCreated) {
       const children = this.treeItem.getChildren();
-      for (let child of children) {
+      for (const child of children) {
         this.addChild(child);
       }
       this.childrenAlreadyCreated = true;
     }
   }
 
+  /**
+   * The collapse method.
+   */
   collapse() {
     this.ul.classList.add('TreeNodesList--collapsed');
     this.expandBtn.innerHTML =
@@ -169,6 +191,9 @@ class TreeItemElement {
     this._expanded = false;
   }
 
+  /**
+   * The destroy method.
+   */
   destroy() {
     this.parentDomElement.removeChild(this.li);
   }
@@ -176,10 +201,21 @@ class TreeItemElement {
 
 uxFactory.registerTreeItemElement(
   TreeItemElement,
-  p => p instanceof Visualive.TreeItem
+  p => p instanceof ZeaEngine.TreeItem
 );
 
+/**
+ * Class representing a geom item element.
+ * @extends TreeItemElement
+ */
 class GeomItemElement extends TreeItemElement {
+  /**
+   * Create a geom item element.
+   * @param {any} treeItem - The treeItem value.
+   * @param {any} parentDomElement - The parentDomElement value.
+   * @param {any} appData - The appData value.
+   * @param {boolean} expanded - The expanded value.
+   */
   constructor(treeItem, parentDomElement, appData, expanded = false) {
     super(treeItem, parentDomElement, appData, expanded);
 
@@ -190,35 +226,54 @@ class GeomItemElement extends TreeItemElement {
 
 uxFactory.registerTreeItemElement(
   GeomItemElement,
-  p => p instanceof Visualive.GeomItem
+  p => p instanceof ZeaEngine.GeomItem
 );
 
+/** Class representing a scene tree view. */
 class SceneTreeView {
+  /**
+   * Create a scene tree view.
+   * @param {any} rootTreeItem - The rootTreeItem value.
+   * @param {any} appData - The appData value.
+   */
   constructor(rootTreeItem, appData) {
     this.appData = appData;
 
     this.ul = document.createElement('ul');
     this.ul.className = 'TreeNodesList TreeNodesList--root';
 
-
-    this.rootElement = new TreeItemElement(rootTreeItem, this.ul, appData, true);
+    this.rootElement = new TreeItemElement(
+      rootTreeItem,
+      this.ul,
+      appData,
+      true
+    );
   }
 
+  /**
+   * The getDomElement method.
+   * @return {any} The return value.
+   */
   getDomElement() {
     return this.container;
   }
 
-
+  /**
+   * The mount method.
+   * @param {any} parentElement - The parentElement param.
+   */
   mount(parentElement) {
     this.parentDomElement = parentElement;
     this.parentDomElement.appendChild(this.ul);
   }
 
+  /**
+   * The unMount method.
+   * @param {any} parentElement - The parentElement param.
+   */
   unMount(parentElement) {
     this.parentDomElement.removeChild(this.ul);
   }
 }
 
-export {
-  SceneTreeView
-} ;
+export { SceneTreeView };

@@ -1,11 +1,19 @@
-// import * as Visualive from '@visualive/engine';
-
 import BaseWidget from './BaseWidget.js';
 
 import uxFactory from '../UxFactory.js';
 import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 
+/**
+ * Class representing a vec4 widget.
+ * @extends BaseWidget
+ */
 export default class Vec4Widget extends BaseWidget {
+  /**
+   * Create a vec4 widget.
+   * @param {any} parameter - The parameter value.
+   * @param {any} parentDomElem - The parentDomElem value.
+   * @param {any} appData - The appData value.
+   */
   constructor(parameter, parentDomElem, appData) {
     super(parameter);
 
@@ -70,7 +78,7 @@ export default class Vec4Widget extends BaseWidget {
 
     parentDomElem.appendChild(container);
 
-    /////////////////////////////
+    // ///////////////////////////
     // SceneWidget Changes.
 
     let change = undefined;
@@ -86,7 +94,7 @@ export default class Vec4Widget extends BaseWidget {
     });
 
     const valueChange = () => {
-      const value = new Visualive.Vec4(
+      const value = new ZeaEngine.Vec4(
         xField.valueAsNumber,
         yField.valueAsNumber,
         zField.valueAsNumber,
@@ -117,7 +125,4 @@ export default class Vec4Widget extends BaseWidget {
   }
 }
 
-uxFactory.registerWidget(
-  Vec4Widget,
-  p => p instanceof Visualive.Vec4Parameter
-);
+uxFactory.registerWidget(Vec4Widget, p => p instanceof ZeaEngine.Vec4Parameter);

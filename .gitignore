@@ -1,4 +1,6 @@
-.cache/
-node_modules/
-tmuxp.json
 dist/
+node_modules/
+.cache/
+
+package-lock.json
+.tmuxp.json
