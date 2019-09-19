@@ -61,12 +61,13 @@ class SelectionTool extends BaseTool {
    * @return {any} The return value.
    */
   onMouseDown(event) {
-    if (event.button == 0) {
+    if (event.button == 0 && !event.altKey) {
       console.log('onMouseDown');
       this.mouseDownPos = event.mousePos;
       this.dragging = false;
       return true;
     }
+    return false;
   }
 
   // eslint-disable-next-line require-jsdoc

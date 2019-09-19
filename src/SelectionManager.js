@@ -1,6 +1,7 @@
 import UndoRedoManager from './undoredo/UndoRedoManager.js';
 import Change from './undoredo/Change.js';
 import XfoHandle from './sceneWidgets/XfoHandle.js';
+import SelectionGroup from './SelectionGroup.js';
 
 /** Class representing a selection change.
  * @extends Change
@@ -130,12 +131,10 @@ class SelectionManager {
     this.selectionChanged = new ZeaEngine.Signal();
     this.leadSelectionChanged = new ZeaEngine.Signal();
 
-    this.selectionGroup = new ZeaEngine.Group('selection');
+    this.selectionGroup = new SelectionGroup();
     this.selectionGroup
       .getParameter('InitialXfoMode')
       .setValue(ZeaEngine.Group.INITIAL_XFO_MODES.average);
-    this.selectionGroup.propagateSelectionToItems = true;
-    this.selectionGroup.propagateSelectionChangesFromItems = false;
     this.selectionGroup.setSelected(true);
 
     const size = 0.1;
@@ -247,14 +246,12 @@ class SelectionManager {
   }
 
   /**
-   * The updateGizmos method.
+   * updateHandleVisiblity determines of the Xfo Manipulation
+   * handle should be displayed or not.
    */
-  updateGizmos() {
+  updateHandleVisiblity() {
     const selection = this.selectionGroup.getItems();
     const visible = Array.from(selection).length > 0;
-    if (Array.from(selection).length > 0)
-      this.selectionGroup.recalcInitialXfo();
-
     this.xfoHandle.setVisible(visible);
     this.__renderer.requestRedraw();
   }
@@ -282,18 +279,18 @@ class SelectionManager {
     }
     for (const treeItem of selection) {
       if (!newSelection.has(treeItem)) {
-        treeItem.setSelected(false);
+        // treeItem.setSelected(false);
         selection.delete(treeItem);
       }
     }
 
     this.selectionGroup.setItems(selection);
-    this.updateGizmos();
 
     // Deselecting can change the lead selected item.
     if (selection.size > 0)
       this.__setLeadSelection(selection.values().next().value);
     else this.__setLeadSelection();
+    this.updateHandleVisiblity();
 
     if (createUndo) {
       const change = new SelectionChange(this, prevSelection, selection);
@@ -338,9 +335,9 @@ class SelectionManager {
       }
 
       if (clear) {
-        Array.from(selection).forEach(item => {
-          item.setSelected(false);
-        });
+        // Array.from(selection).forEach(item => {
+        //   item.setSelected(false);
+        // });
         selection.clear();
       }
     }
@@ -351,12 +348,12 @@ class SelectionManager {
       selection.add(treeItem);
       sel = true;
     } else {
-      treeItem.setSelected(false);
+      // treeItem.setSelected(false);
       selection.delete(treeItem);
       sel = false;
     }
 
-    const preExpandSelSize = selection.size;
+    // const preExpandSelSize = selection.size;
 
     // Now expand the selection to the subtree.
     // treeItem.traverse((subTreeItem)=>{
@@ -378,7 +375,7 @@ class SelectionManager {
 
     this.selectionGroup.setItems(selection);
 
-    if (sel && preExpandSelSize === 1) {
+    if (sel && selection.size === 1) {
       this.__setLeadSelection(treeItem);
     } else if (!sel) {
       // Deselecting can change the lead selected item.
@@ -390,7 +387,7 @@ class SelectionManager {
     const change = new SelectionChange(this, prevSelection, selection);
     this.appData.undoRedoManager.addChange(change);
 
-    this.updateGizmos();
+    this.updateHandleVisiblity();
     this.selectionChanged.emit(prevSelection);
   }
 
@@ -406,11 +403,12 @@ class SelectionManager {
     if (newChange) {
       prevSelection = new Set(selection);
     }
-    for (const treeItem of selection) {
-      treeItem.setSelected(false);
-    }
+    // for (const treeItem of selection) {
+    //   treeItem.setSelected(false);
+    // }
     selection.clear();
     this.selectionGroup.setItems(selection);
+    this.updateHandleVisiblity();
     if (newChange) {
       const change = new SelectionChange(this, prevSelection, selection);
       this.appData.undoRedoManager.addChange(change);
@@ -447,7 +445,7 @@ class SelectionManager {
     } else if (selection.size === 0) {
       this.__setLeadSelection();
     }
-    this.updateGizmos();
+    this.updateHandleVisiblity();
     this.selectionChanged.emit(selection);
   }
 
@@ -461,7 +459,7 @@ class SelectionManager {
 
     for (const treeItem of treeItems) {
       if (treeItem.getSelected()) {
-        treeItem.setSelected(false);
+        // treeItem.setSelected(false);
         selection.delete(selectedParam);
         // treeItem.traverse((subTreeItem)=>{
         //   if(!selection.has(subTreeItem)) {
@@ -481,7 +479,7 @@ class SelectionManager {
     } else if (selection.size === 0) {
       this.__setLeadSelection();
     }
-    this.updateGizmos();
+    this.updateHandleVisiblity();
     this.selectionChanged.emit(selection);
   }
 
