@@ -2,95 +2,9 @@ import BaseWidget from './BaseWidget.js';
 
 import uxFactory from '../UxFactory.js';
 
-// class ItemSetSelectionChange extends Change {
-//   constructor(param, newValue) {
-//     if(param) {
-//       super(param ? (param.getName()+ ' Changed') : 'ParameterValueChange');
-//       this.__prevValue = param.getValue();
-//       this.__param = param;
-//       if(newValue != undefined) {
-//         this.__nextValue = newValue;
-//         this.__param.setValue(this.__nextValue, ZeaEngine.ValueSetMode.USER_SETVALUE);
-//       }
-//     }
-//     else {
-//       super();
-//     }
-//   }
-
-//   getPrevValue() {
-//     return this.__prevValue;
-//   }
-//   getNextValue() {
-//     return this.__nextValue;
-//   }
-
-//   undo() {
-//     if(!this.__param)
-//       return;
-//     this.__param.setValue(this.__prevValue, ZeaEngine.ValueSetMode.USER_SETVALUE);
-//   }
-
-//   redo() {
-//     if(!this.__param)
-//       return;
-//     this.__param.setValue(this.__nextValue, ZeaEngine.ValueSetMode.USER_SETVALUE);
-//   }
-
-//   update(updateData) {
-//     if(!this.__param)
-//       return;
-//     this.__nextValue = updateData.value;
-//     this.__param.setValue(this.__nextValue, ZeaEngine.ValueSetMode.USER_SETVALUE);
-//     this.updated.emit(updateData);
-//   }
-
-//   toJSON(appData) {
-//     const j = {
-//       name: this.name,
-//       paramPath: this.__param.getPath()
-//     }
-//     if(this.__nextValue != undefined) {
-//       if (this.__nextValue.toJSON) {
-//         j.value = this.__nextValue.toJSON();
-//       } else {
-//         j.value = this.__nextValue;
-//       }
-//     }
-//     return j;
-//   }
-
-//   fromJSON(j, appData) {
-//     let param = appData.scene.getRoot().resolvePath(j.paramPath, 1);
-//     if(!param || !(param instanceof ZeaEngine.Parameter)) {
-//       console.warn("resolvePath is unable to resolve", j.paramPath);
-//       return;
-//     }
-//     this.__param = param;
-//     this.__prevValue = this.__param.getValue();
-//     if (this.__prevValue.clone)
-//       this.__nextValue = this.__prevValue.clone();
-//     else
-//       this.__nextValue = this.__prevValue;
-
-//     this.name = this.__param.getName() + ' Changed';
-//     if(j.value != undefined)
-//       this.changeFromJSON(j);
-//   }
-
-//   changeFromJSON(j) {
-//     if(!this.__param)
-//       return;
-//     if (this.__nextValue.fromJSON)
-//       this.__nextValue.fromJSON(j.value);
-//     else
-//       this.__nextValue = j.value;
-//     this.__param.setValue(this.__nextValue, ZeaEngine.ValueSetMode.USER_SETVALUE);
-//   }
-// }
 
 /**
- * Class representing an item set widget.
+ * Class for displaying a StructParameter in an inspector.
  * @extends BaseWidget
  */
 export default class StructWidget extends BaseWidget {
@@ -123,7 +37,7 @@ export default class StructWidget extends BaseWidget {
         labelElem.appendChild(document.createTextNode(name));
         li.appendChild(labelElem);
 
-        const widget = new reg.widget(item, li, this.appData);
+        const widget = new reg.widget(item, li, appData);
         memberWidgets[index] = widget;
         
         ul_listitems.appendChild(li);

@@ -26,22 +26,6 @@ class NameValueChange extends Change {
   }
 
   /**
-   * The getPrevValue method.
-   * @return {any} The return value.
-   */
-  getPrevValue() {
-    return this.__prevName;
-  }
-
-  /**
-   * The getNextValue method.
-   * @return {any} The return value.
-   */
-  getNextValue() {
-    return this.__nextName;
-  }
-
-  /**
    * The undo method.
    */
   undo() {

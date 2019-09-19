@@ -29,22 +29,6 @@ class ParameterValueChange extends Change {
   }
 
   /**
-   * The getPrevValue method.
-   * @return {any} The return value.
-   */
-  getPrevValue() {
-    return this.__prevValue;
-  }
-
-  /**
-   * The getNextValue method.
-   * @return {any} The return value.
-   */
-  getNextValue() {
-    return this.__nextValue;
-  }
-
-  /**
    * The undo method.
    */
   undo() {
@@ -116,7 +100,7 @@ class ParameterValueChange extends Change {
     if (this.__prevValue.clone) this.__nextValue = this.__prevValue.clone();
     else this.__nextValue = this.__prevValue;
 
-    this.name = this.__param.getName() + ' Changed';
+    this.name = j.name;
     if (j.value != undefined) this.changeFromJSON(j);
   }
 
