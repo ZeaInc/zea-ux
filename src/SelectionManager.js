@@ -39,8 +39,8 @@ class SelectionChange extends Change {
    * @param {any} appData - The appData param.
    * @return {any} The return value.
    */
-  toJSON(appData) {
-    const j = super.toJSON(appData);
+  toJSON(context) {
+    const j = super.toJSON(context);
 
     const itemPaths = [];
     for (const treeItem of this.__newSelection) {
@@ -53,17 +53,18 @@ class SelectionChange extends Change {
   /**
    * The fromJSON method.
    * @param {any} j - The j param.
-   * @param {any} appData - The appData param.
+   * @param {any} context - The context param.
    */
-  fromJSON(j, appData) {
-    super.fromJSON(j, appData);
-
-    this.__selectionManager = appData.selectionManager;
+  fromJSON(j, context) {
+    super.fromJSON(j, context);
+    
+    this.__selectionManager = context.appData.selectionManager;
     this.__prevSelection = new Set(this.__selectionManager.getSelection());
 
+    const sceneRoot = context.appData.scene.getRoot();
     const newSelection = new Set();
     for (const itemPath of j.itemPaths) {
-      newSelection.add(appData.scene.getRoot().resolvePath(itemPath, 1));
+      newSelection.add(sceneRoot.resolvePath(itemPath, 1));
     }
     this.__newSelection = newSelection;
 

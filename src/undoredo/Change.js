@@ -36,19 +36,19 @@ export default class Change {
 
   /**
    * The toJSON method.
-   * @param {any} appData - The appData param.
+   * @param {any} context - The appData param.
    * @return {any} The return value.
    */
-  toJSON(appData) {
+  toJSON(context) {
     return {};
   }
 
   /**
    * The fromJSON method.
    * @param {any} j - The j param.
-   * @param {any} appData - The appData param.
+   * @param {any} context - The context param.
    */
-  fromJSON(j, appData) {}
+  fromJSON(j, context) {}
 
   /**
    * The changeFromJSON method.

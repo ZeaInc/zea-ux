@@ -66,10 +66,10 @@ class TreeItemsRemoveChange extends Change {
 
   /**
    * The toJSON method.
-   * @treeItem {any} appData - The appData treeItem.
+   * @treeItem {any} context - The context treeItem.
    * @return {any} The return value.
    */
-  toJSON(appData) {
+  toJSON(context) {
     const j = {
       name: this.name,
       items: [],
@@ -77,7 +77,7 @@ class TreeItemsRemoveChange extends Change {
       itemIndices: this.itemIndices
     };
     this.items.forEach(item => {
-      j.items.push(item.toJSON());
+      j.items.push(item.toJSON(context));
     });
     return j;
   }
@@ -85,12 +85,13 @@ class TreeItemsRemoveChange extends Change {
   /**
    * The fromJSON method.
    * @treeItem {any} j - The j treeItem.
-   * @treeItem {any} appData - The appData treeItem.
+   * @treeItem {any} context - The context treeItem.
    */
-  fromJSON(j, appData) {
+  fromJSON(j, context) {
     this.name = j.name;
+    const sceneRoot = context.appData.scene.getRoot();
     j.itemPaths.forEach(itemPath => {
-      const item = appData.scene.getRoot().resolvePath(itemPath, 1);
+      const item = sceneRoot.resolvePath(itemPath, 1);
       if (!item) {
         console.warn('resolvePath is unable to resolve', itemPath);
         return;

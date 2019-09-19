@@ -55,10 +55,10 @@ class CreateLineChange extends CreateGeomChange {
   /**
    * The fromJSON method.
    * @param {any} j - The j param.
-   * @param {any} appData - The appData param.
+   * @param {any} context - The context param.
    */
-  fromJSON(j, appData) {
-    super.fromJSON(j, appData);
+  fromJSON(j, context) {
+    super.fromJSON(j, context);
     if (j.color) {
       const color = new ZeaEngine.Color();
       color.fromJSON(j.color);

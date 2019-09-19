@@ -47,13 +47,13 @@ class TreeItemAddChange extends Change {
 
   /**
    * The toJSON method.
-   * @treeItem {any} appData - The appData treeItem.
+   * @treeItem {any} context - The context treeItem.
    * @return {any} The return value.
    */
-  toJSON(appData) {
+  toJSON(context) {
     const j = {
       name: this.name,
-      treeItem: this.treeItem.toJSON(),
+      treeItem: this.treeItem.toJSON(context),
       treeItemPath: this.treeItem.getPath(),
       treeItemIndex: this.treeItemIndex,
     };
@@ -63,9 +63,9 @@ class TreeItemAddChange extends Change {
   /**
    * The fromJSON method.
    * @treeItem {any} j - The j treeItem.
-   * @treeItem {any} appData - The appData treeItem.
+   * @treeItem {any} context - The context treeItem.
    */
-  fromJSON(j, appData) {
+  fromJSON(j, context) {
 
     const treeItem = ZeaEngine.sgFactory.constructClass(j.treeItem.type);
     if (!treeItem) {
@@ -76,7 +76,7 @@ class TreeItemAddChange extends Change {
     this.treeItem = treeItem;
     this.treeItem.addRef(this);
     
-    this.treeItem.fromJSON(childJson, context, flags);
+    this.treeItem.fromJSON(j.treeItem, context);
     this.treeItemIndex = this.owner.addChild(this.treeItem, false, false);
   }
 

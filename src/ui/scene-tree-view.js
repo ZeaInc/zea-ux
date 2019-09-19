@@ -70,6 +70,7 @@ class TreeItemElement {
     });
 
     const updateSelected = () => {
+      console.log("updateSelected:", this.treeItem.getPath());
       const selected = this.treeItem.getSelected();
       selected
         ? this.li.classList.add('TreeNodesListItem--isSelected')

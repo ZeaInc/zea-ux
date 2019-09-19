@@ -86,8 +86,8 @@ class CreateFreehandLineChange extends CreateGeomChange {
    * @param {any} appData - The appData param.
    * @return {any} The return value.
    */
-  toJSON(appData) {
-    const j = super.toJSON();
+  toJSON(context) {
+    const j = super.toJSON(context);
     j.lineThickness = this.line.lineThickness;
     j.color = this.geomItem
       .getMaterial()
@@ -101,7 +101,7 @@ class CreateFreehandLineChange extends CreateGeomChange {
    * @param {any} j - The j param.
    * @param {any} appData - The appData param.
    */
-  fromJSON(j, appData) {
+  fromJSON(j, context) {
     // Need to set line thickness before the geom is added to the tree.
     if (j.lineThickness) {
       this.line.lineThickness = j.lineThickness;
@@ -117,7 +117,7 @@ class CreateFreehandLineChange extends CreateGeomChange {
       .getParameter('Color')
       .setValue(color);
 
-    super.fromJSON(j, appData);
+    super.fromJSON(j, context);
   }
 }
 UndoRedoManager.registerChange(

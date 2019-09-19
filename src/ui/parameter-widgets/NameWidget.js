@@ -57,39 +57,33 @@ class NameValueChange extends Change {
    * @param {any} appData - The appData param.
    * @return {any} The return value.
    */
-  toJSON(appData) {
+  toJSON(context) {
     const j = {
+      prevName: this.__prevName,
       name: this.name,
       itemPath: this.__item.getPath(),
     };
-    if (this.__nextName != undefined) {
-      if (this.__nextName.toJSON) {
-        j.value = this.__nextName.toJSON();
-      } else {
-        j.value = this.__nextName;
-      }
-    }
     return j;
   }
 
   /**
    * The fromJSON method.
    * @param {any} j - The j param.
-   * @param {any} appData - The appData param.
+   * @param {any} context - The context param.
    */
-  fromJSON(j, appData) {
-    const item = appData.scene.getRoot().resolvePath(j.itemPath, 1);
+  fromJSON(j, context) {
+    const sceneRoot = context.appData.scene.getRoot();
+    const item = sceneRoot.resolvePath(j.itemPath, 1);
     if (!item || !(item instanceof ZeaEngine.itemeter)) {
       console.warn('resolvePath is unable to resolve', j.itemPath);
       return;
     }
     this.__item = item;
     this.__prevName = this.__item.getName();
-    if (this.__prevName.clone) this.__nextName = this.__prevName.clone();
-    else this.__nextName = this.__prevName;
+    this.__nextName = j.name;
+    this.__item.setName(this.__nextName);
 
     this.name = this.__item.getName() + ' Changed';
-    if (j.value != undefined) this.changeFromJSON(j);
   }
 
   /**
@@ -98,8 +92,7 @@ class NameValueChange extends Change {
    */
   changeFromJSON(j) {
     if (!this.__item) return;
-    if (this.__nextName.fromJSON) this.__nextName.fromJSON(j.value);
-    else this.__nextName = j.value;
+    this.__nextName = j.value;
     this.__item.setName(this.__nextName);
   }
 }

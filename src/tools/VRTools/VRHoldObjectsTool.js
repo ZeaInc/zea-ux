@@ -65,11 +65,11 @@ class HoldObjectsChange extends Change {
 
   /**
    * The toJSON method.
-   * @param {any} appData - The appData param.
+   * @param {any} context - The context param.
    * @return {any} The return value.
    */
-  toJSON(appData) {
-    const j = super.toJSON(appData);
+  toJSON(context) {
+    const j = super.toJSON(context);
 
     const itemPaths = [];
     for (let i = 0; i < this.__selection.length; i++) {
@@ -87,16 +87,17 @@ class HoldObjectsChange extends Change {
   /**
    * The fromJSON method.
    * @param {any} j - The j param.
-   * @param {any} appData - The appData param.
+   * @param {any} context - The context param.
    */
-  fromJSON(j, appData) {
-    super.fromJSON(j, appData);
+  fromJSON(j, context) {
+    super.fromJSON(j, context);
 
+    const sceneRoot = context.appData.scene.getRoot();
     const newSelection = [];
     for (let i = 0; i < j.itemPaths.length; i++) {
       const itemPath = j.itemPaths[i];
       if (itemPath)
-        newSelection[i] = appData.scene.getRoot().resolvePath(itemPath, 1);
+        newSelection[i] = sceneRoot.resolvePath(itemPath, 1);
     }
     this.__selection = newSelection;
   }
