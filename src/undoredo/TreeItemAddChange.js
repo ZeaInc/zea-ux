@@ -20,6 +20,8 @@ class TreeItemAddChange extends Change {
       this.prevSelection = new Set(this.selectionManager.getSelection());
       this.treeItemIndex = this.owner.addChild(this.treeItem);
       this.selectionManager.setSelection(new Set([this.treeItem]));
+
+      this.treeItem.addRef(this);
     } else {
       super();
     }
@@ -72,12 +74,19 @@ class TreeItemAddChange extends Change {
     }
     this.name = j.name;
     this.treeItem = treeItem;
+    this.treeItem.addRef(this);
     
     this.treeItem.fromJSON(childJson, context, flags);
     this.treeItemIndex = this.owner.addChild(this.treeItem, false, false);
+  }
+
+  destroy() { 
+    this.treeItem.removeRef(this);
   }
 }
 
 UndoRedoManager.registerChange('TreeItemAddChange', TreeItemAddChange);
 
-export default TreeItemAddChange;
+export {
+  TreeItemAddChange
+};
