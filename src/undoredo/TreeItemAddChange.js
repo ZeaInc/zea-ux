@@ -19,7 +19,7 @@ class TreeItemAddChange extends Change {
       this.selectionManager = selectionManager;
       this.prevSelection = new Set(this.selectionManager.getSelection());
       this.treeItemIndex = this.owner.addChild(this.treeItem);
-      this.selectionManager.setSelection(new Set([this.treeItem]));
+      this.selectionManager.setSelection(new Set([this.treeItem]), false);
 
       this.treeItem.addRef(this);
     } else {
@@ -31,18 +31,41 @@ class TreeItemAddChange extends Change {
    * The undo method.
    */
   undo() {
+    if (this.treeItem instanceof ZeaEngine.Operator) {
+      const op = this.treeItem;
+      op.detach();
+    } else if (this.treeItem instanceof ZeaEngine.TreeItem) {
+      this.treeItem.traverse(subTreeItem => {
+        if (subTreeItem instanceof ZeaEngine.Operator) {
+          const op = subTreeItem;
+          op.detach();
+        }
+      }, false);
+    }
     this.owner.removeChild(this.treeItemIndex);
     if (this.selectionManager)
-      this.selectionManager.setSelection(this.prevSelection);
+      this.selectionManager.setSelection(this.prevSelection, false);
   }
 
   /**
    * The redo method.
    */
   redo() {
+    // Now re-attach all the detached operators.
+    if (this.treeItem instanceof ZeaEngine.Operator) {
+      const op = this.treeItem;
+      op.reattach();
+    } else if (subTreeItem instanceof ZeaEngine.TreeItem) {
+      this.treeItem.traverse(subTreeItem => {
+        if (subTreeItem instanceof ZeaEngine.Operator) {
+          const op = subTreeItem;
+          op.reattach();
+        }
+      }, false);
+    }
     this.owner.addChild(this.treeItem);
     if (this.selectionManager)
-      this.selectionManager.setSelection(new Set([this.treeItem]));
+      this.selectionManager.setSelection(new Set([this.treeItem]), false);
   }
 
   /**

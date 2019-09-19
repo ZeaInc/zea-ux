@@ -132,7 +132,6 @@ class SelectionTool extends BaseTool {
         );
         const geomItems = event.viewport.getGeomItemsInRect(tl, br);
 
-        console.log(geomItems);
         if (this.appData.selectionManager.pickingModeActive()) {
           this.appData.selectionManager.pick(geomItems);
         } else {

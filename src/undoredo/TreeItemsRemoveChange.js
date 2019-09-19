@@ -11,32 +11,47 @@ class TreeItemsRemoveChange extends Change {
    * @treeItem {any} treeItem - The treeItem value.
    * @treeItem {any} newValue - The newValue value.
    */
-  constructor(items, selectionManager) {
+  constructor(items, appData) {
     super();
     this.items = [];
     this.itemOwners = [];
     this.itemPaths = [];
     this.itemIndices = [];
     if (items) {
-      this.selectionManager = selectionManager;
+      this.selectionManager = appData.selectionManager;
       this.prevSelection = new Set(this.selectionManager.getSelection());
       this.items = items;
       this.newSelection = new Set(this.prevSelection);
       
       const itemNames = [];
       this.items.forEach(item => {
-        itemNames.push(item.getName());
-        item.addRef(this);
         const owner = item.getOwner();
         const itemIndex = owner.getChildIndex(item);
+        itemNames.push(item.getName());
+        item.addRef(this);
         this.itemOwners.push(owner);
         this.itemPaths.push(item.getPath());
         this.itemIndices.push(itemIndex);
-        owner.removeChild(itemIndex);
+
         if (this.selectionManager && this.newSelection.has(item))
           this.newSelection.delete(item);
+        if (item instanceof ZeaEngine.Operator) {
+          const op = item;
+          op.detach();
+        } else if (item instanceof ZeaEngine.TreeItem) {
+          item.traverse(subTreeItem => {
+            if (subTreeItem instanceof ZeaEngine.Operator) {
+              const op = subTreeItem;
+              op.detach();
+            }
+            if (this.selectionManager && this.newSelection.has(subTreeItem))
+              this.newSelection.delete(subTreeItem);
+          }, false);
+        }
+
+        owner.removeChild(itemIndex);
       });
-      this.selectionManager.setSelection(this.newSelection);
+      this.selectionManager.setSelection(this.newSelection, false);
       
       this.name = (itemNames + " Deleted");
     }
@@ -48,9 +63,22 @@ class TreeItemsRemoveChange extends Change {
   undo() {
     this.items.forEach((item, index) => {
       this.itemOwners[index].insertChild(item, this.itemIndices[index], false, false);
+      
+      // Now re-attach all the detached operators.
+      if (item instanceof ZeaEngine.Operator) {
+        const op = item;
+        op.reattach();
+      } else if (subTreeItem instanceof ZeaEngine.TreeItem) {
+        item.traverse(subTreeItem => {
+          if (subTreeItem instanceof ZeaEngine.Operator) {
+            const op = subTreeItem;
+            op.reattach();
+          }
+        }, false);
+      }
     });
     if (this.selectionManager)
-      this.selectionManager.setSelection(this.prevSelection);
+      this.selectionManager.setSelection(this.prevSelection, false);
   }
 
   /**
@@ -58,18 +86,32 @@ class TreeItemsRemoveChange extends Change {
    */
   redo() {
     if (this.selectionManager)
-      this.selectionManager.setSelection(this.newSelection);
+      this.selectionManager.setSelection(this.newSelection, false);
+
+      // Now re-detach all the operators.
     this.items.forEach((item, index) => {
       this.itemOwners[index].removeChild(this.itemIndices[index]);
+      
+      if (item instanceof ZeaEngine.Operator) {
+        const op = item;
+        op.detach();
+      } else if (subTreeItem instanceof ZeaEngine.TreeItem) {
+        item.traverse(subTreeItem => {
+          if (subTreeItem instanceof ZeaEngine.Operator) {
+            const op = subTreeItem;
+            op.detach();
+          }
+        }, false);
+      }
     });
   }
 
   /**
    * The toJSON method.
-   * @treeItem {any} context - The context treeItem.
+   * @treeItem {any} appData - The appData treeItem.
    * @return {any} The return value.
    */
-  toJSON(context) {
+  toJSON(appData) {
     const j = {
       name: this.name,
       items: [],
@@ -77,7 +119,7 @@ class TreeItemsRemoveChange extends Change {
       itemIndices: this.itemIndices
     };
     this.items.forEach(item => {
-      j.items.push(item.toJSON(context));
+      j.items.push(item.toJSON());
     });
     return j;
   }
@@ -85,13 +127,12 @@ class TreeItemsRemoveChange extends Change {
   /**
    * The fromJSON method.
    * @treeItem {any} j - The j treeItem.
-   * @treeItem {any} context - The context treeItem.
+   * @treeItem {any} appData - The appData treeItem.
    */
-  fromJSON(j, context) {
+  fromJSON(j, appData) {
     this.name = j.name;
-    const sceneRoot = context.appData.scene.getRoot();
     j.itemPaths.forEach(itemPath => {
-      const item = sceneRoot.resolvePath(itemPath, 1);
+      const item = appData.scene.getRoot().resolvePath(itemPath, 1);
       if (!item) {
         console.warn('resolvePath is unable to resolve', itemPath);
         return;
@@ -101,6 +142,15 @@ class TreeItemsRemoveChange extends Change {
       this.itemPaths.push(item.getPath());
       this.itemIndices.push(owner.getChildIndex(item));
     });
+  }
+
+  /**
+   * The destroy method cleans up any data requiring manual cleanup.
+   * Deleted items still on the undo stack are then flushed and any
+   * GPU resoruces cleaned up.
+   */
+  destroy() {
+    this.items.forEach(item => item.removeRef(this));
   }
 }
 

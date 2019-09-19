@@ -220,6 +220,7 @@ class SessionSync {
       
       const context = {
         appData,
+        makeRelative: path => path,
         resolvePath: (path, cb) => {
           // Note: Why not return a Promise here?
           // Promise evaluation is always async, so
