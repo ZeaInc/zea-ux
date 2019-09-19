@@ -18,8 +18,6 @@ export default class ParameterOwnerWidget extends BaseWidget {
   constructor(parameter, parentDomElem, appData) {
     super(parameter);
 
-    const parameteOwner = parameter.getValue();
-
     const ul = document.createElement('ul');
     ul.className = 'list pa0';
     const linameWidget = document.createElement('li');
@@ -27,16 +25,27 @@ export default class ParameterOwnerWidget extends BaseWidget {
     parentDomElem.appendChild(ul);
     ul.appendChild(linameWidget);
     ul.appendChild(liparameterContainer);
-    if (parameteOwner instanceof ZeaEngine.BaseItem)
-      this.nameWidget = new NameWidget(parameteOwner, linameWidget, appData);
-    this.parameterContainer = new ParameterContainer(
-      parameteOwner,
-      liparameterContainer,
-      appData
-    );
+
+    const displayParameterOwner = parameterOwner => {
+      if (parameterOwner instanceof ZeaEngine.BaseItem)
+        this.nameWidget = new NameWidget(parameterOwner, linameWidget, appData);
+      this.parameterContainer = new ParameterContainer(
+        parameterOwner,
+        liparameterContainer,
+        appData
+      );
+    };
+    const parameterOwner = parameter.getValue();
+    if (parameterOwner) {
+      displayParameterOwner(parameterOwner);
+    }
 
     parameter.valueChanged.connect(() => {
-      this.parameterContainer.setParameterOwner(parameter.getValue());
+      while (linameWidget.firstChild)
+        linameWidget.removeChild(linameWidget.firstChild);
+      while (liparameterContainer.firstChild)
+        liparameterContainer.removeChild(liparameterContainer.firstChild);
+      displayParameterOwner(parameter.getValue());
     });
   }
 }

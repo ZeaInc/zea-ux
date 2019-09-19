@@ -9,6 +9,7 @@ export * from './Vec3Widget.js';
 export * from './Vec4Widget.js';
 export * from './XfoWidget.js';
 export * from './BBoxWidget.js';
+export * from './ImageWidget.js';
 export * from './MaterialColorWidget.js';
 export * from './MultiChoiceWidget.js';
 
