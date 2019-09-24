@@ -314,7 +314,8 @@ class Panels {
    * Create panels.
    * @param {any} parentDomElement - The parentDomElement value.
    */
-  constructor(parentDomElement) {
+  constructor(parentDomElement, options) {
+    this.options = options;
     if (parentDomElement) this.mount(parentDomElement);
   }
 
@@ -327,8 +328,10 @@ class Panels {
     this.sidePanelsWrapper.className = 'PanelsWrapper flex overflow-hidden';
     parentDomElement.appendChild(this.sidePanelsWrapper);
 
-    this.leftPanel = new SidePanel(0);
-    this.leftPanel.mount(this.sidePanelsWrapper);
+    if(this.options.leftPanel == true) {
+      this.leftPanel = new SidePanel(0);
+      this.leftPanel.mount(this.sidePanelsWrapper);
+    }
 
     this.centerDomElement = document.createElement('div');
     this.centerDomElement.className =
@@ -336,11 +339,15 @@ class Panels {
     this.centerDomElement.id = 'viewport';
     this.sidePanelsWrapper.appendChild(this.centerDomElement);
 
-    this.rightPanel = new SidePanel(1);
-    this.rightPanel.mount(this.sidePanelsWrapper);
+    if(this.options.rightPanel == true) {
+      this.rightPanel = new SidePanel(1);
+      this.rightPanel.mount(this.sidePanelsWrapper);
+    }
 
-    this.bottomPanel = new BottomPanel();
-    this.bottomPanel.mount(parentDomElement);
+    if(this.options.bottomPanel == true) {
+      this.bottomPanel = new BottomPanel();
+      this.bottomPanel.mount(parentDomElement);
+    }
   }
 
   /**
