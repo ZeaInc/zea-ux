@@ -124,9 +124,12 @@ UndoRedoManager.registerChange(
 class SelectionManager {
   /**
    * Create a selection manager.
-   * @param {any} appData - The appData value.
+   * @param {object} options - The options object.
+   * @param {object} appData - The appData value.
    */
-  constructor(appData) {
+  constructor(options, appData) {
+    if (!appData) console.error('Selection Manager needs options and appData.');
+
     this.appData = appData;
     this.leadSelection = undefined;
     this.selectionChanged = new ZeaEngine.Signal();
@@ -138,103 +141,67 @@ class SelectionManager {
       .setValue(ZeaEngine.Group.INITIAL_XFO_MODES.average);
     this.selectionGroup.setSelected(true);
 
-    const size = 0.1;
-    const thickness = size * 0.02;
-    this.xfoHandle = new XfoHandle(size, thickness);
-    this.xfoHandle.setTargetParam(
-      this.selectionGroup.getParameter('GlobalXfo'),
-      false
-    );
-    this.xfoHandle.setVisible(false);
-    // this.xfoHandle.showHandles('Translate')
-    // this.xfoHandle.showHandles('Rotate')
-    // this.xfoHandle.showHandles('Scale')
-    this.selectionGroup.addChild(this.xfoHandle);
+    if (options.enableXfoHandles === true) {
+      const size = 0.1;
+      const thickness = size * 0.02;
+      this.xfoHandle = new XfoHandle(size, thickness);
+      this.xfoHandle.setTargetParam(
+        this.selectionGroup.getParameter('GlobalXfo'),
+        false
+      );
+      this.xfoHandle.setVisible(false);
+      // this.xfoHandle.showHandles('Translate')
+      // this.xfoHandle.showHandles('Rotate')
+      // this.xfoHandle.showHandles('Scale')
+      this.selectionGroup.addChild(this.xfoHandle);
 
-    // /////////////////////////////////
-    // UI and Hotkeys
-    /*
-    let selectItemsActivatedTime;
-    let selectItemsActivated = false;
-    const selectionTool = new SelectionTool(appData);
-    appData.actionRegistry.registerAction({
-      path: ['Edit'],
-      name: 'Select Items',
-      callback: () => {
-        // if (renderer.isXRViewportPresenting())
-        //   return;
-
-        if (selectItemsActivated) {
-          appData.toolManager.popTool();
-          selectItemsActivated = false;
-        } else {
-          appData.toolManager.pushTool(selectionTool);
-          selectItemsActivated = true;
-          selectItemsActivatedTime = performance.now();
-        }
-      },
-      hotkeyReleaseCallback: () => {
-        // if (renderer.isXRViewportPresenting())
-        //   return;
-
-        if (selectItemsActivated) {
-          const t = performance.now() - selectItemsActivatedTime;
-          if (t > 400) {
-            appData.toolManager.popTool();
-            selectItemsActivated = false;
+      const handleGroup = {
+        Translate: new ZeaEngine.Signal(),
+        Rotate: new ZeaEngine.Signal(),
+        Scale: new ZeaEngine.Signal(),
+      };
+      let currMode = '';
+      const showHandles = mode => {
+        if (currMode != mode) {
+          currMode = mode;
+          // eslint-disable-next-line guard-for-in
+          for (const key in handleGroup) {
+            handleGroup[key].emit(mode == key);
           }
+          this.xfoHandle.showHandles(mode);
         }
-      },
-      key: 'q',
-      availableInVR: true,
-    });
-    */
+      };
+      appData.actionRegistry.registerAction({
+        name: 'Translate',
+        path: ['Edit'],
+        callback: () => {
+          showHandles('Translate');
+        },
+        key: 'w',
+        activatedChanged: handleGroup.Translate,
+      });
+      appData.actionRegistry.registerAction({
+        name: 'Rotate',
+        path: ['Edit'],
+        callback: () => {
+          showHandles('Rotate');
+        },
+        key: 'e',
+        activatedChanged: handleGroup.Rotate,
+      });
+      appData.actionRegistry.registerAction({
+        name: 'Scale',
+        path: ['Edit'],
+        callback: () => {
+          showHandles('Scale');
+        },
+        key: 'r',
+        activatedChanged: handleGroup.Scale,
+      });
 
-    const handleGroup = {
-      Translate: new ZeaEngine.Signal(),
-      Rotate: new ZeaEngine.Signal(),
-      Scale: new ZeaEngine.Signal(),
-    };
-    let currMode = '';
-    const showHandles = mode => {
-      if (currMode != mode) {
-        currMode = mode;
-        for (const key in handleGroup) {
-          handleGroup[key].emit(mode == key);
-        }
-        this.xfoHandle.showHandles(mode);
-      }
-    };
-    appData.actionRegistry.registerAction({
-      name: 'Translate',
-      path: ['Edit'],
-      callback: () => {
-        showHandles('Translate');
-      },
-      key: 'w',
-      activatedChanged: handleGroup.Translate,
-    });
-    appData.actionRegistry.registerAction({
-      name: 'Rotate',
-      path: ['Edit'],
-      callback: () => {
-        showHandles('Rotate');
-      },
-      key: 'e',
-      activatedChanged: handleGroup.Rotate,
-    });
-    appData.actionRegistry.registerAction({
-      name: 'Scale',
-      path: ['Edit'],
-      callback: () => {
-        showHandles('Scale');
-      },
-      key: 'r',
-      activatedChanged: handleGroup.Scale,
-    });
-
-    // Translate Activated by default.
-    // showHandles('Translate')
+      // Translate Activated by default.
+      // showHandles('Translate');
+    }
   }
 
   /**
