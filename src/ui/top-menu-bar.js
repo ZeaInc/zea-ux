@@ -12,13 +12,13 @@ class TopMenuBar {
     this.appData = appData;
 
     const headerWrapper = document.createElement('div');
-    headerWrapper.className = 'HeaderWrapper bg-white pa0 bb';
+    headerWrapper.className = 'HeaderWrapper pa0 bb';
     parentDomElement.appendChild(headerWrapper);
 
     if (!isOverlay) {
       this.logo = document.createElement('img');
       this.logo.className = 'Header__logo pl2';
-      this.logo.src = './Zea_Logo_RGB_320x132.png';
+      this.logo.src = './img/logo.png';
       headerWrapper.appendChild(this.logo);
     }
 
@@ -128,6 +128,9 @@ class TopMenuBar {
         this._comboFragment(e.shiftKey, 'S') +
         (e.key != 'Alt' && e.key != 'Ctrl' ? e.key : '')
       ).toLowerCase();
+
+      console.log(keys);
+
       if (keys in this.__hotkeysToActions) {
         const action = this.__hotkeysToActions[keys];
         action.callback(event);
@@ -205,13 +208,11 @@ class TopMenuBar {
       return '';
     }
     if (metaKeys) {
-      return;
-      (metaKeys.shift ? this._comboFragment(metaKeys.shift, 'Shift') : '') +
+      return (metaKeys.shift ? this._comboFragment(metaKeys.shift, 'Shift') : '') +
         (metaKeys.alt ? this._comboFragment(metaKeys.alt, 'Alt') : '') +
         (metaKeys.control
           ? this._comboFragment(metaKeys.control, 'Ctrl')
-          : '') +
-        key;
+          : '') + key;
     } else {
       return key;
     }

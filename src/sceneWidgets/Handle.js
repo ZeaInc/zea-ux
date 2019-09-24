@@ -1,20 +1,19 @@
-// A SceneWidget is a UI widget that lives in the scene.
+// A Handle is a UI widget that lives in the scene.
 // Much like a slider, it translates a series of
 // mouse events into a higher level interaction.
 
 /** Class representing a scene widget.
  * @extends ZeaEngine.TreeItem
  */
-export default class SceneWidget extends ZeaEngine.TreeItem {
+export default class Handle extends ZeaEngine.TreeItem {
   /**
    * Create a scene widget.
    * @param {any} name - The name value.
    */
   constructor(name) {
     super(name);
-    this.manipulateBegin = new ZeaEngine.Signal();
-    this.manipulate = new ZeaEngine.Signal();
-    this.manipulateEnd = new ZeaEngine.Signal();
+
+    this.captured = false;
   }
 
   /**
@@ -28,11 +27,10 @@ export default class SceneWidget extends ZeaEngine.TreeItem {
   unhighlight() {}
 
   /**
-   * The getManipulationRay method.
-   * @param {any} viewport - The viewport param.
+   * The getManipulationPlane method.
    * @return {any} The return value.
    */
-  getManipulationRay(viewport) {
+  getManipulationPlane() {
     const xfo = this.getGlobalXfo();
     return new ZeaEngine.Ray(xfo.tr, xfo.ori.getZaxis());
   }
@@ -40,13 +38,77 @@ export default class SceneWidget extends ZeaEngine.TreeItem {
   // ///////////////////////////////////
   // Mouse events
 
+  
+  /**
+   * The onMouseEnter method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
+  onMouseEnter(event) {
+    this.highlight();
+  }
+  
+  /**
+   * The onMouseLeave method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
+  onMouseLeave(event) {
+    this.unhighlight();
+  }
+  
+  /**
+   * The onMouseDown method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
+  onMouseDown(event) {
+    event.viewport.setCapture(this);
+    this.captured = true;
+    this.handleMouseDown(event);
+  }
+
+  /**
+   * The onMouseMove method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
+  onMouseMove(event) {
+    if (this.captured) {
+      this.handleMouseMove(event);
+      event.stopPropagation();
+    } 
+  }
+
+  /**
+   * The onMouseUp method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
+  onMouseUp(event) {
+    if (this.captured) {
+      this.handleMouseUp(event);
+      event.viewport.releaseCapture();
+      event.stopPropagation();
+      this.captured = false;
+    }
+  }
+
+  /**
+   * The onWheel method.
+   * @param {any} event - The event param.
+   */
+  onWheel(event) {
+  }
+
+
   /**
    * The handleMouseDown method.
    * @param {any} event - The event param.
    * @return {any} The return value.
    */
   handleMouseDown(event) {
-    this.gizmoRay = this.getManipulationRay();
+    this.gizmoRay = this.getManipulationPlane();
     const dist = event.mouseRay.intersectRayPlane(this.gizmoRay);
     event.grabPos = event.mouseRay.pointAtDist(dist);
     this.onDragStart(event);
@@ -61,6 +123,7 @@ export default class SceneWidget extends ZeaEngine.TreeItem {
     const dist = event.mouseRay.intersectRayPlane(this.gizmoRay);
     event.holdPos = event.mouseRay.pointAtDist(dist);
     this.onDrag(event);
+    return true;
   }
 
   /**
@@ -84,7 +147,7 @@ export default class SceneWidget extends ZeaEngine.TreeItem {
    * @return {any} The return value.
    */
   onVRControllerButtonDown(event) {
-    const gizmoRay = this.getManipulationRay();
+    const gizmoRay = this.getManipulationPlane();
     const grabDist = event.controllerRay.intersectRayVector(gizmoRay);
     if (grabDist > 0) {
       const grabPos = event.controllerRay.pointAtDist(grabDist);

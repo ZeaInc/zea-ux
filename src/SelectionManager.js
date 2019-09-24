@@ -1,6 +1,7 @@
 import UndoRedoManager from './undoredo/UndoRedoManager.js';
 import Change from './undoredo/Change.js';
 import XfoHandle from './sceneWidgets/XfoHandle.js';
+import SelectionGroup from './SelectionGroup.js';
 
 /** Class representing a selection change.
  * @extends Change
@@ -23,14 +24,14 @@ class SelectionChange extends Change {
    * The undo method.
    */
   undo() {
-    this.__selectionManager.setSelection(this.__prevSelection);
+    this.__selectionManager.setSelection(this.__prevSelection, false);
   }
 
   /**
    * The redo method.
    */
   redo() {
-    this.__selectionManager.setSelection(this.__newSelection);
+    this.__selectionManager.setSelection(this.__newSelection, false);
   }
 
   /**
@@ -38,8 +39,8 @@ class SelectionChange extends Change {
    * @param {any} appData - The appData param.
    * @return {any} The return value.
    */
-  toJSON(appData) {
-    const j = super.toJSON(appData);
+  toJSON(context) {
+    const j = super.toJSON(context);
 
     const itemPaths = [];
     for (const treeItem of this.__newSelection) {
@@ -52,21 +53,22 @@ class SelectionChange extends Change {
   /**
    * The fromJSON method.
    * @param {any} j - The j param.
-   * @param {any} appData - The appData param.
+   * @param {any} context - The context param.
    */
-  fromJSON(j, appData) {
-    super.fromJSON(j, appData);
-
-    this.__selectionManager = appData.selectionManager;
+  fromJSON(j, context) {
+    super.fromJSON(j, context);
+    
+    this.__selectionManager = context.appData.selectionManager;
     this.__prevSelection = new Set(this.__selectionManager.getSelection());
 
+    const sceneRoot = context.appData.scene.getRoot();
     const newSelection = new Set();
     for (const itemPath of j.itemPaths) {
-      newSelection.add(appData.scene.getRoot().resolvePath(itemPath, 1));
+      newSelection.add(sceneRoot.resolvePath(itemPath, 1));
     }
     this.__newSelection = newSelection;
 
-    this.__selectionManager.setSelection(this.__newSelection);
+    this.__selectionManager.setSelection(this.__newSelection, false);
   }
 }
 
@@ -130,12 +132,10 @@ class SelectionManager {
     this.selectionChanged = new ZeaEngine.Signal();
     this.leadSelectionChanged = new ZeaEngine.Signal();
 
-    this.selectionGroup = new ZeaEngine.Group('selection');
+    this.selectionGroup = new SelectionGroup();
     this.selectionGroup
       .getParameter('InitialXfoMode')
       .setValue(ZeaEngine.Group.INITIAL_XFO_MODES.average);
-    this.selectionGroup.propagateSelectionToItems = true;
-    this.selectionGroup.propagateSelectionChangesFromItems = false;
     this.selectionGroup.setSelected(true);
 
     const size = 0.1;
@@ -247,14 +247,12 @@ class SelectionManager {
   }
 
   /**
-   * The updateGizmos method.
+   * updateHandleVisiblity determines of the Xfo Manipulation
+   * handle should be displayed or not.
    */
-  updateGizmos() {
+  updateHandleVisiblity() {
     const selection = this.selectionGroup.getItems();
     const visible = Array.from(selection).length > 0;
-    if (Array.from(selection).length > 0)
-      this.selectionGroup.recalcInitialXfo();
-
     this.xfoHandle.setVisible(visible);
     this.__renderer.requestRedraw();
   }
@@ -271,7 +269,7 @@ class SelectionManager {
    * The setSelection method.
    * @param {any} newSelection - The newSelection param.
    */
-  setSelection(newSelection) {
+  setSelection(newSelection, createUndo=true) {
     const selection = new Set(this.selectionGroup.getItems());
     const prevSelection = new Set(selection);
     for (const treeItem of newSelection) {
@@ -282,21 +280,23 @@ class SelectionManager {
     }
     for (const treeItem of selection) {
       if (!newSelection.has(treeItem)) {
-        treeItem.setSelected(false);
+        // treeItem.setSelected(false);
         selection.delete(treeItem);
       }
     }
 
     this.selectionGroup.setItems(selection);
-    this.updateGizmos();
 
     // Deselecting can change the lead selected item.
     if (selection.size > 0)
       this.__setLeadSelection(selection.values().next().value);
     else this.__setLeadSelection();
+    this.updateHandleVisiblity();
 
-    const change = new SelectionChange(this, selection, prevSelection);
-    this.appData.undoRedoManager.addChange(change);
+    if (createUndo) {
+      const change = new SelectionChange(this, prevSelection, selection);
+      this.appData.undoRedoManager.addChange(change);
+    }
   }
 
   // eslint-disable-next-line require-jsdoc
@@ -336,9 +336,9 @@ class SelectionManager {
       }
 
       if (clear) {
-        Array.from(selection).forEach(item => {
-          item.setSelected(false);
-        });
+        // Array.from(selection).forEach(item => {
+        //   item.setSelected(false);
+        // });
         selection.clear();
       }
     }
@@ -349,12 +349,12 @@ class SelectionManager {
       selection.add(treeItem);
       sel = true;
     } else {
-      treeItem.setSelected(false);
+      // treeItem.setSelected(false);
       selection.delete(treeItem);
       sel = false;
     }
 
-    const preExpandSelSize = selection.size;
+    // const preExpandSelSize = selection.size;
 
     // Now expand the selection to the subtree.
     // treeItem.traverse((subTreeItem)=>{
@@ -376,7 +376,7 @@ class SelectionManager {
 
     this.selectionGroup.setItems(selection);
 
-    if (sel && preExpandSelSize === 1) {
+    if (sel && selection.size === 1) {
       this.__setLeadSelection(treeItem);
     } else if (!sel) {
       // Deselecting can change the lead selected item.
@@ -385,10 +385,10 @@ class SelectionManager {
       else if (selection.size === 0) this.__setLeadSelection();
     }
 
-    const change = new SelectionChange(this, selection, prevSelection);
+    const change = new SelectionChange(this, prevSelection, selection);
     this.appData.undoRedoManager.addChange(change);
 
-    this.updateGizmos();
+    this.updateHandleVisiblity();
     this.selectionChanged.emit(prevSelection);
   }
 
@@ -398,17 +398,18 @@ class SelectionManager {
    * @return {any} The return value.
    */
   clearSelection(newChange = true) {
-    const selection = this.selectionGroup.getItems();
+    const selection = new Set(this.selectionGroup.getItems());
     if (selection.size == 0) return false;
     let prevSelection;
     if (newChange) {
       prevSelection = new Set(selection);
     }
-    for (const treeItem of selection) {
-      treeItem.setSelected(false);
-    }
+    // for (const treeItem of selection) {
+    //   treeItem.setSelected(false);
+    // }
     selection.clear();
     this.selectionGroup.setItems(selection);
+    this.updateHandleVisiblity();
     if (newChange) {
       const change = new SelectionChange(this, prevSelection, selection);
       this.appData.undoRedoManager.addChange(change);
@@ -423,28 +424,20 @@ class SelectionManager {
    * @param {boolean} replaceSelection - The replaceSelection param.
    */
   selectItems(treeItems, replaceSelection = true) {
-    const selection = this.selectionGroup.getItems();
+    const selection = new Set(this.selectionGroup.getItems());
     const prevSelection = new Set(selection);
 
     if (replaceSelection) {
-      prevSelection.clear();
+      selection.clear();
     }
 
     for (const treeItem of treeItems) {
       if (!treeItem.getSelected()) {
-        // treeItem.getSelected(true);
         selection.add(treeItem);
-
-        // treeItem.traverse((subTreeItem)=>{
-        //   if(!selection.has(subTreeItem)) {
-        //     // subTreeItem.setSelected(true);
-        //     selection.add(subTreeItem);
-        //   }
-        // })
       }
     }
 
-    const change = new SelectionChange(this, selection, prevSelection);
+    const change = new SelectionChange(this, prevSelection, selection);
     this.appData.undoRedoManager.addChange(change);
 
     this.selectionGroup.setItems(selection);
@@ -453,7 +446,7 @@ class SelectionManager {
     } else if (selection.size === 0) {
       this.__setLeadSelection();
     }
-    this.updateGizmos();
+    this.updateHandleVisiblity();
     this.selectionChanged.emit(selection);
   }
 
@@ -467,7 +460,7 @@ class SelectionManager {
 
     for (const treeItem of treeItems) {
       if (treeItem.getSelected()) {
-        treeItem.setSelected(false);
+        // treeItem.setSelected(false);
         selection.delete(selectedParam);
         // treeItem.traverse((subTreeItem)=>{
         //   if(!selection.has(subTreeItem)) {
@@ -487,7 +480,7 @@ class SelectionManager {
     } else if (selection.size === 0) {
       this.__setLeadSelection();
     }
-    this.updateGizmos();
+    this.updateHandleVisiblity();
     this.selectionChanged.emit(selection);
   }
 

@@ -1,10 +1,10 @@
-import SceneWidget from './SceneWidget.js';
+import Handle from './Handle.js';
 import ParameterValueChange from '../undoredo/ParameterValueChange.js';
 
 /** Class representing a planar movement scene widget.
- * @extends SceneWidget
+ * @extends Handle
  */
-class PlanarMovementSceneWidget extends SceneWidget {
+class PlanarMovementHandle extends Handle {
   /**
    * Create a planar movement scene widget.
    * @param {any} name - The name value.
@@ -63,7 +63,7 @@ class PlanarMovementSceneWidget extends SceneWidget {
    * @param {boolean} track - The track param.
    */
   setTargetParam(param, track = true) {
-    this.__param = param;
+    this.param = param;
     if (track) {
       const __updateGizmo = () => {
         this.setGlobalXfo(param.getValue());
@@ -79,16 +79,11 @@ class PlanarMovementSceneWidget extends SceneWidget {
    */
   onDragStart(event) {
     this.grabPos = event.grabPos;
-    this.change = new ParameterValueChange(this.__param);
-
-    event.undoRedoManager.addChange(this.change);
-
-    this.baseXfo = this.__param.getValue();
-
-    this.manipulateBegin.emit({
-      grabPos: event.grabPos,
-      manipRay: this.manipRay,
-    });
+    this.baseXfo = this.param.getValue();
+    if (event.undoRedoManager) {
+      this.change = new ParameterValueChange(this.param);
+      event.undoRedoManager.addChange(this.change);
+    }
   }
 
   /**
@@ -101,16 +96,13 @@ class PlanarMovementSceneWidget extends SceneWidget {
     const newXfo = this.baseXfo.clone();
     newXfo.tr.addInPlace(dragVec);
 
-    this.change.update({
-      value: newXfo,
-    });
-
-    this.manipulate.emit({
-      holdPos: event.holdPos,
-      manipRay: this.gizmoRay,
-      deltaXfo: this.deltaXfo,
-      newXfo: newXfo,
-    });
+    if (this.change) {
+      this.change.update({
+        value: newXfo,
+      });
+    } else {
+      this.param.setValue(newXfo);
+    }
   }
 
   /**
@@ -119,11 +111,6 @@ class PlanarMovementSceneWidget extends SceneWidget {
    */
   onDragEnd(event) {
     this.change = null;
-
-    this.manipulateEnd.emit({
-      releasePos: event.releasePos,
-      manipRay: this.manipRay,
-    });
   }
 }
-export { PlanarMovementSceneWidget };
+export { PlanarMovementHandle };

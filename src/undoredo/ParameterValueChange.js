@@ -29,22 +29,6 @@ class ParameterValueChange extends Change {
   }
 
   /**
-   * The getPrevValue method.
-   * @return {any} The return value.
-   */
-  getPrevValue() {
-    return this.__prevValue;
-  }
-
-  /**
-   * The getNextValue method.
-   * @return {any} The return value.
-   */
-  getNextValue() {
-    return this.__nextValue;
-  }
-
-  /**
    * The undo method.
    */
   undo() {
@@ -82,10 +66,10 @@ class ParameterValueChange extends Change {
 
   /**
    * The toJSON method.
-   * @param {any} appData - The appData param.
+   * @param {any} context - The context param.
    * @return {any} The return value.
    */
-  toJSON(appData) {
+  toJSON(context) {
     const j = {
       name: this.name,
       paramPath: this.__param.getPath(),
@@ -103,10 +87,10 @@ class ParameterValueChange extends Change {
   /**
    * The fromJSON method.
    * @param {any} j - The j param.
-   * @param {any} appData - The appData param.
+   * @param {any} context - The context param.
    */
-  fromJSON(j, appData) {
-    const param = appData.scene.getRoot().resolvePath(j.paramPath, 1);
+  fromJSON(j, context) {
+    const param = context.appData.scene.getRoot().resolvePath(j.paramPath, 1);
     if (!param || !(param instanceof ZeaEngine.Parameter)) {
       console.warn('resolvePath is unable to resolve', j.paramPath);
       return;
@@ -116,7 +100,7 @@ class ParameterValueChange extends Change {
     if (this.__prevValue.clone) this.__nextValue = this.__prevValue.clone();
     else this.__nextValue = this.__prevValue;
 
-    this.name = this.__param.getName() + ' Changed';
+    this.name = j.name;
     if (j.value != undefined) this.changeFromJSON(j);
   }
 

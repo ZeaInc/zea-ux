@@ -27,7 +27,7 @@ export default class XfoWidget extends BaseWidget {
     const xfo = parameter.getValue();
 
     // ///////////////////////////
-    // SceneWidget Changes.
+    // Handle Changes.
 
     let change = undefined;
 

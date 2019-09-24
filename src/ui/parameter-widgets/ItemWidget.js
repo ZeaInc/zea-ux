@@ -46,7 +46,7 @@ export default class ItemWidget extends BaseWidget {
     parentDomElem.appendChild(button);
 
     // ///////////////////////////
-    // SceneWidget Changes.
+    // Handle Changes.
 
     const changing = false;
 

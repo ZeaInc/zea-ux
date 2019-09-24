@@ -11,7 +11,6 @@
 }
 
 .SidePanel {
-  background-color: #fff;
   width: 0px;
   display: none;
 }
@@ -24,7 +23,6 @@
 
 .BottomPanel {
   border-color: #bbb;
-  background-color: #fff;
   overflow: auto;
   width: 100%;
   height: 0px;
@@ -36,7 +34,6 @@
 .BottomPanelHandler {
   border-color: #bbb;
   background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==');
-  background-color: #fff;
   background-repeat: no-repeat;
   background-position: 50%;
   cursor: row-resize;

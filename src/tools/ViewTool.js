@@ -75,7 +75,7 @@ class ViewTool extends BaseTool {
       }
       const addIconToController = controller => {
         const geomItem = new ZeaEngine.GeomItem(
-          'SceneWidgetToolTip',
+          'HandleToolTip',
           this.vrControllerToolTip,
           this.vrControllerToolTipMat
         );

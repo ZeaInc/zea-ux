@@ -11,10 +11,10 @@ class SidePanel {
       this.domElement = document.createElement('div');
       this.domElement.className = 'SidePanel SidePanel--left overflow-auto pa2';
       this.handleElement = document.createElement('div');
-      this.handleElement.className = 'PanelHandler bg-center bg-white';
+      this.handleElement.className = 'PanelHandler bg-center';
     } else {
       this.handleElement = document.createElement('div');
-      this.handleElement.className = 'PanelHandler bg-center bg-white';
+      this.handleElement.className = 'PanelHandler bg-center';
       this.domElement = document.createElement('div');
       this.domElement.className =
         'SidePanel SidePanel--right overflow-auto pa2';
@@ -220,7 +220,7 @@ class BottomPanel {
   constructor() {
     this.handleElement = document.createElement('div');
     this.handleElement.className =
-      'BottomPanelHandler bg-center bg-white z-1 bt';
+      'BottomPanelHandler bg-center z-1 bt';
     this.domElement = document.createElement('div');
     this.domElement.className = 'BottomPanel overflow-auto pa2';
     this.domElement.style.height = `0px`;

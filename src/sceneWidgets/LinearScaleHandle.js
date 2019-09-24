@@ -1,10 +1,10 @@
-import { BaseLinearMovementSceneWidget } from './BaseLinearMovementSceneWidget.js';
+import { BaseLinearMovementHandle } from './BaseLinearMovementHandle.js';
 import ParameterValueChange from '../undoredo/ParameterValueChange.js';
 
 /** Class representing a linear scale scene widget.
- * @extends BaseLinearMovementSceneWidget
+ * @extends BaseLinearMovementHandle
  */
-class LinearScaleSceneWidget extends BaseLinearMovementSceneWidget {
+class LinearScaleHandle extends BaseLinearMovementHandle {
   /**
    * Create a linear scale scene widget.
    * @param {any} name - The name value.
@@ -39,13 +39,12 @@ class LinearScaleSceneWidget extends BaseLinearMovementSceneWidget {
     const tip = new ZeaEngine.GeomItem('tip', tipGeom, handleMat);
     const tipXfo = new ZeaEngine.Xfo();
     tipXfo.tr.set(0, 0, length - thickness * 10);
+    // tipXfo.tr.set(0, 0, length);
+    // tip.setLocalXfo(tipXfo);
+    // Note: the constant screen size shader
+    // only works if all the handle geometries
+    // are centered on the middle of the XfoHandle. 
     tipGeom.transformVertices(tipXfo);
-
-    // this.radiusParam.valueChanged.connect(()=>{
-    //   radius = this.radiusParam.getValue();
-    //   handleGeom.getParameter('radius').setValue(radius);
-    //   handleGeom.getParameter('height').setValue(radius * 0.02);
-    // })
 
     this.addChild(handle);
     this.addChild(tip);
@@ -71,7 +70,7 @@ class LinearScaleSceneWidget extends BaseLinearMovementSceneWidget {
    * @param {boolean} track - The track param.
    */
   setTargetParam(param, track = true) {
-    this.__param = param;
+    this.param = param;
     if (track) {
       const __updateGizmo = () => {
         this.setGlobalXfo(param.getValue());
@@ -86,19 +85,14 @@ class LinearScaleSceneWidget extends BaseLinearMovementSceneWidget {
    * @param {any} event - The event param.
    */
   onDragStart(event) {
-    this.change = new ParameterValueChange(this.__param);
-    event.undoRedoManager.addChange(this.change);
-
     this.grabDist = event.grabDist;
-    console.log(this.grabDist);
     this.oriXfo = this.getGlobalXfo();
-    this.baseXfo = this.__param.getValue();
-    this.sc = (this.baseXfo.sc.x + this.baseXfo.sc.y + this.baseXfo.sc.z) / 3.0;
-
-    this.manipulateBegin.emit({
-      grabPos: event.grabPos,
-      manipRay: this.manipRay,
-    });
+    this.tmplocalXfo = this.getLocalXfo();
+    this.baseXfo = this.param.getValue();
+    if (event.undoRedoManager) {
+      this.change = new ParameterValueChange(this.param);
+      event.undoRedoManager.addChange(this.change);
+    }
   }
 
   /**
@@ -111,23 +105,33 @@ class LinearScaleSceneWidget extends BaseLinearMovementSceneWidget {
     const newXfo = this.baseXfo.clone();
     const sc = event.holdDist / this.grabDist;
     if (sc < 0.0001) return;
-    // const scX = this.oriXfo.ori.getZaxis().dot(newXfo.ori.getXaxis());
-    // const scY = this.oriXfo.ori.getZaxis().dot(newXfo.ori.getYaxis());
-    // const scZ = this.oriXfo.ori.getZaxis().dot(newXfo.ori.getZaxis());
+
+    // const scAxis = this.oriXfo.ori.getZaxis();
+    // const scX = this.baseXfo.ori.getXaxis().dot(scAxis);
+    // const scY = this.baseXfo.ori.getYaxis().dot(scAxis);
+    // const scZ = this.baseXfo.ori.getZaxis().dot(scAxis);
     // console.log("sc:", sc, " scX", scX, " scY:", scY, " scZ:", scZ)
     // newXfo.sc.set(scX, scY, scZ);
-    newXfo.sc.set(this.sc * sc, this.sc * sc, this.sc * sc);
+    newXfo.sc.set(
+      this.baseXfo.sc.x * sc,
+      this.baseXfo.sc.y * sc,
+      this.baseXfo.sc.z * sc
+    );
 
-    this.change.update({
-      value: newXfo,
-    });
+    // Scale inheritance is disabled for handles.
+    // (XfoHandle throws away scale in _cleanGlobalXfo).
+    // This means we have to apply it here to see the scale  
+    // widget change size.
+    this.tmplocalXfo.sc.set(1, 1, sc);
+    this.setLocalXfo(this.tmplocalXfo);
 
-    this.manipulate.emit({
-      holdPos: event.holdPos,
-      manipRay: this.gizmoRay,
-      deltaXfo: this.deltaXfo,
-      newXfo: newXfo,
-    });
+    if (this.change) {
+      this.change.update({
+        value: newXfo,
+      });
+    } else {
+      this.param.setValue(newXfo);
+    }
   }
 
   /**
@@ -137,11 +141,14 @@ class LinearScaleSceneWidget extends BaseLinearMovementSceneWidget {
   onDragEnd(event) {
     this.change = null;
 
-    this.manipulateEnd.emit({
-      releasePos: event.releasePos,
-      manipRay: this.manipRay,
-    });
+    this.tmplocalXfo.sc.set(1, 1, 1);
+    this.setLocalXfo(this.tmplocalXfo);
+
+    const tip = this.getChildByName('tip');
+    const tipXfo = tip.getLocalXfo();
+    tipXfo.sc.set(1, 1, 1);
+    tip.setLocalXfo(tipXfo);
   }
 }
 
-export { LinearScaleSceneWidget };
+export { LinearScaleHandle };

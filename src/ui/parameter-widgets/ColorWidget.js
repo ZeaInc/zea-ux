@@ -33,7 +33,7 @@ export default class ColorWidget extends BaseWidget {
     });
 
     // ///////////////////////////
-    // SceneWidget Changes.
+    // Handle Changes.
 
     let change = undefined;
     let undoing = false;

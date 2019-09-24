@@ -1,11 +1,11 @@
-import SceneWidget from './SceneWidget.js';
+import Handle from './Handle.js';
 import ParameterValueChange from '../undoredo/ParameterValueChange.js';
 
 /**
  * Class representing an axial rotation scene widget.
- * @extends SceneWidget
+ * @extends Handle
  */
-class AxialRotationSceneWidget extends SceneWidget {
+class AxialRotationHandle extends Handle {
   /**
    * Create an axial rotation scene widget.
    * @param {any} name - The name value.
@@ -62,7 +62,7 @@ class AxialRotationSceneWidget extends SceneWidget {
    * @param {boolean} track - The track param.
    */
   setTargetParam(param, track = true) {
-    this.__param = param;
+    this.param = param;
     if (track) {
       const __updateGizmo = () => {
         this.setGlobalXfo(param.getValue());
@@ -77,23 +77,23 @@ class AxialRotationSceneWidget extends SceneWidget {
    * @param {any} event - The event param.
    */
   onDragStart(event) {
-    this.vec0 = event.grabPos.subtract(this.getGlobalXfo().tr);
-    this.grabPos = event.grabPos;
-    this.change = new ParameterValueChange(this.__param);
-
-    event.undoRedoManager.addChange(this.change);
 
     this.baseXfo = this.getGlobalXfo();
+    this.baseXfo.sc.set(1, 1, 1);
     this.deltaXfo = new ZeaEngine.Xfo();
-    this.offsetXfo = this.baseXfo.inverse().multiply(this.__param.getValue());
+    this.offsetXfo = this.baseXfo.inverse().multiply(this.param.getValue());
+    
+    this.vec0 = event.grabPos.subtract(this.baseXfo.tr);
+    this.grabCircleRadius = this.vec0.length();
+    this.vec0.normalizeInPlace();
+
+    if (event.undoRedoManager) {
+      this.change = new ParameterValueChange(this.param);
+      event.undoRedoManager.addChange(this.change);
+    }
 
     // Hilight the material.
     this.colorParam.setValue(new ZeaEngine.Color(1, 1, 1));
-
-    this.manipulateBegin.emit({
-      grabPos: event.grabPos,
-      manipRay: this.manipRay,
-    });
   }
 
   /**
@@ -101,31 +101,37 @@ class AxialRotationSceneWidget extends SceneWidget {
    * @param {any} event - The event param.
    */
   onDrag(event) {
-    const dragVec = event.holdPos.subtract(this.grabPos);
-    let angle = dragVec.length() * 2.0;
+    const vec1 = event.holdPos.subtract(this.baseXfo.tr);
+    const dragCircleRadius = vec1.length();
+    vec1.normalizeInPlace();
 
-    const vec1 = event.holdPos.subtract(this.getGlobalXfo().tr);
-    if (this.vec0.cross(vec1).dot(this.getGlobalXfo().ori.getZaxis()) < 0)
+    // modulate the angle by the radius the mouse moves
+    // away from the center of the handle.
+    // This makes it possible to rotate the object more than
+    // 180 degrees in a single movement.
+    const modulator = dragCircleRadius / this.grabCircleRadius;
+    let angle = this.vec0.angleTo(vec1) * modulator;
+    if (this.vec0.cross(vec1).dot(this.baseXfo.ori.getZaxis()) < 0)
       angle = -angle;
+
+    if (event.shiftKey) {
+      // modulat the angle to 5 degree increments.
+      const increment = Math.degToRad(5);
+      angle = Math.floor(angle / increment) * increment;
+    }
 
     this.deltaXfo.ori.setFromAxisAndAngle(new ZeaEngine.Vec3(0, 0, 1), angle);
 
     const newXfo = this.baseXfo.multiply(this.deltaXfo);
     const value = newXfo.multiply(this.offsetXfo);
 
-    // this.__param.setValue(newXfo)
-
-    this.change.update({
-      value,
-    });
-
-    this.manipulate.emit({
-      holdPos: event.holdPos,
-      manipRay: this.gizmoRay,
-      angle,
-      deltaXfo: this.deltaXfo,
-      newXfo: value,
-    });
+    if (this.change) {
+      this.change.update({
+        value,
+      });
+    } else {
+      this.param.setValue(value);
+    }
   }
 
   /**
@@ -136,11 +142,6 @@ class AxialRotationSceneWidget extends SceneWidget {
     this.change = null;
 
     this.colorParam.setValue(this.__color);
-
-    this.manipulateEnd.emit({
-      releasePos: event.releasePos,
-      manipRay: this.manipRay,
-    });
   }
 }
-export { AxialRotationSceneWidget };
+export { AxialRotationHandle };

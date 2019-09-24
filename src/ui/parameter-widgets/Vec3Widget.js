@@ -66,7 +66,7 @@ export default class Vec3Widget extends BaseWidget {
     parentDomElem.appendChild(container);
 
     // ///////////////////////////
-    // SceneWidget Changes.
+    // Handle Changes.
 
     let change = undefined;
 

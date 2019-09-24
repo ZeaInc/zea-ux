@@ -26,7 +26,7 @@ const addQueryWidget = (querySet, query, parentDomElem, appData) => {
     ul.appendChild(li);
 
     // ///////////////////////////
-    // SceneWidget Changes.
+    // Handle Changes.
 
     let change;
     query.valueChanged.connect(() => {
@@ -177,7 +177,7 @@ const addQueryWidget = (querySet, query, parentDomElem, appData) => {
     ul.appendChild(li);
 
     // ///////////////////////////
-    // SceneWidget Changes.
+    // Handle Changes.
 
     let change;
     query.valueChanged.connect(() => {
@@ -293,7 +293,7 @@ export default class QuerySetWidget extends BaseWidget {
     ul0.appendChild(queryList);
 
     // ///////////////////////////
-    // SceneWidget Changes.
+    // Handle Changes.
 
     const updateDisplayedValue = () => {
       while (queryList.firstChild) {

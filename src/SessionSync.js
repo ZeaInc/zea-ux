@@ -215,9 +215,31 @@ class SessionSync {
     // Scene Changes
     // const otherUndoStack = new UndoRedoManager();
 
+    const root = appData.scene.getRoot();
     appData.undoRedoManager.changeAdded.connect(change => {
+      
+      const context = {
+        appData,
+        makeRelative: path => path,
+        resolvePath: (path, cb) => {
+          // Note: Why not return a Promise here?
+          // Promise evaluation is always async, so
+          // all promisses will be resolved after the current call stack
+          // has terminated. In our case, we want all paths
+          // to be resolved before the end of the function, which
+          // we can handle easily with callback functions. 
+          if (!path)
+            throw ("Path not spcecified")
+          const item = root.resolvePath(path);
+          if (item) {
+            cb(item);
+          } else {
+            console.warn("Path unable to be resolved:" + path);
+          }
+        }
+      };
       const data = {
-        changeData: change.toJSON(appData),
+        changeData: change.toJSON(context),
         changeClass: UndoRedoManager.getChangeClassName(change),
       };
       session.pub(Session.actions.COMMAND_ADDED, data);
