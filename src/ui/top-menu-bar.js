@@ -18,7 +18,7 @@ class TopMenuBar {
     if (!isOverlay) {
       this.logo = document.createElement('img');
       this.logo.className = 'Header__logo pl2';
-      this.logo.src = './logo.png';
+      this.logo.src = './img/logo.png';
       headerWrapper.appendChild(this.logo);
     }
 
