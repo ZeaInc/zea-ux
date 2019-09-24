@@ -48,8 +48,8 @@ class CreateGeomChange extends Change {
    * @param {any} appData - The appData param.
    * @return {any} The return value.
    */
-  toJSON(appData) {
-    const j = super.toJSON();
+  toJSON(context) {
+    const j = super.toJSON(context);
     j.parentItemPath = this.parentItem.getPath();
     j.geomItemName = this.geomItem.getName();
     j.geomItemXfo = this.geomItem.getParameter('LocalXfo').getValue();
@@ -61,8 +61,9 @@ class CreateGeomChange extends Change {
    * @param {any} j - The j param.
    * @param {any} appData - The appData param.
    */
-  fromJSON(j, appData) {
-    this.parentItem = appData.scene.getRoot().resolvePath(j.parentItemPath, 1);
+  fromJSON(j, context) {
+    const sceneRoot = context.appData.scene.getRoot();
+    this.parentItem = sceneRoot.resolvePath(j.parentItemPath, 1);
     this.geomItem.setName(this.parentItem.generateUniqueName(j.geomItemName));
     const xfo = new ZeaEngine.Xfo();
     xfo.fromJSON(j.geomItemXfo);

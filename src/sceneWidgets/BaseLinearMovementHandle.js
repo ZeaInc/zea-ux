@@ -1,10 +1,10 @@
-import SceneWidget from './SceneWidget.js';
+import Handle from './Handle.js';
 
 /**
  * Class representing a base linear movement scene widget.
- * @extends SceneWidget
+ * @extends Handle
  */
-class BaseLinearMovementSceneWidget extends SceneWidget {
+class BaseLinearMovementHandle extends Handle {
   /**
    * Create base linear movement scene widget.
    * @param {any} name - The name value.
@@ -22,7 +22,7 @@ class BaseLinearMovementSceneWidget extends SceneWidget {
    * @return {any} The return value.
    */
   handleMouseDown(event) {
-    this.gizmoRay = this.getManipulationRay();
+    this.gizmoRay = this.getManipulationPlane();
     this.grabDist = event.mouseRay.intersectRayVector(this.gizmoRay)[1];
     const grabPos = this.gizmoRay.pointAtDist(this.grabDist);
     event.grabDist = this.grabDist;
@@ -67,7 +67,7 @@ class BaseLinearMovementSceneWidget extends SceneWidget {
    * @return {any} The return value.
    */
   onVRControllerButtonDown(event) {
-    this.gizmoRay = this.getManipulationRay();
+    this.gizmoRay = this.getManipulationPlane();
 
     this.activeController = event.controller;
     const xfo = this.activeController.getTipXfo();
@@ -111,4 +111,4 @@ class BaseLinearMovementSceneWidget extends SceneWidget {
   }
 }
 
-export { BaseLinearMovementSceneWidget };
+export { BaseLinearMovementHandle };

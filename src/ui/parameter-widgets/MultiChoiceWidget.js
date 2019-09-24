@@ -30,7 +30,7 @@ export default class MultiChoiceWidget extends BaseWidget {
     parentDomElem.appendChild(select);
 
     // ///////////////////////////
-    // SceneWidget Changes.
+    // Handle Changes.
 
     let changing = false;
 

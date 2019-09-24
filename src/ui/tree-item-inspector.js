@@ -73,5 +73,5 @@ export default class TreeItemInspector {
 
 uxFactory.registerInpector(
   TreeItemInspector,
-  p => p instanceof ZeaEngine.TreeItem
+  p => p instanceof ZeaEngine.BaseItem
 );

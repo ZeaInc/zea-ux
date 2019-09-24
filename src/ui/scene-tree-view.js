@@ -22,30 +22,32 @@ class TreeItemElement {
     this.expandBtn.className = 'TreeNodesListItem__ToggleExpanded';
     this.li.appendChild(this.expandBtn);
 
-    // Visibility toggle.
-    this.toggleVisibilityBtn = document.createElement('button');
-    this.toggleVisibilityBtn.className = 'TreeNodesListItem__ToggleVisibility';
-    this.li.appendChild(this.toggleVisibilityBtn);
-    this.toggleVisibilityBtn.innerHTML =
-      '<i class="material-icons md-15">visibility</i>';
+    if (treeItem instanceof ZeaEngine.TreeItem) {
+      // Visibility toggle.
+      this.toggleVisibilityBtn = document.createElement('button');
+      this.toggleVisibilityBtn.className = 'TreeNodesListItem__ToggleVisibility';
+      this.li.appendChild(this.toggleVisibilityBtn);
+      this.toggleVisibilityBtn.innerHTML =
+        '<i class="material-icons md-15">visibility</i>';
 
-    this.toggleVisibilityBtn.addEventListener('click', () => {
-      const visibleParam = this.treeItem.getParameter('Visible');
-      const change = new ParameterValueChange(
-        visibleParam,
-        !visibleParam.getValue()
-      );
-      this.appData.undoRedoManager.addChange(change);
-    });
+      this.toggleVisibilityBtn.addEventListener('click', () => {
+        const visibleParam = this.treeItem.getParameter('Visible');
+        const change = new ParameterValueChange(
+          visibleParam,
+          !visibleParam.getValue()
+        );
+        this.appData.undoRedoManager.addChange(change);
+      });
 
-    const updateVisibility = () => {
-      const visible = this.treeItem.getVisible();
-      visible
-        ? this.li.classList.remove('TreeNodesListItem--isHidden')
-        : this.li.classList.add('TreeNodesListItem--isHidden');
-    };
-    this.treeItem.visibilityChanged.connect(updateVisibility);
-    updateVisibility();
+      const updateVisibility = () => {
+        const visible = this.treeItem.getVisible();
+        visible
+          ? this.li.classList.remove('TreeNodesListItem--isHidden')
+          : this.li.classList.add('TreeNodesListItem--isHidden');
+      };
+      this.treeItem.visibilityChanged.connect(updateVisibility);
+      updateVisibility();
+    }
 
     // Title element.
     this.titleElement = document.createElement('span');
@@ -68,6 +70,7 @@ class TreeItemElement {
     });
 
     const updateSelected = () => {
+      console.log("updateSelected:", this.treeItem.getPath());
       const selected = this.treeItem.getSelected();
       selected
         ? this.li.classList.add('TreeNodesListItem--isSelected')
@@ -76,19 +79,22 @@ class TreeItemElement {
     this.treeItem.selectedChanged.connect(updateSelected);
     updateSelected();
 
-    const updateHighlight = () => {
-      const hilighted = this.treeItem.isHighlighted();
-      hilighted
-        ? this.li.classList.add('TreeNodesListItem--isHighlighted')
-        : this.li.classList.remove('TreeNodesListItem--isHighlighted');
-      if (hilighted) {
-        this.titleElement.style[
-          'border-color'
-        ] = this.treeItem.getHighlight().toHex();
-      }
-    };
-    this.treeItem.highlightChanged.connect(updateHighlight);
-    updateHighlight();
+    if (treeItem instanceof ZeaEngine.TreeItem) {
+      const updateHighlight = () => {
+        const hilighted = this.treeItem.isHighlighted();
+        hilighted
+          ? this.li.classList.add('TreeNodesListItem--isHighlighted')
+          : this.li.classList.remove('TreeNodesListItem--isHighlighted');
+        if (hilighted) {
+          this.titleElement.style[
+            'border-color'
+          ] = this.treeItem.getHighlight().toHex();
+        }
+      };
+      this.treeItem.highlightChanged.connect(updateHighlight);
+      updateHighlight();
+    }
+    
     this.parentDomElement.appendChild(this.li);
 
     this.ul = document.createElement('ul');
@@ -98,29 +104,31 @@ class TreeItemElement {
     this.childElements = [];
     this._expanded = false;
 
-    if (expanded) {
-      this.expand();
-    } else {
-      const children = this.treeItem.getChildren();
-      if (children.length > 0) this.collapse();
+    if (treeItem instanceof ZeaEngine.TreeItem) {
+      if (expanded) {
+        this.expand();
+      } else {
+        const children = this.treeItem.getChildren();
+        if (children.length > 0) this.collapse();
+      }
+
+      this.expandBtn.addEventListener('click', () => {
+        if (this.treeItem.numChildren() > 0) {
+          this._expanded ? this.collapse() : this.expand();
+        }
+      });
+
+      this.treeItem.childAdded.connect((childItem, index) => {
+        this.addChild(childItem);
+      });
+
+      this.treeItem.childRemoved.connect((childItem, index) => {
+        if(this._expanded) {
+          this.childElements[index].destroy();
+          this.childElements.splice(index, 1);
+        }
+      });
     }
-
-    this.expandBtn.addEventListener('click', () => {
-      if (this.treeItem.numChildren() > 0) {
-        this._expanded ? this.collapse() : this.expand();
-      }
-    });
-
-    this.treeItem.childAdded.connect((childItem, index) => {
-      this.addChild(childItem);
-    });
-
-    this.treeItem.childRemoved.connect((childItem, index) => {
-      if(this._expanded) {
-        this.childElements[index].destroy();
-        this.childElements.splice(index, 1);
-      }
-    });
   }
 
   /**
@@ -201,7 +209,7 @@ class TreeItemElement {
 
 uxFactory.registerTreeItemElement(
   TreeItemElement,
-  p => p instanceof ZeaEngine.TreeItem
+  p => p instanceof ZeaEngine.BaseItem
 );
 
 /**

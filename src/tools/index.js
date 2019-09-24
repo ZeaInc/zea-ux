@@ -6,4 +6,4 @@ export * from './VRTools';
 // Create Geom Tools
 export * from './CreateTools';
 
-export * from './SceneWidgetTool.js';
+export * from './HandleTool.js';

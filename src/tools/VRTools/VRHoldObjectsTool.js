@@ -1,5 +1,5 @@
 import BaseTool from '../BaseTool.js';
-import SceneWidget from '../../sceneWidgets/SceneWidget.js';
+import Handle from '../../sceneWidgets/Handle.js';
 import UndoRedoManager from '../../undoredo/UndoRedoManager.js';
 import Change from '../../undoredo/Change.js';
 
@@ -65,11 +65,11 @@ class HoldObjectsChange extends Change {
 
   /**
    * The toJSON method.
-   * @param {any} appData - The appData param.
+   * @param {any} context - The context param.
    * @return {any} The return value.
    */
-  toJSON(appData) {
-    const j = super.toJSON(appData);
+  toJSON(context) {
+    const j = super.toJSON(context);
 
     const itemPaths = [];
     for (let i = 0; i < this.__selection.length; i++) {
@@ -87,16 +87,17 @@ class HoldObjectsChange extends Change {
   /**
    * The fromJSON method.
    * @param {any} j - The j param.
-   * @param {any} appData - The appData param.
+   * @param {any} context - The context param.
    */
-  fromJSON(j, appData) {
-    super.fromJSON(j, appData);
+  fromJSON(j, context) {
+    super.fromJSON(j, context);
 
+    const sceneRoot = context.appData.scene.getRoot();
     const newSelection = [];
     for (let i = 0; i < j.itemPaths.length; i++) {
       const itemPath = j.itemPaths[i];
       if (itemPath)
-        newSelection[i] = appData.scene.getRoot().resolvePath(itemPath, 1);
+        newSelection[i] = sceneRoot.resolvePath(itemPath, 1);
     }
     this.__selection = newSelection;
   }
@@ -161,7 +162,7 @@ class VRHoldObjectsTool extends BaseTool {
       const mat = new ZeaEngine.Material('Cross', 'FlatSurfaceShader');
       mat.getParameter('BaseColor').setValue(new ZeaEngine.Color('#03E3AC'));
       mat.visibleInGeomDataBuffer = false;
-      const geomItem = new ZeaEngine.GeomItem('SceneWidgetToolTip', cross, mat);
+      const geomItem = new ZeaEngine.GeomItem('HandleToolTip', cross, mat);
       controller.getTipItem().removeAllChildren();
       controller.getTipItem().addChild(geomItem, false);
     };
@@ -253,14 +254,14 @@ class VRHoldObjectsTool extends BaseTool {
 
     const intersectionData = event.controller.getGeomItemAtTip();
     if (intersectionData) {
-      if (intersectionData.geomItem.getOwner() instanceof SceneWidget)
+      if (intersectionData.geomItem.getOwner() instanceof Handle)
         return false;
 
       // console.log("onMouseDown on Geom"); // + " Material:" + geomItem.getMaterial().name);
       // console.log(intersectionData.geomItem.getPath()); // + " Material:" + geomItem.getMaterial().name);
       event.intersectionData = intersectionData;
       intersectionData.geomItem.onMouseDown(event, intersectionData);
-      if (event.vleStopPropagation == true) return false;
+      if (!event.propagating) return false;
 
       let gidx = this.__heldGeomItems.indexOf(intersectionData.geomItem);
       if (gidx == -1) {

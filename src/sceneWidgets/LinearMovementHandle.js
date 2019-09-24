@@ -1,10 +1,10 @@
-import { BaseLinearMovementSceneWidget } from './BaseLinearMovementSceneWidget.js';
+import { BaseLinearMovementHandle } from './BaseLinearMovementHandle.js';
 import ParameterValueChange from '../undoredo/ParameterValueChange.js';
 
 /** Class representing a linear movement scene widget.
- * @extends BaseLinearMovementSceneWidget
+ * @extends BaseLinearMovementHandle
  */
-class LinearMovementSceneWidget extends BaseLinearMovementSceneWidget {
+class LinearMovementHandle extends BaseLinearMovementHandle {
   /**
    * Create a linear movement scene widget.
    * @param {any} name - The name value.
@@ -63,7 +63,7 @@ class LinearMovementSceneWidget extends BaseLinearMovementSceneWidget {
    * @param {boolean} track - The track param.
    */
   setTargetParam(param, track = true) {
-    this.__param = param;
+    this.param = param;
     if (track) {
       const __updateGizmo = () => {
         this.setGlobalXfo(param.getValue());
@@ -78,16 +78,12 @@ class LinearMovementSceneWidget extends BaseLinearMovementSceneWidget {
    * @param {any} event - The event param.
    */
   onDragStart(event) {
-    this.change = new ParameterValueChange(this.__param);
-    event.undoRedoManager.addChange(this.change);
-
     this.grabPos = event.grabPos;
-    this.baseXfo = this.__param.getValue();
-
-    this.manipulateBegin.emit({
-      grabPos: event.grabPos,
-      manipRay: this.manipRay,
-    });
+    this.baseXfo = this.param.getValue();
+    if (event.undoRedoManager) {
+      this.change = new ParameterValueChange(this.param);
+      event.undoRedoManager.addChange(this.change);
+    }
   }
 
   /**
@@ -100,16 +96,13 @@ class LinearMovementSceneWidget extends BaseLinearMovementSceneWidget {
     const newXfo = this.baseXfo.clone();
     newXfo.tr.addInPlace(dragVec);
 
-    this.change.update({
-      value: newXfo,
-    });
-
-    this.manipulate.emit({
-      holdPos: event.holdPos,
-      manipRay: this.gizmoRay,
-      deltaXfo: this.deltaXfo,
-      newXfo: newXfo,
-    });
+    if (this.change) {
+      this.change.update({
+        value: newXfo,
+      });
+    } else {
+      this.param.setValue(newXfo);
+    }
   }
 
   /**
@@ -118,12 +111,7 @@ class LinearMovementSceneWidget extends BaseLinearMovementSceneWidget {
    */
   onDragEnd(event) {
     this.change = null;
-
-    this.manipulateEnd.emit({
-      releasePos: event.releasePos,
-      manipRay: this.manipRay,
-    });
   }
 }
 
-export { LinearMovementSceneWidget };
+export { LinearMovementHandle };

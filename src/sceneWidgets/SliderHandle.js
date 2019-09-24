@@ -1,11 +1,11 @@
-import { BaseLinearMovementSceneWidget } from './BaseLinearMovementSceneWidget.js';
+import { BaseLinearMovementHandle } from './BaseLinearMovementHandle.js';
 
 import ParameterValueChange from '../undoredo/ParameterValueChange.js';
 
 /** Class representing a slider scene widget.
- * @extends BaseLinearMovementSceneWidget
+ * @extends BaseLinearMovementHandle
  */
-class SliderSceneWidget extends BaseLinearMovementSceneWidget {
+class SliderHandle extends BaseLinearMovementHandle {
   /**
    * Create a slider scene widget.
    * @param {any} name - The name value.
@@ -85,7 +85,7 @@ class SliderSceneWidget extends BaseLinearMovementSceneWidget {
    * @param {any} param - The param param.
    */
   setTargetParam(param) {
-    this.__param = param;
+    this.param = param;
     const range = param.getRange() ? param.getRange() : [0, 1];
     const __updateSlider = () => {
       this.__updateSlider(
@@ -116,12 +116,14 @@ class SliderSceneWidget extends BaseLinearMovementSceneWidget {
    * @param {any} event - The event param.
    */
   onDragStart(event) {
-    this.change = new ParameterValueChange(this.__param);
-    event.undoRedoManager.addChange(this.change);
 
     // Hilight the material.
     this.handleXfo.sc.x = this.handleXfo.sc.y = this.handleXfo.sc.z = 1.5;
     this.handle.setLocalXfo(this.handleXfo);
+    if (event.undoRedoManager) {
+      this.change = new ParameterValueChange(this.param);
+      event.undoRedoManager.addChange(this.change);
+    }
   }
 
   /**
@@ -131,13 +133,15 @@ class SliderSceneWidget extends BaseLinearMovementSceneWidget {
   onDrag(event) {
     const length = this.lengthParam.getValue();
     const range =
-      this.__param && this.__param.getRange()
-        ? this.__param.getRange()
-        : [0, 1];
+      this.param && this.param.getRange() ? this.param.getRange() : [0, 1];
     const value = Math.remap(event.value, 0, length, range[0], range[1]);
-    this.change.update({
-      value,
-    });
+    if (this.change) {
+      this.change.update({
+        value,
+      });
+    } else {
+      this.param.setValue(value);
+    }
   }
 
   /**
@@ -162,7 +166,7 @@ class SliderSceneWidget extends BaseLinearMovementSceneWidget {
       context,
       flags | ZeaEngine.SAVE_FLAG_SKIP_CHILDREN
     );
-    json.targetParam = this.__param.getPath();
+    json.targetParam = this.param.getPath();
     return json;
   }
 
@@ -183,6 +187,6 @@ class SliderSceneWidget extends BaseLinearMovementSceneWidget {
   }
 }
 
-ZeaEngine.sgFactory.registerClass('SliderSceneWidget', SliderSceneWidget);
+ZeaEngine.sgFactory.registerClass('SliderHandle', SliderHandle);
 
-export { SliderSceneWidget };
+export { SliderHandle };

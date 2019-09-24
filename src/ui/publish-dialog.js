@@ -79,9 +79,23 @@ class PublishDialog {
     embedCodeTextarea.value = `<iframe src="${publishURL}" width="640" height="360" frameborder="0" allow="webvr;webxr;fullscreen" allowfullscreen></iframe>`;
     dialog.appendChild(embedCodeTextarea);
 
+    
+    // ///////////////////////////////
+    // SCORM File
+
+    const button = document.createElement('button');
+    button.appendChild(document.createTextNode('Generate SCORM Package'));
+    button.addEventListener('click', e => {
+    });
+    button.style.margin = '2px';
+
+    dialog.appendChild(button);
+
+    
     this.__publishDialogHolder.appendChild(dialog);
     document.body.appendChild(this.__publishDialogHolder);
     this.visible = false;
+
   }
 
   /**

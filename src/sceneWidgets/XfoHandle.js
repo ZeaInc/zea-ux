@@ -1,8 +1,9 @@
-import SceneWidget from './SceneWidget.js';
-import { LinearMovementSceneWidget } from './LinearMovementSceneWidget.js';
-import { PlanarMovementSceneWidget } from './PlanarMovementSceneWidget.js';
-import { AxialRotationSceneWidget } from './AxialRotationSceneWidget.js';
-import { LinearScaleSceneWidget } from './LinearScaleSceneWidget.js';
+import Handle from './Handle.js';
+import { LinearMovementHandle } from './LinearMovementHandle.js';
+import { PlanarMovementHandle } from './PlanarMovementHandle.js';
+import { AxialRotationHandle } from './AxialRotationHandle.js';
+import { LinearScaleHandle } from './LinearScaleHandle.js';
+import { SphericalRotationHandle } from './SphericalRotationHandle.js';
 
 /**
  * Class representing an xfo handle.
@@ -18,7 +19,7 @@ export default class XfoHandle extends ZeaEngine.TreeItem {
     super('XfoHandle');
 
     // ////////////////////////////////
-    // LinearMovementSceneWidget
+    // LinearMovementHandle
 
     const translationHandles = new ZeaEngine.TreeItem('Translate');
     translationHandles.setVisible(false);
@@ -32,7 +33,7 @@ export default class XfoHandle extends ZeaEngine.TreeItem {
     blue.a = 0.8;
 
     {
-      const linearXWidget = new LinearMovementSceneWidget(
+      const linearXWidget = new LinearMovementHandle(
         'linearX',
         size,
         thickness,
@@ -44,7 +45,7 @@ export default class XfoHandle extends ZeaEngine.TreeItem {
       translationHandles.addChild(linearXWidget);
     }
     {
-      const linearYWidget = new LinearMovementSceneWidget(
+      const linearYWidget = new LinearMovementHandle(
         'linearY',
         size,
         thickness,
@@ -56,7 +57,7 @@ export default class XfoHandle extends ZeaEngine.TreeItem {
       translationHandles.addChild(linearYWidget);
     }
     {
-      const linearZWidget = new LinearMovementSceneWidget(
+      const linearZWidget = new LinearMovementHandle(
         'linearZ',
         size,
         thickness,
@@ -69,7 +70,7 @@ export default class XfoHandle extends ZeaEngine.TreeItem {
     // planarXYWidget
     const planarSize = size * 0.35;
     {
-      const planarXYWidget = new PlanarMovementSceneWidget(
+      const planarXYWidget = new PlanarMovementHandle(
         'planarXY',
         planarSize,
         green,
@@ -80,7 +81,7 @@ export default class XfoHandle extends ZeaEngine.TreeItem {
       translationHandles.addChild(planarXYWidget);
     }
     {
-      const planarYZWidget = new PlanarMovementSceneWidget(
+      const planarYZWidget = new PlanarMovementHandle(
         'planarYZ',
         planarSize,
         red,
@@ -92,7 +93,7 @@ export default class XfoHandle extends ZeaEngine.TreeItem {
       translationHandles.addChild(planarYZWidget);
     }
     {
-      const planarXZWidget = new PlanarMovementSceneWidget(
+      const planarXZWidget = new PlanarMovementHandle(
         'planarXZ',
         planarSize,
         blue,
@@ -110,16 +111,22 @@ export default class XfoHandle extends ZeaEngine.TreeItem {
     rotationHandles.setVisible(false);
     this.addChild(rotationHandles);
     {
-      const maskMat = new ZeaEngine.Material('mask', 'HandleShader');
-      maskMat
-        .getParameter('BaseColor')
-        .setValue(new ZeaEngine.Color(1, 1, 1, 0.4));
-      const maskGeom = new ZeaEngine.Sphere(size - thickness, 64);
-      const maskGeomItem = new ZeaEngine.GeomItem('mask', maskGeom, maskMat);
-      rotationHandles.addChild(maskGeomItem);
+      const rotationWidget = new SphericalRotationHandle(
+        'rotation',
+        size - thickness,
+        new ZeaEngine.Color(1, 1, 1, 0.4)
+      );
+      rotationHandles.addChild(rotationWidget);
+      // const maskMat = new ZeaEngine.Material('mask', 'HandleShader');
+      // maskMat
+      //   .getParameter('BaseColor')
+      //   .setValue(new ZeaEngine.Color(1, 1, 1, 0.4));
+      // const maskGeom = new ZeaEngine.Sphere(size - thickness, 64);
+      // const maskGeomItem = new ZeaEngine.GeomItem('mask', maskGeom, maskMat);
+      // rotationHandles.addChild(maskGeomItem);
     }
     {
-      const rotationXWidget = new AxialRotationSceneWidget(
+      const rotationXWidget = new AxialRotationHandle(
         'rotationX',
         size,
         thickness,
@@ -131,7 +138,7 @@ export default class XfoHandle extends ZeaEngine.TreeItem {
       rotationHandles.addChild(rotationXWidget);
     }
     {
-      const rotationYWidget = new AxialRotationSceneWidget(
+      const rotationYWidget = new AxialRotationHandle(
         'rotationY',
         size,
         thickness,
@@ -143,7 +150,7 @@ export default class XfoHandle extends ZeaEngine.TreeItem {
       rotationHandles.addChild(rotationYWidget);
     }
     {
-      const rotationZWidget = new AxialRotationSceneWidget(
+      const rotationZWidget = new AxialRotationHandle(
         'rotationZ',
         size,
         thickness,
@@ -160,7 +167,7 @@ export default class XfoHandle extends ZeaEngine.TreeItem {
 
     const scaleHandleLength = size * 0.95;
     {
-      const scaleXWidget = new LinearScaleSceneWidget(
+      const scaleXWidget = new LinearScaleHandle(
         'scaleX',
         scaleHandleLength,
         thickness,
@@ -172,7 +179,7 @@ export default class XfoHandle extends ZeaEngine.TreeItem {
       scaleHandles.addChild(scaleXWidget);
     }
     {
-      const scaleYWidget = new LinearScaleSceneWidget(
+      const scaleYWidget = new LinearScaleHandle(
         'scaleY',
         scaleHandleLength,
         thickness,
@@ -184,7 +191,7 @@ export default class XfoHandle extends ZeaEngine.TreeItem {
       scaleHandles.addChild(scaleYWidget);
     }
     {
-      const scaleZWidget = new LinearScaleSceneWidget(
+      const scaleZWidget = new LinearScaleHandle(
         'scaleZ',
         scaleHandleLength,
         thickness,
@@ -192,6 +199,20 @@ export default class XfoHandle extends ZeaEngine.TreeItem {
       );
       scaleHandles.addChild(scaleZWidget);
     }
+  }
+
+  /**
+   * Calculate the global Xfo for the handls.
+   */
+  _cleanGlobalXfo(prevValue) {
+    const parentItem = this.getParentItem();
+    if (parentItem !== undefined) {
+      const parentXfo = parentItem.getGlobalXfo().clone();
+      parentXfo.sc.set(1, 1, 1);
+      return parentXfo.multiply(this.__localXfoParam.getValue());
+    }
+    else
+      return this.__localXfoParam.getValue();
   }
 
   /**
@@ -216,9 +237,9 @@ export default class XfoHandle extends ZeaEngine.TreeItem {
    * @param {any} param - The param param.
    */
   setTargetParam(param) {
-    this.__param = param;
+    this.param = param;
     this.traverse(item => {
-      if (item instanceof SceneWidget) item.setTargetParam(param, false);
+      if (item instanceof Handle) item.setTargetParam(param, false);
     });
   }
 }
