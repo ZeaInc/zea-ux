@@ -224,6 +224,7 @@ class BottomPanel {
     this.domElement = document.createElement('div');
     this.domElement.className = 'BottomPanel overflow-auto pa2';
     this.domElement.style.height = `0px`;
+    this.closedHeight = 0;
 
     let startY;
     let startHeight;
@@ -241,7 +242,7 @@ class BottomPanel {
     const doDrag = event => {
       const delta = event.clientY - startY;
       let panelHeight = startHeight - delta;
-      if (panelHeight < 40) panelHeight = 0;
+      if (panelHeight < this.closedHeight + 40) panelHeight = this.closedHeight;
       this.domElement.style.height = `${panelHeight}px`;
     };
 
