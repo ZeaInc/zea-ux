@@ -315,7 +315,7 @@ class Panels {
    * @param {any} parentDomElement - The parentDomElement value.
    */
   constructor(parentDomElement, options) {
-    this.options = options;
+    this.options = options || {};
     if (parentDomElement) this.mount(parentDomElement);
   }
 

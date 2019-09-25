@@ -127,9 +127,7 @@ class SelectionManager {
    * @param {object} options - The options object.
    * @param {object} appData - The appData value.
    */
-  constructor(options, appData) {
-    if (!appData) console.error('Selection Manager needs options and appData.');
-
+  constructor(appData, options = {}) {
     this.appData = appData;
     this.leadSelection = undefined;
     this.selectionChanged = new ZeaEngine.Signal();
