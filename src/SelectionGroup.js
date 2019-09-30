@@ -1,6 +1,4 @@
 
-const ValueSetMode = ZeaEngine.ValueSetMode;
-
 export default class SelectionGroup extends ZeaEngine.Group {
   constructor() {
     super();
@@ -12,6 +10,15 @@ export default class SelectionGroup extends ZeaEngine.Group {
     const cloned = new SelectionGroup();
     cloned.copyFrom(this, flags);
     return cloned;
+  }
+
+  rebindInitialXfos() {
+    const items = Array.from(this.__itemsParam.getValue());
+    items.forEach((item, index) => {
+      if (item instanceof ZeaEngine.TreeItem) {
+        this.__initialXfos[index] = item.getGlobalXfo();
+      }
+    })
   }
 
   __bindItem(item, index) {
