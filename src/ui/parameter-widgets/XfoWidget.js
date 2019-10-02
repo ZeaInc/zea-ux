@@ -30,27 +30,38 @@ export default class XfoWidget extends BaseWidget {
     // Handle Changes.
 
     let change = undefined;
+    // TODO: All parameter widgets should guard using an explicit boolean.
+    // This is because the 'change' variable is only assigned after the
+    // ParameterValueChange returns, however, the ParameterValueChange
+    // also sets the value of the parameter which causesa value changed 
+    // notification.
+    let settingValue = false;
 
     const updateDisplayedValue = () => {
-      if (!change) {
+      if (!settingValue) {
+
+        // https://www.jacklmoore.com/notes/rounding-in-javascript/
+        function round(value, decimals=6) {
+          return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+        }
         const xfo = parameter.getValue();
-        tr_xField.value = xfo.tr.x;
-        tr_yField.value = xfo.tr.y;
-        tr_zField.value = xfo.tr.z;
-        ori_xField.value = xfo.ori.x;
-        ori_yField.value = xfo.ori.y;
-        ori_zField.value = xfo.ori.z;
-        ori_wField.value = xfo.ori.w;
-        sc_xField.value = xfo.sc.x;
-        sc_yField.value = xfo.sc.y;
-        sc_zField.value = xfo.sc.z;
+        tr_xField.value = round(xfo.tr.x);
+        tr_yField.value = round(xfo.tr.y);
+        tr_zField.value = round(xfo.tr.z);
+        ori_xField.value = round(xfo.ori.x);
+        ori_yField.value = round(xfo.ori.y);
+        ori_zField.value = round(xfo.ori.z);
+        ori_wField.value = round(xfo.ori.w);
+        sc_xField.value = round(xfo.sc.x);
+        sc_yField.value = round(xfo.sc.y);
+        sc_zField.value = round(xfo.sc.z);
       }
     };
 
     parameter.valueChanged.connect(updateDisplayedValue);
 
     const valueChange = () => {
-      console.log('valueChange');
+      settingValue = true;
       const xfo = new ZeaEngine.Xfo();
       xfo.tr.set(
         tr_xField.valueAsNumber,
@@ -75,12 +86,13 @@ export default class XfoWidget extends BaseWidget {
       } else {
         change.update({ value: xfo });
       }
-      updateDisplayedValue();
     };
 
     const valueChangeEnd = () => {
       valueChange();
       change = undefined;
+      settingValue = false;
+      updateDisplayedValue();
     };
 
     function addNumberField(name, ul, value, tabindex) {

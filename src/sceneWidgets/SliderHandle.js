@@ -86,11 +86,8 @@ class SliderHandle extends BaseLinearMovementHandle {
    */
   setTargetParam(param) {
     this.param = param;
-    const range = param.getRange() ? param.getRange() : [0, 1];
     const __updateSlider = () => {
-      this.__updateSlider(
-        Math.remap(param.getValue(), range[0], range[1], 0, 1)
-      );
+      this.__updateSlider(param.getValue());
     };
     __updateSlider();
     param.valueChanged.connect(__updateSlider);
@@ -98,11 +95,14 @@ class SliderHandle extends BaseLinearMovementHandle {
 
   // eslint-disable-next-line require-jsdoc
   __updateSlider(value) {
+    const range =
+      this.param && this.param.getRange() ? this.param.getRange() : [0, 1];
+    const v = Math.remap(value, range[0], range[1], 0, 1);
     const length = this.lengthParam.getValue();
-    this.baseBarXfo.sc.z = value * length;
-    this.handleXfo.tr.z = value * length;
-    this.topBarXfo.tr.z = value * length;
-    this.topBarXfo.sc.z = (1 - value) * length;
+    this.baseBarXfo.sc.z = v * length;
+    this.handleXfo.tr.z = v * length;
+    this.topBarXfo.tr.z = v * length;
+    this.topBarXfo.sc.z = (1 - v) * length;
     this.handle.setLocalXfo(this.handleXfo);
     this.baseBar.setLocalXfo(this.baseBarXfo);
     this.topBar.setLocalXfo(this.topBarXfo);
@@ -120,6 +120,9 @@ class SliderHandle extends BaseLinearMovementHandle {
     // Hilight the material.
     this.handleXfo.sc.x = this.handleXfo.sc.y = this.handleXfo.sc.z = 1.5;
     this.handle.setLocalXfo(this.handleXfo);
+    if(!this.param) {
+      return;
+    }
     if (event.undoRedoManager) {
       this.change = new ParameterValueChange(this.param);
       event.undoRedoManager.addChange(this.change);
@@ -135,6 +138,10 @@ class SliderHandle extends BaseLinearMovementHandle {
     const range =
       this.param && this.param.getRange() ? this.param.getRange() : [0, 1];
     const value = Math.remap(event.value, 0, length, range[0], range[1]);
+    if(!this.param) {
+      this.__updateSlider(value);
+      return;
+    }
     if (this.change) {
       this.change.update({
         value,
