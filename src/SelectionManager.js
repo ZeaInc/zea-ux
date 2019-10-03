@@ -197,6 +197,28 @@ class SelectionManager {
         activatedChanged: handleGroup.Scale,
       });
 
+      const xfoModeParam = this.selectionGroup.getParameter('InitialXfoMode')
+      appData.actionRegistry.registerAction({
+        name: 'Local',
+        path: ['Edit', 'Coords'],
+        callback: () => {
+          this.selectionGroup.rebindInitialXfos();
+          xfoModeParam.setValue(ZeaEngine.Group.INITIAL_XFO_MODES.average);
+        },
+        key: 'k',
+        activatedChanged: handleGroup.Translate,
+      });
+      appData.actionRegistry.registerAction({
+        name: 'Global',
+        path: ['Edit', 'Coords'],
+        callback: () => {
+          this.selectionGroup.rebindInitialXfos();
+          xfoModeParam.setValue(ZeaEngine.Group.INITIAL_XFO_MODES.globalOri);
+        },
+        key: 'l',
+        activatedChanged: handleGroup.Rotate,
+      });
+
       // Translate Activated by default.
       // showHandles('Translate');
     }

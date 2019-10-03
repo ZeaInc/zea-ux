@@ -22,8 +22,8 @@ class VRUITool extends BaseTool {
 
     this.controllerUI = new VRControllerUI(
       appData,
-      vrUIDOMHolderElement,
-      vrUIDOMElement
+      this.__vrUIDOMHolderElement,
+      this.__vrUIDOMElement
     );
     this.controllerUI.addRef(this);
 

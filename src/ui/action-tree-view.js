@@ -2,16 +2,16 @@
 class ActionTreeView {
   /**
    * Create an action tree view.
-   * @param {any} domElement - The domElement value.
    * @param {any} actionRegistry - The actionRegistry value.
    */
-  constructor(domElement, actionRegistry) {
-    this.domElement = domElement;
+  constructor(actionRegistry) {
     this.actionRegistry = actionRegistry;
 
     this.__existingItems = {};
 
-    const ul = this._addUlTo(this.domElement, 'pure-menu-list');
+    const domElement = document.createElement('div');
+    document.body.appendChild(domElement);
+    const ul = this._addUlTo(domElement, 'pure-menu-list');
 
     const actions = this.actionRegistry.getActions();
     actions.forEach(action => {
