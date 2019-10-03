@@ -33,7 +33,7 @@ class UndoRedoManager {
    * @param {any} change - The change param.
    */
   addChange(change) {
-    console.log("AddChange:", change.name)
+    // console.log("AddChange:", change.name)
     if (this.getCurrentChange())
       this.getCurrentChange().updated.disconnect(this.__currChangeUpdated);
 
@@ -66,7 +66,7 @@ class UndoRedoManager {
   undo(pushOnRedoStack = true) {
     if (this.__undoStack.length > 0) {
       const change = this.__undoStack.pop();
-      console.log("undo:", change.name)
+      // console.log("undo:", change.name)
       change.undo();
       if (pushOnRedoStack) {
         this.__redoStack.push(change);
@@ -81,7 +81,7 @@ class UndoRedoManager {
   redo() {
     if (this.__redoStack.length > 0) {
       const change = this.__redoStack.pop();
-      console.log("redo:", change.name)
+      // console.log("redo:", change.name)
       change.redo();
       this.__undoStack.push(change);
       this.changeRedone.emit();

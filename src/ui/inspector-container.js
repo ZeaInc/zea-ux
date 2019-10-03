@@ -8,20 +8,6 @@ class InspectorContainer {
    */
   constructor(appData) {
     this.appData = appData;
-
-    if (this.appData.selectionManager.leadSelection) {
-      this.inspect(this.appData.selectionManager.leadSelection);
-    }
-    this._selChangedId = this.appData.selectionManager.leadSelectionChanged.connect(
-      selectedTreeItem => {
-        // console.log(
-        //   'leadSelectionChange:',
-        //   selectedTreeItem ? selectedTreeItem.getName() : 'None'
-        // );
-        // TODO:
-        this.inspect(selectedTreeItem);
-      }
-    );
   }
 
   /**
@@ -53,6 +39,7 @@ class InspectorContainer {
     this.domElement = parentElement;
     this.domElement.innerHTML = '';
     if (this.inspectedItem) this.inspect(this.inspectedItem);
+    this._selChangedId = this.appData.selectionManager.leadSelectionChanged.connect(this.inspect.bind(this));
   }
 
   /**
