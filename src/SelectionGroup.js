@@ -29,8 +29,6 @@ export default class SelectionGroup extends ZeaEngine.Group {
         // else if (mode != ValueSetMode.OPERATOR_SETVALUE &&  mode != ValueSetMode.OPERATOR_DIRTIED)
       });
       this.__initialXfos[index] = item.getGlobalXfo();
-
-      signalIndices.bboxChangedIndex = item.boundingChanged.connect(this._setBoundingBoxDirty);
     }
 
     this.__signalIndices[index] = signalIndices
