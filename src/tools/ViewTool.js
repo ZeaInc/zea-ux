@@ -34,7 +34,7 @@ class ViewTool extends BaseTool {
     this.__orbitRateParam = this.addParameter(
       new ZeaEngine.NumberParameter(
         'orbitRate',
-        ZeaEngine.SystemDesc.isMobileDevice ? -0.003 : 0.01
+        ZeaEngine.SystemDesc.isMobileDevice ? -0.3 : 1
       )
     );
     this.__dollySpeedParam = this.addParameter(
@@ -139,13 +139,12 @@ class ViewTool extends BaseTool {
 
     // Orbit
     const orbit = new ZeaEngine.Quat();
-    orbit.rotateZ(dragVec.x * orbitRate * 0.12);
-    // globalXfo.ori.multiplyInPlace(orbit);
+    orbit.rotateZ(dragVec.x / viewport.getWidth() * Math.PI * orbitRate);
     globalXfo.ori = orbit.multiply(globalXfo.ori);
 
     // Pitch
     const pitch = new ZeaEngine.Quat();
-    pitch.rotateX(dragVec.y * orbitRate * 0.12);
+    pitch.rotateX(dragVec.y / viewport.getHeight() * Math.PI * orbitRate);
     globalXfo.ori.multiplyInPlace(pitch);
 
     if (this.__keyboardMovement) {
@@ -179,13 +178,12 @@ class ViewTool extends BaseTool {
 
     // Orbit
     const orbit = new ZeaEngine.Quat();
-    orbit.rotateZ(dragVec.x * -orbitRate);
-    // globalXfo.ori.multiplyInPlace(orbit);
+    orbit.rotateZ(dragVec.x / viewport.getWidth() * 2 * Math.PI * -orbitRate);
     globalXfo.ori = orbit.multiply(globalXfo.ori);
 
     // Pitch
     const pitch = new ZeaEngine.Quat();
-    pitch.rotateX(dragVec.y * -orbitRate);
+    pitch.rotateX(dragVec.y / viewport.getHeight() * Math.PI * -orbitRate);
     globalXfo.ori.multiplyInPlace(pitch);
 
     globalXfo.tr = this.__mouseDownCameraTarget.add(
@@ -385,9 +383,9 @@ class ViewTool extends BaseTool {
       this.__mode = 'pan';
     } else if (event.ctrlKey && event.button == 2) {
       this.__mode = 'dolly';
-    } /* else if (event.ctrlKey || event.button == 2) {
+    } else if (event.shiftKey || event.button == 2) {
       this.__mode = 'look';
-    }*/ else {
+    } else {
       this.__mode = this.__defaultMode;
     }
   }
