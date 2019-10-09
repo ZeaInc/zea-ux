@@ -174,8 +174,12 @@ class VRUITool extends BaseTool {
     const pointervec = pointerXfo.ori.getZaxis().negate();
     const ray = new ZeaEngine.Ray(pointerXfo.tr, pointervec);
 
-    const planeXfo = this.controllerUI.getGeomXfo();
-    const plane = new ZeaEngine.Ray(planeXfo.tr, planeXfo.ori.getZaxis());
+    const planeXfo = this.controllerUI.getGlobalXfo();
+    const planeSize = this.controllerUI.getGeomOffsetXfo().sc;
+    const plane = new ZeaEngine.Ray(
+      planeXfo.tr,
+      planeXfo.ori.getZaxis().negate()
+    );
     const res = ray.intersectRayPlane(plane);
     if (res <= 0) {
       // Let the pointer shine right past the UI.
@@ -185,8 +189,8 @@ class VRUITool extends BaseTool {
     const hitOffset = pointerXfo.tr
       .add(pointervec.scale(res))
       .subtract(plane.start);
-    const x = hitOffset.dot(planeXfo.ori.getXaxis()) / planeXfo.sc.x;
-    const y = hitOffset.dot(planeXfo.ori.getYaxis()) / planeXfo.sc.y;
+    const x = hitOffset.dot(planeXfo.ori.getXaxis()) / planeSize.x;
+    const y = hitOffset.dot(planeXfo.ori.getYaxis()) / planeSize.y;
     if (Math.abs(x) > 0.5 || Math.abs(y) > 0.5) {
       // Let the pointer shine right past the UI.
       this.setPointerLength(0.5);

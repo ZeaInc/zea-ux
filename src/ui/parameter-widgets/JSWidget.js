@@ -24,7 +24,7 @@ export default class JSWidget extends BaseWidget {
     div.textContent = parameter.getValue();
     div.style.width = '100%';
     const numLines = Math.min(50, parameter.getValue().split('\n').length);
-    div.style.height = (numLines < 5 ? 100 : (numLines * 14)) + 'px';
+    div.style.height = (Math.max(8, numLines+2) * 14) + 'px';
     parentDomElem.appendChild(div);
 
     const editor = ace.edit(div);

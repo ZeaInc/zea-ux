@@ -8,6 +8,7 @@ export * from './JSWidget.js';
 export * from './Vec2Widget.js';
 export * from './Vec3Widget.js';
 export * from './Vec4Widget.js';
+export * from './Mat4Widget.js';
 export * from './XfoWidget.js';
 export * from './BBoxWidget.js';
 export * from './ImageWidget.js';
