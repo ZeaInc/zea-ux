@@ -53,11 +53,18 @@ class ParameterValueChange extends Change {
    */
   update(updateData) {
     if (!this.__param) return;
-    this.__nextValue = updateData.value;
-    const mode = updateData.mode
-      ? updateData.mode
-      : ZeaEngine.ValueSetMode.USER_SETVALUE;
-    this.__param.setValue(this.__nextValue, mode);
+    if (updateData.value == undefined) {
+      // At the end of an interaction, just as moving a slider,
+      // we need to emit a special event to indicate certain
+      // code can be run. The mode here is USER_SETVALUE_DONE.
+      this.__param.valueChange.emit(updateData.mode);
+    } else {
+      this.__nextValue = updateData.value;
+      const mode = updateData.mode
+        ? updateData.mode
+        : ZeaEngine.ValueSetMode.USER_SETVALUE;
+      this.__param.setValue(this.__nextValue, mode);
+    }
     this.updated.emit(updateData);
   }
 

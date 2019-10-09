@@ -77,12 +77,14 @@ export default class NumberWidget extends BaseWidget {
     };
 
     const valueChangeEnd = () => {
-      valueChange(ZeaEngine.ValueSetMode.USER_SETVALUE);
+      // The change object will emit this special signal to indicate
+      // and interaction has finished. 
+      change.update({ mode: ZeaEngine.ValueSetMode.USER_SETVALUE_DONE });
       change = undefined;
     };
 
     input.addEventListener('input', () => {
-      valueChange(ZeaEngine.ValueSetMode.USER_SETTINGVALUE);
+      valueChange(ZeaEngine.ValueSetMode.USER_SETVALUE);
     });
     input.addEventListener('change', valueChangeEnd);
   }
