@@ -19,7 +19,7 @@ class InspectorContainer {
     if (!this.domElement) return;
 
     if (this.inspector) {
-      this.inspector.destroy();
+      if (this.inspector.destroy) this.inspector.destroy();
       this.domElement.innerHTML = '';
     }
     if (this.inspectedItem) {

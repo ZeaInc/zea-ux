@@ -222,6 +222,10 @@ class SelectionManager {
       // Translate Activated by default.
       // showHandles('Translate');
     }
+
+    if (this.appData.renderer) {
+      this.setRenderer(this.appData.renderer);
+    }
   }
 
   /**
