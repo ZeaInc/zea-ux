@@ -112,17 +112,18 @@ class TreeItemElement {
       }
 
       this.expandBtn.addEventListener('click', () => {
-        if (this.treeItem.numChildren() > 0) {
+        if (this.treeItem.getNumChildren() > 0) {
           this._expanded ? this.collapse() : this.expand();
         }
       });
 
-      this.treeItem.childAdded.connect((childItem, index) => {
-        this.addChild(childItem);
+      this.treeItem.childAdded.connect(childItem => {
+        if (!childItem.testFlag(ZeaEngine.ItemFlags.INVISIBLE))
+          this.addChild(childItem);
       });
 
-      this.treeItem.childRemoved.connect((childItem, index) => {
-        if(this._expanded) {
+      this.treeItem.childRemoved.connect(index => {
+        if (this._expanded) {
           this.childElements[index].destroy();
           this.childElements.splice(index, 1);
         }
@@ -181,8 +182,9 @@ class TreeItemElement {
 
     if (!this.childrenAlreadyCreated) {
       const children = this.treeItem.getChildren();
-      for (const child of children) {
-        this.addChild(child);
+      for (const childItem of children) {
+        if (!childItem.testFlag(ZeaEngine.ItemFlags.INVISIBLE))
+          this.addChild(childItem);
       }
       this.childrenAlreadyCreated = true;
     }
