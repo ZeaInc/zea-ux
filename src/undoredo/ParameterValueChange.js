@@ -11,17 +11,14 @@ class ParameterValueChange extends Change {
    * @param {any} param - The param value.
    * @param {any} newValue - The newValue value.
    */
-  constructor(param, newValue) {
+  constructor(param, newValue, mode = ZeaEngine.ValueSetMode.USER_SETVALUE) {
     if (param) {
       super(param ? param.getName() + ' Changed' : 'ParameterValueChange');
       this.__prevValue = param.getValue();
       this.__param = param;
       if (newValue != undefined) {
         this.__nextValue = newValue;
-        this.__param.setValue(
-          this.__nextValue,
-          ZeaEngine.ValueSetMode.USER_SETVALUE
-        );
+        this.__param.setValue(this.__nextValue, mode);
       }
     } else {
       super();
@@ -57,10 +54,10 @@ class ParameterValueChange extends Change {
   update(updateData) {
     if (!this.__param) return;
     this.__nextValue = updateData.value;
-    this.__param.setValue(
-      this.__nextValue,
-      ZeaEngine.ValueSetMode.USER_SETVALUE
-    );
+    const mode = updateData.mode
+      ? updateData.mode
+      : ZeaEngine.ValueSetMode.USER_SETVALUE;
+    this.__param.setValue(this.__nextValue, mode);
     this.updated.emit(updateData);
   }
 

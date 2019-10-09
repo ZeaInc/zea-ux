@@ -60,27 +60,30 @@ export default class NumberWidget extends BaseWidget {
       }
     });
 
-    const valueChange = () => {
+    const valueChange = mode => {
       let value = input.valueAsNumber;
       if (range) {
         // Renmap from the 0..200 integer to the floating point
         // range specified in the parameter.
         value = range[0] + (value / 200) * (range[1] - range[0]);
+        value = Math.clamp(value, range[0], range[1]);
       }
       if (!change) {
-        change = new ParameterValueChange(parameter, value);
+        change = new ParameterValueChange(parameter, value, mode);
         appData.undoRedoManager.addChange(change);
       } else {
-        change.update({ value });
+        change.update({ value, mode });
       }
     };
 
     const valueChangeEnd = () => {
-      valueChange();
+      valueChange(ZeaEngine.ValueSetMode.USER_SETVALUE);
       change = undefined;
     };
 
-    input.addEventListener('input', valueChange);
+    input.addEventListener('input', () => {
+      valueChange(ZeaEngine.ValueSetMode.USER_SETTINGVALUE);
+    });
     input.addEventListener('change', valueChangeEnd);
   }
 }
