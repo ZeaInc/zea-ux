@@ -32,10 +32,7 @@ class ViewTool extends BaseTool {
     this.__ongoingTouches = {};
 
     this.__orbitRateParam = this.addParameter(
-      new ZeaEngine.NumberParameter(
-        'orbitRate',
-        ZeaEngine.SystemDesc.isMobileDevice ? -0.3 : 1
-      )
+      new ZeaEngine.NumberParameter('orbitRate', 1)
     );
     this.__dollySpeedParam = this.addParameter(
       new ZeaEngine.NumberParameter('dollySpeed', 0.02)
@@ -125,7 +122,10 @@ class ViewTool extends BaseTool {
    */
   look(dragVec, viewport) {
     const focalDistance = viewport.getCamera().getFocalDistance();
-    const orbitRate = this.__orbitRateParam.getValue();
+    const orbitRate =
+      this.__orbitRateParam.getValue() * ZeaEngine.SystemDesc.isMobileDevice
+        ? -1
+        : 1;
 
     if (this.__keyboardMovement) {
       const globalXfo = viewport.getCamera().getGlobalXfo();
@@ -164,7 +164,10 @@ class ViewTool extends BaseTool {
    */
   orbit(dragVec, viewport) {
     const focalDistance = viewport.getCamera().getFocalDistance();
-    const orbitRate = this.__orbitRateParam.getValue();
+    const orbitRate =
+      this.__orbitRateParam.getValue() * ZeaEngine.SystemDesc.isMobileDevice
+        ? -1
+        : 1;
 
     if (this.__keyboardMovement) {
       const globalXfo = viewport.getCamera().getGlobalXfo();
