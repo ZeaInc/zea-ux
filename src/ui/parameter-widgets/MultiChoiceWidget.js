@@ -44,6 +44,7 @@ export default class MultiChoiceWidget extends BaseWidget {
       changing = true;
       const change = new ParameterValueChange(parameter, select.selectedIndex);
       appData.undoRedoManager.addChange(change);
+      change.update({ mode: ZeaEngine.ValueSetMode.USER_SETVALUE_DONE });
       changing = false;
     };
     select.addEventListener('change', valueChange);

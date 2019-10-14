@@ -3,13 +3,11 @@ import BaseWidget from './BaseWidget.js';
 import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 import uxFactory from '../UxFactory.js';
 
-const JSCODE = 1 << 8;
-
 /**
  * Class representing a string widget.
  * @extends BaseWidget
  */
-export default class JSWidget extends BaseWidget {
+export default class CodeWidget extends BaseWidget {
   /**
    * Create a string widget.
    * @param {any} parameter - The parameter value.
@@ -24,7 +22,7 @@ export default class JSWidget extends BaseWidget {
     div.textContent = parameter.getValue();
     div.style.width = '100%';
     const numLines = Math.min(50, parameter.getValue().split('\n').length);
-    div.style.height = (Math.max(8, numLines+2) * 14) + 'px';
+    div.style.height = Math.max(8, numLines + 2) * 14 + 'px';
     parentDomElem.appendChild(div);
 
     const editor = ace.edit(div);
@@ -53,6 +51,7 @@ export default class JSWidget extends BaseWidget {
 
     const valueChangeEnd = () => {
       valueChange();
+      change.update({ mode: ZeaEngine.ValueSetMode.USER_SETVALUE_DONE });
       change = undefined;
     };
     // editor.session.on('change', function(delta) {
@@ -62,15 +61,12 @@ export default class JSWidget extends BaseWidget {
     // });
     div.addEventListener('keydown', event => {
       if (event.ctrlKey && event.key == 's') {
-        valueChange();
-        event.stopPropagation();
+        valueChangeEnd();
         event.preventDefault();
       }
+      event.stopPropagation();
     });
   }
 }
 
-uxFactory.registerWidget(
-  JSWidget,
-  p => p instanceof ZeaEngine.StringParameter && p.testFlag(JSCODE)
-);
+uxFactory.registerWidget(CodeWidget, p => p instanceof ZeaEngine.CodeParameter);

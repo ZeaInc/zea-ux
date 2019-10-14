@@ -57,7 +57,7 @@ class ParameterValueChange extends Change {
       // At the end of an interaction, just as moving a slider,
       // we need to emit a special event to indicate certain
       // code can be run. The mode here is USER_SETVALUE_DONE.
-      this.__param.valueChange.emit(updateData.mode);
+      this.__param.valueChanged.emit(updateData.mode);
     } else {
       this.__nextValue = updateData.value;
       const mode = updateData.mode
