@@ -2,43 +2,6 @@ import ParameterContainer from './parameter-container.js';
 import uxFactory from './UxFactory.js';
 import NameWidget from './parameter-widgets/NameWidget.js';
 
-/** Class representing a name param. */
-class NameParam {
-  /**
-   * Create a name param.
-   * @param {any} treeItem - The treeItem value.
-   */
-  constructor(treeItem) {
-    this._treeItem = treeItem;
-    this.valueChanged = treeItem.nameChanged;
-  }
-
-  /**
-   * The getName method.
-   * @return {any} The return value.
-   */
-  getName() {
-    return 'Name';
-  }
-
-  /**
-   * The getValue method.
-   * @return {any} The return value.
-   */
-  getValue() {
-    return this._treeItem.getName();
-  }
-
-  /**
-   * The setValue method.
-   * @param {any} name - The name param.
-   * @return {any} The return value.
-   */
-  setValue(name) {
-    return this._treeItem.setName(name);
-  }
-}
-
 /** Class representing a tree item inspector. */
 export default class TreeItemInspector {
   /**
