@@ -27,7 +27,7 @@ class TopMenuBar {
     this.topMenuItems.className = 'pure-menu pure-menu-horizontal ml3';
     headerWrapper.appendChild(this.topMenuItems);
 
-    if (!isOverlay) {
+    if (!isOverlay && appData.currentUser) {
       const userProfileWrapper = document.createElement('div');
       headerWrapper.appendChild(userProfileWrapper);
 
