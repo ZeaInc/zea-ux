@@ -37,12 +37,22 @@ export default class ColorWidget extends BaseWidget {
 
     let change = undefined;
     let undoing = false;
-
+    let remoteUserEditedHighlightId;
     parameter.valueChanged.connect(() => {
       if (!change) {
         undoing = true;
         colorPicker.color.rgb = parameter.getValue().getAsRGBDict();
         undoing = false;
+
+        if (mode == ZeaEngine.ValueSetMode.REMOTEUSER_SETVALUE) {
+          colorPicker.el.classList.add('user-edited');
+          if (remoteUserEditedHighlightId)
+            clearTimeout(remoteUserEditedHighlightId);
+          remoteUserEditedHighlightId = setTimeout(() => {
+            colorPicker.el.classList.remove('user-edited');
+            remoteUserEditedHighlightId = null;
+          }, 1500);
+        }
       }
     });
 

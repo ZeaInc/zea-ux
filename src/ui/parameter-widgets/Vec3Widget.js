@@ -69,6 +69,7 @@ export default class Vec3Widget extends BaseWidget {
     // Handle Changes.
 
     let change = undefined;
+    let remoteUserEditedHighlightId;
 
     parameter.valueChanged.connect(() => {
       if (!change) {
@@ -76,6 +77,16 @@ export default class Vec3Widget extends BaseWidget {
         xField.value = vec3.x;
         yField.value = vec3.y;
         zField.value = vec3.z;
+        
+        if (mode == ZeaEngine.ValueSetMode.REMOTEUSER_SETVALUE) {
+          container.classList.add('user-edited');
+          if (remoteUserEditedHighlightId)
+            clearTimeout(remoteUserEditedHighlightId);
+          remoteUserEditedHighlightId = setTimeout(() => {
+            container.classList.remove('user-edited');
+            remoteUserEditedHighlightId = null
+          }, 1500);
+        }
       }
     });
 

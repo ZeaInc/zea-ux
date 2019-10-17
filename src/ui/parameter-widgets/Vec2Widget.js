@@ -56,11 +56,22 @@ export default class Vec2Widget extends BaseWidget {
     // Handle Changes.
 
     let change = undefined;
+    let remoteUserEditedHighlightId;
     parameter.valueChanged.connect(() => {
       if (!change) {
         const vec2 = parameter.getValue();
         xField.value = vec2.x;
         yField.value = vec2.y;
+        
+        if (mode == ZeaEngine.ValueSetMode.REMOTEUSER_SETVALUE) {
+          container.classList.add('user-edited');
+          if (remoteUserEditedHighlightId)
+            clearTimeout(remoteUserEditedHighlightId);
+          remoteUserEditedHighlightId = setTimeout(() => {
+            container.classList.remove('user-edited');
+            remoteUserEditedHighlightId = null
+          }, 1500);
+        }
       }
     });
     const valueChange = () => {

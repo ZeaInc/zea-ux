@@ -26,10 +26,23 @@ export default class BooleanWidget extends BaseWidget {
 
     // ///////////////////////////
     // Handle Changes.
-
+    
     let change;
-    parameter.valueChanged.connect(() => {
-      if (!change) input.checked = parameter.getValue();
+    let remoteUserEditedHighlightId;
+    parameter.valueChanged.connect(mode => {
+      if (!change) {
+        input.checked = parameter.getValue();
+
+        if (mode == ZeaEngine.ValueSetMode.REMOTEUSER_SETVALUE) {
+          input.classList.add('user-edited');
+          if (remoteUserEditedHighlightId)
+            clearTimeout(remoteUserEditedHighlightId);
+          remoteUserEditedHighlightId = setTimeout(() => {
+            input.classList.remove('user-edited');
+            remoteUserEditedHighlightId = null;
+          }, 1500);
+        }
+      }
     });
     input.addEventListener('input', () => {
       change = new ParameterValueChange(parameter, input.checked);

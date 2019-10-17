@@ -1,5 +1,6 @@
 import { Session } from '@zeainc/zea-collab';
 import UndoRedoManager from './undoredo/UndoRedoManager.js';
+import SelectionManager from './SelectionManager.js';
 import Avatar from './Avatar.js';
 
 const convertValuesToJSON = value => {
@@ -56,7 +57,7 @@ class SessionSync {
    * @param {any} appData - The appData value.
    * @param {any} currentUser - The currentUser value.
    */
-  constructor(session, appData, currentUser) {
+  constructor(session, appData, currentUser, options) {
     // const currentUserAvatar = new Avatar(appData, currentUser, true);
 
     const userDatas = {};
@@ -66,6 +67,11 @@ class SessionSync {
         userDatas[userData.id] = {
           undoRedoManager: new UndoRedoManager(),
           avatar: new Avatar(appData, userData),
+          selectionManager: new SelectionManager(appData, {
+            ...options,
+            enableXfoHandles: false,
+            setItemsSelected: false
+          }),
         };
       }
     });
@@ -80,32 +86,26 @@ class SessionSync {
 
     // ///////////////////////////////////////////
     // Video Streams
-    session.sub(
-      Session.actions.USER_VIDEO_STARTED,
-      (data, userId) => {
-        if (!userDatas[userId]) {
-          console.warn('User id not in session:', userId);
-          return;
-        }
-        const video = session.getVideoStream(userId);
-        if (video) userDatas[userId].avatar.attachRTCStream(video);
+    session.sub(Session.actions.USER_VIDEO_STARTED, (data, userId) => {
+      if (!userDatas[userId]) {
+        console.warn('User id not in session:', userId);
+        return;
       }
-    );
+      const video = session.getVideoStream(userId);
+      if (video) userDatas[userId].avatar.attachRTCStream(video);
+    });
 
-    session.sub(
-      Session.actions.USER_VIDEO_STOPPED,
-      (data, userId) => {
-        if (!userDatas[userId]) {
-          console.warn('User id not in session:', userId);
-          return;
-        }
-        console.log('USER_VIDEO_STOPPED:', userId, ' us:', currentUser.id);
-        if (userDatas[userId].avatar)
-          userDatas[userId].avatar.detachRTCStream(
-            session.getVideoStream(userId)
-          );
+    session.sub(Session.actions.USER_VIDEO_STOPPED, (data, userId) => {
+      if (!userDatas[userId]) {
+        console.warn('User id not in session:', userId);
+        return;
       }
-    );
+      console.log('USER_VIDEO_STOPPED:', userId, ' us:', currentUser.id);
+      if (userDatas[userId].avatar)
+        userDatas[userId].avatar.detachRTCStream(
+          session.getVideoStream(userId)
+        );
+    });
 
     // ///////////////////////////////////////////
     // Pose Changes
@@ -123,10 +123,7 @@ class SessionSync {
           length: rayLength,
         },
       };
-      session.pub(
-        Session.actions.POSE_CHANGED,
-        convertValuesToJSON(data)
-      );
+      session.pub(Session.actions.POSE_CHANGED, convertValuesToJSON(data));
     });
     appData.toolManager.hidePointer.connect(event => {
       const data = {
@@ -147,10 +144,7 @@ class SessionSync {
         interfaceType: 'CameraAndPointer',
         unhilightPointer: {},
       };
-      session.pub(
-        Session.actions.POSE_CHANGED,
-        convertValuesToJSON(data)
-      );
+      session.pub(Session.actions.POSE_CHANGED, convertValuesToJSON(data));
     });
 
     let tick = 0;
@@ -180,24 +174,18 @@ class SessionSync {
 
       // currentUserAvatar.updatePose(data);
 
-      session.pub(
-        Session.actions.POSE_CHANGED,
-        convertValuesToJSON(data)
-      );
+      session.pub(Session.actions.POSE_CHANGED, convertValuesToJSON(data));
     });
 
-    session.sub(
-      Session.actions.POSE_CHANGED,
-      (jsonData, userId) => {
-        if (!userDatas[userId]) {
-          console.warn('User id not in session:', userId);
-          return;
-        }
-        const data = convertValuesFromJSON(jsonData, appData.scene);
-        const avatar = userDatas[userId].avatar;
-        avatar.updatePose(data);
+    session.sub(Session.actions.POSE_CHANGED, (jsonData, userId) => {
+      if (!userDatas[userId]) {
+        console.warn('User id not in session:', userId);
+        return;
       }
-    );
+      const data = convertValuesFromJSON(jsonData, appData.scene);
+      const avatar = userDatas[userId].avatar;
+      avatar.updatePose(data);
+    });
 
     // Emit a signal to configure remote avatars to the current camera transform.
     session.pub(
@@ -217,7 +205,6 @@ class SessionSync {
 
     const root = appData.scene.getRoot();
     appData.undoRedoManager.changeAdded.connect(change => {
-      
       const context = {
         appData,
         makeRelative: path => path,
@@ -228,8 +215,7 @@ class SessionSync {
           // has terminated. In our case, we want all paths
           // to be resolved before the end of the function, which
           // we can handle easily with callback functions. 
-          if (!path)
-            throw ("Path not spcecified")
+          if (!path) throw 'Path not spcecified';
           const item = root.resolvePath(path);
           if (item) {
             cb(item);
@@ -245,7 +231,7 @@ class SessionSync {
       session.pub(Session.actions.COMMAND_ADDED, data);
 
       // const otherChange = otherUndoStack.constructChange(data.changeClass);
-      // otherChange.fromJSON(data.changeData, appData)
+      // otherChange.fromJSON(data.changeData, { appData })
       // otherUndoStack.addChange(otherChange);
     });
 
@@ -257,33 +243,34 @@ class SessionSync {
       // otherUndoStack.getCurrentChange().update(changeData2);
     });
 
-    session.sub(
-      Session.actions.COMMAND_ADDED,
-      (data, userId) => {
-        // console.log("Remote Command added:", data.changeClass, userId)
-        if (!userDatas[userId]) {
-          console.warn('User id not in session:', userId);
-          return;
-        }
-        const undoRedoManager = userDatas[userId].undoRedoManager;
-        const change = undoRedoManager.constructChange(data.changeClass);
-        change.fromJSON(data.changeData, appData);
-        undoRedoManager.addChange(change);
+    session.sub(Session.actions.COMMAND_ADDED, (data, userId) => {
+      // console.log("Remote Command added:", data.changeClass, userId)
+      if (!userDatas[userId]) {
+        console.warn('User id not in session:', userId);
+        return;
       }
-    );
+      const undoRedoManager = userDatas[userId].undoRedoManager;
+      const change = undoRedoManager.constructChange(data.changeClass);
 
-    session.sub(
-      Session.actions.COMMAND_UPDATED,
-      (data, userId) => {
-        if (!userDatas[userId]) {
-          console.warn('User id not in session:', userId);
-          return;
-        }
-        const undoRedoManager = userDatas[userId].undoRedoManager;
-        const changeData = convertValuesFromJSON(data, appData.scene);
-        undoRedoManager.getCurrentChange().update(changeData);
+      const context = {
+        appData: {
+          selectionManager: userDatas[userId].selectionManager,
+          scene: appData.scene,
+        },
+      };
+      change.fromJSON(data.changeData, context);
+      undoRedoManager.addChange(change);
+    });
+
+    session.sub(Session.actions.COMMAND_UPDATED, (data, userId) => {
+      if (!userDatas[userId]) {
+        console.warn('User id not in session:', userId);
+        return;
       }
-    );
+      const undoRedoManager = userDatas[userId].undoRedoManager;
+      const changeData = convertValuesFromJSON(data, appData.scene);
+      undoRedoManager.getCurrentChange().update(changeData);
+    });
 
     // ///////////////////////////////////////////
     // Undostack Changes.

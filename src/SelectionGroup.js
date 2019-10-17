@@ -1,8 +1,27 @@
 
+/** Class representing a selection group */
 export default class SelectionGroup extends ZeaEngine.Group {
-  constructor() {
+  constructor(options) {
     super();
 
+    if (options.selectionOutlineColor)
+      this.selectionOutlineColor = options.selectionOutlineColor;
+    else {
+      this.selectionOutlineColor = new ZeaEngine.Color('#03E3AC')
+      this.selectionOutlineColor.a = 0.1
+    }
+    if (options.branchSelectionOutlineColor)
+      this.branchSelectionOutlineColor = options.branchSelectionOutlineColor;
+    else {
+      this.branchSelectionOutlineColor = this.selectionOutlineColor.lerp(
+        new ZeaEngine.Color('white'),
+        0.5
+      )
+      this.branchSelectionOutlineColor.a = 0.1
+    }
+    
+    this.propagatingSelectionToItems = options.setItemsSelected != false;
+    this.getParameter('InitialXfoMode').setValue(ZeaEngine.Group.INITIAL_XFO_MODES.average);
     this.__itemsParam.setFilterFn(item => item instanceof ZeaEngine.BaseItem)
   }
 
@@ -21,12 +40,46 @@ export default class SelectionGroup extends ZeaEngine.Group {
     })
   }
 
+  /**
+   * The getSelectionOutlineColor method.
+   * @return {any} - The return value.
+   */
+  getSelectionOutlineColor() {
+    return this.selectionOutlineColor
+  }
+
+  /**
+   * The setSelectionOutlineColor method.
+   * @param {any} color - The color param.
+   */
+  setSelectionOutlineColor(color) {
+    this.selectionOutlineColor = color
+    this.branchSelectionOutlineColor = color.lerp(
+      new Color('white'),
+      0.5
+    )
+    this.branchSelectionOutlineColor.a = 0.1
+  }
+
   __bindItem(item, index) {
-    item.setSelected(this.getSelected());
+
+    if (this.propagatingSelectionToItems)
+      item.setSelected(this);
+
     
     const signalIndices = {}
     
     if (item instanceof ZeaEngine.TreeItem) {
+      item.addHighlight('selected' + this.getId(), this.selectionOutlineColor, false)
+      item.getChildren().forEach(childItem => {
+        if (childItem instanceof ZeaEngine.TreeItem)
+          childItem.addHighlight(
+            'branchselected' + this.getId(),
+            this.branchSelectionOutlineColor,
+            true
+          )
+      })
+
       signalIndices.globalXfoChangedIndex = item.globalXfoChanged.connect((mode) => {
         // Then the item xfo changes, we update the group xfo.
         if (!this.calculatingGroupXfo && !this.propagatingXfoToItems) {
@@ -42,9 +95,16 @@ export default class SelectionGroup extends ZeaEngine.Group {
   }
 
   __unbindItem(item, index) {
-    item.setSelected(false);
+    if (this.propagatingSelectionToItems)
+      item.setSelected(false);
     
     if (item instanceof ZeaEngine.TreeItem) {
+      item.removeHighlight('selected' + this.getId())
+      item.getChildren().forEach(childItem => {
+        if (childItem instanceof ZeaEngine.TreeItem)
+          childItem.removeHighlight('branchselected' + this.getId(), true)
+      })
+
       item.globalXfoChanged.disconnectId(this.__signalIndices[index].globalXfoChangedIndex);
       
       this.__initialXfos.splice(index, 1);

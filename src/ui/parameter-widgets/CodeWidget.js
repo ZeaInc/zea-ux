@@ -33,9 +33,20 @@ export default class CodeWidget extends BaseWidget {
     // Handle Changes.
 
     let change;
-    parameter.valueChanged.connect(() => {
+    let remoteUserEditedHighlightId;
+    parameter.valueChanged.connect(mode => {
       if (!change) {
         editor.session.setValue(parameter.getValue());
+        
+        if (mode == ZeaEngine.ValueSetMode.REMOTEUSER_SETVALUE) {
+          div.classList.add('user-edited');
+          if (remoteUserEditedHighlightId)
+            clearTimeout(remoteUserEditedHighlightId);
+          remoteUserEditedHighlightId = setTimeout(() => {
+            div.classList.remove('user-edited');
+            remoteUserEditedHighlightId = null;
+          }, 1500);
+        }
       }
     });
 
@@ -51,7 +62,7 @@ export default class CodeWidget extends BaseWidget {
 
     const valueChangeEnd = () => {
       valueChange();
-      change.update({ mode: ZeaEngine.ValueSetMode.USER_SETVALUE_DONE });
+      parameter.setValueDone();
       change = undefined;
     };
     // editor.session.on('change', function(delta) {

@@ -30,6 +30,7 @@ export default class XfoWidget extends BaseWidget {
     // Handle Changes.
 
     let change = undefined;
+    let remoteUserEditedHighlightId;
     // TODO: All parameter widgets should guard using an explicit boolean.
     // This is because the 'change' variable is only assigned after the
     // ParameterValueChange returns, however, the ParameterValueChange
@@ -37,11 +38,13 @@ export default class XfoWidget extends BaseWidget {
     // notification.
     let settingValue = false;
 
-    const updateDisplayedValue = () => {
+    const updateDisplayedValue = mode => {
       if (!settingValue) {
 
         // https://www.jacklmoore.com/notes/rounding-in-javascript/
         function round(value, decimals=6) {
+          if (value < Number('1e-6'))
+            return 0
           return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
         }
         const xfo = parameter.getValue();
@@ -55,6 +58,16 @@ export default class XfoWidget extends BaseWidget {
         sc_xField.value = round(xfo.sc.x);
         sc_yField.value = round(xfo.sc.y);
         sc_zField.value = round(xfo.sc.z);
+        
+        if (mode == ZeaEngine.ValueSetMode.REMOTEUSER_SETVALUE) {
+          container.classList.add('user-edited');
+          if (remoteUserEditedHighlightId)
+            clearTimeout(remoteUserEditedHighlightId);
+          remoteUserEditedHighlightId = setTimeout(() => {
+            container.classList.remove('user-edited');
+            remoteUserEditedHighlightId = null
+          }, 1500);
+        }
       }
     };
 

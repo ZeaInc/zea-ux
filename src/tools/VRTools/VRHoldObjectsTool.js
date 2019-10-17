@@ -96,8 +96,9 @@ class HoldObjectsChange extends Change {
     const newSelection = [];
     for (let i = 0; i < j.itemPaths.length; i++) {
       const itemPath = j.itemPaths[i];
-      if (itemPath)
+      if (itemPath) {
         newSelection[i] = sceneRoot.resolvePath(itemPath, 1);
+      }
     }
     this.__selection = newSelection;
   }
@@ -113,7 +114,9 @@ class HoldObjectsChange extends Change {
   //       const gidx = updateData.changeXfoIds[i];
   //       if(!this.__selection[gidx])
   //         continue;
-  //       this.__selection[gidx].setGlobalXfo(updateData.changeXfos[i]);
+  //       this.__selection[gidx].setGlobalXfo(
+  //         updateData.changeXfos[i],
+  //         ZeaEngine.ValueSetMode.REMOTEUSER_SETVALUE);
   //       this.__newXfos[gidx] = updateData.changeXfos[i];
   //     }
   //   }

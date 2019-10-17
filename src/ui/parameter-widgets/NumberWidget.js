@@ -19,8 +19,11 @@ export default class NumberWidget extends BaseWidget {
 
     const range = parameter.getRange();
     const input = document.createElement('input');
+    const classes = []
     if (range) {
-      input.className = 'mdl-slider mdl-js-slider';
+      classes.push('mdl-slider')
+      classes.push('mdl-js-slider')
+      input.className = classes.join(' ');
       input.setAttribute('id', parameter.getName());
       input.setAttribute('type', 'range');
       input.setAttribute('min', 0);
@@ -37,7 +40,7 @@ export default class NumberWidget extends BaseWidget {
       }
       input.setAttribute('tabindex', 0);
     } else {
-      input.className = 'mdl-textfield__input';
+      input.className = classes.join(' ');
       input.setAttribute('id', parameter.getName());
       input.setAttribute('type', 'number');
       input.setAttribute('pattern', '-?[0-9]*(.[0-9]+)?');
@@ -50,18 +53,30 @@ export default class NumberWidget extends BaseWidget {
     // Handle Changes.
 
     let change = undefined;
-
-    parameter.valueChanged.connect(() => {
+    let remoteUserEditedHighlightId;
+    parameter.valueChanged.connect((mode) => {
       if (!change) {
         if (range)
           input.value =
             ((parameter.getValue() - range[0]) / (range[1] - range[0])) * 200;
         else input.value = parameter.getValue();
+        if (mode == ZeaEngine.ValueSetMode.REMOTEUSER_SETVALUE) {
+          input.classList.add('user-edited');
+          if (remoteUserEditedHighlightId)
+            clearTimeout(remoteUserEditedHighlightId);
+          remoteUserEditedHighlightId = setTimeout(() => {
+            input.classList.remove('user-edited');
+            remoteUserEditedHighlightId = null
+          }, 1500);
+        }
       }
     });
 
-    const valueChange = mode => {
-      let value = input.valueAsNumber;
+    function round(value, decimals=6) {
+      return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+    }
+    const valueChange = () => {
+      let value = round(input.valueAsNumber);
       if (range) {
         // Renmap from the 0..200 integer to the floating point
         // range specified in the parameter.
@@ -69,24 +84,37 @@ export default class NumberWidget extends BaseWidget {
         value = Math.clamp(value, range[0], range[1]);
       }
       if (!change) {
-        change = new ParameterValueChange(parameter, value, mode);
+        change = new ParameterValueChange(parameter, value);
         appData.undoRedoManager.addChange(change);
       } else {
-        change.update({ value, mode });
+        change.update({ value });
       }
     };
 
     const valueChangeEnd = () => {
-      // The change object will emit this special signal to indicate
-      // and interaction has finished. 
-      change.update({ mode: ZeaEngine.ValueSetMode.USER_SETVALUE_DONE });
-      change = undefined;
+      if (change) {
+        // The parmaeter  will emit this special signal to indicate
+        // and interaction has finished.
+        parameter.setValueDone();
+        change = undefined;
+      }
     };
 
     input.addEventListener('input', () => {
-      valueChange(ZeaEngine.ValueSetMode.USER_SETVALUE);
+      valueChange();
     });
     input.addEventListener('change', valueChangeEnd);
+    input.addEventListener('keydown', function(e) {
+      if (e.which === 38 || e.which === 40) {
+        if (e.which === 38)
+          input.valueAsNumber = round(input.valueAsNumber + 0.1);
+        if (e.which === 40)
+          input.valueAsNumber = round(input.valueAsNumber - 0.1);
+        valueChange();
+        e.preventDefault();
+      }
+    });
+    input.addEventListener("focusout", valueChangeEnd);
   }
 }
 

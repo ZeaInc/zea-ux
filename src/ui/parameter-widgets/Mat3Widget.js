@@ -29,6 +29,7 @@ export default class Mat3Widget extends BaseWidget {
     // Handle Changes.
 
     let change = undefined;
+    let remoteUserEditedHighlightId;
     // TODO: All parameter widgets should guard using an explicit boolean.
     // This is because the 'change' variable is only assigned after the
     // ParameterValueChange returns, however, the ParameterValueChange
@@ -55,6 +56,16 @@ export default class Mat3Widget extends BaseWidget {
         m20Field.value = round(mat3.m20);
         m21Field.value = round(mat3.m21);
         m22Field.value = round(mat3.m22);
+        
+        if (mode == ZeaEngine.ValueSetMode.REMOTEUSER_SETVALUE) {
+          container.classList.add('user-edited');
+          if (remoteUserEditedHighlightId)
+            clearTimeout(remoteUserEditedHighlightId);
+          remoteUserEditedHighlightId = setTimeout(() => {
+            container.classList.remove('user-edited');
+            remoteUserEditedHighlightId = null
+          }, 1500);
+        }
       }
     };
 

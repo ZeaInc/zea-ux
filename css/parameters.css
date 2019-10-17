@@ -77,8 +77,16 @@
 
 .flex-outer li input:not([type='checkbox']),
 .flex-outer li textarea {
-  padding: 10px 2px;
-  border: none;
+  border: 1px #ccc solid;
+  padding: 10px 0px;
+  background: #efefef;
+  /* border: none; */
+}
+
+/* Hilight an item that has been edited by a remote user */
+.user-edited {
+  box-shadow: 0 0 8px #03E3AC; 
+  margin: 0px
 }
 
 .flex-outer li button {
@@ -103,15 +111,16 @@
   padding: 0;
 }
 
-/* Adds a box around the numeric value in Safari and Chrome */
+/* Adds a box around the numeric value in Safari and Chrome 
 input[type='number']::-webkit-textfield-decoration-container {
-  border: 1px #ccc solid;
+  /* border: 1px #ccc solid; * /
   background: #efefef;
-  padding: 8px 16px;
+  padding: 8px 0px; /*note: left padding can cause the cursor to not move to where the mouse is clicked * /
 }
 
 input[type='text']::-webkit-textfield-decoration-container {
-  border: 1px #ccc solid;
+  /* border: 1px #ccc solid; * /
   background: #efefef;
-  padding: 8px 16px;
+  padding: 8px 0px; /*note: left padding can cause the cursor to not move to where the mouse is clicked * /
 }
+*/

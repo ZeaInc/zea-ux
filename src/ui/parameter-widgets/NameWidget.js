@@ -58,10 +58,13 @@ class NameValueChange extends Change {
    * @return {any} The return value.
    */
   toJSON(context) {
+    const itemPath = this.__item.getPath().slice();
+    itemPath.pop();
+    itemPath.push(this.__prevName);
     const j = {
-      prevName: this.__prevName,
       name: this.name,
-      itemPath: this.__item.getPath(),
+      nextName: this.__nextName,
+      itemPath,
     };
     return j;
   }
@@ -74,14 +77,17 @@ class NameValueChange extends Change {
   fromJSON(j, context) {
     const sceneRoot = context.appData.scene.getRoot();
     const item = sceneRoot.resolvePath(j.itemPath, 1);
-    if (!item || !(item instanceof ZeaEngine.itemeter)) {
+    if (!item || !(item instanceof ZeaEngine.BaseItem)) {
       console.warn('resolvePath is unable to resolve', j.itemPath);
       return;
     }
     this.__item = item;
     this.__prevName = this.__item.getName();
-    this.__nextName = j.name;
-    this.__item.setName(this.__nextName);
+    this.__nextName = j.nextName;
+    this.__item.setName(
+      this.__nextName,
+      ZeaEngine.ValueSetMode.REMOTEUSER_SETVALUE
+    );
 
     this.name = this.__item.getName() + ' Changed';
   }
@@ -93,7 +99,10 @@ class NameValueChange extends Change {
   changeFromJSON(j) {
     if (!this.__item) return;
     this.__nextName = j.value;
-    this.__item.setName(this.__nextName);
+    this.__item.setName(
+      this.__nextName,
+      ZeaEngine.ValueSetMode.REMOTEUSER_SETVALUE
+    );
   }
 }
 
@@ -120,9 +129,20 @@ export default class NameWidget {
     // Handle Changes.
 
     let change;
-    item.nameChanged.connect(() => {
+    let remoteUserEditedHighlightId;
+    item.nameChanged.connect((name, oldName, mode) => {
       if (!change) {
         input.value = item.getName();
+
+        if (mode == ZeaEngine.ValueSetMode.REMOTEUSER_SETVALUE) {
+          input.classList.add('user-edited');
+          if (remoteUserEditedHighlightId)
+            clearTimeout(remoteUserEditedHighlightId);
+          remoteUserEditedHighlightId = setTimeout(() => {
+            input.classList.remove('user-edited');
+            remoteUserEditedHighlightId = null;
+          }, 1500);
+        }
       }
     });
 

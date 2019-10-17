@@ -133,11 +133,7 @@ class SelectionManager {
     this.selectionChanged = new ZeaEngine.Signal();
     this.leadSelectionChanged = new ZeaEngine.Signal();
 
-    this.selectionGroup = new SelectionGroup();
-    this.selectionGroup
-      .getParameter('InitialXfoMode')
-      .setValue(ZeaEngine.Group.INITIAL_XFO_MODES.average);
-    this.selectionGroup.setSelected(true);
+    this.selectionGroup = new SelectionGroup(options);
 
     if (options.enableXfoHandles === true) {
       const size = 0.1;
@@ -242,6 +238,7 @@ class SelectionManager {
    * handle should be displayed or not.
    */
   updateHandleVisiblity() {
+    if (!this.xfoHandle) return;
     const selection = this.selectionGroup.getItems();
     const visible = Array.from(selection).length > 0;
     this.xfoHandle.setVisible(visible);

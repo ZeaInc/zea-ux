@@ -30,9 +30,20 @@ export default class StringWidget extends BaseWidget {
     // Handle Changes.
 
     let change;
+    let remoteUserEditedHighlightId;
     parameter.valueChanged.connect(() => {
       if (!change) {
         input.value = parameter.getValue();
+        
+        if (mode == ZeaEngine.ValueSetMode.REMOTEUSER_SETVALUE) {
+          input.classList.add('user-edited');
+          if (remoteUserEditedHighlightId)
+            clearTimeout(remoteUserEditedHighlightId);
+          remoteUserEditedHighlightId = setTimeout(() => {
+            input.classList.remove('user-edited');
+            remoteUserEditedHighlightId = null
+          }, 1500);
+        }
       }
     });
 

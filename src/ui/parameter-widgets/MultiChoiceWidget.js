@@ -30,13 +30,23 @@ export default class MultiChoiceWidget extends BaseWidget {
     parentDomElem.appendChild(select);
 
     // ///////////////////////////
-    // Handle Changes.
+    // Handle Changes
 
     let changing = false;
-
-    parameter.valueChanged.connect(() => {
+    let remoteUserEditedHighlightId;
+    parameter.valueChanged.connect(mode => {
       if (!changing) {
         select.selectedIndex = parameter.getValue();
+
+        if (mode == ZeaEngine.ValueSetMode.REMOTEUSER_SETVALUE) {
+          select.classList.add('user-edited');
+          if (remoteUserEditedHighlightId)
+            clearTimeout(remoteUserEditedHighlightId);
+          remoteUserEditedHighlightId = setTimeout(() => {
+            select.classList.remove('user-edited');
+            remoteUserEditedHighlightId = null;
+          }, 1500);
+        }
       }
     });
 
@@ -44,7 +54,7 @@ export default class MultiChoiceWidget extends BaseWidget {
       changing = true;
       const change = new ParameterValueChange(parameter, select.selectedIndex);
       appData.undoRedoManager.addChange(change);
-      change.update({ mode: ZeaEngine.ValueSetMode.USER_SETVALUE_DONE });
+      parameter.setValueDone();
       changing = false;
     };
     select.addEventListener('change', valueChange);

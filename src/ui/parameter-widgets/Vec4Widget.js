@@ -82,6 +82,7 @@ export default class Vec4Widget extends BaseWidget {
     // Handle Changes.
 
     let change = undefined;
+    let remoteUserEditedHighlightId;
 
     parameter.valueChanged.connect(() => {
       if (!change) {
@@ -90,6 +91,16 @@ export default class Vec4Widget extends BaseWidget {
         yField.value = vec4.y;
         zField.value = vec4.z;
         tField.value = vec4.t;
+
+        if (mode == ZeaEngine.ValueSetMode.REMOTEUSER_SETVALUE) {
+          container.classList.add('user-edited');
+          if (remoteUserEditedHighlightId)
+            clearTimeout(remoteUserEditedHighlightId);
+          remoteUserEditedHighlightId = setTimeout(() => {
+            container.classList.remove('user-edited');
+            remoteUserEditedHighlightId = null
+          }, 1500);
+        }
       }
     });
 

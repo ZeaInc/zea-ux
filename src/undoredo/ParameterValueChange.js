@@ -8,14 +8,16 @@ import Change from './Change.js';
 class ParameterValueChange extends Change {
   /**
    * Create a parameter value change.
-   * @param {any} param - The param value.
+   * @param {object} param - The param value.
    * @param {any} newValue - The newValue value.
+   * @param {number} mode - The mode value.
    */
   constructor(param, newValue, mode = ZeaEngine.ValueSetMode.USER_SETVALUE) {
     if (param) {
       super(param ? param.getName() + ' Changed' : 'ParameterValueChange');
       this.__prevValue = param.getValue();
       this.__param = param;
+      this.__mode = mode;
       if (newValue != undefined) {
         this.__nextValue = newValue;
         this.__param.setValue(this.__nextValue, mode);
@@ -30,10 +32,7 @@ class ParameterValueChange extends Change {
    */
   undo() {
     if (!this.__param) return;
-    this.__param.setValue(
-      this.__prevValue,
-      ZeaEngine.ValueSetMode.USER_SETVALUE
-    );
+    this.__param.setValue(this.__prevValue, this.__mode);
   }
 
   /**
@@ -41,10 +40,7 @@ class ParameterValueChange extends Change {
    */
   redo() {
     if (!this.__param) return;
-    this.__param.setValue(
-      this.__nextValue,
-      ZeaEngine.ValueSetMode.USER_SETVALUE
-    );
+    this.__param.setValue(this.__nextValue, this.__mode);
   }
 
   /**
@@ -53,18 +49,9 @@ class ParameterValueChange extends Change {
    */
   update(updateData) {
     if (!this.__param) return;
-    if (updateData.value == undefined) {
-      // At the end of an interaction, just as moving a slider,
-      // we need to emit a special event to indicate certain
-      // code can be run. The mode here is USER_SETVALUE_DONE.
-      this.__param.valueChanged.emit(updateData.mode);
-    } else {
-      this.__nextValue = updateData.value;
-      const mode = updateData.mode
-        ? updateData.mode
-        : ZeaEngine.ValueSetMode.USER_SETVALUE;
-      this.__param.setValue(this.__nextValue, mode);
-    }
+    this.__nextValue = updateData.value;
+    const mode = updateData.mode ? updateData.mode : this.__mode;
+    this.__param.setValue(this.__nextValue, mode);
     this.updated.emit(updateData);
   }
 
@@ -118,7 +105,7 @@ class ParameterValueChange extends Change {
     else this.__nextValue = j.value;
     this.__param.setValue(
       this.__nextValue,
-      ZeaEngine.ValueSetMode.USER_SETVALUE
+      ZeaEngine.ValueSetMode.REMOTEUSER_SETVALUE
     );
   }
 }

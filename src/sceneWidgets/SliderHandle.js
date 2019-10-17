@@ -103,9 +103,9 @@ class SliderHandle extends BaseLinearMovementHandle {
     this.handleXfo.tr.z = v * length;
     this.topBarXfo.tr.z = v * length;
     this.topBarXfo.sc.z = (1 - v) * length;
-    this.handle.setLocalXfo(this.handleXfo);
-    this.baseBar.setLocalXfo(this.baseBarXfo);
-    this.topBar.setLocalXfo(this.topBarXfo);
+    this.handle.setLocalXfo(this.handleXfo, ZeaEngine.ValueSetMode.GENERATED_VALUE);
+    this.baseBar.setLocalXfo(this.baseBarXfo, ZeaEngine.ValueSetMode.GENERATED_VALUE);
+    this.topBar.setLocalXfo(this.topBarXfo, ZeaEngine.ValueSetMode.GENERATED_VALUE);
   }
 
   // ///////////////////////////////////
@@ -119,7 +119,7 @@ class SliderHandle extends BaseLinearMovementHandle {
 
     // Hilight the material.
     this.handleXfo.sc.x = this.handleXfo.sc.y = this.handleXfo.sc.z = 1.5;
-    this.handle.setLocalXfo(this.handleXfo);
+    this.handle.setLocalXfo(this.handleXfo, ZeaEngine.ValueSetMode.GENERATED_VALUE);
     if(!this.param) {
       return;
     }
@@ -159,7 +159,7 @@ class SliderHandle extends BaseLinearMovementHandle {
     this.change = null;
     // /unhilight the material.
     this.handleXfo.sc.x = this.handleXfo.sc.y = this.handleXfo.sc.z = 1.0;
-    this.handle.setLocalXfo(this.handleXfo);
+    this.handle.setLocalXfo(this.handleXfo, ZeaEngine.ValueSetMode.GENERATED_VALUE);
   }
 
   /**
