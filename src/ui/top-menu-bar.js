@@ -129,7 +129,7 @@ class TopMenuBar {
         (e.key != 'Alt' && e.key != 'Ctrl' ? e.key : '')
       ).toLowerCase();
 
-      console.log(keys);
+      // console.log(keys);
 
       if (keys in this.__hotkeysToActions) {
         const action = this.__hotkeysToActions[keys];

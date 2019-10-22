@@ -101,7 +101,7 @@ class TreeItemElement {
     this.li.appendChild(this.ul);
 
     this.childElements = [];
-    this._expanded = false;
+    this.expanded = false;
 
     if (treeItem instanceof ZeaEngine.TreeItem) {
       if (expanded) {
@@ -113,7 +113,7 @@ class TreeItemElement {
 
       this.expandBtn.addEventListener('click', () => {
         if (this.treeItem.getNumChildren() > 0) {
-          this._expanded ? this.collapse() : this.expand();
+          this.expanded ? this.collapse() : this.expand();
         }
       });
 
@@ -123,7 +123,7 @@ class TreeItemElement {
       });
 
       this.treeItem.childRemoved.connect(index => {
-        if (this._expanded) {
+        if (this.expanded) {
           this.childElements[index].destroy();
           this.childElements.splice(index, 1);
         }
@@ -158,7 +158,7 @@ class TreeItemElement {
    * @param {boolean} expanded - The expanded param.
    */
   addChild(treeItem, expanded = false) {
-    if (this._expanded) {
+    if (this.expanded) {
       const childTreeItem = uxFactory.constructTreeItemElement(
         treeItem,
         this.ul,
@@ -171,11 +171,15 @@ class TreeItemElement {
     }
   }
 
+  getChild(index) {
+    return this.childElements[index]
+  }
+
   /**
    * The expand method.
    */
   expand() {
-    this._expanded = true;
+    this.expanded = true;
     this.ul.classList.remove('TreeNodesList--collapsed');
     this.expandBtn.innerHTML =
       '<i class="material-icons md-24">arrow_drop_down</i>';
@@ -197,7 +201,7 @@ class TreeItemElement {
     this.ul.classList.add('TreeNodesList--collapsed');
     this.expandBtn.innerHTML =
       '<i class="material-icons md-24">arrow_right</i>';
-    this._expanded = false;
+    this.expanded = false;
   }
 
   /**
@@ -251,12 +255,14 @@ class SceneTreeView {
     this.ul = document.createElement('ul');
     this.ul.className = 'TreeNodesList TreeNodesList--root';
 
+    this.rootTreeItem = rootTreeItem;
     this.rootElement = new TreeItemElement(
       rootTreeItem,
       this.ul,
       appData,
       true
     );
+
   }
 
   /**
@@ -274,6 +280,30 @@ class SceneTreeView {
   mount(parentElement) {
     this.parentDomElement = parentElement;
     this.parentDomElement.appendChild(this.ul);
+    
+    // This handler will be executed only once when the cursor
+    // moves over the unordered list
+    let mouseOver = false;
+    this.parentDomElement.addEventListener("mouseenter", () => {   
+      mouseOver = true;
+    }, false);
+    this.parentDomElement.addEventListener("mouseleave", () => {   
+      mouseOver = false;
+    }, false);
+
+    // This handler will be executed every time the cursor
+    // is moved over a different list item
+    // this.parentDomElement.addEventListener("mouseover", () => {   
+    //   mouseOver = true;
+    // }, false);
+    document.addEventListener("keydown", event => {
+      if (event.key == 'f' && mouseOver) {
+        const selectedItems = this.appData.selectionManager.getSelection();
+        this.expandSelection(selectedItems, true);
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    });
   }
 
   /**
@@ -282,6 +312,31 @@ class SceneTreeView {
    */
   unMount(parentElement) {
     this.parentDomElement.removeChild(this.ul);
+  }
+  /**
+   * The expandSelection method.
+   * @param {Map} items - The items we wish to expand to show.
+   */
+  expandSelection(items, scrollToView=false) {
+    Array.from(items).forEach(item => {
+      const path = [];
+      while (true) {
+        path.splice(0, 0, item);
+        item = item.getOwner();
+        if (!item) break;
+      }
+      let treeViewItem = this.rootElement;
+      path.forEach((item, index) => {
+        if (index < path.length - 1) {
+          if (!treeViewItem.expanded) treeViewItem.expand();
+          const childIndex = item.getChildIndex(path[index + 1]);
+          treeViewItem = treeViewItem.getChild(childIndex);
+        }
+      });
+      // causes the element to be always at the top of the view.
+      if (scrollToView && treeViewItem)
+        treeViewItem.li.scrollIntoView();
+    });
   }
 }
 
