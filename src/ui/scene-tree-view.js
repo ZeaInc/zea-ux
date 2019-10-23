@@ -251,6 +251,7 @@ class SceneTreeView {
    */
   constructor(rootTreeItem, appData) {
     this.appData = appData;
+    this.mouseOver = false;
 
     this.ul = document.createElement('ul');
     this.ul.className = 'TreeNodesList TreeNodesList--root';
@@ -262,7 +263,6 @@ class SceneTreeView {
       appData,
       true
     );
-
   }
 
   /**
@@ -280,30 +280,21 @@ class SceneTreeView {
   mount(parentElement) {
     this.parentDomElement = parentElement;
     this.parentDomElement.appendChild(this.ul);
-    
+
     // This handler will be executed only once when the cursor
     // moves over the unordered list
-    let mouseOver = false;
-    this.parentDomElement.addEventListener("mouseenter", () => {   
-      mouseOver = true;
-    }, false);
-    this.parentDomElement.addEventListener("mouseleave", () => {   
-      mouseOver = false;
-    }, false);
+    this.parentDomElement.addEventListener(
+      'mouseenter',
+      this.__onMouseEnter.bind(this),
+      false
+    );
+    this.parentDomElement.addEventListener(
+      'mouseleave',
+      this.__onMouseLeave.bind(this),
+      false
+    );
 
-    // This handler will be executed every time the cursor
-    // is moved over a different list item
-    // this.parentDomElement.addEventListener("mouseover", () => {   
-    //   mouseOver = true;
-    // }, false);
-    document.addEventListener("keydown", event => {
-      if (event.key == 'f' && mouseOver) {
-        const selectedItems = this.appData.selectionManager.getSelection();
-        this.expandSelection(selectedItems, true);
-        event.preventDefault();
-        event.stopPropagation();
-      }
-    });
+    document.addEventListener("keydown", this.__onKeyDown.bind(this));
   }
 
   /**
@@ -312,12 +303,113 @@ class SceneTreeView {
    */
   unMount(parentElement) {
     this.parentDomElement.removeChild(this.ul);
+    this.parentDomElement.removeEventListener(
+      'mouseenter',
+      this.__onMouseEnter.bind(this)
+    );
+    this.parentDomElement.removeEventListener(
+      'mouseleave',
+      this.__onMouseLeave.bind(this)
+    );
+    document.removeEventListener("keydown", this.__onKeyDown.bind(this));
+  }
+
+  __onMouseEnter(event) {
+    this.mouseOver = true
+  }
+  
+  __onMouseLeave(event) {
+    this.mouseOver = false
+  }
+  
+  __onKeyDown(event) {
+    console.log("keydown", event.key)
+
+    const { selectionManager } = this.appData
+    if (this.mouseOver && event.key == 'f') {
+      const selectedItems = selectionManager.getSelection();
+      this.expandSelection(selectedItems, true);
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+    
+    if (event.key == 'ArrowLeft'){
+      const selectedItems = selectionManager.getSelection();
+      const newSelection = new Set();
+      Array.from(selectedItems).forEach(item => {
+        newSelection.add(item.getOwner());
+      });
+      if (newSelection.size > 0) {
+        selectionManager.setSelection(newSelection);
+      }
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+    
+    if (event.key == 'ArrowRight'){
+      const selectedItems = selectionManager.getSelection();
+      const newSelection = new Set();
+      Array.from(selectedItems).forEach(item => {
+        if (item instanceof ZeaEngine.TreeItem && item.getNumChildren() > 0)
+          newSelection.add(item.getChild(0));
+      });
+      if (newSelection.size > 0) {
+        selectionManager.setSelection(newSelection);
+        this.expandSelection(newSelection, true);
+      }
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+    
+    if (event.key == 'ArrowUp'){
+      const selectedItems = selectionManager.getSelection();
+      const newSelection = new Set();
+      Array.from(selectedItems).forEach(item => {
+        const index = item.getOwner().getChildIndex(item);
+        if (index == 0) newSelection.add(item.getOwner());
+        else {
+          newSelection.add(item.getOwner().getChild(index-1));
+        }
+      });
+      if (newSelection.size > 0) {
+        selectionManager.setSelection(newSelection);
+        this.expandSelection(newSelection);
+      }
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+    
+    if (event.key == 'ArrowDown') {
+      const selectedItems = selectionManager.getSelection();
+      const newSelection = new Set();
+      Array.from(selectedItems).forEach(item => {
+        const index = item.getOwner().getChildIndex(item);
+        if(index < item.getOwner().getNumChildren() - 1)
+          newSelection.add(item.getOwner().getChild(index+1));
+        else {
+          const indexinOwner = item.getOwner().getChildIndex(item);
+          if (item.getOwner().getNumChildren() > indexinOwner + 1)
+            newSelection.add(item.getOwner().getChild(indexinOwner + 1));
+        }
+      });
+      if (newSelection.size > 0) {
+        selectionManager.setSelection(newSelection);
+        this.expandSelection(newSelection, true);
+      }
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
   }
   /**
    * The expandSelection method.
    * @param {Map} items - The items we wish to expand to show.
    */
-  expandSelection(items, scrollToView=false) {
+  expandSelection(items, scrollToView=true) {
     Array.from(items).forEach(item => {
       const path = [];
       while (true) {
@@ -335,7 +427,11 @@ class SceneTreeView {
       });
       // causes the element to be always at the top of the view.
       if (scrollToView && treeViewItem)
-        treeViewItem.li.scrollIntoView();
+        treeViewItem.titleElement.scrollIntoView({
+          behavior: 'auto',
+          block: 'nearest',
+          inline: 'nearest',
+        });
     });
   }
 }
