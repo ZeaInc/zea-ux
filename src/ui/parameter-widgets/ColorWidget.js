@@ -38,7 +38,7 @@ export default class ColorWidget extends BaseWidget {
     let change = undefined;
     let undoing = false;
     let remoteUserEditedHighlightId;
-    parameter.valueChanged.connect(() => {
+    parameter.valueChanged.connect(mode => {
       if (!change) {
         undoing = true;
         colorPicker.color.rgb = parameter.getValue().getAsRGBDict();

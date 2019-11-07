@@ -37,7 +37,7 @@ export default class Mat3Widget extends BaseWidget {
     // notification.
     let settingValue = false;
 
-    const updateDisplayedValue = () => {
+    const updateDisplayedValue = mode => {
       if (!settingValue) {
 
         // https://www.jacklmoore.com/notes/rounding-in-javascript/
