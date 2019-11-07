@@ -65,6 +65,13 @@
 .TreeNodesListItem__Title:hover {
   background-color: #e1f5fe;
 }
+.TreeNodesListItem__Hover {
+  background-color: #e1f5fe;
+}
+
+.TreeNodesListItem__Dragging {
+  background-color: #e1f5fe;
+}
 
 .TreeNodesListItem--isSelected > .TreeNodesListItem__Title {
   background-color: #76d2bb;

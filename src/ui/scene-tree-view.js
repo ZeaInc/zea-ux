@@ -17,6 +17,7 @@ class TreeItemElement {
 
     this.li = document.createElement('li');
     this.li.className = 'TreeNodesListItem';
+    this.li.treeItem = treeItem;
 
     this.expandBtn = document.createElement('button');
     this.expandBtn.className = 'TreeNodesListItem__ToggleExpanded';
@@ -39,14 +40,9 @@ class TreeItemElement {
         this.appData.undoRedoManager.addChange(change);
       });
 
-      const updateVisibility = () => {
-        const visible = this.treeItem.getVisible();
-        visible
-          ? this.li.classList.remove('TreeNodesListItem--isHidden')
-          : this.li.classList.add('TreeNodesListItem--isHidden');
-      };
-      this.treeItem.visibilityChanged.connect(updateVisibility);
-      updateVisibility();
+ 
+      this.updateVisibilityId = this.treeItem.visibilityChanged.connect(this.updateVisibility.bind(this));
+      this.updateVisibility();
     }
 
     // Title element.
@@ -69,29 +65,13 @@ class TreeItemElement {
       appData.selectionManager.toggleItemSelection(this.treeItem, !e.ctrlKey);
     });
 
-    const updateSelected = () => {
-      const selected = this.treeItem.getSelected();
-      selected
-        ? this.li.classList.add('TreeNodesListItem--isSelected')
-        : this.li.classList.remove('TreeNodesListItem--isSelected');
-    };
-    this.treeItem.selectedChanged.connect(updateSelected);
-    updateSelected();
+
+    this.updateSelectedId = this.treeItem.selectedChanged.connect(this.updateSelected.bind(this));
+    this.updateSelected();
 
     if (treeItem instanceof ZeaEngine.TreeItem) {
-      const updateHighlight = () => {
-        const hilighted = this.treeItem.isHighlighted();
-        hilighted
-          ? this.li.classList.add('TreeNodesListItem--isHighlighted')
-          : this.li.classList.remove('TreeNodesListItem--isHighlighted');
-        if (hilighted) {
-          this.titleElement.style[
-            'border-color'
-          ] = this.treeItem.getHighlight().toHex();
-        }
-      };
-      this.treeItem.highlightChanged.connect(updateHighlight);
-      updateHighlight();
+      this.updateHighlightId = this.treeItem.highlightChanged.connect(this.updateHighlight.bind(this));
+      this.updateHighlight();
     }
     
     this.parentDomElement.appendChild(this.li);
@@ -117,17 +97,138 @@ class TreeItemElement {
         }
       });
 
-      this.treeItem.childAdded.connect(childItem => {
-        if (!childItem.testFlag(ZeaEngine.ItemFlags.INVISIBLE))
-          this.addChild(childItem);
-      });
+      this.childAddedId = this.treeItem.childAdded.connect(this.childAdded.bind(this));
+      this.childRemovedId = this.treeItem.childRemoved.connect(this.childRemoved.bind(this));
+      
 
-      this.treeItem.childRemoved.connect(index => {
-        if (this.expanded) {
-          this.childElements[index].destroy();
-          this.childElements.splice(index, 1);
+      this.titleElement.onmousedown = (event) => { // (1) start the process
+        event.stopPropagation()
+        event.preventDefault()
+        console.log("event")
+        // onmousedown
+        const clientX = event.clientX
+        const clientY = event.clientY
+        let shiftX = clientX - this.li.getBoundingClientRect().left;
+        let shiftY = clientY - this.li.getBoundingClientRect().top;
+
+        let dragging = false;
+        let li;
+        let dropTarget;
+      
+        const onMouseMove = (event) => {
+          if (!dragging) {
+            const dX = event.clientX - clientX
+            const dY = event.clientY - clientY
+            if (Math.abs(dX) > 10 && Math.abs(dY) > 10) {
+              
+              // li = this.li.cloneNode(true);
+              
+              li = document.createElement('li');
+              li.className = 'TreeNodesListItem';
+              li.classList.add('TreeNodesListItem--isHighlighted')
+              li.classList.add('TreeNodesListItem--isSelected')
+              li.classList.add('TreeNodesListItem__Dragging')
+              
+              // li.appendChild(this.expandBtn.cloneNode(true));
+              // if (treeItem instanceof ZeaEngine.TreeItem) {
+              //   li.appendChild(this.toggleVisibilityBtn.cloneNode(true));
+              // }
+              li.appendChild(this.titleElement.cloneNode(true));
+
+              // (2) prepare to moving: make absolute and on top by z-index
+              li.style.position = 'absolute';
+              li.style.zIndex = 1000;
+              // move it out of any current parents directly into body
+              // to make it positioned relative to the body
+              document.body.append(li);
+              // document.body.insertBefore(li, document.body.firstChild);
+              // ...and put that absolutely positioned ball under the pointer
+
+              dragging = true;
+            }
+          }
+          
+          if (dragging) {
+            li.style.left = event.pageX - shiftX + 'px';
+            li.style.top = event.pageY - shiftY + 'px';
+            li.hidden = true;
+            const elemBelow = document.elementFromPoint(event.clientX, event.clientY)
+            if (
+              elemBelow.className == 'TreeNodesListItem__Title' &&
+              elemBelow.parentElement.treeItem instanceof ZeaEngine.TreeItem
+            ) {
+              const liBelow = elemBelow.parentElement;
+              if (dropTarget && dropTarget != liBelow) {
+                dropTarget.classList.remove('TreeNodesListItem--isHighlighted')
+              }
+              if (liBelow == this.li) {
+                dropTarget = null
+              } else if (liBelow && dropTarget != liBelow) {
+                dropTarget = liBelow;
+                dropTarget.classList.add('TreeNodesListItem--isHighlighted')
+              }
+            }
+            li.hidden = false;
+          }
         }
-      });
+      
+        // (3) move the li on mousemove
+      
+        // (4) drop the li, remove unneeded handlers
+        const mouseUp = event => {
+          if (li)
+            document.body.removeChild(li);
+          if (dropTarget) {
+            dropTarget.treeItem.addChild(this.treeItem, true)
+          }
+
+          document.removeEventListener('mousemove', onMouseMove);
+          document.removeEventListener('mouseup', mouseUp);
+        }
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', mouseUp)
+      
+      };
+    }
+    this.li.ondragstart = function() {
+      return false;
+    };
+  }
+
+  updateVisibility () {
+    const visible = this.treeItem.getVisible();
+    visible
+      ? this.li.classList.remove('TreeNodesListItem--isHidden')
+      : this.li.classList.add('TreeNodesListItem--isHidden');
+  }
+  updateSelected() {
+    const selected = this.treeItem.getSelected();
+    if(selected)
+      this.li.classList.add('TreeNodesListItem--isSelected')
+    else this.li.classList.remove('TreeNodesListItem--isSelected');
+  }
+  
+  updateHighlight () {
+    const hilighted = this.treeItem.isHighlighted();
+    if (hilighted)
+      this.li.classList.add('TreeNodesListItem--isHighlighted')
+    else this.li.classList.remove('TreeNodesListItem--isHighlighted');
+    if (hilighted) {
+      this.titleElement.style[
+        'border-color'
+      ] = this.treeItem.getHighlight().toHex();
+    }
+  }
+
+  childAdded (childItem) {
+    // if (!childItem.testFlag(ZeaEngine.ItemFlags.INVISIBLE))
+      this.addChild(childItem);
+  }
+
+  childRemoved (childItem, index) {
+    if (this.expanded) {
+      this.childElements[index].destroy()
+      this.childElements.splice(index, 1);
     }
   }
 
@@ -187,7 +288,7 @@ class TreeItemElement {
     if (!this.childrenAlreadyCreated) {
       const children = this.treeItem.getChildren();
       for (const childItem of children) {
-        if (!childItem.testFlag(ZeaEngine.ItemFlags.INVISIBLE))
+        // if (!childItem.testFlag(ZeaEngine.ItemFlags.INVISIBLE))
           this.addChild(childItem);
       }
       this.childrenAlreadyCreated = true;
@@ -208,6 +309,13 @@ class TreeItemElement {
    * The destroy method.
    */
   destroy() {
+    this.treeItem.selectedChanged.disconnectId(this.updateSelectedId);
+    if (this.treeItem instanceof ZeaEngine.TreeItem) {
+      this.treeItem.highlightChanged.disconnectId(this.updateHighlightId);
+      this.treeItem.visibilityChanged.disconnectId(this.updateVisibilityId);
+      this.treeItem.childAdded.disconnectId(this.childAddedId);
+      this.treeItem.childRemoved.disconnectId(this.childRemovedId);
+    }
     this.parentDomElement.removeChild(this.li);
   }
 }
