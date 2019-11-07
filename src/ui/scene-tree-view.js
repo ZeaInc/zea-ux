@@ -1,5 +1,6 @@
 import uxFactory from './UxFactory.js';
 import ParameterValueChange from '../undoredo/ParameterValueChange.js';
+import { TreeItemMoveChange } from '../undoredo/TreeItemMoveChange.js';
 
 /** Class representing a tree item element. */
 class TreeItemElement {
@@ -12,7 +13,7 @@ class TreeItemElement {
    */
   constructor(treeItem, parentDomElement, appData, expanded = false) {
     this.treeItem = treeItem;
-    this.parentDomElement = parentDomElement;
+    // this.parentDomElement = parentDomElement;
     this.appData = appData;
 
     this.li = document.createElement('li');
@@ -74,7 +75,7 @@ class TreeItemElement {
       this.updateHighlight();
     }
     
-    this.parentDomElement.appendChild(this.li);
+    // this.parentDomElement.appendChild(this.li);
 
     this.ul = document.createElement('ul');
     this.ul.className = 'TreeNodesList';
@@ -179,7 +180,11 @@ class TreeItemElement {
           if (li)
             document.body.removeChild(li);
           if (dropTarget) {
-            dropTarget.treeItem.addChild(this.treeItem, true)
+            const change = new TreeItemMoveChange(
+              this.treeItem,
+              dropTarget.treeItem
+            );
+            this.appData.undoRedoManager.addChange(change);
           }
 
           document.removeEventListener('mousemove', onMouseMove);
@@ -220,13 +225,14 @@ class TreeItemElement {
     }
   }
 
-  childAdded (childItem) {
+  childAdded (childItem, index) {
     // if (!childItem.testFlag(ZeaEngine.ItemFlags.INVISIBLE))
-      this.addChild(childItem);
+      this.addChild(childItem, index);
   }
 
   childRemoved (childItem, index) {
     if (this.expanded) {
+      this.li.removeChild(this.childElements[index].li);
       this.childElements[index].destroy()
       this.childElements.splice(index, 1);
     }
@@ -256,17 +262,20 @@ class TreeItemElement {
   /**
    * The addChild method.
    * @param {any} treeItem - The treeItem param.
-   * @param {boolean} expanded - The expanded param.
+   * @param {number} index - The expanded param.
    */
-  addChild(treeItem, expanded = false) {
+  addChild(treeItem, index) {
     if (this.expanded) {
       const childTreeItem = uxFactory.constructTreeItemElement(
         treeItem,
         this.ul,
-        this.appData,
-        expanded
+        this.appData
       );
-      this.childElements.push(childTreeItem);
+      if(index == this.childElements.length)
+        this.li.appendChild(childTreeItem.li);
+      else 
+        this.li.insertBefore(childTreeItem.li, this.childElements[index].li);
+      this.childElements.splice(index, 0, childTreeItem);
     } else {
       this.collapse();
     }
@@ -287,10 +296,10 @@ class TreeItemElement {
 
     if (!this.childrenAlreadyCreated) {
       const children = this.treeItem.getChildren();
-      for (const childItem of children) {
+      children.forEach((childItem, index) => {
         // if (!childItem.testFlag(ZeaEngine.ItemFlags.INVISIBLE))
-          this.addChild(childItem);
-      }
+          this.addChild(childItem, index);
+      });
       this.childrenAlreadyCreated = true;
     }
   }
@@ -316,7 +325,7 @@ class TreeItemElement {
       this.treeItem.childAdded.disconnectId(this.childAddedId);
       this.treeItem.childRemoved.disconnectId(this.childRemovedId);
     }
-    this.parentDomElement.removeChild(this.li);
+    // this.parentDomElement.removeChild(this.li);
   }
 }
 
@@ -371,6 +380,8 @@ class SceneTreeView {
       appData,
       true
     );
+    
+    this.ul.appendChild(this.rootElement.li);
   }
 
   /**
