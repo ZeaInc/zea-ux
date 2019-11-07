@@ -1,11 +1,10 @@
-import Handle from './Handle.js';
-import ParameterValueChange from '../undoredo/ParameterValueChange.js';
+import { BaseAxialRotationHandle } from './BaseAxialRotationHandle.js';
 
 /**
  * Class representing an axial rotation scene widget.
- * @extends Handle
+ * @extends BaseAxialRotationHandle
  */
-class AxialRotationHandle extends Handle {
+class AxialRotationHandle extends BaseAxialRotationHandle {
   /**
    * Create an axial rotation scene widget.
    * @param {any} name - The name value.
@@ -57,19 +56,10 @@ class AxialRotationHandle extends Handle {
   }
 
   /**
-   * The setTargetParam method.
-   * @param {any} param - The param param.
-   * @param {boolean} track - The track param.
+   * The getBaseXfo method.
    */
-  setTargetParam(param, track = true) {
-    this.param = param;
-    if (track) {
-      const __updateGizmo = () => {
-        this.setGlobalXfo(param.getValue());
-      };
-      __updateGizmo();
-      param.valueChanged.connect(__updateGizmo);
-    }
+  getBaseXfo() {
+    return this.getParameter('GlobalXfo').getValue();
   }
 
   /**
@@ -77,20 +67,7 @@ class AxialRotationHandle extends Handle {
    * @param {any} event - The event param.
    */
   onDragStart(event) {
-
-    this.baseXfo = this.getGlobalXfo();
-    this.baseXfo.sc.set(1, 1, 1);
-    this.deltaXfo = new ZeaEngine.Xfo();
-    this.offsetXfo = this.baseXfo.inverse().multiply(this.param.getValue());
-    
-    this.vec0 = event.grabPos.subtract(this.baseXfo.tr);
-    this.grabCircleRadius = this.vec0.length();
-    this.vec0.normalizeInPlace();
-
-    if (event.undoRedoManager) {
-      this.change = new ParameterValueChange(this.param);
-      event.undoRedoManager.addChange(this.change);
-    }
+    super.onDragStart(event);
 
     // Hilight the material.
     this.colorParam.setValue(new ZeaEngine.Color(1, 1, 1));
@@ -101,37 +78,7 @@ class AxialRotationHandle extends Handle {
    * @param {any} event - The event param.
    */
   onDrag(event) {
-    const vec1 = event.holdPos.subtract(this.baseXfo.tr);
-    const dragCircleRadius = vec1.length();
-    vec1.normalizeInPlace();
-
-    // modulate the angle by the radius the mouse moves
-    // away from the center of the handle.
-    // This makes it possible to rotate the object more than
-    // 180 degrees in a single movement.
-    const modulator = dragCircleRadius / this.grabCircleRadius;
-    let angle = this.vec0.angleTo(vec1) * modulator;
-    if (this.vec0.cross(vec1).dot(this.baseXfo.ori.getZaxis()) < 0)
-      angle = -angle;
-
-    if (event.shiftKey) {
-      // modulat the angle to 5 degree increments.
-      const increment = Math.degToRad(5);
-      angle = Math.floor(angle / increment) * increment;
-    }
-
-    this.deltaXfo.ori.setFromAxisAndAngle(new ZeaEngine.Vec3(0, 0, 1), angle);
-
-    const newXfo = this.baseXfo.multiply(this.deltaXfo);
-    const value = newXfo.multiply(this.offsetXfo);
-
-    if (this.change) {
-      this.change.update({
-        value,
-      });
-    } else {
-      this.param.setValue(value);
-    }
+    super.onDrag(event);
   }
 
   /**
@@ -139,8 +86,7 @@ class AxialRotationHandle extends Handle {
    * @param {any} event - The event param.
    */
   onDragEnd(event) {
-    this.change = null;
-
+    super.onDragEnd(event);
     this.colorParam.setValue(this.__color);
   }
 }

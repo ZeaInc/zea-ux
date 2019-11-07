@@ -113,8 +113,10 @@ class HandleTool extends BaseTool {
         this.__highlightedHandle = handle;
         this.__highlightedHandle.highlight();
         return true;
-      } else if (this.__highlightedHandle)
+      } else if (this.__highlightedHandle) {
         this.__highlightedHandle.unhighlight();
+        this.__highlightedHandle = undefined;
+      }
     }
   }
 

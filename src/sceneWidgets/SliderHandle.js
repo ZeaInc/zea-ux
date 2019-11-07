@@ -21,21 +21,26 @@ class SliderHandle extends BaseLinearMovementHandle {
   ) {
     super(name);
 
-    this.__color = color;
-    this.__hilightedColor = new ZeaEngine.Color(1, 1, 1);
-
     this.lengthParam = this.addParameter(
-      new ZeaEngine.NumberParameter('length', length)
+      new ZeaEngine.NumberParameter('Length', length)
     );
-    this.radiusParam = this.addParameter(
-      new ZeaEngine.NumberParameter('radius', radius)
+    this.handleRadiusParam = this.addParameter(
+      new ZeaEngine.NumberParameter('Handle Radius', radius)
+    );
+    this.barRadiusParam = this.addParameter(
+      new ZeaEngine.NumberParameter('Bar Radius', radius * 0.25)
     );
     this.colorParam = this.addParameter(
-      new ZeaEngine.ColorParameter('BaseColor', color)
+      new ZeaEngine.ColorParameter('Color', color)
+    );
+    this.hilghlightColorParam = this.addParameter(
+      new ZeaEngine.ColorParameter(
+        'Highlight Color',
+        new ZeaEngine.Color(1, 1, 1)
+      )
     );
 
-    const handleMat = new ZeaEngine.Material('handle', 'FlatSurfaceShader');
-    handleMat.replaceParameter(this.colorParam);
+    this.handleMat = new ZeaEngine.Material('handle', 'FlatSurfaceShader');
     // const baseBarMat = new ZeaEngine.Material('baseBar', 'FlatSurfaceShader');
     // baseBarMat.replaceParameter(this.colorParam);
     const topBarMat = new ZeaEngine.Material('topBar', 'FlatSurfaceShader');
@@ -46,17 +51,24 @@ class SliderHandle extends BaseLinearMovementHandle {
     const barGeom = new ZeaEngine.Cylinder(radius * 0.25, 1, 64, 2, true, true);
     const handleGeom = new ZeaEngine.Sphere(radius, 64);
 
-    this.handle = new ZeaEngine.GeomItem('handle', handleGeom, handleMat);
-    this.baseBar = new ZeaEngine.GeomItem('baseBar', barGeom, handleMat);
+    this.handle = new ZeaEngine.GeomItem('handle', handleGeom, this.handleMat);
+    this.baseBar = new ZeaEngine.GeomItem('baseBar', barGeom, this.handleMat);
     this.topBar = new ZeaEngine.GeomItem('topBar', barGeom, topBarMat);
     this.handleXfo = new ZeaEngine.Xfo();
     this.baseBarXfo = new ZeaEngine.Xfo();
     this.topBarXfo = new ZeaEngine.Xfo();
 
-    this.radiusParam.valueChanged.connect(() => {
-      radius = this.radiusParam.getValue();
-      barGeom.getParameter('radius').setValue(radius * 0.25);
-      handleGeom.getParameter('radius').setValue(radius);
+    this.barRadiusParam.valueChanged.connect(() => {
+      barGeom.getParameter('radius').setValue(this.barRadiusParam.getValue());
+    });
+    this.handleRadiusParam.valueChanged.connect(() => {
+      handleGeom.getParameter('radius').setValue(this.handleRadiusParam.getValue());
+    });
+    this.lengthParam.valueChanged.connect(() => {
+      this.__updateSlider(this.value);
+    });
+    this.colorParam.valueChanged.connect(() => {
+      this.handleMat.getParameter('BaseColor').setValue(this.colorParam.getValue());
     });
 
     this.addChild(this.handle);
@@ -70,14 +82,14 @@ class SliderHandle extends BaseLinearMovementHandle {
    * The highlight method.
    */
   highlight() {
-    this.colorParam.setValue(this.__hilightedColor);
+    this.handleMat.getParameter('BaseColor').setValue(this.hilghlightColorParam.getValue());
   }
 
   /**
    * The unhighlight method.
    */
   unhighlight() {
-    this.colorParam.setValue(this.__color);
+    this.handleMat.getParameter('BaseColor').setValue(this.colorParam.getValue());
   }
 
   /**
@@ -95,6 +107,7 @@ class SliderHandle extends BaseLinearMovementHandle {
 
   // eslint-disable-next-line require-jsdoc
   __updateSlider(value) {
+    this.value = value
     const range =
       this.param && this.param.getRange() ? this.param.getRange() : [0, 1];
     const v = Math.remap(value, range[0], range[1], 0, 1);
@@ -137,9 +150,14 @@ class SliderHandle extends BaseLinearMovementHandle {
     const length = this.lengthParam.getValue();
     const range =
       this.param && this.param.getRange() ? this.param.getRange() : [0, 1];
-    const value = Math.remap(event.value, 0, length, range[0], range[1]);
-    if(!this.param) {
+    const value = Math.clamp(
+      Math.remap(event.value, 0, length, range[0], range[1]),
+      range[0],
+      range[1]
+    );
+    if (!this.param) {
       this.__updateSlider(value);
+      this.value = value;
       return;
     }
     if (this.change) {
@@ -157,7 +175,7 @@ class SliderHandle extends BaseLinearMovementHandle {
    */
   onDragEnd(event) {
     this.change = null;
-    // /unhilight the material.
+    // unhilight the material.
     this.handleXfo.sc.x = this.handleXfo.sc.y = this.handleXfo.sc.z = 1.0;
     this.handle.setLocalXfo(this.handleXfo, ZeaEngine.ValueSetMode.GENERATED_VALUE);
   }
@@ -173,7 +191,7 @@ class SliderHandle extends BaseLinearMovementHandle {
       context,
       flags | ZeaEngine.SAVE_FLAG_SKIP_CHILDREN
     );
-    json.targetParam = this.param.getPath();
+    if (this.param) json.targetParam = this.param.getPath();
     return json;
   }
 
