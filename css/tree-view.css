@@ -4,7 +4,6 @@
   border-left: 1px dotted;
   list-style-type: none;
   padding: 0 0 0 15px;
-  width: 800px; /* Note: this is to stop tree items wrapping, but a better solution is probably available */
 }
 
 .TreeNodesList--collapsed {
@@ -15,6 +14,7 @@
   border: none;
   margin: 0;
   padding: 0;
+  width: max-content;
 }
 
 .TreeNodesListItem__ToggleVisibility {

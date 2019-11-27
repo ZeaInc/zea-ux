@@ -283,7 +283,8 @@ class SelectionManager {
 
     if (createUndo) {
       const change = new SelectionChange(this, prevSelection, selection);
-      this.appData.undoRedoManager.addChange(change);
+      if (this.appData.undoRedoManager)
+        this.appData.undoRedoManager.addChange(change);
     }
   }
 
@@ -374,7 +375,8 @@ class SelectionManager {
     }
 
     const change = new SelectionChange(this, prevSelection, selection);
-    this.appData.undoRedoManager.addChange(change);
+    if (this.appData.undoRedoManager)
+      this.appData.undoRedoManager.addChange(change);
 
     this.updateHandleVisiblity();
     this.selectionChanged.emit(prevSelection);
@@ -400,7 +402,8 @@ class SelectionManager {
     this.updateHandleVisiblity();
     if (newChange) {
       const change = new SelectionChange(this, prevSelection, selection);
-      this.appData.undoRedoManager.addChange(change);
+      if (this.appData.undoRedoManager)
+        this.appData.undoRedoManager.addChange(change);
       this.selectionChanged.emit(selection);
     }
     return true;
@@ -426,7 +429,9 @@ class SelectionManager {
     }
 
     const change = new SelectionChange(this, prevSelection, selection);
-    this.appData.undoRedoManager.addChange(change);
+
+    if (this.appData.undoRedoManager)
+      this.appData.undoRedoManager.addChange(change);
 
     this.selectionGroup.setItems(selection);
     if (selection.size === 1) {
@@ -461,7 +466,9 @@ class SelectionManager {
 
     this.selectionGroup.setItems(selection);
     const change = new SelectionChange(this, prevSelection, selection);
-    this.appData.undoRedoManager.addChange(change);
+    
+    if (this.appData.undoRedoManager)
+      this.appData.undoRedoManager.addChange(change);
 
     if (selection.size === 1) {
       this.__setLeadSelection(selection.values().next().value);
@@ -480,7 +487,8 @@ class SelectionManager {
       const selection = this.selectionGroup.getItems();
       const state = !this.leadSelection.getVisible();
       const change = new ToggleSelectionVisibility(selection, state);
-      this.appData.undoRedoManager.addChange(change);
+      if (this.appData.undoRedoManager)
+        this.appData.undoRedoManager.addChange(change);
     }
   }
 
