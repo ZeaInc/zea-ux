@@ -31,7 +31,7 @@ export default class StringWidget extends BaseWidget {
 
     let change;
     let remoteUserEditedHighlightId;
-    parameter.valueChanged.connect(() => {
+    parameter.valueChanged.connect(mode => {
       if (!change) {
         input.value = parameter.getValue();
         
