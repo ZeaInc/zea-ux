@@ -10,10 +10,11 @@ class TreeItemElement {
    * @param {any} appData - The appData value.
    * @param {boolean} expanded - The expanded value.
    */
-  constructor(treeItem, appData, expanded = false) {
+  constructor(treeItem, appData, options, expanded = false) {
     this.treeItem = treeItem;
     // this.parentDomElement = parentDomElement;
     this.appData = appData;
+    this.options = options;
 
     this.li = document.createElement('li');
     this.li.className = 'TreeNodesListItem';
@@ -105,97 +106,93 @@ class TreeItemElement {
       
 
       this.titleElement.onmousedown = (event) => { // (1) start the process
-        event.stopPropagation()
-        event.preventDefault()
-        console.log("event")
-        // onmousedown
-        const clientX = event.clientX
-        const clientY = event.clientY
-        let shiftX = clientX - this.li.getBoundingClientRect().left;
-        let shiftY = clientY - this.li.getBoundingClientRect().top;
 
-        let dragging = false;
-        let li;
-        let dropTarget;
-      
-        const onMouseMove = (event) => {
-          if (!dragging) {
-            const dX = event.clientX - clientX
-            const dY = event.clientY - clientY
-            if (Math.abs(dX) > 10 && Math.abs(dY) > 10) {
-              
-              // li = this.li.cloneNode(true);
-              
-              li = document.createElement('li');
-              li.className = 'TreeNodesListItem';
-              li.classList.add('TreeNodesListItem--isHighlighted')
-              li.classList.add('TreeNodesListItem--isSelected')
-              li.classList.add('TreeNodesListItem__Dragging')
-              
-              // li.appendChild(this.expandBtn.cloneNode(true));
-              // if (treeItem instanceof ZeaEngine.TreeItem) {
-              //   li.appendChild(this.toggleVisibilityBtn.cloneNode(true));
-              // }
-              li.appendChild(this.titleElement.cloneNode(true));
-
-              // (2) prepare to moving: make absolute and on top by z-index
-              li.style.position = 'absolute';
-              li.style.zIndex = 1000;
-              // move it out of any current parents directly into body
-              // to make it positioned relative to the body
-              document.body.append(li);
-              // document.body.insertBefore(li, document.body.firstChild);
-              // ...and put that absolutely positioned ball under the pointer
-
-              dragging = true;
-            }
-          }
+        if (options.allowDragNDrop) {
+          event.stopPropagation()
+          event.preventDefault()
           
-          if (dragging) {
-            li.style.left = event.pageX - shiftX + 'px';
-            li.style.top = event.pageY - shiftY + 'px';
-            li.hidden = true;
-            const elemBelow = document.elementFromPoint(event.clientX, event.clientY)
-            if (
-              elemBelow.className == 'TreeNodesListItem__Title' &&
-              elemBelow.parentElement.treeItem instanceof ZeaEngine.TreeItem
-            ) {
-              const liBelow = elemBelow.parentElement;
-              if (dropTarget && dropTarget != liBelow) {
-                dropTarget.classList.remove('TreeNodesListItem--isHighlighted')
-              }
-              if (liBelow == this.li) {
-                dropTarget = null
-              } else if (liBelow && dropTarget != liBelow) {
-                dropTarget = liBelow;
-                dropTarget.classList.add('TreeNodesListItem--isHighlighted')
+          // onmousedown
+          const clientX = event.clientX
+          const clientY = event.clientY
+          let shiftX = clientX - this.li.getBoundingClientRect().left;
+          let shiftY = clientY - this.li.getBoundingClientRect().top;
+
+          let dragging = false;
+          let li;
+          let dropTarget;
+        
+          const onMouseMove = (event) => {
+            if (!dragging) {
+              const dX = event.clientX - clientX
+              const dY = event.clientY - clientY
+              if (Math.abs(dX) > 10 && Math.abs(dY) > 10) {
+                // li = this.li.cloneNode(true);
+                li = document.createElement('li');
+                li.className = 'TreeNodesListItem';
+                li.classList.add('TreeNodesListItem--isHighlighted')
+                li.classList.add('TreeNodesListItem--isSelected')
+                li.classList.add('TreeNodesListItem__Dragging')
+                
+                // li.appendChild(this.expandBtn.cloneNode(true));
+                // if (treeItem instanceof ZeaEngine.TreeItem) {
+                //   li.appendChild(this.toggleVisibilityBtn.cloneNode(true));
+                // }
+                li.appendChild(this.titleElement.cloneNode(true));
+
+                // (2) prepare to moving: make absolute and on top by z-index
+                li.style.position = 'absolute';
+                li.style.zIndex = 1000;
+                // move it out of any current parents directly into body
+                // to make it positioned relative to the body
+                document.body.append(li);
+                // document.body.insertBefore(li, document.body.firstChild);
+                // ...and put that absolutely positioned ball under the pointer
+
+                dragging = true;
               }
             }
-            li.hidden = false;
+            if (dragging) {
+              li.style.left = event.pageX - shiftX + 'px';
+              li.style.top = event.pageY - shiftY + 'px';
+              li.hidden = true;
+              const elemBelow = document.elementFromPoint(event.clientX, event.clientY)
+              if (
+                elemBelow.className == 'TreeNodesListItem__Title' &&
+                elemBelow.parentElement.treeItem instanceof ZeaEngine.TreeItem
+              ) {
+                const liBelow = elemBelow.parentElement;
+                if (dropTarget && dropTarget != liBelow) {
+                  dropTarget.classList.remove('TreeNodesListItem--isHighlighted')
+                }
+                if (liBelow == this.li) {
+                  dropTarget = null
+                } else if (liBelow && dropTarget != liBelow) {
+                  dropTarget = liBelow;
+                  dropTarget.classList.add('TreeNodesListItem--isHighlighted')
+                }
+              }
+              li.hidden = false;
+            }
           }
-        }
-      
-        // (3) move the li on mousemove
-      
-        // (4) drop the li, remove unneeded handlers
-        const mouseUp = event => {
-          if (li)
-            document.body.removeChild(li);
-          if (dropTarget) {
-            const change = new TreeItemMoveChange(
-              this.treeItem,
-              dropTarget.treeItem
-            );
-            if (this.appData.undoRedoManager)
-              this.appData.undoRedoManager.addChange(change);
-          }
+          // (3) move the li on mousemove
+          // (4) drop the li, remove unneeded handlers
+          const mouseUp = event => {
+            if (li) document.body.removeChild(li);
+            if (dropTarget) {
+              const change = new TreeItemMoveChange(
+                this.treeItem,
+                dropTarget.treeItem
+              );
+              if (this.appData.undoRedoManager)
+                this.appData.undoRedoManager.addChange(change);
+            }
 
-          document.removeEventListener('mousemove', onMouseMove);
-          document.removeEventListener('mouseup', mouseUp);
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', mouseUp);
+          }
+          document.addEventListener('mousemove', onMouseMove);
+          document.addEventListener('mouseup', mouseUp)
         }
-        document.addEventListener('mousemove', onMouseMove);
-        document.addEventListener('mouseup', mouseUp)
-      
       };
     }
     this.li.ondragstart = function() {
@@ -271,7 +268,8 @@ class TreeItemElement {
     if (this.expanded) {
       const childTreeItem = uxFactory.constructTreeItemElement(
         treeItem,
-        this.appData
+        this.appData,
+        this.options
       );
       if(index == this.childElements.length)
         this.ul.appendChild(childTreeItem.li);
@@ -348,7 +346,7 @@ class SceneTreeView {
    * @param {any} rootTreeItem - The rootTreeItem value.
    * @param {any} appData - The appData value.
    */
-  constructor(rootTreeItem, appData) {
+  constructor(rootTreeItem, appData = {}, options = {}) {
     this.appData = appData;
     this.mouseOver = false;
 
@@ -359,6 +357,7 @@ class SceneTreeView {
     this.rootElement = new TreeItemElement(
       rootTreeItem,
       appData,
+      options,
       true
     );
     
@@ -423,9 +422,9 @@ class SceneTreeView {
   }
   
   __onKeyDown(event) {
-    console.log("keydown", event.key)
-
     const { selectionManager } = this.appData
+    if (!selectionManager)
+      return
     if (this.mouseOver && event.key == 'f') {
       const selectedItems = selectionManager.getSelection();
       this.expandSelection(selectedItems, true);
