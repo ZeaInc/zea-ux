@@ -43,7 +43,7 @@ class ArcSlider extends BaseAxialRotationHandle {
       )
     );
 
-    this.handleMat = new ZeaEngine.Material('handle', 'FlatSurfaceShader');
+    this.handleMat = new ZeaEngine.Material('handleMat', 'HandleShader');
     const arcGeom = new ZeaEngine.Circle(arcRadius, arcAngle, 64);
     const handleGeom = new ZeaEngine.Sphere(handleRadius, 64);
 
@@ -62,9 +62,9 @@ class ArcSlider extends BaseAxialRotationHandle {
 
     this.range = [0, arcAngle]
     this.arcAngleParam.valueChanged.connect(() => {
-      const arcAngle = this.arcAngleParam.getValue()
+      const arcAngle = this.arcAngleParam.getValue();
       arcGeom.getParameter('Angle').setValue(arcAngle);
-      this.range = [0, arcAngle]
+      this.range = [0, arcAngle];
     });
     this.arcRadiusParam.valueChanged.connect(() => {
       const arcRadius = this.arcRadiusParam.getValue();
@@ -90,7 +90,51 @@ class ArcSlider extends BaseAxialRotationHandle {
 
     // this.__updateSlider(0);
     this.setTargetParam(this.handle.getParameter('GlobalXfo'), false)
+
+    
+    this.dragStart = new ZeaEngine.Signal();
+    this.dragEnd = new ZeaEngine.Signal();
   }
+
+  // ///////////////////////////////////
+  // Mouse events
+
+  /**
+   * The onMouseEnter method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
+  onMouseEnter(event) {
+    if (event.intersectionData && 
+      event.intersectionData.geomItem == this.handle)
+      super.onMouseEnter(event);
+  }
+  
+  /**
+   * The onMouseLeave method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
+  onMouseLeave(event) {
+    if (event.intersectionData && 
+      event.intersectionData.geomItem == this.handle)
+      super.onMouseLeave(event);
+  }
+  
+  /**
+   * The onMouseDown method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
+  onMouseDown(event) {
+    // We do not want to handle events
+    // that have propagated from children of
+    // the slider.
+    if (event.intersectionData && 
+      event.intersectionData.geomItem == this.handle)
+      super.onMouseDown(event)
+  }
+
 
   /**
    * The highlight method.
@@ -161,11 +205,12 @@ class ArcSlider extends BaseAxialRotationHandle {
     }
 
     // Hilight the material.
-    this.handleGeomOffsetXfo.sc.x = this.handleGeomOffsetXfo.sc.y = this.handleGeomOffsetXfo.sc.z = 1.5;
+    this.handleGeomOffsetXfo.sc.x = this.handleGeomOffsetXfo.sc.y = this.handleGeomOffsetXfo.sc.z = 1.2;
     this.handle
       .getParameter('GeomOffsetXfo')
       .setValue(this.handleGeomOffsetXfo);
-
+    
+    this.dragStart.emit();
   }
 
   /**
@@ -221,6 +266,7 @@ class ArcSlider extends BaseAxialRotationHandle {
       .getParameter('GeomOffsetXfo')
       .setValue(this.handleGeomOffsetXfo);
 
+    this.dragEnd.emit();
   }
 
   /**

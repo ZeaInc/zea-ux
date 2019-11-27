@@ -131,7 +131,7 @@ class SliderHandle extends BaseLinearMovementHandle {
   onDragStart(event) {
 
     // Hilight the material.
-    this.handleXfo.sc.x = this.handleXfo.sc.y = this.handleXfo.sc.z = 1.5;
+    this.handleXfo.sc.x = this.handleXfo.sc.y = this.handleXfo.sc.z = 1.2;
     this.handle.setLocalXfo(this.handleXfo, ZeaEngine.ValueSetMode.GENERATED_VALUE);
     if(!this.param) {
       return;
