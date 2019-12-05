@@ -182,6 +182,7 @@ class HandleTool extends BaseTool {
     if (!this.activeHandle) {
       const intersectionData = event.controller.getGeomItemAtTip();
       if (intersectionData == undefined) return;
+      event.intersectionData = intersectionData;
       if (intersectionData.geomItem.getOwner() instanceof Handle) {
         const handle = intersectionData.geomItem.getOwner();
         this.activeHandle = handle;

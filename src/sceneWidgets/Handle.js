@@ -147,14 +147,15 @@ export default class Handle extends ZeaEngine.TreeItem {
    * @return {any} The return value.
    */
   onVRControllerButtonDown(event) {
+    this.activeController = event.controller;
+    const xfo = this.activeController.getTipXfo().clone();
+
     const gizmoRay = this.getManipulationPlane();
-    const grabDist = event.controllerRay.intersectRayVector(gizmoRay);
-    if (grabDist > 0) {
-      const grabPos = event.controllerRay.pointAtDist(grabDist);
-      this.activeController = event.controller;
-      this.onDragStart(event, grabPos);
-      return true;
-    }
+    const offset = xfo.tr.subtract(gizmoRay.start);
+    const grabPos = xfo.tr.subtract(gizmoRay.dir.scale(offset.dot(gizmoRay.dir)));
+    event.grabPos = grabPos;
+    this.onDragStart(event);
+    return true;
   }
 
   /**
@@ -163,9 +164,15 @@ export default class Handle extends ZeaEngine.TreeItem {
    * @return {any} The return value.
    */
   onVRPoseChanged(event) {
-    const xfo = this.activeController.getTipXfo();
-    this.onDrag(event, xfo.tr);
-    return true;
+    if (this.activeController) {
+      const xfo = this.activeController.getTipXfo();
+      const gizmoRay = this.getManipulationPlane();
+      const offset = xfo.tr.subtract(gizmoRay.start);
+      const holdPos = xfo.tr.subtract(gizmoRay.dir.scale(offset.dot(gizmoRay.dir)));
+      event.holdPos = holdPos;
+      this.onDrag(event);
+      return true;
+    }
   }
 
   /**

@@ -107,7 +107,7 @@ class ArcSlider extends BaseAxialRotationHandle {
   onMouseEnter(event) {
     if (event.intersectionData && 
       event.intersectionData.geomItem == this.handle)
-      super.onMouseEnter(event);
+      this.highlight();
   }
   
   /**
@@ -116,9 +116,7 @@ class ArcSlider extends BaseAxialRotationHandle {
    * @return {any} The return value.
    */
   onMouseLeave(event) {
-    if (event.intersectionData && 
-      event.intersectionData.geomItem == this.handle)
-      super.onMouseLeave(event);
+    this.unhighlight();
   }
   
   /**
@@ -196,7 +194,7 @@ class ArcSlider extends BaseAxialRotationHandle {
     // this.offsetXfo = this.baseXfo.inverse().multiply(this.param.getValue());
     
     this.vec0 = this.getGlobalXfo().ori.getXaxis();
-    this.grabCircleRadius = this.arcRadiusParam.getValue();
+    // this.grabCircleRadius = this.arcRadiusParam.getValue();
     this.vec0.normalizeInPlace();
 
     if (event.undoRedoManager) {
@@ -219,18 +217,12 @@ class ArcSlider extends BaseAxialRotationHandle {
    */
   onDrag(event) {
     const vec1 = event.holdPos.subtract(this.baseXfo.tr);
-    const dragCircleRadius = vec1.length();
     vec1.normalizeInPlace();
 
-    // modulate the angle by the radius the mouse moves
-    // away from the center of the handle.
-    // This makes it possible to rotate the object more than
-    // 180 degrees in a single movement.
-    const modulator = dragCircleRadius / this.grabCircleRadius;
-    let angle = this.vec0.angleTo(vec1) * modulator;
+    let angle = this.vec0.angleTo(vec1);
     if (this.vec0.cross(vec1).dot(this.baseXfo.ori.getZaxis()) < 0)
       angle = -angle;
-    
+
     if (this.range) {
       angle = Math.clamp(angle, this.range[0], this.range[1]);
     }
