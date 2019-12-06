@@ -151,7 +151,8 @@ class SessionSync {
 
     appData.renderer.viewChanged.connect(event => {
       tick++;
-      if (event.vrviewport) {
+      const isVRView = event.interfaceType == 'VR'
+      if (isVRView) {
         // only push every second pose of a vr stream.
         if (tick % 2 != 0) return;
       }
@@ -162,8 +163,7 @@ class SessionSync {
       };
       if (event.focalDistance) {
         data.focalDistance = event.focalDistance;
-      } else if (event.hmd) {
-        data.hmd = event.hmd;
+      } else if (isVRView) {
         data.controllers = [];
         for (const controller of event.controllers) {
           data.controllers.push({
