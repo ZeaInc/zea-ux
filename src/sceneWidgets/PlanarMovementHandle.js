@@ -30,14 +30,22 @@ class PlanarMovementHandle extends Handle {
   }
 
   /**
+   * The getTargetParam method.
+   */
+  getTargetParam() {
+    return this.param ? this.param : this.getParameter("GlobalXfo");
+  }
+
+  /**
    * The onDragStart method.
    * @param {any} event - The event param.
    */
   onDragStart(event) {
     this.grabPos = event.grabPos;
-    this.baseXfo = this.param ? this.param.getValue() : this.getGlobalXfo();
+    const param = this.getTargetParam();
+    this.baseXfo = param.getValue();
     if (event.undoRedoManager) {
-      this.change = new ParameterValueChange(this.param);
+      this.change = new ParameterValueChange(param);
       event.undoRedoManager.addChange(this.change);
     }
   }
@@ -57,9 +65,8 @@ class PlanarMovementHandle extends Handle {
         value: newXfo,
       });
     } else {
-      if (this.param)
-           this.param.setValue(newXfo) 
-      else this.setGlobalXfo(newXfo);
+      const param = this.getTargetParam();
+      param.setValue(newXfo);
     }
   }
 

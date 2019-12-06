@@ -42,14 +42,17 @@ class BaseAxialRotationHandle extends Handle {
     this.baseXfo = this.getGlobalXfo().clone();
     this.baseXfo.sc.set(1, 1, 1);
     this.deltaXfo = new ZeaEngine.Xfo();
-    this.offsetXfo = this.baseXfo.inverse().multiply(this.param.getValue());
+
+    const param = this.getTargetParam();
+    const paramXfo = param.getValue();
+    this.offsetXfo = this.baseXfo.inverse().multiply(paramXfo);
     
     this.vec0 = event.grabPos.subtract(this.baseXfo.tr);
     this.grabCircleRadius = this.vec0.length();
     this.vec0.normalizeInPlace();
 
     if (event.undoRedoManager) {
-      this.change = new ParameterValueChange(this.param);
+      this.change = new ParameterValueChange(param);
       event.undoRedoManager.addChange(this.change);
     }
   }
@@ -92,7 +95,8 @@ class BaseAxialRotationHandle extends Handle {
         value,
       });
     } else {
-      this.param.setValue(value);
+      const param = this.getTargetParam();
+      param.setValue(value);
     }
   }
 

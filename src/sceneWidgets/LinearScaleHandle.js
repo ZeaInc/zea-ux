@@ -82,6 +82,13 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
   }
 
   /**
+   * The getTargetParam method.
+   */
+  getTargetParam() {
+    return this.param ? this.param : this.getParameter("GlobalXfo");
+  }
+
+  /**
    * The onDragStart method.
    * @param {any} event - The event param.
    */
@@ -89,9 +96,10 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
     this.grabDist = event.grabDist;
     this.oriXfo = this.getGlobalXfo();
     this.tmplocalXfo = this.getLocalXfo();
-    this.baseXfo = this.param.getValue();
+    const param = this.getTargetParam();
+    this.baseXfo = param.getValue();
     if (event.undoRedoManager) {
-      this.change = new ParameterValueChange(this.param);
+      this.change = new ParameterValueChange(param);
       event.undoRedoManager.addChange(this.change);
     }
   }

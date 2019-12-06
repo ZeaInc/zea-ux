@@ -75,14 +75,23 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
   }
 
   /**
+   * The getTargetParam method.
+   */
+  getTargetParam() {
+    return this.param ? this.param : this.getParameter("GlobalXfo");
+  }
+
+
+  /**
    * The onDragStart method.
    * @param {any} event - The event param.
    */
   onDragStart(event) {
     this.grabPos = event.grabPos;
-    this.baseXfo = this.param.getValue();
+    const param = this.getTargetParam();
+    this.baseXfo = param.getValue();
     if (event.undoRedoManager) {
-      this.change = new ParameterValueChange(this.param);
+      this.change = new ParameterValueChange(param);
       event.undoRedoManager.addChange(this.change);
     }
   }

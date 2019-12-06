@@ -54,6 +54,13 @@ class SphericalRotationHandle extends Handle {
       param.valueChanged.connect(__updateGizmo);
     }
   }
+  
+  /**
+   * The getTargetParam method.
+   */
+  getTargetParam() {
+    return this.param ? this.param : this.getParameter("GlobalXfo");
+  }
 
   // ///////////////////////////////////
   // Mouse events
@@ -107,7 +114,8 @@ class SphericalRotationHandle extends Handle {
     this.baseXfo = this.getGlobalXfo();
     this.baseXfo.sc.set(1, 1, 1);
     this.deltaXfo = new ZeaEngine.Xfo();
-    this.offsetXfo = this.baseXfo.inverse().multiply(this.param.getValue());
+    const param = this.getTargetParam();
+    this.offsetXfo = this.baseXfo.inverse().multiply(param.getValue());
 
     this.vec0 = event.grabPos.subtract(this.baseXfo.tr);
     this.vec0.normalizeInPlace();
@@ -116,7 +124,7 @@ class SphericalRotationHandle extends Handle {
     this.colorParam.setValue(new ZeaEngine.Color(1, 1, 1));
 
     if (event.undoRedoManager) {
-      this.change = new ParameterValueChange(this.param);
+      this.change = new ParameterValueChange(param);
       event.undoRedoManager.addChange(this.change);
     }
   }
@@ -142,7 +150,8 @@ class SphericalRotationHandle extends Handle {
         value,
       });
     } else {
-      this.param.setValue(newXfo);
+      const param = this.getTargetParam();
+      param.setValue(newXfo);
     }
 
   }

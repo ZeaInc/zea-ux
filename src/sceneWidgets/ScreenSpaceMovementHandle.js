@@ -28,6 +28,13 @@ class ScreenSpaceMovementHandle extends Handle {
     }
   }
 
+  /**
+   * The getTargetParam method.
+   */
+  getTargetParam() {
+    return this.param ? this.param : this.getParameter("GlobalXfo");
+  }
+
   // ///////////////////////////////////
   // Mouse events
 
@@ -40,7 +47,8 @@ class ScreenSpaceMovementHandle extends Handle {
     this.gizmoRay = new ZeaEngine.Ray();
     // this.gizmoRay.dir = event.viewport.getCamera().getGlobalXfo().ori.getZaxis().negate()
     this.gizmoRay.dir = event.mouseRay.dir.negate();
-    const baseXfo = this.param ? this.param.getValue() : this.getGlobalXfo();
+    const param = this.getTargetParam();
+    const baseXfo = param.getValue();
     this.gizmoRay.pos = baseXfo.tr;
     const dist = event.mouseRay.intersectRayPlane(this.gizmoRay);
     event.grabPos = event.mouseRay.pointAtDist(dist);
@@ -80,10 +88,10 @@ class ScreenSpaceMovementHandle extends Handle {
    */
   onDragStart(event) {
     this.grabPos = event.grabPos;
-    // this.baseXfo = this.param.getValue();
-    this.baseXfo = this.param ? this.param.getValue() : this.getGlobalXfo();
+    const param = this.getTargetParam();
+    this.baseXfo = param.getValue();
     if (event.undoRedoManager) {
-      this.change = new ParameterValueChange(this.param);
+      this.change = new ParameterValueChange(param);
       event.undoRedoManager.addChange(this.change);
     }
   }
@@ -103,9 +111,8 @@ class ScreenSpaceMovementHandle extends Handle {
         value: newXfo,
       });
     } else {
-      if (this.param)
-           this.param.setValue(newXfo) 
-      else this.setGlobalXfo(newXfo);
+      const param = this.getTargetParam();
+      param.setValue(newXfo);
     }
   }
 
