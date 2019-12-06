@@ -5,6 +5,66 @@ import { AxialRotationHandle } from './AxialRotationHandle.js';
 import { LinearScaleHandle } from './LinearScaleHandle.js';
 import { SphericalRotationHandle } from './SphericalRotationHandle.js';
 
+
+/** Class representing a planar movement scene widget.
+ * @extends Handle
+ */
+class XfoPlanarMovementHandle extends PlanarMovementHandle {
+  /**
+   * Create a planar movement scene widget.
+   * @param {any} name - The name value.
+   * @param {any} size - The size value.
+   * @param {any} color - The color value.
+   * @param {any} offset - The offset value.
+   */
+  constructor(name, size, color, offset) {
+    super(name);
+    
+    this.__color = color;
+    this.__hilightedColor = new ZeaEngine.Color(1, 1, 1);
+    this.sizeParam = this.addParameter(
+      new ZeaEngine.NumberParameter('size', size)
+    );
+    this.colorParam = this.addParameter(
+      new ZeaEngine.ColorParameter('BaseColor', color)
+    );
+
+    const handleMat = new ZeaEngine.Material('handle', 'HandleShader');
+    handleMat.getParameter("maintainScreenSize").setValue(true)
+    handleMat.replaceParameter(this.colorParam);
+
+    const handleGeom = new ZeaEngine.Cuboid(size, size, size * 0.02);
+
+    const handleGeomXfo = new ZeaEngine.Xfo();
+    handleGeomXfo.tr = offset;
+    handleGeom.transformVertices(handleGeomXfo);
+    this.handle = new ZeaEngine.GeomItem('handle', handleGeom, handleMat);
+
+    this.sizeParam.valueChanged.connect(() => {
+      size = this.sizeParam.getValue();
+      handleGeom.getParameter('size').setValue(size);
+      handleGeom.getParameter('height').setValue(size * 0.02);
+    });
+
+    this.addChild(this.handle);
+  }
+
+  /**
+   * The highlight method.
+   */
+  highlight() {
+    this.colorParam.setValue(this.__hilightedColor);
+  }
+
+  /**
+   * The unhighlight method.
+   */
+  unhighlight() {
+    this.colorParam.setValue(this.__color);
+  }
+}
+
+
 /**
  * Class representing an xfo handle.
  * @extends ZeaEngine.TreeItem
@@ -70,7 +130,7 @@ export default class XfoHandle extends ZeaEngine.TreeItem {
     // planarXYWidget
     const planarSize = size * 0.35;
     {
-      const planarXYWidget = new PlanarMovementHandle(
+      const planarXYWidget = new XfoPlanarMovementHandle(
         'planarXY',
         planarSize,
         green,
@@ -81,7 +141,7 @@ export default class XfoHandle extends ZeaEngine.TreeItem {
       translationHandles.addChild(planarXYWidget);
     }
     {
-      const planarYZWidget = new PlanarMovementHandle(
+      const planarYZWidget = new XfoPlanarMovementHandle(
         'planarYZ',
         planarSize,
         red,
@@ -93,7 +153,7 @@ export default class XfoHandle extends ZeaEngine.TreeItem {
       translationHandles.addChild(planarYZWidget);
     }
     {
-      const planarXZWidget = new PlanarMovementHandle(
+      const planarXZWidget = new XfoPlanarMovementHandle(
         'planarXZ',
         planarSize,
         blue,

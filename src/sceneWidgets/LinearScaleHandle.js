@@ -22,6 +22,7 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
     );
 
     const handleMat = new ZeaEngine.Material('handle', 'HandleShader');
+    handleMat.getParameter("maintainScreenSize").setValue(true)
     handleMat.replaceParameter(this.colorParam);
     const handleGeom = new ZeaEngine.Cylinder(
       thickness,

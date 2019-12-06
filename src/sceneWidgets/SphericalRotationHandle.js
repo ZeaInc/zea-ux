@@ -18,6 +18,7 @@ class SphericalRotationHandle extends Handle {
 
     this.radius = radius;
     const maskMat = new ZeaEngine.Material('mask', 'HandleShader');
+    maskMat.getParameter("maintainScreenSize").setValue(true)
     maskMat.getParameter('BaseColor').setValue(color);
     const maskGeom = new ZeaEngine.Sphere(radius, 64);
     const maskGeomItem = new ZeaEngine.GeomItem('mask', maskGeom, maskMat);
