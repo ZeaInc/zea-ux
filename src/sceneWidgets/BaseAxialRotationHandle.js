@@ -32,6 +32,13 @@ class BaseAxialRotationHandle extends Handle {
       param.valueChanged.connect(__updateGizmo);
     }
   }
+  
+  /**
+   * The getTargetParam method.
+   */
+  getTargetParam() {
+    return this.param ? this.param : this.getParameter("GlobalXfo");
+  }
 
   /**
    * The onDragStart method.

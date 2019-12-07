@@ -422,6 +422,8 @@ class SceneTreeView {
   }
   
   __onKeyDown(event) {
+    if (!this.mouseOver)
+      return;
     const { selectionManager } = this.appData
     if (!selectionManager)
       return
@@ -432,7 +434,6 @@ class SceneTreeView {
       event.stopPropagation();
       return;
     }
-    
     if (event.key == 'ArrowLeft'){
       const selectedItems = selectionManager.getSelection();
       const newSelection = new Set();

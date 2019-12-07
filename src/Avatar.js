@@ -48,7 +48,7 @@ export default class Avatar {
         geom = new ZeaEngine.Plane(2, 0.5);
         avatarImage.labelRendered.connect(event => {
           const aspect = event.width / event.height;
-          geom.setX(0.5 * aspect);
+          geom.getParameter('SizeX').setValue(0.5 * aspect);
         });
       }
 
@@ -388,7 +388,7 @@ export default class Avatar {
             srcControllerTree = this.__vrAsset.getChildByName('Controller');
           const controllerTree = srcControllerTree.clone();
           const xfo = new ZeaEngine.Xfo(
-            new ZeaEngine.Vec3(0, -0.035, -0.02),
+            new ZeaEngine.Vec3(0, -0.035, -0.085),
             new ZeaEngine.Quat({
               setFromAxisAndAngle: [new ZeaEngine.Vec3(0, 1, 0), Math.PI],
             }),
