@@ -243,7 +243,7 @@ class ArcSlider extends BaseAxialRotationHandle {
         value,
       });
     } else {
-      const param = this.getTargetParam();
+      const param = this.param ? this.param : this.getParameter("GlobalXfo");
       param.setValue(value);
     }
   }

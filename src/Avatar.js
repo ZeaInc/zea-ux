@@ -28,29 +28,49 @@ export default class Avatar {
       this.__camera.addRef(this);
       this.__cameraBound = false;
 
-      this.__avatarImage = new ZeaEngine.LDRImage(
-        'user' + this.__userData.id + 'AvatarImage'
-      );
-      this.__avatarImage.setImageURL(this.__userData.picture);
-      this.__avatarImageMaterial = new ZeaEngine.Material(
+      let avatarImage;
+      let geom;
+      if (this.__userData.picture && this.__userData.picture != "") {
+        avatarImage = new ZeaEngine.LDRImage(
+          'user' + this.__userData.id + 'AvatarImage'
+        );
+        avatarImage.setImageURL(this.__userData.picture);
+        geom = new ZeaEngine.Disc(0.5, 64)
+      } else {
+        avatarImage = new ZeaEngine.Label(name);
+        const bgColor = new ZeaEngine.Color(0.84, 0.84, 0.84);
+        avatarImage.getParameter('backgroundColor').setValue(bgColor)
+        avatarImage.getParameter('fontSize').setValue(48);
+        avatarImage.getParameter('borderRadius').setValue(15);
+        avatarImage.getParameter('margin').setValue(8);
+        avatarImage.getParameter('text').setValue(this.__userData.name);
+
+        geom = new ZeaEngine.Plane(2, 0.5);
+        avatarImage.labelRendered.connect(event => {
+          const aspect = event.width / event.height;
+          geom.getParameter('SizeX').setValue(0.5 * aspect);
+        });
+      }
+
+      const avatarImageMaterial = new ZeaEngine.Material(
         'user' + this.__userData.id + 'AvatarImageMaterial',
         'FlatSurfaceShader'
       );
-      this.__avatarImageMaterial
+      avatarImageMaterial
         .getParameter('BaseColor')
         .setValue(this.__avatarColor);
-      this.__avatarImageMaterial
-        .getParameter('BaseColor')
-        .setImage(this.__avatarImage);
-      this.__avatarImageMaterial.visibleInGeomDataBuffer = false;
+      avatarImageMaterial.getParameter('BaseColor').setImage(avatarImage);
+
+      avatarImageMaterial.visibleInGeomDataBuffer = false;
       this.__avatarImageGeomItem = new ZeaEngine.GeomItem(
         'avatarImage',
-        new ZeaEngine.Disc(0.5, 64),
-        this.__avatarImageMaterial
+        geom,
+        avatarImageMaterial
       );
 
       this.__avatarImageXfo = new ZeaEngine.Xfo();
       this.__avatarImageXfo.sc.set(0.2, 0.2, 1);
+      this.__avatarImageXfo.ori.setFromAxisAndAngle(new ZeaEngine.Vec3(0,1,0), Math.PI)
       this.__avatarImageGeomItem.setLocalXfo(this.__avatarImageXfo);
 
       this.__avatarImageGeomItem.addRef(this);
@@ -270,7 +290,7 @@ export default class Avatar {
 
     if (this.__avatarImageGeomItem) {
       this.__avatarImageXfo.sc.set(0.12, 0.12, 1);
-      this.__avatarImageXfo.tr.set(0, -0.04, -0.1);
+      this.__avatarImageXfo.tr.set(0, -0.04, -0.135);
       this.__avatarImageGeomItem.setLocalXfo(this.__avatarImageXfo);
       hmdHolder.addChild(this.__avatarImageGeomItem, false);
     }
@@ -368,7 +388,7 @@ export default class Avatar {
             srcControllerTree = this.__vrAsset.getChildByName('Controller');
           const controllerTree = srcControllerTree.clone();
           const xfo = new ZeaEngine.Xfo(
-            new ZeaEngine.Vec3(0, -0.035, -0.02),
+            new ZeaEngine.Vec3(0, -0.035, -0.085),
             new ZeaEngine.Quat({
               setFromAxisAndAngle: [new ZeaEngine.Vec3(0, 1, 0), Math.PI],
             }),
