@@ -66,6 +66,7 @@ export default class Handle extends ZeaEngine.TreeItem {
     event.viewport.setCapture(this);
     this.captured = true;
     this.handleMouseDown(event);
+    event.stopPropagation();
   }
 
   /**
@@ -77,7 +78,7 @@ export default class Handle extends ZeaEngine.TreeItem {
     if (this.captured) {
       this.handleMouseMove(event);
       event.stopPropagation();
-    } 
+    }
   }
 
   /**
