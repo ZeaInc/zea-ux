@@ -63,10 +63,13 @@ export default class Handle extends ZeaEngine.TreeItem {
    * @return {any} The return value.
    */
   onMouseDown(event) {
-    event.viewport.setCapture(this);
-    this.captured = true;
-    this.handleMouseDown(event);
+    event.setCapture(this);
     event.stopPropagation();
+    this.captured = true;
+    if (event.viewport)
+      this.handleMouseDown(event);
+    else if (event.vrviewport)
+      this.onVRControllerButtonDown(event);
   }
 
   /**
@@ -76,8 +79,11 @@ export default class Handle extends ZeaEngine.TreeItem {
    */
   onMouseMove(event) {
     if (this.captured) {
-      this.handleMouseMove(event);
       event.stopPropagation();
+      if (event.viewport)
+        this.handleMouseMove(event);
+      else if (event.vrviewport)
+        this.onVRPoseChanged(event);
     }
   }
 
@@ -88,10 +94,13 @@ export default class Handle extends ZeaEngine.TreeItem {
    */
   onMouseUp(event) {
     if (this.captured) {
-      this.handleMouseUp(event);
-      event.viewport.releaseCapture();
+      event.releaseCapture();
       event.stopPropagation();
       this.captured = false;
+      if (event.viewport)
+        this.handleMouseUp(event);
+      else if (event.vrviewport)
+        this.onVRControllerButtonUp(event);
     }
   }
 

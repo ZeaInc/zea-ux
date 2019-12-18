@@ -464,15 +464,29 @@ class ToolManager {
   // VRController events
 
   /**
+   * The __prepareEvent method.
+   * @param {any} event - The event that occurs.
+   * @private
+   */
+  __prepareEvent(event) {
+    event.undoRedoManager = this.appData.undoRedoManager;
+    event.propagating = true
+    event.stopPropagation = () => {
+      event.propagating = false
+    }
+  }
+
+  /**
    * The onVRControllerButtonDown method.
    * @param {any} event - The event param.
    */
   onVRControllerButtonDown(event) {
-    event.undoRedoManager = this.appData.undoRedoManager;
+    this.__prepareEvent(event);
     let i = this.__toolStack.length;
     while (i--) {
       const tool = this.__toolStack[i];
       if (tool && tool.onVRControllerButtonDown(event) == true) break;
+      if (!event.propagating) break;
     }
   }
 
@@ -481,11 +495,12 @@ class ToolManager {
    * @param {any} event - The event param.
    */
   onVRControllerButtonUp(event) {
-    event.undoRedoManager = this.appData.undoRedoManager;
+    this.__prepareEvent(event);
     let i = this.__toolStack.length;
     while (i--) {
       const tool = this.__toolStack[i];
       if (tool && tool.onVRControllerButtonUp(event) == true) break;
+      if (!event.propagating) break;
     }
   }
 
@@ -494,11 +509,12 @@ class ToolManager {
    * @param {any} event - The event param.
    */
   onVRControllerDoubleClicked(event) {
-    event.undoRedoManager = this.appData.undoRedoManager;
+    this.__prepareEvent(event);
     let i = this.__toolStack.length;
     while (i--) {
       const tool = this.__toolStack[i];
       if (tool && tool.onVRControllerDoubleClicked(event) == true) break;
+      if (!event.propagating) break;
     }
   }
 
@@ -507,11 +523,12 @@ class ToolManager {
    * @param {any} event - The event param.
    */
   onVRPoseChanged(event) {
-    event.undoRedoManager = this.appData.undoRedoManager;
+    this.__prepareEvent(event);
     let i = this.__toolStack.length;
     while (i--) {
       const tool = this.__toolStack[i];
       if (tool && tool.onVRPoseChanged(event) == true) break;
+      if (!event.propagating) break;
     }
   }
 

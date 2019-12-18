@@ -14,6 +14,7 @@ class HandleTool extends BaseTool {
     super(appData);
 
     this.activeHandle = undefined;
+    this.activeHandles = [];
   }
 
   /**
@@ -173,21 +174,41 @@ class HandleTool extends BaseTool {
   // ///////////////////////////////////
   // VRController events
 
+
+  /**
+   * The __prepareEvent method.
+   * @param {any} event - The event that occurs.
+   * @private
+   */
+  __prepareEvent(event) {
+    event.setCapture = (item) => {
+      this.capturedItem = item
+    }
+    event.getCapture = (item) => {
+      return this.capturedItem
+    }
+    event.releaseCapture = () => {
+      this.capturedItem = null
+    }
+  }
+
   /**
    * The onVRControllerButtonDown method.
    * @param {any} event - The event param.
    * @return {any} The return value.
    */
   onVRControllerButtonDown(event) {
-    if (!this.activeHandle) {
+    if (this.capturedItem) {
+      this.__prepareEvent(event)
+      this.capturedItem.onMouseDown(event)
+      return true;
+    } else {
       const intersectionData = event.controller.getGeomItemAtTip();
-      if (intersectionData == undefined) return;
-      event.intersectionData = intersectionData;
-      if (intersectionData.geomItem.getOwner() instanceof Handle) {
-        const handle = intersectionData.geomItem.getOwner();
-        this.activeHandle = handle;
-        this.activeHandle.onVRControllerButtonDown(event);
-        return true;
+      if (intersectionData != undefined) {
+        event.intersectionData = intersectionData;
+        event.geomItem = intersectionData.geomItem;
+        this.__prepareEvent(event)
+        intersectionData.geomItem.onMouseDown(event)
       }
     }
   }
@@ -198,33 +219,27 @@ class HandleTool extends BaseTool {
    * @return {any} The return value.
    */
   onVRPoseChanged(event) {
-    if (this.activeHandle) {
-      this.activeHandle.onVRPoseChanged(event);
+    if (this.capturedItem) {
+      this.capturedItem.onMouseMove(event)
       return true;
     } else {
-      let handleHit = false;
+
+      let itemHit = false;
       for (const controller of event.controllers) {
         const intersectionData = controller.getGeomItemAtTip();
-        if (
-          intersectionData != undefined &&
-          intersectionData.geomItem.getOwner() instanceof Handle
-        ) {
-          const handle = intersectionData.geomItem.getOwner();
-
-          if (this.__highlightedHandle) this.__highlightedHandle.unhighlight();
-
-          this.__highlightedHandle = handle;
-          this.__highlightedHandle.highlight();
-          handleHit = true;
-          break;
+        if (intersectionData != undefined) {
+          if (intersectionData.geomItem != this.mouseOverItem) {
+            if (this.mouseOverItem) this.mouseOverItem.onMouseLeave(event)
+            this.mouseOverItem = intersectionData.geomItem
+            this.mouseOverItem.onMouseEnter(event)
+          }
+          intersectionData.geomItem.onMouseMove(event)
+          itemHit = true
         }
       }
-
-      if (!handleHit) {
-        if (this.__highlightedHandle) {
-          this.__highlightedHandle.unhighlight();
-          this.__highlightedHandle = undefined;
-        }
+      if (!itemHit && this.mouseOverItem) {
+        this.mouseOverItem.onMouseLeave(event)
+        this.mouseOverItem = null
       }
     }
   }
@@ -235,28 +250,19 @@ class HandleTool extends BaseTool {
    * @return {any} The return value.
    */
   onVRControllerButtonUp(event) {
-    if (this.activeHandle) {
-      this.activeHandle.onDragEnd(event);
-      this.activeHandle = undefined;
+    
+    this.__prepareEvent(event)
+    if (this.capturedItem) {
+      this.capturedItem.onMouseUp(event)
+      return true
+    }
 
-      if (
-        this.__highlightedHandle &&
-        this.activeController == event.controller
-      ) {
-        // Check if by releasing the button, we should immedietly
-        // unhilight the handle.
-        // It is possible that the highlight is still on for a handle
-        // we are interacting with, even though the controller is no longer touching
-        // it.
-        const intersectionData = event.controller.getGeomItemAtTip();
-        if (
-          !intersectionData != undefined ||
-          intersectionData.geomItem.getOwner() != this.__highlightedHandle
-        ) {
-          if (this.__highlightedHandle) this.__highlightedHandle.unhighlight();
-        }
-      }
-      return true;
+    const controller = event.controller
+    const intersectionData = controller.getGeomItemAtTip();
+    if (intersectionData != undefined) {
+      event.intersectionData = intersectionData;
+      event.geomItem = intersectionData.geomItem;
+      intersectionData.geomItem.onMouseUp(event)
     }
   }
 }
