@@ -11,6 +11,7 @@ class PlanarMovementHandle extends Handle {
    */
   constructor(name) {
     super(name);
+    this.fullXfoManipulationInVR = true;
   }
 
   /**
@@ -77,5 +78,61 @@ class PlanarMovementHandle extends Handle {
   onDragEnd(event) {
     this.change = null;
   }
+  
+  // ///////////////////////////////////
+  // VRController events
+
+  /**
+   * The onVRControllerButtonDown method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
+  onVRControllerButtonDown(event) {
+    if (this.fullXfoManipulationInVR) {
+      this.activeController = event.controller;
+      const xfo = this.activeController.getTipXfo();
+      const handleXfo = this.getGlobalXfo();
+      this.grabOffset = xfo.inverse().multiply(handleXfo);
+    } else {
+      super.onVRControllerButtonDown(event)
+    }
+    return true;
+  }
+
+  /**
+   * The onVRPoseChanged method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
+  onVRPoseChanged(event) {
+    if (this.fullXfoManipulationInVR) {
+      const xfo = this.activeController.getTipXfo();
+      const newXfo = xfo.multiply(this.grabOffset);
+      if (this.change) {
+        this.change.update({
+          value: newXfo,
+        });
+      } else {
+        const param = this.getTargetParam();
+        param.setValue(newXfo);
+      }
+    } else {
+      super.onVRPoseChanged(event)
+    }
+  }
+
+  /**
+   * The onVRControllerButtonUp method.
+   * @param {any} event - The event param.
+   * @return {any} The return value.
+   */
+  onVRControllerButtonUp(event) {
+    if (this.fullXfoManipulationInVR) {
+      this.change = null;
+    } else {
+      super.onVRControllerButtonUp(event)
+    }
+  }
+
 }
 export { PlanarMovementHandle };
