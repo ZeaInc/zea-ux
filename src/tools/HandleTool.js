@@ -14,7 +14,8 @@ class HandleTool extends BaseTool {
     super(appData);
 
     this.activeHandle = undefined;
-    this.activeHandles = [];
+    this.capturedItems = [];
+    this.mouseOverItems = [];
   }
 
   /**
@@ -176,19 +177,20 @@ class HandleTool extends BaseTool {
 
 
   /**
-   * The __prepareEvent method.
+   * The __prepareVREvent method.
    * @param {any} event - The event that occurs.
    * @private
    */
-  __prepareEvent(event) {
+  __prepareVREvent(event) {
+    const id = event.controller.getId();
     event.setCapture = (item) => {
-      this.capturedItem = item
+      this.capturedItems[id] = item
     }
-    event.getCapture = (item) => {
-      return this.capturedItem
+    event.getCapture = () => {
+      return this.capturedItems[id]
     }
     event.releaseCapture = () => {
-      this.capturedItem = null
+      this.capturedItems[id] = null
     }
   }
 
@@ -198,16 +200,16 @@ class HandleTool extends BaseTool {
    * @return {any} The return value.
    */
   onVRControllerButtonDown(event) {
-    if (this.capturedItem) {
-      this.__prepareEvent(event)
-      this.capturedItem.onMouseDown(event)
-      return true;
+    const id = event.controller.getId();
+    if (this.capturedItems[id]) {
+      this.__prepareVREvent(event)
+      this.capturedItems[id].onMouseDown(event)
     } else {
       const intersectionData = event.controller.getGeomItemAtTip();
       if (intersectionData != undefined) {
         event.intersectionData = intersectionData;
         event.geomItem = intersectionData.geomItem;
-        this.__prepareEvent(event)
+        this.__prepareVREvent(event)
         intersectionData.geomItem.onMouseDown(event)
       }
     }
@@ -219,27 +221,26 @@ class HandleTool extends BaseTool {
    * @return {any} The return value.
    */
   onVRPoseChanged(event) {
-    if (this.capturedItem) {
-      this.capturedItem.onMouseMove(event)
-      return true;
-    } else {
-
-      let itemHit = false;
-      for (const controller of event.controllers) {
+    for (const controller of event.controllers) {
+      const id = controller.getId();
+      if (this.capturedItems[id]) {
+        this.capturedItems[id].onMouseMove(event)
+      } else {
         const intersectionData = controller.getGeomItemAtTip();
         if (intersectionData != undefined) {
-          if (intersectionData.geomItem != this.mouseOverItem) {
-            if (this.mouseOverItem) this.mouseOverItem.onMouseLeave(event)
-            this.mouseOverItem = intersectionData.geomItem
-            this.mouseOverItem.onMouseEnter(event)
+          event.intersectionData = intersectionData;
+          event.geomItem = intersectionData.geomItem;
+          if (intersectionData.geomItem != this.mouseOverItems[id]) {
+            if (this.mouseOverItems[id]) this.mouseOverItems[id].onMouseLeave(event)
+            this.mouseOverItems[id] = intersectionData.geomItem
+            this.mouseOverItems[id].onMouseEnter(event)
           }
           intersectionData.geomItem.onMouseMove(event)
-          itemHit = true
         }
-      }
-      if (!itemHit && this.mouseOverItem) {
-        this.mouseOverItem.onMouseLeave(event)
-        this.mouseOverItem = null
+        else if (this.mouseOverItems[id]) {
+          this.mouseOverItems[id].onMouseLeave(event)
+          this.mouseOverItems[id] = null
+        }
       }
     }
   }
@@ -250,19 +251,18 @@ class HandleTool extends BaseTool {
    * @return {any} The return value.
    */
   onVRControllerButtonUp(event) {
-    
-    this.__prepareEvent(event)
-    if (this.capturedItem) {
-      this.capturedItem.onMouseUp(event)
-      return true
-    }
-
-    const controller = event.controller
-    const intersectionData = controller.getGeomItemAtTip();
-    if (intersectionData != undefined) {
-      event.intersectionData = intersectionData;
-      event.geomItem = intersectionData.geomItem;
-      intersectionData.geomItem.onMouseUp(event)
+    this.__prepareVREvent(event)
+    const id = event.controller.getId();
+    if (this.capturedItems[id]) {
+      this.capturedItems[id].onMouseUp(event)
+    } else {
+      const controller = event.controller
+      const intersectionData = controller.getGeomItemAtTip();
+      if (intersectionData != undefined) {
+        event.intersectionData = intersectionData;
+        event.geomItem = intersectionData.geomItem;
+        intersectionData.geomItem.onMouseUp(event)
+      }
     }
   }
 }
