@@ -61,11 +61,11 @@ export default class SelectionGroup extends ZeaEngine.Group {
     this.branchSelectionOutlineColor.a = 0.1
   }
 
+  // eslint-disable-next-line require-jsdoc
   __bindItem(item, index) {
 
     if (this.propagatingSelectionToItems)
       item.setSelected(this);
-
     
     const signalIndices = {}
     
@@ -94,6 +94,7 @@ export default class SelectionGroup extends ZeaEngine.Group {
     this.__signalIndices[index] = signalIndices
   }
 
+  // eslint-disable-next-line require-jsdoc
   __unbindItem(item, index) {
     if (this.propagatingSelectionToItems)
       item.setSelected(false);
@@ -111,6 +112,39 @@ export default class SelectionGroup extends ZeaEngine.Group {
     }
     
     this.__signalIndices.splice(index, 1);
+  }
+
+  /**
+   * The _propagateDirtyXfoToItems method.
+   * @private
+   */
+  _propagateDirtyXfoToItems() {
+    if (this.calculatingGroupXfo) return
+
+    const items = Array.from(this.__itemsParam.getValue())
+    // Only after all the items are resolved do we have an invXfo and we can tranform our items.
+    if (
+      !this.calculatingGroupXfo &&
+      items.length > 0 &&
+      this.invGroupXfo &&
+      !this.dirty
+    ) {
+      const xfo = this.__globalXfoParam.getValue()
+      const delta = xfo.multiply(this.invGroupXfo)
+
+      this.propagatingXfoToItems = true // Note: selection group needs this set.
+      const setGlobal = (item, initialXfo) => {
+        const param = item.getParameter('GlobalXfo');
+        const result = delta.multiply(initialXfo);
+        param.setValue(result);
+      };
+      items.forEach((item, index) => {
+        if (item instanceof ZeaEngine.TreeItem) {
+          setGlobal(item, this.__initialXfos[index])
+        }
+      });
+      this.propagatingXfoToItems = false
+    }
   }
 
 };
