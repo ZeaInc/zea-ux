@@ -2,6 +2,7 @@ import BaseWidget from './BaseWidget.js';
 
 import uxFactory from '../UxFactory.js';
 import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
+import round from './round.js';
 
 /**
  * Class representing an xfo widget.
@@ -40,13 +41,6 @@ export default class XfoWidget extends BaseWidget {
 
     const updateDisplayedValue = mode => {
       if (!settingValue) {
-
-        // https://www.jacklmoore.com/notes/rounding-in-javascript/
-        function round(value, decimals=6) {
-          if (value < Number('1e-6'))
-            return 0
-          return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
-        }
         const xfo = parameter.getValue();
         tr_xField.value = round(xfo.tr.x);
         tr_yField.value = round(xfo.tr.y);
