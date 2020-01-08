@@ -4,21 +4,26 @@ export default class SelectionGroup extends ZeaEngine.Group {
   constructor(options) {
     super();
 
+    let selectionColor
+    let subtreeColor
     if (options.selectionOutlineColor)
-      this.selectionOutlineColor = options.selectionOutlineColor;
+      selectionColor = options.selectionOutlineColor;
     else {
-      this.selectionOutlineColor = new ZeaEngine.Color('#03E3AC')
-      this.selectionOutlineColor.a = 0.1
+      selectionColor = new ZeaEngine.Color('#03E3AC')
+      selectionColor.a = 0.1
     }
     if (options.branchSelectionOutlineColor)
-      this.branchSelectionOutlineColor = options.branchSelectionOutlineColor;
+      subtreeColor = options.branchSelectionOutlineColor;
     else {
-      this.branchSelectionOutlineColor = this.selectionOutlineColor.lerp(
+      subtreeColor = selectionColor.lerp(
         new ZeaEngine.Color('white'),
         0.5
       )
-      this.branchSelectionOutlineColor.a = 0.1
+      subtreeColor.a = 0.1
     }
+
+    this.getParameter('HighlightColor').setValue(selectionColor)
+    this.addParameter(new ZeaEngine.ColorParameter('SubtreeHighlightColor', subtreeColor))
     
     this.propagatingSelectionToItems = options.setItemsSelected != false;
     this.getParameter('InitialXfoMode').setValue(ZeaEngine.Group.INITIAL_XFO_MODES.average);
@@ -43,23 +48,23 @@ export default class SelectionGroup extends ZeaEngine.Group {
   /**
    * The getSelectionOutlineColor method.
    * @return {any} - The return value.
-   */
   getSelectionOutlineColor() {
     return this.selectionOutlineColor
   }
+   */
 
   /**
    * The setSelectionOutlineColor method.
    * @param {any} color - The color param.
-   */
   setSelectionOutlineColor(color) {
     this.selectionOutlineColor = color
-    this.branchSelectionOutlineColor = color.lerp(
+    subtreeColor = color.lerp(
       new Color('white'),
       0.5
     )
-    this.branchSelectionOutlineColor.a = 0.1
+    subtreeColor.a = 0.1
   }
+   */
 
   // eslint-disable-next-line require-jsdoc
   __bindItem(item, index) {
@@ -70,12 +75,15 @@ export default class SelectionGroup extends ZeaEngine.Group {
     const signalIndices = {}
     
     if (item instanceof ZeaEngine.TreeItem) {
-      item.addHighlight('selected' + this.getId(), this.selectionOutlineColor, false)
+      const highlightColor = this.getParameter('HighlightColor').getValue()
+      highlightColor.a = this.getParameter('HighlightFill').getValue()
+      const subTreeColor = this.getParameter('SubtreeHighlightColor').getValue()
+      item.addHighlight('selected' + this.getId(), highlightColor, false)
       item.getChildren().forEach(childItem => {
         if (childItem instanceof ZeaEngine.TreeItem)
           childItem.addHighlight(
             'branchselected' + this.getId(),
-            this.branchSelectionOutlineColor,
+            subTreeColor,
             true
           )
       })
