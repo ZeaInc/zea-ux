@@ -41,6 +41,7 @@ class SliderHandle extends BaseLinearMovementHandle {
     );
 
     this.handleMat = new ZeaEngine.Material('handle', 'FlatSurfaceShader');
+    this.handleMat.getParameter('BaseColor').setValue(this.colorParam.getValue());
     // const baseBarMat = new ZeaEngine.Material('baseBar', 'FlatSurfaceShader');
     // baseBarMat.replaceParameter(this.colorParam);
     const topBarMat = new ZeaEngine.Material('topBar', 'FlatSurfaceShader');
