@@ -34,12 +34,14 @@ export default class BBoxWidget extends BaseWidget {
     const updateDisplayedValue = () => {
       if (!change) {
         const bbox = parameter.getValue();
-        min_xField.value = bbox.p0.x;
-        min_yField.value = bbox.p0.y;
-        min_zField.value = bbox.p0.z;
-        max_xField.value = bbox.p1.x;
-        max_yField.value = bbox.p1.y;
-        max_zField.value = bbox.p1.z;
+        if (bbox.isValid()) {
+          min_xField.value = bbox.p0.x;
+          min_yField.value = bbox.p0.y;
+          min_zField.value = bbox.p0.z;
+          max_xField.value = bbox.p1.x;
+          max_yField.value = bbox.p1.y;
+          max_zField.value = bbox.p1.z;
+        }
       }
     };
 
