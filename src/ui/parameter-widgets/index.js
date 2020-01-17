@@ -1,5 +1,6 @@
 // ////////////////////////////////////
 // Parameter Widgets
+export * from './BaseWidget.js';
 export * from './BooleanWidget.js';
 export * from './ColorWidget.js';
 export * from './NumberWidget.js';
@@ -20,4 +21,3 @@ export * from './ItemWidget.js';
 export * from './ItemSetWidget.js';
 export * from './StructWidget.js';
 export * from './ListWidget.js';
-export * from './QuerySetWidget.js';
