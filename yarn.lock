@@ -1104,10 +1104,10 @@
   resolved "https://registry.yarnpkg.com/@xtuc/long/-/long-4.2.2.tgz#d291c6a4e97989b5c61d9acf396ae4fe133a718d"
   integrity sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==
 
-"@zeainc/zea-collab@^0.0.35":
-  version "0.0.35"
-  resolved "https://registry.yarnpkg.com/@zeainc/zea-collab/-/zea-collab-0.0.35.tgz#f712f5e2d679320a387d01d249434bba443f642a"
-  integrity sha512-ee6G3mNwFZBmOm4UaZpZsdSTBpzOYzyYZf/jWM96/w5HDEeB6eBPj2sJ7KroPXmbZcOTGx1YosIO42qFJAu1zg==
+"@zeainc/zea-collab@^0.0.36":
+  version "0.0.36"
+  resolved "https://registry.yarnpkg.com/@zeainc/zea-collab/-/zea-collab-0.0.36.tgz#5ff41feb41f00251e71d5343fb66de2f2c5c6f7f"
+  integrity sha512-55J+wt4AAU9C6AkIEYuGKqpTaEIDuc9NA/0r/IMDlLaDcDHPkPL22lVX7yRzD1l8o9f7eSgYb56Te2d2s8oQJw==
   dependencies:
     socket.io-client "^2.1.1"
     socketio-wildcard "^2.0.0"

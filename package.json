@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "@jaames/iro": "^4.5.1",
-    "@zeainc/zea-collab": "^0.0.35",
+    "@zeainc/zea-collab": "^0.0.36",
     "dom-to-image": "^2.6.0"
   }
 }
