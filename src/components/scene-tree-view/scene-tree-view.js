@@ -1,14 +1,16 @@
+/**
+ * Tree item view.
+ *
+ */
 class SceneTreeView extends HTMLElement {
-  treeItemView;
+  /**
+   * Constructor.
+   *
+   */
   constructor() {
     super();
 
-    var shadowRoot = this.attachShadow({ mode: 'open' });
-
-    // Add component CSS
-    const styleTag = document.createElement('style');
-    styleTag.appendChild(document.createTextNode(this.css));
-    shadowRoot.appendChild(styleTag);
+    const shadowRoot = this.attachShadow({ mode: 'open' });
 
     // Create container tags
     this.treeContainer = document.createElement('div');
@@ -18,13 +20,16 @@ class SceneTreeView extends HTMLElement {
     this.treeItemView = document.createElement('tree-item-view');
   }
 
+  /**
+   * Set tree item.
+   * @param {object} treeItem Tree item.
+   * @param {object} appData App data.
+   */
   setTreeItem(treeItem, appData) {
     this.treeItemView.setTreeItem(treeItem);
     this.treeContainer.appendChild(this.treeItemView);
   }
 }
-
-SceneTreeView.css = ``;
 
 customElements.define('scene-tree-view', SceneTreeView);
 

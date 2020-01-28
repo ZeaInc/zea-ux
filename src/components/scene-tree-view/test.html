@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined"
+    />
+    <style></style>
+    <title>Zea Tree View</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script src="https://unpkg.com/@zeainc/zea-engine@0.0.92/dist/zea-engine.js"></script>
+    <script src="../tree-item-view/tree-item-view.js"></script>
+    <script src="scene-tree-view.js"></script>
+    <script>
+      const rootTreeItem = new ZeaEngine.TreeItem();
+
+      for (let i = 0; i < 10; i++) {
+        const childI = new ZeaEngine.TreeItem('Child' + i);
+        for (let j = 0; j < 100; j++) {
+          const childJ = new ZeaEngine.TreeItem('Child' + j);
+          for (let k = 0; k < 10; k++) {
+            childJ.addChild(new ZeaEngine.TreeItem('Child' + k));
+          }
+          childI.addChild(childJ);
+        }
+        rootTreeItem.addChild(childI);
+      }
+
+      const sceneTreeView = document.createElement('scene-tree-view');
+
+      sceneTreeView.setTreeItem(rootTreeItem, {});
+
+      document.body.appendChild(sceneTreeView);
+
+      setTimeout(() => {
+        rootTreeItem.setName('Foo');
+        // rootTreeItem.addHighlight("Foo", new ZeaEngine.Color(1, 0, 0), true);
+      }, 1000);
+    </script>
+  </body>
+</html>
