@@ -1,5 +1,5 @@
 /**
- * Tree item view.
+ * Scene tree view.
  *
  */
 class SceneTreeView extends HTMLElement {
