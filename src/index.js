@@ -12,3 +12,4 @@ export * from './sceneWidgets';
 
 // Web components.
 export { default as TreeItemView } from './components/tree-item-view/tree-item-view';
+export { default as SceneTreeView } from './components/scene-tree-view/scene-tree-view';
