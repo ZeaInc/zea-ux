@@ -1,20 +1,191 @@
-/**
- * Tree item view.
- *
- */
 class TreeItemView extends HTMLElement {
-  /**
-   * Constructor.
-   *
-   */
+  css = `
+    /* tree-view.css */
+
+    /* fallback */
+    @font-face {
+      font-family: 'Material Icons';
+      font-style: normal;
+      font-weight: 400;
+      src: url(https://fonts.gstatic.com/s/materialicons/v48/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2) format('woff2');
+    }
+
+    /* fallback */
+    @font-face {
+      font-family: 'Material Icons Outlined';
+      font-style: normal;
+      font-weight: 400;
+      src: url(https://fonts.gstatic.com/s/materialiconsoutlined/v14/gok-H7zzDkdnRel8-DQ6KAXJ69wP1tGnf4ZGhUcel5euIg.woff2) format('woff2');
+    }
+
+    .material-icons {
+      font-family: 'Material Icons';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 24px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-feature-settings: 'liga';
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .material-icons-outlined {
+      font-family: 'Material Icons Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 24px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-feature-settings: 'liga';
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .TreeNodesList {
+      border-left: 1px dotted;
+      list-style-type: none;
+      padding: 0 0 0 15px;
+      margin: 0 0 0 10px;
+    }
+
+    .TreeNodesList--collapsed {
+      display: none;
+    }
+
+    .TreeNodesList--root {
+      border: none;
+      margin: 0;
+      padding: 0;
+      width: max-content;
+    }
+
+    .TreeNodesListItem{
+      display: flex;
+    }
+
+    .TreeNodesListItem__ToggleVisibility {
+      border: none;
+      color: #333;
+      height: 24px;
+      padding: 0;
+      width: 25px;
+    }
+
+    .TreeNodesListItem__ToggleVisibility:focus {
+      outline: none;
+    }
+
+    .TreeNodesListItem__ToggleExpanded {
+      border: none;
+      height: 24px;
+      width: 24px;
+      padding: 0;
+      background-color: #0000;
+      outline: none;
+    }
+
+    .TreeNodesListItem::before {
+      border-bottom: 1px dotted;
+      content: '';
+      display: inline-block;
+      left: -15px;
+      position: relative;
+      top: -5px;
+      width: 10px;
+    }
+
+    .TreeNodesListItem__Toggle:focus {
+      outline: none;
+    }
+
+    .TreeNodeHeader{
+      display: flex;
+      margin: 0.4em auto;
+    }
+
+    .TreeNodesListItem__Title {
+      cursor: default;
+      padding: 2px 4px;
+      border-radius: 5px;
+    }
+
+    .TreeNodesListItem__Title:hover {
+      background-color: #e1f5fe;
+    }
+    .TreeNodesListItem__Hover {
+      background-color: #e1f5fe;
+    }
+
+    .TreeNodesListItem__Dragging {
+      background-color: #e1f5fe;
+    }
+
+    .TreeNodesListItem--isSelected > .TreeNodeHeader > .TreeNodesListItem__Title {
+      background-color: #76d2bb;
+      color: #3B3B3B;
+    }
+
+    .TreeNodesListItem--isHidden > .TreeNodeHeader >  .TreeNodesListItem__Title {
+      color: #9e9e9e;
+    }
+
+    .TreeNodesListItem--isHighlighted > .TreeNodeHeader >  .TreeNodesListItem__Title {
+      border-style: solid;
+      border-width: thin;
+    }
+
+    /* Rules for sizing the icon. */
+    .material-icons-outlined.md-15,
+    .material-icons.md-15 {
+      font-size: 15px;
+    }
+    .material-icons.md-18 {
+      font-size: 18px;
+    }
+    .material-icons.md-24 {
+      font-size: 24px;
+    }
+    .material-icons.md-36 {
+      font-size: 36px;
+    }
+    .material-icons.md-48 {
+      font-size: 48px;
+    }
+
+    /* Rules for using icons as black on a light background. */
+    .material-icons.md-dark {
+      color: rgba(0, 0, 0, 0.54);
+    }
+    .material-icons.md-dark.md-inactive {
+      color: rgba(0, 0, 0, 0.26);
+    }
+
+    /* Rules for using icons as white on a dark background. */
+    .material-icons.md-light {
+      color: rgba(255, 255, 255, 1);
+    }
+    .material-icons.md-light.md-inactive {
+      color: rgba(255, 255, 255, 0.3);
+    }
+    `;
+
   constructor() {
     super();
 
-    const shadowRoot = this.attachShadow({ mode: 'open' });
+    var shadowRoot = this.attachShadow({ mode: 'open' });
 
     // Add component CSS
     const styleTag = document.createElement('style');
-    styleTag.appendChild(document.createTextNode(TreeItemView.css));
+    styleTag.appendChild(document.createTextNode(this.css));
     shadowRoot.appendChild(styleTag);
 
     // Create container tags
@@ -71,16 +242,12 @@ class TreeItemView extends HTMLElement {
     shadowRoot.appendChild(this.itemContainer);
   }
 
-  /**
-   * Set tree item.
-   * @param {object} treeItem Tree item.
-   * @param {object} appData App data.
-   */
   setTreeItem(treeItem, appData) {
     this.treeItem = treeItem;
 
     this.appData = appData;
 
+    ////////////////////////
     // Name
     this.titleElement.textContent = treeItem.getName();
     const updateName = () => {
@@ -88,6 +255,7 @@ class TreeItemView extends HTMLElement {
     };
     this.treeItem.nameChanged.connect(updateName);
 
+    ////////////////////////
     // Visiblity
     this.toggleVisibilityBtn.addEventListener('click', () => {
       const visibleParam = this.treeItem.getParameter('Visible');
@@ -106,6 +274,7 @@ class TreeItemView extends HTMLElement {
     );
     this.updateVisibility();
 
+    ////////////////////////
     // Selection
 
     this.updateSelectedId = this.treeItem.selectedChanged.connect(
@@ -113,6 +282,7 @@ class TreeItemView extends HTMLElement {
     );
     this.updateSelected();
 
+    ////////////////////////
     // Highlights
 
     this.updateHighlightId = this.treeItem.highlightChanged.connect(
@@ -125,10 +295,6 @@ class TreeItemView extends HTMLElement {
     }
   }
 
-  /**
-   * Update visibility.
-   *
-   */
   updateVisibility() {
     const visible = this.treeItem.getVisible();
     visible
@@ -144,10 +310,6 @@ class TreeItemView extends HTMLElement {
     }
   }
 
-  /**
-   * Update selected.
-   *
-   */
   updateSelected() {
     const selected = this.treeItem.getSelected();
     if (selected)
@@ -155,9 +317,6 @@ class TreeItemView extends HTMLElement {
     else this.itemContainer.classList.remove('TreeNodesListItem--isSelected');
   }
 
-  /**
-   * Update highlight.
-   */
   updateHighlight() {
     const hilighted = this.treeItem.isHighlighted();
     if (hilighted)
@@ -222,185 +381,4 @@ class TreeItemView extends HTMLElement {
   }
 }
 
-TreeItemView.css = `
-  /* tree-view.css */
-
-  /* fallback */
-  @font-face {
-    font-family: 'Material Icons';
-    font-style: normal;
-    font-weight: 400;
-    src: url(https://fonts.gstatic.com/s/materialicons/v48/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2) format('woff2');
-  }
-
-  /* fallback */
-  @font-face {
-    font-family: 'Material Icons Outlined';
-    font-style: normal;
-    font-weight: 400;
-    src: url(https://fonts.gstatic.com/s/materialiconsoutlined/v14/gok-H7zzDkdnRel8-DQ6KAXJ69wP1tGnf4ZGhUcel5euIg.woff2) format('woff2');
-  }
-
-  .material-icons {
-    font-family: 'Material Icons';
-    font-weight: normal;
-    font-style: normal;
-    font-size: 24px;
-    line-height: 1;
-    letter-spacing: normal;
-    text-transform: none;
-    display: inline-block;
-    white-space: nowrap;
-    word-wrap: normal;
-    direction: ltr;
-    -webkit-font-feature-settings: 'liga';
-    -webkit-font-smoothing: antialiased;
-  }
-
-  .material-icons-outlined {
-    font-family: 'Material Icons Outlined';
-    font-weight: normal;
-    font-style: normal;
-    font-size: 24px;
-    line-height: 1;
-    letter-spacing: normal;
-    text-transform: none;
-    display: inline-block;
-    white-space: nowrap;
-    word-wrap: normal;
-    direction: ltr;
-    -webkit-font-feature-settings: 'liga';
-    -webkit-font-smoothing: antialiased;
-  }
-
-  .TreeNodesList {
-    border-left: 1px dotted;
-    list-style-type: none;
-    padding: 0 0 0 15px;
-    margin: 0 0 0 10px;
-  }
-
-  .TreeNodesList--collapsed {
-    display: none;
-  }
-
-  .TreeNodesList--root {
-    border: none;
-    margin: 0;
-    padding: 0;
-    width: max-content;
-  }
-
-  .TreeNodesListItem{
-    display: flex;
-  }
-
-  .TreeNodesListItem__ToggleVisibility {
-    border: none;
-    color: #333;
-    height: 24px;
-    padding: 0;
-    width: 25px;
-  }
-
-  .TreeNodesListItem__ToggleVisibility:focus {
-    outline: none;
-  }
-
-  .TreeNodesListItem__ToggleExpanded {
-    border: none;
-    height: 24px;
-    width: 24px;
-    padding: 0;
-    background-color: #0000;
-    outline: none;
-  }
-
-  .TreeNodesListItem::before {
-    border-bottom: 1px dotted;
-    content: '';
-    display: inline-block;
-    left: -15px;
-    position: relative;
-    top: -5px;
-    width: 10px;
-  }
-
-  .TreeNodesListItem__Toggle:focus {
-    outline: none;
-  }
-
-  .TreeNodeHeader{
-    display: flex;
-    margin: 0.4em auto;
-  }
-
-  .TreeNodesListItem__Title {
-    cursor: default;
-    padding: 2px 4px;
-    border-radius: 5px;
-  }
-
-  .TreeNodesListItem__Title:hover {
-    background-color: #e1f5fe;
-  }
-  .TreeNodesListItem__Hover {
-    background-color: #e1f5fe;
-  }
-
-  .TreeNodesListItem__Dragging {
-    background-color: #e1f5fe;
-  }
-
-  .TreeNodesListItem--isSelected > .TreeNodeHeader > .TreeNodesListItem__Title {
-    background-color: #76d2bb;
-    color: #3B3B3B;
-  }
-
-  .TreeNodesListItem--isHidden > .TreeNodeHeader >  .TreeNodesListItem__Title {
-    color: #9e9e9e;
-  }
-
-  .TreeNodesListItem--isHighlighted > .TreeNodeHeader >  .TreeNodesListItem__Title {
-    border-style: solid;
-    border-width: thin;
-  }
-
-  /* Rules for sizing the icon. */
-  .material-icons-outlined.md-15,
-  .material-icons.md-15 {
-    font-size: 15px;
-  }
-  .material-icons.md-18 {
-    font-size: 18px;
-  }
-  .material-icons.md-24 {
-    font-size: 24px;
-  }
-  .material-icons.md-36 {
-    font-size: 36px;
-  }
-  .material-icons.md-48 {
-    font-size: 48px;
-  }
-
-  /* Rules for using icons as black on a light background. */
-  .material-icons.md-dark {
-    color: rgba(0, 0, 0, 0.54);
-  }
-  .material-icons.md-dark.md-inactive {
-    color: rgba(0, 0, 0, 0.26);
-  }
-
-  /* Rules for using icons as white on a dark background. */
-  .material-icons.md-light {
-    color: rgba(255, 255, 255, 1);
-  }
-  .material-icons.md-light.md-inactive {
-    color: rgba(255, 255, 255, 0.3);
-  }
-  `;
-
 customElements.define('tree-item-view', TreeItemView);
-
-export default TreeItemView;
