@@ -12,9 +12,9 @@ class SceneTreeView extends HTMLElement {
 
     // Create container tags
     this.treeContainer = document.createElement('div');
-
-    //
     shadowRoot.appendChild(this.treeContainer);
+
+    // Init root tree item
     this.treeItemView = document.createElement('tree-item-view');
   }
 
