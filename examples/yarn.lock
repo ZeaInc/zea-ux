@@ -792,6 +792,28 @@
     "@visualive/engine" "^0.0.56"
     dom-to-image "^2.6.0"
 
+"@zeainc/zea-collab@^0.0.36":
+  version "0.0.36"
+  resolved "https://registry.yarnpkg.com/@zeainc/zea-collab/-/zea-collab-0.0.36.tgz#5ff41feb41f00251e71d5343fb66de2f2c5c6f7f"
+  integrity sha512-55J+wt4AAU9C6AkIEYuGKqpTaEIDuc9NA/0r/IMDlLaDcDHPkPL22lVX7yRzD1l8o9f7eSgYb56Te2d2s8oQJw==
+  dependencies:
+    socket.io-client "^2.1.1"
+    socketio-wildcard "^2.0.0"
+
+"@zeainc/zea-engine@^0.0.94":
+  version "0.0.94"
+  resolved "https://registry.yarnpkg.com/@zeainc/zea-engine/-/zea-engine-0.0.94.tgz#0e164a7851a61ec292742858d242598114f8183e"
+  integrity sha512-PilvGmKL6D4bpYsaSdiIGFxMr+I0WOZXiJPvtk0d9sycbM5iBRAky8K1AYfrQUIXm7dI0F8DOZ28ZwltVqs+YA==
+
+"@zeainc/zea-ux@^0.0.87":
+  version "0.0.87"
+  resolved "https://registry.yarnpkg.com/@zeainc/zea-ux/-/zea-ux-0.0.87.tgz#36f0d55f655b92708a8ac49ca54885bdd5b35f25"
+  integrity sha512-FqP3ZlpEQZc4wEIesDqD9+ndrBUjjUnnYBLx2Vpc7nUPpCOaW21TWAf1sgJOCP5cFAImUm/P9ovzrDpQRtirkg==
+  dependencies:
+    "@jaames/iro" "^4.5.1"
+    "@zeainc/zea-collab" "^0.0.36"
+    dom-to-image "^2.6.0"
+
 abab@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/abab/-/abab-2.0.0.tgz#aba0ab4c5eee2d4c79d3487d85450fb2376ebb0f"
