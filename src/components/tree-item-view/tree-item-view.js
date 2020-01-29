@@ -88,40 +88,40 @@ class TreeItemView extends HTMLElement {
     };
     this.treeItem.nameChanged.connect(updateName);
 
-    // Visiblity
-    this.toggleVisibilityBtn.addEventListener('click', () => {
-      const visibleParam = this.treeItem.getParameter('Visible');
-      if (this.appData && this.appData.undoRedoManager) {
-        const change = new ParameterValueChange(
-          visibleParam,
-          !visibleParam.getValue()
-        );
-        this.appData.undoRedoManager.addChange(change);
-      } else {
-        visibleParam.setValue(!visibleParam.getValue());
-      }
-    });
-    this.updateVisibilityId = this.treeItem.visibilityChanged.connect(
-      this.updateVisibility.bind(this)
-    );
-    this.updateVisibility();
-
     // Selection
-
     this.updateSelectedId = this.treeItem.selectedChanged.connect(
       this.updateSelected.bind(this)
     );
     this.updateSelected();
 
-    // Highlights
+    if (treeItem instanceof ZeaEngine.TreeItem) {
+      // Visiblity
+      this.toggleVisibilityBtn.addEventListener('click', () => {
+        const visibleParam = this.treeItem.getParameter('Visible');
+        if (this.appData && this.appData.undoRedoManager) {
+          const change = new ParameterValueChange(
+            visibleParam,
+            !visibleParam.getValue()
+          );
+          this.appData.undoRedoManager.addChange(change);
+        } else {
+          visibleParam.setValue(!visibleParam.getValue());
+        }
+      });
+      this.updateVisibilityId = this.treeItem.visibilityChanged.connect(
+        this.updateVisibility.bind(this)
+      );
+      this.updateVisibility();
 
-    this.updateHighlightId = this.treeItem.highlightChanged.connect(
-      this.updateHighlight.bind(this)
-    );
-    this.updateHighlight();
+      // Highlights
+      this.updateHighlightId = this.treeItem.highlightChanged.connect(
+        this.updateHighlight.bind(this)
+      );
+      this.updateHighlight();
 
-    if (this.treeItem.getChildren().length) {
-      this.collapse();
+      if (this.treeItem.getChildren().length) {
+        this.collapse();
+      }
     }
   }
 
