@@ -42,13 +42,6 @@ class TreeItemView extends HTMLElement {
       }
     });
 
-    // Visibility toggle button
-    this.toggleVisibilityBtn = document.createElement('button');
-    this.toggleVisibilityBtn.className = 'TreeNodesListItem__ToggleVisibility';
-
-    this.itemHeader.appendChild(this.toggleVisibilityBtn);
-    this.toggleVisibilityBtn.innerHTML =
-      '<i class="material-icons-outlined md-15">visibility</i>';
 
     // Title element
     this.titleElement = document.createElement('span');
@@ -69,6 +62,7 @@ class TreeItemView extends HTMLElement {
 
     //
     shadowRoot.appendChild(this.itemContainer);
+
   }
 
   /**
@@ -96,6 +90,15 @@ class TreeItemView extends HTMLElement {
 
     if (treeItem instanceof ZeaEngine.TreeItem) {
       // Visiblity
+      
+    // Visibility toggle button
+    this.toggleVisibilityBtn = document.createElement('button');
+    this.toggleVisibilityBtn.className = 'TreeNodesListItem__ToggleVisibility';
+
+    this.itemHeader.insertBefore(this.toggleVisibilityBtn, this.titleElement);
+    this.toggleVisibilityBtn.innerHTML =
+      '<i class="material-icons-outlined md-15">visibility</i>';
+
       this.toggleVisibilityBtn.addEventListener('click', () => {
         const visibleParam = this.treeItem.getParameter('Visible');
         if (this.appData && this.appData.undoRedoManager) {
@@ -225,20 +228,22 @@ class TreeItemView extends HTMLElement {
 TreeItemView.css = `
   /* tree-view.css */
 
+  ////
+  /// From https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined
+
   /* fallback */
   @font-face {
     font-family: 'Material Icons';
     font-style: normal;
     font-weight: 400;
-    src: url(https://fonts.gstatic.com/s/materialicons/v48/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2) format('woff2');
+    src: url(https://fonts.gstatic.com/s/materialicons/v48/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2) format('woff2');
   }
-
   /* fallback */
   @font-face {
     font-family: 'Material Icons Outlined';
     font-style: normal;
     font-weight: 400;
-    src: url(https://fonts.gstatic.com/s/materialiconsoutlined/v14/gok-H7zzDkdnRel8-DQ6KAXJ69wP1tGnf4ZGhUcel5euIg.woff2) format('woff2');
+    src: url(https://fonts.gstatic.com/s/materialiconsoutlined/v14/gok-H7zzDkdnRel8-DQ6KAXJ69wP1tGnf4ZGhUce.woff2) format('woff2');
   }
 
   .material-icons {
@@ -272,7 +277,6 @@ TreeItemView.css = `
     -webkit-font-feature-settings: 'liga';
     -webkit-font-smoothing: antialiased;
   }
-
   .TreeNodesList {
     border-left: 1px dotted;
     list-style-type: none;
@@ -399,6 +403,7 @@ TreeItemView.css = `
   .material-icons.md-light.md-inactive {
     color: rgba(255, 255, 255, 0.3);
   }
+
   `;
 
 customElements.define('tree-item-view', TreeItemView);
