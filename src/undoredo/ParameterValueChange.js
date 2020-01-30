@@ -113,3 +113,4 @@ class ParameterValueChange extends Change {
 UndoRedoManager.registerChange('ParameterValueChange', ParameterValueChange);
 
 export default ParameterValueChange;
+export { ParameterValueChange };
