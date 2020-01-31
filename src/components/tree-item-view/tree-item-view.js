@@ -125,6 +125,9 @@ class TreeItemView extends HTMLElement {
       if (this.treeItem.getChildren().length) {
         this.collapse();
       }
+      
+      this.childAddedId = this.treeItem.childAdded.connect(this.childAdded.bind(this));
+      this.childRemovedId = this.treeItem.childRemoved.connect(this.childRemoved.bind(this));
     }
   }
 
@@ -213,15 +216,41 @@ class TreeItemView extends HTMLElement {
       const childTreeItem = document.createElement('tree-item-view');
       childTreeItem.setTreeItem(treeItem, this.appData);
 
-      //   if(index == this.childElements.length)
-      this.itemChildren.appendChild(childTreeItem);
-      //   else {
-      //     this.ul.insertBefore(childTreeItem, this.childElements[index]);
-      //   }
-      //   this.childElements.splice(index, 0, childTreeItem);
+      if (index == this.itemChildren.childElementCount) {
+        this.itemChildren.appendChild(childTreeItem);
+      } else {
+        this.itemChildren.insertBefore(childTreeItem, this.itemChildren.children[index]);
+      }
     } else {
       this.collapse();
     }
+  }
+
+  
+  childAdded(childItem, index) {
+    // if (!childItem.testFlag(ZeaEngine.ItemFlags.INVISIBLE))
+      this.addChild(childItem, index);
+  }
+
+  childRemoved(childItem, index) {
+    if (this.expanded) {
+      this.itemChildren.children[index].destroy()
+      this.itemChildren.removeChild(this.itemChildren.children[index]);
+    }
+  }
+
+  /**
+   * The destroy method.
+   */
+  destroy() {
+    this.treeItem.selectedChanged.disconnectId(this.updateSelectedId);
+    if (this.treeItem instanceof ZeaEngine.TreeItem) {
+      this.treeItem.highlightChanged.disconnectId(this.updateHighlightId);
+      this.treeItem.visibilityChanged.disconnectId(this.updateVisibilityId);
+      this.treeItem.childAdded.disconnectId(this.childAddedId);
+      this.treeItem.childRemoved.disconnectId(this.childRemovedId);
+    }
+    // this.parentDomElement.removeChild(this.li);
   }
 }
 
