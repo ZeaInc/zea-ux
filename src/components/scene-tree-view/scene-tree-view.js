@@ -50,7 +50,7 @@ class SceneTreeView extends HTMLElement {
    * @param {object} appData App data.
    */
   setTreeItem(treeItem, appData) {
-    this.treeItemView.setTreeItem(treeItem);
+    this.treeItemView.setTreeItem(treeItem, appData);
     this.treeContainer.appendChild(this.treeItemView);
   }
 }

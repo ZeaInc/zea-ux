@@ -65,3 +65,5 @@ export default class Change {
    */
   destroy() {}
 }
+
+export { Change };

@@ -51,11 +51,14 @@ class TreeItemView extends HTMLElement {
         this.treeItem.setSelected(!this.treeItem.getSelected());
         return;
       }
-      if (appData.selectionManager.pickingModeActive()) {
-        appData.selectionManager.pick(this.treeItem);
+      if (this.appData.selectionManager.pickingModeActive()) {
+        this.appData.selectionManager.pick(this.treeItem);
         return;
       }
-      appData.selectionManager.toggleItemSelection(this.treeItem, !e.ctrlKey);
+      this.appData.selectionManager.toggleItemSelection(
+        this.treeItem,
+        !e.ctrlKey
+      );
     });
 
     this.itemHeader.appendChild(this.titleElement);
