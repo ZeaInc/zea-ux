@@ -174,9 +174,16 @@ class TreeItemView extends HTMLElement {
     else
       this.itemContainer.classList.remove('TreeNodesListItem--isHighlighted');
     if (hilighted) {
-      this.titleElement.style[
-        'border-color'
-      ] = this.treeItem.getHighlight().toHex();
+      const highlightColor = this.treeItem.getHighlight();
+      const bgColor = highlightColor.lerp(new ZeaEngine.Color(0.75, 0.75, 0.75, 0), 0.5);
+      this.titleElement.style.setProperty(
+        'border-color',
+        highlightColor.toHex()
+      );
+      this.titleElement.style.setProperty('background-color', bgColor.toHex());
+    } else {
+      this.titleElement.style.removeProperty('border-color');
+      this.titleElement.style.removeProperty('background-color');
     }
   }
 
