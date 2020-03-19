@@ -800,15 +800,15 @@
     socket.io-client "^2.1.1"
     socketio-wildcard "^2.0.0"
 
-"@zeainc/zea-engine@^0.0.94":
-  version "0.0.94"
-  resolved "https://registry.yarnpkg.com/@zeainc/zea-engine/-/zea-engine-0.0.94.tgz#0e164a7851a61ec292742858d242598114f8183e"
-  integrity sha512-PilvGmKL6D4bpYsaSdiIGFxMr+I0WOZXiJPvtk0d9sycbM5iBRAky8K1AYfrQUIXm7dI0F8DOZ28ZwltVqs+YA==
+"@zeainc/zea-engine@^0.1.3":
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/@zeainc/zea-engine/-/zea-engine-0.1.3.tgz#6e55d04ca9bbc81fc74ebbf26d654911a319733a"
+  integrity sha512-KyTn3JE1wW45jCwE8Gjw61hJtd3NCuWnfcVRTPIzElAPrqkFptaEUcv86fynhxnvx0lOpHUQ85gOiVc+VtvgUw==
 
-"@zeainc/zea-ux@^0.0.87":
-  version "0.0.87"
-  resolved "https://registry.yarnpkg.com/@zeainc/zea-ux/-/zea-ux-0.0.87.tgz#36f0d55f655b92708a8ac49ca54885bdd5b35f25"
-  integrity sha512-FqP3ZlpEQZc4wEIesDqD9+ndrBUjjUnnYBLx2Vpc7nUPpCOaW21TWAf1sgJOCP5cFAImUm/P9ovzrDpQRtirkg==
+"@zeainc/zea-ux@^0.0.93":
+  version "0.0.93"
+  resolved "https://registry.yarnpkg.com/@zeainc/zea-ux/-/zea-ux-0.0.93.tgz#01d8a200caa813fc18a738252cdaa54896f28f35"
+  integrity sha512-9+LaZVUzS6n0vvIzrvbq5Sealq1t7FVGU0FTwPzvB5SZNipRymedIDH2YcWk+swEAoeNKlkUzsHUa52eAOXGoQ==
   dependencies:
     "@jaames/iro" "^4.5.1"
     "@zeainc/zea-collab" "^0.0.36"

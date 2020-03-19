@@ -1112,6 +1112,11 @@
     socket.io-client "^2.1.1"
     socketio-wildcard "^2.0.0"
 
+"@zeainc/zea-engine@^0.1.3":
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/@zeainc/zea-engine/-/zea-engine-0.1.3.tgz#6e55d04ca9bbc81fc74ebbf26d654911a319733a"
+  integrity sha512-KyTn3JE1wW45jCwE8Gjw61hJtd3NCuWnfcVRTPIzElAPrqkFptaEUcv86fynhxnvx0lOpHUQ85gOiVc+VtvgUw==
+
 JSONStream@^1.0.3:
   version "1.3.5"
   resolved "https://registry.yarnpkg.com/JSONStream/-/JSONStream-1.3.5.tgz#3208c1f08d3a4d99261ab64f92302bc15e111ca0"
