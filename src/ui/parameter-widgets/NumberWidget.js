@@ -1,5 +1,5 @@
+import { ValueSetMode, NumberParameter } from '@zeainc/zea-engine';
 import BaseWidget from './BaseWidget.js';
-
 import uxFactory from '../UxFactory.js';
 import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 
@@ -60,7 +60,7 @@ export default class NumberWidget extends BaseWidget {
           input.value =
             ((parameter.getValue() - range[0]) / (range[1] - range[0])) * 200;
         else input.value = parameter.getValue();
-        if (mode == ZeaEngine.ValueSetMode.REMOTEUSER_SETVALUE) {
+        if (mode == ValueSetMode.REMOTEUSER_SETVALUE) {
           input.classList.add('user-edited');
           if (remoteUserEditedHighlightId)
             clearTimeout(remoteUserEditedHighlightId);
@@ -120,5 +120,5 @@ export default class NumberWidget extends BaseWidget {
 
 uxFactory.registerWidget(
   NumberWidget,
-  p => p instanceof ZeaEngine.NumberParameter
+  p => p instanceof NumberParameter
 );

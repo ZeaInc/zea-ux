@@ -1,5 +1,18 @@
-import { BaseLinearMovementHandle } from './BaseLinearMovementHandle.js';
+import {
+  Color,
+  Xfo,
+  NumberParameter,
+  ColorParameter,
+  ValueSetMode,
+  GeomItem,
+  Material,
+  Cylinder,
+  Sphere,
+  SAVE_FLAG_SKIP_CHILDREN,
+  sgFactory
+} from '@zeainc/zea-engine';
 
+import { BaseLinearMovementHandle } from './BaseLinearMovementHandle.js';
 import ParameterValueChange from '../undoredo/ParameterValueChange.js';
 
 /** Class representing a slider scene widget.
@@ -13,51 +26,37 @@ class SliderHandle extends BaseLinearMovementHandle {
    * @param {any} radius - The radius value.
    * @param {any} color - The color value.
    */
-  constructor(
-    name,
-    length = 0.5,
-    radius = 0.02,
-    color = new ZeaEngine.Color(1, 1, 0)
-  ) {
+  constructor(name, length = 0.5, radius = 0.02, color = new Color(1, 1, 0)) {
     super(name);
 
-    this.lengthParam = this.addParameter(
-      new ZeaEngine.NumberParameter('Length', length)
-    );
+    this.lengthParam = this.addParameter(new NumberParameter('Length', length));
     this.handleRadiusParam = this.addParameter(
-      new ZeaEngine.NumberParameter('Handle Radius', radius)
+      new NumberParameter('Handle Radius', radius)
     );
     this.barRadiusParam = this.addParameter(
-      new ZeaEngine.NumberParameter('Bar Radius', radius * 0.25)
+      new NumberParameter('Bar Radius', radius * 0.25)
     );
-    this.colorParam = this.addParameter(
-      new ZeaEngine.ColorParameter('Color', color)
-    );
+    this.colorParam = this.addParameter(new ColorParameter('Color', color));
     this.hilghlightColorParam = this.addParameter(
-      new ZeaEngine.ColorParameter(
-        'Highlight Color',
-        new ZeaEngine.Color(1, 1, 1)
-      )
+      new ColorParameter('Highlight Color', new Color(1, 1, 1))
     );
 
-    this.handleMat = new ZeaEngine.Material('handle', 'FlatSurfaceShader');
+    this.handleMat = new Material('handle', 'FlatSurfaceShader');
     this.handleMat.getParameter('BaseColor').setValue(this.colorParam.getValue());
-    // const baseBarMat = new ZeaEngine.Material('baseBar', 'FlatSurfaceShader');
+    // const baseBarMat = new Material('baseBar', 'FlatSurfaceShader');
     // baseBarMat.replaceParameter(this.colorParam);
-    const topBarMat = new ZeaEngine.Material('topBar', 'FlatSurfaceShader');
-    topBarMat
-      .getParameter('BaseColor')
-      .setValue(new ZeaEngine.Color(0.5, 0.5, 0.5));
+    const topBarMat = new Material('topBar', 'FlatSurfaceShader');
+    topBarMat.getParameter('BaseColor').setValue(new Color(0.5, 0.5, 0.5));
 
-    const barGeom = new ZeaEngine.Cylinder(radius * 0.25, 1, 64, 2, true, true);
-    const handleGeom = new ZeaEngine.Sphere(radius, 64);
+    const barGeom = new Cylinder(radius * 0.25, 1, 64, 2, true, true);
+    const handleGeom = new Sphere(radius, 64);
 
-    this.handle = new ZeaEngine.GeomItem('handle', handleGeom, this.handleMat);
-    this.baseBar = new ZeaEngine.GeomItem('baseBar', barGeom, this.handleMat);
-    this.topBar = new ZeaEngine.GeomItem('topBar', barGeom, topBarMat);
-    this.handleXfo = new ZeaEngine.Xfo();
-    this.baseBarXfo = new ZeaEngine.Xfo();
-    this.topBarXfo = new ZeaEngine.Xfo();
+    this.handle = new GeomItem('handle', handleGeom, this.handleMat);
+    this.baseBar = new GeomItem('baseBar', barGeom, this.handleMat);
+    this.topBar = new GeomItem('topBar', barGeom, topBarMat);
+    this.handleXfo = new Xfo();
+    this.baseBarXfo = new Xfo();
+    this.topBarXfo = new Xfo();
 
     this.barRadiusParam.valueChanged.connect(() => {
       barGeom.getParameter('radius').setValue(this.barRadiusParam.getValue());
@@ -108,7 +107,7 @@ class SliderHandle extends BaseLinearMovementHandle {
 
   // eslint-disable-next-line require-jsdoc
   __updateSlider(value) {
-    this.value = value
+    this.value = value;
     const range =
       this.param && this.param.getRange() ? this.param.getRange() : [0, 1];
     const v = Math.remap(value, range[0], range[1], 0, 1);
@@ -117,9 +116,9 @@ class SliderHandle extends BaseLinearMovementHandle {
     this.handleXfo.tr.z = v * length;
     this.topBarXfo.tr.z = v * length;
     this.topBarXfo.sc.z = (1 - v) * length;
-    this.handle.setLocalXfo(this.handleXfo, ZeaEngine.ValueSetMode.GENERATED_VALUE);
-    this.baseBar.setLocalXfo(this.baseBarXfo, ZeaEngine.ValueSetMode.GENERATED_VALUE);
-    this.topBar.setLocalXfo(this.topBarXfo, ZeaEngine.ValueSetMode.GENERATED_VALUE);
+    this.handle.setLocalXfo(this.handleXfo, ValueSetMode.GENERATED_VALUE);
+    this.baseBar.setLocalXfo(this.baseBarXfo, ValueSetMode.GENERATED_VALUE);
+    this.topBar.setLocalXfo(this.topBarXfo, ValueSetMode.GENERATED_VALUE);
   }
 
   // ///////////////////////////////////
@@ -133,8 +132,8 @@ class SliderHandle extends BaseLinearMovementHandle {
 
     // Hilight the material.
     this.handleXfo.sc.x = this.handleXfo.sc.y = this.handleXfo.sc.z = 1.2;
-    this.handle.setLocalXfo(this.handleXfo, ZeaEngine.ValueSetMode.GENERATED_VALUE);
-    if(!this.param) {
+    this.handle.setLocalXfo(this.handleXfo, ValueSetMode.GENERATED_VALUE);
+    if (!this.param) {
       return;
     }
     if (event.undoRedoManager) {
@@ -178,7 +177,7 @@ class SliderHandle extends BaseLinearMovementHandle {
     this.change = null;
     // unhilight the material.
     this.handleXfo.sc.x = this.handleXfo.sc.y = this.handleXfo.sc.z = 1.0;
-    this.handle.setLocalXfo(this.handleXfo, ZeaEngine.ValueSetMode.GENERATED_VALUE);
+    this.handle.setLocalXfo(this.handleXfo, ValueSetMode.GENERATED_VALUE);
   }
 
   /**
@@ -188,10 +187,7 @@ class SliderHandle extends BaseLinearMovementHandle {
    * @return {any} The return value.
    */
   toJSON(context, flags = 0) {
-    const json = super.toJSON(
-      context,
-      flags | ZeaEngine.SAVE_FLAG_SKIP_CHILDREN
-    );
+    const json = super.toJSON(context, flags | SAVE_FLAG_SKIP_CHILDREN);
     if (this.param) json.targetParam = this.param.getPath();
     return json;
   }
@@ -213,6 +209,6 @@ class SliderHandle extends BaseLinearMovementHandle {
   }
 }
 
-ZeaEngine.sgFactory.registerClass('SliderHandle', SliderHandle);
+sgFactory.registerClass('SliderHandle', SliderHandle);
 
 export { SliderHandle };

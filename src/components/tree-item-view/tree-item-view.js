@@ -1,3 +1,5 @@
+import { TreeItem, Color } from '@zeainc/zea-engine';
+
 /**
  * Tree item view.
  *
@@ -91,7 +93,7 @@ class TreeItemView extends HTMLElement {
     );
     this.updateSelected();
 
-    if (treeItem instanceof ZeaEngine.TreeItem) {
+    if (treeItem instanceof TreeItem) {
       // Visiblity
       
     // Visibility toggle button
@@ -175,7 +177,7 @@ class TreeItemView extends HTMLElement {
       this.itemContainer.classList.remove('TreeNodesListItem--isHighlighted');
     if (hilighted) {
       const highlightColor = this.treeItem.getHighlight();
-      const bgColor = highlightColor.lerp(new ZeaEngine.Color(0.75, 0.75, 0.75, 0), 0.5);
+      const bgColor = highlightColor.lerp(new Color(0.75, 0.75, 0.75, 0), 0.5);
       this.titleElement.style.setProperty(
         'border-color',
         highlightColor.toHex()
@@ -199,7 +201,7 @@ class TreeItemView extends HTMLElement {
     if (!this.childrenAlreadyCreated) {
       const children = this.treeItem.getChildren();
       children.forEach((childItem, index) => {
-        // if (!childItem.testFlag(ZeaEngine.ItemFlags.INVISIBLE))
+        // if (!childItem.testFlag(ItemFlags.INVISIBLE))
         this.addChild(childItem, index);
       });
       this.childrenAlreadyCreated = true;
@@ -238,7 +240,7 @@ class TreeItemView extends HTMLElement {
 
   
   childAdded(childItem, index) {
-    // if (!childItem.testFlag(ZeaEngine.ItemFlags.INVISIBLE))
+    // if (!childItem.testFlag(ItemFlags.INVISIBLE))
       this.addChild(childItem, index);
   }
 
@@ -254,7 +256,7 @@ class TreeItemView extends HTMLElement {
    */
   destroy() {
     this.treeItem.selectedChanged.disconnectId(this.updateSelectedId);
-    if (this.treeItem instanceof ZeaEngine.TreeItem) {
+    if (this.treeItem instanceof TreeItem) {
       this.treeItem.highlightChanged.disconnectId(this.updateHighlightId);
       this.treeItem.visibilityChanged.disconnectId(this.updateVisibilityId);
       this.treeItem.childAdded.disconnectId(this.childAddedId);

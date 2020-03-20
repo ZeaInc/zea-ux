@@ -1,5 +1,5 @@
+import { ListParameter } from '@zeainc/zea-engine';
 import BaseWidget from './BaseWidget.js';
-
 import uxFactory from '../UxFactory.js';
 
 /**
@@ -92,7 +92,4 @@ export default class ListWidget extends BaseWidget {
   }
 }
 
-uxFactory.registerWidget(
-  ListWidget,
-  p => p instanceof ZeaEngine.ListParameter
-);
+uxFactory.registerWidget(ListWidget, p => p instanceof ListParameter);

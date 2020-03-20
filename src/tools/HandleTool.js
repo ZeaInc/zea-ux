@@ -1,3 +1,4 @@
+import { Color, GeomItem, Material, Sphere } from '@zeainc/zea-engine';
 import BaseTool from './BaseTool.js';
 import Handle from '../sceneWidgets/Handle.js';
 
@@ -30,11 +31,11 @@ class HandleTool extends BaseTool {
     const addIconToController = controller => {
       // The tool might already be deactivated.
       if (!this.__activated) return;
-      const geon = new ZeaEngine.Sphere(0.02 * 0.75);
-      const mat = new ZeaEngine.Material('Cross', 'FlatSurfaceShader');
-      mat.getParameter('BaseColor').setValue(new ZeaEngine.Color('#03E3AC'));
+      const geon = new Sphere(0.02 * 0.75);
+      const mat = new Material('Cross', 'FlatSurfaceShader');
+      mat.getParameter('BaseColor').setValue(new Color('#03E3AC'));
       mat.visibleInGeomDataBuffer = false;
-      const geomItem = new ZeaEngine.GeomItem('HandleToolTip', geon, mat);
+      const geomItem = new GeomItem('HandleToolTip', geon, mat);
       controller.getTipItem().removeAllChildren();
       controller.getTipItem().addChild(geomItem, false);
     };

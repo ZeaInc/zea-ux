@@ -1,5 +1,5 @@
+import { Vec2, ValueSetMode, Vec2Parameter } from '@zeainc/zea-engine';
 import BaseWidget from './BaseWidget.js';
-
 import uxFactory from '../UxFactory.js';
 import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 import round from './round.js';
@@ -64,7 +64,7 @@ export default class Vec2Widget extends BaseWidget {
         xField.value = round(vec2.x);
         yField.value = round(vec2.y);
         
-        if (mode == ZeaEngine.ValueSetMode.REMOTEUSER_SETVALUE) {
+        if (mode == ValueSetMode.REMOTEUSER_SETVALUE) {
           container.classList.add('user-edited');
           if (remoteUserEditedHighlightId)
             clearTimeout(remoteUserEditedHighlightId);
@@ -76,10 +76,7 @@ export default class Vec2Widget extends BaseWidget {
       }
     });
     const valueChange = () => {
-      const value = new ZeaEngine.Vec2(
-        xField.valueAsNumber,
-        yField.valueAsNumber
-      );
+      const value = new Vec2(xField.valueAsNumber, yField.valueAsNumber);
       if (!change) {
         change = new ParameterValueChange(parameter, value);
         appData.undoRedoManager.addChange(change);
@@ -98,4 +95,4 @@ export default class Vec2Widget extends BaseWidget {
   }
 }
 
-uxFactory.registerWidget(Vec2Widget, p => p instanceof ZeaEngine.Vec2Parameter);
+uxFactory.registerWidget(Vec2Widget, p => p instanceof Vec2Parameter);

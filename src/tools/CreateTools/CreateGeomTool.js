@@ -1,3 +1,14 @@
+
+import {
+  Color,
+  Xfo,
+  Ray,
+  ColorParameter,
+  GeomItem,
+  Material,
+  Cross,
+} from '@zeainc/zea-engine';
+
 import BaseCreateTool from '../BaseCreateTool.js';
 import Change from '../../undoredo/Change.js';
 
@@ -65,7 +76,7 @@ class CreateGeomChange extends Change {
     const sceneRoot = context.appData.scene.getRoot();
     this.parentItem = sceneRoot.resolvePath(j.parentItemPath, 1);
     this.geomItem.setName(this.parentItem.generateUniqueName(j.geomItemName));
-    const xfo = new ZeaEngine.Xfo();
+    const xfo = new Xfo();
     xfo.fromJSON(j.geomItemXfo);
     this.geomItem.setLocalXfo(xfo);
     this.childIndex = this.parentItem.addChild(this.geomItem, false);
@@ -102,9 +113,9 @@ class CreateGeomTool extends BaseCreateTool {
     this.removeToolOnRightClick = true;
 
     this.cp = this.addParameter(
-      new ZeaEngine.ColorParameter(
+      new ColorParameter(
         'Line Color',
-        new ZeaEngine.Color(0.7, 0.2, 0.2)
+        new Color(0.7, 0.2, 0.2)
       )
     );
   }
@@ -119,8 +130,8 @@ class CreateGeomTool extends BaseCreateTool {
 
     this.appData.renderer.getXRViewport().then(xrvp => {
       if (!this.vrControllerToolTip) {
-        this.vrControllerToolTip = new ZeaEngine.Cross(0.05);
-        this.vrControllerToolTipMat = new ZeaEngine.Material(
+        this.vrControllerToolTip = new Cross(0.05);
+        this.vrControllerToolTipMat = new Material(
           'VRController Cross',
           'LinesShader'
         );
@@ -130,7 +141,7 @@ class CreateGeomTool extends BaseCreateTool {
         this.vrControllerToolTipMat.visibleInGeomDataBuffer = false;
       }
       const addIconToController = controller => {
-        const geomItem = new ZeaEngine.GeomItem(
+        const geomItem = new GeomItem(
           'CreateGeomToolTip',
           this.vrControllerToolTip,
           this.vrControllerToolTipMat
@@ -175,7 +186,7 @@ class CreateGeomTool extends BaseCreateTool {
     const ray = viewport.calcRayFromScreenPos(screenPos);
 
     // Raycast any working planes.
-    const planeRay = new ZeaEngine.Ray(
+    const planeRay = new Ray(
       this.constructionPlane.tr,
       this.constructionPlane.ori.getZaxis()
     );
@@ -232,7 +243,7 @@ class CreateGeomTool extends BaseCreateTool {
     //
     if (this.stage == 0) {
       if (event.button == 0) {
-        this.constructionPlane = new ZeaEngine.Xfo();
+        this.constructionPlane = new Xfo();
 
         const xfo = this.screenPosToXfo(event.mousePos, event.viewport);
         this.createStart(xfo, this.appData.scene.getRoot());
@@ -345,7 +356,7 @@ class CreateGeomTool extends BaseCreateTool {
     if (!this.__activeController) {
       // TODO: Snap the Xfo to any nearby construction planes.
       this.__activeController = event.controller;
-      this.constructionPlane = new ZeaEngine.Xfo();
+      this.constructionPlane = new Xfo();
       const xfo = this.constructionPlane.clone();
       xfo.tr = this.__activeController.getTipXfo().tr;
       this.createStart(xfo, this.appData.scene.getRoot());

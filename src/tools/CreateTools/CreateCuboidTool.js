@@ -1,3 +1,4 @@
+import { Quat, Vec3, Cuboid, Material, GeomItem } from '@zeainc/zea-engine';
 import UndoRedoManager from '../../undoredo/UndoRedoManager.js';
 import { CreateGeomChange, CreateGeomTool } from './CreateGeomTool.js';
 
@@ -14,9 +15,9 @@ class CreateCuboidChange extends CreateGeomChange {
   constructor(parentItem, xfo) {
     super('Create Cuboid');
 
-    this.cuboid = new ZeaEngine.Cuboid(0, 0, 0, true);
-    const material = new ZeaEngine.Material('Cuboid', 'SimpleSurfaceShader');
-    this.geomItem = new ZeaEngine.GeomItem('Cuboid');
+    this.cuboid = new Cuboid(0, 0, 0, true);
+    const material = new Material('Cuboid', 'SimpleSurfaceShader');
+    this.geomItem = new GeomItem('Cuboid');
     this.geomItem.setGeometry(this.cuboid);
     this.geomItem.setMaterial(material);
 
@@ -103,8 +104,8 @@ class CreateCuboidTool extends CreateGeomTool {
       this.stage = 2;
       this.pt1 = pt;
 
-      const quat = new ZeaEngine.Quat();
-      quat.setFromAxisAndAngle(new ZeaEngine.Vec3(1, 0, 0), Math.PI * 0.5);
+      const quat = new Quat();
+      quat.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * 0.5);
       this.constructionPlane.ori = this.constructionPlane.ori.multiply(quat);
       this.constructionPlane.tr = pt;
       this.invxfo = this.constructionPlane.inverse();

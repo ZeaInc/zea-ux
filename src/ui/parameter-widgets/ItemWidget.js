@@ -1,5 +1,5 @@
+import { TreeItemParameter } from '@zeainc/zea-engine';
 import BaseWidget from './BaseWidget.js';
-
 import uxFactory from '../UxFactory.js';
 import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 
@@ -62,7 +62,4 @@ export default class ItemWidget extends BaseWidget {
   }
 }
 
-uxFactory.registerWidget(
-  ItemWidget,
-  p => p instanceof ZeaEngine.TreeItemParameter
-);
+uxFactory.registerWidget(ItemWidget, p => p instanceof TreeItemParameter);

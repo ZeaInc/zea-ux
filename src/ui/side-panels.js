@@ -1,3 +1,5 @@
+import { Vec2 } from '@zeainc/zea-engine';
+
 /** Class representing a side panel. */
 class SidePanel {
   /**
@@ -63,7 +65,7 @@ class SidePanel {
     const __startTouch = (touch, viewport) => {
       __ongoingTouches[touch.identifier] = {
         identifier: touch.identifier,
-        pos: new ZeaEngine.Vec2(touch.pageX, touch.pageY),
+        pos: new Vec2(touch.pageX, touch.pageY),
       };
     };
     const __endTouch = (touch, viewport) => {
@@ -113,7 +115,7 @@ class SidePanel {
             this.domElement.style.width = `${panelWidth}px`;
           }
 
-          // const touchPos = new ZeaEngine.Vec2(touch.pageX, touch.pageY);
+          // const touchPos = new Vec2(touch.pageX, touch.pageY);
           // const touchData = __ongoingTouches[touch.identifier];
           // const dragVec = touchData.pos.subtract(touchPos);
 
@@ -181,7 +183,8 @@ class SidePanel {
       this.domElement.style.width =
         (widget.getDefaultWidth ? widget.getDefaultWidth() : 300) + 'px';
 
-      this.widget.mount(this.domElement);
+      if (this.widget.mount) this.widget.mount(this.domElement);
+      else this.domElement.appendChild(this.widget);
     } else {
       this.domElement.style.display = 'none';
       this.domElement.style.width = `0px`;
@@ -282,8 +285,8 @@ class BottomPanel {
       this.domElement.style.display = 'block';
       this.domElement.style.height =
         (widget.getDefaultHeight ? widget.getDefaultHeight() : 180) + 'px';
-
-      this.widget.mount(this.domElement);
+      if (this.widget.mount) this.widget.mount(this.domElement);
+      else this.domElement.appendChild(this.widget);
     } else {
       this.domElement.style.display = 'none';
       this.domElement.style.height = `0px`;

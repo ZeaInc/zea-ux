@@ -1,5 +1,5 @@
+import { OperatorOutput } from '@zeainc/zea-engine';
 import BaseWidget from './BaseWidget.js';
-
 import uxFactory from '../UxFactory.js';
 
 /**
@@ -42,11 +42,10 @@ export default class OperatorOutputWidget extends BaseWidget {
 
     parentDomElem.appendChild(input);
     parentDomElem.appendChild(button);
-
   }
 }
 
 uxFactory.registerWidget(
   OperatorOutputWidget,
-  p => p instanceof ZeaEngine.OperatorOutput
+  p => p instanceof OperatorOutput
 );

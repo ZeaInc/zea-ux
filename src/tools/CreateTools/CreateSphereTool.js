@@ -1,3 +1,4 @@
+import { GeomItem, Material, Sphere } from '@zeainc/zea-engine';
 import UndoRedoManager from '../../undoredo/UndoRedoManager.js';
 import { CreateGeomChange, CreateGeomTool } from './CreateGeomTool.js';
 
@@ -14,9 +15,9 @@ class CreateSphereChange extends CreateGeomChange {
   constructor(parentItem, xfo) {
     super('Create Sphere', parentItem);
 
-    this.sphere = new ZeaEngine.Sphere(0, 64, 32);
-    const material = new ZeaEngine.Material('Sphere', 'SimpleSurfaceShader');
-    this.geomItem = new ZeaEngine.GeomItem('Sphere');
+    this.sphere = new Sphere(0, 64, 32);
+    const material = new Material('Sphere', 'SimpleSurfaceShader');
+    this.geomItem = new GeomItem('Sphere');
     this.geomItem.setGeometry(this.sphere);
     this.geomItem.setMaterial(material);
 

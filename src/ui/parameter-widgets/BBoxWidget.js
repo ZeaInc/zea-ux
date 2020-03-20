@@ -1,3 +1,4 @@
+import { Box3 } from '@zeainc/zea-engine';
 import BaseWidget from './BaseWidget.js';
 
 import uxFactory from '../UxFactory.js';
@@ -48,7 +49,7 @@ export default class BBoxWidget extends BaseWidget {
     parameter.valueChanged.connect(updateDisplayedValue);
 
     const valueChange = () => {
-      const bbox = new ZeaEngine.bbox();
+      const bbox = new Box3();
       bbox.p0.set(
         min_xField.valueAsNumber,
         min_yField.valueAsNumber,
@@ -109,7 +110,4 @@ export default class BBoxWidget extends BaseWidget {
   }
 }
 
-uxFactory.registerWidget(
-  BBoxWidget,
-  p => p.getValue() instanceof ZeaEngine.Box3
-);
+uxFactory.registerWidget(BBoxWidget, p => p.getValue() instanceof Box3);

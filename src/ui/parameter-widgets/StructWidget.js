@@ -1,5 +1,5 @@
+import { StructParameter } from '@zeainc/zea-engine';
 import BaseWidget from './BaseWidget.js';
-
 import uxFactory from '../UxFactory.js';
 
 
@@ -67,7 +67,4 @@ export default class StructWidget extends BaseWidget {
   }
 }
 
-uxFactory.registerWidget(
-  StructWidget,
-  p => p instanceof ZeaEngine.StructParameter
-);
+uxFactory.registerWidget(StructWidget, p => p instanceof StructParameter);

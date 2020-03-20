@@ -1,3 +1,18 @@
+
+import {
+  SystemDesc,
+  Signal,
+  Vec2,
+  Vec3,
+  Quat,
+  Color,
+  Xfo,
+  NumberParameter,
+  GeomItem,
+  Material,
+  Sphere,
+} from '@zeainc/zea-engine';
+
 import BaseTool from './BaseTool.js';
 
 const VIEW_TOOL_MODELS = {
@@ -23,27 +38,27 @@ class ViewTool extends BaseTool {
     this.__defaultMode = 'orbit';
     this.__mode = this.__defaultMode;
 
-    this.__mouseDragDelta = new ZeaEngine.Vec2();
+    this.__mouseDragDelta = new Vec2();
     this.__keyboardMovement = false;
     this.__keysPressed = [];
     this.__maxVel = 0.002;
-    this.__velocity = new ZeaEngine.Vec3();
+    this.__velocity = new Vec3();
 
     this.__ongoingTouches = {};
 
     this.__orbitRateParam = this.addParameter(
-      new ZeaEngine.NumberParameter('orbitRate', 1)
+      new NumberParameter('orbitRate', 1)
     );
     this.__dollySpeedParam = this.addParameter(
-      new ZeaEngine.NumberParameter('dollySpeed', 0.02)
+      new NumberParameter('dollySpeed', 0.02)
     );
     this.__mouseWheelDollySpeedParam = this.addParameter(
-      new ZeaEngine.NumberParameter('mouseWheelDollySpeed', 0.002)
+      new NumberParameter('mouseWheelDollySpeed', 0.002)
     );
 
     this.__controllerTriggersHeld = [];
 
-    this.movementFinished = new ZeaEngine.Signal();
+    this.movementFinished = new Signal();
   }
 
   // /////////////////////////////////////
@@ -60,18 +75,18 @@ class ViewTool extends BaseTool {
 
     this.appData.renderer.getXRViewport().then(xrvp => {
       if (!this.vrControllerToolTip) {
-        this.vrControllerToolTip = new ZeaEngine.Sphere(0.02 * 0.75);
-        this.vrControllerToolTipMat = new ZeaEngine.Material(
+        this.vrControllerToolTip = new Sphere(0.02 * 0.75);
+        this.vrControllerToolTipMat = new Material(
           'Cross',
           'FlatSurfaceShader'
         );
         this.vrControllerToolTipMat
           .getParameter('BaseColor')
-          .setValue(new ZeaEngine.Color('#03E3AC'));
+          .setValue(new Color('#03E3AC'));
         this.vrControllerToolTipMat.visibleInGeomDataBuffer = false;
       }
       const addIconToController = controller => {
-        const geomItem = new ZeaEngine.GeomItem(
+        const geomItem = new GeomItem(
           'HandleToolTip',
           this.vrControllerToolTip,
           this.vrControllerToolTipMat
@@ -123,9 +138,7 @@ class ViewTool extends BaseTool {
   look(dragVec, viewport) {
     const focalDistance = viewport.getCamera().getFocalDistance();
     const orbitRate =
-      this.__orbitRateParam.getValue() * ZeaEngine.SystemDesc.isMobileDevice
-        ? -1
-        : 1;
+      this.__orbitRateParam.getValue() * SystemDesc.isMobileDevice ? -1 : 1;
 
     if (this.__keyboardMovement) {
       const globalXfo = viewport.getCamera().getGlobalXfo();
@@ -138,13 +151,13 @@ class ViewTool extends BaseTool {
     const globalXfo = this.__mouseDownCameraXfo.clone();
 
     // Orbit
-    const orbit = new ZeaEngine.Quat();
-    orbit.rotateZ(dragVec.x / viewport.getWidth() * Math.PI * orbitRate);
+    const orbit = new Quat();
+    orbit.rotateZ((dragVec.x / viewport.getWidth()) * Math.PI * orbitRate);
     globalXfo.ori = orbit.multiply(globalXfo.ori);
 
     // Pitch
-    const pitch = new ZeaEngine.Quat();
-    pitch.rotateX(dragVec.y / viewport.getHeight() * Math.PI * orbitRate);
+    const pitch = new Quat();
+    pitch.rotateX((dragVec.y / viewport.getHeight()) * Math.PI * orbitRate);
     globalXfo.ori.multiplyInPlace(pitch);
 
     if (this.__keyboardMovement) {
@@ -165,9 +178,7 @@ class ViewTool extends BaseTool {
   orbit(dragVec, viewport) {
     const focalDistance = viewport.getCamera().getFocalDistance();
     const orbitRate =
-      this.__orbitRateParam.getValue() * ZeaEngine.SystemDesc.isMobileDevice
-        ? -1
-        : 1;
+      this.__orbitRateParam.getValue() * SystemDesc.isMobileDevice ? -1 : 1;
 
     if (this.__keyboardMovement) {
       const globalXfo = viewport.getCamera().getGlobalXfo();
@@ -180,13 +191,13 @@ class ViewTool extends BaseTool {
     const globalXfo = this.__mouseDownCameraXfo.clone();
 
     // Orbit
-    const orbit = new ZeaEngine.Quat();
-    orbit.rotateZ(dragVec.x / viewport.getWidth() * 2 * Math.PI * -orbitRate);
+    const orbit = new Quat();
+    orbit.rotateZ((dragVec.x / viewport.getWidth()) * 2 * Math.PI * -orbitRate);
     globalXfo.ori = orbit.multiply(globalXfo.ori);
 
     // Pitch
-    const pitch = new ZeaEngine.Quat();
-    pitch.rotateX(dragVec.y / viewport.getHeight() * Math.PI * -orbitRate);
+    const pitch = new Quat();
+    pitch.rotateX((dragVec.y / viewport.getHeight()) * Math.PI * -orbitRate);
     globalXfo.ori.multiplyInPlace(pitch);
 
     globalXfo.tr = this.__mouseDownCameraTarget.add(
@@ -211,13 +222,13 @@ class ViewTool extends BaseTool {
   pan(dragVec, viewport) {
     const focalDistance = viewport.getCamera().getFocalDistance();
     const fovY = viewport.getCamera().getFov();
-    const xAxis = new ZeaEngine.Vec3(1, 0, 0);
-    const yAxis = new ZeaEngine.Vec3(0, 1, 0);
+    const xAxis = new Vec3(1, 0, 0);
+    const yAxis = new Vec3(0, 1, 0);
 
     const cameraPlaneHeight = 2.0 * focalDistance * Math.tan(0.5 * fovY);
     const cameraPlaneWidth =
       cameraPlaneHeight * (viewport.getWidth() / viewport.getHeight());
-    const delta = new ZeaEngine.Xfo();
+    const delta = new Xfo();
     delta.tr = xAxis.scale(
       -(dragVec.x / viewport.getWidth()) * cameraPlaneWidth
     );
@@ -237,7 +248,7 @@ class ViewTool extends BaseTool {
    */
   dolly(dragVec, viewport) {
     const dollyDist = dragVec.x * this.__dollySpeedParam.getValue();
-    const delta = new ZeaEngine.Xfo();
+    const delta = new Xfo();
     delta.tr.set(0, 0, dollyDist);
     viewport
       .getCamera()
@@ -254,13 +265,13 @@ class ViewTool extends BaseTool {
     const focalDistance = viewport.getCamera().getFocalDistance();
     const fovY = viewport.getCamera().getFov();
 
-    const xAxis = new ZeaEngine.Vec3(1, 0, 0);
-    const yAxis = new ZeaEngine.Vec3(0, 1, 0);
+    const xAxis = new Vec3(1, 0, 0);
+    const yAxis = new Vec3(0, 1, 0);
 
     const cameraPlaneHeight = 2.0 * focalDistance * Math.tan(0.5 * fovY);
     const cameraPlaneWidth =
       cameraPlaneHeight * (viewport.getWidth() / viewport.getHeight());
-    const delta = new ZeaEngine.Xfo();
+    const delta = new Xfo();
     delta.tr = xAxis.scale(
       -(panDelta.x / viewport.getWidth()) * cameraPlaneWidth
     );
@@ -315,8 +326,8 @@ class ViewTool extends BaseTool {
       const dir = pos.subtract(initlalGlobalXfo.tr);
       const dist = dir.normalizeInPlace();
 
-      const orbit = new ZeaEngine.Quat();
-      const pitch = new ZeaEngine.Quat();
+      const orbit = new Quat();
+      const pitch = new Quat();
 
       // Orbit
       {
@@ -538,7 +549,7 @@ class ViewTool extends BaseTool {
 
   // eslint-disable-next-line require-jsdoc
   __integrateVelocityChange(velChange, viewport) {
-    const delta = new ZeaEngine.Xfo();
+    const delta = new Xfo();
     delta.tr = this.__velocity.normalize().scale(this.__maxVel);
     viewport.getCamera().setGlobalXfo(
       viewport
@@ -644,7 +655,7 @@ class ViewTool extends BaseTool {
   __startTouch(touch, viewport) {
     this.__ongoingTouches[touch.identifier] = {
       identifier: touch.identifier,
-      pos: new ZeaEngine.Vec2(touch.pageX, touch.pageY),
+      pos: new Vec2(touch.pageX, touch.pageY),
     };
   }
 
@@ -689,7 +700,7 @@ class ViewTool extends BaseTool {
     const touches = event.changedTouches;
     if (touches.length == 1 && this.__manipMode != 'panAndZoom') {
       const touch = touches[0];
-      const touchPos = new ZeaEngine.Vec2(touch.pageX, touch.pageY);
+      const touchPos = new Vec2(touch.pageX, touch.pageY);
       const touchData = this.__ongoingTouches[touch.identifier];
       const dragVec = touchData.pos.subtract(touchPos);
       if (this.__defaultMode == 'look') {
@@ -707,8 +718,8 @@ class ViewTool extends BaseTool {
       const touch1 = touches[1];
       const touchData1 = this.__ongoingTouches[touch1.identifier];
 
-      const touch0Pos = new ZeaEngine.Vec2(touch0.pageX, touch0.pageY);
-      const touch1Pos = new ZeaEngine.Vec2(touch1.pageX, touch1.pageY);
+      const touch0Pos = new Vec2(touch0.pageX, touch0.pageY);
+      const touch1Pos = new Vec2(touch1.pageX, touch1.pageY);
       const startSeparation = touchData1.pos.subtract(touchData0.pos).length();
       const dragSeparation = touch1Pos.subtract(touch0Pos).length();
       const separationDist = startSeparation - dragSeparation;
@@ -860,7 +871,7 @@ class ViewTool extends BaseTool {
       const grabPos = this.__controllerTriggersHeld[0].getControllerTipStageLocalXfo()
         .tr;
 
-      const deltaXfo = new ZeaEngine.Xfo();
+      const deltaXfo = new Xfo();
       deltaXfo.tr = this.__grabPos.subtract(grabPos);
 
       // //////////////
@@ -880,7 +891,7 @@ class ViewTool extends BaseTool {
       const grabDist = grabDir.length();
       grabDir.scaleInPlace(1 / grabDist);
 
-      const deltaXfo = new ZeaEngine.Xfo();
+      const deltaXfo = new Xfo();
 
       // //////////////
       // Compute sc

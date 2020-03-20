@@ -1,3 +1,5 @@
+import { Signal } from '@zeainc/zea-engine';
+
 /** Class representing a user chip. */
 class UserChip {
   /**
@@ -6,7 +8,7 @@ class UserChip {
    * @param {any} userData - The userData value.
    */
   constructor(domElement, userData) {
-    this.userPressed = new ZeaEngine.Signal();
+    this.userPressed = new Signal();
 
     this.domElement = domElement;
     this.clean();

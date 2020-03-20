@@ -1,3 +1,4 @@
+import { Color, Rect, Material, GeomItem } from '@zeainc/zea-engine';
 import UndoRedoManager from '../../undoredo/UndoRedoManager.js';
 import { CreateGeomChange, CreateGeomTool } from './CreateGeomTool.js';
 
@@ -14,12 +15,12 @@ class CreateRectChange extends CreateGeomChange {
   constructor(parentItem, xfo) {
     super('Create Rect');
 
-    this.rect = new ZeaEngine.Rect(0, 0);
+    this.rect = new Rect(0, 0);
     this.rect.lineThickness = 0.05;
-    // const material = new ZeaEngine.Material('rect', 'LinesShader');
-    const material = new ZeaEngine.Material('circle', 'FatLinesShader');
-    material.getParameter('Color').setValue(new ZeaEngine.Color(0.7, 0.2, 0.2));
-    this.geomItem = new ZeaEngine.GeomItem('Rect');
+    // const material = new Material('rect', 'LinesShader');
+    const material = new Material('circle', 'FatLinesShader');
+    material.getParameter('Color').setValue(new Color(0.7, 0.2, 0.2));
+    this.geomItem = new GeomItem('Rect');
     this.geomItem.setGeometry(this.rect);
     this.geomItem.setMaterial(material);
 

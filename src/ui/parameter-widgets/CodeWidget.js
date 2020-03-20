@@ -1,5 +1,5 @@
+import { ValueSetMode, CodeParameter } from '@zeainc/zea-engine';
 import BaseWidget from './BaseWidget.js';
-
 import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 import uxFactory from '../UxFactory.js';
 
@@ -38,7 +38,7 @@ export default class CodeWidget extends BaseWidget {
       if (!change) {
         editor.session.setValue(parameter.getValue());
         
-        if (mode == ZeaEngine.ValueSetMode.REMOTEUSER_SETVALUE) {
+        if (mode == ValueSetMode.REMOTEUSER_SETVALUE) {
           div.classList.add('user-edited');
           if (remoteUserEditedHighlightId)
             clearTimeout(remoteUserEditedHighlightId);
@@ -80,4 +80,4 @@ export default class CodeWidget extends BaseWidget {
   }
 }
 
-uxFactory.registerWidget(CodeWidget, p => p instanceof ZeaEngine.CodeParameter);
+uxFactory.registerWidget(CodeWidget, p => p instanceof CodeParameter);

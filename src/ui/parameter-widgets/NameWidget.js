@@ -1,3 +1,32 @@
+
+import {
+  SystemDesc,
+  Float32,
+  Signal,
+  Vec2,
+  Vec3,
+  Quat,
+  Color,
+  Xfo,
+  Ray,
+  ValueSetMode,
+  BooleanParameter,
+  NumberParameter,
+  ColorParameter,
+  ItemFlags,
+  BaseItem,
+  TreeItem,
+  GeomItem,
+  Material,
+  Lines,
+  Rect,
+  Cross,
+  Cylinder,
+  Cuboid,
+  Sphere,
+  Cone,
+} from '@zeainc/zea-engine';
+
 import Change from '../../undoredo/Change.js';
 import UndoRedoManager from '../../undoredo/UndoRedoManager.js';
 
@@ -77,7 +106,7 @@ class NameValueChange extends Change {
   fromJSON(j, context) {
     const sceneRoot = context.appData.scene.getRoot();
     const item = sceneRoot.resolvePath(j.itemPath, 1);
-    if (!item || !(item instanceof ZeaEngine.BaseItem)) {
+    if (!item || !(item instanceof BaseItem)) {
       console.warn('resolvePath is unable to resolve', j.itemPath);
       return;
     }
@@ -86,7 +115,7 @@ class NameValueChange extends Change {
     this.__nextName = j.nextName;
     this.__item.setName(
       this.__nextName,
-      ZeaEngine.ValueSetMode.REMOTEUSER_SETVALUE
+      ValueSetMode.REMOTEUSER_SETVALUE
     );
 
     this.name = this.__item.getName() + ' Changed';
@@ -101,7 +130,7 @@ class NameValueChange extends Change {
     this.__nextName = j.value;
     this.__item.setName(
       this.__nextName,
-      ZeaEngine.ValueSetMode.REMOTEUSER_SETVALUE
+      ValueSetMode.REMOTEUSER_SETVALUE
     );
   }
 }
@@ -134,7 +163,7 @@ export default class NameWidget {
       if (!change) {
         input.value = item.getName();
 
-        if (mode == ZeaEngine.ValueSetMode.REMOTEUSER_SETVALUE) {
+        if (mode == ValueSetMode.REMOTEUSER_SETVALUE) {
           input.classList.add('user-edited');
           if (remoteUserEditedHighlightId)
             clearTimeout(remoteUserEditedHighlightId);

@@ -1,3 +1,34 @@
+
+import {
+  SystemDesc,
+  Float32,
+  Signal,
+  Vec2,
+  Vec3,
+  Quat,
+  Color,
+  Xfo,
+  Ray,
+  ValueSetMode,
+  BooleanParameter,
+  NumberParameter,
+  ColorParameter,
+  ItemFlags,
+  BaseItem,
+  TreeItem,
+  GeomItem,
+  Material,
+  Lines,
+  Rect,
+  Cross,
+  Cylinder,
+  Cuboid,
+  Sphere,
+  Cone,
+  Operator,
+  sgFactory,
+} from '@zeainc/zea-engine';
+
 /** Class representing a tool manager. */
 class ToolManager {
   /**
@@ -8,10 +39,10 @@ class ToolManager {
     this.__toolStack = [];
     this.appData = appData;
 
-    this.movePointer = new ZeaEngine.Signal();
-    this.hilightPointer = new ZeaEngine.Signal();
-    this.unhilightPointer = new ZeaEngine.Signal();
-    this.hidePointer = new ZeaEngine.Signal();
+    this.movePointer = new Signal();
+    this.hilightPointer = new Signal();
+    this.unhilightPointer = new Signal();
+    this.hidePointer = new Signal();
     this.avatarPointerVisible = false;
     this.avatarPointerHighlighted = false;
   }

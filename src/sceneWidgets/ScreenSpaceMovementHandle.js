@@ -1,3 +1,4 @@
+import { Ray } from '@zeainc/zea-engine';
 import Handle from './Handle.js';
 import ParameterValueChange from '../undoredo/ParameterValueChange.js';
 
@@ -44,7 +45,7 @@ class ScreenSpaceMovementHandle extends Handle {
    * @return {any} The return value.
    */
   handleMouseDown(event) {
-    this.gizmoRay = new ZeaEngine.Ray();
+    this.gizmoRay = new Ray();
     // this.gizmoRay.dir = event.viewport.getCamera().getGlobalXfo().ori.getZaxis().negate()
     this.gizmoRay.dir = event.mouseRay.dir.negate();
     const param = this.getTargetParam();

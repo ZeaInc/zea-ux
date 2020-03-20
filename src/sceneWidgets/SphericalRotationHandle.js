@@ -1,3 +1,17 @@
+
+import {
+  Color,
+  Xfo,
+  NumberParameter,
+  ColorParameter,
+  GeomItem,
+  Material,
+  Cylinder,
+  Cuboid,
+  Sphere,
+  Cone,
+} from '@zeainc/zea-engine';
+
 import Handle from './Handle.js';
 // import ParameterValueChange from '../undoredo/ParameterValueChange.js';
 
@@ -17,11 +31,11 @@ class SphericalRotationHandle extends Handle {
     super(name);
 
     this.radius = radius;
-    const maskMat = new ZeaEngine.Material('mask', 'HandleShader');
+    const maskMat = new Material('mask', 'HandleShader');
     maskMat.getParameter("maintainScreenSize").setValue(true)
     maskMat.getParameter('BaseColor').setValue(color);
-    const maskGeom = new ZeaEngine.Sphere(radius, 64);
-    const maskGeomItem = new ZeaEngine.GeomItem('mask', maskGeom, maskMat);
+    const maskGeom = new Sphere(radius, 64);
+    const maskGeomItem = new GeomItem('mask', maskGeom, maskMat);
     this.addChild(maskGeomItem);
   }
 
@@ -113,7 +127,7 @@ class SphericalRotationHandle extends Handle {
   onDragStart(event) {
     this.baseXfo = this.getGlobalXfo();
     this.baseXfo.sc.set(1, 1, 1);
-    this.deltaXfo = new ZeaEngine.Xfo();
+    this.deltaXfo = new Xfo();
     const param = this.getTargetParam();
     this.offsetXfo = this.baseXfo.inverse().multiply(param.getValue());
 
@@ -121,7 +135,7 @@ class SphericalRotationHandle extends Handle {
     this.vec0.normalizeInPlace();
 
     // Hilight the material.
-    this.colorParam.setValue(new ZeaEngine.Color(1, 1, 1));
+    this.colorParam.setValue(new Color(1, 1, 1));
 
     if (event.undoRedoManager) {
       this.change = new ParameterValueChange(param);

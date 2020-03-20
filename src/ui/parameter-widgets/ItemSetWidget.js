@@ -1,5 +1,5 @@
+import { Signal, ItemSetParameter } from '@zeainc/zea-engine';
 import BaseWidget from './BaseWidget.js';
-
 import uxFactory from '../UxFactory.js';
 
 /**
@@ -51,8 +51,8 @@ export default class ItemSetWidget extends BaseWidget {
 
     // ///////////////////////////
     // Handle Changes.
-    this.selectionChanged = new ZeaEngine.Signal();
-    this.selectionDoubleClicked = new ZeaEngine.Signal();
+    this.selectionChanged = new Signal();
+    this.selectionDoubleClicked = new Signal();
 
     let prevSelection = -1;
 
@@ -102,7 +102,4 @@ export default class ItemSetWidget extends BaseWidget {
   }
 }
 
-uxFactory.registerWidget(
-  ItemSetWidget,
-  p => p instanceof ZeaEngine.ItemSetParameter
-);
+uxFactory.registerWidget(ItemSetWidget, p => p instanceof ItemSetParameter);

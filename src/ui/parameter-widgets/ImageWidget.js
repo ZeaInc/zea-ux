@@ -1,5 +1,5 @@
+import { ImageParameter } from '@zeainc/zea-engine';
 import ParameterOwnerWidget from './ParameterOwnerWidget.js';
-
 import uxFactory from '../UxFactory.js';
 import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 
@@ -59,7 +59,4 @@ export default class ImageWidget extends ParameterOwnerWidget {
   setParentDomElem(parentDomElem) {}
 }
 
-uxFactory.registerWidget(
-  ImageWidget,
-  p => p instanceof ZeaEngine.ImageParameter
-);
+uxFactory.registerWidget(ImageWidget, p => p instanceof ImageParameter);

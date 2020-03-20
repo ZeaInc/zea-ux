@@ -1,3 +1,5 @@
+import { Xfo, ValueSetMode, XfoParameter } from '@zeainc/zea-engine';
+
 import BaseWidget from './BaseWidget.js';
 
 import uxFactory from '../UxFactory.js';
@@ -53,7 +55,7 @@ export default class XfoWidget extends BaseWidget {
         sc_yField.value = round(xfo.sc.y);
         sc_zField.value = round(xfo.sc.z);
         
-        if (mode == ZeaEngine.ValueSetMode.REMOTEUSER_SETVALUE) {
+        if (mode == ValueSetMode.REMOTEUSER_SETVALUE) {
           container.classList.add('user-edited');
           if (remoteUserEditedHighlightId)
             clearTimeout(remoteUserEditedHighlightId);
@@ -69,7 +71,7 @@ export default class XfoWidget extends BaseWidget {
 
     const valueChange = () => {
       settingValue = true;
-      const xfo = new ZeaEngine.Xfo();
+      const xfo = new Xfo();
       xfo.tr.set(
         tr_xField.valueAsNumber,
         tr_yField.valueAsNumber,
@@ -143,4 +145,4 @@ export default class XfoWidget extends BaseWidget {
   }
 }
 
-uxFactory.registerWidget(XfoWidget, p => p instanceof ZeaEngine.XfoParameter);
+uxFactory.registerWidget(XfoWidget, p => p instanceof XfoParameter);

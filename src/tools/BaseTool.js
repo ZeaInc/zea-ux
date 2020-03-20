@@ -1,8 +1,13 @@
+import {
+  Signal,
+  ParameterOwner,
+} from '@zeainc/zea-engine';
+
 /**
  * Class representing a base tool.
- * @extends ZeaEngine.ParameterOwner
+ * @extends ParameterOwner
  */
-export default class BaseTool extends ZeaEngine.ParameterOwner {
+export default class BaseTool extends ParameterOwner {
   /**
    * Create a base tool.
    * @param {any} appData - The appData value.
@@ -13,9 +18,9 @@ export default class BaseTool extends ZeaEngine.ParameterOwner {
     this.appData = appData;
 
     // When the tool becomes active ready
-    this.installChanged = new ZeaEngine.Signal();
-    this.activatedChanged = new ZeaEngine.Signal();
-    this.actionFinished = new ZeaEngine.Signal();
+    this.installChanged = new Signal();
+    this.activatedChanged = new Signal();
+    this.actionFinished = new Signal();
 
     this.__params = [];
     this.__installed = false;

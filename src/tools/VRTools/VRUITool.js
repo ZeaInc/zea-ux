@@ -1,4 +1,12 @@
-// import domtoimage from 'dom-to-image';
+import {
+  Vec3,
+  Color,
+  Xfo,
+  Ray,
+  GeomItem,
+  Material,
+  Lines,
+} from '@zeainc/zea-engine';
 import BaseTool from '../BaseTool.js';
 import VRControllerUI from './VRControllerUI.js';
 
@@ -29,31 +37,31 @@ class VRUITool extends BaseTool {
 
     appData.renderer.addTreeItem(this.controllerUI);
 
-    this.__uiLocalXfo = new ZeaEngine.Xfo();
+    this.__uiLocalXfo = new Xfo();
     this.__uiLocalXfo.ori.setFromAxisAndAngle(
-      new ZeaEngine.Vec3(1, 0, 0),
+      new Vec3(1, 0, 0),
       Math.PI * -0.6
     );
 
-    const pointermat = new ZeaEngine.Material('pointermat', 'LinesShader');
+    const pointermat = new Material('pointermat', 'LinesShader');
     pointermat.visibleInGeomDataBuffer = false;
-    pointermat.getParameter('Color').setValue(new ZeaEngine.Color(1.2, 0, 0));
+    pointermat.getParameter('Color').setValue(new Color(1.2, 0, 0));
 
-    const line = new ZeaEngine.Lines();
+    const line = new Lines();
     line.setNumVertices(2);
     line.setNumSegments(1);
     line.setSegment(0, 0, 1);
     line.getVertex(0).set(0.0, 0.0, 0.0);
     line.getVertex(1).set(0.0, 0.0, -1.0);
     line.setBoundingBoxDirty();
-    this.__pointerLocalXfo = new ZeaEngine.Xfo();
+    this.__pointerLocalXfo = new Xfo();
     this.__pointerLocalXfo.sc.set(1, 1, 0.1);
     this.__pointerLocalXfo.ori.setFromAxisAndAngle(
-      new ZeaEngine.Vec3(1, 0, 0),
+      new Vec3(1, 0, 0),
       Math.PI * -0.2
     );
 
-    this.__uiPointerItem = new ZeaEngine.GeomItem(
+    this.__uiPointerItem = new GeomItem(
       'VRControllerPointer',
       line,
       pointermat
@@ -172,11 +180,11 @@ class VRUITool extends BaseTool {
   calcUIIntersection() {
     const pointerXfo = this.__uiPointerItem.getGlobalXfo();
     const pointervec = pointerXfo.ori.getZaxis().negate();
-    const ray = new ZeaEngine.Ray(pointerXfo.tr, pointervec);
+    const ray = new Ray(pointerXfo.tr, pointervec);
 
     const planeXfo = this.controllerUI.getGlobalXfo();
     const planeSize = this.controllerUI.getGeomOffsetXfo().sc;
-    const plane = new ZeaEngine.Ray(
+    const plane = new Ray(
       planeXfo.tr,
       planeXfo.ori.getZaxis().negate()
     );

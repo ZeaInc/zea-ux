@@ -1,3 +1,4 @@
+import { Vec3, Xfo } from '@zeainc/zea-engine';
 import Handle from './Handle.js';
 import ParameterValueChange from '../undoredo/ParameterValueChange.js';
 
@@ -48,7 +49,7 @@ class BaseAxialRotationHandle extends Handle {
 
     this.baseXfo = this.getGlobalXfo().clone();
     this.baseXfo.sc.set(1, 1, 1);
-    this.deltaXfo = new ZeaEngine.Xfo();
+    this.deltaXfo = new Xfo();
 
     const param = this.getTargetParam();
     const paramXfo = param.getValue();
@@ -92,7 +93,7 @@ class BaseAxialRotationHandle extends Handle {
       angle = Math.floor(angle / increment) * increment;
     }
 
-    this.deltaXfo.ori.setFromAxisAndAngle(new ZeaEngine.Vec3(0, 0, 1), angle);
+    this.deltaXfo.ori.setFromAxisAndAngle(new Vec3(0, 0, 1), angle);
 
     const newXfo = this.baseXfo.multiply(this.deltaXfo);
     const value = newXfo.multiply(this.offsetXfo);

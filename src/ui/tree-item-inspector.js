@@ -1,3 +1,4 @@
+import { BaseItem } from '@zeainc/zea-engine';
 import ParameterContainer from './parameter-container.js';
 import uxFactory from './UxFactory.js';
 import NameWidget from './parameter-widgets/NameWidget.js';
@@ -34,7 +35,4 @@ export default class TreeItemInspector {
   }
 }
 
-uxFactory.registerInpector(
-  TreeItemInspector,
-  p => p instanceof ZeaEngine.BaseItem
-);
+uxFactory.registerInpector(TreeItemInspector, p => p instanceof BaseItem);

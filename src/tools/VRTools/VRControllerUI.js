@@ -1,12 +1,21 @@
+import {
+  Vec3,
+  Xfo,
+  GeomItem,
+  Material,
+  Plane,
+  DataImage,
+} from '@zeainc/zea-engine';
+
 import domtoimage from './dom-to-image.js';
 
 const VR_UI_ELEM_CLASS = 'VRUIElement';
 
 /**
  * Class representing a VR controller UI.
- * @extends ZeaEngine.GeomItem
+ * @extends GeomItem
  */
-export default class VRControllerUI extends ZeaEngine.GeomItem {
+export default class VRControllerUI extends GeomItem {
   /**
    * Create a VR controller UI.
    * @param {any} appData - The appData value.
@@ -14,26 +23,26 @@ export default class VRControllerUI extends ZeaEngine.GeomItem {
    * @param {any} vrUIDOMElement - The vrUIDOMElement value.
    */
   constructor(appData, vrUIDOMHolderElement, vrUIDOMElement) {
-    const uimat = new ZeaEngine.Material('uimat', 'FlatSurfaceShader');
+    const uimat = new Material('uimat', 'FlatSurfaceShader');
     uimat.visibleInGeomDataBuffer = false;
 
-    super('VRControllerUI', new ZeaEngine.Plane(1, 1), uimat);
+    super('VRControllerUI', new Plane(1, 1), uimat);
 
     this.appData = appData;
     this.__vrUIDOMHolderElement = vrUIDOMHolderElement;
     this.__vrUIDOMElement = vrUIDOMElement;
 
-    this.__uiimage = new ZeaEngine.DataImage();
-    // uimat.getParameter('BaseColor').setValue(new ZeaEngine.Color(0.3, 0.3, 0.3));
+    this.__uiimage = new DataImage();
+    // uimat.getParameter('BaseColor').setValue(new Color(0.3, 0.3, 0.3));
     uimat.getParameter('BaseColor').setValue(this.__uiimage);
 
-    this.__uiGeomOffsetXfo = new ZeaEngine.Xfo();
+    this.__uiGeomOffsetXfo = new Xfo();
     this.__uiGeomOffsetXfo.sc.set(0, 0, 1);
     this.__rect = { width: 0, height: 0 };
 
     // Flip it over so we see the front.
     this.__uiGeomOffsetXfo.ori.setFromAxisAndAngle(
-      new ZeaEngine.Vec3(0, 1, 0),
+      new Vec3(0, 1, 0),
       Math.PI
     );
     this.setGeomOffsetXfo(this.__uiGeomOffsetXfo);

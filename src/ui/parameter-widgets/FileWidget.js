@@ -1,5 +1,5 @@
+import { FilePathParameter } from '@zeainc/zea-engine';
 import BaseWidget from './BaseWidget.js';
-
 import uxFactory from '../UxFactory.js';
 import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 
@@ -49,7 +49,4 @@ class FileWidget extends BaseWidget {
   }
 }
 
-uxFactory.registerWidget(
-  FileWidget,
-  p => p instanceof ZeaEngine.FilePathParameter
-);
+uxFactory.registerWidget(FileWidget, p => p instanceof FilePathParameter);

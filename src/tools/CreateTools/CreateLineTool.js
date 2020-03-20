@@ -1,3 +1,12 @@
+
+import {
+  Color,
+  NumberParameter,
+  GeomItem,
+  Material,
+  Lines,
+} from '@zeainc/zea-engine';
+
 import UndoRedoManager from '../../undoredo/UndoRedoManager.js';
 import { CreateGeomChange, CreateGeomTool } from './CreateGeomTool.js';
 
@@ -16,13 +25,13 @@ class CreateLineChange extends CreateGeomChange {
   constructor(parentItem, xfo, color, thickness) {
     super('Create Line');
 
-    this.line = new ZeaEngine.Lines(0.0);
+    this.line = new Lines(0.0);
     this.line.setNumVertices(2);
     this.line.setNumSegments(1);
     this.line.setSegment(0, 0, 1);
-    const material = new ZeaEngine.Material('Line', 'LinesShader');
-    material.getParameter('Color').setValue(new ZeaEngine.Color(0.7, 0.2, 0.2));
-    this.geomItem = new ZeaEngine.GeomItem('Line');
+    const material = new Material('Line', 'LinesShader');
+    material.getParameter('Color').setValue(new Color(0.7, 0.2, 0.2));
+    this.geomItem = new GeomItem('Line');
     this.geomItem.setGeometry(this.line);
     this.geomItem.setMaterial(material);
 
@@ -32,7 +41,7 @@ class CreateLineChange extends CreateGeomChange {
 
     if (thickness) {
       this.line.lineThickness = thickness;
-      // this.line.addVertexAttribute('lineThickness', ZeaEngine.Float32, 0.0);
+      // this.line.addVertexAttribute('lineThickness', Float32, 0.0);
     }
 
     if (parentItem && xfo) {
@@ -60,14 +69,14 @@ class CreateLineChange extends CreateGeomChange {
   fromJSON(j, context) {
     super.fromJSON(j, context);
     if (j.color) {
-      const color = new ZeaEngine.Color();
+      const color = new Color();
       color.fromJSON(j.color);
       material.getParameter('Color').setValue(color);
     }
 
     if (j.thickness) {
       this.line.lineThickness = j.thickness;
-      // this.line.addVertexAttribute('lineThickness', ZeaEngine.Float32, 0.0);
+      // this.line.addVertexAttribute('lineThickness', Float32, 0.0);
     }
   }
 }
@@ -86,7 +95,7 @@ export default class CreateLineTool extends CreateGeomTool {
     super(appData);
 
     this.tp = this.addParameter(
-      new ZeaEngine.NumberParameter('Line Thickness', 0.06, [0, 0.1])
+      new NumberParameter('Line Thickness', 0.06, [0, 0.1])
     ); // 1cm.
   }
 
@@ -97,15 +106,15 @@ export default class CreateLineTool extends CreateGeomTool {
 
   //   this.appData.renderer.getXRViewport().then(xrvp => {
   //     if(!this.vrControllerToolTip) {
-  //       this.vrControllerToolTip = new ZeaEngine.Sphere(this.tp.getValue(), 64);
-  //       this.vrControllerToolTipMat = new ZeaEngine.Material('marker', 'FlatSurfaceShader');
+  //       this.vrControllerToolTip = new Sphere(this.tp.getValue(), 64);
+  //       this.vrControllerToolTipMat = new Material('marker', 'FlatSurfaceShader');
   //       this.vrControllerToolTipMat.getParameter('BaseColor').setValue(this.cp.getValue());
   //     }
   //     const addIconToController = (controller) => {
   //       // The tool might already be deactivated.
   //       if(!this.__activated)
   //         return;
-  //       const geomItem = new ZeaEngine.GeomItem('VRControllerTip', this.vrControllerToolTip, this.vrControllerToolTipMat);
+  //       const geomItem = new GeomItem('VRControllerTip', this.vrControllerToolTip, this.vrControllerToolTipMat);
   //       controller.getTipItem().removeAllChildren();
   //       controller.getTipItem().addChild(geomItem, false);
   //     }

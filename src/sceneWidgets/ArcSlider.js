@@ -1,5 +1,20 @@
-import { BaseAxialRotationHandle } from './BaseAxialRotationHandle.js';
+import {
+  Signal,
+  Color,
+  Xfo,
+  NumberParameter,
+  ColorParameter,
+  ValueSetMode,
+  GeomItem,
+  Material,
+  Cylinder,
+  Circle,
+  Sphere,
+  SAVE_FLAG_SKIP_CHILDREN,
+  sgFactory
+} from '@zeainc/zea-engine';
 
+import { BaseAxialRotationHandle } from './BaseAxialRotationHandle.js';
 import ParameterValueChange from '../undoredo/ParameterValueChange.js';
 
 /** Class representing a slider scene widget.
@@ -18,39 +33,34 @@ class ArcSlider extends BaseAxialRotationHandle {
     arcRadius = 1,
     arcAngle = 1,
     handleRadius = 0.02,
-    color = new ZeaEngine.Color(1, 1, 0)
+    color = new Color(1, 1, 0)
   ) {
     super(name);
     this.arcRadiusParam = this.addParameter(
-      new ZeaEngine.NumberParameter('Arc Radius', arcRadius)
+      new NumberParameter('Arc Radius', arcRadius)
     );
     this.arcAngleParam = this.addParameter(
-      new ZeaEngine.NumberParameter('Arc Angle', arcAngle)
+      new NumberParameter('Arc Angle', arcAngle)
     );
     this.handleRadiusParam = this.addParameter(
-      new ZeaEngine.NumberParameter('Handle Radius', handleRadius)
+      new NumberParameter('Handle Radius', handleRadius)
     );
     // this.barRadiusParam = this.addParameter(
-    //   new ZeaEngine.NumberParameter('Bar Radius', radius * 0.25)
+    //   new NumberParameter('Bar Radius', radius * 0.25)
     // );
-    this.colorParam = this.addParameter(
-      new ZeaEngine.ColorParameter('Color', color)
-    );
+    this.colorParam = this.addParameter(new ColorParameter('Color', color));
     this.hilghlightColorParam = this.addParameter(
-      new ZeaEngine.ColorParameter(
-        'Highlight Color',
-        new ZeaEngine.Color(1, 1, 1)
-      )
+      new ColorParameter('Highlight Color', new Color(1, 1, 1))
     );
 
-    this.handleMat = new ZeaEngine.Material('handleMat', 'HandleShader');
-    const arcGeom = new ZeaEngine.Circle(arcRadius, arcAngle, 64);
-    const handleGeom = new ZeaEngine.Sphere(handleRadius, 64);
+    this.handleMat = new Material('handleMat', 'HandleShader');
+    const arcGeom = new Circle(arcRadius, arcAngle, 64);
+    const handleGeom = new Sphere(handleRadius, 64);
 
-    this.handle = new ZeaEngine.GeomItem('handle', handleGeom, this.handleMat);
-    this.arc = new ZeaEngine.GeomItem('arc', arcGeom, this.handleMat);
-    this.handleXfo = new ZeaEngine.Xfo();
-    this.handleGeomOffsetXfo = new ZeaEngine.Xfo();
+    this.handle = new GeomItem('handle', handleGeom, this.handleMat);
+    this.arc = new GeomItem('arc', arcGeom, this.handleMat);
+    this.handleXfo = new Xfo();
+    this.handleGeomOffsetXfo = new Xfo();
     this.handleGeomOffsetXfo.tr.x = arcRadius;
     this.handle
       .getParameter('GeomOffsetXfo')
@@ -92,8 +102,8 @@ class ArcSlider extends BaseAxialRotationHandle {
     this.setTargetParam(this.handle.getParameter('GlobalXfo'), false)
 
     
-    this.dragStart = new ZeaEngine.Signal();
-    this.dragEnd = new ZeaEngine.Signal();
+    this.dragStart = new Signal();
+    this.dragEnd = new Signal();
   }
 
   // ///////////////////////////////////
@@ -169,7 +179,7 @@ class ArcSlider extends BaseAxialRotationHandle {
   //   const v = Math.remap(value, range[0], range[1], 0, 1);
   //   const length = this.arcAngleParam.getValue();
   //   this.handleXfo.ori.setFromAxisAndAngle(this.axis, ) = v * length;
-  //   this.handle.setLocalXfo(this.handleXfo, ZeaEngine.ValueSetMode.GENERATED_VALUE);
+  //   this.handle.setLocalXfo(this.handleXfo, ValueSetMode.GENERATED_VALUE);
   // }
 
   // ///////////////////////////////////
@@ -190,7 +200,7 @@ class ArcSlider extends BaseAxialRotationHandle {
 
     this.baseXfo = this.getGlobalXfo().clone();
     this.baseXfo.sc.set(1, 1, 1);
-    this.deltaXfo = new ZeaEngine.Xfo();
+    this.deltaXfo = new Xfo();
     // this.offsetXfo = this.baseXfo.inverse().multiply(this.param.getValue());
     
     this.vec0 = this.getGlobalXfo().ori.getXaxis();
@@ -233,7 +243,7 @@ class ArcSlider extends BaseAxialRotationHandle {
       angle = Math.floor(angle / increment) * increment;
     }
 
-    this.deltaXfo.ori.setFromAxisAndAngle(new ZeaEngine.Vec3(0, 0, 1), angle);
+    this.deltaXfo.ori.setFromAxisAndAngle(new Vec3(0, 0, 1), angle);
 
     const newXfo = this.baseXfo.multiply(this.deltaXfo);
     const value = newXfo;//.multiply(this.offsetXfo);
@@ -271,7 +281,7 @@ class ArcSlider extends BaseAxialRotationHandle {
   toJSON(context, flags = 0) {
     const json = super.toJSON(
       context,
-      flags | ZeaEngine.SAVE_FLAG_SKIP_CHILDREN
+      flags | SAVE_FLAG_SKIP_CHILDREN
     );
     if (this.param) json.targetParam = this.param.getPath();
     return json;
@@ -294,6 +304,6 @@ class ArcSlider extends BaseAxialRotationHandle {
   }
 }
 
-ZeaEngine.sgFactory.registerClass('ArcSlider', ArcSlider);
+sgFactory.registerClass('ArcSlider', ArcSlider);
 
 export { ArcSlider };

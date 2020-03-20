@@ -1,3 +1,5 @@
+import { BaseItem, TreeItem } from '@zeainc/zea-engine';
+
 import uxFactory from './UxFactory.js';
 import ParameterValueChange from '../undoredo/ParameterValueChange.js';
 import { TreeItemMoveChange } from '../undoredo/TreeItemMoveChange.js';
@@ -24,7 +26,7 @@ class TreeItemElement {
     this.expandBtn.className = 'TreeNodesListItem__ToggleExpanded';
     this.li.appendChild(this.expandBtn);
 
-    if (treeItem instanceof ZeaEngine.TreeItem) {
+    if (treeItem instanceof TreeItem) {
       // Visibility toggle.
       this.toggleVisibilityBtn = document.createElement('button');
       this.toggleVisibilityBtn.className = 'TreeNodesListItem__ToggleVisibility';
@@ -73,7 +75,7 @@ class TreeItemElement {
     this.updateSelectedId = this.treeItem.selectedChanged.connect(this.updateSelected.bind(this));
     this.updateSelected();
 
-    if (treeItem instanceof ZeaEngine.TreeItem) {
+    if (treeItem instanceof TreeItem) {
       this.updateHighlightId = this.treeItem.highlightChanged.connect(this.updateHighlight.bind(this));
       this.updateHighlight();
     }
@@ -87,7 +89,7 @@ class TreeItemElement {
     this.childElements = [];
     this.expanded = false;
 
-    if (treeItem instanceof ZeaEngine.TreeItem) {
+    if (treeItem instanceof TreeItem) {
       if (expanded) {
         this.expand();
       } else {
@@ -134,7 +136,7 @@ class TreeItemElement {
                 li.classList.add('TreeNodesListItem__Dragging')
                 
                 // li.appendChild(this.expandBtn.cloneNode(true));
-                // if (treeItem instanceof ZeaEngine.TreeItem) {
+                // if (treeItem instanceof TreeItem) {
                 //   li.appendChild(this.toggleVisibilityBtn.cloneNode(true));
                 // }
                 li.appendChild(this.titleElement.cloneNode(true));
@@ -158,7 +160,7 @@ class TreeItemElement {
               const elemBelow = document.elementFromPoint(event.clientX, event.clientY)
               if (
                 elemBelow.className == 'TreeNodesListItem__Title' &&
-                elemBelow.parentElement.treeItem instanceof ZeaEngine.TreeItem
+                elemBelow.parentElement.treeItem instanceof TreeItem
               ) {
                 const liBelow = elemBelow.parentElement;
                 if (dropTarget && dropTarget != liBelow) {
@@ -226,7 +228,7 @@ class TreeItemElement {
   }
 
   childAdded (childItem, index) {
-    // if (!childItem.testFlag(ZeaEngine.ItemFlags.INVISIBLE))
+    // if (!childItem.testFlag(ItemFlags.INVISIBLE))
       this.addChild(childItem, index);
   }
 
@@ -302,7 +304,7 @@ class TreeItemElement {
     if (!this.childrenAlreadyCreated) {
       const children = this.treeItem.getChildren();
       children.forEach((childItem, index) => {
-        // if (!childItem.testFlag(ZeaEngine.ItemFlags.INVISIBLE))
+        // if (!childItem.testFlag(ItemFlags.INVISIBLE))
           this.addChild(childItem, index);
       });
       this.childrenAlreadyCreated = true;
@@ -324,7 +326,7 @@ class TreeItemElement {
    */
   destroy() {
     this.treeItem.selectedChanged.disconnectId(this.updateSelectedId);
-    if (this.treeItem instanceof ZeaEngine.TreeItem) {
+    if (this.treeItem instanceof TreeItem) {
       this.treeItem.highlightChanged.disconnectId(this.updateHighlightId);
       this.treeItem.visibilityChanged.disconnectId(this.updateVisibilityId);
       this.treeItem.childAdded.disconnectId(this.childAddedId);
@@ -336,7 +338,7 @@ class TreeItemElement {
 
 uxFactory.registerTreeItemElement(
   TreeItemElement,
-  p => p instanceof ZeaEngine.BaseItem
+  p => p instanceof BaseItem
 );
 
 /** Class representing a scene tree view. */
@@ -452,7 +454,7 @@ class SceneTreeView {
       const selectedItems = selectionManager.getSelection();
       const newSelection = new Set();
       Array.from(selectedItems).forEach(item => {
-        if (item instanceof ZeaEngine.TreeItem && item.getNumChildren() > 0)
+        if (item instanceof TreeItem && item.getNumChildren() > 0)
           newSelection.add(item.getChild(0));
       });
       if (newSelection.size > 0) {

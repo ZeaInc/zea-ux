@@ -1,4 +1,5 @@
-import UndoRedoManager from './UndoRedoManager.js';
+import { Signal } from '@zeainc/zea-engine';
+import { UndoRedoManager } from './UndoRedoManager.js';
 
 /** Class representing a change. */
 export default class Change {
@@ -9,7 +10,7 @@ export default class Change {
   constructor(name) {
     this.name = name ? name : UndoRedoManager.getChangeClassName(this);
 
-    this.updated = new ZeaEngine.Signal();
+    this.updated = new Signal();
   }
 
   /**

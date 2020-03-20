@@ -1,5 +1,5 @@
+import { Vec3, ValueSetMode, Vec3Parameter } from '@zeainc/zea-engine';
 import BaseWidget from './BaseWidget.js';
-
 import uxFactory from '../UxFactory.js';
 import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 import round from './round.js';
@@ -79,7 +79,7 @@ export default class Vec3Widget extends BaseWidget {
         yField.value = round(vec3.y);
         zField.value = round(vec3.z);
         
-        if (mode == ZeaEngine.ValueSetMode.REMOTEUSER_SETVALUE) {
+        if (mode == ValueSetMode.REMOTEUSER_SETVALUE) {
           container.classList.add('user-edited');
           if (remoteUserEditedHighlightId)
             clearTimeout(remoteUserEditedHighlightId);
@@ -92,7 +92,7 @@ export default class Vec3Widget extends BaseWidget {
     });
 
     const valueChange = () => {
-      const value = new ZeaEngine.Vec3(
+      const value = new Vec3(
         xField.valueAsNumber,
         yField.valueAsNumber,
         zField.valueAsNumber
@@ -120,4 +120,4 @@ export default class Vec3Widget extends BaseWidget {
   }
 }
 
-uxFactory.registerWidget(Vec3Widget, p => p instanceof ZeaEngine.Vec3Parameter);
+uxFactory.registerWidget(Vec3Widget, p => p instanceof Vec3Parameter);

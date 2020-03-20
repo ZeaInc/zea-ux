@@ -1,3 +1,5 @@
+import { Signal } from '@zeainc/zea-engine';
+
 /** Class representing an action registry. */
 class ActionRegistry {
   /**
@@ -5,7 +7,7 @@ class ActionRegistry {
    */
   constructor() {
     this.actions = [];
-    this.actionAdded = new ZeaEngine.Signal();
+    this.actionAdded = new Signal();
   }
 
   /**

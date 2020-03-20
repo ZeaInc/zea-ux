@@ -1,5 +1,5 @@
+import { Mat4, ValueSetMode, Mat4Parameter } from '@zeainc/zea-engine';
 import BaseWidget from './BaseWidget.js';
-
 import uxFactory from '../UxFactory.js';
 import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 
@@ -65,7 +65,7 @@ export default class Mat4Widget extends BaseWidget {
         m32Field.value = round(mat4.m32);
         m33Field.value = round(mat4.m33);
         
-        if (mode == ZeaEngine.ValueSetMode.REMOTEUSER_SETVALUE) {
+        if (mode == ValueSetMode.REMOTEUSER_SETVALUE) {
           container.classList.add('user-edited');
           if (remoteUserEditedHighlightId)
             clearTimeout(remoteUserEditedHighlightId);
@@ -81,7 +81,7 @@ export default class Mat4Widget extends BaseWidget {
 
     const valueChange = () => {
       settingValue = true;
-      const mat4 = new ZeaEngine.Mat4();
+      const mat4 = new Mat4();
       mat4.set(
         m00Field.valueAsNumber,
         m01Field.valueAsNumber,
@@ -173,4 +173,4 @@ export default class Mat4Widget extends BaseWidget {
   }
 }
 
-uxFactory.registerWidget(Mat4Widget, p => p instanceof ZeaEngine.Mat4Parameter);
+uxFactory.registerWidget(Mat4Widget, p => p instanceof Mat4Parameter);

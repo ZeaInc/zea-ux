@@ -1,3 +1,27 @@
+
+import {
+  SystemDesc,
+  Float32,
+  Signal,
+  Vec2,
+  Vec3,
+  Quat,
+  Color,
+  Xfo,
+  Ray,
+  BooleanParameter,
+  NumberParameter,
+  ColorParameter,
+  GeomItem,
+  Material,
+  Lines,
+  Rect,
+  Cross,
+  Cylinder,
+  Cuboid,
+  Sphere,
+  Cone,
+} from '@zeainc/zea-engine';
 import BaseTool from '../BaseTool.js';
 import Handle from '../../sceneWidgets/Handle.js';
 import UndoRedoManager from '../../undoredo/UndoRedoManager.js';
@@ -116,7 +140,7 @@ class HoldObjectsChange extends Change {
   //         continue;
   //       this.__selection[gidx].setGlobalXfo(
   //         updateData.changeXfos[i],
-  //         ZeaEngine.ValueSetMode.REMOTEUSER_SETVALUE);
+  //         ValueSetMode.REMOTEUSER_SETVALUE);
   //       this.__newXfos[gidx] = updateData.changeXfos[i];
   //     }
   //   }
@@ -161,11 +185,11 @@ class VRHoldObjectsTool extends BaseTool {
     const addIconToController = controller => {
       // The tool might already be deactivated.
       if (!this.__activated) return;
-      const cross = new ZeaEngine.Cross(0.03);
-      const mat = new ZeaEngine.Material('Cross', 'FlatSurfaceShader');
-      mat.getParameter('BaseColor').setValue(new ZeaEngine.Color('#03E3AC'));
+      const cross = new Cross(0.03);
+      const mat = new Material('Cross', 'FlatSurfaceShader');
+      mat.getParameter('BaseColor').setValue(new Color('#03E3AC'));
       mat.visibleInGeomDataBuffer = false;
-      const geomItem = new ZeaEngine.GeomItem('HandleToolTip', cross, mat);
+      const geomItem = new GeomItem('HandleToolTip', cross, mat);
       controller.getTipItem().removeAllChildren();
       controller.getTipItem().addChild(geomItem, false);
     };
@@ -211,7 +235,7 @@ class VRHoldObjectsTool extends BaseTool {
 
       xfo0.ori.alignWith(xfo1.ori);
 
-      grabXfo = new ZeaEngine.Xfo();
+      grabXfo = new Xfo();
       grabXfo.tr = xfo0.tr.lerp(xfo1.tr, 0.5);
       grabXfo.ori = xfo0.ori.lerp(xfo1.ori, 0.5);
 
@@ -224,7 +248,7 @@ class VRHoldObjectsTool extends BaseTool {
       if (angle > 0) {
         const axis = vec1.cross(vec0);
         axis.normalizeInPlace();
-        const align = new ZeaEngine.Quat();
+        const align = new Quat();
         align.setFromAxisAndAngle(axis, angle);
         grabXfo.ori = align.multiply(grabXfo.ori);
       }

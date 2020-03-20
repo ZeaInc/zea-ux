@@ -1,5 +1,5 @@
+import { ValueSetMode, StringParameter } from '@zeainc/zea-engine';
 import BaseWidget from './BaseWidget.js';
-
 import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 import uxFactory from '../UxFactory.js';
 
@@ -34,8 +34,7 @@ export default class StringWidget extends BaseWidget {
     parameter.valueChanged.connect(mode => {
       if (!change) {
         input.value = parameter.getValue();
-        
-        if (mode == ZeaEngine.ValueSetMode.REMOTEUSER_SETVALUE) {
+        if (mode == ValueSetMode.REMOTEUSER_SETVALUE) {
           input.classList.add('user-edited');
           if (remoteUserEditedHighlightId)
             clearTimeout(remoteUserEditedHighlightId);
@@ -69,5 +68,5 @@ export default class StringWidget extends BaseWidget {
 
 uxFactory.registerWidget(
   StringWidget,
-  p => p instanceof ZeaEngine.StringParameter
+  p => p instanceof StringParameter
 );

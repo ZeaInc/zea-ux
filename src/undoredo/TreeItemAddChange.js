@@ -1,3 +1,33 @@
+
+import {
+  SystemDesc,
+  Float32,
+  Signal,
+  Vec2,
+  Vec3,
+  Quat,
+  Color,
+  Xfo,
+  Ray,
+  ValueSetMode,
+  BooleanParameter,
+  NumberParameter,
+  ColorParameter,
+  ItemFlags,
+  BaseItem,
+  TreeItem,
+  GeomItem,
+  Material,
+  Lines,
+  Rect,
+  Cross,
+  Cylinder,
+  Cuboid,
+  Sphere,
+  Cone,
+  Operator,
+  sgFactory,
+} from '@zeainc/zea-engine';
 import UndoRedoManager from './UndoRedoManager.js';
 import Change from './Change.js';
 
@@ -31,12 +61,12 @@ class TreeItemAddChange extends Change {
    * The undo method.
    */
   undo() {
-    if (this.treeItem instanceof ZeaEngine.Operator) {
+    if (this.treeItem instanceof Operator) {
       const op = this.treeItem;
       op.detach();
-    } else if (this.treeItem instanceof ZeaEngine.TreeItem) {
+    } else if (this.treeItem instanceof TreeItem) {
       this.treeItem.traverse(subTreeItem => {
-        if (subTreeItem instanceof ZeaEngine.Operator) {
+        if (subTreeItem instanceof Operator) {
           const op = subTreeItem;
           op.detach();
         }
@@ -52,12 +82,12 @@ class TreeItemAddChange extends Change {
    */
   redo() {
     // Now re-attach all the detached operators.
-    if (this.treeItem instanceof ZeaEngine.Operator) {
+    if (this.treeItem instanceof Operator) {
       const op = this.treeItem;
       op.reattach();
-    } else if (subTreeItem instanceof ZeaEngine.TreeItem) {
+    } else if (subTreeItem instanceof TreeItem) {
       this.treeItem.traverse(subTreeItem => {
-        if (subTreeItem instanceof ZeaEngine.Operator) {
+        if (subTreeItem instanceof Operator) {
           const op = subTreeItem;
           op.reattach();
         }
@@ -90,7 +120,7 @@ class TreeItemAddChange extends Change {
    */
   fromJSON(j, context) {
 
-    const treeItem = ZeaEngine.sgFactory.constructClass(j.treeItem.type);
+    const treeItem = sgFactory.constructClass(j.treeItem.type);
     if (!treeItem) {
       console.warn('resolvePath is unable to conostruct', j.treeItem);
       return;

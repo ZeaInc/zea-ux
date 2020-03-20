@@ -1,3 +1,15 @@
+import {
+  Color,
+  Vec3,
+  Xfo,
+  NumberParameter,
+  ColorParameter,
+  TreeItem,
+  GeomItem,
+  Material,
+  Cuboid,
+} from '@zeainc/zea-engine';
+
 import Handle from './Handle.js';
 import { LinearMovementHandle } from './LinearMovementHandle.js';
 import { PlanarMovementHandle } from './PlanarMovementHandle.js';
@@ -21,24 +33,24 @@ class XfoPlanarMovementHandle extends PlanarMovementHandle {
     super(name);
     
     this.__color = color;
-    this.__hilightedColor = new ZeaEngine.Color(1, 1, 1);
+    this.__hilightedColor = new Color(1, 1, 1);
     this.sizeParam = this.addParameter(
-      new ZeaEngine.NumberParameter('size', size)
+      new NumberParameter('size', size)
     );
     this.colorParam = this.addParameter(
-      new ZeaEngine.ColorParameter('BaseColor', color)
+      new ColorParameter('BaseColor', color)
     );
 
-    const handleMat = new ZeaEngine.Material('handle', 'HandleShader');
+    const handleMat = new Material('handle', 'HandleShader');
     handleMat.getParameter("maintainScreenSize").setValue(true)
     handleMat.replaceParameter(this.colorParam);
 
-    const handleGeom = new ZeaEngine.Cuboid(size, size, size * 0.02);
+    const handleGeom = new Cuboid(size, size, size * 0.02);
 
-    const handleGeomXfo = new ZeaEngine.Xfo();
+    const handleGeomXfo = new Xfo();
     handleGeomXfo.tr = offset;
     handleGeom.transformVertices(handleGeomXfo);
-    this.handle = new ZeaEngine.GeomItem('handle', handleGeom, handleMat);
+    this.handle = new GeomItem('handle', handleGeom, handleMat);
 
     this.sizeParam.valueChanged.connect(() => {
       size = this.sizeParam.getValue();
@@ -67,9 +79,9 @@ class XfoPlanarMovementHandle extends PlanarMovementHandle {
 
 /**
  * Class representing an xfo handle.
- * @extends ZeaEngine.TreeItem
+ * @extends TreeItem
  */
-export default class XfoHandle extends ZeaEngine.TreeItem {
+export default class XfoHandle extends TreeItem {
   /**
    * Create an axial rotation scene widget.
    * @param {any} size - The size value.
@@ -81,13 +93,13 @@ export default class XfoHandle extends ZeaEngine.TreeItem {
     // ////////////////////////////////
     // LinearMovementHandle
 
-    const translationHandles = new ZeaEngine.TreeItem('Translate');
+    const translationHandles = new TreeItem('Translate');
     translationHandles.setVisible(false);
     this.addChild(translationHandles);
 
-    const red = new ZeaEngine.Color(1, 0.1, 0.1);
-    const green = new ZeaEngine.Color('#32CD32'); // limegreen https://www.rapidtables.com/web/color/green-color.html
-    const blue = new ZeaEngine.Color('#1E90FF'); // dodgerblue https://www.rapidtables.com/web/color/blue-color.html
+    const red = new Color(1, 0.1, 0.1);
+    const green = new Color('#32CD32'); // limegreen https://www.rapidtables.com/web/color/green-color.html
+    const blue = new Color('#1E90FF'); // dodgerblue https://www.rapidtables.com/web/color/blue-color.html
     red.a = 0.8;
     green.a = 0.8;
     blue.a = 0.8;
@@ -99,8 +111,8 @@ export default class XfoHandle extends ZeaEngine.TreeItem {
         thickness,
         red
       );
-      const xfo = new ZeaEngine.Xfo();
-      xfo.ori.setFromAxisAndAngle(new ZeaEngine.Vec3(0, 1, 0), Math.PI * 0.5);
+      const xfo = new Xfo();
+      xfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI * 0.5);
       linearXWidget.getParameter('LocalXfo').setValue(xfo);
       translationHandles.addChild(linearXWidget);
     }
@@ -111,8 +123,8 @@ export default class XfoHandle extends ZeaEngine.TreeItem {
         thickness,
         green
       );
-      const xfo = new ZeaEngine.Xfo();
-      xfo.ori.setFromAxisAndAngle(new ZeaEngine.Vec3(1, 0, 0), Math.PI * -0.5);
+      const xfo = new Xfo();
+      xfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * -0.5);
       linearYWidget.getParameter('LocalXfo').setValue(xfo);
       translationHandles.addChild(linearYWidget);
     }
@@ -134,9 +146,9 @@ export default class XfoHandle extends ZeaEngine.TreeItem {
         'planarXY',
         planarSize,
         green,
-        new ZeaEngine.Vec3(planarSize * 0.5, planarSize * 0.5, 0.0)
+        new Vec3(planarSize * 0.5, planarSize * 0.5, 0.0)
       );
-      const xfo = new ZeaEngine.Xfo();
+      const xfo = new Xfo();
       planarXYWidget.getParameter('LocalXfo').setValue(xfo);
       translationHandles.addChild(planarXYWidget);
     }
@@ -145,10 +157,10 @@ export default class XfoHandle extends ZeaEngine.TreeItem {
         'planarYZ',
         planarSize,
         red,
-        new ZeaEngine.Vec3(planarSize * -0.5, planarSize * 0.5, 0.0)
+        new Vec3(planarSize * -0.5, planarSize * 0.5, 0.0)
       );
-      const xfo = new ZeaEngine.Xfo();
-      xfo.ori.setFromAxisAndAngle(new ZeaEngine.Vec3(0, 1, 0), Math.PI * 0.5);
+      const xfo = new Xfo();
+      xfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI * 0.5);
       planarYZWidget.getParameter('LocalXfo').setValue(xfo);
       translationHandles.addChild(planarYZWidget);
     }
@@ -157,32 +169,32 @@ export default class XfoHandle extends ZeaEngine.TreeItem {
         'planarXZ',
         planarSize,
         blue,
-        new ZeaEngine.Vec3(planarSize * 0.5, planarSize * 0.5, 0.0)
+        new Vec3(planarSize * 0.5, planarSize * 0.5, 0.0)
       );
-      const xfo = new ZeaEngine.Xfo();
-      xfo.ori.setFromAxisAndAngle(new ZeaEngine.Vec3(1, 0, 0), Math.PI * 0.5);
+      const xfo = new Xfo();
+      xfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * 0.5);
       planarXZWidget.getParameter('LocalXfo').setValue(xfo);
       translationHandles.addChild(planarXZWidget);
     }
 
     // ////////////////////////////////
     // Rotation
-    const rotationHandles = new ZeaEngine.TreeItem('Rotate');
+    const rotationHandles = new TreeItem('Rotate');
     rotationHandles.setVisible(false);
     this.addChild(rotationHandles);
     {
       const rotationWidget = new SphericalRotationHandle(
         'rotation',
         size - thickness,
-        new ZeaEngine.Color(1, 1, 1, 0.4)
+        new Color(1, 1, 1, 0.4)
       );
       rotationHandles.addChild(rotationWidget);
-      // const maskMat = new ZeaEngine.Material('mask', 'HandleShader');
+      // const maskMat = new Material('mask', 'HandleShader');
       // maskMat
       //   .getParameter('BaseColor')
-      //   .setValue(new ZeaEngine.Color(1, 1, 1, 0.4));
-      // const maskGeom = new ZeaEngine.Sphere(size - thickness, 64);
-      // const maskGeomItem = new ZeaEngine.GeomItem('mask', maskGeom, maskMat);
+      //   .setValue(new Color(1, 1, 1, 0.4));
+      // const maskGeom = new Sphere(size - thickness, 64);
+      // const maskGeomItem = new GeomItem('mask', maskGeom, maskMat);
       // rotationHandles.addChild(maskGeomItem);
     }
     {
@@ -192,8 +204,8 @@ export default class XfoHandle extends ZeaEngine.TreeItem {
         thickness,
         red
       );
-      const xfo = new ZeaEngine.Xfo();
-      xfo.ori.setFromAxisAndAngle(new ZeaEngine.Vec3(0, 1, 0), Math.PI * 0.5);
+      const xfo = new Xfo();
+      xfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI * 0.5);
       rotationXWidget.getParameter('LocalXfo').setValue(xfo);
       rotationHandles.addChild(rotationXWidget);
     }
@@ -204,8 +216,8 @@ export default class XfoHandle extends ZeaEngine.TreeItem {
         thickness,
         green
       );
-      const xfo = new ZeaEngine.Xfo();
-      xfo.ori.setFromAxisAndAngle(new ZeaEngine.Vec3(1, 0, 0), Math.PI * 0.5);
+      const xfo = new Xfo();
+      xfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * 0.5);
       rotationYWidget.getParameter('LocalXfo').setValue(xfo);
       rotationHandles.addChild(rotationYWidget);
     }
@@ -221,7 +233,7 @@ export default class XfoHandle extends ZeaEngine.TreeItem {
 
     // ////////////////////////////////
     // Scale - Not supported
-    const scaleHandles = new ZeaEngine.TreeItem('Scale');
+    const scaleHandles = new TreeItem('Scale');
     scaleHandles.setVisible(false);
     this.addChild(scaleHandles);
 
@@ -233,8 +245,8 @@ export default class XfoHandle extends ZeaEngine.TreeItem {
         thickness,
         red
       );
-      const xfo = new ZeaEngine.Xfo();
-      xfo.ori.setFromAxisAndAngle(new ZeaEngine.Vec3(0, 1, 0), Math.PI * 0.5);
+      const xfo = new Xfo();
+      xfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI * 0.5);
       scaleXWidget.getParameter('LocalXfo').setValue(xfo);
       scaleHandles.addChild(scaleXWidget);
     }
@@ -245,8 +257,8 @@ export default class XfoHandle extends ZeaEngine.TreeItem {
         thickness,
         green
       );
-      const xfo = new ZeaEngine.Xfo();
-      xfo.ori.setFromAxisAndAngle(new ZeaEngine.Vec3(1, 0, 0), Math.PI * -0.5);
+      const xfo = new Xfo();
+      xfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * -0.5);
       scaleYWidget.getParameter('LocalXfo').setValue(xfo);
       scaleHandles.addChild(scaleYWidget);
     }

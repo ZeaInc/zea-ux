@@ -1,5 +1,5 @@
+import { ValueSetMode, BooleanParameter } from '@zeainc/zea-engine';
 import BaseWidget from './BaseWidget.js';
-
 import uxFactory from '../UxFactory.js';
 import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 
@@ -33,7 +33,7 @@ export default class BooleanWidget extends BaseWidget {
       if (!change) {
         input.checked = parameter.getValue();
 
-        if (mode == ZeaEngine.ValueSetMode.REMOTEUSER_SETVALUE) {
+        if (mode == ValueSetMode.REMOTEUSER_SETVALUE) {
           input.classList.add('user-edited');
           if (remoteUserEditedHighlightId)
             clearTimeout(remoteUserEditedHighlightId);
@@ -52,7 +52,4 @@ export default class BooleanWidget extends BaseWidget {
   }
 }
 
-uxFactory.registerWidget(
-  BooleanWidget,
-  p => p instanceof ZeaEngine.BooleanParameter
-);
+uxFactory.registerWidget(BooleanWidget, p => p instanceof BooleanParameter);

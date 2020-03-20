@@ -1,3 +1,4 @@
+import { ValueSetMode, Parameter } from '@zeainc/zea-engine';
 import UndoRedoManager from './UndoRedoManager.js';
 import Change from './Change.js';
 
@@ -12,7 +13,7 @@ class ParameterValueChange extends Change {
    * @param {any} newValue - The newValue value.
    * @param {number} mode - The mode value.
    */
-  constructor(param, newValue, mode = ZeaEngine.ValueSetMode.USER_SETVALUE) {
+  constructor(param, newValue, mode = ValueSetMode.USER_SETVALUE) {
     if (param) {
       super(param ? param.getName() + ' Changed' : 'ParameterValueChange');
       this.__prevValue = param.getValue();
@@ -82,7 +83,7 @@ class ParameterValueChange extends Change {
    */
   fromJSON(j, context) {
     const param = context.appData.scene.getRoot().resolvePath(j.paramPath, 1);
-    if (!param || !(param instanceof ZeaEngine.Parameter)) {
+    if (!param || !(param instanceof Parameter)) {
       console.warn('resolvePath is unable to resolve', j.paramPath);
       return;
     }
@@ -105,7 +106,7 @@ class ParameterValueChange extends Change {
     else this.__nextValue = j.value;
     this.__param.setValue(
       this.__nextValue,
-      ZeaEngine.ValueSetMode.REMOTEUSER_SETVALUE
+      ValueSetMode.REMOTEUSER_SETVALUE
     );
   }
 }

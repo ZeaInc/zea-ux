@@ -1,3 +1,4 @@
+import { Signal } from '@zeainc/zea-engine';
 import { Session } from '@zeainc/zea-collab';
 import { UserChip } from './user-chip.js';
 
@@ -8,7 +9,7 @@ class CollabPanel {
    * @param {any} session - The session value.
    */
   constructor(session) {
-    this.userSelected = new ZeaEngine.Signal();
+    this.userSelected = new Signal();
     this.session = session;
   }
 

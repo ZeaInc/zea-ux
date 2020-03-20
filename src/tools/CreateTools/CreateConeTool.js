@@ -1,3 +1,4 @@
+import { GeomItem, Material, Cone } from '@zeainc/zea-engine';
 import UndoRedoManager from '../../undoredo/UndoRedoManager.js';
 import { CreateGeomChange, CreateGeomTool } from './CreateGeomTool.js';
 
@@ -14,9 +15,9 @@ class CreateConeChange extends CreateGeomChange {
   constructor(parentItem, xfo) {
     super('Create Cone');
 
-    const cone = new ZeaEngine.Cone(0.0, 0.0);
-    const material = new ZeaEngine.Material('Sphere');
-    this.geomItem = new ZeaEngine.GeomItem('Sphere');
+    const cone = new Cone(0.0, 0.0);
+    const material = new Material('Sphere');
+    this.geomItem = new GeomItem('Sphere');
     this.geomItem.setGeometry(cone);
     this.geomItem.setMaterial(material);
 

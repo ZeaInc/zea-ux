@@ -1,5 +1,5 @@
+import { MultiChoiceParameter, ValueSetMode } from '@zeainc/zea-engine';
 import BaseWidget from './BaseWidget.js';
-
 import uxFactory from '../UxFactory.js';
 import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 
@@ -38,7 +38,7 @@ export default class MultiChoiceWidget extends BaseWidget {
       if (!changing) {
         select.selectedIndex = parameter.getValue();
 
-        if (mode == ZeaEngine.ValueSetMode.REMOTEUSER_SETVALUE) {
+        if (mode == ValueSetMode.REMOTEUSER_SETVALUE) {
           select.classList.add('user-edited');
           if (remoteUserEditedHighlightId)
             clearTimeout(remoteUserEditedHighlightId);
@@ -63,5 +63,5 @@ export default class MultiChoiceWidget extends BaseWidget {
 
 uxFactory.registerWidget(
   MultiChoiceWidget,
-  p => p instanceof ZeaEngine.MultiChoiceParameter
+  p => p instanceof MultiChoiceParameter
 );

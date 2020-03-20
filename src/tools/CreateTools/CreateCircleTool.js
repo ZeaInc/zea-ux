@@ -1,3 +1,4 @@
+import { Color, GeomItem, Material, Circle } from '@zeainc/zea-engine';
 import UndoRedoManager from '../../undoredo/UndoRedoManager.js';
 import { CreateGeomChange, CreateGeomTool } from './CreateGeomTool.js';
 
@@ -14,12 +15,12 @@ class CreateCircleChange extends CreateGeomChange {
   constructor(parentItem, xfo) {
     super('Create Circle', parentItem);
 
-    this.circle = new ZeaEngine.Circle(0, 64);
+    this.circle = new Circle(0, 64);
     this.circle.lineThickness = 0.05;
-    // const material = new ZeaEngine.Material('circle', 'LinesShader');
-    const material = new ZeaEngine.Material('circle', 'FatLinesShader');
-    material.getParameter('Color').setValue(new ZeaEngine.Color(0.7, 0.2, 0.2));
-    this.geomItem = new ZeaEngine.GeomItem('Circle');
+    // const material = new Material('circle', 'LinesShader');
+    const material = new Material('circle', 'FatLinesShader');
+    material.getParameter('Color').setValue(new Color(0.7, 0.2, 0.2));
+    this.geomItem = new GeomItem('Circle');
     this.geomItem.setGeometry(this.circle);
     this.geomItem.setMaterial(material);
 

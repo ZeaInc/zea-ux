@@ -1,3 +1,5 @@
+import { Signal, Group } from '@zeainc/zea-engine';
+
 import UndoRedoManager from './undoredo/UndoRedoManager.js';
 import Change from './undoredo/Change.js';
 import XfoHandle from './sceneWidgets/XfoHandle.js';
@@ -130,8 +132,8 @@ class SelectionManager {
   constructor(appData, options = {}) {
     this.appData = appData;
     this.leadSelection = undefined;
-    this.selectionChanged = new ZeaEngine.Signal();
-    this.leadSelectionChanged = new ZeaEngine.Signal();
+    this.selectionChanged = new Signal();
+    this.leadSelectionChanged = new Signal();
 
     this.selectionGroup = new SelectionGroup(options);
 
@@ -150,9 +152,9 @@ class SelectionManager {
       this.selectionGroup.addChild(this.xfoHandle);
 
       const handleGroup = {
-        Translate: new ZeaEngine.Signal(),
-        Rotate: new ZeaEngine.Signal(),
-        Scale: new ZeaEngine.Signal(),
+        Translate: new Signal(),
+        Rotate: new Signal(),
+        Scale: new Signal(),
       };
       let currMode = '';
       const showHandles = mode => {
@@ -199,7 +201,7 @@ class SelectionManager {
         path: ['Edit', 'Coords'],
         callback: () => {
           this.selectionGroup.rebindInitialXfos();
-          xfoModeParam.setValue(ZeaEngine.Group.INITIAL_XFO_MODES.average);
+          xfoModeParam.setValue(Group.INITIAL_XFO_MODES.average);
         },
         key: 'k',
         activatedChanged: handleGroup.Translate,
@@ -209,7 +211,7 @@ class SelectionManager {
         path: ['Edit', 'Coords'],
         callback: () => {
           this.selectionGroup.rebindInitialXfos();
-          xfoModeParam.setValue(ZeaEngine.Group.INITIAL_XFO_MODES.globalOri);
+          xfoModeParam.setValue(Group.INITIAL_XFO_MODES.globalOri);
         },
         key: 'l',
         activatedChanged: handleGroup.Rotate,

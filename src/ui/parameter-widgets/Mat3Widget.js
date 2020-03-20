@@ -1,5 +1,5 @@
+import { Mat3, ValueSetMode, Mat3Parameter } from '@zeainc/zea-engine';
 import BaseWidget from './BaseWidget.js';
-
 import uxFactory from '../UxFactory.js';
 import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 
@@ -57,7 +57,7 @@ export default class Mat3Widget extends BaseWidget {
         m21Field.value = round(mat3.m21);
         m22Field.value = round(mat3.m22);
         
-        if (mode == ZeaEngine.ValueSetMode.REMOTEUSER_SETVALUE) {
+        if (mode == ValueSetMode.REMOTEUSER_SETVALUE) {
           container.classList.add('user-edited');
           if (remoteUserEditedHighlightId)
             clearTimeout(remoteUserEditedHighlightId);
@@ -73,7 +73,7 @@ export default class Mat3Widget extends BaseWidget {
 
     const valueChange = () => {
       settingValue = true;
-      const mat3 = new ZeaEngine.Mat3();
+      const mat3 = new Mat3();
       mat3.set(
         m00Field.valueAsNumber,
         m01Field.valueAsNumber,
@@ -148,4 +148,4 @@ export default class Mat3Widget extends BaseWidget {
   }
 }
 
-uxFactory.registerWidget(Mat3Widget, p => p instanceof ZeaEngine.Mat3Parameter);
+uxFactory.registerWidget(Mat3Widget, p => p instanceof Mat3Parameter);

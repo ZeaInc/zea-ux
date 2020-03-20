@@ -1,5 +1,5 @@
+import { Color, MaterialColorParam } from '@zeainc/zea-engine';
 import BaseWidget from './BaseWidget.js';
-
 import uxFactory from '../UxFactory.js';
 import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
 
@@ -73,7 +73,7 @@ export default class MaterialColorWidget extends BaseWidget {
 
     colorPicker.on('color:change', (color, changes) => {
       if (undoing) return;
-      const value = new ZeaEngine.Color();
+      const value = new Color();
       value.setFromRGBDict(colorPicker.color.rgb);
       if (!change) {
         change = new ParameterValueChange(parameter, value);
@@ -93,5 +93,5 @@ export default class MaterialColorWidget extends BaseWidget {
 
 uxFactory.registerWidget(
   MaterialColorWidget,
-  p => p instanceof ZeaEngine.MaterialColorParam
+  p => p instanceof MaterialColorParam
 );

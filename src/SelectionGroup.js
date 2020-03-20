@@ -1,6 +1,13 @@
+import {
+  Color,
+  ColorParameter,
+  BaseItem,
+  TreeItem,
+  Group,
+} from '@zeainc/zea-engine';
 
 /** Class representing a selection group */
-export default class SelectionGroup extends ZeaEngine.Group {
+export default class SelectionGroup extends Group {
   constructor(options) {
     super();
 
@@ -9,25 +16,25 @@ export default class SelectionGroup extends ZeaEngine.Group {
     if (options.selectionOutlineColor)
       selectionColor = options.selectionOutlineColor;
     else {
-      selectionColor = new ZeaEngine.Color('#03E3AC')
+      selectionColor = new Color('#03E3AC')
       selectionColor.a = 0.1
     }
     if (options.branchSelectionOutlineColor)
       subtreeColor = options.branchSelectionOutlineColor;
     else {
       subtreeColor = selectionColor.lerp(
-        new ZeaEngine.Color('white'),
+        new Color('white'),
         0.5
       )
       subtreeColor.a = 0.1
     }
 
     this.getParameter('HighlightColor').setValue(selectionColor)
-    this.addParameter(new ZeaEngine.ColorParameter('SubtreeHighlightColor', subtreeColor))
+    this.addParameter(new ColorParameter('SubtreeHighlightColor', subtreeColor))
     
     this.propagatingSelectionToItems = options.setItemsSelected != false;
-    this.getParameter('InitialXfoMode').setValue(ZeaEngine.Group.INITIAL_XFO_MODES.average);
-    this.__itemsParam.setFilterFn(item => item instanceof ZeaEngine.BaseItem)
+    this.getParameter('InitialXfoMode').setValue(Group.INITIAL_XFO_MODES.average);
+    this.__itemsParam.setFilterFn(item => item instanceof BaseItem)
   }
 
   clone(flags) {
@@ -39,7 +46,7 @@ export default class SelectionGroup extends ZeaEngine.Group {
   rebindInitialXfos() {
     const items = Array.from(this.__itemsParam.getValue());
     items.forEach((item, index) => {
-      if (item instanceof ZeaEngine.TreeItem) {
+      if (item instanceof TreeItem) {
         this.__initialXfos[index] = item.getGlobalXfo();
       }
     })
@@ -74,13 +81,13 @@ export default class SelectionGroup extends ZeaEngine.Group {
     
     const signalIndices = {}
     
-    if (item instanceof ZeaEngine.TreeItem) {
+    if (item instanceof TreeItem) {
       const highlightColor = this.getParameter('HighlightColor').getValue()
       highlightColor.a = this.getParameter('HighlightFill').getValue()
       const subTreeColor = this.getParameter('SubtreeHighlightColor').getValue()
       item.addHighlight('selected' + this.getId(), highlightColor, false)
       item.getChildren().forEach(childItem => {
-        if (childItem instanceof ZeaEngine.TreeItem)
+        if (childItem instanceof TreeItem)
           childItem.addHighlight(
             'branchselected' + this.getId(),
             subTreeColor,
@@ -107,10 +114,10 @@ export default class SelectionGroup extends ZeaEngine.Group {
     if (this.propagatingSelectionToItems)
       item.setSelected(false);
     
-    if (item instanceof ZeaEngine.TreeItem) {
+    if (item instanceof TreeItem) {
       item.removeHighlight('selected' + this.getId())
       item.getChildren().forEach(childItem => {
-        if (childItem instanceof ZeaEngine.TreeItem)
+        if (childItem instanceof TreeItem)
           childItem.removeHighlight('branchselected' + this.getId(), true)
       })
 
@@ -147,7 +154,7 @@ export default class SelectionGroup extends ZeaEngine.Group {
         param.setValue(result);
       };
       items.forEach((item, index) => {
-        if (item instanceof ZeaEngine.TreeItem) {
+        if (item instanceof TreeItem) {
           setGlobal(item, this.__initialXfos[index])
         }
       });

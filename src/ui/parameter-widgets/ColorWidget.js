@@ -1,3 +1,4 @@
+import { Color, ValueSetMode, ColorParameter } from '@zeainc/zea-engine';
 // import iro from '@jaames/iro';
 // import iro from '../../../node_modules/@jaames/iro/dist/iro.es.js';
 // import iro from 'https://rawgit.com/jaames/iro.js/master/dist/iro.es.js';
@@ -44,7 +45,7 @@ export default class ColorWidget extends BaseWidget {
         colorPicker.color.rgb = parameter.getValue().getAsRGBDict();
         undoing = false;
 
-        if (mode == ZeaEngine.ValueSetMode.REMOTEUSER_SETVALUE) {
+        if (mode == ValueSetMode.REMOTEUSER_SETVALUE) {
           colorPicker.el.classList.add('user-edited');
           if (remoteUserEditedHighlightId)
             clearTimeout(remoteUserEditedHighlightId);
@@ -70,7 +71,7 @@ export default class ColorWidget extends BaseWidget {
     colorPicker.on('color:change', (color, changes) => {
       if (undoing) return;
       // console.log('input:change', colorPicker.color.rgb, !change)
-      const value = new ZeaEngine.Color();
+      const value = new Color();
       value.setFromRGBDict(colorPicker.color.rgb);
       if (!change) {
         change = new ParameterValueChange(parameter, value);
@@ -88,7 +89,4 @@ export default class ColorWidget extends BaseWidget {
   setParentDomElem(parentDomElem) {}
 }
 
-uxFactory.registerWidget(
-  ColorWidget,
-  p => p instanceof ZeaEngine.ColorParameter
-);
+uxFactory.registerWidget(ColorWidget, p => p instanceof ColorParameter);

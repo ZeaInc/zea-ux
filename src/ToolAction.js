@@ -1,3 +1,4 @@
+import { Signal } from '@zeainc/zea-engine';
 import Action from './Action.js';
 
 /** Class representing a tool action.
@@ -17,7 +18,7 @@ class ToolAction extends Action {
     this.toolManager = toolManager;
     this.tool = tool;
     this.state = false;
-    this.activatedChanged = new ZeaEngine.Signal();
+    this.activatedChanged = new Signal();
 
     tool.installChanged.connect(state => {
       this.activatedChanged.emit(state);

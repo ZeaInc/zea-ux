@@ -1,3 +1,13 @@
+import {
+  Color,
+  Xfo,
+  ColorParameter,
+  GeomItem,
+  Material,
+  Cylinder,
+  Cone,
+} from '@zeainc/zea-engine';
+
 import { BaseLinearMovementHandle } from './BaseLinearMovementHandle.js';
 import ParameterValueChange from '../undoredo/ParameterValueChange.js';
 
@@ -16,21 +26,21 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
     super(name);
 
     this.__color = color;
-    this.__hilightedColor = new ZeaEngine.Color(1, 1, 1);
+    this.__hilightedColor = new Color(1, 1, 1);
     this.colorParam = this.addParameter(
-      new ZeaEngine.ColorParameter('BaseColor', color)
+      new ColorParameter('BaseColor', color)
     );
 
-    const handleMat = new ZeaEngine.Material('handle', 'HandleShader');
+    const handleMat = new Material('handle', 'HandleShader');
     handleMat.getParameter("maintainScreenSize").setValue(true)
     handleMat.replaceParameter(this.colorParam);
-    const handleGeom = new ZeaEngine.Cylinder(thickness, length, 64);
+    const handleGeom = new Cylinder(thickness, length, 64);
     handleGeom.getParameter('baseZAtZero').setValue(true);
-    const tipGeom = new ZeaEngine.Cone(thickness * 4, thickness * 10, 64, true);
-    const handle = new ZeaEngine.GeomItem('handle', handleGeom, handleMat);
+    const tipGeom = new Cone(thickness * 4, thickness * 10, 64, true);
+    const handle = new GeomItem('handle', handleGeom, handleMat);
 
-    const tip = new ZeaEngine.GeomItem('tip', tipGeom, handleMat);
-    const tipXfo = new ZeaEngine.Xfo();
+    const tip = new GeomItem('tip', tipGeom, handleMat);
+    const tipXfo = new Xfo();
     tipXfo.tr.set(0, 0, length);
     tipGeom.transformVertices(tipXfo);
 

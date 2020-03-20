@@ -1,6 +1,6 @@
+import { BaseItem, ParameterOwner } from '@zeainc/zea-engine';
 import BaseWidget from './BaseWidget.js';
 import NameWidget from './NameWidget.js';
-
 import uxFactory from '../UxFactory.js';
 import ParameterContainer from '../parameter-container.js';
 
@@ -27,7 +27,7 @@ export default class ParameterOwnerWidget extends BaseWidget {
     ul.appendChild(liparameterContainer);
 
     const displayParameterOwner = parameterOwner => {
-      if (parameterOwner instanceof ZeaEngine.BaseItem)
+      if (parameterOwner instanceof BaseItem)
         this.nameWidget = new NameWidget(parameterOwner, linameWidget, appData);
       this.parameterContainer = new ParameterContainer(
         parameterOwner,
@@ -52,5 +52,5 @@ export default class ParameterOwnerWidget extends BaseWidget {
 
 uxFactory.registerWidget(
   ParameterOwnerWidget,
-  p => p.getValue() instanceof ZeaEngine.ParameterOwner
+  p => p.getValue() instanceof ParameterOwner
 );

@@ -1,11 +1,13 @@
+import { TreeItem, Ray } from '@zeainc/zea-engine';
+
 // A Handle is a UI widget that lives in the scene.
 // Much like a slider, it translates a series of
 // mouse events into a higher level interaction.
 
 /** Class representing a scene widget.
- * @extends ZeaEngine.TreeItem
+ * @extends TreeItem
  */
-export default class Handle extends ZeaEngine.TreeItem {
+export default class Handle extends TreeItem {
   /**
    * Create a scene widget.
    * @param {any} name - The name value.
@@ -32,7 +34,7 @@ export default class Handle extends ZeaEngine.TreeItem {
    */
   getManipulationPlane() {
     const xfo = this.getGlobalXfo();
-    return new ZeaEngine.Ray(xfo.tr, xfo.ori.getZaxis());
+    return new Ray(xfo.tr, xfo.ori.getZaxis());
   }
 
   // ///////////////////////////////////

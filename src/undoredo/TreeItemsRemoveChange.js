@@ -1,3 +1,4 @@
+import { TreeItem, Operator } from '@zeainc/zea-engine';
 import UndoRedoManager from './UndoRedoManager.js';
 import Change from './Change.js';
 
@@ -35,12 +36,12 @@ class TreeItemsRemoveChange extends Change {
 
         if (this.selectionManager && this.newSelection.has(item))
           this.newSelection.delete(item);
-        if (item instanceof ZeaEngine.Operator) {
+        if (item instanceof Operator) {
           const op = item;
           op.detach();
-        } else if (item instanceof ZeaEngine.TreeItem) {
+        } else if (item instanceof TreeItem) {
           item.traverse(subTreeItem => {
-            if (subTreeItem instanceof ZeaEngine.Operator) {
+            if (subTreeItem instanceof Operator) {
               const op = subTreeItem;
               op.detach();
             }
@@ -65,12 +66,12 @@ class TreeItemsRemoveChange extends Change {
       this.itemOwners[index].insertChild(item, this.itemIndices[index], false, false);
       
       // Now re-attach all the detached operators.
-      if (item instanceof ZeaEngine.Operator) {
+      if (item instanceof Operator) {
         const op = item;
         op.reattach();
-      } else if (subTreeItem instanceof ZeaEngine.TreeItem) {
+      } else if (subTreeItem instanceof TreeItem) {
         item.traverse(subTreeItem => {
-          if (subTreeItem instanceof ZeaEngine.Operator) {
+          if (subTreeItem instanceof Operator) {
             const op = subTreeItem;
             op.reattach();
           }
@@ -92,12 +93,12 @@ class TreeItemsRemoveChange extends Change {
     this.items.forEach((item, index) => {
       this.itemOwners[index].removeChild(this.itemIndices[index]);
       
-      if (item instanceof ZeaEngine.Operator) {
+      if (item instanceof Operator) {
         const op = item;
         op.detach();
-      } else if (subTreeItem instanceof ZeaEngine.TreeItem) {
+      } else if (subTreeItem instanceof TreeItem) {
         item.traverse(subTreeItem => {
-          if (subTreeItem instanceof ZeaEngine.Operator) {
+          if (subTreeItem instanceof Operator) {
             const op = subTreeItem;
             op.detach();
           }

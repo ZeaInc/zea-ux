@@ -1,3 +1,5 @@
+import { Signal } from '@zeainc/zea-engine';
+
 const __changeClasses = {};
 const __classNames = {};
 
@@ -10,10 +12,10 @@ class UndoRedoManager {
     this.__undoStack = [];
     this.__redoStack = [];
 
-    this.changeAdded = new ZeaEngine.Signal();
-    this.changeUpdated = new ZeaEngine.Signal();
-    this.changeUndone = new ZeaEngine.Signal();
-    this.changeRedone = new ZeaEngine.Signal();
+    this.changeAdded = new Signal();
+    this.changeUpdated = new Signal();
+    this.changeUndone = new Signal();
+    this.changeRedone = new Signal();
 
     this.__currChangeUpdated = this.__currChangeUpdated.bind(this);
   }

@@ -1,3 +1,14 @@
+
+import {
+  Color,
+  Xfo,
+  NumberParameter,
+  ColorParameter,
+  GeomItem,
+  Material,
+  Torus,
+} from '@zeainc/zea-engine';
+
 import { BaseAxialRotationHandle } from './BaseAxialRotationHandle.js';
 
 /**
@@ -16,22 +27,22 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
     super(name);
 
     this.__color = color;
-    this.__hilightedColor = new ZeaEngine.Color(1, 1, 1);
+    this.__hilightedColor = new Color(1, 1, 1);
     this.radiusParam = this.addParameter(
-      new ZeaEngine.NumberParameter('radius', radius)
+      new NumberParameter('radius', radius)
     );
     this.colorParam = this.addParameter(
-      new ZeaEngine.ColorParameter('BaseColor', color)
+      new ColorParameter('BaseColor', color)
     );
 
-    const handleMat = new ZeaEngine.Material('handle', 'HandleShader');
+    const handleMat = new Material('handle', 'HandleShader');
     handleMat.getParameter("maintainScreenSize").setValue(true)
     handleMat.replaceParameter(this.colorParam);
 
-    // const handleGeom = new ZeaEngine.Cylinder(radius, thickness * 2, 64, 2, false);
-    const handleGeom = new ZeaEngine.Torus(thickness, radius, 64);
-    this.handle = new ZeaEngine.GeomItem('handle', handleGeom, handleMat);
-    this.handleXfo = new ZeaEngine.Xfo();
+    // const handleGeom = new Cylinder(radius, thickness * 2, 64, 2, false);
+    const handleGeom = new Torus(thickness, radius, 64);
+    this.handle = new GeomItem('handle', handleGeom, handleMat);
+    this.handleXfo = new Xfo();
 
     this.radiusParam.valueChanged.connect(() => {
       radius = this.radiusParam.getValue();
@@ -71,7 +82,7 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
     super.onDragStart(event);
 
     // Hilight the material.
-    this.colorParam.setValue(new ZeaEngine.Color(1, 1, 1));
+    this.colorParam.setValue(new Color(1, 1, 1));
   }
 
   /**
