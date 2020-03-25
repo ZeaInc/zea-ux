@@ -25,7 +25,7 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
     );
 
     const handleMat = new ZeaEngine.Material('handle', 'HandleShader');
-    handleMat.getParameter("maintainScreenSize").setValue(true)
+    handleMat.getParameter("maintainScreenSize").setValue(1)
     handleMat.replaceParameter(this.colorParam);
 
     // const handleGeom = new ZeaEngine.Cylinder(radius, thickness * 2, 64, 2, false);
