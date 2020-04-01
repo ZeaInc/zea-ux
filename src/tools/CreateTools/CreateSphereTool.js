@@ -1,6 +1,6 @@
-import { GeomItem, Material, Sphere } from '@zeainc/zea-engine';
-import UndoRedoManager from '../../undoredo/UndoRedoManager.js';
-import { CreateGeomChange, CreateGeomTool } from './CreateGeomTool.js';
+import { GeomItem, Material, Sphere } from '@zeainc/zea-engine'
+import UndoRedoManager from '../../undoredo/UndoRedoManager.js'
+import { CreateGeomChange, CreateGeomTool } from './CreateGeomTool.js'
 
 /**
  * Class representing a create sphere change.
@@ -13,16 +13,16 @@ class CreateSphereChange extends CreateGeomChange {
    * @param {any} xfo - The xfo value.
    */
   constructor(parentItem, xfo) {
-    super('Create Sphere', parentItem);
+    super('Create Sphere', parentItem)
 
-    this.sphere = new Sphere(0, 64, 32);
-    const material = new Material('Sphere', 'SimpleSurfaceShader');
-    this.geomItem = new GeomItem('Sphere');
-    this.geomItem.setGeometry(this.sphere);
-    this.geomItem.setMaterial(material);
+    this.sphere = new Sphere(0, 64, 32)
+    const material = new Material('Sphere', 'SimpleSurfaceShader')
+    this.geomItem = new GeomItem('Sphere')
+    this.geomItem.setGeometry(this.sphere)
+    this.geomItem.setMaterial(material)
 
     if (parentItem && xfo) {
-      this.setParentAndXfo(parentItem, xfo);
+      this.setParentAndXfo(parentItem, xfo)
     }
   }
 
@@ -31,8 +31,8 @@ class CreateSphereChange extends CreateGeomChange {
    * @param {any} updateData - The updateData param.
    */
   update(updateData) {
-    this.sphere.radius = updateData.radius;
-    this.updated.emit(updateData);
+    this.sphere.radius = updateData.radius
+    this.updated.emit(updateData)
   }
 
   /**
@@ -40,9 +40,9 @@ class CreateSphereChange extends CreateGeomChange {
    * @return {any} The return value.
    */
   toJSON() {
-    const j = super.toJSON();
-    j.radius = this.geomItem.getGeometry().radius;
-    return j;
+    const j = super.toJSON()
+    j.radius = this.geomItem.getGeometry().radius
+    return j
   }
 
   /**
@@ -50,10 +50,10 @@ class CreateSphereChange extends CreateGeomChange {
    * @param {any} j - The j param.
    */
   changeFromJSON(j) {
-    if (j.radius) this.geomItem.getGeometry().radius = j.radius;
+    if (j.radius) this.geomItem.getGeometry().radius = j.radius
   }
 }
-UndoRedoManager.registerChange('CreateSphereChange', CreateSphereChange);
+UndoRedoManager.registerChange('CreateSphereChange', CreateSphereChange)
 
 /**
  * Class representing a create sphere tool.
@@ -65,7 +65,7 @@ class CreateSphereTool extends CreateGeomTool {
    * @param {any} appData - The appData value.
    */
   constructor(appData) {
-    super(appData);
+    super(appData)
   }
 
   /**
@@ -74,12 +74,12 @@ class CreateSphereTool extends CreateGeomTool {
    * @param {any} parentItem - The parentItem param.
    */
   createStart(xfo, parentItem) {
-    this.change = new CreateSphereChange(parentItem, xfo);
-    this.appData.undoRedoManager.addChange(this.change);
+    this.change = new CreateSphereChange(parentItem, xfo)
+    this.appData.undoRedoManager.addChange(this.change)
 
-    this.xfo = xfo;
-    this.stage = 1;
-    this.radius = 0.0;
+    this.xfo = xfo
+    this.stage = 1
+    this.radius = 0.0
   }
 
   /**
@@ -87,8 +87,8 @@ class CreateSphereTool extends CreateGeomTool {
    * @param {any} pt - The pt param.
    */
   createMove(pt) {
-    this.radius = pt.distanceTo(this.xfo.tr);
-    this.change.update({ radius: this.radius });
+    this.radius = pt.distanceTo(this.xfo.tr)
+    this.change.update({ radius: this.radius })
   }
 
   /**
@@ -97,11 +97,11 @@ class CreateSphereTool extends CreateGeomTool {
    */
   createRelease(pt) {
     if (this.radius == 0) {
-      this.appData.undoRedoManager.undo(false);
+      this.appData.undoRedoManager.undo(false)
     }
-    this.stage = 0;
-    this.actionFinished.emit();
+    this.stage = 0
+    this.actionFinished.emit()
   }
 }
 
-export { CreateSphereTool };
+export { CreateSphereTool }

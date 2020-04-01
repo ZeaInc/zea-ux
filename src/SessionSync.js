@@ -1,55 +1,54 @@
-import { typeRegistry, BaseItem, sgFactory } from '@zeainc/zea-engine';
+import { typeRegistry, BaseItem, sgFactory } from '@zeainc/zea-engine'
 
-import { Session } from '@zeainc/zea-collab';
-import UndoRedoManager from './undoredo/UndoRedoManager.js';
-import SelectionManager from './SelectionManager.js';
-import Avatar from './Avatar.js';
+import { Session } from '@zeainc/zea-collab'
+import UndoRedoManager from './undoredo/UndoRedoManager.js'
+import SelectionManager from './SelectionManager.js'
+import Avatar from './Avatar.js'
 
-const convertValuesToJSON = value => {
+const convertValuesToJSON = (value) => {
   if (value == undefined) {
-    return undefined;
+    return undefined
   } else if (value instanceof BaseItem) {
-    return '::' + value.getPath();
+    return '::' + value.getPath()
   } else if (value.toJSON) {
-    const result = value.toJSON();
-    result.typeName = typeRegistry.getTypeName(value.constructor);
-    return result;
+    const result = value.toJSON()
+    result.typeName = typeRegistry.getTypeName(value.constructor)
+    return result
   } else if (Array.isArray(value)) {
-    const arr = [];
-    for (const element of value) arr.push(convertValuesToJSON(element));
-    return arr;
+    const arr = []
+    for (const element of value) arr.push(convertValuesToJSON(element))
+    return arr
   } else if (typeof value === 'object') {
-    const dict = {};
-    for (const key in value) dict[key] = convertValuesToJSON(value[key]);
-    return dict;
+    const dict = {}
+    for (const key in value) dict[key] = convertValuesToJSON(value[key])
+    return dict
   } else {
-    return value;
+    return value
   }
-};
+}
 
 const convertValuesFromJSON = (value, scene) => {
   if (value == undefined) {
-    return undefined;
+    return undefined
   } else if (typeof value === 'string' && value.startsWith('::')) {
-    return scene.getRoot().resolvePath(value, 1);
+    return scene.getRoot().resolvePath(value, 1)
   } else if (value.typeName) {
-    const newval = typeRegistry.getType(value.typeName).create();
-    newval.fromJSON(value);
-    return newval;
+    const newval = typeRegistry.getType(value.typeName).create()
+    newval.fromJSON(value)
+    return newval
   } else if (Array.isArray(value)) {
-    const arr = [];
-    for (const element of value)
-      arr.push(convertValuesFromJSON(element, scene));
-    return arr;
+    const arr = []
+    for (const element of value) arr.push(convertValuesFromJSON(element, scene))
+    return arr
   } else if (typeof value === 'object') {
-    const dict = {};
+    const dict = {}
     for (const key in value)
-      dict[key] = convertValuesFromJSON(value[key], scene);
-    return dict;
+      dict[key] = convertValuesFromJSON(value[key], scene)
+    return dict
   } else {
-    return value;
+    return value
   }
-};
+}
 
 /** Class representing a session sync. */
 class SessionSync {
@@ -62,9 +61,9 @@ class SessionSync {
   constructor(session, appData, currentUser, options) {
     // const currentUserAvatar = new Avatar(appData, currentUser, true);
 
-    const userDatas = {};
+    const userDatas = {}
 
-    session.sub(Session.actions.USER_JOINED, userData => {
+    session.sub(Session.actions.USER_JOINED, (userData) => {
       if (!(userData.id in userDatas)) {
         userDatas[userData.id] = {
           undoRedoManager: new UndoRedoManager(),
@@ -72,51 +71,49 @@ class SessionSync {
           selectionManager: new SelectionManager(appData, {
             ...options,
             enableXfoHandles: false,
-            setItemsSelected: false
+            setItemsSelected: false,
           }),
-        };
+        }
       }
-    });
-    session.sub(Session.actions.USER_LEFT, userData => {
+    })
+    session.sub(Session.actions.USER_LEFT, (userData) => {
       if (!userDatas[userData.id]) {
-        console.warn('User id not in session:', userData.id);
-        return;
+        console.warn('User id not in session:', userData.id)
+        return
       }
-      userDatas[userData.id].avatar.destroy();
-      delete userDatas[userData.id];
-    });
+      userDatas[userData.id].avatar.destroy()
+      delete userDatas[userData.id]
+    })
 
     // ///////////////////////////////////////////
     // Video Streams
     session.sub(Session.actions.USER_VIDEO_STARTED, (data, userId) => {
       if (!userDatas[userId]) {
-        console.warn('User id not in session:', userId);
-        return;
+        console.warn('User id not in session:', userId)
+        return
       }
-      const video = session.getVideoStream(userId);
-      if (video) userDatas[userId].avatar.attachRTCStream(video);
-    });
+      const video = session.getVideoStream(userId)
+      if (video) userDatas[userId].avatar.attachRTCStream(video)
+    })
 
     session.sub(Session.actions.USER_VIDEO_STOPPED, (data, userId) => {
       if (!userDatas[userId]) {
-        console.warn('User id not in session:', userId);
-        return;
+        console.warn('User id not in session:', userId)
+        return
       }
-      console.log('USER_VIDEO_STOPPED:', userId, ' us:', currentUser.id);
+      console.log('USER_VIDEO_STOPPED:', userId, ' us:', currentUser.id)
       if (userDatas[userId].avatar)
-        userDatas[userId].avatar.detachRTCStream(
-          session.getVideoStream(userId)
-        );
-    });
+        userDatas[userId].avatar.detachRTCStream(session.getVideoStream(userId))
+    })
 
     // ///////////////////////////////////////////
     // Pose Changes
-    appData.toolManager.movePointer.connect(event => {
+    appData.toolManager.movePointer.connect((event) => {
       const intersectionData = event.viewport.getGeomDataAtPos(
         event.mousePos,
         event.mouseRay
-      );
-      const rayLength = intersectionData ? intersectionData.dist : 5.0;
+      )
+      const rayLength = intersectionData ? intersectionData.dist : 5.0
       const data = {
         interfaceType: 'CameraAndPointer',
         movePointer: {
@@ -124,198 +121,195 @@ class SessionSync {
           dir: event.mouseRay.dir,
           length: rayLength,
         },
-      };
-      session.pub(Session.actions.POSE_CHANGED, convertValuesToJSON(data));
-    });
-    appData.toolManager.hidePointer.connect(event => {
+      }
+      session.pub(Session.actions.POSE_CHANGED, convertValuesToJSON(data))
+    })
+    appData.toolManager.hidePointer.connect((event) => {
       const data = {
         interfaceType: 'CameraAndPointer',
         hidePointer: {},
-      };
-      session.pub(Session.actions.POSE_CHANGED, data);
-    });
-    appData.toolManager.hilightPointer.connect(event => {
+      }
+      session.pub(Session.actions.POSE_CHANGED, data)
+    })
+    appData.toolManager.hilightPointer.connect((event) => {
       const data = {
         interfaceType: 'CameraAndPointer',
         hilightPointer: {},
-      };
-      session.pub(Session.actions.POSE_CHANGED, data);
-    });
-    appData.toolManager.unhilightPointer.connect(event => {
+      }
+      session.pub(Session.actions.POSE_CHANGED, data)
+    })
+    appData.toolManager.unhilightPointer.connect((event) => {
       const data = {
         interfaceType: 'CameraAndPointer',
         unhilightPointer: {},
-      };
-      session.pub(Session.actions.POSE_CHANGED, convertValuesToJSON(data));
-    });
+      }
+      session.pub(Session.actions.POSE_CHANGED, convertValuesToJSON(data))
+    })
 
-    let tick = 0;
+    let tick = 0
 
-    appData.renderer.viewChanged.connect(event => {
-      tick++;
+    appData.renderer.viewChanged.connect((event) => {
+      tick++
       const isVRView = event.interfaceType == 'VR'
       if (isVRView) {
         // only push every second pose of a vr stream.
-        if (tick % 2 != 0) return;
+        if (tick % 2 != 0) return
       }
 
       const data = {
         interfaceType: event.interfaceType,
         viewXfo: event.viewXfo,
-      };
+      }
       if (event.focalDistance) {
-        data.focalDistance = event.focalDistance;
+        data.focalDistance = event.focalDistance
       } else if (isVRView) {
-        data.controllers = [];
+        data.controllers = []
         for (const controller of event.controllers) {
           data.controllers.push({
             xfo: controller.getTreeItem().getGlobalXfo(),
-          });
+          })
         }
       }
 
       // currentUserAvatar.updatePose(data);
 
-      session.pub(Session.actions.POSE_CHANGED, convertValuesToJSON(data));
-    });
+      session.pub(Session.actions.POSE_CHANGED, convertValuesToJSON(data))
+    })
 
     session.sub(Session.actions.POSE_CHANGED, (jsonData, userId) => {
       if (!userDatas[userId]) {
-        console.warn('User id not in session:', userId);
-        return;
+        console.warn('User id not in session:', userId)
+        return
       }
-      const data = convertValuesFromJSON(jsonData, appData.scene);
-      const avatar = userDatas[userId].avatar;
-      avatar.updatePose(data);
-    });
+      const data = convertValuesFromJSON(jsonData, appData.scene)
+      const avatar = userDatas[userId].avatar
+      avatar.updatePose(data)
+    })
 
     // Emit a signal to configure remote avatars to the current camera transform.
     session.pub(
       Session.actions.POSE_CHANGED,
       convertValuesToJSON({
         interfaceType: 'CameraAndPointer',
-        viewXfo: appData.renderer
-          .getViewport()
-          .getCamera()
-          .getGlobalXfo(),
+        viewXfo: appData.renderer.getViewport().getCamera().getGlobalXfo(),
       })
-    );
+    )
 
     // ///////////////////////////////////////////
     // Scene Changes
     // const otherUndoStack = new UndoRedoManager();
 
-    const root = appData.scene.getRoot();
-    appData.undoRedoManager.changeAdded.connect(change => {
+    const root = appData.scene.getRoot()
+    appData.undoRedoManager.changeAdded.connect((change) => {
       const context = {
         appData,
-        makeRelative: path => path,
+        makeRelative: (path) => path,
         resolvePath: (path, cb) => {
           // Note: Why not return a Promise here?
           // Promise evaluation is always async, so
           // all promisses will be resolved after the current call stack
           // has terminated. In our case, we want all paths
           // to be resolved before the end of the function, which
-          // we can handle easily with callback functions. 
-          if (!path) throw 'Path not spcecified';
-          const item = root.resolvePath(path);
+          // we can handle easily with callback functions.
+          if (!path) throw 'Path not spcecified'
+          const item = root.resolvePath(path)
           if (item) {
-            cb(item);
+            cb(item)
           } else {
-            console.warn("Path unable to be resolved:" + path);
+            console.warn('Path unable to be resolved:' + path)
           }
-        }
-      };
+        },
+      }
       const data = {
         changeData: change.toJSON(context),
         changeClass: UndoRedoManager.getChangeClassName(change),
-      };
-      session.pub(Session.actions.COMMAND_ADDED, data);
+      }
+      session.pub(Session.actions.COMMAND_ADDED, data)
 
       // const otherChange = otherUndoStack.constructChange(data.changeClass);
       // otherChange.fromJSON(data.changeData, { appData })
       // otherUndoStack.addChange(otherChange);
-    });
+    })
 
-    appData.undoRedoManager.changeUpdated.connect(data => {
-      const jsonData = convertValuesToJSON(data);
-      session.pub(Session.actions.COMMAND_UPDATED, jsonData);
+    appData.undoRedoManager.changeUpdated.connect((data) => {
+      const jsonData = convertValuesToJSON(data)
+      session.pub(Session.actions.COMMAND_UPDATED, jsonData)
 
       // const changeData2 = convertValuesFromJSON(jsonData, appData.scene);
       // otherUndoStack.getCurrentChange().update(changeData2);
-    });
+    })
 
     session.sub(Session.actions.COMMAND_ADDED, (data, userId) => {
       // console.log("Remote Command added:", data.changeClass, userId)
       if (!userDatas[userId]) {
-        console.warn('User id not in session:', userId);
-        return;
+        console.warn('User id not in session:', userId)
+        return
       }
-      const undoRedoManager = userDatas[userId].undoRedoManager;
-      const change = undoRedoManager.constructChange(data.changeClass);
+      const undoRedoManager = userDatas[userId].undoRedoManager
+      const change = undoRedoManager.constructChange(data.changeClass)
 
       const context = {
         appData: {
           selectionManager: userDatas[userId].selectionManager,
           scene: appData.scene,
         },
-      };
-      change.fromJSON(data.changeData, context);
-      undoRedoManager.addChange(change);
-    });
+      }
+      change.fromJSON(data.changeData, context)
+      undoRedoManager.addChange(change)
+    })
 
     session.sub(Session.actions.COMMAND_UPDATED, (data, userId) => {
       if (!userDatas[userId]) {
-        console.warn('User id not in session:', userId);
-        return;
+        console.warn('User id not in session:', userId)
+        return
       }
-      const undoRedoManager = userDatas[userId].undoRedoManager;
-      const changeData = convertValuesFromJSON(data, appData.scene);
-      undoRedoManager.getCurrentChange().update(changeData);
-    });
+      const undoRedoManager = userDatas[userId].undoRedoManager
+      const changeData = convertValuesFromJSON(data, appData.scene)
+      undoRedoManager.getCurrentChange().update(changeData)
+    })
 
     // ///////////////////////////////////////////
     // Undostack Changes.
     // Synchronize undo stacks between users.
 
     appData.undoRedoManager.changeUndone.connect(() => {
-      session.pub('UndoRedoManager_changeUndone', {});
-    });
+      session.pub('UndoRedoManager_changeUndone', {})
+    })
 
     session.sub('UndoRedoManager_changeUndone', (data, userId) => {
-      const undoRedoManager = userDatas[userId].undoRedoManager;
-      undoRedoManager.undo();
-    });
+      const undoRedoManager = userDatas[userId].undoRedoManager
+      undoRedoManager.undo()
+    })
 
     appData.undoRedoManager.changeRedone.connect(() => {
-      session.pub('UndoRedoManager_changeRedone', {});
-    });
+      session.pub('UndoRedoManager_changeRedone', {})
+    })
 
     session.sub('UndoRedoManager_changeRedone', (data, userId) => {
-      const undoRedoManager = userDatas[userId].undoRedoManager;
-      undoRedoManager.redo();
-    });
+      const undoRedoManager = userDatas[userId].undoRedoManager
+      undoRedoManager.redo()
+    })
 
     // ///////////////////////////////////////////
     // State Machine Changes.
     // Synchronize State Machine changes between users.
 
-    sgFactory.registerCallback('StateMachine', stateMachine => {
-      stateMachine.stateChanged.connect(name => {
+    sgFactory.registerCallback('StateMachine', (stateMachine) => {
+      stateMachine.stateChanged.connect((name) => {
         session.pub('StateMachine_stateChanged', {
           stateMachine: stateMachine.getPath(),
           stateName: name,
-        });
-      });
-    });
+        })
+      })
+    })
 
     session.sub('StateMachine_stateChanged', (data, userId) => {
       const stateMachine = appData.scene
         .getRoot()
-        .resolvePath(data.stateMachine, 1);
-      stateMachine.activateState(data.stateName);
-    });
+        .resolvePath(data.stateMachine, 1)
+      stateMachine.activateState(data.stateName)
+    })
   }
 }
 
-export { SessionSync };
+export { SessionSync }

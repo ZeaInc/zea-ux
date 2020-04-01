@@ -1,4 +1,4 @@
-import { Vec2 } from '@zeainc/zea-engine';
+import { Vec2 } from '@zeainc/zea-engine'
 
 /** Class representing a side panel. */
 class SidePanel {
@@ -7,112 +7,111 @@ class SidePanel {
    * @param {any} panelSide - The panelSide value.
    */
   constructor(panelSide) {
-    this.panelSide = panelSide;
+    this.panelSide = panelSide
 
     if (panelSide == 0) {
-      this.domElement = document.createElement('div');
-      this.domElement.className = 'SidePanel SidePanel--left overflow-auto pa2';
-      this.handleElement = document.createElement('div');
-      this.handleElement.className = 'PanelHandler bg-center';
+      this.domElement = document.createElement('div')
+      this.domElement.className = 'SidePanel SidePanel--left overflow-auto pa2'
+      this.handleElement = document.createElement('div')
+      this.handleElement.className = 'PanelHandler bg-center'
     } else {
-      this.handleElement = document.createElement('div');
-      this.handleElement.className = 'PanelHandler bg-center';
-      this.domElement = document.createElement('div');
-      this.domElement.className =
-        'SidePanel SidePanel--right overflow-auto pa2';
+      this.handleElement = document.createElement('div')
+      this.handleElement.className = 'PanelHandler bg-center'
+      this.domElement = document.createElement('div')
+      this.domElement.className = 'SidePanel SidePanel--right overflow-auto pa2'
     }
 
     // Side panels are collapsed by default.
-    this.domElement.style.width = `0px`;
+    this.domElement.style.width = `0px`
 
-    let startX;
-    let startWidth;
+    let startX
+    let startWidth
 
-    const initDrag = event => {
-      startX = event.clientX;
+    const initDrag = (event) => {
+      startX = event.clientX
       startWidth =
         parseInt(
           document.defaultView.getComputedStyle(this.domElement).width,
           10
-        ) * window.devicePixelRatio;
-      document.addEventListener('mousemove', doDrag, false);
-      document.addEventListener('mouseup', stopDrag, false);
-    };
+        ) * window.devicePixelRatio
+      document.addEventListener('mousemove', doDrag, false)
+      document.addEventListener('mouseup', stopDrag, false)
+    }
 
-    const doDrag = event => {
-      const delta = (event.clientX - startX) * window.devicePixelRatio;
+    const doDrag = (event) => {
+      const delta = (event.clientX - startX) * window.devicePixelRatio
       const panelWidth =
-        panelSide == 0 ? startWidth + delta : startWidth - delta;
+        panelSide == 0 ? startWidth + delta : startWidth - delta
       if (panelWidth < 40) {
-        this.domElement.style.display = 'none';
-        this.domElement.style.width = `0px`;
+        this.domElement.style.display = 'none'
+        this.domElement.style.width = `0px`
       } else {
-        this.domElement.style.display = 'block';
-        this.domElement.style.width = `${panelWidth}px`;
+        this.domElement.style.display = 'block'
+        this.domElement.style.width = `${panelWidth}px`
       }
-    };
+    }
 
-    const stopDrag = event => {
-      document.removeEventListener('mousemove', doDrag, false);
-      document.removeEventListener('mouseup', stopDrag, false);
-    };
+    const stopDrag = (event) => {
+      document.removeEventListener('mousemove', doDrag, false)
+      document.removeEventListener('mouseup', stopDrag, false)
+    }
 
-    this.handleElement.addEventListener('mousedown', initDrag, false);
+    this.handleElement.addEventListener('mousedown', initDrag, false)
 
     // ///////////////////////////////////
     // Touch events
-    const __ongoingTouches = {};
+    const __ongoingTouches = {}
     const __startTouch = (touch, viewport) => {
       __ongoingTouches[touch.identifier] = {
         identifier: touch.identifier,
         pos: new Vec2(touch.pageX, touch.pageY),
-      };
-    };
+      }
+    }
     const __endTouch = (touch, viewport) => {
       // let idx = this.__ongoingTouchIndexById(touch.identifier);
       // __ongoingTouches.splice(idx, 1); // remove it; we're done
-      delete __ongoingTouches[touch.identifier];
-    };
+      delete __ongoingTouches[touch.identifier]
+    }
 
     this.handleElement.addEventListener(
       'touchstart',
-      event => {
+      (event) => {
         // console.log("onTouchStart");
-        event.preventDefault();
-        event.stopPropagation();
+        event.preventDefault()
+        event.stopPropagation()
 
         startWidth =
           parseInt(
             document.defaultView.getComputedStyle(this.domElement).width,
             10
-          ) * window.devicePixelRatio;
-        const touches = event.changedTouches;
+          ) * window.devicePixelRatio
+        const touches = event.changedTouches
         if (touches.length == 1) {
-          startX = touches[0].clientX;
+          startX = touches[0].clientX
           for (let i = 0; i < touches.length; i++) {
-            __startTouch(touches[i]);
+            __startTouch(touches[i])
           }
-          event.stopPropagation();
+          event.stopPropagation()
         }
       },
       false
-    );
+    )
     this.handleElement.addEventListener(
       'touchmove',
-      event => {
-        const touches = event.changedTouches;
+      (event) => {
+        const touches = event.changedTouches
         if (touches.length == 1) {
-          const touch = touches[0];
+          const touch = touches[0]
           // To get pixel values, we must take into account the devicePixelRatio
-          const delta = (touch.clientX - startX) * window.devicePixelRatio;
+          const delta = (touch.clientX - startX) * window.devicePixelRatio
           const panelWidth =
-            panelSide == 0 ? startWidth + delta : startWidth - delta;
+            panelSide == 0 ? startWidth + delta : startWidth - delta
           if (panelWidth < 40) {
-            this.domElement.style.display = 'none';
-            this.domElement.style.width = `0px`;
+            this.domElement.style.display = 'none'
+            this.domElement.style.width = `0px`
           } else {
-            this.domElement.style.display = 'block';
-            this.domElement.style.width = `${panelWidth}px`;
+            this.domElement.style.display = 'block'
+            this.domElement.style.width = `${panelWidth}px`
           }
 
           // const touchPos = new Vec2(touch.pageX, touch.pageY);
@@ -123,35 +122,35 @@ class SidePanel {
           // if (panelWidth < 40) panelWidth = 0;
           // this.domElement.style.width = `${panelWidth}px`;
 
-          event.stopPropagation();
+          event.stopPropagation()
         }
       },
       false
-    );
+    )
     this.handleElement.addEventListener(
       'touchend',
-      event => {
-        event.preventDefault();
-        event.stopPropagation();
-        const touches = event.changedTouches;
+      (event) => {
+        event.preventDefault()
+        event.stopPropagation()
+        const touches = event.changedTouches
         for (let i = 0; i < touches.length; i++) {
-          __endTouch(touches[i]);
+          __endTouch(touches[i])
         }
-        event.stopPropagation();
+        event.stopPropagation()
       },
       false
-    );
+    )
     this.handleElement.addEventListener(
       'touchcancel',
-      event => {
-        const touches = event.changedTouches;
+      (event) => {
+        const touches = event.changedTouches
         for (let i = 0; i < touches.length; i++) {
-          __endTouch(touches[i]);
+          __endTouch(touches[i])
         }
-        event.stopPropagation();
+        event.stopPropagation()
       },
       false
-    );
+    )
   }
 
   /**
@@ -159,7 +158,7 @@ class SidePanel {
    * @return {any} The return value.
    */
   getPanelWidget() {
-    return this.widget;
+    return this.widget
   }
 
   /**
@@ -168,26 +167,26 @@ class SidePanel {
    */
   setPanelWidget(widget) {
     if (this.widget) {
-      this.widget.unMount(this.domElement);
+      this.widget.unMount(this.domElement)
 
       // Clean up the DOM in case a mess was lefft behind.
       while (this.domElement.firstChild) {
-        this.domElement.removeChild(this.domElement.firstChild);
+        this.domElement.removeChild(this.domElement.firstChild)
       }
     }
 
-    this.widget = widget;
+    this.widget = widget
 
     if (this.widget) {
-      this.domElement.style.display = 'block';
+      this.domElement.style.display = 'block'
       this.domElement.style.width =
-        (widget.getDefaultWidth ? widget.getDefaultWidth() : 300) + 'px';
+        (widget.getDefaultWidth ? widget.getDefaultWidth() : 300) + 'px'
 
-      if (this.widget.mount) this.widget.mount(this.domElement);
-      else this.domElement.appendChild(this.widget);
+      if (this.widget.mount) this.widget.mount(this.domElement)
+      else this.domElement.appendChild(this.widget)
     } else {
-      this.domElement.style.display = 'none';
-      this.domElement.style.width = `0px`;
+      this.domElement.style.display = 'none'
+      this.domElement.style.width = `0px`
     }
   }
 
@@ -196,13 +195,13 @@ class SidePanel {
    * @param {any} parentElement - The parentElement param.
    */
   mount(parentElement) {
-    this.parentDomElement = parentElement;
+    this.parentDomElement = parentElement
     if (this.panelSide == 0) {
-      this.parentDomElement.appendChild(this.domElement);
-      this.parentDomElement.appendChild(this.handleElement);
+      this.parentDomElement.appendChild(this.domElement)
+      this.parentDomElement.appendChild(this.handleElement)
     } else {
-      this.parentDomElement.appendChild(this.handleElement);
-      this.parentDomElement.appendChild(this.domElement);
+      this.parentDomElement.appendChild(this.handleElement)
+      this.parentDomElement.appendChild(this.domElement)
     }
   }
 
@@ -211,7 +210,7 @@ class SidePanel {
    * @param {any} parentElement - The parentElement param.
    */
   unMount(parentElement) {
-    this.parentDomElement.removeChild(this.domElement);
+    this.parentDomElement.removeChild(this.domElement)
   }
 }
 
@@ -221,40 +220,39 @@ class BottomPanel {
    * Create a bottom panel.
    */
   constructor() {
-    this.handleElement = document.createElement('div');
-    this.handleElement.className =
-      'BottomPanelHandler bg-center z-1 bt';
-    this.domElement = document.createElement('div');
-    this.domElement.className = 'BottomPanel overflow-auto pa2';
-    this.domElement.style.height = `0px`;
-    this.closedHeight = 0;
+    this.handleElement = document.createElement('div')
+    this.handleElement.className = 'BottomPanelHandler bg-center z-1 bt'
+    this.domElement = document.createElement('div')
+    this.domElement.className = 'BottomPanel overflow-auto pa2'
+    this.domElement.style.height = `0px`
+    this.closedHeight = 0
 
-    let startY;
-    let startHeight;
+    let startY
+    let startHeight
 
-    const initDrag = event => {
-      startY = event.clientY;
+    const initDrag = (event) => {
+      startY = event.clientY
       startHeight = parseInt(
         document.defaultView.getComputedStyle(this.domElement).height,
         10
-      );
-      document.addEventListener('mousemove', doDrag, false);
-      document.addEventListener('mouseup', stopDrag, false);
-    };
+      )
+      document.addEventListener('mousemove', doDrag, false)
+      document.addEventListener('mouseup', stopDrag, false)
+    }
 
-    const doDrag = event => {
-      const delta = event.clientY - startY;
-      let panelHeight = startHeight - delta;
-      if (panelHeight < this.closedHeight + 40) panelHeight = this.closedHeight;
-      this.domElement.style.height = `${panelHeight}px`;
-    };
+    const doDrag = (event) => {
+      const delta = event.clientY - startY
+      let panelHeight = startHeight - delta
+      if (panelHeight < this.closedHeight + 40) panelHeight = this.closedHeight
+      this.domElement.style.height = `${panelHeight}px`
+    }
 
-    const stopDrag = event => {
-      document.removeEventListener('mousemove', doDrag, false);
-      document.removeEventListener('mouseup', stopDrag, false);
-    };
+    const stopDrag = (event) => {
+      document.removeEventListener('mousemove', doDrag, false)
+      document.removeEventListener('mouseup', stopDrag, false)
+    }
 
-    this.handleElement.addEventListener('mousedown', initDrag, false);
+    this.handleElement.addEventListener('mousedown', initDrag, false)
   }
 
   /**
@@ -262,7 +260,7 @@ class BottomPanel {
    * @return {any} The return value.
    */
   getPanelWidget() {
-    return this.widget;
+    return this.widget
   }
 
   /**
@@ -271,25 +269,25 @@ class BottomPanel {
    */
   setPanelWidget(widget) {
     if (this.widget) {
-      this.widget.unMount(this.domElement);
+      this.widget.unMount(this.domElement)
 
       // Clean up the DOM in case a mess was lefft behind.
       while (this.domElement.firstChild) {
-        this.domElement.removeChild(this.domElement.firstChild);
+        this.domElement.removeChild(this.domElement.firstChild)
       }
     }
 
-    this.widget = widget;
+    this.widget = widget
 
     if (this.widget) {
-      this.domElement.style.display = 'block';
+      this.domElement.style.display = 'block'
       this.domElement.style.height =
-        (widget.getDefaultHeight ? widget.getDefaultHeight() : 180) + 'px';
-      if (this.widget.mount) this.widget.mount(this.domElement);
-      else this.domElement.appendChild(this.widget);
+        (widget.getDefaultHeight ? widget.getDefaultHeight() : 180) + 'px'
+      if (this.widget.mount) this.widget.mount(this.domElement)
+      else this.domElement.appendChild(this.widget)
     } else {
-      this.domElement.style.display = 'none';
-      this.domElement.style.height = `0px`;
+      this.domElement.style.display = 'none'
+      this.domElement.style.height = `0px`
     }
   }
 
@@ -298,9 +296,9 @@ class BottomPanel {
    * @param {any} parentElement - The parentElement param.
    */
   mount(parentElement) {
-    this.parentDomElement = parentElement;
-    this.parentDomElement.appendChild(this.handleElement);
-    this.parentDomElement.appendChild(this.domElement);
+    this.parentDomElement = parentElement
+    this.parentDomElement.appendChild(this.handleElement)
+    this.parentDomElement.appendChild(this.domElement)
   }
 
   /**
@@ -308,7 +306,7 @@ class BottomPanel {
    * @param {any} parentElement - The parentElement param.
    */
   unMount(parentElement) {
-    this.parentDomElement.removeChild(this.domElement);
+    this.parentDomElement.removeChild(this.domElement)
   }
 }
 
@@ -319,8 +317,8 @@ class Panels {
    * @param {any} parentDomElement - The parentDomElement value.
    */
   constructor(parentDomElement, options) {
-    this.options = options || {};
-    if (parentDomElement) this.mount(parentDomElement);
+    this.options = options || {}
+    if (parentDomElement) this.mount(parentDomElement)
   }
 
   /**
@@ -328,29 +326,28 @@ class Panels {
    * @param {any} parentDomElement - The parentDomElement param.
    */
   mount(parentDomElement) {
-    this.sidePanelsWrapper = document.createElement('div');
-    this.sidePanelsWrapper.className = 'PanelsWrapper flex overflow-hidden';
-    parentDomElement.appendChild(this.sidePanelsWrapper);
+    this.sidePanelsWrapper = document.createElement('div')
+    this.sidePanelsWrapper.className = 'PanelsWrapper flex overflow-hidden'
+    parentDomElement.appendChild(this.sidePanelsWrapper)
 
-    if(this.options.leftPanel == true) {
-      this.leftPanel = new SidePanel(0);
-      this.leftPanel.mount(this.sidePanelsWrapper);
+    if (this.options.leftPanel == true) {
+      this.leftPanel = new SidePanel(0)
+      this.leftPanel.mount(this.sidePanelsWrapper)
     }
 
-    this.centerDomElement = document.createElement('div');
-    this.centerDomElement.className =
-      'PanelsCenter flex-grow-1 overflow-hidden';
-    this.centerDomElement.id = 'viewport';
-    this.sidePanelsWrapper.appendChild(this.centerDomElement);
+    this.centerDomElement = document.createElement('div')
+    this.centerDomElement.className = 'PanelsCenter flex-grow-1 overflow-hidden'
+    this.centerDomElement.id = 'viewport'
+    this.sidePanelsWrapper.appendChild(this.centerDomElement)
 
-    if(this.options.rightPanel == true) {
-      this.rightPanel = new SidePanel(1);
-      this.rightPanel.mount(this.sidePanelsWrapper);
+    if (this.options.rightPanel == true) {
+      this.rightPanel = new SidePanel(1)
+      this.rightPanel.mount(this.sidePanelsWrapper)
     }
 
-    if(this.options.bottomPanel == true) {
-      this.bottomPanel = new BottomPanel();
-      this.bottomPanel.mount(parentDomElement);
+    if (this.options.bottomPanel == true) {
+      this.bottomPanel = new BottomPanel()
+      this.bottomPanel.mount(parentDomElement)
     }
   }
 
@@ -364,4 +361,4 @@ class Panels {
     // }
   }
 }
-export { Panels };
+export { Panels }

@@ -1,4 +1,3 @@
-
 import {
   Color,
   Xfo,
@@ -10,9 +9,9 @@ import {
   Cuboid,
   Sphere,
   Cone,
-} from '@zeainc/zea-engine';
+} from '@zeainc/zea-engine'
 
-import Handle from './Handle.js';
+import Handle from './Handle.js'
 // import ParameterValueChange from '../undoredo/ParameterValueChange.js';
 
 /**
@@ -28,15 +27,15 @@ class SphericalRotationHandle extends Handle {
    * @param {any} color - The color value.
    */
   constructor(name, radius, color) {
-    super(name);
+    super(name)
 
-    this.radius = radius;
-    const maskMat = new Material('mask', 'HandleShader');
-    maskMat.getParameter("maintainScreenSize").setValue(true)
-    maskMat.getParameter('BaseColor').setValue(color);
-    const maskGeom = new Sphere(radius, 64);
-    const maskGeomItem = new GeomItem('mask', maskGeom, maskMat);
-    this.addChild(maskGeomItem);
+    this.radius = radius
+    const maskMat = new Material('mask', 'HandleShader')
+    maskMat.getParameter('maintainScreenSize').setValue(true)
+    maskMat.getParameter('BaseColor').setValue(color)
+    const maskGeom = new Sphere(radius, 64)
+    const maskGeomItem = new GeomItem('mask', maskGeom, maskMat)
+    this.addChild(maskGeomItem)
   }
 
   /**
@@ -59,21 +58,21 @@ class SphericalRotationHandle extends Handle {
    * @param {boolean} track - The track param.
    */
   setTargetParam(param, track = true) {
-    this.param = param;
+    this.param = param
     if (track) {
       const __updateGizmo = () => {
-        this.setGlobalXfo(param.getValue());
-      };
-      __updateGizmo();
-      param.valueChanged.connect(__updateGizmo);
+        this.setGlobalXfo(param.getValue())
+      }
+      __updateGizmo()
+      param.valueChanged.connect(__updateGizmo)
     }
   }
-  
+
   /**
    * The getTargetParam method.
    */
   getTargetParam() {
-    return this.param ? this.param : this.getParameter("GlobalXfo");
+    return this.param ? this.param : this.getParameter('GlobalXfo')
   }
 
   // ///////////////////////////////////
@@ -93,7 +92,7 @@ class SphericalRotationHandle extends Handle {
     // const dist = event.mouseRay.intersectRaySphere(this.sphere);
     // event.grabPos = event.mouseRay.pointAtDist(dist);
     // this.onDragStart(event);
-    return true;
+    return true
   }
 
   /**
@@ -104,7 +103,7 @@ class SphericalRotationHandle extends Handle {
     // const dist = event.mouseRay.intersectRaySphere(this.sphere);
     // event.holdPos = event.mouseRay.pointAtDist(dist);
     // this.onDrag(event);
-    return true;
+    return true
   }
 
   /**
@@ -116,30 +115,29 @@ class SphericalRotationHandle extends Handle {
     // const dist = event.mouseRay.intersectRaySphere(this.sphere);
     // event.releasePos = event.mouseRay.pointAtDist(dist);
     // this.onDragEnd(event);
-    return true;
+    return true
   }
-
 
   /**
    * The onDragStart method.
    * @param {any} event - The event param.
    */
   onDragStart(event) {
-    this.baseXfo = this.getGlobalXfo();
-    this.baseXfo.sc.set(1, 1, 1);
-    this.deltaXfo = new Xfo();
-    const param = this.getTargetParam();
-    this.offsetXfo = this.baseXfo.inverse().multiply(param.getValue());
+    this.baseXfo = this.getGlobalXfo()
+    this.baseXfo.sc.set(1, 1, 1)
+    this.deltaXfo = new Xfo()
+    const param = this.getTargetParam()
+    this.offsetXfo = this.baseXfo.inverse().multiply(param.getValue())
 
-    this.vec0 = event.grabPos.subtract(this.baseXfo.tr);
-    this.vec0.normalizeInPlace();
+    this.vec0 = event.grabPos.subtract(this.baseXfo.tr)
+    this.vec0.normalizeInPlace()
 
     // Hilight the material.
-    this.colorParam.setValue(new Color(1, 1, 1));
+    this.colorParam.setValue(new Color(1, 1, 1))
 
     if (event.undoRedoManager) {
-      this.change = new ParameterValueChange(param);
-      event.undoRedoManager.addChange(this.change);
+      this.change = new ParameterValueChange(param)
+      event.undoRedoManager.addChange(this.change)
     }
   }
 
@@ -148,26 +146,25 @@ class SphericalRotationHandle extends Handle {
    * @param {any} event - The event param.
    */
   onDrag(event) {
-    const vec1 = event.holdPos.subtract(this.baseXfo.tr);
-    vec1.normalizeInPlace();
+    const vec1 = event.holdPos.subtract(this.baseXfo.tr)
+    vec1.normalizeInPlace()
 
-    const angle = this.vec0.angleTo(vec1) * modulator;
-    const axis = this.vec0.cross(vec1).normalize();
+    const angle = this.vec0.angleTo(vec1) * modulator
+    const axis = this.vec0.cross(vec1).normalize()
 
-    this.deltaXfo.ori.setFromAxisAndAngle(axis, angle);
+    this.deltaXfo.ori.setFromAxisAndAngle(axis, angle)
 
-    const newXfo = this.baseXfo.multiply(this.deltaXfo);
-    const value = newXfo.multiply(this.offsetXfo);
+    const newXfo = this.baseXfo.multiply(this.deltaXfo)
+    const value = newXfo.multiply(this.offsetXfo)
 
     if (this.change) {
       this.change.update({
         value,
-      });
+      })
     } else {
-      const param = this.getTargetParam();
-      param.setValue(newXfo);
+      const param = this.getTargetParam()
+      param.setValue(newXfo)
     }
-
   }
 
   /**
@@ -175,9 +172,9 @@ class SphericalRotationHandle extends Handle {
    * @param {any} event - The event param.
    */
   onDragEnd(event) {
-    this.change = null;
+    this.change = null
 
-    this.colorParam.setValue(this.__color);
+    this.colorParam.setValue(this.__color)
   }
 }
-export { SphericalRotationHandle };
+export { SphericalRotationHandle }

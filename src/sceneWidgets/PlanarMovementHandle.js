@@ -1,5 +1,5 @@
-import Handle from './Handle.js';
-import ParameterValueChange from '../undoredo/ParameterValueChange.js';
+import Handle from './Handle.js'
+import ParameterValueChange from '../undoredo/ParameterValueChange.js'
 
 /** Class representing a planar movement scene widget.
  * @extends Handle
@@ -10,8 +10,8 @@ class PlanarMovementHandle extends Handle {
    * @param {any} name - The name value.
    */
   constructor(name) {
-    super(name);
-    this.fullXfoManipulationInVR = true;
+    super(name)
+    this.fullXfoManipulationInVR = true
   }
 
   /**
@@ -20,13 +20,13 @@ class PlanarMovementHandle extends Handle {
    * @param {boolean} track - The track param.
    */
   setTargetParam(param, track = true) {
-    this.param = param;
+    this.param = param
     if (track) {
       const __updateGizmo = () => {
-        this.setGlobalXfo(param.getValue());
-      };
-      __updateGizmo();
-      param.valueChanged.connect(__updateGizmo);
+        this.setGlobalXfo(param.getValue())
+      }
+      __updateGizmo()
+      param.valueChanged.connect(__updateGizmo)
     }
   }
 
@@ -34,7 +34,7 @@ class PlanarMovementHandle extends Handle {
    * The getTargetParam method.
    */
   getTargetParam() {
-    return this.param ? this.param : this.getParameter("GlobalXfo");
+    return this.param ? this.param : this.getParameter('GlobalXfo')
   }
 
   /**
@@ -42,12 +42,12 @@ class PlanarMovementHandle extends Handle {
    * @param {any} event - The event param.
    */
   onDragStart(event) {
-    this.grabPos = event.grabPos;
-    const param = this.getTargetParam();
-    this.baseXfo = param.getValue();
+    this.grabPos = event.grabPos
+    const param = this.getTargetParam()
+    this.baseXfo = param.getValue()
     if (event.undoRedoManager) {
-      this.change = new ParameterValueChange(param);
-      event.undoRedoManager.addChange(this.change);
+      this.change = new ParameterValueChange(param)
+      event.undoRedoManager.addChange(this.change)
     }
   }
 
@@ -56,18 +56,18 @@ class PlanarMovementHandle extends Handle {
    * @param {any} event - The event param.
    */
   onDrag(event) {
-    const dragVec = event.holdPos.subtract(this.grabPos);
+    const dragVec = event.holdPos.subtract(this.grabPos)
 
-    const newXfo = this.baseXfo.clone();
-    newXfo.tr.addInPlace(dragVec);
+    const newXfo = this.baseXfo.clone()
+    newXfo.tr.addInPlace(dragVec)
 
     if (this.change) {
       this.change.update({
         value: newXfo,
-      });
+      })
     } else {
-      const param = this.getTargetParam();
-      param.setValue(newXfo);
+      const param = this.getTargetParam()
+      param.setValue(newXfo)
     }
   }
 
@@ -76,9 +76,9 @@ class PlanarMovementHandle extends Handle {
    * @param {any} event - The event param.
    */
   onDragEnd(event) {
-    this.change = null;
+    this.change = null
   }
-  
+
   // ///////////////////////////////////
   // VRController events
 
@@ -89,14 +89,14 @@ class PlanarMovementHandle extends Handle {
    */
   onVRControllerButtonDown(event) {
     if (this.fullXfoManipulationInVR) {
-      this.activeController = event.controller;
-      const xfo = this.activeController.getTipXfo();
-      const handleXfo = this.getGlobalXfo();
-      this.grabOffset = xfo.inverse().multiply(handleXfo);
+      this.activeController = event.controller
+      const xfo = this.activeController.getTipXfo()
+      const handleXfo = this.getGlobalXfo()
+      this.grabOffset = xfo.inverse().multiply(handleXfo)
     } else {
       super.onVRControllerButtonDown(event)
     }
-    return true;
+    return true
   }
 
   /**
@@ -106,15 +106,15 @@ class PlanarMovementHandle extends Handle {
    */
   onVRPoseChanged(event) {
     if (this.fullXfoManipulationInVR) {
-      const xfo = this.activeController.getTipXfo();
-      const newXfo = xfo.multiply(this.grabOffset);
+      const xfo = this.activeController.getTipXfo()
+      const newXfo = xfo.multiply(this.grabOffset)
       if (this.change) {
         this.change.update({
           value: newXfo,
-        });
+        })
       } else {
-        const param = this.getTargetParam();
-        param.setValue(newXfo);
+        const param = this.getTargetParam()
+        param.setValue(newXfo)
       }
     } else {
       super.onVRPoseChanged(event)
@@ -128,11 +128,10 @@ class PlanarMovementHandle extends Handle {
    */
   onVRControllerButtonUp(event) {
     if (this.fullXfoManipulationInVR) {
-      this.change = null;
+      this.change = null
     } else {
       super.onVRControllerButtonUp(event)
     }
   }
-
 }
-export { PlanarMovementHandle };
+export { PlanarMovementHandle }

@@ -1,4 +1,4 @@
-import uxFactory from './UxFactory.js';
+import uxFactory from './UxFactory.js'
 
 /** Class representing an inspector container. */
 class InspectorContainer {
@@ -7,8 +7,8 @@ class InspectorContainer {
    * @param {any} appData - The appData value.
    */
   constructor(appData) {
-    this.appData = appData;
-    this.pinned = false;
+    this.appData = appData
+    this.pinned = false
   }
 
   /**
@@ -16,19 +16,19 @@ class InspectorContainer {
    * @param {any} inspectedItem - The inspectedItem param.
    */
   inspect(inspectedItem) {
-    this.inspectedItem = inspectedItem;
-    if (!this.domElement) return;
+    this.inspectedItem = inspectedItem
+    if (!this.domElement) return
 
     if (this.inspector) {
-      if (this.inspector.destroy) this.inspector.destroy();
-      this.domElement.innerHTML = '';
+      if (this.inspector.destroy) this.inspector.destroy()
+      this.domElement.innerHTML = ''
     }
     if (this.inspectedItem) {
       this.inspector = uxFactory.constructInspector(
         inspectedItem,
         this.domElement,
         this.appData
-      );
+      )
     }
   }
 
@@ -37,46 +37,48 @@ class InspectorContainer {
    * @param {any} parentElement - The parentElement param.
    */
   mount(parentElement) {
-    this.parentElement = parentElement;
+    this.parentElement = parentElement
 
-    const ul = document.createElement('ul');
-    ul.className = 'list pa0 pr3';
-    
-    const liPin = document.createElement('li');
+    const ul = document.createElement('ul')
+    ul.className = 'list pa0 pr3'
 
-    const pinButton = document.createElement('input');
-    pinButton.setAttribute('id', 'pinned');
-    pinButton.setAttribute('type', 'checkbox');
-    pinButton.setAttribute('tabindex', 0);
-    pinButton.checked = this.pinned;
-    pinButton.style.margin = '5px';
+    const liPin = document.createElement('li')
+
+    const pinButton = document.createElement('input')
+    pinButton.setAttribute('id', 'pinned')
+    pinButton.setAttribute('type', 'checkbox')
+    pinButton.setAttribute('tabindex', 0)
+    pinButton.checked = this.pinned
+    pinButton.style.margin = '5px'
 
     pinButton.addEventListener('input', () => {
-      this.pinned = pinButton.checked;
-    });
+      this.pinned = pinButton.checked
+    })
 
-    const labelElem = document.createElement('label');
-    labelElem.setAttribute('for', 'pinned');
-    labelElem.appendChild(document.createTextNode('Pinned'));
-    liPin.appendChild(labelElem);
-    liPin.appendChild(pinButton);
-    
-    ul.appendChild(liPin);
-    
-    const liContents = document.createElement('li');
-    this.domElement = document.createElement('div');
-    liContents.appendChild(this.domElement);
-    ul.appendChild(liContents);
-    this.parentElement.appendChild(ul);
+    const labelElem = document.createElement('label')
+    labelElem.setAttribute('for', 'pinned')
+    labelElem.appendChild(document.createTextNode('Pinned'))
+    liPin.appendChild(labelElem)
+    liPin.appendChild(pinButton)
+
+    ul.appendChild(liPin)
+
+    const liContents = document.createElement('li')
+    this.domElement = document.createElement('div')
+    liContents.appendChild(this.domElement)
+    ul.appendChild(liContents)
+    this.parentElement.appendChild(ul)
 
     // this.domElement = parentElement;
-    this.domElement.innerHTML = '';
-    if (this.inspectedItem) this.inspect(this.inspectedItem);
+    this.domElement.innerHTML = ''
+    if (this.inspectedItem) this.inspect(this.inspectedItem)
 
-    const selectionManager = this.appData.selectionManager;
-    this._selChangedId = selectionManager.leadSelectionChanged.connect(item => {
-      if (!this.inspectedItem || !this.pinned) this.inspect(item);
-    });
+    const selectionManager = this.appData.selectionManager
+    this._selChangedId = selectionManager.leadSelectionChanged.connect(
+      (item) => {
+        if (!this.inspectedItem || !this.pinned) this.inspect(item)
+      }
+    )
   }
 
   /**
@@ -85,9 +87,9 @@ class InspectorContainer {
   unMount() {
     this.appData.selectionManager.leadSelectionChanged.disconnectId(
       this._selChangedId
-    );
-    this.parentElement.innerHTML = '';
+    )
+    this.parentElement.innerHTML = ''
   }
 }
 
-export { InspectorContainer };
+export { InspectorContainer }

@@ -1,4 +1,4 @@
-import { TreeItem, Color } from '@zeainc/zea-engine';
+import { TreeItem, Color } from '@zeainc/zea-engine'
 
 /**
  * Tree item view.
@@ -10,64 +10,62 @@ class TreeItemView extends HTMLElement {
    *
    */
   constructor() {
-    super();
+    super()
 
-    const shadowRoot = this.attachShadow({ mode: 'open' });
+    const shadowRoot = this.attachShadow({ mode: 'open' })
 
     // Add component CSS
-    const styleTag = document.createElement('style');
-    styleTag.appendChild(document.createTextNode(TreeItemView.css));
-    shadowRoot.appendChild(styleTag);
+    const styleTag = document.createElement('style')
+    styleTag.appendChild(document.createTextNode(TreeItemView.css))
+    shadowRoot.appendChild(styleTag)
 
     // Create container tags
-    this.itemContainer = document.createElement('div');
+    this.itemContainer = document.createElement('div')
 
-    this.itemHeader = document.createElement('div');
-    this.itemHeader.className = 'TreeNodeHeader';
-    this.itemContainer.appendChild(this.itemHeader);
+    this.itemHeader = document.createElement('div')
+    this.itemHeader.className = 'TreeNodeHeader'
+    this.itemContainer.appendChild(this.itemHeader)
 
-    this.itemChildren = document.createElement('div');
-    this.itemChildren.className = 'TreeNodesList';
-    this.itemContainer.appendChild(this.itemChildren);
+    this.itemChildren = document.createElement('div')
+    this.itemChildren.className = 'TreeNodesList'
+    this.itemContainer.appendChild(this.itemChildren)
 
     // Item expand button
-    this.expandBtn = document.createElement('button');
-    this.expandBtn.className = 'TreeNodesListItem__ToggleExpanded';
-    this.itemHeader.appendChild(this.expandBtn);
+    this.expandBtn = document.createElement('button')
+    this.expandBtn.className = 'TreeNodesListItem__ToggleExpanded'
+    this.itemHeader.appendChild(this.expandBtn)
 
-    this.expanded = false;
-    this.childrenAlreadyCreated = false;
+    this.expanded = false
+    this.childrenAlreadyCreated = false
 
     this.expandBtn.addEventListener('click', () => {
       if (this.treeItem.getNumChildren() > 0) {
-        this.expanded ? this.collapse() : this.expand();
+        this.expanded ? this.collapse() : this.expand()
       }
-    });
-
+    })
 
     // Title element
-    this.titleElement = document.createElement('span');
-    this.titleElement.className = 'TreeNodesListItem__Title';
-    this.titleElement.addEventListener('click', e => {
+    this.titleElement = document.createElement('span')
+    this.titleElement.className = 'TreeNodesListItem__Title'
+    this.titleElement.addEventListener('click', (e) => {
       if (!this.appData || !this.appData.selectionManager) {
-        this.treeItem.setSelected(!this.treeItem.getSelected());
-        return;
+        this.treeItem.setSelected(!this.treeItem.getSelected())
+        return
       }
       if (this.appData.selectionManager.pickingModeActive()) {
-        this.appData.selectionManager.pick(this.treeItem);
-        return;
+        this.appData.selectionManager.pick(this.treeItem)
+        return
       }
       this.appData.selectionManager.toggleItemSelection(
         this.treeItem,
         !e.ctrlKey
-      );
-    });
+      )
+    })
 
-    this.itemHeader.appendChild(this.titleElement);
+    this.itemHeader.appendChild(this.titleElement)
 
     //
-    shadowRoot.appendChild(this.itemContainer);
-
+    shadowRoot.appendChild(this.itemContainer)
   }
 
   /**
@@ -76,63 +74,67 @@ class TreeItemView extends HTMLElement {
    * @param {object} appData App data.
    */
   setTreeItem(treeItem, appData) {
-    this.treeItem = treeItem;
+    this.treeItem = treeItem
 
-    this.appData = appData;
+    this.appData = appData
 
     // Name
-    this.titleElement.textContent = treeItem.getName();
+    this.titleElement.textContent = treeItem.getName()
     const updateName = () => {
-      this.titleElement.textContent = treeItem.getName();
-    };
-    this.treeItem.nameChanged.connect(updateName);
+      this.titleElement.textContent = treeItem.getName()
+    }
+    this.treeItem.nameChanged.connect(updateName)
 
     // Selection
     this.updateSelectedId = this.treeItem.selectedChanged.connect(
       this.updateSelected.bind(this)
-    );
-    this.updateSelected();
+    )
+    this.updateSelected()
 
     if (treeItem instanceof TreeItem) {
       // Visiblity
-      
-    // Visibility toggle button
-    this.toggleVisibilityBtn = document.createElement('button');
-    this.toggleVisibilityBtn.className = 'TreeNodesListItem__ToggleVisibility';
 
-    this.itemHeader.insertBefore(this.toggleVisibilityBtn, this.titleElement);
-    this.toggleVisibilityBtn.innerHTML =
-      '<i class="material-icons-outlined md-15">visibility</i>';
+      // Visibility toggle button
+      this.toggleVisibilityBtn = document.createElement('button')
+      this.toggleVisibilityBtn.className = 'TreeNodesListItem__ToggleVisibility'
+
+      this.itemHeader.insertBefore(this.toggleVisibilityBtn, this.titleElement)
+      this.toggleVisibilityBtn.innerHTML =
+        '<i class="material-icons-outlined md-15">visibility</i>'
 
       this.toggleVisibilityBtn.addEventListener('click', () => {
-        const visibleParam = this.treeItem.getParameter('Visible');
+        const visibleParam = this.treeItem.getParameter('Visible')
         if (this.appData && this.appData.undoRedoManager) {
           const change = new ParameterValueChange(
             visibleParam,
             !visibleParam.getValue()
-          );
-          this.appData.undoRedoManager.addChange(change);
+          )
+          this.appData.undoRedoManager.addChange(change)
         } else {
-          visibleParam.setValue(!visibleParam.getValue());
+          visibleParam.setValue(!visibleParam.getValue())
         }
-      });
+      })
       this.updateVisibilityId = this.treeItem.visibilityChanged.connect(
         this.updateVisibility.bind(this)
-      );
-      this.updateVisibility();
+      )
+      this.updateVisibility()
 
       // Highlights
       this.updateHighlightId = this.treeItem.highlightChanged.connect(
         this.updateHighlight.bind(this)
-      );
-      this.updateHighlight();
+      )
+      this.updateHighlight()
 
       if (this.treeItem.getChildren().length) {
-        this.collapse();
+        this.collapse()
       }
-      
-      this.childAddedId = this.treeItem.childAdded.connect(this.childAdded.bind(this));
-      this.childRemovedId = this.treeItem.childRemoved.connect(this.childRemoved.bind(this));
+
+      this.childAddedId = this.treeItem.childAdded.connect(
+        this.childAdded.bind(this)
+      )
+      this.childRemovedId = this.treeItem.childRemoved.connect(
+        this.childRemoved.bind(this)
+      )
     }
   }
 
@@ -141,17 +143,17 @@ class TreeItemView extends HTMLElement {
    *
    */
   updateVisibility() {
-    const visible = this.treeItem.getVisible();
+    const visible = this.treeItem.getVisible()
     visible
       ? this.itemContainer.classList.remove('TreeNodesListItem--isHidden')
-      : this.itemContainer.classList.add('TreeNodesListItem--isHidden');
+      : this.itemContainer.classList.add('TreeNodesListItem--isHidden')
 
     if (visible) {
       this.toggleVisibilityBtn.innerHTML =
-        '<i class="material-icons-outlined md-15">visibility</i>';
+        '<i class="material-icons-outlined md-15">visibility</i>'
     } else {
       this.toggleVisibilityBtn.innerHTML =
-        '<i class="material-icons-outlined md-15">visibility_off</i>';
+        '<i class="material-icons-outlined md-15">visibility_off</i>'
     }
   }
 
@@ -160,32 +162,31 @@ class TreeItemView extends HTMLElement {
    *
    */
   updateSelected() {
-    const selected = this.treeItem.getSelected();
+    const selected = this.treeItem.getSelected()
     if (selected)
-      this.itemContainer.classList.add('TreeNodesListItem--isSelected');
-    else this.itemContainer.classList.remove('TreeNodesListItem--isSelected');
+      this.itemContainer.classList.add('TreeNodesListItem--isSelected')
+    else this.itemContainer.classList.remove('TreeNodesListItem--isSelected')
   }
 
   /**
    * Update highlight.
    */
   updateHighlight() {
-    const hilighted = this.treeItem.isHighlighted();
+    const hilighted = this.treeItem.isHighlighted()
     if (hilighted)
-      this.itemContainer.classList.add('TreeNodesListItem--isHighlighted');
-    else
-      this.itemContainer.classList.remove('TreeNodesListItem--isHighlighted');
+      this.itemContainer.classList.add('TreeNodesListItem--isHighlighted')
+    else this.itemContainer.classList.remove('TreeNodesListItem--isHighlighted')
     if (hilighted) {
-      const highlightColor = this.treeItem.getHighlight();
-      const bgColor = highlightColor.lerp(new Color(0.75, 0.75, 0.75, 0), 0.5);
+      const highlightColor = this.treeItem.getHighlight()
+      const bgColor = highlightColor.lerp(new Color(0.75, 0.75, 0.75, 0), 0.5)
       this.titleElement.style.setProperty(
         'border-color',
         highlightColor.toHex()
-      );
-      this.titleElement.style.setProperty('background-color', bgColor.toHex());
+      )
+      this.titleElement.style.setProperty('background-color', bgColor.toHex())
     } else {
-      this.titleElement.style.removeProperty('border-color');
-      this.titleElement.style.removeProperty('background-color');
+      this.titleElement.style.removeProperty('border-color')
+      this.titleElement.style.removeProperty('background-color')
     }
   }
 
@@ -193,18 +194,18 @@ class TreeItemView extends HTMLElement {
    * The expand method.
    */
   expand() {
-    this.expanded = true;
-    this.itemChildren.classList.remove('TreeNodesList--collapsed');
+    this.expanded = true
+    this.itemChildren.classList.remove('TreeNodesList--collapsed')
     this.expandBtn.innerHTML =
-      '<i class="material-icons md-24">arrow_drop_down</i>';
+      '<i class="material-icons md-24">arrow_drop_down</i>'
 
     if (!this.childrenAlreadyCreated) {
-      const children = this.treeItem.getChildren();
+      const children = this.treeItem.getChildren()
       children.forEach((childItem, index) => {
         // if (!childItem.testFlag(ItemFlags.INVISIBLE))
-        this.addChild(childItem, index);
-      });
-      this.childrenAlreadyCreated = true;
+        this.addChild(childItem, index)
+      })
+      this.childrenAlreadyCreated = true
     }
   }
 
@@ -212,10 +213,9 @@ class TreeItemView extends HTMLElement {
    * The collapse method.
    */
   collapse() {
-    this.itemChildren.classList.add('TreeNodesList--collapsed');
-    this.expandBtn.innerHTML =
-      '<i class="material-icons md-24">arrow_right</i>';
-    this.expanded = false;
+    this.itemChildren.classList.add('TreeNodesList--collapsed')
+    this.expandBtn.innerHTML = '<i class="material-icons md-24">arrow_right</i>'
+    this.expanded = false
   }
 
   /**
@@ -225,29 +225,31 @@ class TreeItemView extends HTMLElement {
    */
   addChild(treeItem, index) {
     if (this.expanded) {
-      const childTreeItem = document.createElement('tree-item-view');
-      childTreeItem.setTreeItem(treeItem, this.appData);
+      const childTreeItem = document.createElement('tree-item-view')
+      childTreeItem.setTreeItem(treeItem, this.appData)
 
       if (index == this.itemChildren.childElementCount) {
-        this.itemChildren.appendChild(childTreeItem);
+        this.itemChildren.appendChild(childTreeItem)
       } else {
-        this.itemChildren.insertBefore(childTreeItem, this.itemChildren.children[index]);
+        this.itemChildren.insertBefore(
+          childTreeItem,
+          this.itemChildren.children[index]
+        )
       }
     } else {
-      this.collapse();
+      this.collapse()
     }
   }
 
-  
   childAdded(childItem, index) {
     // if (!childItem.testFlag(ItemFlags.INVISIBLE))
-      this.addChild(childItem, index);
+    this.addChild(childItem, index)
   }
 
   childRemoved(childItem, index) {
     if (this.expanded) {
       this.itemChildren.children[index].destroy()
-      this.itemChildren.removeChild(this.itemChildren.children[index]);
+      this.itemChildren.removeChild(this.itemChildren.children[index])
     }
   }
 
@@ -255,12 +257,12 @@ class TreeItemView extends HTMLElement {
    * The destroy method.
    */
   destroy() {
-    this.treeItem.selectedChanged.disconnectId(this.updateSelectedId);
+    this.treeItem.selectedChanged.disconnectId(this.updateSelectedId)
     if (this.treeItem instanceof TreeItem) {
-      this.treeItem.highlightChanged.disconnectId(this.updateHighlightId);
-      this.treeItem.visibilityChanged.disconnectId(this.updateVisibilityId);
-      this.treeItem.childAdded.disconnectId(this.childAddedId);
-      this.treeItem.childRemoved.disconnectId(this.childRemovedId);
+      this.treeItem.highlightChanged.disconnectId(this.updateHighlightId)
+      this.treeItem.visibilityChanged.disconnectId(this.updateVisibilityId)
+      this.treeItem.childAdded.disconnectId(this.childAddedId)
+      this.treeItem.childRemoved.disconnectId(this.childRemovedId)
     }
     // this.parentDomElement.removeChild(this.li);
   }
@@ -445,8 +447,8 @@ TreeItemView.css = `
     color: rgba(255, 255, 255, 0.3);
   }
 
-  `;
+  `
 
-customElements.define('tree-item-view', TreeItemView);
+customElements.define('tree-item-view', TreeItemView)
 
-export default TreeItemView;
+export default TreeItemView

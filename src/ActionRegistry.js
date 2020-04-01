@@ -1,4 +1,4 @@
-import { Signal } from '@zeainc/zea-engine';
+import { Signal } from '@zeainc/zea-engine'
 
 /** Class representing an action registry. */
 class ActionRegistry {
@@ -6,8 +6,8 @@ class ActionRegistry {
    * Create an action registry.
    */
   constructor() {
-    this.actions = [];
-    this.actionAdded = new Signal();
+    this.actions = []
+    this.actionAdded = new Signal()
   }
 
   /**
@@ -15,14 +15,14 @@ class ActionRegistry {
    * @param {any} action - The action param.
    */
   registerAction(action) {
-    const { name } = action;
+    const { name } = action
 
     if (!name) {
-      console.warn('A action is missing its name.');
-      return;
+      console.warn('A action is missing its name.')
+      return
     }
 
-    this._addAction(action);
+    this._addAction(action)
   }
 
   /**
@@ -30,8 +30,8 @@ class ActionRegistry {
    * @param {any} action - The action param.
    */
   _addAction(action) {
-    this.actions.push(action);
-    this.actionAdded.emit(action);
+    this.actions.push(action)
+    this.actionAdded.emit(action)
   }
 
   /**
@@ -39,9 +39,9 @@ class ActionRegistry {
    * @return {any} The return value.
    */
   getActions() {
-    return this.actions;
+    return this.actions
   }
 }
 
-export default ActionRegistry;
-export { ActionRegistry };
+export default ActionRegistry
+export { ActionRegistry }

@@ -1,5 +1,5 @@
-import { Signal } from '@zeainc/zea-engine';
-import { UndoRedoManager } from './UndoRedoManager.js';
+import { Signal } from '@zeainc/zea-engine'
+import { UndoRedoManager } from './UndoRedoManager.js'
 
 /** Class representing a change. */
 export default class Change {
@@ -8,23 +8,23 @@ export default class Change {
    * @param {any} name - The name value.
    */
   constructor(name) {
-    this.name = name ? name : UndoRedoManager.getChangeClassName(this);
+    this.name = name ? name : UndoRedoManager.getChangeClassName(this)
 
-    this.updated = new Signal();
+    this.updated = new Signal()
   }
 
   /**
    * The undo method.
    */
   undo() {
-    throw new Error('Implement me');
+    throw new Error('Implement me')
   }
 
   /**
    * The redo method.
    */
   redo() {
-    throw new Error('Implement me');
+    throw new Error('Implement me')
   }
 
   /**
@@ -32,7 +32,7 @@ export default class Change {
    * @param {any} updateData - The updateData param.
    */
   update(updateData) {
-    throw new Error('Implement me');
+    throw new Error('Implement me')
   }
 
   /**
@@ -41,7 +41,7 @@ export default class Change {
    * @return {any} The return value.
    */
   toJSON(context) {
-    return {};
+    return {}
   }
 
   /**
@@ -58,7 +58,7 @@ export default class Change {
   changeFromJSON(j) {
     // Many change objects can load json directly
     // in the update method.
-    this.update(j);
+    this.update(j)
   }
 
   /**
@@ -67,4 +67,4 @@ export default class Change {
   destroy() {}
 }
 
-export { Change };
+export { Change }

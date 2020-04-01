@@ -7,11 +7,11 @@ export default class Action {
    * @param {boolean} availableInVR - The availableInVR value.
    */
   constructor(name, path, availableInVR = false) {
-    this.name = name;
-    this.path = path;
-    this.availableInVR = availableInVR;
+    this.name = name
+    this.path = path
+    this.availableInVR = availableInVR
 
-    this.callback = this.callback.bind(this);
+    this.callback = this.callback.bind(this)
   }
 
   /**

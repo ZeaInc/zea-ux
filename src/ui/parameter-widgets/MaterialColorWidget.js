@@ -1,7 +1,7 @@
-import { Color, MaterialColorParam } from '@zeainc/zea-engine';
-import BaseWidget from './BaseWidget.js';
-import uxFactory from '../UxFactory.js';
-import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
+import { Color, MaterialColorParam } from '@zeainc/zea-engine'
+import BaseWidget from './BaseWidget.js'
+import uxFactory from '../UxFactory.js'
+import ParameterValueChange from '../../undoredo/ParameterValueChange.js'
 
 // class TexParam {
 //   constructor(parameter, parentDomElem, appData) {
@@ -33,7 +33,7 @@ export default class MaterialColorWidget extends BaseWidget {
    * @param {any} appData - The appData value.
    */
   constructor(parameter, parentDomElem, appData) {
-    super(parameter);
+    super(parameter)
 
     const colorPicker = new iro.ColorPicker(parentDomElem, {
       // Color picker options:
@@ -44,44 +44,44 @@ export default class MaterialColorWidget extends BaseWidget {
       anticlockwise: true,
       borderWidth: 1,
       borderColor: '#fff',
-    });
+    })
 
     // this.textureWidget = new FileWiget(new TexParam(parameter), parentDomElem, appData);
 
     // ///////////////////////////
     // Handle Changes.
 
-    let change = undefined;
-    let undoing = false;
+    let change = undefined
+    let undoing = false
 
     parameter.valueChanged.connect(() => {
       if (!change) {
-        undoing = true;
-        colorPicker.color.rgb = parameter.getValue().getAsRGBDict();
-        undoing = false;
+        undoing = true
+        colorPicker.color.rgb = parameter.getValue().getAsRGBDict()
+        undoing = false
       }
-    });
+    })
 
     colorPicker.on('input:start', () => {
-      change = new ParameterValueChange(parameter);
-      appData.undoRedoManager.addChange(change);
-    });
+      change = new ParameterValueChange(parameter)
+      appData.undoRedoManager.addChange(change)
+    })
 
     colorPicker.on('input:end', () => {
-      change = undefined;
-    });
+      change = undefined
+    })
 
     colorPicker.on('color:change', (color, changes) => {
-      if (undoing) return;
-      const value = new Color();
-      value.setFromRGBDict(colorPicker.color.rgb);
+      if (undoing) return
+      const value = new Color()
+      value.setFromRGBDict(colorPicker.color.rgb)
       if (!change) {
-        change = new ParameterValueChange(parameter, value);
-        appData.undoRedoManager.addChange(change);
+        change = new ParameterValueChange(parameter, value)
+        appData.undoRedoManager.addChange(change)
       } else {
-        change.update({ value });
+        change.update({ value })
       }
-    });
+    })
   }
 
   /**
@@ -93,5 +93,5 @@ export default class MaterialColorWidget extends BaseWidget {
 
 uxFactory.registerWidget(
   MaterialColorWidget,
-  p => p instanceof MaterialColorParam
-);
+  (p) => p instanceof MaterialColorParam
+)

@@ -4,115 +4,111 @@ class PublishDialog {
    * Create a publish dialog.
    */
   constructor() {
-    this.__publishDialogHolder = document.createElement('div');
-    this.__publishDialogHolder.className = 'publish-dialog-bg';
-    this.__publishDialogHolder.addEventListener('mousedown', e => {
-      if (e.target == this.__publishDialogHolder) this.hide();
-    });
-    const dialog = document.createElement('div');
-    dialog.className = 'publish-dialog';
+    this.__publishDialogHolder = document.createElement('div')
+    this.__publishDialogHolder.className = 'publish-dialog-bg'
+    this.__publishDialogHolder.addEventListener('mousedown', (e) => {
+      if (e.target == this.__publishDialogHolder) this.hide()
+    })
+    const dialog = document.createElement('div')
+    dialog.className = 'publish-dialog'
 
-    const urlParams = new URLSearchParams(window.location.search);
+    const urlParams = new URLSearchParams(window.location.search)
 
-    const args = new URLSearchParams();
-    urlParams.forEach(function(value, key) {
+    const args = new URLSearchParams()
+    urlParams.forEach(function (value, key) {
       if (!key.startsWith('room-id')) {
-        args.set(key, value);
+        args.set(key, value)
       }
-    });
-    args.set('published', true);
+    })
+    args.set('published', true)
 
-    const published = false;
-    const publishURL = `${window.location.origin}?${args.toString()}`;
+    const published = false
+    const publishURL = `${window.location.origin}?${args.toString()}`
 
     // ///////////////////////////////
     // Public Setting
-    const isPublicDiv = document.createElement('div');
-    isPublicDiv.className = 'publicToggle';
-    isPublicDiv.className = 'publish-dialog-toggle';
+    const isPublicDiv = document.createElement('div')
+    isPublicDiv.className = 'publicToggle'
+    isPublicDiv.className = 'publish-dialog-toggle'
 
-    const isPublicCheckbox = document.createElement('input');
-    isPublicCheckbox.setAttribute('type', 'checkbox');
-    isPublicCheckbox.setAttribute('is', 'isPublicCheckbox');
+    const isPublicCheckbox = document.createElement('input')
+    isPublicCheckbox.setAttribute('type', 'checkbox')
+    isPublicCheckbox.setAttribute('is', 'isPublicCheckbox')
 
-    isPublicCheckbox.value = publishURL;
-    isPublicCheckbox.addEventListener('change', e => {
-      embedCodeTextarea.disabled = !isPublicCheckbox.checked;
-      linkTextarea.disabled = !isPublicCheckbox.checked;
-    });
-    isPublicDiv.appendChild(isPublicCheckbox);
+    isPublicCheckbox.value = publishURL
+    isPublicCheckbox.addEventListener('change', (e) => {
+      embedCodeTextarea.disabled = !isPublicCheckbox.checked
+      linkTextarea.disabled = !isPublicCheckbox.checked
+    })
+    isPublicDiv.appendChild(isPublicCheckbox)
 
-    const isPublicCheckboxLabel = document.createElement('label');
-    isPublicCheckboxLabel.className = 'publish-dialog-label';
-    isPublicCheckboxLabel.setAttribute('type', 'checkbox');
-    isPublicCheckboxLabel.setAttribute('for', 'isPublicCheckbox');
-    isPublicCheckboxLabel.textContent = 'Is Published';
+    const isPublicCheckboxLabel = document.createElement('label')
+    isPublicCheckboxLabel.className = 'publish-dialog-label'
+    isPublicCheckboxLabel.setAttribute('type', 'checkbox')
+    isPublicCheckboxLabel.setAttribute('for', 'isPublicCheckbox')
+    isPublicCheckboxLabel.textContent = 'Is Published'
 
-    isPublicDiv.appendChild(isPublicCheckboxLabel);
-    dialog.appendChild(isPublicDiv);
+    isPublicDiv.appendChild(isPublicCheckboxLabel)
+    dialog.appendChild(isPublicDiv)
 
     // ///////////////////////////////
     // link
 
-    const linkTextarea = document.createElement('textarea');
-    linkTextarea.className = 'embedcode';
-    linkTextarea.className = 'publish-dialog-link';
-    linkTextarea.setAttribute('rows', 2);
-    linkTextarea.setAttribute('cols', 30);
-    linkTextarea.setAttribute('readonly', 'readonly');
+    const linkTextarea = document.createElement('textarea')
+    linkTextarea.className = 'embedcode'
+    linkTextarea.className = 'publish-dialog-link'
+    linkTextarea.setAttribute('rows', 2)
+    linkTextarea.setAttribute('cols', 30)
+    linkTextarea.setAttribute('readonly', 'readonly')
 
-    linkTextarea.value = publishURL;
-    linkTextarea.disabled = !published;
-    dialog.appendChild(linkTextarea);
+    linkTextarea.value = publishURL
+    linkTextarea.disabled = !published
+    dialog.appendChild(linkTextarea)
 
     // ///////////////////////////////
     // embedcode
 
-    const embedCodeTextarea = document.createElement('textarea');
-    embedCodeTextarea.className = 'embedcode';
-    embedCodeTextarea.className = 'publish-dialog-embedcode';
-    embedCodeTextarea.setAttribute('rows', 5);
-    embedCodeTextarea.setAttribute('cols', 30);
-    embedCodeTextarea.setAttribute('readonly', 'readonly');
-    embedCodeTextarea.disabled = !published;
+    const embedCodeTextarea = document.createElement('textarea')
+    embedCodeTextarea.className = 'embedcode'
+    embedCodeTextarea.className = 'publish-dialog-embedcode'
+    embedCodeTextarea.setAttribute('rows', 5)
+    embedCodeTextarea.setAttribute('cols', 30)
+    embedCodeTextarea.setAttribute('readonly', 'readonly')
+    embedCodeTextarea.disabled = !published
 
-    embedCodeTextarea.value = `<iframe src="${publishURL}" width="640" height="360" frameborder="0" allow="webvr;webxr;fullscreen" allowfullscreen></iframe>`;
-    dialog.appendChild(embedCodeTextarea);
+    embedCodeTextarea.value = `<iframe src="${publishURL}" width="640" height="360" frameborder="0" allow="webvr;webxr;fullscreen" allowfullscreen></iframe>`
+    dialog.appendChild(embedCodeTextarea)
 
-    
     // ///////////////////////////////
     // SCORM File
 
-    const button = document.createElement('button');
-    button.appendChild(document.createTextNode('Generate SCORM Package'));
-    button.addEventListener('click', e => {
-    });
-    button.style.margin = '2px';
+    const button = document.createElement('button')
+    button.appendChild(document.createTextNode('Generate SCORM Package'))
+    button.addEventListener('click', (e) => {})
+    button.style.margin = '2px'
 
-    dialog.appendChild(button);
+    dialog.appendChild(button)
 
-    
-    this.__publishDialogHolder.appendChild(dialog);
-    document.body.appendChild(this.__publishDialogHolder);
-    this.visible = false;
-
+    this.__publishDialogHolder.appendChild(dialog)
+    document.body.appendChild(this.__publishDialogHolder)
+    this.visible = false
   }
 
   /**
    * The show method.
    */
   show() {
-    this.__publishDialogHolder.style.display = 'block';
-    this.visible = true;
+    this.__publishDialogHolder.style.display = 'block'
+    this.visible = true
   }
 
   /**
    * The hide method.
    */
   hide() {
-    this.__publishDialogHolder.style.display = 'none';
-    this.visible = false;
+    this.__publishDialogHolder.style.display = 'none'
+    this.visible = false
   }
 }
 
-export { PublishDialog };
+export { PublishDialog }

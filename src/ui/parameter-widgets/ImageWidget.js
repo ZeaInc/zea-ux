@@ -1,9 +1,7 @@
-import { ImageParameter } from '@zeainc/zea-engine';
-import ParameterOwnerWidget from './ParameterOwnerWidget.js';
-import uxFactory from '../UxFactory.js';
-import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
-
-
+import { ImageParameter } from '@zeainc/zea-engine'
+import ParameterOwnerWidget from './ParameterOwnerWidget.js'
+import uxFactory from '../UxFactory.js'
+import ParameterValueChange from '../../undoredo/ParameterValueChange.js'
 
 /**
  * Class representing a image widget.
@@ -17,39 +15,36 @@ export default class ImageWidget extends ParameterOwnerWidget {
    * @param {any} appData - The appData value.
    */
   constructor(parameter, parentDomElem, appData) {
-
-    
-    let image = parameter.getValue();
-    let dropDiv;
+    let image = parameter.getValue()
+    let dropDiv
     {
-      const ul = document.createElement('ul');
-      ul.style.width = '100%';
-      ul.style['padding-inline-start'] = '0px';
-      
-      {
-        const input = document.createElement('input');
-        input.className = 'mdl-textfield__input';
-        input.setAttribute('id', parameter.getName());
-        input.setAttribute('type', 'text');
-        input.setAttribute('value', image ? image.getPath() : '<NONE>');
-        input.setAttribute('tabindex', 0);
+      const ul = document.createElement('ul')
+      ul.style.width = '100%'
+      ul.style['padding-inline-start'] = '0px'
 
-        const li = document.createElement('li');
-        li.style.display = 'block';
-        li.appendChild(input);
-        ul.appendChild(li);
+      {
+        const input = document.createElement('input')
+        input.className = 'mdl-textfield__input'
+        input.setAttribute('id', parameter.getName())
+        input.setAttribute('type', 'text')
+        input.setAttribute('value', image ? image.getPath() : '<NONE>')
+        input.setAttribute('tabindex', 0)
+
+        const li = document.createElement('li')
+        li.style.display = 'block'
+        li.appendChild(input)
+        ul.appendChild(li)
       }
 
-      parentDomElem.appendChild(ul);
-
+      parentDomElem.appendChild(ul)
     }
-    super(parameter, parentDomElem, appData);
+    super(parameter, parentDomElem, appData)
 
     parameter.valueChanged.connect(() => {
       if (!image) {
-        parentDomElem.removeChild(dropDiv);
+        parentDomElem.removeChild(dropDiv)
       }
-    });
+    })
   }
 
   /**
@@ -59,4 +54,4 @@ export default class ImageWidget extends ParameterOwnerWidget {
   setParentDomElem(parentDomElem) {}
 }
 
-uxFactory.registerWidget(ImageWidget, p => p instanceof ImageParameter);
+uxFactory.registerWidget(ImageWidget, (p) => p instanceof ImageParameter)

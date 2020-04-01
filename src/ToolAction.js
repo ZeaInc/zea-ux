@@ -1,5 +1,5 @@
-import { Signal } from '@zeainc/zea-engine';
-import Action from './Action.js';
+import { Signal } from '@zeainc/zea-engine'
+import Action from './Action.js'
 
 /** Class representing a tool action.
  * @extends Action
@@ -14,15 +14,15 @@ class ToolAction extends Action {
    * @param {any} tool - The tool value.
    */
   constructor(name, path, availableInVR, toolManager, tool) {
-    super(name, path, availableInVR);
-    this.toolManager = toolManager;
-    this.tool = tool;
-    this.state = false;
-    this.activatedChanged = new Signal();
+    super(name, path, availableInVR)
+    this.toolManager = toolManager
+    this.tool = tool
+    this.state = false
+    this.activatedChanged = new Signal()
 
-    tool.installChanged.connect(state => {
-      this.activatedChanged.emit(state);
-    });
+    tool.installChanged.connect((state) => {
+      this.activatedChanged.emit(state)
+    })
   }
 
   /**
@@ -30,27 +30,27 @@ class ToolAction extends Action {
    */
   callback() {
     if (!this.tool.installed()) {
-      const currTool = this.toolManager.currTool();
+      const currTool = this.toolManager.currTool()
       if (currTool.getName() == 'VRUITool') {
         // Note: when activating new tools in VR, we
         // can insert the new tool below the VRUI tool,
         // so that once the VR UI is closed, it becomes
         // the new active tool.
-        this.toolManager.insertToolBefore(this.tool, currTool);
+        this.toolManager.insertToolBefore(this.tool, currTool)
       } else {
         if (currTool.isPrimaryTool()) {
-          this.toolManager.replaceCurrentTool(this.tool);
+          this.toolManager.replaceCurrentTool(this.tool)
         } else {
-          this.toolManager.pushTool(this.tool);
+          this.toolManager.pushTool(this.tool)
         }
       }
       // this.state = true;
     } else {
-      this.toolManager.removeToolByHandle(this.tool);
+      this.toolManager.removeToolByHandle(this.tool)
       // this.state = false;
     }
     // this.activatedChanged.emit(this.state)
   }
 }
 
-export { ToolAction };
+export { ToolAction }

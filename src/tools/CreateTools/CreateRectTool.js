@@ -1,6 +1,6 @@
-import { Color, Rect, Material, GeomItem } from '@zeainc/zea-engine';
-import UndoRedoManager from '../../undoredo/UndoRedoManager.js';
-import { CreateGeomChange, CreateGeomTool } from './CreateGeomTool.js';
+import { Color, Rect, Material, GeomItem } from '@zeainc/zea-engine'
+import UndoRedoManager from '../../undoredo/UndoRedoManager.js'
+import { CreateGeomChange, CreateGeomTool } from './CreateGeomTool.js'
 
 /**
  * Class representing a create rect change.
@@ -13,19 +13,19 @@ class CreateRectChange extends CreateGeomChange {
    * @param {any} xfo - The xfo value.
    */
   constructor(parentItem, xfo) {
-    super('Create Rect');
+    super('Create Rect')
 
-    this.rect = new Rect(0, 0);
-    this.rect.lineThickness = 0.05;
+    this.rect = new Rect(0, 0)
+    this.rect.lineThickness = 0.05
     // const material = new Material('rect', 'LinesShader');
-    const material = new Material('circle', 'FatLinesShader');
-    material.getParameter('Color').setValue(new Color(0.7, 0.2, 0.2));
-    this.geomItem = new GeomItem('Rect');
-    this.geomItem.setGeometry(this.rect);
-    this.geomItem.setMaterial(material);
+    const material = new Material('circle', 'FatLinesShader')
+    material.getParameter('Color').setValue(new Color(0.7, 0.2, 0.2))
+    this.geomItem = new GeomItem('Rect')
+    this.geomItem.setGeometry(this.rect)
+    this.geomItem.setMaterial(material)
 
     if (parentItem && xfo) {
-      this.setParentAndXfo(parentItem, xfo);
+      this.setParentAndXfo(parentItem, xfo)
     }
   }
 
@@ -35,18 +35,18 @@ class CreateRectChange extends CreateGeomChange {
    */
   update(updateData) {
     if (updateData.baseSize) {
-      this.rect.setSize(updateData.baseSize[0], updateData.baseSize[1]);
+      this.rect.setSize(updateData.baseSize[0], updateData.baseSize[1])
     }
     if (updateData.tr) {
-      const xfo = this.geomItem.getParameter('LocalXfo').getValue();
-      xfo.tr.fromJSON(updateData.tr);
-      this.geomItem.getParameter('LocalXfo').setValue(xfo);
+      const xfo = this.geomItem.getParameter('LocalXfo').getValue()
+      xfo.tr.fromJSON(updateData.tr)
+      this.geomItem.getParameter('LocalXfo').setValue(xfo)
     }
 
-    this.updated.emit(updateData);
+    this.updated.emit(updateData)
   }
 }
-UndoRedoManager.registerChange('CreateRectChange', CreateRectChange);
+UndoRedoManager.registerChange('CreateRectChange', CreateRectChange)
 
 /**
  * Class representing a create rect tool.
@@ -58,7 +58,7 @@ class CreateRectTool extends CreateGeomTool {
    * @param {any} appData - The appData value.
    */
   constructor(appData) {
-    super(appData);
+    super(appData)
   }
 
   /**
@@ -67,13 +67,13 @@ class CreateRectTool extends CreateGeomTool {
    * @param {any} parentItem - The parentItem param.
    */
   createStart(xfo, parentItem) {
-    this.change = new CreateRectChange(parentItem, xfo);
-    this.appData.undoRedoManager.addChange(this.change);
+    this.change = new CreateRectChange(parentItem, xfo)
+    this.appData.undoRedoManager.addChange(this.change)
 
-    this.xfo = xfo;
-    this.invxfo = xfo.inverse();
-    this.stage = 1;
-    this._size = 0.0;
+    this.xfo = xfo
+    this.invxfo = xfo.inverse()
+    this.stage = 1
+    this._size = 0.0
   }
 
   /**
@@ -82,18 +82,18 @@ class CreateRectTool extends CreateGeomTool {
    */
   createMove(pt) {
     if (this.stage == 1) {
-      const delta = this.invxfo.transformVec3(pt);
+      const delta = this.invxfo.transformVec3(pt)
 
-      (this._size = Math.abs(delta.x)), Math.abs(delta.y);
+      ;(this._size = Math.abs(delta.x)), Math.abs(delta.y)
 
       // const delta = pt.subtract(this.xfo.tr)
       this.change.update({
         baseSize: [Math.abs(delta.x), Math.abs(delta.y)],
         tr: this.xfo.tr.add(delta.scale(0.5)),
-      });
+      })
     } else {
-      const vec = this.invxfo.transformVec3(pt);
-      this.change.update({ height: vec.y });
+      const vec = this.invxfo.transformVec3(pt)
+      this.change.update({ height: vec.y })
     }
   }
 
@@ -104,11 +104,11 @@ class CreateRectTool extends CreateGeomTool {
    */
   createRelease(pt, viewport) {
     if (this._size == 0) {
-      this.appData.undoRedoManager.undo(false);
+      this.appData.undoRedoManager.undo(false)
     }
-    this.stage = 0;
-    this.actionFinished.emit();
+    this.stage = 0
+    this.actionFinished.emit()
   }
 }
 
-export { CreateRectTool };
+export { CreateRectTool }

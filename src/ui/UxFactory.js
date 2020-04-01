@@ -4,9 +4,9 @@ class UxFactory {
    * Create a UX factory.
    */
   constructor() {
-    this.treeItemFactories = [];
-    this.widgetFactories = [];
-    this.inspectorFactories = [];
+    this.treeItemFactories = []
+    this.widgetFactories = []
+    this.inspectorFactories = []
   }
 
   /**
@@ -15,7 +15,7 @@ class UxFactory {
    * @param {any} rule - The rule param.
    */
   registerInpector(inspector, rule) {
-    this.inspectorFactories.push({ inspector, rule });
+    this.inspectorFactories.push({ inspector, rule })
   }
 
   /**
@@ -28,11 +28,11 @@ class UxFactory {
     // This allows widgets to override existing widgets in special cases.
     // E.g. display a custom color picker in VR compared to the
     // material editor.
-    const baseItem = args[0];
+    const baseItem = args[0]
     for (let i = this.inspectorFactories.length; i-- > 0; ) {
-      const reg = this.inspectorFactories[i];
+      const reg = this.inspectorFactories[i]
       if (reg.rule(baseItem)) {
-        return new reg.inspector(...args);
+        return new reg.inspector(...args)
       }
     }
 
@@ -40,7 +40,7 @@ class UxFactory {
       `Inspector factory not found for parameter '${baseItem.getName()}' of class '${
         baseItem.constructor.name
       }'`
-    );
+    )
   }
 
   /**
@@ -49,7 +49,7 @@ class UxFactory {
    * @param {any} rule - The rule param.
    */
   registerTreeItemElement(treeItemElement, rule) {
-    this.treeItemFactories.push({ treeItemElement, rule });
+    this.treeItemFactories.push({ treeItemElement, rule })
   }
 
   /**
@@ -62,11 +62,11 @@ class UxFactory {
     // This allows widgets to override existing widgets in special cases.
     // E.g. display a custom color picker in VR compared to the
     // material editor.
-    const treeItem = args[0];
+    const treeItem = args[0]
     for (let i = this.treeItemFactories.length; i-- > 0; ) {
-      const reg = this.treeItemFactories[i];
+      const reg = this.treeItemFactories[i]
       if (reg.rule(treeItem)) {
-        return new reg.treeItemElement(...args);
+        return new reg.treeItemElement(...args)
       }
     }
 
@@ -74,7 +74,7 @@ class UxFactory {
       `Tree item factory not found for parameter '${treeItem.getName()}' of class '${
         treeItem.constructor.name
       }'`
-    );
+    )
   }
 
   /**
@@ -83,7 +83,7 @@ class UxFactory {
    * @param {any} rule - The rule param.
    */
   registerWidget(widget, rule) {
-    this.widgetFactories.push({ widget, rule });
+    this.widgetFactories.push({ widget, rule })
   }
 
   /**
@@ -93,9 +93,9 @@ class UxFactory {
    */
   findWidgetReg(param) {
     for (let i = this.widgetFactories.length; i-- > 0; ) {
-      const reg = this.widgetFactories[i];
+      const reg = this.widgetFactories[i]
       if (reg.rule(param)) {
-        return reg;
+        return reg
       }
     }
   }
@@ -110,11 +110,11 @@ class UxFactory {
     // This allows widgets to override existing widgets in special cases.
     // E.g. display a custom color picker in VR compared to the
     // material editor.
-    const param = args[0];
+    const param = args[0]
     for (let i = this.widgetFactories.length; i-- > 0; ) {
-      const reg = this.widgetFactories[i];
+      const reg = this.widgetFactories[i]
       if (reg.rule(param)) {
-        return new reg.widget(...args);
+        return new reg.widget(...args)
       }
     }
 
@@ -122,10 +122,10 @@ class UxFactory {
       `Widget factory not found for parameter '${param.getName()}' of class '${
         param.constructor.name
       }'`
-    );
+    )
   }
 }
 
-const uxFactory = new UxFactory();
+const uxFactory = new UxFactory()
 
-export default uxFactory;
+export default uxFactory

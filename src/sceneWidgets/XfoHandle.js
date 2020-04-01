@@ -8,15 +8,14 @@ import {
   GeomItem,
   Material,
   Cuboid,
-} from '@zeainc/zea-engine';
+} from '@zeainc/zea-engine'
 
-import Handle from './Handle.js';
-import { LinearMovementHandle } from './LinearMovementHandle.js';
-import { PlanarMovementHandle } from './PlanarMovementHandle.js';
-import { AxialRotationHandle } from './AxialRotationHandle.js';
-import { LinearScaleHandle } from './LinearScaleHandle.js';
-import { SphericalRotationHandle } from './SphericalRotationHandle.js';
-
+import Handle from './Handle.js'
+import { LinearMovementHandle } from './LinearMovementHandle.js'
+import { PlanarMovementHandle } from './PlanarMovementHandle.js'
+import { AxialRotationHandle } from './AxialRotationHandle.js'
+import { LinearScaleHandle } from './LinearScaleHandle.js'
+import { SphericalRotationHandle } from './SphericalRotationHandle.js'
 
 /** Class representing a planar movement scene widget.
  * @extends Handle
@@ -30,52 +29,47 @@ class XfoPlanarMovementHandle extends PlanarMovementHandle {
    * @param {any} offset - The offset value.
    */
   constructor(name, size, color, offset) {
-    super(name);
-    
-    this.__color = color;
-    this.__hilightedColor = new Color(1, 1, 1);
-    this.sizeParam = this.addParameter(
-      new NumberParameter('size', size)
-    );
-    this.colorParam = this.addParameter(
-      new ColorParameter('BaseColor', color)
-    );
+    super(name)
 
-    const handleMat = new Material('handle', 'HandleShader');
-    handleMat.getParameter("maintainScreenSize").setValue(true)
-    handleMat.replaceParameter(this.colorParam);
+    this.__color = color
+    this.__hilightedColor = new Color(1, 1, 1)
+    this.sizeParam = this.addParameter(new NumberParameter('size', size))
+    this.colorParam = this.addParameter(new ColorParameter('BaseColor', color))
 
-    const handleGeom = new Cuboid(size, size, size * 0.02);
+    const handleMat = new Material('handle', 'HandleShader')
+    handleMat.getParameter('maintainScreenSize').setValue(true)
+    handleMat.replaceParameter(this.colorParam)
 
-    const handleGeomXfo = new Xfo();
-    handleGeomXfo.tr = offset;
-    handleGeom.transformVertices(handleGeomXfo);
-    this.handle = new GeomItem('handle', handleGeom, handleMat);
+    const handleGeom = new Cuboid(size, size, size * 0.02)
+
+    const handleGeomXfo = new Xfo()
+    handleGeomXfo.tr = offset
+    handleGeom.transformVertices(handleGeomXfo)
+    this.handle = new GeomItem('handle', handleGeom, handleMat)
 
     this.sizeParam.valueChanged.connect(() => {
-      size = this.sizeParam.getValue();
-      handleGeom.getParameter('size').setValue(size);
-      handleGeom.getParameter('height').setValue(size * 0.02);
-    });
+      size = this.sizeParam.getValue()
+      handleGeom.getParameter('size').setValue(size)
+      handleGeom.getParameter('height').setValue(size * 0.02)
+    })
 
-    this.addChild(this.handle);
+    this.addChild(this.handle)
   }
 
   /**
    * The highlight method.
    */
   highlight() {
-    this.colorParam.setValue(this.__hilightedColor);
+    this.colorParam.setValue(this.__hilightedColor)
   }
 
   /**
    * The unhighlight method.
    */
   unhighlight() {
-    this.colorParam.setValue(this.__color);
+    this.colorParam.setValue(this.__color)
   }
 }
-
 
 /**
  * Class representing an xfo handle.
@@ -88,21 +82,21 @@ export default class XfoHandle extends TreeItem {
    * @param {any} thickness - The thickness value.
    */
   constructor(size, thickness) {
-    super('XfoHandle');
+    super('XfoHandle')
 
     // ////////////////////////////////
     // LinearMovementHandle
 
-    const translationHandles = new TreeItem('Translate');
-    translationHandles.setVisible(false);
-    this.addChild(translationHandles);
+    const translationHandles = new TreeItem('Translate')
+    translationHandles.setVisible(false)
+    this.addChild(translationHandles)
 
-    const red = new Color(1, 0.1, 0.1);
-    const green = new Color('#32CD32'); // limegreen https://www.rapidtables.com/web/color/green-color.html
-    const blue = new Color('#1E90FF'); // dodgerblue https://www.rapidtables.com/web/color/blue-color.html
-    red.a = 0.8;
-    green.a = 0.8;
-    blue.a = 0.8;
+    const red = new Color(1, 0.1, 0.1)
+    const green = new Color('#32CD32') // limegreen https://www.rapidtables.com/web/color/green-color.html
+    const blue = new Color('#1E90FF') // dodgerblue https://www.rapidtables.com/web/color/blue-color.html
+    red.a = 0.8
+    green.a = 0.8
+    blue.a = 0.8
 
     {
       const linearXWidget = new LinearMovementHandle(
@@ -110,11 +104,11 @@ export default class XfoHandle extends TreeItem {
         size,
         thickness,
         red
-      );
-      const xfo = new Xfo();
-      xfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI * 0.5);
-      linearXWidget.getParameter('LocalXfo').setValue(xfo);
-      translationHandles.addChild(linearXWidget);
+      )
+      const xfo = new Xfo()
+      xfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI * 0.5)
+      linearXWidget.getParameter('LocalXfo').setValue(xfo)
+      translationHandles.addChild(linearXWidget)
     }
     {
       const linearYWidget = new LinearMovementHandle(
@@ -122,11 +116,11 @@ export default class XfoHandle extends TreeItem {
         size,
         thickness,
         green
-      );
-      const xfo = new Xfo();
-      xfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * -0.5);
-      linearYWidget.getParameter('LocalXfo').setValue(xfo);
-      translationHandles.addChild(linearYWidget);
+      )
+      const xfo = new Xfo()
+      xfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * -0.5)
+      linearYWidget.getParameter('LocalXfo').setValue(xfo)
+      translationHandles.addChild(linearYWidget)
     }
     {
       const linearZWidget = new LinearMovementHandle(
@@ -134,23 +128,23 @@ export default class XfoHandle extends TreeItem {
         size,
         thickness,
         blue
-      );
-      translationHandles.addChild(linearZWidget);
+      )
+      translationHandles.addChild(linearZWidget)
     }
 
     // ////////////////////////////////
     // planarXYWidget
-    const planarSize = size * 0.35;
+    const planarSize = size * 0.35
     {
       const planarXYWidget = new XfoPlanarMovementHandle(
         'planarXY',
         planarSize,
         green,
         new Vec3(planarSize * 0.5, planarSize * 0.5, 0.0)
-      );
-      const xfo = new Xfo();
-      planarXYWidget.getParameter('LocalXfo').setValue(xfo);
-      translationHandles.addChild(planarXYWidget);
+      )
+      const xfo = new Xfo()
+      planarXYWidget.getParameter('LocalXfo').setValue(xfo)
+      translationHandles.addChild(planarXYWidget)
     }
     {
       const planarYZWidget = new XfoPlanarMovementHandle(
@@ -158,11 +152,11 @@ export default class XfoHandle extends TreeItem {
         planarSize,
         red,
         new Vec3(planarSize * -0.5, planarSize * 0.5, 0.0)
-      );
-      const xfo = new Xfo();
-      xfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI * 0.5);
-      planarYZWidget.getParameter('LocalXfo').setValue(xfo);
-      translationHandles.addChild(planarYZWidget);
+      )
+      const xfo = new Xfo()
+      xfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI * 0.5)
+      planarYZWidget.getParameter('LocalXfo').setValue(xfo)
+      translationHandles.addChild(planarYZWidget)
     }
     {
       const planarXZWidget = new XfoPlanarMovementHandle(
@@ -170,25 +164,25 @@ export default class XfoHandle extends TreeItem {
         planarSize,
         blue,
         new Vec3(planarSize * 0.5, planarSize * 0.5, 0.0)
-      );
-      const xfo = new Xfo();
-      xfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * 0.5);
-      planarXZWidget.getParameter('LocalXfo').setValue(xfo);
-      translationHandles.addChild(planarXZWidget);
+      )
+      const xfo = new Xfo()
+      xfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * 0.5)
+      planarXZWidget.getParameter('LocalXfo').setValue(xfo)
+      translationHandles.addChild(planarXZWidget)
     }
 
     // ////////////////////////////////
     // Rotation
-    const rotationHandles = new TreeItem('Rotate');
-    rotationHandles.setVisible(false);
-    this.addChild(rotationHandles);
+    const rotationHandles = new TreeItem('Rotate')
+    rotationHandles.setVisible(false)
+    this.addChild(rotationHandles)
     {
       const rotationWidget = new SphericalRotationHandle(
         'rotation',
         size - thickness,
         new Color(1, 1, 1, 0.4)
-      );
-      rotationHandles.addChild(rotationWidget);
+      )
+      rotationHandles.addChild(rotationWidget)
       // const maskMat = new Material('mask', 'HandleShader');
       // maskMat
       //   .getParameter('BaseColor')
@@ -203,11 +197,11 @@ export default class XfoHandle extends TreeItem {
         size,
         thickness,
         red
-      );
-      const xfo = new Xfo();
-      xfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI * 0.5);
-      rotationXWidget.getParameter('LocalXfo').setValue(xfo);
-      rotationHandles.addChild(rotationXWidget);
+      )
+      const xfo = new Xfo()
+      xfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI * 0.5)
+      rotationXWidget.getParameter('LocalXfo').setValue(xfo)
+      rotationHandles.addChild(rotationXWidget)
     }
     {
       const rotationYWidget = new AxialRotationHandle(
@@ -215,11 +209,11 @@ export default class XfoHandle extends TreeItem {
         size,
         thickness,
         green
-      );
-      const xfo = new Xfo();
-      xfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * 0.5);
-      rotationYWidget.getParameter('LocalXfo').setValue(xfo);
-      rotationHandles.addChild(rotationYWidget);
+      )
+      const xfo = new Xfo()
+      xfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * 0.5)
+      rotationYWidget.getParameter('LocalXfo').setValue(xfo)
+      rotationHandles.addChild(rotationYWidget)
     }
     {
       const rotationZWidget = new AxialRotationHandle(
@@ -227,28 +221,28 @@ export default class XfoHandle extends TreeItem {
         size,
         thickness,
         blue
-      );
-      rotationHandles.addChild(rotationZWidget);
+      )
+      rotationHandles.addChild(rotationZWidget)
     }
 
     // ////////////////////////////////
     // Scale - Not supported
-    const scaleHandles = new TreeItem('Scale');
-    scaleHandles.setVisible(false);
-    this.addChild(scaleHandles);
+    const scaleHandles = new TreeItem('Scale')
+    scaleHandles.setVisible(false)
+    this.addChild(scaleHandles)
 
-    const scaleHandleLength = size * 0.95;
+    const scaleHandleLength = size * 0.95
     {
       const scaleXWidget = new LinearScaleHandle(
         'scaleX',
         scaleHandleLength,
         thickness,
         red
-      );
-      const xfo = new Xfo();
-      xfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI * 0.5);
-      scaleXWidget.getParameter('LocalXfo').setValue(xfo);
-      scaleHandles.addChild(scaleXWidget);
+      )
+      const xfo = new Xfo()
+      xfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI * 0.5)
+      scaleXWidget.getParameter('LocalXfo').setValue(xfo)
+      scaleHandles.addChild(scaleXWidget)
     }
     {
       const scaleYWidget = new LinearScaleHandle(
@@ -256,11 +250,11 @@ export default class XfoHandle extends TreeItem {
         scaleHandleLength,
         thickness,
         green
-      );
-      const xfo = new Xfo();
-      xfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * -0.5);
-      scaleYWidget.getParameter('LocalXfo').setValue(xfo);
-      scaleHandles.addChild(scaleYWidget);
+      )
+      const xfo = new Xfo()
+      xfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * -0.5)
+      scaleYWidget.getParameter('LocalXfo').setValue(xfo)
+      scaleHandles.addChild(scaleYWidget)
     }
     {
       const scaleZWidget = new LinearScaleHandle(
@@ -268,8 +262,8 @@ export default class XfoHandle extends TreeItem {
         scaleHandleLength,
         thickness,
         blue
-      );
-      scaleHandles.addChild(scaleZWidget);
+      )
+      scaleHandles.addChild(scaleZWidget)
     }
   }
 
@@ -277,14 +271,12 @@ export default class XfoHandle extends TreeItem {
    * Calculate the global Xfo for the handls.
    */
   _cleanGlobalXfo(prevValue) {
-    const parentItem = this.getParentItem();
+    const parentItem = this.getParentItem()
     if (parentItem !== undefined) {
-      const parentXfo = parentItem.getGlobalXfo().clone();
-      parentXfo.sc.set(1, 1, 1);
-      return parentXfo.multiply(this.__localXfoParam.getValue());
-    }
-    else
-      return this.__localXfoParam.getValue();
+      const parentXfo = parentItem.getGlobalXfo().clone()
+      parentXfo.sc.set(1, 1, 1)
+      return parentXfo.multiply(this.__localXfoParam.getValue())
+    } else return this.__localXfoParam.getValue()
   }
 
   /**
@@ -293,15 +285,15 @@ export default class XfoHandle extends TreeItem {
    * @return {any} The return value.
    */
   showHandles(name) {
-    this.traverse(item => {
+    this.traverse((item) => {
       if (item != this) {
-        item.setVisible(false);
-        return false;
+        item.setVisible(false)
+        return false
       }
-    });
+    })
 
-    const child = this.getChildByName(name);
-    if (child) child.setVisible(true);
+    const child = this.getChildByName(name)
+    if (child) child.setVisible(true)
   }
 
   /**
@@ -309,9 +301,9 @@ export default class XfoHandle extends TreeItem {
    * @param {any} param - The param param.
    */
   setTargetParam(param) {
-    this.param = param;
-    this.traverse(item => {
-      if (item instanceof Handle) item.setTargetParam(param, false);
-    });
+    this.param = param
+    this.traverse((item) => {
+      if (item instanceof Handle) item.setTargetParam(param, false)
+    })
   }
 }

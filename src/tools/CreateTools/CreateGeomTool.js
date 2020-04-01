@@ -1,4 +1,3 @@
-
 import {
   Color,
   Xfo,
@@ -7,10 +6,10 @@ import {
   GeomItem,
   Material,
   Cross,
-} from '@zeainc/zea-engine';
+} from '@zeainc/zea-engine'
 
-import BaseCreateTool from '../BaseCreateTool.js';
-import Change from '../../undoredo/Change.js';
+import BaseCreateTool from '../BaseCreateTool.js'
+import Change from '../../undoredo/Change.js'
 
 /**
  * Class representing a create geom change.
@@ -22,7 +21,7 @@ class CreateGeomChange extends Change {
    * @param {any} name - The name value.
    */
   constructor(name) {
-    super(name);
+    super(name)
   }
 
   /**
@@ -31,27 +30,27 @@ class CreateGeomChange extends Change {
    * @param {any} xfo - The xfo param.
    */
   setParentAndXfo(parentItem, xfo) {
-    this.parentItem = parentItem;
-    const name = this.parentItem.generateUniqueName(this.geomItem.getName());
-    this.geomItem.setName(name);
-    this.geomItem.setGlobalXfo(xfo);
-    this.childIndex = this.parentItem.addChild(this.geomItem, true);
+    this.parentItem = parentItem
+    const name = this.parentItem.generateUniqueName(this.geomItem.getName())
+    this.geomItem.setName(name)
+    this.geomItem.setGlobalXfo(xfo)
+    this.childIndex = this.parentItem.addChild(this.geomItem, true)
 
-    this.geomItem.addRef(this); // keep a ref to stop it being destroyed
+    this.geomItem.addRef(this) // keep a ref to stop it being destroyed
   }
 
   /**
    * The undo method.
    */
   undo() {
-    this.parentItem.removeChild(this.childIndex);
+    this.parentItem.removeChild(this.childIndex)
   }
 
   /**
    * The redo method.
    */
   redo() {
-    this.parentItem.addChild(this.geomItem, false, false);
+    this.parentItem.addChild(this.geomItem, false, false)
   }
 
   /**
@@ -60,11 +59,11 @@ class CreateGeomChange extends Change {
    * @return {any} The return value.
    */
   toJSON(context) {
-    const j = super.toJSON(context);
-    j.parentItemPath = this.parentItem.getPath();
-    j.geomItemName = this.geomItem.getName();
-    j.geomItemXfo = this.geomItem.getParameter('LocalXfo').getValue();
-    return j;
+    const j = super.toJSON(context)
+    j.parentItemPath = this.parentItem.getPath()
+    j.geomItemName = this.geomItem.getName()
+    j.geomItemXfo = this.geomItem.getParameter('LocalXfo').getValue()
+    return j
   }
 
   /**
@@ -73,13 +72,13 @@ class CreateGeomChange extends Change {
    * @param {any} appData - The appData param.
    */
   fromJSON(j, context) {
-    const sceneRoot = context.appData.scene.getRoot();
-    this.parentItem = sceneRoot.resolvePath(j.parentItemPath, 1);
-    this.geomItem.setName(this.parentItem.generateUniqueName(j.geomItemName));
-    const xfo = new Xfo();
-    xfo.fromJSON(j.geomItemXfo);
-    this.geomItem.setLocalXfo(xfo);
-    this.childIndex = this.parentItem.addChild(this.geomItem, false);
+    const sceneRoot = context.appData.scene.getRoot()
+    this.parentItem = sceneRoot.resolvePath(j.parentItemPath, 1)
+    this.geomItem.setName(this.parentItem.generateUniqueName(j.geomItemName))
+    const xfo = new Xfo()
+    xfo.fromJSON(j.geomItemXfo)
+    this.geomItem.setLocalXfo(xfo)
+    this.childIndex = this.parentItem.addChild(this.geomItem, false)
   }
 
   // changeFromJSON(j) {
@@ -93,7 +92,7 @@ class CreateGeomChange extends Change {
    * The destroy method.
    */
   destroy() {
-    this.geomItem.removeRef(this); // remove the tmp ref.
+    this.geomItem.removeRef(this) // remove the tmp ref.
   }
 }
 
@@ -107,71 +106,68 @@ class CreateGeomTool extends BaseCreateTool {
    * @param {any} appData - The appData value.
    */
   constructor(appData) {
-    super(appData);
+    super(appData)
 
-    this.stage = 0;
-    this.removeToolOnRightClick = true;
+    this.stage = 0
+    this.removeToolOnRightClick = true
 
     this.cp = this.addParameter(
-      new ColorParameter(
-        'Line Color',
-        new Color(0.7, 0.2, 0.2)
-      )
-    );
+      new ColorParameter('Line Color', new Color(0.7, 0.2, 0.2))
+    )
   }
 
   /**
    * The activateTool method.
    */
   activateTool() {
-    super.activateTool();
+    super.activateTool()
 
-    this.appData.renderer.getDiv().style.cursor = 'crosshair';
+    this.appData.renderer.getDiv().style.cursor = 'crosshair'
 
-    this.appData.renderer.getXRViewport().then(xrvp => {
+    this.appData.renderer.getXRViewport().then((xrvp) => {
       if (!this.vrControllerToolTip) {
-        this.vrControllerToolTip = new Cross(0.05);
+        this.vrControllerToolTip = new Cross(0.05)
         this.vrControllerToolTipMat = new Material(
           'VRController Cross',
           'LinesShader'
-        );
+        )
         this.vrControllerToolTipMat
           .getParameter('Color')
-          .setValue(this.cp.getValue());
-        this.vrControllerToolTipMat.visibleInGeomDataBuffer = false;
+          .setValue(this.cp.getValue())
+        this.vrControllerToolTipMat.visibleInGeomDataBuffer = false
       }
-      const addIconToController = controller => {
+      const addIconToController = (controller) => {
         const geomItem = new GeomItem(
           'CreateGeomToolTip',
           this.vrControllerToolTip,
           this.vrControllerToolTipMat
-        );
-        controller.getTipItem().removeAllChildren();
-        controller.getTipItem().addChild(geomItem, false);
-      };
+        )
+        controller.getTipItem().removeAllChildren()
+        controller.getTipItem().addChild(geomItem, false)
+      }
       for (const controller of xrvp.getControllers()) {
-        addIconToController(controller);
+        addIconToController(controller)
       }
       this.addIconToControllerId = xrvp.controllerAdded.connect(
         addIconToController
-      );
-    });
+      )
+    })
   }
 
   /**
    * The deactivateTool method.
    */
   deactivateTool() {
-    super.deactivateTool();
+    super.deactivateTool()
 
-    this.appData.renderer.getDiv().style.cursor = 'pointer';
+    this.appData.renderer.getDiv().style.cursor = 'pointer'
 
-    this.appData.renderer.getXRViewport().then(xrvp => {
+    this.appData.renderer.getXRViewport().then((xrvp) => {
       // for(let controller of xrvp.getControllers()) {
       //   controller.getTipItem().removeAllChildren();
       // }
-      xrvp.controllerAdded.disconnectId(this.addIconToControllerId);
-    });
+      xrvp.controllerAdded.disconnectId(this.addIconToControllerId)
+    })
   }
 
   /**
@@ -183,25 +179,25 @@ class CreateGeomTool extends BaseCreateTool {
   screenPosToXfo(screenPos, viewport) {
     //
 
-    const ray = viewport.calcRayFromScreenPos(screenPos);
+    const ray = viewport.calcRayFromScreenPos(screenPos)
 
     // Raycast any working planes.
     const planeRay = new Ray(
       this.constructionPlane.tr,
       this.constructionPlane.ori.getZaxis()
-    );
-    const dist = ray.intersectRayPlane(planeRay);
+    )
+    const dist = ray.intersectRayPlane(planeRay)
     if (dist > 0.0) {
-      const xfo = this.constructionPlane.clone();
-      xfo.tr = ray.pointAtDist(dist);
-      return xfo;
+      const xfo = this.constructionPlane.clone()
+      xfo.tr = ray.pointAtDist(dist)
+      return xfo
     }
 
     // else project based on focal dist.
-    const camera = viewport.getCamera();
-    const xfo = camera.getGlobalXfo().clone();
-    xfo.tr = ray.pointAtDist(camera.getFocalDistance());
-    return xfo;
+    const camera = viewport.getCamera()
+    const xfo = camera.getGlobalXfo().clone()
+    xfo.tr = ray.pointAtDist(camera.getFocalDistance())
+    return xfo
   }
 
   /**
@@ -210,7 +206,7 @@ class CreateGeomTool extends BaseCreateTool {
    * @param {any} parentItem - The parentItem param.
    */
   createStart(xfo, parentItem) {
-    this.stage = 1;
+    this.stage = 1
   }
 
   /**
@@ -243,22 +239,22 @@ class CreateGeomTool extends BaseCreateTool {
     //
     if (this.stage == 0) {
       if (event.button == 0) {
-        this.constructionPlane = new Xfo();
+        this.constructionPlane = new Xfo()
 
-        const xfo = this.screenPosToXfo(event.mousePos, event.viewport);
-        this.createStart(xfo, this.appData.scene.getRoot());
+        const xfo = this.screenPosToXfo(event.mousePos, event.viewport)
+        this.createStart(xfo, this.appData.scene.getRoot())
       } else if (event.button == 2) {
         // Cancel the tool.
         if (this.removeToolOnRightClick)
-          this.appData.toolManager.removeTool(this.index);
+          this.appData.toolManager.removeTool(this.index)
       }
-      return true;
+      return true
     } else if (event.button == 2) {
-      this.appData.undoRedoManager.undo(false);
-      this.stage = 0;
-      return true;
+      this.appData.undoRedoManager.undo(false)
+      this.stage = 0
+      return true
     }
-    return true;
+    return true
   }
 
   /**
@@ -268,9 +264,9 @@ class CreateGeomTool extends BaseCreateTool {
    */
   onMouseMove(event) {
     if (this.stage > 0) {
-      const xfo = this.screenPosToXfo(event.mousePos, event.viewport);
-      this.createMove(xfo.tr);
-      return true;
+      const xfo = this.screenPosToXfo(event.mousePos, event.viewport)
+      this.createMove(xfo.tr)
+      return true
     }
   }
 
@@ -281,9 +277,9 @@ class CreateGeomTool extends BaseCreateTool {
    */
   onMouseUp(event) {
     if (this.stage > 0) {
-      const xfo = this.screenPosToXfo(event.mousePos, event.viewport);
-      this.createRelease(xfo.tr);
-      return true;
+      const xfo = this.screenPosToXfo(event.mousePos, event.viewport)
+      this.createRelease(xfo.tr)
+      return true
     }
   }
 
@@ -355,13 +351,13 @@ class CreateGeomTool extends BaseCreateTool {
   onVRControllerButtonDown(event) {
     if (!this.__activeController) {
       // TODO: Snap the Xfo to any nearby construction planes.
-      this.__activeController = event.controller;
-      this.constructionPlane = new Xfo();
-      const xfo = this.constructionPlane.clone();
-      xfo.tr = this.__activeController.getTipXfo().tr;
-      this.createStart(xfo, this.appData.scene.getRoot());
+      this.__activeController = event.controller
+      this.constructionPlane = new Xfo()
+      const xfo = this.constructionPlane.clone()
+      xfo.tr = this.__activeController.getTipXfo().tr
+      this.createStart(xfo, this.appData.scene.getRoot())
     }
-    return true;
+    return true
   }
 
   /**
@@ -372,9 +368,9 @@ class CreateGeomTool extends BaseCreateTool {
   onVRPoseChanged(event) {
     if (this.__activeController && this.stage > 0) {
       // TODO: Snap the Xfo to any nearby construction planes.
-      const xfo = this.__activeController.getTipXfo();
-      this.createMove(xfo.tr);
-      return true;
+      const xfo = this.__activeController.getTipXfo()
+      this.createMove(xfo.tr)
+      return true
     }
   }
 
@@ -386,13 +382,13 @@ class CreateGeomTool extends BaseCreateTool {
   onVRControllerButtonUp(event) {
     if (this.stage > 0) {
       if (this.__activeController == event.controller) {
-        const xfo = this.__activeController.getTipXfo();
-        this.createRelease(xfo.tr);
-        if (this.stage == 0) this.__activeController = undefined;
-        return true;
+        const xfo = this.__activeController.getTipXfo()
+        this.createRelease(xfo.tr)
+        if (this.stage == 0) this.__activeController = undefined
+        return true
       }
     }
   }
 }
 
-export { CreateGeomChange, CreateGeomTool };
+export { CreateGeomChange, CreateGeomTool }

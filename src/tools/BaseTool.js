@@ -1,7 +1,4 @@
-import {
-  Signal,
-  ParameterOwner,
-} from '@zeainc/zea-engine';
+import { Signal, ParameterOwner } from '@zeainc/zea-engine'
 
 /**
  * Class representing a base tool.
@@ -13,18 +10,18 @@ export default class BaseTool extends ParameterOwner {
    * @param {any} appData - The appData value.
    */
   constructor(appData) {
-    super();
-    if (!appData) console.error('App data not provided to tool');
-    this.appData = appData;
+    super()
+    if (!appData) console.error('App data not provided to tool')
+    this.appData = appData
 
     // When the tool becomes active ready
-    this.installChanged = new Signal();
-    this.activatedChanged = new Signal();
-    this.actionFinished = new Signal();
+    this.installChanged = new Signal()
+    this.activatedChanged = new Signal()
+    this.actionFinished = new Signal()
 
-    this.__params = [];
-    this.__installed = false;
-    this.__activated = false;
+    this.__params = []
+    this.__installed = false
+    this.__activated = false
   }
 
   /**
@@ -32,7 +29,7 @@ export default class BaseTool extends ParameterOwner {
    * @return {any} The return value.
    */
   getName() {
-    return this.constructor.name;
+    return this.constructor.name
   }
 
   /**
@@ -40,7 +37,7 @@ export default class BaseTool extends ParameterOwner {
    * @return {any} The return value.
    */
   isPrimaryTool() {
-    return false;
+    return false
   }
 
   // ///////////////////////////////////
@@ -51,7 +48,7 @@ export default class BaseTool extends ParameterOwner {
    * @return {any} The return value.
    */
   installed() {
-    return this.__installed;
+    return this.__installed
   }
 
   /**
@@ -59,35 +56,35 @@ export default class BaseTool extends ParameterOwner {
    * @param {any} index - The index param.
    */
   install(index) {
-    if (this.__installed) throw new Error('Tool already installed');
-    this.index = index;
-    this.__installed = true;
-    this.installChanged.emit(true);
+    if (this.__installed) throw new Error('Tool already installed')
+    this.index = index
+    this.__installed = true
+    this.installChanged.emit(true)
   }
 
   /**
    * The uninstall method.
    */
   uninstall() {
-    this.__installed = false;
-    this.installChanged.emit(false);
+    this.__installed = false
+    this.installChanged.emit(false)
   }
 
   /**
    * The activateTool method.
    */
   activateTool() {
-    if (this.__activated) throw new Error('Tool already activate');
-    this.__activated = true;
-    this.activatedChanged.emit(true);
+    if (this.__activated) throw new Error('Tool already activate')
+    this.__activated = true
+    this.activatedChanged.emit(true)
   }
 
   /**
    * The deactivateTool method.
    */
   deactivateTool() {
-    this.__activated = false;
-    this.activatedChanged.emit(false);
+    this.__activated = false
+    this.activatedChanged.emit(false)
   }
 
   // ///////////////////////////////////

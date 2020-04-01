@@ -1,7 +1,7 @@
-import { Signal } from '@zeainc/zea-engine';
+import { Signal } from '@zeainc/zea-engine'
 
-const __changeClasses = {};
-const __classNames = {};
+const __changeClasses = {}
+const __classNames = {}
 
 /** Class representing an undo redo manager. */
 class UndoRedoManager {
@@ -9,25 +9,25 @@ class UndoRedoManager {
    * Create an undo redo manager.
    */
   constructor() {
-    this.__undoStack = [];
-    this.__redoStack = [];
+    this.__undoStack = []
+    this.__redoStack = []
 
-    this.changeAdded = new Signal();
-    this.changeUpdated = new Signal();
-    this.changeUndone = new Signal();
-    this.changeRedone = new Signal();
+    this.changeAdded = new Signal()
+    this.changeUpdated = new Signal()
+    this.changeUndone = new Signal()
+    this.changeRedone = new Signal()
 
-    this.__currChangeUpdated = this.__currChangeUpdated.bind(this);
+    this.__currChangeUpdated = this.__currChangeUpdated.bind(this)
   }
 
   /**
    * The flush method.
    */
   flush() {
-    for (const change of this.__undoStack) change.destroy();
-    this.__undoStack = [];
-    for (const change of this.__redoStack) change.destroy();
-    this.__redoStack = [];
+    for (const change of this.__undoStack) change.destroy()
+    this.__undoStack = []
+    for (const change of this.__redoStack) change.destroy()
+    this.__redoStack = []
   }
 
   /**
@@ -37,15 +37,15 @@ class UndoRedoManager {
   addChange(change) {
     // console.log("AddChange:", change.name)
     if (this.getCurrentChange())
-      this.getCurrentChange().updated.disconnect(this.__currChangeUpdated);
+      this.getCurrentChange().updated.disconnect(this.__currChangeUpdated)
 
-    this.__undoStack.push(change);
-    change.updated.connect(this.__currChangeUpdated);
+    this.__undoStack.push(change)
+    change.updated.connect(this.__currChangeUpdated)
 
-    for (const change of this.__redoStack) change.destroy();
-    this.__redoStack = [];
+    for (const change of this.__redoStack) change.destroy()
+    this.__redoStack = []
 
-    this.changeAdded.emit(change);
+    this.changeAdded.emit(change)
   }
 
   /**
@@ -53,12 +53,12 @@ class UndoRedoManager {
    * @return {any} The return value.
    */
   getCurrentChange() {
-    return this.__undoStack[this.__undoStack.length - 1];
+    return this.__undoStack[this.__undoStack.length - 1]
   }
 
   // eslint-disable-next-line require-jsdoc
   __currChangeUpdated(updateData) {
-    this.changeUpdated.emit(updateData);
+    this.changeUpdated.emit(updateData)
   }
 
   /**
@@ -67,12 +67,12 @@ class UndoRedoManager {
    */
   undo(pushOnRedoStack = true) {
     if (this.__undoStack.length > 0) {
-      const change = this.__undoStack.pop();
+      const change = this.__undoStack.pop()
       // console.log("undo:", change.name)
-      change.undo();
+      change.undo()
       if (pushOnRedoStack) {
-        this.__redoStack.push(change);
-        this.changeUndone.emit();
+        this.__redoStack.push(change)
+        this.changeUndone.emit()
       }
     }
   }
@@ -82,11 +82,11 @@ class UndoRedoManager {
    */
   redo() {
     if (this.__redoStack.length > 0) {
-      const change = this.__redoStack.pop();
+      const change = this.__redoStack.pop()
       // console.log("redo:", change.name)
-      change.redo();
-      this.__undoStack.push(change);
-      this.changeRedone.emit();
+      change.redo()
+      this.__undoStack.push(change)
+      this.changeRedone.emit()
     }
   }
 
@@ -99,7 +99,7 @@ class UndoRedoManager {
    * @return {any} The return value.
    */
   constructChange(claName) {
-    return new __changeClasses[claName]();
+    return new __changeClasses[claName]()
   }
 
   /**
@@ -109,9 +109,9 @@ class UndoRedoManager {
    */
   static getChangeClassName(inst) {
     if (__classNames[inst.constructor.name])
-      return __classNames[inst.constructor.name];
-    console.warn('Change not registered:', inst.constructor.name);
-    return inst.constructor.name;
+      return __classNames[inst.constructor.name]
+    console.warn('Change not registered:', inst.constructor.name)
+    return inst.constructor.name
   }
 
   /**
@@ -120,10 +120,10 @@ class UndoRedoManager {
    * @param {any} cls - The cls param.
    */
   static registerChange(name, cls) {
-    __changeClasses[name] = cls;
-    __classNames[cls.name] = name;
+    __changeClasses[name] = cls
+    __classNames[cls.name] = name
   }
 }
 
-export default UndoRedoManager;
-export { UndoRedoManager };
+export default UndoRedoManager
+export { UndoRedoManager }

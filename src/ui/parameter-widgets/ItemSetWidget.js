@@ -1,6 +1,6 @@
-import { Signal, ItemSetParameter } from '@zeainc/zea-engine';
-import BaseWidget from './BaseWidget.js';
-import uxFactory from '../UxFactory.js';
+import { Signal, ItemSetParameter } from '@zeainc/zea-engine'
+import BaseWidget from './BaseWidget.js'
+import uxFactory from '../UxFactory.js'
 
 /**
  * Class representing an item set widget.
@@ -14,92 +14,92 @@ export default class ItemSetWidget extends BaseWidget {
    * @param {any} appData - The appData value.
    */
   constructor(parameter, parentDomElem, appData) {
-    super(parameter);
-    const select = document.createElement('select');
+    super(parameter)
+    const select = document.createElement('select')
     select.classList.add('itemset-items')
 
     const rebuild = () => {
-      const items = Array.from(parameter.getValue());
-      select.setAttribute('size', items.length + 1);
+      const items = Array.from(parameter.getValue())
+      select.setAttribute('size', items.length + 1)
       for (let i = 0; i < items.length; i++) {
-        const item = items[i];
-        const option = document.createElement('option');
-        option.appendChild(document.createTextNode(item.getPath()));
-        select.appendChild(option);
+        const item = items[i]
+        const option = document.createElement('option')
+        option.appendChild(document.createTextNode(item.getPath()))
+        select.appendChild(option)
       }
-    };
+    }
     parameter.valueChanged.connect(() => {
       while (select.firstChild) {
-        select.removeChild(select.firstChild);
+        select.removeChild(select.firstChild)
       }
-      rebuild();
-    });
-    rebuild();
+      rebuild()
+    })
+    rebuild()
 
-    select.selectedIndex = -1;
-    select.style.width = '100%';
+    select.selectedIndex = -1
+    select.style.width = '100%'
 
-    const ul = document.createElement('ul');
-    ul.style.width = '100%';
-    ul.style['padding-inline-start'] = '0px';
-    const li = document.createElement('li');
-    li.style.display = 'block';
-    ul.appendChild(li);
-    li.appendChild(select);
+    const ul = document.createElement('ul')
+    ul.style.width = '100%'
+    ul.style['padding-inline-start'] = '0px'
+    const li = document.createElement('li')
+    li.style.display = 'block'
+    ul.appendChild(li)
+    li.appendChild(select)
 
-    parentDomElem.appendChild(ul);
+    parentDomElem.appendChild(ul)
 
     // ///////////////////////////
     // Handle Changes.
-    this.selectionChanged = new Signal();
-    this.selectionDoubleClicked = new Signal();
+    this.selectionChanged = new Signal()
+    this.selectionDoubleClicked = new Signal()
 
-    let prevSelection = -1;
+    let prevSelection = -1
 
-    select.addEventListener('change', event => {
-      console.log('valueChange', select.selectedIndex);
-      this.selectionChanged.emit(select.selectedIndex, prevSelection);
-      prevSelection = select.selectedIndex;
-    });
-    select.addEventListener('dblclick', event => {
-      console.log('dblclick', select.selectedIndex);
-      const item = parameter.getItem(select.selectedIndex);
-      appData.selectionManager.setSelection(new Set([item]));
-      this.selectionDoubleClicked.emit(select.selectedIndex);
-    });
+    select.addEventListener('change', (event) => {
+      console.log('valueChange', select.selectedIndex)
+      this.selectionChanged.emit(select.selectedIndex, prevSelection)
+      prevSelection = select.selectedIndex
+    })
+    select.addEventListener('dblclick', (event) => {
+      console.log('dblclick', select.selectedIndex)
+      const item = parameter.getItem(select.selectedIndex)
+      appData.selectionManager.setSelection(new Set([item]))
+      this.selectionDoubleClicked.emit(select.selectedIndex)
+    })
 
     // ///////////////////////////////
     // Add/Remove buttons.
     if (parameter.getFilterFn() != undefined) {
-      const addButton = document.createElement('button');
-      addButton.appendChild(document.createTextNode('Add'));
-      addButton.addEventListener('click', e => {
+      const addButton = document.createElement('button')
+      addButton.appendChild(document.createTextNode('Add'))
+      addButton.addEventListener('click', (e) => {
         // console.log('Start picking mode.');
         appData.selectionManager.startPickingMode(
           `Pick a new item.`,
-          items => {
+          (items) => {
             // const change = new ParameterValueChange(parameter, items);
             // appData.undoRedoManager.addChange(change);
             parameter.addItems(items)
           },
           parameter.getFilterFn(),
           1
-        );
-      });
-      const removeButton = document.createElement('button');
-      removeButton.appendChild(document.createTextNode('Remove'));
-      removeButton.addEventListener('click', e => {
+        )
+      })
+      const removeButton = document.createElement('button')
+      removeButton.appendChild(document.createTextNode('Remove'))
+      removeButton.addEventListener('click', (e) => {
         parameter.removeItem(select.selectedIndex)
-      });
-      const li = document.createElement('li');
-      li.style.display = 'block';
-      addButton.style.margin = '2px';
-      removeButton.style.margin = '2px';
-      li.appendChild(addButton);
-      li.appendChild(removeButton);
-      ul.appendChild(li);
+      })
+      const li = document.createElement('li')
+      li.style.display = 'block'
+      addButton.style.margin = '2px'
+      removeButton.style.margin = '2px'
+      li.appendChild(addButton)
+      li.appendChild(removeButton)
+      ul.appendChild(li)
     }
   }
 }
 
-uxFactory.registerWidget(ItemSetWidget, p => p instanceof ItemSetParameter);
+uxFactory.registerWidget(ItemSetWidget, (p) => p instanceof ItemSetParameter)

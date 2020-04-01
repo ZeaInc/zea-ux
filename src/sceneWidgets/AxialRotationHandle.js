@@ -1,4 +1,3 @@
-
 import {
   Color,
   Xfo,
@@ -7,9 +6,9 @@ import {
   GeomItem,
   Material,
   Torus,
-} from '@zeainc/zea-engine';
+} from '@zeainc/zea-engine'
 
-import { BaseAxialRotationHandle } from './BaseAxialRotationHandle.js';
+import { BaseAxialRotationHandle } from './BaseAxialRotationHandle.js'
 
 /**
  * Class representing an axial rotation scene widget.
@@ -24,54 +23,50 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
    * @param {any} color - The color value.
    */
   constructor(name, radius, thickness, color) {
-    super(name);
+    super(name)
 
-    this.__color = color;
-    this.__hilightedColor = new Color(1, 1, 1);
-    this.radiusParam = this.addParameter(
-      new NumberParameter('radius', radius)
-    );
-    this.colorParam = this.addParameter(
-      new ColorParameter('BaseColor', color)
-    );
+    this.__color = color
+    this.__hilightedColor = new Color(1, 1, 1)
+    this.radiusParam = this.addParameter(new NumberParameter('radius', radius))
+    this.colorParam = this.addParameter(new ColorParameter('BaseColor', color))
 
-    const handleMat = new Material('handle', 'HandleShader');
-    handleMat.getParameter("maintainScreenSize").setValue(true)
-    handleMat.replaceParameter(this.colorParam);
+    const handleMat = new Material('handle', 'HandleShader')
+    handleMat.getParameter('maintainScreenSize').setValue(true)
+    handleMat.replaceParameter(this.colorParam)
 
     // const handleGeom = new Cylinder(radius, thickness * 2, 64, 2, false);
-    const handleGeom = new Torus(thickness, radius, 64);
-    this.handle = new GeomItem('handle', handleGeom, handleMat);
-    this.handleXfo = new Xfo();
+    const handleGeom = new Torus(thickness, radius, 64)
+    this.handle = new GeomItem('handle', handleGeom, handleMat)
+    this.handleXfo = new Xfo()
 
     this.radiusParam.valueChanged.connect(() => {
-      radius = this.radiusParam.getValue();
-      handleGeom.getParameter('radius').setValue(radius);
-      handleGeom.getParameter('height').setValue(radius * 0.02);
-    });
+      radius = this.radiusParam.getValue()
+      handleGeom.getParameter('radius').setValue(radius)
+      handleGeom.getParameter('height').setValue(radius * 0.02)
+    })
 
-    this.addChild(this.handle);
+    this.addChild(this.handle)
   }
 
   /**
    * The highlight method.
    */
   highlight() {
-    this.colorParam.setValue(this.__hilightedColor);
+    this.colorParam.setValue(this.__hilightedColor)
   }
 
   /**
    * The unhighlight method.
    */
   unhighlight() {
-    this.colorParam.setValue(this.__color);
+    this.colorParam.setValue(this.__color)
   }
 
   /**
    * The getBaseXfo method.
    */
   getBaseXfo() {
-    return this.getParameter('GlobalXfo').getValue();
+    return this.getParameter('GlobalXfo').getValue()
   }
 
   /**
@@ -79,10 +74,10 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
    * @param {any} event - The event param.
    */
   onDragStart(event) {
-    super.onDragStart(event);
+    super.onDragStart(event)
 
     // Hilight the material.
-    this.colorParam.setValue(new Color(1, 1, 1));
+    this.colorParam.setValue(new Color(1, 1, 1))
   }
 
   /**
@@ -90,7 +85,7 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
    * @param {any} event - The event param.
    */
   onDrag(event) {
-    super.onDrag(event);
+    super.onDrag(event)
   }
 
   /**
@@ -98,8 +93,8 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
    * @param {any} event - The event param.
    */
   onDragEnd(event) {
-    super.onDragEnd(event);
-    this.colorParam.setValue(this.__color);
+    super.onDragEnd(event)
+    this.colorParam.setValue(this.__color)
   }
 }
-export { AxialRotationHandle };
+export { AxialRotationHandle }

@@ -1,6 +1,6 @@
-import { Signal } from '@zeainc/zea-engine';
-import { Session } from '@zeainc/zea-collab';
-import { UserChip } from './user-chip.js';
+import { Signal } from '@zeainc/zea-engine'
+import { Session } from '@zeainc/zea-collab'
+import { UserChip } from './user-chip.js'
 
 /** Class representing a collab panel. */
 class CollabPanel {
@@ -9,8 +9,8 @@ class CollabPanel {
    * @param {any} session - The session value.
    */
   constructor(session) {
-    this.userSelected = new Signal();
-    this.session = session;
+    this.userSelected = new Signal()
+    this.session = session
   }
 
   /**
@@ -79,41 +79,41 @@ class CollabPanel {
           Join Room
         </button>
       </div>
-    `;
+    `
 
-    parentElement.innerHTML = collabMarkup;
+    parentElement.innerHTML = collabMarkup
 
-    const $userChips = document.getElementById('userChips');
-    const $receivedMessages = document.getElementById('receivedMessages');
+    const $userChips = document.getElementById('userChips')
+    const $receivedMessages = document.getElementById('receivedMessages')
     // const $mediaWrapper = document.getElementById('mediaWrapper');
 
-    const $toggleMic = document.getElementById('toggleMic');
-    let micStarted = false;
-    $toggleMic.addEventListener('click', e => {
+    const $toggleMic = document.getElementById('toggleMic')
+    let micStarted = false
+    $toggleMic.addEventListener('click', (e) => {
       if (micStarted) {
-        this.session.muteAudio();
-        $toggleMic.classList.remove('AudioButton--on');
-        micStarted = false;
+        this.session.muteAudio()
+        $toggleMic.classList.remove('AudioButton--on')
+        micStarted = false
       } else {
-        this.session.unmuteAudio();
-        $toggleMic.classList.add('AudioButton--on');
-        micStarted = true;
+        this.session.unmuteAudio()
+        $toggleMic.classList.add('AudioButton--on')
+        micStarted = true
       }
-    });
+    })
 
-    const $toggleCam = document.getElementById('toggleCam');
-    let cameraStarted = false;
-    $toggleCam.addEventListener('click', e => {
+    const $toggleCam = document.getElementById('toggleCam')
+    let cameraStarted = false
+    $toggleCam.addEventListener('click', (e) => {
       if (cameraStarted) {
-        this.session.stopCamera();
-        $toggleCam.classList.remove('CameraButton--on');
-        cameraStarted = false;
+        this.session.stopCamera()
+        $toggleCam.classList.remove('CameraButton--on')
+        cameraStarted = false
       } else {
-        this.session.startCamera();
-        $toggleCam.classList.add('CameraButton--on');
-        cameraStarted = true;
+        this.session.startCamera()
+        $toggleCam.classList.add('CameraButton--on')
+        cameraStarted = true
       }
-    });
+    })
 
     // document.formCreateRoom.addEventListener('submit', e => {
     //   const $form = e.target;
@@ -123,79 +123,70 @@ class CollabPanel {
     // });
 
     const addMessage = (user, msg) => {
-      const p = document.createElement('p');
-      p.innerHTML = `<strong>${user}:</strong> ${msg}`;
-      $receivedMessages.appendChild(p);
-      $receivedMessages.scrollTop = $receivedMessages.scrollHeight;
-    };
+      const p = document.createElement('p')
+      p.innerHTML = `<strong>${user}:</strong> ${msg}`
+      $receivedMessages.appendChild(p)
+      $receivedMessages.scrollTop = $receivedMessages.scrollHeight
+    }
 
-    document.formSendMessage.addEventListener('submit', e => {
-      const $form = e.target;
-      addMessage('Me', $form.messageToSend.value);
+    document.formSendMessage.addEventListener('submit', (e) => {
+      const $form = e.target
+      addMessage('Me', $form.messageToSend.value)
       this.session.pub(Session.actions.TEXT_MESSAGE, {
         text: $form.messageToSend.value,
-      });
-      e.preventDefault();
-      $form.reset();
-    });
+      })
+      e.preventDefault()
+      $form.reset()
+    })
 
-    this.session.sub(
-      Session.actions.TEXT_MESSAGE,
-      (message, userId) => {
-        const userData = this.session.getUser(userId);
-        addMessage(userData.given_name, message.text);
-      }
-    );
+    this.session.sub(Session.actions.TEXT_MESSAGE, (message, userId) => {
+      const userData = this.session.getUser(userId)
+      addMessage(userData.given_name, message.text)
+    })
 
-    const userChipsElements = {};
-    const addUserChip = userData => {
-      const p = document.createElement('p');
-      p.innerHTML = `<strong>(${userData.name} has joined)</strong>`;
-      $receivedMessages.appendChild(p);
-      $receivedMessages.scrollTop = $receivedMessages.scrollHeight;
+    const userChipsElements = {}
+    const addUserChip = (userData) => {
+      const p = document.createElement('p')
+      p.innerHTML = `<strong>(${userData.name} has joined)</strong>`
+      $receivedMessages.appendChild(p)
+      $receivedMessages.scrollTop = $receivedMessages.scrollHeight
 
-      const li = document.createElement('li');
-      $userChips.appendChild(li);
-      const userChip = new UserChip(li, userData);
-      userChip.userSelected.connect(userData => {
-        this.userSelected.emit(userData);
-      });
+      const li = document.createElement('li')
+      $userChips.appendChild(li)
+      const userChip = new UserChip(li, userData)
+      userChip.userSelected.connect((userData) => {
+        this.userSelected.emit(userData)
+      })
 
-      userChipsElements[userData.id] = li;
-    };
+      userChipsElements[userData.id] = li
+    }
 
-    const removeUserChip = userData => {
-      const p = document.createElement('p');
-      p.innerHTML = `<strong>(${userData.name} has left)</strong>`;
-      $receivedMessages.appendChild(p);
-      $receivedMessages.scrollTop = $receivedMessages.scrollHeight;
+    const removeUserChip = (userData) => {
+      const p = document.createElement('p')
+      p.innerHTML = `<strong>(${userData.name} has left)</strong>`
+      $receivedMessages.appendChild(p)
+      $receivedMessages.scrollTop = $receivedMessages.scrollHeight
 
-      $userChips.removeChild(userChipsElements[userData.id]);
-    };
+      $userChips.removeChild(userChipsElements[userData.id])
+    }
 
-    this.session.sub(
-      Session.actions.USER_JOINED,
-      (userData, userId) => {
-        addUserChip(userData);
-      }
-    );
+    this.session.sub(Session.actions.USER_JOINED, (userData, userId) => {
+      addUserChip(userData)
+    })
 
-    this.session.sub(
-      Session.actions.USER_LEFT,
-      (userData, userId) => {
-        removeUserChip(userData);
-      }
-    );
+    this.session.sub(Session.actions.USER_LEFT, (userData, userId) => {
+      removeUserChip(userData)
+    })
 
     this.session.sub(Session.actions.LEFT_ROOM, () => {
-      const users = this.session.getUsers();
-      for (const id in users) removeUserChip(users[id]);
-      $receivedMessages.innerHTML = '';
-    });
+      const users = this.session.getUsers()
+      for (const id in users) removeUserChip(users[id])
+      $receivedMessages.innerHTML = ''
+    })
 
-    const users = this.session.getUsers();
+    const users = this.session.getUsers()
     for (const id in users) {
-      addUserChip(users[id]);
+      addUserChip(users[id])
     }
   }
 
@@ -206,4 +197,4 @@ class CollabPanel {
   unMount(parentElement) {}
 }
 
-export { CollabPanel };
+export { CollabPanel }

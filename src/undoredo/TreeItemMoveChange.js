@@ -1,5 +1,5 @@
-import UndoRedoManager from './UndoRedoManager.js';
-import Change from './Change.js';
+import UndoRedoManager from './UndoRedoManager.js'
+import Change from './Change.js'
 
 /**
  * Class representing a treeItemeter value change.
@@ -13,15 +13,15 @@ class TreeItemMoveChange extends Change {
    */
   constructor(treeItem, newOwner) {
     if (treeItem) {
-      console.log("TreeItemMoveChange")
-      super(treeItem.getName() + ' Added');
-      this.treeItem = treeItem;
-      this.oldOwner = this.treeItem.getOwner();
+      console.log('TreeItemMoveChange')
+      super(treeItem.getName() + ' Added')
+      this.treeItem = treeItem
+      this.oldOwner = this.treeItem.getOwner()
       this.oldOwnerIndex = this.oldOwner.getChildIndex(this.treeItem)
-      this.newOwner = newOwner;
-      this.newOwner.addChild(this.treeItem, true);
+      this.newOwner = newOwner
+      this.newOwner.addChild(this.treeItem, true)
     } else {
-      super();
+      super()
     }
   }
 
@@ -29,14 +29,14 @@ class TreeItemMoveChange extends Change {
    * The undo method.
    */
   undo() {
-    this.oldOwner.insertChild(this.treeItem, this.oldOwnerIndex, true);
+    this.oldOwner.insertChild(this.treeItem, this.oldOwnerIndex, true)
   }
 
   /**
    * The redo method.
    */
   redo() {
-    this.newOwner.addChild(this.treeItem, true);
+    this.newOwner.addChild(this.treeItem, true)
   }
 
   /**
@@ -49,8 +49,8 @@ class TreeItemMoveChange extends Change {
       name: this.name,
       treeItemPath: this.treeItem.getPath(),
       newOwnerPath: this.newOwner.getPath(),
-    };
-    return j;
+    }
+    return j
   }
 
   /**
@@ -59,29 +59,26 @@ class TreeItemMoveChange extends Change {
    * @treeItem {any} context - The context treeItem.
    */
   fromJSON(j, context) {
-
-    const treeItem = appData.scene.getRoot().resolvePath(j.treeItemPath, 1);
+    const treeItem = appData.scene.getRoot().resolvePath(j.treeItemPath, 1)
     if (!treeItem) {
-      console.warn('resolvePath is unable to resolve', j.treeItemPath);
-      return;
+      console.warn('resolvePath is unable to resolve', j.treeItemPath)
+      return
     }
-    const newOwner = appData.scene.getRoot().resolvePath(j.newOwnerPath, 1);
+    const newOwner = appData.scene.getRoot().resolvePath(j.newOwnerPath, 1)
     if (!newOwner) {
-      console.warn('resolvePath is unable to resolve', j.newOwnerPath);
-      return;
+      console.warn('resolvePath is unable to resolve', j.newOwnerPath)
+      return
     }
-    this.name = j.name;
-    this.treeItem = treeItem;
-    this.newOwner = newOwner;
-    
-    this.oldOwner = this.treeItem.getOwner();
+    this.name = j.name
+    this.treeItem = treeItem
+    this.newOwner = newOwner
+
+    this.oldOwner = this.treeItem.getOwner()
     this.oldOwnerIndex = this.oldOwner.getChildIndex(this.treeItem)
-    this.newOwner.addChild(this.treeItem, true);
+    this.newOwner.addChild(this.treeItem, true)
   }
 }
 
-UndoRedoManager.registerChange('TreeItemMoveChange', TreeItemMoveChange);
+UndoRedoManager.registerChange('TreeItemMoveChange', TreeItemMoveChange)
 
-export {
-  TreeItemMoveChange
-};
+export { TreeItemMoveChange }

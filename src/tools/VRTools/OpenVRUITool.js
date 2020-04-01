@@ -1,4 +1,4 @@
-import BaseTool from '../BaseTool.js';
+import BaseTool from '../BaseTool.js'
 
 /**
  * Class representing an open VR UI tool.
@@ -11,22 +11,22 @@ class OpenVRUITool extends BaseTool {
    * @param {any} vrUITool - The vrUITool value.
    */
   constructor(appData, vrUITool) {
-    super(appData);
+    super(appData)
 
-    this.vrUITool = vrUITool;
-    this.uiToolIndex = -1;
-    this.__stayClosed = false;
+    this.vrUITool = vrUITool
+    this.uiToolIndex = -1
+    this.__stayClosed = false
   }
 
   /**
    * The uninstall method.
    */
   uninstall() {
-    super.uninstall();
+    super.uninstall()
 
     // Also remove the UI tool
     if (this.uiToolIndex > 0)
-      this.appData.toolManager.removeToolByHandle(this.vrUITool);
+      this.appData.toolManager.removeToolByHandle(this.vrUITool)
   }
 
   // ///////////////////////////////////
@@ -48,7 +48,7 @@ class OpenVRUITool extends BaseTool {
    * The stayClosed method.
    */
   stayClosed() {
-    this.__stayClosed = true;
+    this.__stayClosed = true
   }
 
   /**
@@ -57,37 +57,37 @@ class OpenVRUITool extends BaseTool {
    * @return {any} The return value.
    */
   onVRPoseChanged(event) {
-    if (this.vrUITool.installed()) return;
+    if (this.vrUITool.installed()) return
 
     // Controller coordinate system
     // X = Horizontal.
     // Y = Up.
     // Z = Towards handle base.
-    const headXfo = event.viewXfo;
+    const headXfo = event.viewXfo
     const checkControllers = (ctrlA, ctrlB) => {
-      if (!ctrlA) return false;
-      const xfoA = ctrlA.getTreeItem().getGlobalXfo();
-      const headToCtrlA = xfoA.tr.subtract(headXfo.tr);
-      headToCtrlA.normalizeInPlace();
+      if (!ctrlA) return false
+      const xfoA = ctrlA.getTreeItem().getGlobalXfo()
+      const headToCtrlA = xfoA.tr.subtract(headXfo.tr)
+      headToCtrlA.normalizeInPlace()
       if (headToCtrlA.angleTo(xfoA.ori.getYaxis()) < Math.PI * 0.25) {
         // Stay closed as a subsequent tool has just caused the UI to be
         // closed while interacting with the UI. (see: VRUITool.deactivateTool)
         if (!this.__stayClosed) {
-          this.vrUITool.setUIControllers(this, ctrlA, ctrlB, headXfo);
-          this.uiToolIndex = this.appData.toolManager.pushTool(this.vrUITool);
+          this.vrUITool.setUIControllers(this, ctrlA, ctrlB, headXfo)
+          this.uiToolIndex = this.appData.toolManager.pushTool(this.vrUITool)
         }
-        return true;
+        return true
       }
-    };
+    }
 
     if (event.controllers.length > 0) {
       if (checkControllers(event.controllers[0], event.controllers[1]))
-        return true;
+        return true
       if (checkControllers(event.controllers[1], event.controllers[0]))
-        return true;
+        return true
     }
-    this.uiToolIndex = -1;
-    this.__stayClosed = false;
+    this.uiToolIndex = -1
+    this.__stayClosed = false
   }
 }
-export { OpenVRUITool };
+export { OpenVRUITool }

@@ -1,7 +1,7 @@
-import { ValueSetMode, StringParameter } from '@zeainc/zea-engine';
-import BaseWidget from './BaseWidget.js';
-import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
-import uxFactory from '../UxFactory.js';
+import { ValueSetMode, StringParameter } from '@zeainc/zea-engine'
+import BaseWidget from './BaseWidget.js'
+import ParameterValueChange from '../../undoredo/ParameterValueChange.js'
+import uxFactory from '../UxFactory.js'
 
 /**
  * Class representing a string widget.
@@ -15,58 +15,55 @@ export default class StringWidget extends BaseWidget {
    * @param {any} appData - The appData value.
    */
   constructor(parameter, parentDomElem, appData) {
-    super(parameter);
+    super(parameter)
 
-    const input = document.createElement('input');
-    input.className = 'mdl-textfield__input';
-    input.setAttribute('id', parameter.getName());
-    input.setAttribute('type', 'text');
-    input.setAttribute('value', parameter.getValue());
-    input.setAttribute('tabindex', 0);
+    const input = document.createElement('input')
+    input.className = 'mdl-textfield__input'
+    input.setAttribute('id', parameter.getName())
+    input.setAttribute('type', 'text')
+    input.setAttribute('value', parameter.getValue())
+    input.setAttribute('tabindex', 0)
 
-    parentDomElem.appendChild(input);
+    parentDomElem.appendChild(input)
 
     // ///////////////////////////
     // Handle Changes.
 
-    let change;
-    let remoteUserEditedHighlightId;
-    parameter.valueChanged.connect(mode => {
+    let change
+    let remoteUserEditedHighlightId
+    parameter.valueChanged.connect((mode) => {
       if (!change) {
-        input.value = parameter.getValue();
+        input.value = parameter.getValue()
         if (mode == ValueSetMode.REMOTEUSER_SETVALUE) {
-          input.classList.add('user-edited');
+          input.classList.add('user-edited')
           if (remoteUserEditedHighlightId)
-            clearTimeout(remoteUserEditedHighlightId);
+            clearTimeout(remoteUserEditedHighlightId)
           remoteUserEditedHighlightId = setTimeout(() => {
-            input.classList.remove('user-edited');
+            input.classList.remove('user-edited')
             remoteUserEditedHighlightId = null
-          }, 1500);
+          }, 1500)
         }
       }
-    });
+    })
 
     const valueChange = () => {
-      const value = input.value;
+      const value = input.value
       if (!change) {
-        change = new ParameterValueChange(parameter, value);
-        appData.undoRedoManager.addChange(change);
+        change = new ParameterValueChange(parameter, value)
+        appData.undoRedoManager.addChange(change)
       } else {
-        change.update({ value });
+        change.update({ value })
       }
-    };
+    }
 
     const valueChangeEnd = () => {
-      valueChange();
-      change = undefined;
-    };
+      valueChange()
+      change = undefined
+    }
 
-    input.addEventListener('input', valueChange);
-    input.addEventListener('change', valueChangeEnd);
+    input.addEventListener('input', valueChange)
+    input.addEventListener('change', valueChangeEnd)
   }
 }
 
-uxFactory.registerWidget(
-  StringWidget,
-  p => p instanceof StringParameter
-);
+uxFactory.registerWidget(StringWidget, (p) => p instanceof StringParameter)

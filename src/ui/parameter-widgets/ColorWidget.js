@@ -1,12 +1,12 @@
-import { Color, ValueSetMode, ColorParameter } from '@zeainc/zea-engine';
+import { Color, ValueSetMode, ColorParameter } from '@zeainc/zea-engine'
 // import iro from '@jaames/iro';
 // import iro from '../../../node_modules/@jaames/iro/dist/iro.es.js';
 // import iro from 'https://rawgit.com/jaames/iro.js/master/dist/iro.es.js';
 
-import BaseWidget from './BaseWidget.js';
+import BaseWidget from './BaseWidget.js'
 
-import uxFactory from '../UxFactory.js';
-import ParameterValueChange from '../../undoredo/ParameterValueChange.js';
+import uxFactory from '../UxFactory.js'
+import ParameterValueChange from '../../undoredo/ParameterValueChange.js'
 
 /**
  * Class representing a color widget.
@@ -20,7 +20,7 @@ export default class ColorWidget extends BaseWidget {
    * @param {any} appData - The appData value.
    */
   constructor(parameter, parentDomElem, appData) {
-    super(parameter);
+    super(parameter)
 
     const colorPicker = new iro.ColorPicker(parentDomElem, {
       // Color picker options:
@@ -31,55 +31,55 @@ export default class ColorWidget extends BaseWidget {
       anticlockwise: true,
       borderWidth: 1,
       borderColor: '#fff',
-    });
+    })
 
     // ///////////////////////////
     // Handle Changes.
 
-    let change = undefined;
-    let undoing = false;
-    let remoteUserEditedHighlightId;
-    parameter.valueChanged.connect(mode => {
+    let change = undefined
+    let undoing = false
+    let remoteUserEditedHighlightId
+    parameter.valueChanged.connect((mode) => {
       if (!change) {
-        undoing = true;
-        colorPicker.color.rgb = parameter.getValue().getAsRGBDict();
-        undoing = false;
+        undoing = true
+        colorPicker.color.rgb = parameter.getValue().getAsRGBDict()
+        undoing = false
 
         if (mode == ValueSetMode.REMOTEUSER_SETVALUE) {
-          colorPicker.el.classList.add('user-edited');
+          colorPicker.el.classList.add('user-edited')
           if (remoteUserEditedHighlightId)
-            clearTimeout(remoteUserEditedHighlightId);
+            clearTimeout(remoteUserEditedHighlightId)
           remoteUserEditedHighlightId = setTimeout(() => {
-            colorPicker.el.classList.remove('user-edited');
-            remoteUserEditedHighlightId = null;
-          }, 1500);
+            colorPicker.el.classList.remove('user-edited')
+            remoteUserEditedHighlightId = null
+          }, 1500)
         }
       }
-    });
+    })
 
     colorPicker.on('input:start', () => {
-      console.log('input:start', parameter.getValue().getAsRGBDict());
-      change = new ParameterValueChange(parameter);
-      appData.undoRedoManager.addChange(change);
-    });
+      console.log('input:start', parameter.getValue().getAsRGBDict())
+      change = new ParameterValueChange(parameter)
+      appData.undoRedoManager.addChange(change)
+    })
 
     colorPicker.on('input:end', () => {
-      console.log('input:end');
-      change = undefined;
-    });
+      console.log('input:end')
+      change = undefined
+    })
 
     colorPicker.on('color:change', (color, changes) => {
-      if (undoing) return;
+      if (undoing) return
       // console.log('input:change', colorPicker.color.rgb, !change)
-      const value = new Color();
-      value.setFromRGBDict(colorPicker.color.rgb);
+      const value = new Color()
+      value.setFromRGBDict(colorPicker.color.rgb)
       if (!change) {
-        change = new ParameterValueChange(parameter, value);
-        appData.undoRedoManager.addChange(change);
+        change = new ParameterValueChange(parameter, value)
+        appData.undoRedoManager.addChange(change)
       } else {
-        change.update({ value });
+        change.update({ value })
       }
-    });
+    })
   }
 
   /**
@@ -89,4 +89,4 @@ export default class ColorWidget extends BaseWidget {
   setParentDomElem(parentDomElem) {}
 }
 
-uxFactory.registerWidget(ColorWidget, p => p instanceof ColorParameter);
+uxFactory.registerWidget(ColorWidget, (p) => p instanceof ColorParameter)

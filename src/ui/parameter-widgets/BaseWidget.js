@@ -7,4 +7,4 @@ class BaseWidget {
   constructor(parameter) {}
 }
 
-export default BaseWidget;
+export default BaseWidget

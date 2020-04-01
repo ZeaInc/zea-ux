@@ -1,4 +1,3 @@
-
 import {
   SystemDesc,
   Float32,
@@ -27,9 +26,9 @@ import {
   Cone,
   Operator,
   sgFactory,
-} from '@zeainc/zea-engine';
-import UndoRedoManager from './UndoRedoManager.js';
-import Change from './Change.js';
+} from '@zeainc/zea-engine'
+import UndoRedoManager from './UndoRedoManager.js'
+import Change from './Change.js'
 
 /**
  * Class representing a treeItemeter value change.
@@ -43,17 +42,17 @@ class TreeItemAddChange extends Change {
    */
   constructor(treeItem, owner, selectionManager) {
     if (treeItem) {
-      super(treeItem.getName() + ' Added');
-      this.treeItem = treeItem;
-      this.owner = owner;
-      this.selectionManager = selectionManager;
-      this.prevSelection = new Set(this.selectionManager.getSelection());
-      this.treeItemIndex = this.owner.addChild(this.treeItem);
-      this.selectionManager.setSelection(new Set([this.treeItem]), false);
+      super(treeItem.getName() + ' Added')
+      this.treeItem = treeItem
+      this.owner = owner
+      this.selectionManager = selectionManager
+      this.prevSelection = new Set(this.selectionManager.getSelection())
+      this.treeItemIndex = this.owner.addChild(this.treeItem)
+      this.selectionManager.setSelection(new Set([this.treeItem]), false)
 
-      this.treeItem.addRef(this);
+      this.treeItem.addRef(this)
     } else {
-      super();
+      super()
     }
   }
 
@@ -62,19 +61,19 @@ class TreeItemAddChange extends Change {
    */
   undo() {
     if (this.treeItem instanceof Operator) {
-      const op = this.treeItem;
-      op.detach();
+      const op = this.treeItem
+      op.detach()
     } else if (this.treeItem instanceof TreeItem) {
-      this.treeItem.traverse(subTreeItem => {
+      this.treeItem.traverse((subTreeItem) => {
         if (subTreeItem instanceof Operator) {
-          const op = subTreeItem;
-          op.detach();
+          const op = subTreeItem
+          op.detach()
         }
-      }, false);
+      }, false)
     }
-    this.owner.removeChild(this.treeItemIndex);
+    this.owner.removeChild(this.treeItemIndex)
     if (this.selectionManager)
-      this.selectionManager.setSelection(this.prevSelection, false);
+      this.selectionManager.setSelection(this.prevSelection, false)
   }
 
   /**
@@ -83,19 +82,19 @@ class TreeItemAddChange extends Change {
   redo() {
     // Now re-attach all the detached operators.
     if (this.treeItem instanceof Operator) {
-      const op = this.treeItem;
-      op.reattach();
+      const op = this.treeItem
+      op.reattach()
     } else if (subTreeItem instanceof TreeItem) {
-      this.treeItem.traverse(subTreeItem => {
+      this.treeItem.traverse((subTreeItem) => {
         if (subTreeItem instanceof Operator) {
-          const op = subTreeItem;
-          op.reattach();
+          const op = subTreeItem
+          op.reattach()
         }
-      }, false);
+      }, false)
     }
-    this.owner.addChild(this.treeItem);
+    this.owner.addChild(this.treeItem)
     if (this.selectionManager)
-      this.selectionManager.setSelection(new Set([this.treeItem]), false);
+      this.selectionManager.setSelection(new Set([this.treeItem]), false)
   }
 
   /**
@@ -109,8 +108,8 @@ class TreeItemAddChange extends Change {
       treeItem: this.treeItem.toJSON(context),
       treeItemPath: this.treeItem.getPath(),
       treeItemIndex: this.treeItemIndex,
-    };
-    return j;
+    }
+    return j
   }
 
   /**
@@ -119,27 +118,24 @@ class TreeItemAddChange extends Change {
    * @treeItem {any} context - The context treeItem.
    */
   fromJSON(j, context) {
-
-    const treeItem = sgFactory.constructClass(j.treeItem.type);
+    const treeItem = sgFactory.constructClass(j.treeItem.type)
     if (!treeItem) {
-      console.warn('resolvePath is unable to conostruct', j.treeItem);
-      return;
+      console.warn('resolvePath is unable to conostruct', j.treeItem)
+      return
     }
-    this.name = j.name;
-    this.treeItem = treeItem;
-    this.treeItem.addRef(this);
-    
-    this.treeItem.fromJSON(j.treeItem, context);
-    this.treeItemIndex = this.owner.addChild(this.treeItem, false, false);
+    this.name = j.name
+    this.treeItem = treeItem
+    this.treeItem.addRef(this)
+
+    this.treeItem.fromJSON(j.treeItem, context)
+    this.treeItemIndex = this.owner.addChild(this.treeItem, false, false)
   }
 
-  destroy() { 
-    this.treeItem.removeRef(this);
+  destroy() {
+    this.treeItem.removeRef(this)
   }
 }
 
-UndoRedoManager.registerChange('TreeItemAddChange', TreeItemAddChange);
+UndoRedoManager.registerChange('TreeItemAddChange', TreeItemAddChange)
 
-export {
-  TreeItemAddChange
-};
+export { TreeItemAddChange }
