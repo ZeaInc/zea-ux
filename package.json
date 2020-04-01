@@ -10,12 +10,13 @@
   "main": "./dist/zea-ux.js",
   "scripts": {
     "build": "webpack --config webpack-prod.config.js",
-    "build:dev": "webpack --mode=development --watch --config webpack-dev.config.js",
     "docs": "documentation build src/** -f html -o docs",
     "docs:serve": "documentation serve --watch src/**",
     "docs:lint": "documentation lint src/**",
-    "dist": "webpack --config webpack-prod.config.js && yarn publish --access=public",
-    "lint": "eslint src/"
+    "dist": "yarn run build && yarn publish --access=public",
+    "lint": "eslint src/",
+    "prepare": "yarn run build",
+    "start": "webpack --mode=development --watch --config webpack-dev.config.js"
   },
   "repository": {
     "type": "git",
