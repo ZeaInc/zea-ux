@@ -1,6 +1,5 @@
 import {
   SystemDesc,
-  Float32,
   Signal,
   Vec2,
   Vec3,

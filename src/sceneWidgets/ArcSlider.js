@@ -10,7 +10,6 @@ import {
   Cylinder,
   Circle,
   Sphere,
-  SAVE_FLAG_SKIP_CHILDREN,
   sgFactory,
 } from '@zeainc/zea-engine'
 

@@ -1,6 +1,5 @@
 import {
   SystemDesc,
-  Float32,
   Signal,
   Vec2,
   Vec3,
@@ -12,7 +11,6 @@ import {
   BooleanParameter,
   NumberParameter,
   ColorParameter,
-  ItemFlags,
   BaseItem,
   TreeItem,
   GeomItem,

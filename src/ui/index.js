@@ -1,6 +1,6 @@
 // ////////////////////////////////////
 // Parameter Widgets
-export * from './parameter-widgets'
+export * from './parameter-widgets/index'
 
 export * from './top-menu-bar.js'
 export * from './side-panels.js'
