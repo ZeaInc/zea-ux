@@ -59,6 +59,9 @@ class SceneTreeView extends HTMLElement {
   }
 }
 
-customElements.define('scene-tree-view', SceneTreeView)
+const ELEMENT_NAME = 'scene-tree-view'
+
+customElements.get(ELEMENT_NAME) ||
+  customElements.define(ELEMENT_NAME, SceneTreeView)
 
 export default SceneTreeView

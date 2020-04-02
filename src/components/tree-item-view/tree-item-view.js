@@ -449,6 +449,9 @@ TreeItemView.css = `
 
   `
 
-customElements.define('tree-item-view', TreeItemView)
+const ELEMENT_NAME = 'tree-item-view'
+
+customElements.get(ELEMENT_NAME) ||
+  customElements.define(ELEMENT_NAME, TreeItemView)
 
 export default TreeItemView
