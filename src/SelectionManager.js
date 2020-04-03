@@ -151,81 +151,68 @@ class SelectionManager {
       // this.xfoHandle.showHandles('Scale')
       this.selectionGroup.addChild(this.xfoHandle)
 
-      const handleGroup = {
+      this.handleGroup = {
         Translate: new Signal(),
         Rotate: new Signal(),
         Scale: new Signal(),
-      }
-      let currMode = ''
-      const showHandles = (mode) => {
-        if (currMode != mode) {
-          currMode = mode
-          // eslint-disable-next-line guard-for-in
-          for (const key in handleGroup) {
-            handleGroup[key].emit(mode == key)
-          }
-          this.xfoHandle.showHandles(mode)
-        }
-      }
+      };
+      this.currMode = '';
       appData.actionRegistry.registerAction({
         name: 'Translate',
         path: ['Edit'],
         callback: () => {
-          showHandles('Translate')
+          this.showHandles('Translate');
         },
         key: 'w',
-        activatedChanged: handleGroup.Translate,
-      })
+        activatedChanged: this.handleGroup.Translate,
+      });
       appData.actionRegistry.registerAction({
         name: 'Rotate',
         path: ['Edit'],
         callback: () => {
-          showHandles('Rotate')
+          this.showHandles('Rotate');
         },
         key: 'e',
-        activatedChanged: handleGroup.Rotate,
-      })
+        activatedChanged: this.handleGroup.Rotate,
+      });
       appData.actionRegistry.registerAction({
         name: 'Scale',
         path: ['Edit'],
         callback: () => {
-          showHandles('Scale')
+          this.showHandles('Scale');
         },
         key: 'r',
-        activatedChanged: handleGroup.Scale,
-      })
+        activatedChanged: this.handleGroup.Scale,
+      });
 
-      const xfoModeParam = this.selectionGroup.getParameter('InitialXfoMode')
       appData.actionRegistry.registerAction({
         name: 'Local',
         path: ['Edit', 'Coords'],
         callback: () => {
-          this.selectionGroup.rebindInitialXfos()
-          xfoModeParam.setValue(Group.INITIAL_XFO_MODES.average)
+          this.setXfoMode(ZeaEngine.Group.INITIAL_XFO_MODES.average);
         },
         key: 'k',
-        activatedChanged: handleGroup.Translate,
-      })
+        activatedChanged: this.handleGroup.Translate,
+      });
       appData.actionRegistry.registerAction({
         name: 'Global',
         path: ['Edit', 'Coords'],
         callback: () => {
-          this.selectionGroup.rebindInitialXfos()
-          xfoModeParam.setValue(Group.INITIAL_XFO_MODES.globalOri)
+          this.setXfoMode(ZeaEngine.Group.INITIAL_XFO_MODES.globalOri);
         },
         key: 'l',
-        activatedChanged: handleGroup.Rotate,
-      })
+        activatedChanged: this.handleGroup.Rotate,
+      });
 
       // Translate Activated by default.
-      // showHandles('Translate');
+      // this.showHandles('Translate');
     }
 
     if (this.appData.renderer) {
       this.setRenderer(this.appData.renderer)
     }
   }
-
+  
   /**
    * The setRenderer method.
    * @param {any} renderer - The renderer param.
@@ -234,6 +221,34 @@ class SelectionManager {
     this.__renderer = renderer
     this.__renderer.addTreeItem(this.selectionGroup)
   }
+
+
+  /**
+   * The setRenderer method.
+   * @param {any} renderer - The renderer param.
+   */
+  setXfoMode(mode) {
+    if (this.xfoHandle) {
+      this.selectionGroup.rebindInitialXfos();
+      this.selectionGroup.getParameter('InitialXfoMode').setValue(mode);
+    }
+  }
+
+  
+  /**
+   * The setRenderer method.
+   * @param {any} renderer - The renderer param.
+   */
+  showHandles(mode) {
+    if (this.xfoHandle && this.currMode != mode) {
+      this.currMode = mode;
+      // eslint-disable-next-line guard-for-in
+      for (const key in this.handleGroup) {
+        this.handleGroup[key].emit(mode == key);
+      }
+      this.xfoHandle.showHandles(mode);
+    }
+  };
 
   /**
    * updateHandleVisiblity determines of the Xfo Manipulation

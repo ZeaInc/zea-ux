@@ -31,7 +31,7 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
     this.colorParam = this.addParameter(new ColorParameter('BaseColor', color))
 
     const handleMat = new Material('handle', 'HandleShader')
-    handleMat.getParameter('maintainScreenSize').setValue(true)
+    handleMat.getParameter('maintainScreenSize').setValue(1)
     handleMat.replaceParameter(this.colorParam)
 
     // const handleGeom = new Cylinder(radius, thickness * 2, 64, 2, false);
