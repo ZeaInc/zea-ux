@@ -2,6 +2,7 @@ import { Signal } from '@zeainc/zea-engine'
 
 const __changeClasses = {}
 const __classNames = {}
+const __classes = []
 
 /** Class representing an undo redo manager. */
 class UndoRedoManager {
@@ -108,7 +109,8 @@ class UndoRedoManager {
    * @return {any} The return value.
    */
   static getChangeClassName(inst) {
-    if (__classNames[inst]) return __classNames[inst]
+    const id = __classes.indexOf(inst.constructor)
+    if (__classNames[id]) return __classNames[id]
     console.warn('Change not registered:', inst.constructor.name)
     return inst.constructor.name
   }
@@ -119,8 +121,13 @@ class UndoRedoManager {
    * @param {any} cls - The cls param.
    */
   static registerChange(name, cls) {
+    if (__classes.indexOf(cls) != -1)
+      console.warn("Class already registered:", name)
+
+    const id = __classes.length;
+    __classes.push(cls)
     __changeClasses[name] = cls
-    __classNames[cls] = name
+    __classNames[id] = name
   }
 }
 
