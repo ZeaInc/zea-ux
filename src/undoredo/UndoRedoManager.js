@@ -108,8 +108,7 @@ class UndoRedoManager {
    * @return {any} The return value.
    */
   static getChangeClassName(inst) {
-    if (__classNames[inst.constructor.name])
-      return __classNames[inst.constructor.name]
+    if (__classNames[inst]) return __classNames[inst]
     console.warn('Change not registered:', inst.constructor.name)
     return inst.constructor.name
   }
@@ -121,7 +120,7 @@ class UndoRedoManager {
    */
   static registerChange(name, cls) {
     __changeClasses[name] = cls
-    __classNames[cls.name] = name
+    __classNames[cls] = name
   }
 }
 
