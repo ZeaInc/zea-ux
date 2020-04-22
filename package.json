@@ -1,6 +1,6 @@
 {
   "name": "@zeainc/zea-ux",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "",
   "files": [
     "/dist/",
@@ -43,7 +43,7 @@
   "dependencies": {
     "@jaames/iro": "^4.5.1",
     "@zeainc/zea-collab": "^1.0.0",
-    "@zeainc/zea-engine": "^0.1.5",
+    "@zeainc/zea-engine": "^1.0.1",
     "dom-to-image": "^2.6.0"
   }
 }
