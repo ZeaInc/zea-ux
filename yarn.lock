@@ -956,10 +956,10 @@
     socket.io-client "^2.1.1"
     socketio-wildcard "^2.0.0"
 
-"@zeainc/zea-engine@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@zeainc/zea-engine/-/zea-engine-1.0.2.tgz#11c6eb9e65993bd3aa9683a83f99991fc30c9a69"
-  integrity sha512-WbzxpMELtGLxC/lNIr8ASq2uMfsm5PKlnDYc0Urh/p2CfG1LfkvqQn17Lr4IpOK0ioJ9ogOO6/HSa3Y9WFD0/Q==
+"@zeainc/zea-engine@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@zeainc/zea-engine/-/zea-engine-1.0.3.tgz#bfa0c7ce75822dc7018766666582b798ab557065"
+  integrity sha512-mJB5k+zLbdzfCH0rPC+fynTwa9qqDvbW/RstuA8Oe8pNxdkch1Ydn/qk6+nwveijn0deFBky0PWj3b8St8DEIw==
 
 JSONStream@^1.0.3:
   version "1.3.5"
