@@ -1,5 +1,5 @@
 import { typeRegistry, BaseItem, sgFactory } from '@zeainc/zea-engine'
-
+/*
 import { Session } from '@zeainc/zea-collab'
 import UndoRedoManager from './undoredo/UndoRedoManager.js'
 import SelectionManager from './SelectionManager.js'
@@ -50,14 +50,14 @@ const convertValuesFromJSON = (value, scene) => {
   }
 }
 
-/** Class representing a session sync. */
+/* * Class representing a session sync. * /
 class SessionSync {
   /**
    * Create a session sync.
    * @param {any} session - The session value.
    * @param {any} appData - The appData value.
    * @param {any} currentUser - The currentUser value.
-   */
+   * /
   constructor(session, appData, currentUser, options) {
     // const currentUserAvatar = new Avatar(appData, currentUser, true);
 
@@ -313,3 +313,4 @@ class SessionSync {
 }
 
 export { SessionSync }
+*/
