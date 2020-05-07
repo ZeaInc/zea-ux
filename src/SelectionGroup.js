@@ -104,6 +104,7 @@ export default class SelectionGroup extends Group {
         }
       )
       this.__initialXfos[index] = item.getGlobalXfo()
+      this.groupXfoDirty = true
     }
 
     this.__signalIndices[index] = signalIndices
@@ -125,6 +126,7 @@ export default class SelectionGroup extends Group {
       )
 
       this.__initialXfos.splice(index, 1)
+      this.groupXfoDirty = true
     }
 
     this.__signalIndices.splice(index, 1)
