@@ -97,6 +97,7 @@ export default class SelectionGroup extends Group {
           // Then the item xfo changes, we update the group xfo.
           if (!this.calculatingGroupXfo && !this.propagatingXfoToItems) {
             this.__initialXfos[index] = item.getGlobalXfo()
+            this.groupXfoDirty = true
             this._setGlobalXfoDirty()
           }
           // else if (mode != ValueSetMode.OPERATOR_SETVALUE &&  mode != ValueSetMode.OPERATOR_DIRTIED)
@@ -134,7 +135,7 @@ export default class SelectionGroup extends Group {
    * @private
    */
   _propagateDirtyXfoToItems() {
-    if (this.calculatingGroupXfo) return
+    if (this.groupXfoDirty || this.calculatingGroupXfo) return
 
     const items = Array.from(this.__itemsParam.getValue())
     // Only after all the items are resolved do we have an invXfo and we can tranform our items.
