@@ -2,13 +2,16 @@
   "name": "@zeainc/zea-ux",
   "version": "1.2.8",
   "description": "",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "rawimport": "dist/index.rawimport.js",
   "files": [
-    "/dist/",
-    "/css/"
+    "/dist/index.cjs.js",
+    "/dist/index.esm.js",
+    "/dist/index.rawimport.js",
+    "/css/**"
   ],
   "keywords": [],
-  "main": "dist/zea-ux.cjs.js",
-  "module": "dist/zea-ux.esm.js",
   "scripts": {
     "build": "rollup -c",
     "dist": "yarn publish --access=public",
