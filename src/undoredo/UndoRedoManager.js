@@ -17,6 +17,7 @@ class UndoRedoManager {
     this.changeUpdated = new Signal()
     this.changeUndone = new Signal()
     this.changeRedone = new Signal()
+    this.changeCanceled = new Signal()
 
     this.__currChangeUpdated = this.__currChangeUpdated.bind(this)
   }
@@ -88,6 +89,17 @@ class UndoRedoManager {
       change.redo()
       this.__undoStack.push(change)
       this.changeRedone.emit()
+    }
+  }
+
+  /**
+   * The cancel method
+   */
+  cancel() {
+    if (this.__undoStack.length > 0) {
+      const change = this.__undoStack.pop()
+      change.cancel()
+      this.changeCanceled.emit()
     }
   }
 
