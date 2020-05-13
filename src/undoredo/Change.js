@@ -1,7 +1,10 @@
 import { Signal } from '@zeainc/zea-engine'
 import { UndoRedoManager } from './UndoRedoManager.js'
 
-/** Class representing a change. */
+/**
+ * Class representing a change.
+ *
+ */
 export default class Change {
   /**
    * Create a change.
