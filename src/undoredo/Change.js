@@ -28,6 +28,13 @@ export default class Change {
   }
 
   /**
+   * The cancel method.
+   */
+  cancel() {
+    throw new Error('Implement me')
+  }
+
+  /**
    * The update method.
    * @param {any} updateData - The updateData param.
    */
