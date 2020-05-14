@@ -25,6 +25,36 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras sollicitudin, est 
 
 
 ## Change
+Class `Change` is like an abstract class, that should be used to impose a guideline or to impose the structure of all the classes registered in the `UndoRedoManager` class.
+
+### Constructor
+`Change(name)`
+
+Every class that extends from `Change` must contain a global `name` attribute. It is used by the `UndoRedoManager` factory to re-construct the class of the specific implementation of the `Change` class.
+```javascript
+/**
+ * Using the super class constructor to set the name of the FooChange class.
+ */
+class FooChange extends Change {
+    constructor(name) 
+        super(name)
+    }
+}
+```
+
+```javascript
+/**
+ * Setting name attribute directly without using super class constructor
+ */
+class FooChange extends Change {
+    constructor() {
+        this.name = 'FooChange'
+    }
+}
+```
+
+!> **name** attribute is mandatory and important to register classes in the `UndoRedoManager` Factory, because when the code is transpiled, the name of the classes change, 
+so, we need a way of relating the transpiled class name with the actual class name.
 
 ### undo
 
