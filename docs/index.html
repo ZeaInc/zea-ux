@@ -19,10 +19,24 @@
       repo: 'https://github.com/ZeaInc/zea-ux',
       loadSidebar: true,
       subMaxLevel: 3,
-      loadNavbar: true
+      loadNavbar: true,
+      copyCode: {
+        buttonText: {
+          '/es-ES/'   : 'Haga clic para copiar',
+          '/'      : 'Copy to clipboard'
+        },
+        errorText: {
+          '/'      : 'Error'
+        },
+        successText: {
+          '/es-ES/'   : 'Copiado',
+          '/'      : 'Copied'
+        }
+      }
     }
   </script>
   <script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/emoji.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify-copy-code"></script>
 </body>
 </html>
