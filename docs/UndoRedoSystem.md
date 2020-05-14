@@ -1,4 +1,4 @@
-# Undo/Redo System
+## Undo/Redo System
 As part of the UX Library, this tool allows you to implement Undo/Redo/Cancel commands on your system, managing a stack of changes so you can navigate through them.
 
 [](_examples/UndoRedoSystem.html ':include :type=iframe width=100% height=150px')
@@ -78,7 +78,7 @@ window.onload = () => {
 
 ---
 
-## UndoRedoManager(*Class* )
+## UndoRedoManager(*Class*)
 Class `UndoRedoManager` is a mixture of the [Factory Design Pattern](https://en.wikipedia.org/wiki/Factory_method_pattern) and the actual stack of changes manager.
 This is the heart of the Undo/Redo System, letting you navigate through the history of changes you've saved.
 
@@ -93,7 +93,7 @@ It doesn't have any parameters, but under the hood it initializes the [signals](
 const undoRedoManager = new UndoRedoManager()
 ```
 
-### flush(*Method* )
+### flush(*Method*)
 As the name indicates, it empties undo/redo stacks permanently, losing all the pass stored actions().
 
 #### **Syntax**
@@ -101,7 +101,7 @@ As the name indicates, it empties undo/redo stacks permanently, losing all the p
 undoRedoManager.flush()
 ```
 
-### addChange(*Method* )
+### addChange(*Method*)
 asdasd
 
 #### **Syntax**
@@ -113,7 +113,7 @@ undoRedoManager.addChange(fooChange)
 **change** | Instantiated class of type `Change`.
 
 
-### getCurrentChange(*Method* )+
+### getCurrentChange(*Method*)+
 aasdasd
 
 #### **Syntax**
@@ -123,7 +123,7 @@ const currentChange = undoRedoManager.getCurrentChange()
 #### **Return value**
 
 
-### undo(*Method* )
+### undo(*Method*)
 Rollback the latest action, passing it to the redo stack in case you wanna recover it later on.
 
 #### **Syntax**
@@ -131,7 +131,7 @@ Rollback the latest action, passing it to the redo stack in case you wanna recov
 undoRedoManager.undo()
 ```
 
-### redo(*Method* )
+### redo(*Method*)
 Rollbacks the `undo` action
 
 #### **Syntax**
@@ -139,7 +139,7 @@ Rollbacks the `undo` action
 undoRedoManager.redo()
 ```
 
-### cancel(*Method* )
+### cancel(*Method*)
 Works the same as the `undo` method, but it doesn't move the change to the redo stack, it just removes it permanently. Like if it never existed.
 
 #### **Syntax**
@@ -150,7 +150,7 @@ undoRedoManager.undo()
 ### User Synchronization {docsify-ignore}
 This tool was build with multiple users synchronization in mind, in other words, synchronize undo/redo stacks for all the users, every command will inmediatly get replicated to all the other users
 
-### constructChange(*Method* )
+### constructChange(*Method*)
 
 #### **Syntax**
 ```javascript
@@ -160,14 +160,14 @@ const fooChangeClass = UndoRedoManager.constructChange(className);
 fooChangeClass.fromJSON(data)
 ```
 
-### getChangeClassName(*Method* )
+### getChangeClassName(*Method*)
 
 #### **Syntax**
 ```javascript
 const className = UndoRedoManager.getChangeClassName(fooChange);
 ```
 
-### registerChange(*Method* )
+### registerChange(*Method*)
 asdasdasd
 
 #### **Syntax**
@@ -182,7 +182,7 @@ UndoRedoManager.registerChange('FooChange', FooChange);
 ```
 
 ---
-## Change(*Class* )
+## Change(*Class*)
 Class `Change` is like an abstract class, that should be used to impose a guideline or to impose the structure of all the classes registered in the `UndoRedoManager` class.
 
 ### Constructor
@@ -216,7 +216,7 @@ class FooChange extends Change {
 !> **name** attribute is mandatory and important to register classes in the `UndoRedoManager` Factory, because when the code is transpiled, the name of the classes change, 
 so, we need a way of relating the transpiled class name with the actual class name.
 
-### undo(*Method* )
+### undo(*Method*)
 Called by the `UndoRedoManager` in the `undo` method, represents your specific implementation, it can be anything you want.
 
 #### **Syntax**
@@ -227,7 +227,7 @@ undo() {
 }
 ```
 
-### redo(*Method* )
+### redo(*Method*)
 Called by the `UndoRedoManager` in the `redo` method, represents your specific implementation, it can be anything you want.
 
 #### **Syntax**
@@ -237,7 +237,7 @@ redo() {
 }
 ```
 
-### cancel(*Method* )
+### cancel(*Method*)
 Called by the `UndoRedoManager` in the `cancel` method, represents your specific implementation, it can be anything you want.
 
 #### **Syntax**
@@ -248,7 +248,7 @@ cancel() {
 }
 ```
 
-### update(*Method* )
+### update(*Method*)
 
 #### **Syntax**
 ```javascript
@@ -260,7 +260,7 @@ update(data) {
 }
 ```
 
-### toJSON(*Method* )
+### toJSON(*Method*)
 
 #### **Syntax**
 ```javascript
@@ -272,7 +272,7 @@ toJSON(data) {
 }
 ```
 
-### fromJSON(*Method* )
+### fromJSON(*Method*)
 
 #### **Syntax**
 ```javascript
@@ -284,7 +284,7 @@ toJSON(data) {
 }
 ```
 
-### changeFromJSON(*Method* )
+### changeFromJSON(*Method*)
 
 #### **Syntax**
 ```javascript
