@@ -39,6 +39,6 @@
 ### changeFromJSON
 
 ### destroy
-```
+```javascript
 function() {}
 ```
