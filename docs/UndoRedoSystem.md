@@ -3,6 +3,79 @@ As part of the UX Library, this tool allows you to implement Undo/Redo/Cancel co
 
 [](_examples/UndoRedoSystem.html ':include :type=iframe width=100% height=150px')
 
+```javascript
+import { UndoRedoManager } from '@zeainc/zea-ux';
+import { Signal } from '@zeainc/zea-engine';
+
+// Type of Change Class
+class FooChange {
+  constructor() {
+    this.name = 'FooChange'
+
+    // This signal is used by the UndoRedoManager
+    this.updated = new Signal()
+  }
+
+  setColor(_color) {
+    this.colorList = document.getElementById('color-list')
+    
+    this.li = document.createElement('li')
+    this.li.appendChild(document.createTextNode(_color))
+    this.li.setAttribute('style', `background-color: ${_color};`)
+    
+    this.colorList.appendChild(this.li)
+  }
+
+  undo() {
+    this.li.remove()
+  }
+
+  redo() {
+    this.colorList.appendChild(this.li)
+  }
+
+  destroy() {
+    console.log('destroyed change')
+  }
+}
+
+UndoRedoManager.registerChange('FooChange', FooChange)
+
+window.onload = () => {
+  const addColorBtn = document.getElementById('addColorBtn')
+  const undoBtn = document.getElementById('undoBtn')
+  const redoBtn = document.getElementById('redoBtn')
+
+  const undoRedoManager = new UndoRedoManager()
+
+  undoRedoManager.changeAdded.connect(() => { 
+    redoBtn.disabled = true;
+  });
+
+  undoRedoManager.changeUndone.connect(() => { 
+    redoBtn.disabled = false;
+  });
+
+  addColorBtn.addEventListener('click', (event) => {
+    const color = `#${( 0x1000000 + (Math.random()) * 0xffffff).toString(16).substr(1, 6)}`
+
+    const fooChange = new FooChange()
+    fooChange.setColor(color)
+
+    undoRedoManager.addChange(fooChange);
+  })
+
+  undoBtn.addEventListener('click', (event) => {
+    undoRedoManager.undo()
+  })
+  
+  redoBtn.addEventListener('click', (event) => {
+    undoRedoManager.redo()
+  })
+};
+
+```
+
 ---
 
 ## UndoRedoManager(*Class* )

@@ -1,39 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Undo/Redo System</title>
-    <style>
-        .container {
-            display: flex;
-        }
-
-        .right-side {
-            margin-left: auto;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="left-side">
-            <button>Undo</button>
-            <button>Redo</button>
-        </div>
-        <div class="right-side">
-            <button onclick="changeBackgroundColor()">New Background Color</button>
-        </div>
+<!doctype html> 
+<html lang=en>
+  <head>
+    <meta charset=UTF-8 />
+    <meta name=viewport content="width=device-width,initial-scale=1"/>
+    <meta http-equiv=X-UA-Compatible content="ie=edge"/>
+    <title>UndoRedo system</title>
+    <link href="css/UndoRedoSystem.css" rel="stylesheet">
+  </head>
+  <body>
+    <header>
+      <div class=left-side> <button id=undoBtn>Undo</button> <button id=redoBtn>Redo</button> </div>
+      <div class=right-side> <button id=addColorBtn>Add Random Color</button> </div>
+    </header>
+    <div class=container>
+      <ul id=color-list></ul>
     </div>
-
-    <script>
-        this.backgroundColors = []
-
-        function changeBackgroundColor() {
-            this.backgroundColor = '#'+(0x1000000+(Math.random())*0xffffff).toString(16).substr(1,6);
-            this.backgroundColors.push(backgroundColor)
-
-            document.body.setAttribute('style', `background-color: ${this.backgroundColor};`)
-        }
-    </script>
-</body>
+    <script type="text/javascript" src="js/UndoRedoSystem.js"></script>
+  </body>
 </html>

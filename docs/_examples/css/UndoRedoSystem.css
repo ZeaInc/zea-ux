@@ -1,0 +1,16 @@
+header {
+    display: flex;
+}
+
+header .right-side {
+    margin-left: auto;
+}
+
+.container #color-list {
+    list-style: none;
+}
+
+.container #color-list li {
+    margin: 5px 0;
+    width: 100px;
+}
