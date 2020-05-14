@@ -56,21 +56,74 @@ class FooChange extends Change {
 !> **name** attribute is mandatory and important to register classes in the `UndoRedoManager` Factory, because when the code is transpiled, the name of the classes change, 
 so, we need a way of relating the transpiled class name with the actual class name.
 
+[](_examples/UndoRedoSystem.html ':include :type=iframe width=100% height=150px')
+
 ### undo
+Called by the `UndoRedoManager` in the `undo` method, represents your specific implementation, it can be anything you want.
+```javascript
+undo() {
+    const colorIndex = backgroundColors.indexOf(this.backgroundColor)
+    backgroundColors.splice(this.backgroundColor, 1)
+}
+```
 
 ### redo
+Called by the `UndoRedoManager` in the `redo` method, represents your specific implementation, it can be anything you want.
+```javascript
+redo() {
+    backgroundColors.push(this.backgroundColor)
+}
+```
 
 ### cancel
+Called by the `UndoRedoManager` in the `cancel` method, represents your specific implementation, it can be anything you want.
+```javascript
+cancel() {
+    const colorIndex = backgroundColors.indexOf(this.backgroundColor)
+    backgroundColors.splice(this.backgroundColor, 1)
+}
+```
 
 ### update
+```javascript
+update(data) {
+    this.backgroundColor = data.backgroundColor
+    const colorIndex = backgroundColors.indexOf(this.backgroundColor)
+    document.body.setAttribute('style', `background-color: ${this.backgroundColor};`)
+    this.updated.emit(data)
+}
+```
 
 ### toJSON
+```javascript
+toJSON(data) {
+    this.backgroundColor = data.backgroundColor
+    const colorIndex = backgroundColors.indexOf(this.backgroundColor)
+    document.body.setAttribute('style', `background-color: ${this.backgroundColor};`)
+    this.updated.emit(data)
+}
+```
 
 ### fromJSON
+```javascript
+toJSON(data) {
+    this.backgroundColor = data.backgroundColor
+    const colorIndex = backgroundColors.indexOf(this.backgroundColor)
+    document.body.setAttribute('style', `background-color: ${this.backgroundColor};`)
+    this.updated.emit(data)
+}
+```
 
 ### changeFromJSON
+```javascript
+changeFromJSON(data) {
+    
+}
+```
 
 ### destroy
 ```javascript
-function() {}
+destroy(data) {
+    
+}
 ```
