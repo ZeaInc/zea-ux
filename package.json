@@ -15,9 +15,6 @@
   "scripts": {
     "build": "rollup -c",
     "dist": "yarn publish --access=public",
-    "docs": "documentation build src/** -f html -o docs",
-    "docs:lint": "documentation lint src/**",
-    "docs:serve": "documentation serve --watch src/**",
     "lint": "eslint src/",
     "prepare": "yarn run build",
     "start": "rollup -c rollup.config.dev.js -w",
@@ -34,7 +31,6 @@
   "author": "Zea Inc.",
   "license": "ISC",
   "devDependencies": {
-    "documentation": "^12.1.1",
     "eslint": "^6.2.1",
     "eslint-config-google": "^0.13.0",
     "eslint-config-prettier": "^6.1.0",
