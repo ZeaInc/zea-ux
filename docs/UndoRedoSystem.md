@@ -36,8 +36,8 @@ Every class that extends from `Change` must contain a global `name` attribute. I
  * Using the super class constructor to set the name of the FooChange class.
  */
 class FooChange extends Change {
-    constructor(name) 
-        super(name)
+    constructor() 
+        super('FooChange')
     }
 }
 ```
