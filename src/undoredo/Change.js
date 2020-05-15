@@ -42,22 +42,23 @@ export default class Change {
   /**
    * The toJSON method.
    * @param {any} context - The appData param.
-   * @return {any} The return value.
+   * @return {Object} A JSON Object representing the state of the change.
    */
   toJSON(context) {
     return {}
   }
 
   /**
-   * The fromJSON method.
-   * @param {any} j - The j param.
-   * @param {any} context - The context param.
+   * The counterpart of the `toJSON` method, this one should be called. It should contain the logic for reconstructing your class.
+Setting the state or do anything you would need to perfectly replicate the change.
+   * @param {Object} j - Because it is the object that we gof from `toJSON` method.
+   * @param {any} context - Anything you may need to pass in order to add the change to your view.
    */
   fromJSON(j, context) {}
 
   /**
-   * The changeFromJSON method.
-   * @param {any} j - The j param.
+   * Works very similar to `fromJSON` method. But it calls the `update` method instead.
+   * @param {Object} j - Because it is the object that we got from `changeUpdated` notification.
    */
   changeFromJSON(j) {
     // Many change objects can load json directly

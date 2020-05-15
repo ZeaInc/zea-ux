@@ -24,6 +24,7 @@ class FooChange {
    * Could be anything you want.
    */
   setColor(_color) {
+    this.color = _color;
     this.colorList = document.getElementById('color-list')
     
     this.li = document.createElement('li')
@@ -316,35 +317,90 @@ update(data) {
 These are the methods you wanna use if you want to use synchronization in your project.
 
 ### toJSON(*Method*)
-
+In order to re-create the class in other user systems, we need to pack the state of the current change and send it over, for it, we call the this method.
 
 #### **Syntax**
 ```javascript
-toJSON(data) {
-    this.backgroundColor = data.backgroundColor
-    const colorIndex = backgroundColors.indexOf(this.backgroundColor)
-    document.body.setAttribute('style', `background-color: ${this.backgroundColor};`)
-    this.updated.emit(data)
+// We could store the color in a class atribute and use it here.
+toJSON() {
+    return {
+      color: this.color
+    }
 }
+
+/** When you recieve a notification from the `changeAdded` signal, 
+ *  what you would do is get the JSON of the change and the class name to send to the other users.
+ *  Something like:
+ */
+undoRedoManager.changeAdded.connect((change) => {
+  const data = {
+    changeData: change.toJSON(context),
+    changeClass: UndoRedoManager.getChangeClassName(change),
+  }
+
+  // then hand it over to the other users using any method you want, it could be websockets. 
+  // i.e: socket.emit('ChangeAdded', data)
+})
+
 ```
+
+!> Use **changeAdded** to know when a new change was added to the manager.
+
+#### **Return value**
+**changeJSON | `Object`** A JSON Object representing the state of the change.
 
 ### fromJSON(*Method*)
+The counterpart of the `toJSON` method, this one should be called. It should contain the logic for reconstructing your class.
+Setting the state or do anything you would need to perfectly replicate the change.
 
 #### **Syntax**
 ```javascript
-toJSON(data) {
-    this.backgroundColor = data.backgroundColor
-    const colorIndex = backgroundColors.indexOf(this.backgroundColor)
-    document.body.setAttribute('style', `background-color: ${this.backgroundColor};`)
-    this.updated.emit(data)
+fromJSON(data, context) {
+  this.setColor(data.color)
 }
+
+/**
+ * If we follow the example of sending the data over a websocket, this is how in a general view it will be done.
+ */
+socket.on('ChangeAdded', (data, userId) => {
+  // Get the UndoRedoManager replica of the user that emitted the event from your local list and construct the class
+  const undoRedoManager = this.userDatas[userId].undoRedoManager
+  const change = undoRedoManager.constructChange(data.changeClass)
+
+  change.fromJSON(data.changeData, context)
+  undoRedoManager.addChange(change)
+})
 ```
+
+#### **Parameters**
+**data | `Object`** Because it is the object that we got from `toJSON` method.
+**context | `any`** Anything you may need to pass in order to add the change to your view.
 
 ### changeFromJSON(*Method*)
+Works very similar to `fromJSON` method. But it calls the `update` method instead.
 
 #### **Syntax**
 ```javascript
+// Implementation example
 changeFromJSON(data) {
-    
+  this.update(data)
 }
+
+/**
+ * You would subscribe to the update signal and emit an event with your websocket
+ */
+undoRedoManager.changeUpdated.connect((data) => {
+  //i.e. socket.emit('ChangeUpdated', jsonData)
+})
+
+// Then with the socket do the following
+socket.on('ChangeUpdated', (data, userId) => {
+  const undoRedoManager = this.userDatas[userId].undoRedoManager
+  undoRedoManager.getCurrentChange().changeFromJSON(data)
+})
 ```
+
+!> Use **changeUpdated** to know when a change was updated to the manager.
+
+#### **Parameters**
+**data | `Object`** Because it is the object that we got from `changeUpdated` notification.
