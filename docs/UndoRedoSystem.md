@@ -205,7 +205,7 @@ const className = UndoRedoManager.getChangeClassName(fooChange);
 ```
 
 #### **Return value**
-**className | `String`** The specific instantiated class derived from the [`Change`](#changeclass) class().
+**className | `String`** Literally the name of the class.
 
 ### registerChange(*Method*)
 Registers the class in the UndoRedoManager Factory.
@@ -224,14 +224,18 @@ class FooChange {
 UndoRedoManager.registerChange('FooChange', FooChange);
 ```
 
+#### **Parameters**
+**className | `String`** Literally the name of the class.
+**changeClass | `Change*`** The declared class name.
+
 ---
 ## Change(*Class*)
-Class `Change` is like an abstract class, that should be used to impose a guideline or to impose the structure of all the classes registered in the `UndoRedoManager` class.
+Kind of an abstract class, that represents the mandatory structure of a change classes that are used in the [`UndoRedoManager`](#undoredomanagerclass). 
 
 ### Constructor
 `Change(name)`
 
-Every class that extends from `Change` must contain a global `name` attribute. It is used by the `UndoRedoManager` factory to re-construct the class of the specific implementation of the `Change` class.
+Every class that extends from `Change` must contain a global `name` attribute. It is used by the `UndoRedoManager` factory to re-construct the class of the specific implementation of the `Change` class([See registerChange method](#registerchangemethod)).
 
 #### **Syntax**
 ```javascript
@@ -243,67 +247,76 @@ class FooChange extends Change {
         super('FooChange')
     }
 }
-```
 
-```javascript
+// Or
+
 /**
  * Setting name attribute directly without using super class constructor
  */
-class FooChange extends Change {
+class FooChange {
     constructor() {
         this.name = 'FooChange'
     }
 }
 ```
 
-!> **name** attribute is mandatory and important to register classes in the `UndoRedoManager` Factory, because when the code is transpiled, the name of the classes change, 
-so, we need a way of relating the transpiled class name with the actual class name.
+!> **name** attribute is mandatory.
+
+#### **Parameters**
+**name | `String`** Literally the name of the class.
 
 ### undo(*Method*)
-Called by the `UndoRedoManager` in the `undo` method, represents your specific implementation, it can be anything you want.
+Called by the `UndoRedoManager` in the `undo` method, and contains the code you wanna run when the undo action is triggered, of course it depends on what you're doing.
+Check the [code](#undoredo-system) at the start of the page.
 
 #### **Syntax**
 ```javascript
 undo() {
-    const colorIndex = backgroundColors.indexOf(this.backgroundColor)
-    backgroundColors.splice(this.backgroundColor, 1)
+  this.li.remove()
 }
 ```
 
 ### redo(*Method*)
-Called by the `UndoRedoManager` in the `redo` method, represents your specific implementation, it can be anything you want.
+Called by the `UndoRedoManager` in the `redo` method, and is the same as the `undo` method, contains the specific code you wanna run.
 
 #### **Syntax**
 ```javascript
 redo() {
-    backgroundColors.push(this.backgroundColor)
+    this.colorList.appendChild(this.li)
 }
 ```
 
 ### cancel(*Method*)
-Called by the `UndoRedoManager` in the `cancel` method, represents your specific implementation, it can be anything you want.
+Called by the `UndoRedoManager` in the `cancel` method, it is very likely to be the same as undo, but as always we give you enough space to maneuver.
 
 #### **Syntax**
 ```javascript
 cancel() {
-    const colorIndex = backgroundColors.indexOf(this.backgroundColor)
-    backgroundColors.splice(this.backgroundColor, 1)
+  this.li.remove()
 }
 ```
 
 ### update(*Method*)
+Use this method to udpate the state of your `Change` class.
 
 #### **Syntax**
 ```javascript
 update(data) {
-    this.backgroundColor = data.backgroundColor
-    const colorIndex = backgroundColors.indexOf(this.backgroundColor)
-    document.body.setAttribute('style', `background-color: ${this.backgroundColor};`)
+    this.li.innerHTML = data.color
+    this.li.setAttribute('style', `background-color: ${data.color};`)
+
+    //If you want to notify that the change was updated just emit an event with `this.updated`.
     this.updated.emit(data)
 }
 ```
+#### **Parameters**
+**data | `any`** It can be any type of data, you decide it.
+
+### User Synchronization {docsify-ignore}
+These are the methods you wanna use if you want to use synchronization in your project.
 
 ### toJSON(*Method*)
+
 
 #### **Syntax**
 ```javascript

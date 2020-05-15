@@ -2,13 +2,13 @@ import { Signal } from '@zeainc/zea-engine'
 import { UndoRedoManager } from './UndoRedoManager.js'
 
 /**
- * Class representing a change.
- *
+ * Kind of an abstract class, that represents the mandatory structure of a change classes that are used in the [`UndoRedoManager`]().
  */
 export default class Change {
   /**
-   * Create a change.
-   * @param {any} name - The name value.
+   * Every class that extends from `Change` must contain a global `name` attribute.
+   * It is used by the `UndoRedoManager` factory to re-construct the class of the specific implementation of the `Change` class.
+   * @param {String} name - The name value.
    */
   constructor(name) {
     this.name = name ? name : UndoRedoManager.getChangeClassName(this)
@@ -17,21 +17,22 @@ export default class Change {
   }
 
   /**
-   * The undo method.
+   * Called by the `UndoRedoManager` in the `undo` method, and contains the code you wanna run when the undo action is triggered, 
+   * of course it depends on what you're doing.
    */
   undo() {
     throw new Error('Implement me')
   }
 
   /**
-   * The redo method.
+   * Called by the `UndoRedoManager` in the `redo` method, and is the same as the `undo` method, contains the specific code you wanna run.
    */
   redo() {
     throw new Error('Implement me')
   }
 
   /**
-   * The update method.
+   * Use this method to udpate the state of your `Change` class.
    * @param {any} updateData - The updateData param.
    */
   update(updateData) {
