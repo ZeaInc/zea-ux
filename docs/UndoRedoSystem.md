@@ -126,7 +126,7 @@ const fooChange = new FooChange()
 undoRedoManager.addChange(fooChange)
 ```
 #### **Parameters**
-**change |** Instantiated class derived from the [`Change`](#changeclass) class.
+**change | `Change*`** Instantiated class derived from the [`Change`](#changeclass) class.
 
 
 ### getCurrentChange(*Method*)
@@ -140,7 +140,7 @@ if (currentchange) {
 }
 ```
 #### **Return value**
-**[change | null] |** Instantiated class derived from the [`Change`](#changeclass) class or a null if there's nothing in the undo stack.
+**[change | null] | `Change*`** Instantiated class derived from the [`Change`](#changeclass) class or a null if there's nothing in the undo stack.
 
 
 ### undo(*Method*)
@@ -174,9 +174,15 @@ undoRedoManager.cancel()
 ```
 
 ### User Synchronization {docsify-ignore}
-This tool was build with multiple users synchronization in mind, in other words, synchronize undo/redo stacks for all the users, every command will inmediatly get replicated to all the other users
+In adition to the utils for undoing/redoing/canceling power, we wanted to give this tool the option of syncing stacks of multiple users... replication!. 
+Intrinsically related to the fromJSON, toJSON, changeFromJSON and methods in the [Change](#changeclass) class. So, if there are multiple users connected in the same page, you sync up their undo/redo stacks, and if one of them undo/redo, all of them will get the update.
+This is where the [Factory Design Pattern](https://en.wikipedia.org/wiki/Factory_method_pattern) comes into hand, knowing how to create classes.
 
 ### constructChange(*Method*)
+Basically returns a new instance of the derived [Change](#changeclass) class. This is why we need the `name` attribute.
+It doesn't contain any state, use `fromJSON` method to restore it.
+
+!> **Error**: If the className is not registered in the UndoRedoManager Factory it will throw an error notifying about it.
 
 #### **Syntax**
 ```javascript
@@ -186,24 +192,35 @@ const fooChangeClass = UndoRedoManager.constructChange(className);
 fooChangeClass.fromJSON(data)
 ```
 
+#### **Return value**
+**change | `Change*`** The specific instantiated class derived from the [`Change`](#changeclass) class().
+
 ### getChangeClassName(*Method*)
+Very simple method that returns the name of the instanciated class, checking first in the registry and returning if found, 
+if not then checks the `name` attribute declared in constructor.
 
 #### **Syntax**
 ```javascript
 const className = UndoRedoManager.getChangeClassName(fooChange);
 ```
 
+#### **Return value**
+**className | `String`** The specific instantiated class derived from the [`Change`](#changeclass) class().
+
 ### registerChange(*Method*)
-asdasdasd
+Registers the class in the UndoRedoManager Factory.
+Why do we need to specify the name of the class?, Because when the code is transpiled the defined class names change, so it won't be known as we declared it anymore.
 
 #### **Syntax**
 ```javascript
-class FooChange extends Change {
+// Derivated from `Change` class
+class FooChange {
     constructor() 
         super('FooChange')
     }
 }
 
+// Add it at the bottom of the your class file
 UndoRedoManager.registerChange('FooChange', FooChange);
 ```
 

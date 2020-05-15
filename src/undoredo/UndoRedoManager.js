@@ -12,7 +12,7 @@ const __classes = []
  */
 class UndoRedoManager {
   /**
-   * It doesn't have any parameters, but under the hood it initializes the signals to notify subscribers when something happens. 
+   * It doesn't have any parameters, but under the hood it initializes the signals to notify subscribers when something happens.
    * The implementation is really simple, just initialize it like any other class.
    */
   constructor() {
@@ -108,18 +108,27 @@ class UndoRedoManager {
   // User Synchronization
 
   /**
-   * The constructChange method.
-   * @param {any} claName - The claName param.
-   * @return {any} The return value.
+   * Basically returns a new instance of the derived `Change` class. This is why we need the `name` attribute.
+   *
+   * @fires Error if the className is invalid
+   * @param {String} claName - The claName param.
+   * @return {Change} The return value.
    */
   constructChange(claName) {
+    if (!(className in __classNames))
+      throw new Error(
+        `${className} is not registered in the UndoRedoManager Factory`
+      )
+
     return new __changeClasses[claName]()
   }
 
   /**
-   * The getChangeClassName method.
-   * @param {any} inst - The inst param.
-   * @return {any} The return value.
+   * Very simple method that returns the name of the instanciated class, checking first in the registry and returning if found,
+   * if not then checks the `name` attribute declared in constructor.
+   *
+   * @param {Change} inst - The inst param.
+   * @return {String} The return value.
    */
   static getChangeClassName(inst) {
     const id = __classes.indexOf(inst.constructor)
@@ -129,15 +138,18 @@ class UndoRedoManager {
   }
 
   /**
-   * The registerChange method.
-   * @param {any} name - The name param.
-   * @param {any} cls - The cls param.
+   * Registers the class in the UndoRedoManager Factory.
+   * Why do we need to specify the name of the class?
+   * Because when the code is transpiled, the defined class names change, so it won't be known as we declared it anymore.
+   *
+   * @param {String} name - The name param.
+   * @param {Change} cls - The cls param.
    */
   static registerChange(name, cls) {
     if (__classes.indexOf(cls) != -1)
-      console.warn("Class already registered:", name)
+      console.warn('Class already registered:', name)
 
-    const id = __classes.length;
+    const id = __classes.length
     __classes.push(cls)
     __changeClasses[name] = cls
     __classNames[id] = name
