@@ -4,10 +4,16 @@ const __changeClasses = {}
 const __classNames = {}
 const __classes = []
 
-/** Class representing an undo redo manager. */
+/**
+ * UndoRedoMAnager is a mixture of the [Factory Design Pattern](https://en.wikipedia.org/wiki/Factory_method_pattern) and the actual changes stacks manager.
+ * This is the heart of the Undo/Redo System, letting you navigate through the changes history you've saved.
+ *
+ * This relies on the [Signal](https://github.com/ZeaInc/zea-engine) notification system, when a change is added, updated, undone, redone or cancelled.
+ */
 class UndoRedoManager {
   /**
-   * Create an undo redo manager.
+   * It doesn't have any parameters, but under the hood it initializes the signals to notify subscribers when something happens. 
+   * The implementation is really simple, just initialize it like any other class.
    */
   constructor() {
     this.__undoStack = []
@@ -22,7 +28,8 @@ class UndoRedoManager {
   }
 
   /**
-   * The flush method.
+   * As the name indicates, it empties undo/redo stacks permanently, losing all stored actions.
+   * Right now, before flushing the stacks it calls the `destroy` method on all changes, ensure to at least declare it.
    */
   flush() {
     for (const change of this.__undoStack) change.destroy()
@@ -32,11 +39,15 @@ class UndoRedoManager {
   }
 
   /**
-   * The addChange method.
-   * @param {any} change - The change param.
+   * Recieves an instance of a class that extends or has the same structure as the `Change` class.
+   * When this action happens, the last added change update notificatons will get disconnected.
+   * Which implies that any future updates to changes that are not the last one would need a new call to the "addChange" method.
+   * Also, resets the redo stack(Calls destroy method when doing it).
+   * changeAdded event is emitted, if you want to subscribe, just `yourChange.changeAdded.connect(() => {...})`
+   *
+   * @param {Change} change - Instantiated class derived from the `Change` class.
    */
   addChange(change) {
-    // console.log("AddChange:", change.name)
     if (this.getCurrentChange())
       this.getCurrentChange().updated.disconnect(this.__currChangeUpdated)
 
@@ -50,11 +61,12 @@ class UndoRedoManager {
   }
 
   /**
-   * The getCurrentChange method.
-   * @return {any} The return value.
+   * Returns the last change added to the undo stack, but in case it is empty a `null` is returned.
+   *
+   * @return {Change | null} The return value.
    */
   getCurrentChange() {
-    return this.__undoStack[this.__undoStack.length - 1]
+    return this.__undoStack ? this.__undoStack[this.__undoStack - 1] : null
   }
 
   // eslint-disable-next-line require-jsdoc
@@ -63,13 +75,14 @@ class UndoRedoManager {
   }
 
   /**
-   * The undo method.
+   * Rollback the latest action, passing it to the redo stack in case you wanna recover it later on.
+   *
+   * Emits the `changeUndone` event, if you want to subscribe to it.
    * @param {boolean} pushOnRedoStack - The pushOnRedoStack param.
    */
   undo(pushOnRedoStack = true) {
     if (this.__undoStack.length > 0) {
       const change = this.__undoStack.pop()
-      // console.log("undo:", change.name)
       change.undo()
       if (pushOnRedoStack) {
         this.__redoStack.push(change)
@@ -79,12 +92,12 @@ class UndoRedoManager {
   }
 
   /**
-   * The redo method.
+   * Rollbacks the `undo` action by moving the change from the `redo` stack to the `undo` stack.
+   * Emits the `changeRedone` event, if you want to subscribe to it.
    */
   redo() {
     if (this.__redoStack.length > 0) {
       const change = this.__redoStack.pop()
-      // console.log("redo:", change.name)
       change.redo()
       this.__undoStack.push(change)
       this.changeRedone.emit()

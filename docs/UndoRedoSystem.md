@@ -1,5 +1,8 @@
 ## Undo/Redo System
-As part of the UX Library, this tool allows you to implement Undo/Redo/Cancel commands on your system, managing a stack of changes so you can navigate through them.
+A module of the UX Library that can handle Undo/Redo/Cancel commands on pretty much any system, managing a stack of changes that can be navigated through.
+It is closely tight to a event dispatcher system([Signal](https://github.com/ZeaInc/zea-engine)), that notifies subscribers everytime of any action taken in the Manager.
+
+Basic example of how to implement the UndoRedoManager:
 
 [](_examples/UndoRedoSystem.html ':include :type=iframe width=100% height=150px')
 
@@ -7,15 +10,19 @@ As part of the UX Library, this tool allows you to implement Undo/Redo/Cancel co
 import { UndoRedoManager } from '@zeainc/zea-ux';
 import { Signal } from '@zeainc/zea-engine';
 
-// Type of Change Class
+// Type of `Change` Class
 class FooChange {
   constructor() {
     this.name = 'FooChange'
 
-    // This signal is used by the UndoRedoManager
+    // Must... Used by the UndoRedoManager.
     this.updated = new Signal()
   }
 
+  /**
+   * Custom method.
+   * Could be anything you want.
+   */
   setColor(_color) {
     this.colorList = document.getElementById('color-list')
     
@@ -39,6 +46,7 @@ class FooChange {
   }
 }
 
+// Register the change class in your UndoRedoManager in case you wanna replicate it to other users
 UndoRedoManager.registerChange('FooChange', FooChange)
 
 window.onload = () => {
@@ -48,6 +56,7 @@ window.onload = () => {
 
   const undoRedoManager = new UndoRedoManager()
 
+| // Small example of how `Signal` work, we subscribe and use it event to disable the redoBtn
   undoRedoManager.changeAdded.connect(() => { 
     redoBtn.disabled = true;
   });
@@ -79,14 +88,14 @@ window.onload = () => {
 ---
 
 ## UndoRedoManager(*Class*)
-Class `UndoRedoManager` is a mixture of the [Factory Design Pattern](https://en.wikipedia.org/wiki/Factory_method_pattern) and the actual stack of changes manager.
-This is the heart of the Undo/Redo System, letting you navigate through the history of changes you've saved.
+Class `UndoRedoManager` is a mixture of the [Factory Design Pattern](https://en.wikipedia.org/wiki/Factory_method_pattern) and the actual change stacks manager.
+This is the heart of the Undo/Redo System, letting you navigate through the changes history you've saved.
 
-!> This relies on the [Signal]() notification system, when a change is added, updated, undone, redone or cancelled.
+!> This relies on the [Signal](https://github.com/ZeaInc/zea-engine) notification system, when a change is added, updated, undone, redone or cancelled.
 
 ### constructor
 `UndoRedoManager()`
-It doesn't have any parameters, but under the hood it initializes the [signals]() that notify subscribers when something happens.
+It doesn't have any parameters, but under the hood it initializes the signals to notify subscribers when something happens. The implementation is really simple, just initialize it like any other class.
 
 #### **Syntax**
 ```javascript
@@ -94,7 +103,8 @@ const undoRedoManager = new UndoRedoManager()
 ```
 
 ### flush(*Method*)
-As the name indicates, it empties undo/redo stacks permanently, losing all the pass stored actions().
+As the name indicates, it empties undo/redo stacks permanently, losing all stored actions.
+Right now, before flushing the stacks it calls the `destroy` method on all changes, ensure to at least declare it.
 
 #### **Syntax**
 ```javascript
@@ -102,29 +112,41 @@ undoRedoManager.flush()
 ```
 
 ### addChange(*Method*)
-asdasd
+Recieves an instance of a class that extends or has the same structure as the [`Change`](#changeclass) class.
+When this action happens, the last added change update notificatons will get disconnected. 
+Which implies that any future updates to changes that are not the last action, would need a new call to the "addChange" method.
+Also, resets the redo stack(Calls destroy method when doing it).
+
+!> **changeAdded** event is emitted, if you want to subscribe just `fooChange.changeAdded.connect(callbackFunc)`.
 
 #### **Syntax**
 ```javascript
+// Class that extends or has the same structure as the `Change` class
 const fooChange = new FooChange()
 undoRedoManager.addChange(fooChange)
 ```
 #### **Parameters**
-**change** | Instantiated class of type `Change`.
+**change |** Instantiated class derived from the [`Change`](#changeclass) class.
 
 
-### getCurrentChange(*Method*)+
-aasdasd
+### getCurrentChange(*Method*)
+Returns the last change added to the undo stack, but in case it is empty a `null` is returned. Ensure to check the outcome result before trying to use it
 
 #### **Syntax**
 ```javascript
 const currentChange = undoRedoManager.getCurrentChange()
+if (currentchange) {
+  ...
+}
 ```
 #### **Return value**
+**[change | null] |** Instantiated class derived from the [`Change`](#changeclass) class or a null if there's nothing in the undo stack.
 
 
 ### undo(*Method*)
 Rollback the latest action, passing it to the redo stack in case you wanna recover it later on.
+
+!> **changeUndone** event is emitted, if you want to subscribe just `fooChange.changeUndone.connect(callbackFunc)`.
 
 #### **Syntax**
 ```javascript
@@ -132,7 +154,9 @@ undoRedoManager.undo()
 ```
 
 ### redo(*Method*)
-Rollbacks the `undo` action
+Rollbacks the `undo` action by moving the change from the `redo` stack to the `undo` stack.
+
+!> **changeRedone** event is emitted, if you want to subscribe just `fooChange.changeRedone.connect(callbackFunc)`.
 
 #### **Syntax**
 ```javascript
@@ -142,9 +166,11 @@ undoRedoManager.redo()
 ### cancel(*Method*)
 Works the same as the `undo` method, but it doesn't move the change to the redo stack, it just removes it permanently. Like if it never existed.
 
+!> **changeCanceled** event is emitted, if you want to subscribe just `fooChange.changeCanceled.connect(callbackFunc)`.
+
 #### **Syntax**
 ```javascript
-undoRedoManager.undo()
+undoRedoManager.cancel()
 ```
 
 ### User Synchronization {docsify-ignore}
