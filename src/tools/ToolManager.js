@@ -1,30 +1,4 @@
-import {
-  SystemDesc,
-  Signal,
-  Vec2,
-  Vec3,
-  Quat,
-  Color,
-  Xfo,
-  Ray,
-  ValueSetMode,
-  BooleanParameter,
-  NumberParameter,
-  ColorParameter,
-  BaseItem,
-  TreeItem,
-  GeomItem,
-  Material,
-  Lines,
-  Rect,
-  Cross,
-  Cylinder,
-  Cuboid,
-  Sphere,
-  Cone,
-  Operator,
-  sgFactory,
-} from '@zeainc/zea-engine'
+import {} from '@zeainc/zea-engine'
 
 /** Class representing a tool manager. */
 class ToolManager {
@@ -36,10 +10,6 @@ class ToolManager {
     this.__toolStack = []
     this.appData = appData
 
-    this.movePointer = new Signal()
-    this.hilightPointer = new Signal()
-    this.unhilightPointer = new Signal()
-    this.hidePointer = new Signal()
     this.avatarPointerVisible = false
     this.avatarPointerHighlighted = false
   }
@@ -206,52 +176,52 @@ class ToolManager {
   bind(renderer) {
     const viewport = renderer.getViewport()
 
-    this.mouseDownId = viewport.mouseDown.connect(this.onMouseDown.bind(this))
-    this.mouseMoveId = viewport.mouseMove.connect(this.onMouseMove.bind(this))
-    this.mouseUpId = viewport.mouseUp.connect(this.onMouseUp.bind(this))
-    this.mouseLeaveId = viewport.mouseLeave.connect(
+    this.mouseDownId = viewport.on('mouseDown', this.onMouseDown.bind(this))
+    this.mouseMoveId = viewport.on('mouseMove', this.onMouseMove.bind(this))
+    this.mouseUpId = viewport.on('mouseUp', this.onMouseUp.bind(this))
+    this.mouseLeaveId = viewport.on('mouseLeave', 
       this.onMouseLeave.bind(this)
     )
-    this.mouseDoubleClickedId = viewport.mouseDoubleClicked.connect(
+    this.mouseDoubleClickedId = viewport.on('mouseDoubleClicked', 
       this.onDoubleClick.bind(this)
     )
-    this.mouseWheelId = viewport.mouseWheel.connect(this.onWheel.bind(this))
+    this.mouseWheelId = viewport.on('mouseWheel', this.onWheel.bind(this))
 
     // ///////////////////////////////////
     // Keyboard events
-    this.keyDownId = viewport.keyDown.connect(this.onKeyDown.bind(this))
-    this.keyUpId = viewport.keyUp.connect(this.onKeyUp.bind(this))
-    this.keyPressedId = viewport.keyPressed.connect(
+    this.keyDownId = viewport.on('keyDown', this.onKeyDown.bind(this))
+    this.keyUpId = viewport.on('keyUp', this.onKeyUp.bind(this))
+    this.keyPressedId = viewport.on('keyPressed', 
       this.onKeyPressed.bind(this)
     )
 
     // ///////////////////////////////////
     // Touch events
-    this.touchStartId = viewport.touchStart.connect(
+    this.touchStartId = viewport.on('touchStart', 
       this.onTouchStart.bind(this)
     )
-    this.touchMoveId = viewport.touchMove.connect(this.onTouchMove.bind(this))
-    this.touchEndId = viewport.touchEnd.connect(this.onTouchEnd.bind(this))
-    this.touchCancelId = viewport.touchCancel.connect(
+    this.touchMoveId = viewport.on('touchMove', this.onTouchMove.bind(this))
+    this.touchEndId = viewport.on('touchEnd', this.onTouchEnd.bind(this))
+    this.touchCancelId = viewport.on('touchCancel', 
       this.onTouchCancel.bind(this)
     )
-    this.doubleTappedId = viewport.doubleTapped.connect(
+    this.doubleTappedId = viewport.on('doubleTapped', 
       this.onDoubleTap.bind(this)
     )
 
     this.appData.renderer.getXRViewport().then((xrvp) => {
       // ///////////////////////////////////
       // VRController events
-      this.controllerDownId = xrvp.controllerButtonDown.connect(
+      this.controllerDownId = xrvp.on('controllerButtonDown', 
         this.onVRControllerButtonDown.bind(this)
       )
-      this.controllerUpId = xrvp.controllerButtonUp.connect(
+      this.controllerUpId = xrvp.on('controllerButtonUp', 
         this.onVRControllerButtonUp.bind(this)
       )
-      this.controllerDoubleClickId = xrvp.controllerDoubleClicked.connect(
+      this.controllerDoubleClickId = xrvp.on('controllerDoubleClicked', 
         this.onVRControllerDoubleClicked.bind(this)
       )
-      this.onVRPoseChangedId = xrvp.viewChanged.connect(
+      this.onVRPoseChangedId = xrvp.on('viewChanged', 
         this.onVRPoseChanged.bind(this)
       )
     })
@@ -272,16 +242,16 @@ class ToolManager {
 
     if (event.showPointerOnAvatar == true) {
       if (!this.avatarPointerVisible) {
-        this.movePointer.emit(event)
+        this.emit('movePointer', event)
         this.avatarPointerVisible = true
       }
       if (!this.avatarPointerHighlighted) {
-        this.hilightPointer.emit(event)
+        this.emit('hilightPointer', event)
         this.avatarPointerHighlighted = true
       }
     } else if (this.avatarPointerVisible) {
       this.avatarPointerVisible = false
-      this.hidePointer.emit()
+      this.emit('hidePointer')
     }
   }
 
@@ -298,11 +268,11 @@ class ToolManager {
       if (tool && tool.onMouseMove(event) == true) break
     }
     if (event.showPointerOnAvatar == true) {
-      this.movePointer.emit(event)
+      this.emit('movePointer', event)
       this.avatarPointerVisible = true
     } else if (this.avatarPointerVisible) {
       this.avatarPointerVisible = false
-      this.hidePointer.emit()
+      this.emit('hidePointer')
     }
   }
 
@@ -320,12 +290,12 @@ class ToolManager {
     }
     if (event.showPointerOnAvatar == true) {
       if (this.avatarPointerHighlighted) {
-        this.unhilightPointer.emit(event)
+        this.emit('unhilightPointer', event)
         this.avatarPointerHighlighted = false
       }
     } else if (this.avatarPointerVisible) {
       this.avatarPointerVisible = false
-      this.hidePointer.emit()
+      this.emit('hidePointer')
     }
   }
 
@@ -341,7 +311,7 @@ class ToolManager {
     }
     if (this.avatarPointerVisible) {
       this.avatarPointerVisible = false
-      this.hidePointer.emit()
+      this.emit('hidePointer')
     }
   }
 

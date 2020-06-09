@@ -120,7 +120,7 @@ export default class CreateLineTool extends CreateGeomTool {
   //     for(let controller of xrvp.getControllers()) {
   //       addIconToController(controller)
   //     }
-  //     this.addIconToControllerId = xrvp.controllerAdded.connect(addIconToController);
+  //     this.addIconToControllerId = xrvp.on('controllerAdded', addIconToController);
   //   });
 
   // }
@@ -171,7 +171,7 @@ export default class CreateLineTool extends CreateGeomTool {
       this.appData.undoRedoManager.undo(false)
     }
     this.stage = 0
-    this.actionFinished.emit()
+    this.emit('actionFinished')
   }
 }
 export { CreateLineTool }

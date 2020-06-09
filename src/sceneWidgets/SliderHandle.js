@@ -25,7 +25,7 @@ class SliderHandle extends BaseLinearMovementHandle {
    * @param {any} radius - The radius value.
    * @param {any} color - The color value.
    */
-  constructor(name, length = 0.5, radius = 0.02, color = new Color(1, 1, 0)) {
+  constructor(name, length = 0.5, radius = 0.02, color = new Color('#F9CE03')) {
     super(name)
 
     this.lengthParam = this.addParameter(new NumberParameter('Length', length))
@@ -59,18 +59,18 @@ class SliderHandle extends BaseLinearMovementHandle {
     this.baseBarXfo = new Xfo()
     this.topBarXfo = new Xfo()
 
-    this.barRadiusParam.valueChanged.connect(() => {
+    this.barRadiusParam.on('valueChanged', () => {
       barGeom.getParameter('radius').setValue(this.barRadiusParam.getValue())
     })
-    this.handleRadiusParam.valueChanged.connect(() => {
+    this.handleRadiusParam.on('valueChanged', () => {
       handleGeom
         .getParameter('radius')
         .setValue(this.handleRadiusParam.getValue())
     })
-    this.lengthParam.valueChanged.connect(() => {
+    this.lengthParam.on('valueChanged', () => {
       this.__updateSlider(this.value)
     })
-    this.colorParam.valueChanged.connect(() => {
+    this.colorParam.on('valueChanged', () => {
       this.handleMat
         .getParameter('BaseColor')
         .setValue(this.colorParam.getValue())
@@ -111,7 +111,7 @@ class SliderHandle extends BaseLinearMovementHandle {
       this.__updateSlider(param.getValue())
     }
     __updateSlider()
-    param.valueChanged.connect(__updateSlider)
+    param.on('valueChanged', __updateSlider)
   }
 
   // eslint-disable-next-line require-jsdoc

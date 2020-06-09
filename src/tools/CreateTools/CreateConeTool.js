@@ -94,13 +94,13 @@ class CreateConeTool extends CreateGeomTool {
     if (this._radius == 0 || this._height == 0) {
       this.appData.undoRedoManager.undo(false)
       this.stage = 0
-      this.actionFinished.emit()
+      this.emit('actionFinished')
     }
     if (this.stage == 1) {
       this.stage = 2
     } else if (this.stage == 2) {
       this.stage = 0
-      this.actionFinished.emit()
+      this.emit('actionFinished')
     }
   }
 }

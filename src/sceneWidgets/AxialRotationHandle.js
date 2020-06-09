@@ -39,7 +39,7 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
     this.handle = new GeomItem('handle', handleGeom, handleMat)
     this.handleXfo = new Xfo()
 
-    this.radiusParam.valueChanged.connect(() => {
+    this.radiusParam.on('valueChanged', () => {
       radius = this.radiusParam.getValue()
       handleGeom.getParameter('radius').setValue(radius)
       handleGeom.getParameter('height').setValue(radius * 0.02)

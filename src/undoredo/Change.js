@@ -1,16 +1,14 @@
-import { Signal } from '@zeainc/zea-engine'
+import { EventEmitter } from '@zeainc/zea-engine'
 import { UndoRedoManager } from './UndoRedoManager.js'
 
 /** Class representing a change. */
-export default class Change {
+export default class Change extends EventEmitter {
   /**
    * Create a change.
    * @param {any} name - The name value.
    */
   constructor(name) {
     this.name = name ? name : UndoRedoManager.getChangeClassName(this)
-
-    this.updated = new Signal()
   }
 
   /**

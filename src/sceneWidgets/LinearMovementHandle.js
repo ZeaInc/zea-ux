@@ -42,7 +42,7 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
     tipXfo.tr.set(0, 0, length)
     tipGeom.transformVertices(tipXfo)
 
-    // this.radiusParam.valueChanged.connect(()=>{
+    // this.radiusParam.on('valueChanged', ()=>{
     //   radius = this.radiusParam.getValue();
     //   handleGeom.getParameter('radius').setValue(radius);
     //   handleGeom.getParameter('height').setValue(radius * 0.02);
@@ -78,7 +78,7 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
         this.setGlobalXfo(param.getValue())
       }
       __updateGizmo()
-      param.valueChanged.connect(__updateGizmo)
+      param.on('valueChanged', __updateGizmo)
     }
   }
 

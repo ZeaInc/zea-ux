@@ -1,5 +1,3 @@
-import { Signal, Group } from '@zeainc/zea-engine'
-
 import UndoRedoManager from './undoredo/UndoRedoManager.js'
 import Change from './undoredo/Change.js'
 import XfoHandle from './sceneWidgets/XfoHandle.js'
@@ -132,9 +130,6 @@ class SelectionManager {
   constructor(appData, options = {}) {
     this.appData = appData
     this.leadSelection = undefined
-    this.selectionChanged = new Signal()
-    this.leadSelectionChanged = new Signal()
-
     this.selectionGroup = new SelectionGroup(options)
 
     if (options.enableXfoHandles === true) {
@@ -150,62 +145,6 @@ class SelectionManager {
       // this.xfoHandle.showHandles('Rotate')
       // this.xfoHandle.showHandles('Scale')
       this.selectionGroup.addChild(this.xfoHandle)
-
-      this.handleGroup = {
-        Translate: new Signal(),
-        Rotate: new Signal(),
-        Scale: new Signal(),
-      };
-      this.currMode = '';
-      appData.actionRegistry.registerAction({
-        name: 'Translate',
-        path: ['Edit'],
-        callback: () => {
-          this.showHandles('Translate');
-        },
-        key: 'w',
-        activatedChanged: this.handleGroup.Translate,
-      });
-      appData.actionRegistry.registerAction({
-        name: 'Rotate',
-        path: ['Edit'],
-        callback: () => {
-          this.showHandles('Rotate');
-        },
-        key: 'e',
-        activatedChanged: this.handleGroup.Rotate,
-      });
-      appData.actionRegistry.registerAction({
-        name: 'Scale',
-        path: ['Edit'],
-        callback: () => {
-          this.showHandles('Scale');
-        },
-        key: 'r',
-        activatedChanged: this.handleGroup.Scale,
-      });
-
-      appData.actionRegistry.registerAction({
-        name: 'Local',
-        path: ['Edit', 'Coords'],
-        callback: () => {
-          this.setXfoMode(ZeaEngine.Group.INITIAL_XFO_MODES.average);
-        },
-        key: 'k',
-        activatedChanged: this.handleGroup.Translate,
-      });
-      appData.actionRegistry.registerAction({
-        name: 'Global',
-        path: ['Edit', 'Coords'],
-        callback: () => {
-          this.setXfoMode(ZeaEngine.Group.INITIAL_XFO_MODES.globalOri);
-        },
-        key: 'l',
-        activatedChanged: this.handleGroup.Rotate,
-      });
-
-      // Translate Activated by default.
-      // this.showHandles('Translate');
     }
 
     if (this.appData.renderer) {
@@ -309,7 +248,7 @@ class SelectionManager {
   __setLeadSelection(treeItem) {
     if (this.leadSelection != treeItem) {
       this.leadSelection = treeItem
-      this.leadSelectionChanged.emit(treeItem)
+      this.emit('leadSelectionChanged', { treeItem })
     }
   }
 
@@ -396,7 +335,7 @@ class SelectionManager {
       this.appData.undoRedoManager.addChange(change)
 
     this.updateHandleVisiblity()
-    this.selectionChanged.emit(prevSelection)
+    this.emit('selectionChanged', { prevSelection, selection })
   }
 
   /**
@@ -421,7 +360,7 @@ class SelectionManager {
       const change = new SelectionChange(this, prevSelection, selection)
       if (this.appData.undoRedoManager)
         this.appData.undoRedoManager.addChange(change)
-      this.selectionChanged.emit(selection)
+      this.emit('selectionChanged', { selection, prevSelection })
     }
     return true
   }
@@ -457,7 +396,7 @@ class SelectionManager {
       this.__setLeadSelection()
     }
     this.updateHandleVisiblity()
-    this.selectionChanged.emit(selection)
+    this.emit('selectionChanged', { prevSelection, selection })
   }
 
   /**
@@ -493,7 +432,7 @@ class SelectionManager {
       this.__setLeadSelection()
     }
     this.updateHandleVisiblity()
-    this.selectionChanged.emit(selection)
+    this.emit('selectionChanged', { prevSelection, selection })
   }
 
   /**

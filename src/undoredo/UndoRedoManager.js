@@ -1,5 +1,3 @@
-import { Signal } from '@zeainc/zea-engine'
-
 const __changeClasses = {}
 const __classNames = {}
 const __classes = []
@@ -12,11 +10,6 @@ class UndoRedoManager {
   constructor() {
     this.__undoStack = []
     this.__redoStack = []
-
-    this.changeAdded = new Signal()
-    this.changeUpdated = new Signal()
-    this.changeUndone = new Signal()
-    this.changeRedone = new Signal()
 
     this.__currChangeUpdated = this.__currChangeUpdated.bind(this)
   }
@@ -46,7 +39,7 @@ class UndoRedoManager {
     for (const change of this.__redoStack) change.destroy()
     this.__redoStack = []
 
-    this.changeAdded.emit(change)
+    this.emit('changeAdded', { change })
   }
 
   /**
@@ -59,7 +52,7 @@ class UndoRedoManager {
 
   // eslint-disable-next-line require-jsdoc
   __currChangeUpdated(updateData) {
-    this.changeUpdated.emit(updateData)
+    this.emit('changeUpdated', updateData)
   }
 
   /**
@@ -73,7 +66,7 @@ class UndoRedoManager {
       change.undo()
       if (pushOnRedoStack) {
         this.__redoStack.push(change)
-        this.changeUndone.emit()
+        this.emit('changeUndone')
       }
     }
   }
@@ -87,7 +80,7 @@ class UndoRedoManager {
       // console.log("redo:", change.name)
       change.redo()
       this.__undoStack.push(change)
-      this.changeRedone.emit()
+      this.emit('changeRedone')
     }
   }
 
@@ -96,23 +89,33 @@ class UndoRedoManager {
 
   /**
    * The constructChange method.
-   * @param {any} claName - The claName param.
+   * @param {string} className - The className param.
    * @return {any} The return value.
    */
-  constructChange(claName) {
-    return new __changeClasses[claName]()
+  constructChange(className) {
+    return new __changeClasses[className]()
+  }
+
+  /**
+   * The isChangeClassRegistered method.
+   * @param {object} inst - The instance of the Change class.
+   * @return {boolean} Returns 'true' if the class has been registered.
+   */
+  static isChangeClassRegistered(inst) {
+    const id = __classes.indexOf(inst.constructor)
+    return id != -1
   }
 
   /**
    * The getChangeClassName method.
-   * @param {any} inst - The inst param.
+   * @param {object} inst - The instance of the Change class.
    * @return {any} The return value.
    */
   static getChangeClassName(inst) {
     const id = __classes.indexOf(inst.constructor)
     if (__classNames[id]) return __classNames[id]
     console.warn('Change not registered:', inst.constructor.name)
-    return inst.constructor.name
+    return ''
   }
 
   /**
