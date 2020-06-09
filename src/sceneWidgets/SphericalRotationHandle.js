@@ -64,7 +64,7 @@ class SphericalRotationHandle extends Handle {
         this.setGlobalXfo(param.getValue())
       }
       __updateGizmo()
-      param.valueChanged.connect(__updateGizmo)
+      param.on('valueChanged', __updateGizmo)
     }
   }
 

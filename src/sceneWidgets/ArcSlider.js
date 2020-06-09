@@ -1,13 +1,10 @@
 import {
-  Signal,
   Color,
   Xfo,
   NumberParameter,
   ColorParameter,
-  ValueSetMode,
   GeomItem,
   Material,
-  Cylinder,
   Circle,
   Sphere,
   sgFactory,
@@ -63,17 +60,17 @@ class ArcSlider extends BaseAxialRotationHandle {
     this.handleGeomOffsetXfo.tr.x = arcRadius
     this.handle.getParameter('GeomOffsetXfo').setValue(this.handleGeomOffsetXfo)
 
-    // this.barRadiusParam.valueChanged.connect(() => {
+    // this.barRadiusParam.on('valueChanged', () => {
     //   arcGeom.getParameter('radius').setValue(this.barRadiusParam.getValue());
     // });
 
     this.range = [0, arcAngle]
-    this.arcAngleParam.valueChanged.connect(() => {
+    this.arcAngleParam.on('valueChanged', () => {
       const arcAngle = this.arcAngleParam.getValue()
       arcGeom.getParameter('Angle').setValue(arcAngle)
       this.range = [0, arcAngle]
     })
-    this.arcRadiusParam.valueChanged.connect(() => {
+    this.arcRadiusParam.on('valueChanged', () => {
       const arcRadius = this.arcRadiusParam.getValue()
       arcGeom.getParameter('Radius').setValue(arcRadius)
       this.handleGeomOffsetXfo.tr.x = arcRadius
@@ -81,12 +78,12 @@ class ArcSlider extends BaseAxialRotationHandle {
         .getParameter('GeomOffsetXfo')
         .setValue(this.handleGeomOffsetXfo)
     })
-    this.handleRadiusParam.valueChanged.connect(() => {
+    this.handleRadiusParam.on('valueChanged', () => {
       handleGeom
         .getParameter('radius')
         .setValue(this.handleRadiusParam.getValue())
     })
-    this.colorParam.valueChanged.connect(() => {
+    this.colorParam.on('valueChanged', () => {
       this.handleMat
         .getParameter('BaseColor')
         .setValue(this.colorParam.getValue())
@@ -97,9 +94,6 @@ class ArcSlider extends BaseAxialRotationHandle {
 
     // this.__updateSlider(0);
     this.setTargetParam(this.handle.getParameter('GlobalXfo'), false)
-
-    this.dragStart = new Signal()
-    this.dragEnd = new Signal()
   }
 
   // ///////////////////////////////////
@@ -171,7 +165,7 @@ class ArcSlider extends BaseAxialRotationHandle {
   //     this.__updateSlider(param.getValue());
   //   };
   //   __updateSlider();
-  //   param.valueChanged.connect(__updateSlider);
+  //   param.on('valueChanged', __updateSlider);
   // }
 
   // eslint-disable-next-line require-jsdoc
@@ -218,7 +212,7 @@ class ArcSlider extends BaseAxialRotationHandle {
     this.handleGeomOffsetXfo.sc.x = this.handleGeomOffsetXfo.sc.y = this.handleGeomOffsetXfo.sc.z = 1.2
     this.handle.getParameter('GeomOffsetXfo').setValue(this.handleGeomOffsetXfo)
 
-    this.dragStart.emit()
+    this.emit('dragStart')
   }
 
   /**
@@ -267,7 +261,7 @@ class ArcSlider extends BaseAxialRotationHandle {
     this.handleGeomOffsetXfo.sc.x = this.handleGeomOffsetXfo.sc.y = this.handleGeomOffsetXfo.sc.z = 1.0
     this.handle.getParameter('GeomOffsetXfo').setValue(this.handleGeomOffsetXfo)
 
-    this.dragEnd.emit()
+    this.emit('dragEnd')
   }
 
   /**

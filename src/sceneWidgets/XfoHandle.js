@@ -47,7 +47,7 @@ class XfoPlanarMovementHandle extends PlanarMovementHandle {
     handleGeom.transformVertices(handleGeomXfo)
     this.handle = new GeomItem('handle', handleGeom, handleMat)
 
-    this.sizeParam.valueChanged.connect(() => {
+    this.sizeParam.on('valueChanged', () => {
       size = this.sizeParam.getValue()
       handleGeom.getParameter('size').setValue(size)
       handleGeom.getParameter('height').setValue(size * 0.02)

@@ -1,4 +1,4 @@
-import { Signal, ParameterOwner } from '@zeainc/zea-engine'
+import { ParameterOwner } from '@zeainc/zea-engine'
 
 /**
  * Class representing a base tool.
@@ -13,11 +13,6 @@ export default class BaseTool extends ParameterOwner {
     super()
     if (!appData) console.error('App data not provided to tool')
     this.appData = appData
-
-    // When the tool becomes active ready
-    this.installChanged = new Signal()
-    this.activatedChanged = new Signal()
-    this.actionFinished = new Signal()
 
     this.__params = []
     this.__installed = false
@@ -59,7 +54,7 @@ export default class BaseTool extends ParameterOwner {
     if (this.__installed) throw new Error('Tool already installed')
     this.index = index
     this.__installed = true
-    this.installChanged.emit(true)
+    this.emit('installChanged', { installed: this.__installed })
   }
 
   /**
@@ -67,7 +62,7 @@ export default class BaseTool extends ParameterOwner {
    */
   uninstall() {
     this.__installed = false
-    this.installChanged.emit(false)
+    this.emit('installChanged', { installed: this.__installed })
   }
 
   /**
@@ -76,7 +71,7 @@ export default class BaseTool extends ParameterOwner {
   activateTool() {
     if (this.__activated) throw new Error('Tool already activate')
     this.__activated = true
-    this.activatedChanged.emit(true)
+    this.emit('activatedChanged', { activated: this.__activated })
   }
 
   /**
@@ -84,7 +79,7 @@ export default class BaseTool extends ParameterOwner {
    */
   deactivateTool() {
     this.__activated = false
-    this.activatedChanged.emit(false)
+    this.emit('activatedChanged', { activated: this.__activated })
   }
 
   // ///////////////////////////////////

@@ -1,25 +1,4 @@
-import {
-  SystemDesc,
-  Signal,
-  Vec2,
-  Vec3,
-  Quat,
-  Color,
-  Xfo,
-  Ray,
-  BooleanParameter,
-  NumberParameter,
-  ColorParameter,
-  GeomItem,
-  Material,
-  Lines,
-  Rect,
-  Cross,
-  Cylinder,
-  Cuboid,
-  Sphere,
-  Cone,
-} from '@zeainc/zea-engine'
+import { Quat, Color, Xfo, GeomItem, Material, Cross } from '@zeainc/zea-engine'
 import BaseTool from '../BaseTool.js'
 import Handle from '../../sceneWidgets/Handle.js'
 import UndoRedoManager from '../../undoredo/UndoRedoManager.js'
@@ -195,7 +174,7 @@ class VRHoldObjectsTool extends BaseTool {
     this.appData.renderer.getXRViewport().then((xrvp) => {
       for (const controller of xrvp.getControllers())
         addIconToController(controller)
-      this.addIconToControllerId = xrvp.controllerAdded.connect(
+      this.addIconToControllerId = xrvp.on('controllerAdded', 
         addIconToController
       )
     })

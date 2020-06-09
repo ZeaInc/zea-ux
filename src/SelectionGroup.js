@@ -92,7 +92,7 @@ export default class SelectionGroup extends Group {
           )
       })
 
-      signalIndices.globalXfoChangedIndex = item.globalXfoChanged.connect(
+      signalIndices.globalXfoChangedIndex = item.on('globalXfoChanged',
         (mode) => {
           // Then the item xfo changes, we update the group xfo.
           if (!this.calculatingGroupXfo && !this.propagatingXfoToItems) {

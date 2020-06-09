@@ -1,6 +1,5 @@
 import {
   SystemDesc,
-  Signal,
   Vec2,
   Vec3,
   Quat,
@@ -57,7 +56,6 @@ class ViewTool extends BaseTool {
 
     this.__controllerTriggersHeld = []
 
-    this.movementFinished = new Signal()
   }
 
   // /////////////////////////////////////
@@ -93,7 +91,7 @@ class ViewTool extends BaseTool {
       for (const controller of xrvp.getControllers()) {
         addIconToController(controller)
       }
-      this.addIconToControllerId = xrvp.controllerAdded.connect(
+      this.addIconToControllerId = xrvp.on('controllerAdded', 
         addIconToController
       )
     })
@@ -355,7 +353,7 @@ class ViewTool extends BaseTool {
         this.__focusIntervalId = setTimeout(applyMovement, 20)
       } else {
         this.__focusIntervalId = undefined
-        this.movementFinished.emit()
+        this.emit('movementFinished')
       }
     }
     applyMovement()
@@ -432,7 +430,7 @@ class ViewTool extends BaseTool {
    */
   onDragEnd(event) {
     // event.viewport.renderGeomDataFbo();
-    this.movementFinished.emit()
+    this.emit('movementFinished')
     return false
   }
 
@@ -523,7 +521,7 @@ class ViewTool extends BaseTool {
         this.__mouseWheelZoomIntervalId = setTimeout(applyMovement, 20)
       } else {
         this.__mouseWheelZoomIntervalId = undefined
-        this.movementFinished.emit()
+        this.emit('movementFinished')
         event.viewport.renderGeomDataFbo()
       }
     }
@@ -727,7 +725,7 @@ class ViewTool extends BaseTool {
     switch (this.__manipMode) {
       case 'orbit':
       case 'panAndZoom':
-        this.movementFinished.emit()
+        this.emit('movementFinished')
         break
     }
     for (let i = 0; i < touches.length; i++) {

@@ -1,30 +1,4 @@
-import {
-  SystemDesc,
-  Signal,
-  Vec2,
-  Vec3,
-  Quat,
-  Color,
-  Xfo,
-  Ray,
-  ValueSetMode,
-  BooleanParameter,
-  NumberParameter,
-  ColorParameter,
-  BaseItem,
-  TreeItem,
-  GeomItem,
-  Material,
-  Lines,
-  Rect,
-  Cross,
-  Cylinder,
-  Cuboid,
-  Sphere,
-  Cone,
-  Operator,
-  sgFactory,
-} from '@zeainc/zea-engine'
+import { TreeItem, Operator, sgFactory } from '@zeainc/zea-engine'
 import UndoRedoManager from './UndoRedoManager.js'
 import Change from './Change.js'
 

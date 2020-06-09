@@ -148,7 +148,7 @@ class CreateGeomTool extends BaseCreateTool {
       for (const controller of xrvp.getControllers()) {
         addIconToController(controller)
       }
-      this.addIconToControllerId = xrvp.controllerAdded.connect(
+      this.addIconToControllerId = xrvp.on('controllerAdded', 
         addIconToController
       )
     })
