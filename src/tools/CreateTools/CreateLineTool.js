@@ -134,7 +134,7 @@ export default class CreateLineTool extends CreateGeomTool {
   //     // for(let controller of xrvp.getControllers()) {
   //     //   controller.getTipItem().removeAllChildren();
   //     // }
-  //     xrvp.controllerAdded.disconnectId(this.addIconToControllerId);
+  //     xrvp.removeListenerById('controllerAdded', this.addIconToControllerId);
   //   });
   // }
 

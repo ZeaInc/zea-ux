@@ -63,7 +63,7 @@ class HandleTool extends BaseTool {
       // for(let controller of xrvp.getControllers()) {
       //   controller.getTipItem().removeAllChildren();
       // }
-      xrvp.controllerAdded.disconnectId(this.addIconToControllerId)
+      xrvp.removeListenerById('controllerAdded', this.addIconToControllerId)
     })
   }
 

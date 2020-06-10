@@ -1,3 +1,4 @@
+import { EventEmitter } from '@zeainc/zea-engine'
 import UndoRedoManager from './undoredo/UndoRedoManager.js'
 import Change from './undoredo/Change.js'
 import XfoHandle from './sceneWidgets/XfoHandle.js'
@@ -121,13 +122,14 @@ UndoRedoManager.registerChange(
 )
 
 /** Class representing a selection manager */
-class SelectionManager {
+class SelectionManager extends EventEmitter {
   /**
    * Create a selection manager.
    * @param {object} options - The options object.
    * @param {object} appData - The appData value.
    */
   constructor(appData, options = {}) {
+    super()
     this.appData = appData
     this.leadSelection = undefined
     this.selectionGroup = new SelectionGroup(options)

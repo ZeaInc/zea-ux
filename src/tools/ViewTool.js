@@ -109,7 +109,7 @@ class ViewTool extends BaseTool {
       //   //   controller.getTipItem().removeAllChildren();
       //   // }
       // }
-      xrvp.controllerAdded.disconnectId(this.addIconToControllerId)
+      xrvp.removeListenerById('controllerAdded', this.addIconToControllerId)
     })
   }
 

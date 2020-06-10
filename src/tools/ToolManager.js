@@ -531,31 +531,31 @@ class ToolManager {
   destroy() {
     const viewport = this.appData.renderer.getViewport()
 
-    viewport.mouseDown.disconnectId(this.mouseDownId)
-    viewport.mouseMove.disconnectId(this.mouseMoveId)
-    viewport.mouseUp.disconnectId(this.mouseUpId)
-    viewport.mouseLeave.disconnectId(this.mouseUpId)
-    viewport.mouseWheel.disconnectId(this.mouseWheelId)
+    viewport.removeListenerById('mouseDown', this.mouseDownId)
+    viewport.removeListenerById('mouseMove', this.mouseMoveId)
+    viewport.removeListenerById('mouseUp', this.mouseUpId)
+    viewport.removeListenerById('mouseLeave', this.mouseUpId)
+    viewport.removeListenerById('mouseWheel', this.mouseWheelId)
 
     // ///////////////////////////////////
     // Keyboard events
-    viewport.keyDown.disconnectId(this.keyDownId)
-    viewport.keyUp.disconnectId(this.keyUpId)
-    viewport.keyPressed.disconnectId(this.keyPressedId)
+    viewport.removeListenerById('keyDown', this.keyDownId)
+    viewport.removeListenerById('keyUp', this.keyUpId)
+    viewport.removeListenerById('keyPressed', this.keyPressedId)
 
     // ///////////////////////////////////
     // Touch events
-    viewport.touchStart.disconnectId(this.touchStartId)
-    viewport.touchMove.disconnectId(this.touchMoveId)
-    viewport.touchEnd.disconnectId(this.touchEndId)
-    viewport.touchCancel.disconnectId(this.touchCancelId)
+    viewport.removeListenerById('touchStart', this.touchStartId)
+    viewport.removeListenerById('touchMove', this.touchMoveId)
+    viewport.removeListenerById('touchEnd', this.touchEndId)
+    viewport.removeListenerById('touchCancel', this.touchCancelId)
 
     this.appData.renderer.getXRViewport().then((xrvp) => {
       // ///////////////////////////////////
       // VRController events
-      viewport.controllerDown.disconnectId(this.controllerDownId)
-      viewport.controllerUp.disconnectId(this.controllerUpId)
-      viewport.viewChanged.disconnectId(this.onVRPoseChangedId)
+      viewport.removeListenerById('controllerDown', this.controllerDownId)
+      viewport.removeListenerById('controllerUp', this.controllerUpId)
+      viewport.removeListenerById('viewChanged', this.onVRPoseChangedId)
     })
   }
 }

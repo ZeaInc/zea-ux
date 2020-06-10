@@ -121,7 +121,7 @@ export default class SelectionGroup extends Group {
           childItem.removeHighlight('branchselected' + this.getId(), true)
       })
 
-      item.globalXfoChanged.disconnectId(
+      item.removeListenerById('globalXfoChanged',
         this.__signalIndices[index].globalXfoChangedIndex
       )
 
