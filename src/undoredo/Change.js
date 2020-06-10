@@ -8,6 +8,7 @@ export default class Change extends EventEmitter {
    * @param {any} name - The name value.
    */
   constructor(name) {
+    super()
     this.name = name ? name : UndoRedoManager.getChangeClassName(this)
   }
 
