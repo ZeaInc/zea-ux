@@ -87,7 +87,7 @@ class CreateFreehandLineChange extends CreateGeomChange {
         indicesChanged: true,
       })
     }
-    this.updated.emit(updateData)
+    this.emit('updated', updateData)
   }
 
   /**

@@ -32,7 +32,7 @@ class CreateSphereChange extends CreateGeomChange {
    */
   update(updateData) {
     this.sphere.radius = updateData.radius
-    this.updated.emit(updateData)
+    this.emit('updated', updateData)
   }
 
   /**

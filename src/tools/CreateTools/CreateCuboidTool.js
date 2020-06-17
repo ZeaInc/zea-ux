@@ -42,7 +42,7 @@ class CreateCuboidChange extends CreateGeomChange {
     if (updateData.height) {
       this.cuboid.z = updateData.height
     }
-    this.updated.emit(updateData)
+    this.emit('updated', updateData)
   }
 }
 UndoRedoManager.registerChange('CreateCuboidChange', CreateCuboidChange)

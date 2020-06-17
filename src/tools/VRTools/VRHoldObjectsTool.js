@@ -61,7 +61,7 @@ class HoldObjectsChange extends Change {
         this.__newXfos[gidx] = updateData.changeXfos[i]
       }
     }
-    this.updated.emit(updateData)
+    this.emit('updated', updateData)
   }
 
   /**
@@ -121,7 +121,7 @@ class HoldObjectsChange extends Change {
   //       this.__newXfos[gidx] = updateData.changeXfos[i];
   //     }
   //   }
-  //   this.updated.emit(updateData);
+  //   this.emit('updated', updateData);
   // }
 }
 

@@ -53,7 +53,7 @@ class ParameterValueChange extends Change {
     this.__nextValue = updateData.value
     const mode = updateData.mode ? updateData.mode : this.__mode
     this.__param.setValue(this.__nextValue, mode)
-    this.updated.emit(updateData)
+    this.emit('updated', updateData)
   }
 
   /**

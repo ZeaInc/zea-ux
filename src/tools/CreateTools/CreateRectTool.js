@@ -43,7 +43,7 @@ class CreateRectChange extends CreateGeomChange {
       this.geomItem.getParameter('LocalXfo').setValue(xfo)
     }
 
-    this.updated.emit(updateData)
+    this.emit('updated', updateData)
   }
 }
 UndoRedoManager.registerChange('CreateRectChange', CreateRectChange)

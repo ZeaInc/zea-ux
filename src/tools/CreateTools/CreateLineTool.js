@@ -57,7 +57,7 @@ class CreateLineChange extends CreateGeomChange {
       this.line.getVertex(1).setFromOther(updateData.p1)
       this.line.geomDataChanged.emit()
     }
-    this.updated.emit(updateData)
+    this.emit('updated', updateData)
   }
 
   /**

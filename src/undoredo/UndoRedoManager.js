@@ -1,15 +1,19 @@
+import { EventEmitter } from '@zeainc/zea-engine'
+
 const __changeClasses = {}
 const __classNames = {}
 const __classes = []
 
 /** Class representing an undo redo manager. */
-class UndoRedoManager {
+class UndoRedoManager extends EventEmitter {
   /**
    * Create an undo redo manager.
    */
   constructor() {
+    super()
     this.__undoStack = []
     this.__redoStack = []
+    this.__currChange = null
 
     this.__currChangeUpdated = this.__currChangeUpdated.bind(this)
   }
@@ -22,6 +26,10 @@ class UndoRedoManager {
     this.__undoStack = []
     for (const change of this.__redoStack) change.destroy()
     this.__redoStack = []
+    if (this.__currChange) {
+      this.__currChange.off('updated', this.__currChangeUpdated)
+      this.__currChange = null
+    }
   }
 
   /**
@@ -30,11 +38,13 @@ class UndoRedoManager {
    */
   addChange(change) {
     // console.log("AddChange:", change.name)
-    if (this.getCurrentChange())
-      this.getCurrentChange().updated.disconnect(this.__currChangeUpdated)
+    if (this.__currChange) {
+      this.__currChange.off('updated', this.__currChangeUpdated)
+    }
 
     this.__undoStack.push(change)
-    change.updated.connect(this.__currChangeUpdated)
+    this.__currChange = change
+    this.__currChange.on('updated', this.__currChangeUpdated)
 
     for (const change of this.__redoStack) change.destroy()
     this.__redoStack = []
@@ -47,7 +57,7 @@ class UndoRedoManager {
    * @return {any} The return value.
    */
   getCurrentChange() {
-    return this.__undoStack[this.__undoStack.length - 1]
+    return this.__currChange
   }
 
   // eslint-disable-next-line require-jsdoc
@@ -61,6 +71,11 @@ class UndoRedoManager {
    */
   undo(pushOnRedoStack = true) {
     if (this.__undoStack.length > 0) {
+      if (this.__currChange) {
+        this.__currChange.off('updated', this.__currChangeUpdated)
+        this.__currChange = null
+      }
+
       const change = this.__undoStack.pop()
       // console.log("undo:", change.name)
       change.undo()

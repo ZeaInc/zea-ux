@@ -35,7 +35,7 @@ class CreateCircleChange extends CreateGeomChange {
    */
   update(updateData) {
     this.circle.getParameter('Radius').setValue(updateData.radius)
-    this.updated.emit(updateData)
+    this.emit('updated', updateData)
   }
 
   /**

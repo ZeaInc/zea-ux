@@ -35,7 +35,7 @@ class CreateConeChange extends CreateGeomChange {
       this.geomItem.getGeometry().setRadius(updateData.radius)
     if (updateData.height)
       this.geomItem.getGeometry().setHeight(updateData.height)
-    this.updated.emit(updateData)
+    this.emit('updated', updateData)
   }
 }
 UndoRedoManager.registerChange('CreateCircleChange', CreateCircleChange)
