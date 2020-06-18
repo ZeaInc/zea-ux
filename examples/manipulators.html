@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <title>Manipulators</title>
 
-    <script src="http://localhost:3150/VisualiveEngineClient/lib/Visualive.js"></script>
+
+    <script src="node_modules/@zeainc/zea-engine/dist/zea-engine.js"></script>
+    <script src="node_modules/@zeainc/zea-ux/dist/zea-ux.js"></script>
 
     <!-- Use https://tachyons.io to normalize styles and add useful classes -->
     <link rel="stylesheet" href="https://unpkg.com/tachyons@4/css/tachyons.min.css"/>
@@ -18,7 +20,6 @@
     <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css">
 
   
-    <script src="../dist/visualive-ux.js"></script>
     <link rel="stylesheet" href="../css/tree-view.css">
     <script type="module">
       
@@ -35,7 +36,7 @@ const {
   SliderSceneWidget,
   AxialRotationSceneWidget,
   PlanarMovementSceneWidget
-}  = visualiveUx;
+}  = ZeaUx;
 
 const undoRedoManager = new UndoRedoManager();
 // const selectionManager = new SelectionManager(undoRedoManager);
@@ -47,34 +48,34 @@ const appData = {
 ////////////////////////////////////////////////////
 // Setup the Scene and Renderer
 
-const scene = new Visualive.Scene();
+const scene = new ZeaEngine.Scene();
 
 scene.setupGrid(5.0, 50);
 
 const addShape = (name, shape, pos, material) => {
-  const geomItem = new Visualive.GeomItem(name + 'Item', shape, material);
-  geomItem.setLocalXfo(new Visualive.Xfo(pos));
+  const geomItem = new ZeaEngine.GeomItem(name + 'Item', shape, material);
+  geomItem.setLocalXfo(new ZeaEngine.Xfo(pos));
   scene.getRoot().addChild(geomItem);
   return geomItem;
 };
-const standardMaterial = new Visualive.Material(
+const standardMaterial = new ZeaEngine.Material(
   'surfaces',
   'SimpleSurfaceShader'
 );
 standardMaterial
   .getParameter('BaseColor')
-  .setValue(new Visualive.Color(89 / 255, 182 / 255, 92 / 255));
+  .setValue(new ZeaEngine.Color(89 / 255, 182 / 255, 92 / 255));
 
 const cylinder = addShape(
   'Cylinder',
-  new Visualive.Cylinder(0.2, 0.4, 32, 2, true, true),
-  new Visualive.Vec3(1, 0, 0),
+  new ZeaEngine.Cylinder(0.2, 0.4, 32, 2, true, true),
+  new ZeaEngine.Vec3(1, 0, 0),
   standardMaterial
 );
 const cuboid = addShape(
   'Cuboid',
-  new Visualive.Cuboid(0.5, 0.2, 0.6, true),
-  new Visualive.Vec3(-1, 0, 0),
+  new ZeaEngine.Cuboid(0.5, 0.2, 0.6, true),
+  new ZeaEngine.Vec3(-1, 0, 0),
   standardMaterial
 );
 
@@ -85,12 +86,12 @@ const slider = new SliderSceneWidget(
   'slider',
   0.5,
   0.02,
-  new Visualive.Color('#8A2BE2'),
+  new ZeaEngine.Color('#8A2BE2'),
   undoRedoManager
 );
 scene.getRoot().addChild(slider);
 
-const param = new Visualive.NumberParameter('param', 0.0, [-0.5, 1.0]);
+const param = new ZeaEngine.NumberParameter('param', 0.0, [-0.5, 1.0]);
 slider.setTargetParam(param);
 param.valueChanged.connect(() => {
   const xfo = cylinder.getGlobalXfo();
@@ -105,7 +106,7 @@ scene.getRoot().addParameter(param);
 const rotationWidget = new AxialRotationSceneWidget(
   'rotation',
   0.5,
-  new Visualive.Color('#8A2BE2'),
+  new ZeaEngine.Color('#8A2BE2'),
   undoRedoManager
 );
 scene.getRoot().addChild(rotationWidget);
@@ -117,7 +118,7 @@ rotationWidget.setTargetParam(cuboid.getParameter('GlobalXfo'));
 const planarWidget = new PlanarMovementSceneWidget(
   'planar',
   0.5,
-  new Visualive.Color('#8A2BE2'),
+  new ZeaEngine.Color('#8A2BE2'),
   undoRedoManager
 );
 scene.getRoot().addChild(planarWidget);
@@ -128,7 +129,7 @@ planarWidget.setTargetParam(cylinder.getParameter('GlobalXfo'));
 // Renderer
 
 
-const renderer = new Visualive.GLRenderer(
+const renderer = new ZeaEngine.GLRenderer(
   document.getElementById('viewport')
 );
 
@@ -137,8 +138,8 @@ renderer
   .getViewport()
   .getCamera()
   .setPositionAndTarget(
-    new Visualive.Vec3(2, 2, 1.7),
-    new Visualive.Vec3(0, 0, 0.4)
+    new ZeaEngine.Vec3(2, 2, 1.7),
+    new ZeaEngine.Vec3(0, 0, 0.4)
   );
 renderer.resumeDrawing();
 
@@ -153,7 +154,7 @@ appData.toolManager = toolManager;
 renderer.getViewport().setManipulator(null);
 toolManager.bind(renderer);
 
-const viewTool = new ViewTool(appData, visualiveUx.VIEW_TOOL_MODELS.VIEWER);
+const viewTool = new ViewTool(appData, ZeaEngineUx.VIEW_TOOL_MODELS.VIEWER);
 const handleTool = new SceneWidgetTool(appData);
 toolManager.pushTool(viewTool);
 toolManager.pushTool(handleTool);

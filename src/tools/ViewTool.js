@@ -1,9 +1,22 @@
-import BaseTool from './BaseTool.js';
+import {
+  SystemDesc,
+  Vec2,
+  Vec3,
+  Quat,
+  Color,
+  Xfo,
+  NumberParameter,
+  GeomItem,
+  Material,
+  Sphere,
+} from '@zeainc/zea-engine'
+
+import BaseTool from './BaseTool.js'
 
 const VIEW_TOOL_MODELS = {
   VIEWER: 0,
   DCC: 1,
-};
+}
 
 /**
  * Class representing a view tool
@@ -16,37 +29,33 @@ class ViewTool extends BaseTool {
    * @param {any} maipulationModel - The maipulationModel value.
    */
   constructor(appData, maipulationModel = VIEW_TOOL_MODELS.VIEWER) {
-    super(appData);
-    console.log('ViewTool:', maipulationModel);
+    super(appData)
+    console.log('ViewTool:', maipulationModel)
 
-    this.__maipulationModel = maipulationModel;
-    this.__defaultMode = 'orbit';
-    this.__mode = this.__defaultMode;
+    this.__maipulationModel = maipulationModel
+    this.__defaultMode = 'orbit'
+    this.__mode = this.__defaultMode
 
-    this.__mouseDragDelta = new Visualive.Vec2();
-    this.__keyboardMovement = false;
-    this.__keysPressed = [];
-    this.__maxVel = 0.002;
-    this.__velocity = new Visualive.Vec3();
+    this.__mouseDragDelta = new Vec2()
+    this.__keyboardMovement = false
+    this.__keysPressed = []
+    this.__maxVel = 0.002
+    this.__velocity = new Vec3()
 
-    this.__ongoingTouches = {};
+    this.__ongoingTouches = {}
 
     this.__orbitRateParam = this.addParameter(
-      new Visualive.NumberParameter(
-        'orbitRate',
-        Visualive.SystemDesc.isMobileDevice ? -0.003 : 0.01
-      )
-    );
+      new NumberParameter('orbitRate', 1)
+    )
     this.__dollySpeedParam = this.addParameter(
-      new Visualive.NumberParameter('dollySpeed', 0.02)
-    );
+      new NumberParameter('dollySpeed', 0.02)
+    )
     this.__mouseWheelDollySpeedParam = this.addParameter(
-      new Visualive.NumberParameter('mouseWheelDollySpeed', 0.002)
-    );
+      new NumberParameter('mouseWheelDollySpeed', 0.002)
+    )
 
-    this.__controllerTriggersHeld = [];
+    this.__controllerTriggersHeld = []
 
-    this.movementFinished = new Visualive.Signal();
   }
 
   // /////////////////////////////////////
@@ -56,55 +65,52 @@ class ViewTool extends BaseTool {
    * The activateTool method.
    */
   activateTool() {
-    super.activateTool();
-    console.log('activateTool.ViewTool');
+    super.activateTool()
+    console.log('activateTool.ViewTool')
 
-    this.appData.renderer.getDiv().style.cursor = 'default';
+    this.appData.renderer.getDiv().style.cursor = 'default'
 
-    this.appData.renderer.getXRViewport().then(xrvp => {
+    this.appData.renderer.getXRViewport().then((xrvp) => {
       if (!this.vrControllerToolTip) {
-        this.vrControllerToolTip = new Visualive.Sphere(0.02 * 0.75);
-        this.vrControllerToolTipMat = new Visualive.Material(
-          'Cross',
-          'FlatSurfaceShader'
-        );
+        this.vrControllerToolTip = new Sphere(0.02 * 0.75)
+        this.vrControllerToolTipMat = new Material('Cross', 'FlatSurfaceShader')
         this.vrControllerToolTipMat
           .getParameter('BaseColor')
-          .setValue(new Visualive.Color('#03E3AC'));
-        this.vrControllerToolTipMat.visibleInGeomDataBuffer = false;
+          .setValue(new Color('#03E3AC'))
+        this.vrControllerToolTipMat.visibleInGeomDataBuffer = false
       }
-      const addIconToController = controller => {
-        const geomItem = new Visualive.GeomItem(
-          'SceneWidgetToolTip',
+      const addIconToController = (controller) => {
+        const geomItem = new GeomItem(
+          'HandleToolTip',
           this.vrControllerToolTip,
           this.vrControllerToolTipMat
-        );
-        controller.getTipItem().removeAllChildren();
-        controller.getTipItem().addChild(geomItem, false);
-      };
-      for (const controller of xrvp.getControllers()) {
-        addIconToController(controller);
+        )
+        controller.getTipItem().removeAllChildren()
+        controller.getTipItem().addChild(geomItem, false)
       }
-      this.addIconToControllerId = xrvp.controllerAdded.connect(
+      for (const controller of xrvp.getControllers()) {
+        addIconToController(controller)
+      }
+      this.addIconToControllerId = xrvp.on('controllerAdded', 
         addIconToController
-      );
-    });
+      )
+    })
   }
 
   /**
    * The deactivateTool method.
    */
   deactivateTool() {
-    super.deactivateTool();
+    super.deactivateTool()
 
-    this.appData.renderer.getXRViewport().then(xrvp => {
+    this.appData.renderer.getXRViewport().then((xrvp) => {
       // if(this.vrControllerToolTip) {
       //   // for(let controller of xrvp.getControllers()) {
       //   //   controller.getTipItem().removeAllChildren();
       //   // }
       // }
-      xrvp.controllerAdded.disconnectId(this.addIconToControllerId);
-    });
+      xrvp.removeListenerById('controllerAdded', this.addIconToControllerId)
+    })
   }
 
   // /////////////////////////////////////
@@ -115,7 +121,7 @@ class ViewTool extends BaseTool {
    * @param {any} mode - The mode param.
    */
   setDefaultMode(mode) {
-    this.__defaultMode = mode;
+    this.__defaultMode = mode
   }
 
   /**
@@ -124,37 +130,37 @@ class ViewTool extends BaseTool {
    * @param {any} viewport - The viewport param.
    */
   look(dragVec, viewport) {
-    const focalDistance = viewport.getCamera().getFocalDistance();
-    const orbitRate = this.__orbitRateParam.getValue();
+    const focalDistance = viewport.getCamera().getFocalDistance()
+    const orbitRate =
+      this.__orbitRateParam.getValue() * SystemDesc.isMobileDevice ? -1 : 1
 
     if (this.__keyboardMovement) {
-      const globalXfo = viewport.getCamera().getGlobalXfo();
-      this.__mouseDownCameraXfo = globalXfo.clone();
-      this.__mouseDownZaxis = globalXfo.ori.getZaxis();
-      const targetOffset = this.__mouseDownZaxis.scale(-focalDistance);
-      this.__mouseDownCameraTarget = globalXfo.tr.add(targetOffset);
+      const globalXfo = viewport.getCamera().getGlobalXfo()
+      this.__mouseDownCameraXfo = globalXfo.clone()
+      this.__mouseDownZaxis = globalXfo.ori.getZaxis()
+      const targetOffset = this.__mouseDownZaxis.scale(-focalDistance)
+      this.__mouseDownCameraTarget = globalXfo.tr.add(targetOffset)
     }
 
-    const globalXfo = this.__mouseDownCameraXfo.clone();
+    const globalXfo = this.__mouseDownCameraXfo.clone()
 
     // Orbit
-    const orbit = new Visualive.Quat();
-    orbit.rotateZ(dragVec.x * orbitRate * 0.12);
-    // globalXfo.ori.multiplyInPlace(orbit);
-    globalXfo.ori = orbit.multiply(globalXfo.ori);
+    const orbit = new Quat()
+    orbit.rotateZ((dragVec.x / viewport.getWidth()) * Math.PI * orbitRate)
+    globalXfo.ori = orbit.multiply(globalXfo.ori)
 
     // Pitch
-    const pitch = new Visualive.Quat();
-    pitch.rotateX(dragVec.y * orbitRate * 0.12);
-    globalXfo.ori.multiplyInPlace(pitch);
+    const pitch = new Quat()
+    pitch.rotateX((dragVec.y / viewport.getHeight()) * Math.PI * orbitRate)
+    globalXfo.ori.multiplyInPlace(pitch)
 
     if (this.__keyboardMovement) {
       // TODO: debug this potential regression. we now use the generic method which emits a signal.
       // Avoid generating a signal because we have an animation frame occuring.
       // see: onKeyPressed
-      viewport.getCamera().setGlobalXfo(globalXfo);
+      viewport.getCamera().setGlobalXfo(globalXfo)
     } else {
-      viewport.getCamera().setGlobalXfo(globalXfo);
+      viewport.getCamera().setGlobalXfo(globalXfo)
     }
   }
 
@@ -164,41 +170,41 @@ class ViewTool extends BaseTool {
    * @param {any} viewport - The viewport param.
    */
   orbit(dragVec, viewport) {
-    const focalDistance = viewport.getCamera().getFocalDistance();
-    const orbitRate = this.__orbitRateParam.getValue();
+    const focalDistance = viewport.getCamera().getFocalDistance()
+    const orbitRate =
+      this.__orbitRateParam.getValue() * SystemDesc.isMobileDevice ? -1 : 1
 
     if (this.__keyboardMovement) {
-      const globalXfo = viewport.getCamera().getGlobalXfo();
-      this.__mouseDownCameraXfo = globalXfo.clone();
-      this.__mouseDownZaxis = globalXfo.ori.getZaxis();
-      const targetOffset = this.__mouseDownZaxis.scale(-focalDistance);
-      this.__mouseDownCameraTarget = globalXfo.tr.add(targetOffset);
+      const globalXfo = viewport.getCamera().getGlobalXfo()
+      this.__mouseDownCameraXfo = globalXfo.clone()
+      this.__mouseDownZaxis = globalXfo.ori.getZaxis()
+      const targetOffset = this.__mouseDownZaxis.scale(-focalDistance)
+      this.__mouseDownCameraTarget = globalXfo.tr.add(targetOffset)
     }
 
-    const globalXfo = this.__mouseDownCameraXfo.clone();
+    const globalXfo = this.__mouseDownCameraXfo.clone()
 
     // Orbit
-    const orbit = new Visualive.Quat();
-    orbit.rotateZ(dragVec.x * -orbitRate);
-    // globalXfo.ori.multiplyInPlace(orbit);
-    globalXfo.ori = orbit.multiply(globalXfo.ori);
+    const orbit = new Quat()
+    orbit.rotateZ((dragVec.x / viewport.getWidth()) * 2 * Math.PI * -orbitRate)
+    globalXfo.ori = orbit.multiply(globalXfo.ori)
 
     // Pitch
-    const pitch = new Visualive.Quat();
-    pitch.rotateX(dragVec.y * -orbitRate);
-    globalXfo.ori.multiplyInPlace(pitch);
+    const pitch = new Quat()
+    pitch.rotateX((dragVec.y / viewport.getHeight()) * Math.PI * -orbitRate)
+    globalXfo.ori.multiplyInPlace(pitch)
 
     globalXfo.tr = this.__mouseDownCameraTarget.add(
       globalXfo.ori.getZaxis().scale(focalDistance)
-    );
+    )
 
     if (this.__keyboardMovement) {
       // TODO: debug this potential regression. we now use the generic method which emits a signal.
       // Avoid generating a signal because we have an animation frame occuring.
       // see: onKeyPressed
-      viewport.getCamera().setGlobalXfo(globalXfo);
+      viewport.getCamera().setGlobalXfo(globalXfo)
     } else {
-      viewport.getCamera().setGlobalXfo(globalXfo);
+      viewport.getCamera().setGlobalXfo(globalXfo)
     }
   }
 
@@ -208,25 +214,23 @@ class ViewTool extends BaseTool {
    * @param {any} viewport - The viewport param.
    */
   pan(dragVec, viewport) {
-    const focalDistance = viewport.getCamera().getFocalDistance();
-    const fovY = viewport.getCamera().getFov();
-    const xAxis = new Visualive.Vec3(1, 0, 0);
-    const yAxis = new Visualive.Vec3(0, 1, 0);
+    const focalDistance = viewport.getCamera().getFocalDistance()
+    const fovY = viewport.getCamera().getFov()
+    const xAxis = new Vec3(1, 0, 0)
+    const yAxis = new Vec3(0, 1, 0)
 
-    const cameraPlaneHeight = 2.0 * focalDistance * Math.tan(0.5 * fovY);
+    const cameraPlaneHeight = 2.0 * focalDistance * Math.tan(0.5 * fovY)
     const cameraPlaneWidth =
-      cameraPlaneHeight * (viewport.getWidth() / viewport.getHeight());
-    const delta = new Visualive.Xfo();
+      cameraPlaneHeight * (viewport.getWidth() / viewport.getHeight())
+    const delta = new Xfo()
     delta.tr = xAxis.scale(
       -(dragVec.x / viewport.getWidth()) * cameraPlaneWidth
-    );
+    )
     delta.tr.addInPlace(
       yAxis.scale((dragVec.y / viewport.getHeight()) * cameraPlaneHeight)
-    );
+    )
 
-    viewport
-      .getCamera()
-      .setGlobalXfo(this.__mouseDownCameraXfo.multiply(delta));
+    viewport.getCamera().setGlobalXfo(this.__mouseDownCameraXfo.multiply(delta))
   }
 
   /**
@@ -235,12 +239,10 @@ class ViewTool extends BaseTool {
    * @param {any} viewport - The viewport param.
    */
   dolly(dragVec, viewport) {
-    const dollyDist = dragVec.x * this.__dollySpeedParam.getValue();
-    const delta = new Visualive.Xfo();
-    delta.tr.set(0, 0, dollyDist);
-    viewport
-      .getCamera()
-      .setGlobalXfo(this.__mouseDownCameraXfo.multiply(delta));
+    const dollyDist = dragVec.x * this.__dollySpeedParam.getValue()
+    const delta = new Xfo()
+    delta.tr.set(0, 0, dollyDist)
+    viewport.getCamera().setGlobalXfo(this.__mouseDownCameraXfo.multiply(delta))
   }
 
   /**
@@ -250,29 +252,27 @@ class ViewTool extends BaseTool {
    * @param {any} viewport - The viewport param.
    */
   panAndZoom(panDelta, dragDist, viewport) {
-    const focalDistance = viewport.getCamera().getFocalDistance();
-    const fovY = viewport.getCamera().getFov();
+    const focalDistance = viewport.getCamera().getFocalDistance()
+    const fovY = viewport.getCamera().getFov()
 
-    const xAxis = new Visualive.Vec3(1, 0, 0);
-    const yAxis = new Visualive.Vec3(0, 1, 0);
+    const xAxis = new Vec3(1, 0, 0)
+    const yAxis = new Vec3(0, 1, 0)
 
-    const cameraPlaneHeight = 2.0 * focalDistance * Math.tan(0.5 * fovY);
+    const cameraPlaneHeight = 2.0 * focalDistance * Math.tan(0.5 * fovY)
     const cameraPlaneWidth =
-      cameraPlaneHeight * (viewport.getWidth() / viewport.getHeight());
-    const delta = new Visualive.Xfo();
+      cameraPlaneHeight * (viewport.getWidth() / viewport.getHeight())
+    const delta = new Xfo()
     delta.tr = xAxis.scale(
       -(panDelta.x / viewport.getWidth()) * cameraPlaneWidth
-    );
+    )
     delta.tr.addInPlace(
       yAxis.scale((panDelta.y / viewport.getHeight()) * cameraPlaneHeight)
-    );
+    )
 
-    const zoomDist = dragDist * focalDistance;
-    viewport.getCamera().setFocalDistance(this.__mouseDownFocalDist + zoomDist);
-    delta.tr.z += zoomDist;
-    viewport
-      .getCamera()
-      .setGlobalXfo(this.__mouseDownCameraXfo.multiply(delta));
+    const zoomDist = dragDist * focalDistance
+    viewport.getCamera().setFocalDistance(this.__mouseDownFocalDist + zoomDist)
+    delta.tr.z += zoomDist
+    viewport.getCamera().setGlobalXfo(this.__mouseDownCameraXfo.multiply(delta))
   }
 
   /**
@@ -280,22 +280,16 @@ class ViewTool extends BaseTool {
    * @param {any} viewport - The viewport param.
    */
   initDrag(viewport) {
-    const focalDistance = viewport.getCamera().getFocalDistance();
-    this.__mouseDragDelta.set(0, 0);
-    this.__mouseDownCameraXfo = viewport
-      .getCamera()
-      .getGlobalXfo()
-      .clone();
-    this.__mouseDownZaxis = viewport
-      .getCamera()
-      .getGlobalXfo()
-      .ori.getZaxis();
-    const targetOffset = this.__mouseDownZaxis.scale(-focalDistance);
+    const focalDistance = viewport.getCamera().getFocalDistance()
+    this.__mouseDragDelta.set(0, 0)
+    this.__mouseDownCameraXfo = viewport.getCamera().getGlobalXfo().clone()
+    this.__mouseDownZaxis = viewport.getCamera().getGlobalXfo().ori.getZaxis()
+    const targetOffset = this.__mouseDownZaxis.scale(-focalDistance)
     this.__mouseDownCameraTarget = viewport
       .getCamera()
       .getGlobalXfo()
-      .tr.add(targetOffset);
-    this.__mouseDownFocalDist = focalDistance;
+      .tr.add(targetOffset)
+    this.__mouseDownFocalDist = focalDistance
   }
 
   /**
@@ -304,67 +298,67 @@ class ViewTool extends BaseTool {
    * @param {any} pos - The pos param.
    */
   aimFocus(camera, pos) {
-    if (this.__focusIntervalId) clearInterval(this.__focusIntervalId);
+    if (this.__focusIntervalId) clearInterval(this.__focusIntervalId)
 
-    const count = 20;
-    let i = 0;
+    const count = 20
+    let i = 0
     const applyMovement = () => {
-      const initlalGlobalXfo = camera.getGlobalXfo();
-      const initlalDist = camera.getFocalDistance();
-      const dir = pos.subtract(initlalGlobalXfo.tr);
-      const dist = dir.normalizeInPlace();
+      const initlalGlobalXfo = camera.getGlobalXfo()
+      const initlalDist = camera.getFocalDistance()
+      const dir = pos.subtract(initlalGlobalXfo.tr)
+      const dist = dir.normalizeInPlace()
 
-      const orbit = new Visualive.Quat();
-      const pitch = new Visualive.Quat();
+      const orbit = new Quat()
+      const pitch = new Quat()
 
       // Orbit
       {
-        const currDir = initlalGlobalXfo.ori.getZaxis().clone();
-        currDir.z = 0;
-        const newDir = dir.negate();
-        newDir.z = 0;
+        const currDir = initlalGlobalXfo.ori.getZaxis().clone()
+        currDir.z = 0
+        const newDir = dir.negate()
+        newDir.z = 0
 
-        orbit.setFrom2Vectors(currDir, newDir);
+        orbit.setFrom2Vectors(currDir, newDir)
       }
 
       // Pitch
       {
-        const currDir = initlalGlobalXfo.ori.getZaxis().clone();
-        const newDir = dir.negate();
-        currDir.x = newDir.x;
-        currDir.y = newDir.y;
-        currDir.normalizeInPlace();
+        const currDir = initlalGlobalXfo.ori.getZaxis().clone()
+        const newDir = dir.negate()
+        currDir.x = newDir.x
+        currDir.y = newDir.y
+        currDir.normalizeInPlace()
 
         if (currDir.cross(newDir).dot(initlalGlobalXfo.ori.getXaxis()) > 0.0)
-          pitch.rotateX(currDir.angleTo(newDir));
-        else pitch.rotateX(-currDir.angleTo(newDir));
+          pitch.rotateX(currDir.angleTo(newDir))
+        else pitch.rotateX(-currDir.angleTo(newDir))
       }
 
-      const targetGlobalXfo = initlalGlobalXfo.clone();
-      targetGlobalXfo.ori = orbit.multiply(targetGlobalXfo.ori);
-      targetGlobalXfo.ori.multiplyInPlace(pitch);
+      const targetGlobalXfo = initlalGlobalXfo.clone()
+      targetGlobalXfo.ori = orbit.multiply(targetGlobalXfo.ori)
+      targetGlobalXfo.ori.multiplyInPlace(pitch)
 
       // With each iteraction we get closer to our goal
       // and on the final iteration we should aim perfectly at
       // the target.
-      const t = Math.pow(i / count, 2);
-      const globalXfo = initlalGlobalXfo.clone();
-      globalXfo.ori = initlalGlobalXfo.ori.lerp(targetGlobalXfo.ori, t);
+      const t = Math.pow(i / count, 2)
+      const globalXfo = initlalGlobalXfo.clone()
+      globalXfo.ori = initlalGlobalXfo.ori.lerp(targetGlobalXfo.ori, t)
 
-      camera.setFocalDistance(initlalDist + (dist - initlalDist) * t);
-      camera.setGlobalXfo(globalXfo);
+      camera.setFocalDistance(initlalDist + (dist - initlalDist) * t)
+      camera.setGlobalXfo(globalXfo)
 
-      i++;
+      i++
       if (i <= count) {
-        this.__focusIntervalId = setTimeout(applyMovement, 20);
+        this.__focusIntervalId = setTimeout(applyMovement, 20)
       } else {
-        this.__focusIntervalId = undefined;
-        this.movementFinished.emit();
+        this.__focusIntervalId = undefined
+        this.emit('movementFinished')
       }
-    };
-    applyMovement();
+    }
+    applyMovement()
 
-    this.__manipulationState = 'focussing';
+    this.__manipulationState = 'focussing'
   }
 
   /**
@@ -378,17 +372,17 @@ class ViewTool extends BaseTool {
    * @param {any} event - The event param.
    */
   onDragStart(event) {
-    this.__mouseDownPos = event.mousePos;
-    this.initDrag(event.viewport);
+    this.__mouseDownPos = event.mousePos
+    this.initDrag(event.viewport)
 
     if (event.button == 2) {
-      this.__mode = 'pan';
+      this.__mode = 'pan'
     } else if (event.ctrlKey && event.button == 2) {
-      this.__mode = 'dolly';
-    } /* else if (event.ctrlKey || event.button == 2) {
-      this.__mode = 'look';
-    }*/ else {
-      this.__mode = this.__defaultMode;
+      this.__mode = 'dolly'
+    } else if (event.shiftKey || event.button == 2) {
+      this.__mode = 'look'
+    } else {
+      this.__mode = this.__defaultMode
     }
   }
 
@@ -409,23 +403,23 @@ class ViewTool extends BaseTool {
     //     this.__mouseDragDelta.y += event.movementY;
     // }
     if (this.__keyboardMovement) {
-      this.__mouseDragDelta = event.mousePos;
+      this.__mouseDragDelta = event.mousePos
     } else {
-      this.__mouseDragDelta = event.mousePos.subtract(this.__mouseDownPos);
+      this.__mouseDragDelta = event.mousePos.subtract(this.__mouseDownPos)
     }
     switch (this.__mode) {
       case 'orbit':
-        this.orbit(this.__mouseDragDelta, event.viewport);
-        break;
+        this.orbit(this.__mouseDragDelta, event.viewport)
+        break
       case 'look':
-        this.look(this.__mouseDragDelta, event.viewport);
-        break;
+        this.look(this.__mouseDragDelta, event.viewport)
+        break
       case 'pan':
-        this.pan(this.__mouseDragDelta, event.viewport);
-        break;
+        this.pan(this.__mouseDragDelta, event.viewport)
+        break
       case 'dolly':
-        this.dolly(this.__mouseDragDelta, event.viewport);
-        break;
+        this.dolly(this.__mouseDragDelta, event.viewport)
+        break
     }
   }
 
@@ -436,8 +430,8 @@ class ViewTool extends BaseTool {
    */
   onDragEnd(event) {
     // event.viewport.renderGeomDataFbo();
-    this.movementFinished.emit();
-    return false;
+    this.emit('movementFinished')
+    return false
   }
 
   /**
@@ -447,12 +441,12 @@ class ViewTool extends BaseTool {
    */
   onMouseDown(event) {
     if (this.__maipulationModel == VIEW_TOOL_MODELS.DCC && !event.altKey)
-      return false;
+      return false
 
-    this.dragging = true;
-    this.__mouseDownPos = event.mousePos;
-    this.onDragStart(event);
-    return true;
+    this.dragging = true
+    this.__mouseDownPos = event.mousePos
+    this.onDragStart(event)
+    return true
   }
 
   /**
@@ -462,9 +456,9 @@ class ViewTool extends BaseTool {
    */
   onMouseUp(event) {
     if (this.dragging) {
-      this.onDragEnd(event);
-      this.dragging = false;
-      return true;
+      this.onDragEnd(event)
+      this.dragging = false
+      return true
     }
   }
 
@@ -475,9 +469,9 @@ class ViewTool extends BaseTool {
    */
   onMouseMove(event) {
     if (this.dragging) {
-      this.onDrag(event);
-      event.showPointerOnAvatar = false;
-      return true;
+      this.onDrag(event)
+      event.showPointerOnAvatar = false
+      return true
     }
   }
 
@@ -487,14 +481,14 @@ class ViewTool extends BaseTool {
    */
   onDoubleClick(event) {
     if (event.intersectionData) {
-      const viewport = event.viewport;
-      const camera = viewport.getCamera();
+      const viewport = event.viewport
+      const camera = viewport.getCamera()
       const pos = camera
         .getGlobalXfo()
         .tr.add(
           event.intersectionData.mouseRay.dir.scale(event.intersectionData.dist)
-        );
-      this.aimFocus(camera, pos);
+        )
+      this.aimFocus(camera, pos)
     }
   }
 
@@ -505,46 +499,42 @@ class ViewTool extends BaseTool {
    */
   onWheel(event) {
     if (this.__maipulationModel == VIEW_TOOL_MODELS.DCC && !event.altKey)
-      return false;
+      return false
 
-    const viewport = event.viewport;
-    const xfo = viewport.getCamera().getGlobalXfo();
-    const vec = xfo.ori.getZaxis();
+    const viewport = event.viewport
+    const xfo = viewport.getCamera().getGlobalXfo()
+    const vec = xfo.ori.getZaxis()
     if (this.__mouseWheelZoomIntervalId)
-      clearInterval(this.__mouseWheelZoomIntervalId);
-    let count = 0;
+      clearInterval(this.__mouseWheelZoomIntervalId)
+    let count = 0
     const applyMovement = () => {
-      const focalDistance = viewport.getCamera().getFocalDistance();
-      const mouseWheelDollySpeed = this.__mouseWheelDollySpeedParam.getValue();
-      const zoomDist =
-        event.deltaY * mouseWheelDollySpeed * focalDistance * 0.2;
-      xfo.tr.addInPlace(vec.scale(zoomDist));
+      const focalDistance = viewport.getCamera().getFocalDistance()
+      const mouseWheelDollySpeed = this.__mouseWheelDollySpeedParam.getValue()
+      const zoomDist = event.deltaY * mouseWheelDollySpeed * focalDistance * 0.2
+      xfo.tr.addInPlace(vec.scale(zoomDist))
       if (this.__defaultMode == 'orbit')
-        viewport.getCamera().setFocalDistance(focalDistance + zoomDist);
-      viewport.getCamera().setGlobalXfo(xfo);
+        viewport.getCamera().setFocalDistance(focalDistance + zoomDist)
+      viewport.getCamera().setGlobalXfo(xfo)
 
-      count++;
+      count++
       if (count < 5) {
-        this.__mouseWheelZoomIntervalId = setTimeout(applyMovement, 20);
+        this.__mouseWheelZoomIntervalId = setTimeout(applyMovement, 20)
       } else {
-        this.__mouseWheelZoomIntervalId = undefined;
-        this.movementFinished.emit();
-        event.viewport.renderGeomDataFbo();
+        this.__mouseWheelZoomIntervalId = undefined
+        this.emit('movementFinished')
+        event.viewport.renderGeomDataFbo()
       }
-    };
-    applyMovement();
+    }
+    applyMovement()
   }
 
   // eslint-disable-next-line require-jsdoc
   __integrateVelocityChange(velChange, viewport) {
-    const delta = new Visualive.Xfo();
-    delta.tr = this.__velocity.normalize().scale(this.__maxVel);
-    viewport.getCamera().setGlobalXfo(
-      viewport
-        .getCamera()
-        .getGlobalXfo()
-        .multiply(delta)
-    );
+    const delta = new Xfo()
+    delta.tr = this.__velocity.normalize().scale(this.__maxVel)
+    viewport
+      .getCamera()
+      .setGlobalXfo(viewport.getCamera().getGlobalXfo().multiply(delta))
   }
 
   /**
@@ -593,7 +583,7 @@ class ViewTool extends BaseTool {
       window.requestAnimationFrame(animationFrame);
     }
     */
-    return false; // no keys handled
+    return false // no keys handled
   }
 
   /**
@@ -633,7 +623,7 @@ class ViewTool extends BaseTool {
     if (this.__keysPressed.length == 0)
       this.__keyboardMovement = false;
     */
-    return true;
+    return true
   }
 
   // ///////////////////////////////////
@@ -643,15 +633,15 @@ class ViewTool extends BaseTool {
   __startTouch(touch, viewport) {
     this.__ongoingTouches[touch.identifier] = {
       identifier: touch.identifier,
-      pos: new Visualive.Vec2(touch.pageX, touch.pageY),
-    };
+      pos: new Vec2(touch.pageX, touch.pageY),
+    }
   }
 
   // eslint-disable-next-line require-jsdoc
   __endTouch(touch, viewport) {
     // const idx = this.__ongoingTouchIndexById(touch.identifier);
     // this.__ongoingTouches.splice(idx, 1); // remove it; we're done
-    delete this.__ongoingTouches[touch.identifier];
+    delete this.__ongoingTouches[touch.identifier]
   }
 
   /**
@@ -661,18 +651,18 @@ class ViewTool extends BaseTool {
    */
   onTouchStart(event) {
     // console.log("onTouchStart");
-    event.preventDefault();
-    event.stopPropagation();
+    event.preventDefault()
+    event.stopPropagation()
 
     if (Object.keys(this.__ongoingTouches).length == 0)
-      this.__manipMode = undefined;
+      this.__manipMode = undefined
 
-    const touches = event.changedTouches;
+    const touches = event.changedTouches
     for (let i = 0; i < touches.length; i++) {
-      this.__startTouch(touches[i]);
+      this.__startTouch(touches[i])
     }
-    this.initDrag(event.viewport);
-    return true;
+    this.initDrag(event.viewport)
+    return true
   }
 
   /**
@@ -681,45 +671,45 @@ class ViewTool extends BaseTool {
    * @return {any} The return value.
    */
   onTouchMove(event) {
-    event.preventDefault();
-    event.stopPropagation();
+    event.preventDefault()
+    event.stopPropagation()
     // console.log("this.__manipMode:" + this.__manipMode);
 
-    const touches = event.changedTouches;
+    const touches = event.changedTouches
     if (touches.length == 1 && this.__manipMode != 'panAndZoom') {
-      const touch = touches[0];
-      const touchPos = new Visualive.Vec2(touch.pageX, touch.pageY);
-      const touchData = this.__ongoingTouches[touch.identifier];
-      const dragVec = touchData.pos.subtract(touchPos);
+      const touch = touches[0]
+      const touchPos = new Vec2(touch.pageX, touch.pageY)
+      const touchData = this.__ongoingTouches[touch.identifier]
+      const dragVec = touchData.pos.subtract(touchPos)
       if (this.__defaultMode == 'look') {
         // TODO: scale panning here.
-        dragVec.scaleInPlace(6.0);
-        this.look(dragVec, event.viewport);
+        dragVec.scaleInPlace(6.0)
+        this.look(dragVec, event.viewport)
       } else {
-        this.orbit(dragVec, event.viewport);
+        this.orbit(dragVec, event.viewport)
       }
-      this.__manipMode = 'orbit';
-      return true;
+      this.__manipMode = 'orbit'
+      return true
     } else if (touches.length == 2) {
-      const touch0 = touches[0];
-      const touchData0 = this.__ongoingTouches[touch0.identifier];
-      const touch1 = touches[1];
-      const touchData1 = this.__ongoingTouches[touch1.identifier];
+      const touch0 = touches[0]
+      const touchData0 = this.__ongoingTouches[touch0.identifier]
+      const touch1 = touches[1]
+      const touchData1 = this.__ongoingTouches[touch1.identifier]
 
-      const touch0Pos = new Visualive.Vec2(touch0.pageX, touch0.pageY);
-      const touch1Pos = new Visualive.Vec2(touch1.pageX, touch1.pageY);
-      const startSeparation = touchData1.pos.subtract(touchData0.pos).length();
-      const dragSeparation = touch1Pos.subtract(touch0Pos).length();
-      const separationDist = startSeparation - dragSeparation;
+      const touch0Pos = new Vec2(touch0.pageX, touch0.pageY)
+      const touch1Pos = new Vec2(touch1.pageX, touch1.pageY)
+      const startSeparation = touchData1.pos.subtract(touchData0.pos).length()
+      const dragSeparation = touch1Pos.subtract(touch0Pos).length()
+      const separationDist = startSeparation - dragSeparation
 
-      const touch0Drag = touch0Pos.subtract(touchData0.pos);
-      const touch1Drag = touch1Pos.subtract(touchData1.pos);
-      const dragVec = touch0Drag.add(touch1Drag);
+      const touch0Drag = touch0Pos.subtract(touchData0.pos)
+      const touch1Drag = touch1Pos.subtract(touchData1.pos)
+      const dragVec = touch0Drag.add(touch1Drag)
       // TODO: scale panning here.
-      dragVec.scaleInPlace(0.5);
-      this.panAndZoom(dragVec, separationDist * 0.002, event.viewport);
-      this.__manipMode = 'panAndZoom';
-      return true;
+      dragVec.scaleInPlace(0.5)
+      this.panAndZoom(dragVec, separationDist * 0.002, event.viewport)
+      this.__manipMode = 'panAndZoom'
+      return true
     }
   }
 
@@ -729,21 +719,21 @@ class ViewTool extends BaseTool {
    * @return {any} The return value.
    */
   onTouchEnd(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    const touches = event.changedTouches;
+    event.preventDefault()
+    event.stopPropagation()
+    const touches = event.changedTouches
     switch (this.__manipMode) {
       case 'orbit':
       case 'panAndZoom':
-        this.movementFinished.emit();
-        break;
+        this.emit('movementFinished')
+        break
     }
     for (let i = 0; i < touches.length; i++) {
-      this.__endTouch(touches[i]);
+      this.__endTouch(touches[i])
     }
     if (Object.keys(this.__ongoingTouches).length == 0)
-      this.__manipMode = undefined;
-    return true;
+      this.__manipMode = undefined
+    return true
   }
 
   /**
@@ -752,12 +742,12 @@ class ViewTool extends BaseTool {
    * @return {any} The return value.
    */
   onTouchCancel(event) {
-    console.log('touchcancel.');
-    const touches = event.changedTouches;
+    console.log('touchcancel.')
+    const touches = event.changedTouches
     for (let i = 0; i < touches.length; i++) {
-      this.__endTouch(touches[i]);
+      this.__endTouch(touches[i])
     }
-    return true;
+    return true
   }
 
   /**
@@ -765,19 +755,19 @@ class ViewTool extends BaseTool {
    * @param {any} event - The event param.
    */
   onDoubleTap(event) {
-    const touches = event.changedTouches;
+    const touches = event.changedTouches
     for (let i = 0; i < touches.length; i++) {
-      this.__startTouch(touches[i]);
+      this.__startTouch(touches[i])
     }
     if (event.intersectionData) {
-      const viewport = event.viewport;
-      const camera = viewport.getCamera();
+      const viewport = event.viewport
+      const camera = viewport.getCamera()
       const pos = camera
         .getGlobalXfo()
         .tr.add(
           event.intersectionData.mouseRay.dir.scale(event.intersectionData.dist)
-        );
-      this.aimFocus(camera, pos);
+        )
+      this.aimFocus(camera, pos)
     }
   }
 
@@ -789,23 +779,23 @@ class ViewTool extends BaseTool {
     if (this.__controllerTriggersHeld.length == 1) {
       this.__grabPos = this.__controllerTriggersHeld[0]
         .getControllerTipStageLocalXfo()
-        .tr.clone();
-      this.stageXfo__GrabStart = vrviewport.getXfo().clone();
-      this.__invOri = this.stageXfo__GrabStart.ori.inverse();
+        .tr.clone()
+      this.stageXfo__GrabStart = vrviewport.getXfo().clone()
+      this.__invOri = this.stageXfo__GrabStart.ori.inverse()
     } else if (this.__controllerTriggersHeld.length == 2) {
       const p0 = this.__controllerTriggersHeld[0].getControllerTipStageLocalXfo()
-        .tr;
+        .tr
       const p1 = this.__controllerTriggersHeld[1].getControllerTipStageLocalXfo()
-        .tr;
-      this.__grabDir = p1.subtract(p0);
-      this.__grabPos = p0.lerp(p1, 0.5);
-      this.__grabDir.y = 0.0;
-      this.__grabDist = this.__grabDir.length();
-      this.__grabDir.scaleInPlace(1 / this.__grabDist);
-      this.stageXfo__GrabStart = vrviewport.getXfo().clone();
+        .tr
+      this.__grabDir = p1.subtract(p0)
+      this.__grabPos = p0.lerp(p1, 0.5)
+      this.__grabDir.y = 0.0
+      this.__grabDist = this.__grabDir.length()
+      this.__grabDir.scaleInPlace(1 / this.__grabDist)
+      this.stageXfo__GrabStart = vrviewport.getXfo().clone()
       this.__grab_to_stage = this.__grabPos.subtract(
         this.stageXfo__GrabStart.tr
-      );
+      )
     }
   }
 
@@ -815,10 +805,10 @@ class ViewTool extends BaseTool {
    * @return {any} The return value.
    */
   onVRControllerButtonDown(event) {
-    if (event.button != 1) return;
-    this.__controllerTriggersHeld.push(event.controller);
-    this.__initMoveStage(event.vrviewport);
-    return true;
+    if (event.button != 1) return
+    this.__controllerTriggersHeld.push(event.controller)
+    this.__initMoveStage(event.vrviewport)
+    return true
   }
 
   /**
@@ -827,11 +817,11 @@ class ViewTool extends BaseTool {
    * @return {any} The return value.
    */
   onVRControllerButtonUp(event) {
-    if (event.button != 1) return;
-    const index = this.__controllerTriggersHeld.indexOf(event.controller);
-    this.__controllerTriggersHeld.splice(index, 1);
-    this.__initMoveStage(event.vrviewport);
-    return true;
+    if (event.button != 1) return
+    const index = this.__controllerTriggersHeld.indexOf(event.controller)
+    this.__controllerTriggersHeld.splice(index, 1)
+    this.__initMoveStage(event.vrviewport)
+    return true
   }
 
   /**
@@ -842,11 +832,11 @@ class ViewTool extends BaseTool {
     console.log(
       'onVRControllerDoubleClicked:',
       this.__controllerTriggersHeld.length
-    );
+    )
 
-    const stageXfo = event.vrviewport.getXfo().clone();
-    stageXfo.sc.set(1, 1, 1);
-    event.vrviewport.setXfo(stageXfo);
+    const stageXfo = event.vrviewport.getXfo().clone()
+    stageXfo.sc.set(1, 1, 1)
+    event.vrviewport.setXfo(stageXfo)
   }
 
   /**
@@ -857,71 +847,71 @@ class ViewTool extends BaseTool {
   onVRPoseChanged(event) {
     if (this.__controllerTriggersHeld.length == 1) {
       const grabPos = this.__controllerTriggersHeld[0].getControllerTipStageLocalXfo()
-        .tr;
+        .tr
 
-      const deltaXfo = new Visualive.Xfo();
-      deltaXfo.tr = this.__grabPos.subtract(grabPos);
+      const deltaXfo = new Xfo()
+      deltaXfo.tr = this.__grabPos.subtract(grabPos)
 
       // //////////////
       // Update the stage Xfo
-      const stageXfo = this.stageXfo__GrabStart.multiply(deltaXfo);
-      event.vrviewport.setXfo(stageXfo);
-      return true;
+      const stageXfo = this.stageXfo__GrabStart.multiply(deltaXfo)
+      event.vrviewport.setXfo(stageXfo)
+      return true
     } else if (this.__controllerTriggersHeld.length == 2) {
       const p0 = this.__controllerTriggersHeld[0].getControllerTipStageLocalXfo()
-        .tr;
+        .tr
       const p1 = this.__controllerTriggersHeld[1].getControllerTipStageLocalXfo()
-        .tr;
+        .tr
 
-      const grabPos = p0.lerp(p1, 0.5);
-      const grabDir = p1.subtract(p0);
-      grabDir.y = 0.0;
-      const grabDist = grabDir.length();
-      grabDir.scaleInPlace(1 / grabDist);
+      const grabPos = p0.lerp(p1, 0.5)
+      const grabDir = p1.subtract(p0)
+      grabDir.y = 0.0
+      const grabDist = grabDir.length()
+      grabDir.scaleInPlace(1 / grabDist)
 
-      const deltaXfo = new Visualive.Xfo();
+      const deltaXfo = new Xfo()
 
       // //////////////
       // Compute sc
       // Limit to a 10x change in scale per grab.
-      const sc = Math.max(Math.min(this.__grabDist / grabDist, 10.0), 0.1);
+      const sc = Math.max(Math.min(this.__grabDist / grabDist, 10.0), 0.1)
 
       // Avoid causing a scale that would make the user < 1.0 scale factor.
       // if(stageSc < 1.0){
       //     sc = 1.0 / this.stageXfo__GrabStart.sc.x;
       // }
-      deltaXfo.sc.set(sc, sc, sc);
+      deltaXfo.sc.set(sc, sc, sc)
 
       // //////////////
       // Compute ori
-      let angle = this.__grabDir.angleTo(grabDir);
+      let angle = this.__grabDir.angleTo(grabDir)
       if (this.__grabDir.cross(grabDir).y > 0.0) {
-        angle = -angle;
+        angle = -angle
       }
-      deltaXfo.ori.rotateY(angle);
+      deltaXfo.ori.rotateY(angle)
 
       // Rotate around the point between the hands.
-      const oriTrDelta = deltaXfo.ori.rotateVec3(this.__grabPos);
-      deltaXfo.tr.addInPlace(this.__grabPos.subtract(oriTrDelta));
+      const oriTrDelta = deltaXfo.ori.rotateVec3(this.__grabPos)
+      deltaXfo.tr.addInPlace(this.__grabPos.subtract(oriTrDelta))
 
       // Scale around the point between the hands.
-      const deltaSc = this.__grabPos.scale(1.0 - sc);
-      deltaXfo.tr.addInPlace(deltaXfo.ori.rotateVec3(deltaSc));
+      const deltaSc = this.__grabPos.scale(1.0 - sc)
+      deltaXfo.tr.addInPlace(deltaXfo.ori.rotateVec3(deltaSc))
 
       // //////////////
       // Compute tr
       // Not quite working.....
-      const deltaTr = this.__grabPos.subtract(grabPos).scale(sc);
-      deltaXfo.tr.addInPlace(deltaXfo.ori.rotateVec3(deltaTr));
+      const deltaTr = this.__grabPos.subtract(grabPos).scale(sc)
+      deltaXfo.tr.addInPlace(deltaXfo.ori.rotateVec3(deltaTr))
 
       // //////////////
       // Update the stage Xfo
-      const stageXfo = this.stageXfo__GrabStart.multiply(deltaXfo);
-      event.vrviewport.setXfo(stageXfo);
+      const stageXfo = this.stageXfo__GrabStart.multiply(deltaXfo)
+      event.vrviewport.setXfo(stageXfo)
 
-      return true;
+      return true
     }
   }
 }
 
-export { VIEW_TOOL_MODELS, ViewTool };
+export { VIEW_TOOL_MODELS, ViewTool }

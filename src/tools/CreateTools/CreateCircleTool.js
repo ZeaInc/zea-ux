@@ -1,5 +1,6 @@
-import UndoRedoManager from '../../undoredo/UndoRedoManager.js';
-import { CreateGeomChange, CreateGeomTool } from './CreateGeomTool.js';
+import { Color, GeomItem, Material, Circle } from '@zeainc/zea-engine'
+import UndoRedoManager from '../../undoredo/UndoRedoManager.js'
+import { CreateGeomChange, CreateGeomTool } from './CreateGeomTool.js'
 
 /**
  * Class representing a create circle change.
@@ -12,19 +13,19 @@ class CreateCircleChange extends CreateGeomChange {
    * @param {any} xfo - The xfo value.
    */
   constructor(parentItem, xfo) {
-    super('Create Circle', parentItem);
+    super('Create Circle', parentItem)
 
-    this.circle = new Visualive.Circle(0, 64);
-    this.circle.lineThickness = 0.05;
-    // const material = new Visualive.Material('circle', 'LinesShader');
-    const material = new Visualive.Material('circle', 'FatLinesShader');
-    material.getParameter('Color').setValue(new Visualive.Color(0.7, 0.2, 0.2));
-    this.geomItem = new Visualive.GeomItem('Circle');
-    this.geomItem.setGeometry(this.circle);
-    this.geomItem.setMaterial(material);
+    this.circle = new Circle(0, 64)
+    this.circle.lineThickness = 0.05
+    // const material = new Material('circle', 'LinesShader');
+    const material = new Material('circle', 'FatLinesShader')
+    material.getParameter('Color').setValue(new Color(0.7, 0.2, 0.2))
+    this.geomItem = new GeomItem('Circle')
+    this.geomItem.setGeometry(this.circle)
+    this.geomItem.setMaterial(material)
 
     if (parentItem && xfo) {
-      this.setParentAndXfo(parentItem, xfo);
+      this.setParentAndXfo(parentItem, xfo)
     }
   }
 
@@ -33,8 +34,8 @@ class CreateCircleChange extends CreateGeomChange {
    * @param {any} updateData - The updateData param.
    */
   update(updateData) {
-    this.circle.getParameter('Radius').setValue(updateData.radius);
-    this.updated.emit(updateData);
+    this.circle.getParameter('Radius').setValue(updateData.radius)
+    this.emit('updated', updateData)
   }
 
   /**
@@ -42,9 +43,9 @@ class CreateCircleChange extends CreateGeomChange {
    * @return {any} The return value.
    */
   toJSON() {
-    const j = super.toJSON();
-    j.radius = this.circle.getParameter('Radius').getValue();
-    return j;
+    const j = super.toJSON()
+    j.radius = this.circle.getParameter('Radius').getValue()
+    return j
   }
 
   /**
@@ -52,11 +53,11 @@ class CreateCircleChange extends CreateGeomChange {
    * @param {any} j - The j param.
    */
   changeFromJSON(j) {
-    console.log('CreateCircleChange:', j);
-    if (j.radius) this.circle.getParameter('Radius').setValue(j.radius);
+    console.log('CreateCircleChange:', j)
+    if (j.radius) this.circle.getParameter('Radius').setValue(j.radius)
   }
 }
-UndoRedoManager.registerChange('CreateCircleChange', CreateCircleChange);
+UndoRedoManager.registerChange('CreateCircleChange', CreateCircleChange)
 
 /**
  * Class representing a create circle tool.
@@ -68,7 +69,7 @@ class CreateCircleTool extends CreateGeomTool {
    * @param {any} appData - The appData value.
    */
   constructor(appData) {
-    super(appData);
+    super(appData)
   }
 
   /**
@@ -77,12 +78,12 @@ class CreateCircleTool extends CreateGeomTool {
    * @param {any} parentItem - The parentItem param.
    */
   createStart(xfo, parentItem) {
-    this.change = new CreateCircleChange(parentItem, xfo);
-    this.appData.undoRedoManager.addChange(this.change);
+    this.change = new CreateCircleChange(parentItem, xfo)
+    this.appData.undoRedoManager.addChange(this.change)
 
-    this.xfo = xfo;
-    this.stage = 1;
-    this.radius = 0.0;
+    this.xfo = xfo
+    this.stage = 1
+    this.radius = 0.0
   }
 
   /**
@@ -90,8 +91,8 @@ class CreateCircleTool extends CreateGeomTool {
    * @param {any} pt - The pt param.
    */
   createMove(pt) {
-    this.radius = pt.distanceTo(this.xfo.tr);
-    this.change.update({ radius: this.radius });
+    this.radius = pt.distanceTo(this.xfo.tr)
+    this.change.update({ radius: this.radius })
   }
 
   /**
@@ -100,12 +101,12 @@ class CreateCircleTool extends CreateGeomTool {
    */
   createRelease(pt) {
     if (this.radius == 0) {
-      this.appData.undoRedoManager.undo(false);
+      this.appData.undoRedoManager.undo(false)
     }
-    this.change = null;
-    this.stage = 0;
-    this.actionFinished.emit();
+    this.change = null
+    this.stage = 0
+    this.emit('actionFinished')
   }
 }
 
-export { CreateCircleTool };
+export { CreateCircleTool }

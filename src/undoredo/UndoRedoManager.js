@@ -1,33 +1,35 @@
-// import * as Visualive from '@visualive/engine';
+import { EventEmitter } from '@zeainc/zea-engine'
 
-const __changeClasses = {};
-const __classNames = {};
+const __changeClasses = {}
+const __classNames = {}
+const __classes = []
 
 /** Class representing an undo redo manager. */
-class UndoRedoManager {
+class UndoRedoManager extends EventEmitter {
   /**
    * Create an undo redo manager.
    */
   constructor() {
-    this.__undoStack = [];
-    this.__redoStack = [];
+    super()
+    this.__undoStack = []
+    this.__redoStack = []
+    this.__currChange = null
 
-    this.changeAdded = new Visualive.Signal();
-    this.changeUpdated = new Visualive.Signal();
-    this.changeUndone = new Visualive.Signal();
-    this.changeRedone = new Visualive.Signal();
-
-    this.__currChangeUpdated = this.__currChangeUpdated.bind(this);
+    this.__currChangeUpdated = this.__currChangeUpdated.bind(this)
   }
 
   /**
    * The flush method.
    */
   flush() {
-    for (const change of this.__undoStack) change.destroy();
-    this.__undoStack = [];
-    for (const change of this.__redoStack) change.destroy();
-    this.__redoStack = [];
+    for (const change of this.__undoStack) change.destroy()
+    this.__undoStack = []
+    for (const change of this.__redoStack) change.destroy()
+    this.__redoStack = []
+    if (this.__currChange) {
+      this.__currChange.off('updated', this.__currChangeUpdated)
+      this.__currChange = null
+    }
   }
 
   /**
@@ -35,16 +37,19 @@ class UndoRedoManager {
    * @param {any} change - The change param.
    */
   addChange(change) {
-    if (this.getCurrentChange())
-      this.getCurrentChange().updated.disconnect(this.__currChangeUpdated);
+    // console.log("AddChange:", change.name)
+    if (this.__currChange) {
+      this.__currChange.off('updated', this.__currChangeUpdated)
+    }
 
-    this.__undoStack.push(change);
-    change.updated.connect(this.__currChangeUpdated);
+    this.__undoStack.push(change)
+    this.__currChange = change
+    this.__currChange.on('updated', this.__currChangeUpdated)
 
-    for (const change of this.__redoStack) change.destroy();
-    this.__redoStack = [];
+    for (const change of this.__redoStack) change.destroy()
+    this.__redoStack = []
 
-    this.changeAdded.emit(change);
+    this.emit('changeAdded', { change })
   }
 
   /**
@@ -52,12 +57,12 @@ class UndoRedoManager {
    * @return {any} The return value.
    */
   getCurrentChange() {
-    return this.__undoStack[this.__undoStack.length - 1];
+    return this.__currChange
   }
 
   // eslint-disable-next-line require-jsdoc
   __currChangeUpdated(updateData) {
-    this.changeUpdated.emit(updateData);
+    this.emit('changeUpdated', updateData)
   }
 
   /**
@@ -66,11 +71,17 @@ class UndoRedoManager {
    */
   undo(pushOnRedoStack = true) {
     if (this.__undoStack.length > 0) {
-      const change = this.__undoStack.pop();
-      change.undo();
+      if (this.__currChange) {
+        this.__currChange.off('updated', this.__currChangeUpdated)
+        this.__currChange = null
+      }
+
+      const change = this.__undoStack.pop()
+      // console.log("undo:", change.name)
+      change.undo()
       if (pushOnRedoStack) {
-        this.__redoStack.push(change);
-        this.changeUndone.emit();
+        this.__redoStack.push(change)
+        this.emit('changeUndone')
       }
     }
   }
@@ -80,10 +91,11 @@ class UndoRedoManager {
    */
   redo() {
     if (this.__redoStack.length > 0) {
-      const change = this.__redoStack.pop();
-      change.redo();
-      this.__undoStack.push(change);
-      this.changeRedone.emit();
+      const change = this.__redoStack.pop()
+      // console.log("redo:", change.name)
+      change.redo()
+      this.__undoStack.push(change)
+      this.emit('changeRedone')
     }
   }
 
@@ -92,23 +104,33 @@ class UndoRedoManager {
 
   /**
    * The constructChange method.
-   * @param {any} claName - The claName param.
+   * @param {string} className - The className param.
    * @return {any} The return value.
    */
-  constructChange(claName) {
-    return new __changeClasses[claName]();
+  constructChange(className) {
+    return new __changeClasses[className]()
+  }
+
+  /**
+   * The isChangeClassRegistered method.
+   * @param {object} inst - The instance of the Change class.
+   * @return {boolean} Returns 'true' if the class has been registered.
+   */
+  static isChangeClassRegistered(inst) {
+    const id = __classes.indexOf(inst.constructor)
+    return id != -1
   }
 
   /**
    * The getChangeClassName method.
-   * @param {any} inst - The inst param.
+   * @param {object} inst - The instance of the Change class.
    * @return {any} The return value.
    */
   static getChangeClassName(inst) {
-    if (__classNames[inst.constructor.name])
-      return __classNames[inst.constructor.name];
-    console.warn('Change not registered:', inst.constructor.name);
-    return inst.constructor.name;
+    const id = __classes.indexOf(inst.constructor)
+    if (__classNames[id]) return __classNames[id]
+    console.warn('Change not registered:', inst.constructor.name)
+    return ''
   }
 
   /**
@@ -117,10 +139,15 @@ class UndoRedoManager {
    * @param {any} cls - The cls param.
    */
   static registerChange(name, cls) {
-    __changeClasses[name] = cls;
-    __classNames[cls.name] = name;
+    if (__classes.indexOf(cls) != -1)
+      console.warn("Class already registered:", name)
+
+    const id = __classes.length;
+    __classes.push(cls)
+    __changeClasses[name] = cls
+    __classNames[id] = name
   }
 }
 
-export default UndoRedoManager;
-export { UndoRedoManager };
+export default UndoRedoManager
+export { UndoRedoManager }

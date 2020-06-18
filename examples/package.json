@@ -4,7 +4,9 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "@visualive/ux": "^0.0.58"
+    "@visualive/ux": "^0.0.58",
+    "@zeainc/zea-engine": "^0.1.3",
+    "@zeainc/zea-ux": "^0.0.93"
   },
   "devDependencies": {
     "parcel-bundler": "^1.12.3"

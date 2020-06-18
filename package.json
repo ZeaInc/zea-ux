@@ -1,30 +1,37 @@
 {
-  "name": "@visualive/ux",
-  "version": "0.0.62",
+  "name": "@zeainc/zea-ux",
+  "version": "1.3.0",
   "description": "",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "rawimport": "dist/index.rawimport.js",
   "files": [
-    "/dist/"
+    "/dist/index.cjs.js",
+    "/dist/index.esm.js",
+    "/dist/index.rawimport.js",
+    "/css/**"
   ],
   "keywords": [],
-  "main": "./dist/visualive-ux.js",
   "scripts": {
-    "build": "webpack --config webpack-prod.config.js",
-    "build:dev": "webpack --mode=development --watch --config webpack-dev.config.js",
+    "build": "rollup -c",
+    "dist": "yarn publish --access=public",
     "docs": "documentation build src/** -f html -o docs",
-    "docs:serve": "documentation serve --watch src/**",
     "docs:lint": "documentation lint src/**",
-    "dist": "webpack --config webpack-prod.config.js && yarn publish --access=public",
-    "lint": "eslint src/"
+    "docs:serve": "documentation serve --watch src/**",
+    "lint": "eslint src/",
+    "prepare": "yarn run build",
+    "start": "rollup -c rollup.config.dev.js -w",
+    "to-link-packages": "yarn link @zeainc/zea-engine @zeainc/zea-collab"
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/VisualiveIO/visualive-ux.git"
+    "url": "git+ssh://git@github.com/ZeaInc/zea-ux.git"
   },
   "bugs": {
-    "url": "https://github.com/VisualiveIO/visualive-ux/issues"
+    "url": "https://github.com/ZeaInc/zea-ux/issues"
   },
-  "homepage": "https://github.com/VisualiveIO/visualive-ux#readme",
-  "author": "Visualive",
+  "homepage": "https://github.com/ZeaInc/zea-ux#readme",
+  "author": "Zea Inc.",
   "license": "ISC",
   "devDependencies": {
     "documentation": "^12.1.1",
@@ -32,14 +39,17 @@
     "eslint-config-google": "^0.13.0",
     "eslint-config-prettier": "^6.1.0",
     "eslint-plugin-prettier": "^3.1.0",
-    "prettier": "^1.18.2",
-    "webpack": "^4.37.0",
-    "webpack-cli": "^3.3.6"
+    "prettier": "^2.0.2",
+    "rollup": "^2.2.0",
+    "rollup-plugin-terser": "^5.3.0"
   },
   "dependencies": {
     "@jaames/iro": "^4.5.1",
-    "@visualive/collab": "^0.0.29",
-    "@visualive/engine": "^0.0.58",
+    "@zeainc/zea-engine": "^1.0.4",
     "dom-to-image": "^2.6.0"
+  },
+  "externals": {
+    "@zeainc/zea-engine": "@zeainc/zea-engine",
+    "@zeainc/zea-collab": "@zeainc/zea-collab"
   }
 }

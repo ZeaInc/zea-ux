@@ -1,4 +1,4 @@
-import BaseTool from './BaseTool.js';
+import BaseTool from './BaseTool.js'
 
 /**
  * Class representing base create tool.
@@ -10,7 +10,7 @@ export default class BaseCreateTool extends BaseTool {
    * @param {any} appData - The appData value.
    */
   constructor(appData) {
-    super(appData);
+    super(appData)
   }
 
   /**
@@ -18,6 +18,6 @@ export default class BaseCreateTool extends BaseTool {
    * @return {any} The return value.
    */
   isPrimaryTool() {
-    return true;
+    return true
   }
 }

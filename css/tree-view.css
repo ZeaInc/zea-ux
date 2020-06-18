@@ -4,7 +4,6 @@
   border-left: 1px dotted;
   list-style-type: none;
   padding: 0 0 0 15px;
-  width: 400px; /* Note: this is to stop tree items wrapping, but a better solution is probably available */
 }
 
 .TreeNodesList--collapsed {
@@ -15,6 +14,7 @@
   border: none;
   margin: 0;
   padding: 0;
+  width: max-content;
 }
 
 .TreeNodesListItem__ToggleVisibility {
@@ -65,13 +65,20 @@
 .TreeNodesListItem__Title:hover {
   background-color: #e1f5fe;
 }
+.TreeNodesListItem__Hover {
+  background-color: #e1f5fe;
+}
+
+.TreeNodesListItem__Dragging {
+  background-color: #e1f5fe;
+}
 
 .TreeNodesListItem--isSelected > .TreeNodesListItem__Title {
   background-color: #76d2bb;
+  color: #3B3B3B;
 }
 
 .TreeNodesListItem--isHidden > .TreeNodesListItem__Title {
-  background-color: #eeeeee;
   color: #9e9e9e;
 }
 

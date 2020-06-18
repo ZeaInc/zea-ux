@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <title>Parameters</title>
 
-    <script src="http://localhost:3150/VisualiveEngineClient/lib/Visualive.js"></script>
+
+    <script src="node_modules/@zeainc/zea-engine/dist/zea-engine.js"></script>
+    <script src="node_modules/@zeainc/zea-ux/dist/zea-ux.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/@jaames/iro/dist/iro.min.js"></script>
 
     <!-- Use https://tachyons.io to normalize styles and add useful classes -->
@@ -19,82 +22,79 @@
     <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css">
 
     
-    <script src="../dist/visualive-ux.js"></script>
     <link rel="stylesheet" href="../css/parameters.css">
     <script type="module">
-      
-// import { UndoRedoManager, ParameterContainer } from '../src/index.js';
-const { UndoRedoManager, ParameterContainer } = visualiveUx;
 
-const undoRedoManager = new UndoRedoManager();
-const parameterOwner = new Visualive.ParameterOwner();
+const undoRedoManager = new ZeaUx.UndoRedoManager();
+const parameterOwner = new ZeaEngine.ParameterOwner();
 
 
-parameterOwner.addParameter(new Visualive.BooleanParameter('Toggle', false));
+parameterOwner.addParameter(new ZeaEngine.BooleanParameter('Toggle', false));
 
-parameterOwner.addParameter(new Visualive.StringParameter('Name', 'Foo'));
-parameterOwner.addParameter(new Visualive.NumberParameter('MyNumber', 5));
+parameterOwner.addParameter(new ZeaEngine.StringParameter('Name', 'Foo'));
+parameterOwner.addParameter(new ZeaEngine.NumberParameter('MyNumber', 5));
+
 parameterOwner.addParameter(
-  new Visualive.NumberParameter('Smooth', 1.3, [1, 2])
+  new ZeaEngine.NumberParameter('Smooth', 1.3, [1, 2])
 );
 parameterOwner.addParameter(
-  new Visualive.NumberParameter('Stepped', 6, [0, 30], 5)
+  new ZeaEngine.NumberParameter('Stepped', 6, [0, 30], 5)
 );
 parameterOwner.addParameter(
-  new Visualive.MultiChoiceParameter('PickOne', 2, ["One", "Two", "Three", "Four"])
+  new ZeaEngine.MultiChoiceParameter('PickOne', 2, ["One", "Two", "Three", "Four"])
 );
 parameterOwner.addParameter(
-  new Visualive.Vec2Parameter('Vec2 Parameter', new Visualive.Vec2(1, 2))
+  new ZeaEngine.Vec2Parameter('Vec2 Parameter', new ZeaEngine.Vec2(1, 2))
 );
 parameterOwner.addParameter(
-  new Visualive.Vec3Parameter('Vec3 Parameter', new Visualive.Vec3(3, 4, 5))
+  new ZeaEngine.Vec3Parameter('Vec3 Parameter', new ZeaEngine.Vec3(3, 4, 5))
 );
 parameterOwner.addParameter(
-  new Visualive.Vec4Parameter('Vec4 Parameter', new Visualive.Vec4(6, 7, 8, 9))
+  new ZeaEngine.Vec4Parameter('Vec4 Parameter', new ZeaEngine.Vec4(6, 7, 8, 9))
 );
 parameterOwner.addParameter(
-  new Visualive.XfoParameter('Xfo Parameter', new Visualive.Xfo())
+  new ZeaEngine.XfoParameter('Xfo Parameter', new ZeaEngine.Xfo())
 );
 parameterOwner.addParameter(
-  new Visualive.ColorParameter('Color', new Visualive.Color(1, 1, 0, 1))
+  new ZeaEngine.ColorParameter('Color', new ZeaEngine.Color(1, 1, 0, 1))
 );
 
 parameterOwner.addParameter(
-  new Visualive.MaterialParameter('Material', new Visualive.Material("Foo", "StandardSurfaceShader"))
+  new ZeaEngine.MaterialParameter('Material', new ZeaEngine.Material("Foo", "StandardSurfaceShader"))
 );
 parameterOwner.addParameter(
-  new Visualive.GeometryParameter('Geometry_Circle', new Visualive.Circle())
+  new ZeaEngine.GeometryParameter('Geometry_Circle', new ZeaEngine.Circle())
 );
 parameterOwner.addParameter(
-  new Visualive.GeometryParameter('Geometry_Cone', new Visualive.Cone())
+  new ZeaEngine.GeometryParameter('Geometry_Cone', new ZeaEngine.Cone())
 );
 parameterOwner.addParameter(
-  new Visualive.GeometryParameter('Geometry_Cross', new Visualive.Cross())
+  new ZeaEngine.GeometryParameter('Geometry_Cross', new ZeaEngine.Cross())
 );
 parameterOwner.addParameter(
-  new Visualive.GeometryParameter('Geometry_Cuboid', new Visualive.Cuboid())
+  new ZeaEngine.GeometryParameter('Geometry_Cuboid', new ZeaEngine.Cuboid())
 );
 parameterOwner.addParameter(
-  new Visualive.GeometryParameter('Geometry_Cylinder', new Visualive.Cylinder())
+  new ZeaEngine.GeometryParameter('Geometry_Cylinder', new ZeaEngine.Cylinder())
 );
 parameterOwner.addParameter(
-  new Visualive.GeometryParameter('Geometry_Disc', new Visualive.Disc())
+  new ZeaEngine.GeometryParameter('Geometry_Disc', new ZeaEngine.Disc())
 );
 parameterOwner.addParameter(
-  new Visualive.GeometryParameter('Geometry_Grid', new Visualive.Grid())
+  new ZeaEngine.GeometryParameter('Geometry_Grid', new ZeaEngine.Grid())
 );
 
 const treeItemParam = parameterOwner.addParameter(
-  new Visualive.TreeItemParameter('Item', (item) => item instanceof Visualive.TreeItem )
+  new ZeaEngine.TreeItemParameter('Item', (item) => item instanceof ZeaEngine.TreeItem )
 );
 
 const itemSetParam = parameterOwner.addParameter(
-  new Visualive.ItemSetParameter('Items', (item) => item instanceof Visualive.GeomItem)
+  new ZeaEngine.ItemSetParameter('Items', (item) => item instanceof ZeaEngine.GeomItem)
 );
 
-const firstLevelChild = new Visualive.TreeItem(`Root Item`);
+const firstLevelChild = new ZeaEngine.TreeItem(`Root Item`);
 for (let ii = 0; ++ii <= 5; ) {
-  const geomItem = new Visualive.GeomItem(`Geom Item ${ii}`);
+  const geomItem = new ZeaEngine.GeomItem(`Geom Item ${ii}`);
   firstLevelChild.addChild(geomItem);
   itemSetParam.addItem(geomItem)
 }
@@ -102,7 +102,8 @@ itemSetParam.setValue(-1);// Clear the selection
 
 treeItemParam.setValue(firstLevelChild.getChild(2))
 
-const parameterContainer = new ParameterContainer(
+
+const parameterContainer = new ZeaUx.ParameterContainer(
   parameterOwner,
   document.getElementById('parameters'),
   { undoRedoManager }
