@@ -13,6 +13,7 @@ import {
 
 import { BaseLinearMovementHandle } from './BaseLinearMovementHandle.js'
 import ParameterValueChange from '../undoredo/ParameterValueChange.js'
+import './Shaders/HandleShader'
 
 /** Class representing a linear scale scene widget.
  * @extends BaseLinearMovementHandle

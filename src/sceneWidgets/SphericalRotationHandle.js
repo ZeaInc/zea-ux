@@ -12,7 +12,7 @@ import {
 } from '@zeainc/zea-engine'
 
 import Handle from './Handle.js'
-// import ParameterValueChange from '../undoredo/ParameterValueChange.js';
+import './Shaders/HandleShader'
 
 /**
  * Class representing an axial rotation scene widget.

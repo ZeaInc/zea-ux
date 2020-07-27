@@ -12,6 +12,7 @@ import {
 
 import { BaseAxialRotationHandle } from './BaseAxialRotationHandle.js'
 import ParameterValueChange from '../undoredo/ParameterValueChange.js'
+import './Shaders/HandleShader'
 
 /** Class representing a slider scene widget.
  * @extends BaseAxialRotationHandle

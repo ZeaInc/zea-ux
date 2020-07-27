@@ -16,6 +16,7 @@ import { PlanarMovementHandle } from './PlanarMovementHandle.js'
 import { AxialRotationHandle } from './AxialRotationHandle.js'
 import { LinearScaleHandle } from './LinearScaleHandle.js'
 import { SphericalRotationHandle } from './SphericalRotationHandle.js'
+import './Shaders/HandleShader'
 
 /** Class representing a planar movement scene widget.
  * @extends Handle

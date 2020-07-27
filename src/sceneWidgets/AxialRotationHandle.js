@@ -9,6 +9,7 @@ import {
 } from '@zeainc/zea-engine'
 
 import { BaseAxialRotationHandle } from './BaseAxialRotationHandle.js'
+import './Shaders/HandleShader'
 
 /**
  * Class representing an axial rotation scene widget.
