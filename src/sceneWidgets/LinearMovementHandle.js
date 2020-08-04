@@ -76,7 +76,7 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
     this.param = param
     if (track) {
       const __updateGizmo = () => {
-        this.setGlobalXfo(param.getValue())
+        this.getParameter('GlobalXfo').setValue(param.getValue())
       }
       __updateGizmo()
       param.on('valueChanged', __updateGizmo)

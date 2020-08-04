@@ -3,12 +3,12 @@ import {
   Xfo,
   NumberParameter,
   ColorParameter,
-  ValueSetMode,
   GeomItem,
   Material,
   Cylinder,
   Sphere,
   sgFactory,
+  MathFunctions,
 } from '@zeainc/zea-engine'
 
 import { BaseLinearMovementHandle } from './BaseLinearMovementHandle.js'
@@ -119,15 +119,15 @@ class SliderHandle extends BaseLinearMovementHandle {
     this.value = value
     const range =
       this.param && this.param.getRange() ? this.param.getRange() : [0, 1]
-    const v = Math.remap(value, range[0], range[1], 0, 1)
+    const v = MathFunctions.remap(value, range[0], range[1], 0, 1)
     const length = this.lengthParam.getValue()
     this.baseBarXfo.sc.z = v * length
     this.handleXfo.tr.z = v * length
     this.topBarXfo.tr.z = v * length
     this.topBarXfo.sc.z = (1 - v) * length
-    this.handle.setLocalXfo(this.handleXfo, ValueSetMode.GENERATED_VALUE)
-    this.baseBar.setLocalXfo(this.baseBarXfo, ValueSetMode.GENERATED_VALUE)
-    this.topBar.setLocalXfo(this.topBarXfo, ValueSetMode.GENERATED_VALUE)
+    this.handle.getParameter('LocalXfo').setValue(this.handleXfo)
+    this.baseBar.getParameter('LocalXfo').setValue(this.baseBarXfo)
+    this.topBar.getParameter('LocalXfo').setValue(this.topBarXfo)
   }
 
   // ///////////////////////////////////
@@ -140,7 +140,7 @@ class SliderHandle extends BaseLinearMovementHandle {
   onDragStart(event) {
     // Hilight the material.
     this.handleXfo.sc.x = this.handleXfo.sc.y = this.handleXfo.sc.z = 1.2
-    this.handle.setLocalXfo(this.handleXfo, ValueSetMode.GENERATED_VALUE)
+    this.handle.getParameter('LocalXfo').setValue(this.handleXfo)
     if (!this.param) {
       return
     }
@@ -159,7 +159,7 @@ class SliderHandle extends BaseLinearMovementHandle {
     const range =
       this.param && this.param.getRange() ? this.param.getRange() : [0, 1]
     const value = Math.clamp(
-      Math.remap(event.value, 0, length, range[0], range[1]),
+      MathFunctions.remap(event.value, 0, length, range[0], range[1]),
       range[0],
       range[1]
     )
@@ -185,7 +185,7 @@ class SliderHandle extends BaseLinearMovementHandle {
     this.change = null
     // unhilight the material.
     this.handleXfo.sc.x = this.handleXfo.sc.y = this.handleXfo.sc.z = 1.0
-    this.handle.setLocalXfo(this.handleXfo, ValueSetMode.GENERATED_VALUE)
+    this.handle.getParameter('LocalXfo').setValue(this.handleXfo)
   }
 
   /**

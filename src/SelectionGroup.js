@@ -46,7 +46,7 @@ export default class SelectionGroup extends Group {
     const items = Array.from(this.__itemsParam.getValue())
     items.forEach((item, index) => {
       if (item instanceof TreeItem) {
-        this.__initialXfos[index] = item.getGlobalXfo()
+        this.__initialXfos[index] = item.getParameter('GlobalXfo').getValue()
       }
     })
   }
@@ -92,18 +92,18 @@ export default class SelectionGroup extends Group {
           )
       })
 
-      signalIndices.globalXfoChangedIndex = item.on('globalXfoChanged',
-        (mode) => {
-          // Then the item xfo changes, we update the group xfo.
-          if (!this.calculatingGroupXfo && !this.propagatingXfoToItems) {
-            this.__initialXfos[index] = item.getGlobalXfo()
-            this.groupXfoDirty = true
-            this._setGlobalXfoDirty()
-          }
-          // else if (mode != ValueSetMode.OPERATOR_SETVALUE &&  mode != ValueSetMode.OPERATOR_DIRTIED)
+      const globalXfoParam = item.getParameter('GlobalXfo')
+      signalIndices.globalXfoChanged = (mode) => {
+        // Then the item xfo changes, we update the group xfo.
+        if (!this.calculatingGroupXfo && !this.propagatingXfoToItems) {
+          this.__initialXfos[index] = item.getParameter('GlobalXfo').getValue()
+          this.groupXfoDirty = true
+          this._setGlobalXfoDirty()
         }
-      )
-      this.__initialXfos[index] = item.getGlobalXfo()
+        // else if (mode != ValueSetMode.OPERATOR_SETVALUE &&  mode != ValueSetMode.OPERATOR_DIRTIED)
+      }
+      globalXfoParam.on('valueChanged', signalIndices.globalXfoChanged)
+      this.__initialXfos[index] = item.getParameter('GlobalXfo').getValue()
       this.groupXfoDirty = true
     }
 
@@ -121,8 +121,10 @@ export default class SelectionGroup extends Group {
           childItem.removeHighlight('branchselected' + this.getId(), true)
       })
 
-      item.removeListenerById('globalXfoChanged',
-        this.__signalIndices[index].globalXfoChangedIndex
+      const globalXfoParam = item.getParameter('GlobalXfo')
+      globalXfoParam.off(
+        'valueChanged',
+        this.__signalIndices[index].globalXfoChanged
       )
 
       this.__initialXfos.splice(index, 1)

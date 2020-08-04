@@ -55,7 +55,6 @@ class ViewTool extends BaseTool {
     )
 
     this.__controllerTriggersHeld = []
-
   }
 
   // /////////////////////////////////////
@@ -91,7 +90,8 @@ class ViewTool extends BaseTool {
       for (const controller of xrvp.getControllers()) {
         addIconToController(controller)
       }
-      this.addIconToControllerId = xrvp.on('controllerAdded', 
+      this.addIconToControllerId = xrvp.on(
+        'controllerAdded',
         addIconToController
       )
     })
@@ -135,7 +135,10 @@ class ViewTool extends BaseTool {
       this.__orbitRateParam.getValue() * SystemDesc.isMobileDevice ? -1 : 1
 
     if (this.__keyboardMovement) {
-      const globalXfo = viewport.getCamera().getGlobalXfo()
+      const globalXfo = viewport
+        .getCamera()
+        .getParameter('GlobalXfo')
+        .getValue()
       this.__mouseDownCameraXfo = globalXfo.clone()
       this.__mouseDownZaxis = globalXfo.ori.getZaxis()
       const targetOffset = this.__mouseDownZaxis.scale(-focalDistance)
@@ -158,9 +161,9 @@ class ViewTool extends BaseTool {
       // TODO: debug this potential regression. we now use the generic method which emits a signal.
       // Avoid generating a signal because we have an animation frame occuring.
       // see: onKeyPressed
-      viewport.getCamera().setGlobalXfo(globalXfo)
+      viewport.getCamera().getParameter('GlobalXfo').setValue(globalXfo)
     } else {
-      viewport.getCamera().setGlobalXfo(globalXfo)
+      viewport.getCamera().getParameter('GlobalXfo').setValue(globalXfo)
     }
   }
 
@@ -175,7 +178,10 @@ class ViewTool extends BaseTool {
       this.__orbitRateParam.getValue() * SystemDesc.isMobileDevice ? -1 : 1
 
     if (this.__keyboardMovement) {
-      const globalXfo = viewport.getCamera().getGlobalXfo()
+      const globalXfo = viewport
+        .getCamera()
+        .getParameter('GlobalXfo')
+        .getValue()
       this.__mouseDownCameraXfo = globalXfo.clone()
       this.__mouseDownZaxis = globalXfo.ori.getZaxis()
       const targetOffset = this.__mouseDownZaxis.scale(-focalDistance)
@@ -202,9 +208,9 @@ class ViewTool extends BaseTool {
       // TODO: debug this potential regression. we now use the generic method which emits a signal.
       // Avoid generating a signal because we have an animation frame occuring.
       // see: onKeyPressed
-      viewport.getCamera().setGlobalXfo(globalXfo)
+      viewport.getCamera().getParameter('GlobalXfo').setValue(globalXfo)
     } else {
-      viewport.getCamera().setGlobalXfo(globalXfo)
+      viewport.getCamera().getParameter('GlobalXfo').setValue(globalXfo)
     }
   }
 
@@ -230,7 +236,10 @@ class ViewTool extends BaseTool {
       yAxis.scale((dragVec.y / viewport.getHeight()) * cameraPlaneHeight)
     )
 
-    viewport.getCamera().setGlobalXfo(this.__mouseDownCameraXfo.multiply(delta))
+    viewport
+      .getCamera()
+      .getParameter('GlobalXfo')
+      .setValue(this.__mouseDownCameraXfo.multiply(delta))
   }
 
   /**
@@ -242,7 +251,10 @@ class ViewTool extends BaseTool {
     const dollyDist = dragVec.x * this.__dollySpeedParam.getValue()
     const delta = new Xfo()
     delta.tr.set(0, 0, dollyDist)
-    viewport.getCamera().setGlobalXfo(this.__mouseDownCameraXfo.multiply(delta))
+    viewport
+      .getCamera()
+      .getParameter('GlobalXfo')
+      .setValue(this.__mouseDownCameraXfo.multiply(delta))
   }
 
   /**
@@ -272,7 +284,10 @@ class ViewTool extends BaseTool {
     const zoomDist = dragDist * focalDistance
     viewport.getCamera().setFocalDistance(this.__mouseDownFocalDist + zoomDist)
     delta.tr.z += zoomDist
-    viewport.getCamera().setGlobalXfo(this.__mouseDownCameraXfo.multiply(delta))
+    viewport
+      .getCamera()
+      .getParameter('GlobalXfo')
+      .setValue(this.__mouseDownCameraXfo.multiply(delta))
   }
 
   /**
@@ -282,12 +297,21 @@ class ViewTool extends BaseTool {
   initDrag(viewport) {
     const focalDistance = viewport.getCamera().getFocalDistance()
     this.__mouseDragDelta.set(0, 0)
-    this.__mouseDownCameraXfo = viewport.getCamera().getGlobalXfo().clone()
-    this.__mouseDownZaxis = viewport.getCamera().getGlobalXfo().ori.getZaxis()
+    this.__mouseDownCameraXfo = viewport
+      .getCamera()
+      .getParameter('GlobalXfo')
+      .getValue()
+      .clone()
+    this.__mouseDownZaxis = viewport
+      .getCamera()
+      .getParameter('GlobalXfo')
+      .getValue()
+      .ori.getZaxis()
     const targetOffset = this.__mouseDownZaxis.scale(-focalDistance)
     this.__mouseDownCameraTarget = viewport
       .getCamera()
-      .getGlobalXfo()
+      .getParameter('GlobalXfo')
+      .getValue()
       .tr.add(targetOffset)
     this.__mouseDownFocalDist = focalDistance
   }
@@ -303,7 +327,7 @@ class ViewTool extends BaseTool {
     const count = 20
     let i = 0
     const applyMovement = () => {
-      const initlalGlobalXfo = camera.getGlobalXfo()
+      const initlalGlobalXfo = camera.getParameter('GlobalXfo').getValue()
       const initlalDist = camera.getFocalDistance()
       const dir = pos.subtract(initlalGlobalXfo.tr)
       const dist = dir.normalizeInPlace()
@@ -346,7 +370,7 @@ class ViewTool extends BaseTool {
       globalXfo.ori = initlalGlobalXfo.ori.lerp(targetGlobalXfo.ori, t)
 
       camera.setFocalDistance(initlalDist + (dist - initlalDist) * t)
-      camera.setGlobalXfo(globalXfo)
+      camera.getParameter('GlobalXfo').setValue(globalXfo)
 
       i++
       if (i <= count) {
@@ -484,7 +508,8 @@ class ViewTool extends BaseTool {
       const viewport = event.viewport
       const camera = viewport.getCamera()
       const pos = camera
-        .getGlobalXfo()
+        .getParameter('GlobalXfo')
+        .getValue()
         .tr.add(
           event.intersectionData.mouseRay.dir.scale(event.intersectionData.dist)
         )
@@ -502,7 +527,7 @@ class ViewTool extends BaseTool {
       return false
 
     const viewport = event.viewport
-    const xfo = viewport.getCamera().getGlobalXfo()
+    const xfo = viewport.getCamera().getParameter('GlobalXfo').getValue()
     const vec = xfo.ori.getZaxis()
     if (this.__mouseWheelZoomIntervalId)
       clearInterval(this.__mouseWheelZoomIntervalId)
@@ -514,7 +539,7 @@ class ViewTool extends BaseTool {
       xfo.tr.addInPlace(vec.scale(zoomDist))
       if (this.__defaultMode == 'orbit')
         viewport.getCamera().setFocalDistance(focalDistance + zoomDist)
-      viewport.getCamera().setGlobalXfo(xfo)
+      viewport.getCamera().getParameter('GlobalXfo').setValue(xfo)
 
       count++
       if (count < 5) {
@@ -534,7 +559,14 @@ class ViewTool extends BaseTool {
     delta.tr = this.__velocity.normalize().scale(this.__maxVel)
     viewport
       .getCamera()
-      .setGlobalXfo(viewport.getCamera().getGlobalXfo().multiply(delta))
+      .getParameter('GlobalXfo')
+      .setValue(
+        viewport
+          .getCamera()
+          .getParameter('GlobalXfo')
+          .getValue()
+          .multiply(delta)
+      )
   }
 
   /**
@@ -763,7 +795,8 @@ class ViewTool extends BaseTool {
       const viewport = event.viewport
       const camera = viewport.getCamera()
       const pos = camera
-        .getGlobalXfo()
+        .getParameter('GlobalXfo')
+        .getValue()
         .tr.add(
           event.intersectionData.mouseRay.dir.scale(event.intersectionData.dist)
         )

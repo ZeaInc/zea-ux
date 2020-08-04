@@ -33,7 +33,7 @@ class CreateGeomChange extends Change {
     this.parentItem = parentItem
     const name = this.parentItem.generateUniqueName(this.geomItem.getName())
     this.geomItem.setName(name)
-    this.geomItem.setGlobalXfo(xfo)
+    this.geomItem.getParameter('GlobalXfo').setValue(xfo)
     this.childIndex = this.parentItem.addChild(this.geomItem, true)
 
     this.geomItem.addRef(this) // keep a ref to stop it being destroyed
@@ -77,7 +77,7 @@ class CreateGeomChange extends Change {
     this.geomItem.setName(this.parentItem.generateUniqueName(j.geomItemName))
     const xfo = new Xfo()
     xfo.fromJSON(j.geomItemXfo)
-    this.geomItem.setLocalXfo(xfo)
+    this.geomItem.getParameter('LocalXfo').setValue(xfo)
     this.childIndex = this.parentItem.addChild(this.geomItem, false)
   }
 
@@ -148,7 +148,8 @@ class CreateGeomTool extends BaseCreateTool {
       for (const controller of xrvp.getControllers()) {
         addIconToController(controller)
       }
-      this.addIconToControllerId = xrvp.on('controllerAdded', 
+      this.addIconToControllerId = xrvp.on(
+        'controllerAdded',
         addIconToController
       )
     })
@@ -195,7 +196,7 @@ class CreateGeomTool extends BaseCreateTool {
 
     // else project based on focal dist.
     const camera = viewport.getCamera()
-    const xfo = camera.getGlobalXfo().clone()
+    const xfo = camera.getParameter('GlobalXfo').getValue().clone()
     xfo.tr = ray.pointAtDist(camera.getFocalDistance())
     return xfo
   }

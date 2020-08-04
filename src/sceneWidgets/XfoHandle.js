@@ -274,7 +274,7 @@ export default class XfoHandle extends TreeItem {
   _cleanGlobalXfo(prevValue) {
     const parentItem = this.getParentItem()
     if (parentItem !== undefined) {
-      const parentXfo = parentItem.getGlobalXfo().clone()
+      const parentXfo = parentItem.getParameter('GlobalXfo').getValue().clone()
       parentXfo.sc.set(1, 1, 1)
       return parentXfo.multiply(this.__localXfoParam.getValue())
     } else return this.__localXfoParam.getValue()

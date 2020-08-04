@@ -23,7 +23,7 @@ class PlanarMovementHandle extends Handle {
     this.param = param
     if (track) {
       const __updateGizmo = () => {
-        this.setGlobalXfo(param.getValue())
+        this.getParameter('GlobalXfo').setValue(param.getValue())
       }
       __updateGizmo()
       param.on('valueChanged', __updateGizmo)
@@ -91,7 +91,7 @@ class PlanarMovementHandle extends Handle {
     if (this.fullXfoManipulationInVR) {
       this.activeController = event.controller
       const xfo = this.activeController.getTipXfo()
-      const handleXfo = this.getGlobalXfo()
+      const handleXfo = this.getParameter('GlobalXfo').getValue()
       this.grabOffset = xfo.inverse().multiply(handleXfo)
     } else {
       super.onVRControllerButtonDown(event)

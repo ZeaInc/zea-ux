@@ -45,7 +45,7 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
     const tipXfo = new Xfo()
     tipXfo.tr.set(0, 0, length - thickness * 10)
     // tipXfo.tr.set(0, 0, length);
-    // tip.setLocalXfo(tipXfo);
+    // tip.getParameter('LocalXfo').setValue(tipXfo);
     // Note: the constant screen size shader
     // only works if all the handle geometries
     // are centered on the middle of the XfoHandle.
@@ -78,7 +78,7 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
     this.param = param
     if (track) {
       const __updateGizmo = () => {
-        this.setGlobalXfo(param.getValue())
+        this.getParameter('GlobalXfo').setValue(param.getValue())
       }
       __updateGizmo()
       param.on('valueChanged', __updateGizmo)
@@ -98,8 +98,8 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
    */
   onDragStart(event) {
     this.grabDist = event.grabDist
-    this.oriXfo = this.getGlobalXfo()
-    this.tmplocalXfo = this.getLocalXfo()
+    this.oriXfo = this.getParameter('GlobalXfo').getValue()
+    this.tmplocalXfo = this.getParameter('LocalXfo').getValue()
     const param = this.getTargetParam()
     this.baseXfo = param.getValue()
     if (event.undoRedoManager) {
@@ -136,7 +136,7 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
     // This means we have to apply it here to see the scale
     // widget change size.
     this.tmplocalXfo.sc.set(1, 1, sc)
-    this.setLocalXfo(this.tmplocalXfo)
+    this.getParameter('LocalXfo').setValue(this.tmplocalXfo)
 
     if (this.change) {
       this.change.update({
@@ -155,12 +155,12 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
     this.change = null
 
     this.tmplocalXfo.sc.set(1, 1, 1)
-    this.setLocalXfo(this.tmplocalXfo)
+    this.getParameter('LocalXfo').setValue(this.tmplocalXfo)
 
     const tip = this.getChildByName('tip')
-    const tipXfo = tip.getLocalXfo()
+    const tipXfo = tip.getParameter('LocalXfo').getValue()
     tipXfo.sc.set(1, 1, 1)
-    tip.setLocalXfo(tipXfo)
+    tip.getParameter('LocalXfo').setValue(tipXfo)
   }
 }
 
