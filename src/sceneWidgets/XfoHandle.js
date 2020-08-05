@@ -17,6 +17,7 @@ import { AxialRotationHandle } from './AxialRotationHandle.js'
 import { LinearScaleHandle } from './LinearScaleHandle.js'
 import { SphericalRotationHandle } from './SphericalRotationHandle.js'
 import './Shaders/HandleShader'
+import transformVertices from './transformVertices'
 
 /** Class representing a planar movement scene widget.
  * @extends Handle
@@ -35,17 +36,17 @@ class XfoPlanarMovementHandle extends PlanarMovementHandle {
     this.__color = color
     this.__hilightedColor = new Color(1, 1, 1)
     this.sizeParam = this.addParameter(new NumberParameter('size', size))
-    this.colorParam = this.addParameter(new ColorParameter('BaseColor', color))
 
     const handleMat = new Material('handle', 'HandleShader')
     handleMat.getParameter('maintainScreenSize').setValue(1)
-    handleMat.replaceParameter(this.colorParam)
+    this.colorParam = handleMat.getParameter('BaseColor')
+    this.colorParam.setValue(color)
 
     const handleGeom = new Cuboid(size, size, size * 0.02)
 
     const handleGeomXfo = new Xfo()
     handleGeomXfo.tr = offset
-    handleGeom.transformVertices(handleGeomXfo)
+    transformVertices(handleGeom.getVertexAttribute('positions'), handleGeomXfo)
     this.handle = new GeomItem('handle', handleGeom, handleMat)
 
     this.sizeParam.on('valueChanged', () => {

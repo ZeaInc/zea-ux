@@ -11,6 +11,7 @@ import {
 import { BaseLinearMovementHandle } from './BaseLinearMovementHandle.js'
 import ParameterValueChange from '../undoredo/ParameterValueChange.js'
 import './Shaders/HandleShader'
+import transformVertices from './transformVertices'
 
 /** Class representing a linear movement scene widget.
  * @extends BaseLinearMovementHandle
@@ -28,11 +29,11 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
 
     this.__color = color
     this.__hilightedColor = new Color(1, 1, 1)
-    this.colorParam = this.addParameter(new ColorParameter('BaseColor', color))
 
     const handleMat = new Material('handle', 'HandleShader')
     handleMat.getParameter('maintainScreenSize').setValue(1)
-    handleMat.replaceParameter(this.colorParam)
+    this.colorParam = handleMat.getParameter('BaseColor')
+    this.colorParam.setValue(color)
     const handleGeom = new Cylinder(thickness, length, 64)
     handleGeom.getParameter('baseZAtZero').setValue(true)
     const tipGeom = new Cone(thickness * 4, thickness * 10, 64, true)
@@ -41,13 +42,7 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
     const tip = new GeomItem('tip', tipGeom, handleMat)
     const tipXfo = new Xfo()
     tipXfo.tr.set(0, 0, length)
-    tipGeom.transformVertices(tipXfo)
-
-    // this.radiusParam.on('valueChanged', ()=>{
-    //   radius = this.radiusParam.getValue();
-    //   handleGeom.getParameter('radius').setValue(radius);
-    //   handleGeom.getParameter('height').setValue(radius * 0.02);
-    // })
+    transformVertices(tipGeom.getVertexAttribute('positions'), tipXfo)
 
     this.addChild(handle)
     this.addChild(tip)

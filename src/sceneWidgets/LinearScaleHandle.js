@@ -14,6 +14,7 @@ import {
 import { BaseLinearMovementHandle } from './BaseLinearMovementHandle.js'
 import ParameterValueChange from '../undoredo/ParameterValueChange.js'
 import './Shaders/HandleShader'
+import transformVertices from './transformVertices'
 
 /** Class representing a linear scale scene widget.
  * @extends BaseLinearMovementHandle
@@ -31,11 +32,11 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
 
     this.__color = color
     this.__hilightedColor = new Color(1, 1, 1)
-    this.colorParam = this.addParameter(new ColorParameter('BaseColor', color))
 
     const handleMat = new Material('handle', 'HandleShader')
     handleMat.getParameter('maintainScreenSize').setValue(1)
-    handleMat.replaceParameter(this.colorParam)
+    this.colorParam = handleMat.getParameter('BaseColor')
+    this.colorParam.setValue(color)
     const handleGeom = new Cylinder(thickness, length - thickness * 10, 64)
     handleGeom.getParameter('baseZAtZero').setValue(true)
     const tipGeom = new Cuboid(thickness * 10, thickness * 10, thickness * 10)
@@ -49,7 +50,7 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
     // Note: the constant screen size shader
     // only works if all the handle geometries
     // are centered on the middle of the XfoHandle.
-    tipGeom.transformVertices(tipXfo)
+    transformVertices(tipGeom.getVertexAttribute('positions'), tipXfo)
 
     this.addChild(handle)
     this.addChild(tip)
