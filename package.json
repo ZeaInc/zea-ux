@@ -31,7 +31,7 @@
   },
   "homepage": "https://github.com/ZeaInc/zea-ux#readme",
   "author": "Zea Inc.",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@zeainc/jsdocs2md": "^0.0.3",
     "documentation": "^12.1.1",
