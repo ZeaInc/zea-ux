@@ -1,7 +1,7 @@
 - API Reference
 [//]: <> (API)
 * [GLSelectionRect](api/GLSelectionRect)
-* [SelectionGroup](api/SelectionGroup)
+* [SelectionGroupXfoOperator](api/SelectionGroupXfoOperator)
 * [SelectionManager](api/SelectionManager)
 * [sceneWidgets](api/sceneWidgets/README)
   * [ArcSlider](api/sceneWidgets/ArcSlider)
