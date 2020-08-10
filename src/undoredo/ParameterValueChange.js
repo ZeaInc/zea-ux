@@ -13,15 +13,14 @@ class ParameterValueChange extends Change {
    * @param {any} newValue - The newValue value.
    * @param {number} mode - The mode value.
    */
-  constructor(param, newValue, mode = ValueSetMode.USER_SETVALUE) {
+  constructor(param, newValue) {
     if (param) {
       super(param ? param.getName() + ' Changed' : 'ParameterValueChange')
       this.__prevValue = param.getValue()
       this.__param = param
-      this.__mode = mode
       if (newValue != undefined) {
         this.__nextValue = newValue
-        this.__param.setValue(this.__nextValue, mode)
+        this.__param.setValue(this.__nextValue)
       }
     } else {
       super()
@@ -33,7 +32,7 @@ class ParameterValueChange extends Change {
    */
   undo() {
     if (!this.__param) return
-    this.__param.setValue(this.__prevValue, this.__mode)
+    this.__param.setValue(this.__prevValue)
   }
 
   /**
@@ -41,7 +40,7 @@ class ParameterValueChange extends Change {
    */
   redo() {
     if (!this.__param) return
-    this.__param.setValue(this.__nextValue, this.__mode)
+    this.__param.setValue(this.__nextValue)
   }
 
   /**
@@ -51,8 +50,7 @@ class ParameterValueChange extends Change {
   update(updateData) {
     if (!this.__param) return
     this.__nextValue = updateData.value
-    const mode = updateData.mode ? updateData.mode : this.__mode
-    this.__param.setValue(this.__nextValue, mode)
+    this.__param.setValue(this.__nextValue)
     this.emit('updated', updateData)
   }
 
@@ -104,7 +102,7 @@ class ParameterValueChange extends Change {
     if (!this.__param) return
     if (this.__nextValue.fromJSON) this.__nextValue.fromJSON(j.value)
     else this.__nextValue = j.value
-    this.__param.setValue(this.__nextValue, ValueSetMode.REMOTEUSER_SETVALUE)
+    this.__param.setValue(this.__nextValue)
   }
 }
 

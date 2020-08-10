@@ -177,7 +177,7 @@ class ArcSlider extends BaseAxialRotationHandle {
   //   const v = Math.remap(value, range[0], range[1], 0, 1);
   //   const length = this.arcAngleParam.getValue();
   //   this.handleXfo.ori.setFromAxisAndAngle(this.axis, ) = v * length;
-  //   this.handle.setLocalXfo(this.handleXfo, ValueSetMode.GENERATED_VALUE);
+  //   this.handle.getParameter('LocalXfo').setValue(this.handleXfo;
   // }
 
   // ///////////////////////////////////
@@ -195,12 +195,12 @@ class ArcSlider extends BaseAxialRotationHandle {
    * @param {any} event - The event param.
    */
   onDragStart(event) {
-    this.baseXfo = this.getGlobalXfo().clone()
+    this.baseXfo = this.getParameter('GlobalXfo').getValue().clone()
     this.baseXfo.sc.set(1, 1, 1)
     this.deltaXfo = new Xfo()
     // this.offsetXfo = this.baseXfo.inverse().multiply(this.param.getValue());
 
-    this.vec0 = this.getGlobalXfo().ori.getXaxis()
+    this.vec0 = this.getParameter('GlobalXfo').getValue().ori.getXaxis()
     // this.grabCircleRadius = this.arcRadiusParam.getValue();
     this.vec0.normalizeInPlace()
 

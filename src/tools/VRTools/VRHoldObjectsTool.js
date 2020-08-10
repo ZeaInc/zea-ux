@@ -29,7 +29,9 @@ class HoldObjectsChange extends Change {
   undo() {
     for (let i = 0; i < this.__selection.length; i++) {
       if (this.__selection[i]) {
-        this.__selection[i].setGlobalXfo(this.__prevXfos[i])
+        this.__selection[i]
+          .getParameter('GlobalXfo')
+          .setValue(this.__prevXfos[i])
       }
     }
   }
@@ -40,7 +42,9 @@ class HoldObjectsChange extends Change {
   redo() {
     for (let i = 0; i < this.__selection.length; i++) {
       if (this.__selection[i]) {
-        this.__selection[i].setGlobalXfo(this.__newXfos[i])
+        this.__selection[i]
+          .getParameter('GlobalXfo')
+          .setValue(this.__newXfos[i])
       }
     }
   }
@@ -52,12 +56,16 @@ class HoldObjectsChange extends Change {
   update(updateData) {
     if (updateData.newItem) {
       this.__selection[updateData.newItemId] = updateData.newItem
-      this.__prevXfos[updateData.newItemId] = updateData.newItem.getGlobalXfo()
+      this.__prevXfos[updateData.newItemId] = updateData.newItem
+        .getParameter('GlobalXfo')
+        .getValue()
     } else if (updateData.changeXfos) {
       for (let i = 0; i < updateData.changeXfoIds.length; i++) {
         const gidx = updateData.changeXfoIds[i]
         if (!this.__selection[gidx]) continue
-        this.__selection[gidx].setGlobalXfo(updateData.changeXfos[i])
+        this.__selection[gidx]
+          .getParameter('GlobalXfo')
+          .setValue(updateData.changeXfos[i])
         this.__newXfos[gidx] = updateData.changeXfos[i]
       }
     }
@@ -108,14 +116,14 @@ class HoldObjectsChange extends Change {
 
   //   if(updateData.newItem) {
   //     this.__selection[updateData.newItemId] = updateData.newItem;
-  //     this.__prevXfos[updateData.newItemId] = updateData.newItem.getGlobalXfo();
+  //     this.__prevXfos[updateData.newItemId] = updateData.newItem.getParameter('GlobalXfo').getValue();
   //   }
   //   else if(updateData.changeXfos) {
   //     for(let i=0; i<updateData.changeXfoIds.length; i++){
   //       const gidx = updateData.changeXfoIds[i];
   //       if(!this.__selection[gidx])
   //         continue;
-  //       this.__selection[gidx].setGlobalXfo(
+  //       this.__selection[gidx].getParameter('GlobalXfo').setValue(
   //         updateData.changeXfos[i],
   //         ValueSetMode.REMOTEUSER_SETVALUE);
   //       this.__newXfos[gidx] = updateData.changeXfos[i];
@@ -174,7 +182,8 @@ class VRHoldObjectsTool extends BaseTool {
     this.appData.renderer.getXRViewport().then((xrvp) => {
       for (const controller of xrvp.getControllers())
         addIconToController(controller)
-      this.addIconToControllerId = xrvp.on('controllerAdded', 
+      this.addIconToControllerId = xrvp.on(
+        'controllerAdded',
         addIconToController
       )
     })
@@ -243,7 +252,7 @@ class VRHoldObjectsTool extends BaseTool {
       const grabXfo = this.computeGrabXfo(this.__heldGeomItemRefs[i])
       this.__heldGeomItemOffsets[i] = grabXfo
         .inverse()
-        .multiply(heldGeom.getGlobalXfo())
+        .multiply(heldGeom.getParameter('GlobalXfo').getValue())
     }
   }
 

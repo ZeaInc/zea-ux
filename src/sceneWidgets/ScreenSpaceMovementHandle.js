@@ -22,7 +22,7 @@ class ScreenSpaceMovementHandle extends Handle {
     this.param = param
     if (track) {
       const __updateGizmo = () => {
-        this.setGlobalXfo(param.getValue())
+        this.getParameter('GlobalXfo').setValue(param.getValue())
       }
       __updateGizmo()
       param.on('valueChanged', __updateGizmo)
@@ -46,7 +46,7 @@ class ScreenSpaceMovementHandle extends Handle {
    */
   handleMouseDown(event) {
     this.gizmoRay = new Ray()
-    // this.gizmoRay.dir = event.viewport.getCamera().getGlobalXfo().ori.getZaxis().negate()
+    // this.gizmoRay.dir = event.viewport.getCamera().getParameter('GlobalXfo').getValue().ori.getZaxis().negate()
     this.gizmoRay.dir = event.mouseRay.dir.negate()
     const param = this.getTargetParam()
     const baseXfo = param.getValue()

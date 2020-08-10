@@ -61,7 +61,7 @@ class SphericalRotationHandle extends Handle {
     this.param = param
     if (track) {
       const __updateGizmo = () => {
-        this.setGlobalXfo(param.getValue())
+        this.getParameter('GlobalXfo').setValue(param.getValue())
       }
       __updateGizmo()
       param.on('valueChanged', __updateGizmo)
@@ -84,7 +84,7 @@ class SphericalRotationHandle extends Handle {
    * @return {any} The return value.
    */
   handleMouseDown(event) {
-    // const xfo = this.getGlobalXfo();
+    // const xfo = this.getParameter('GlobalXfo').getValue();
     // this.sphere = {
     //   tr: xfo,
     //   radius: this.radius,
@@ -123,7 +123,7 @@ class SphericalRotationHandle extends Handle {
    * @param {any} event - The event param.
    */
   onDragStart(event) {
-    this.baseXfo = this.getGlobalXfo()
+    this.baseXfo = this.getParameter('GlobalXfo').getValue()
     this.baseXfo.sc.set(1, 1, 1)
     this.deltaXfo = new Xfo()
     const param = this.getTargetParam()
