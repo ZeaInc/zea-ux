@@ -42,7 +42,6 @@
   * [Change](api/undoredo/Change)
   * [ParameterValueChange](api/undoredo/ParameterValueChange)
   * [TreeItemAddChange](api/undoredo/TreeItemAddChange)
-  * [TreeItemMoveChange](api/undoredo/TreeItemMoveChange)
   * [TreeItemsRemoveChange](api/undoredo/TreeItemsRemoveChange)
   * [UndoRedoManager](api/undoredo/UndoRedoManager)
 [//]: <> (API)

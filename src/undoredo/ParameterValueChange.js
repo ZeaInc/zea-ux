@@ -1,17 +1,21 @@
-import { ValueSetMode, Parameter } from '@zeainc/zea-engine'
+import { Parameter } from '@zeainc/zea-engine'
 import UndoRedoManager from './UndoRedoManager.js'
 import Change from './Change.js'
 
 /**
- * Class representing a parameter value change.
+ * Represents a `Change` class for storing `Parameter` values.
+ *
+ * **Events**
+ * * **updated:** Triggered when the `ParameterValueChange` value is updated.
+ *
  * @extends Change
  */
 class ParameterValueChange extends Change {
   /**
-   * Create a parameter value change.
-   * @param {object} param - The param value.
-   * @param {any} newValue - The newValue value.
-   * @param {number} mode - The mode value.
+   * Creates an instance of ParameterValueChange.
+   *
+   * @param {Parameter} param - The param value.
+   * @param {object|string|number|any} newValue - The newValue value.
    */
   constructor(param, newValue) {
     if (param) {
@@ -28,7 +32,7 @@ class ParameterValueChange extends Change {
   }
 
   /**
-   * The undo method.
+   * Rollbacks the value of the parameter to the previous one, passing it to the redo stack in case you wanna recover it later on.
    */
   undo() {
     if (!this.__param) return
@@ -36,7 +40,8 @@ class ParameterValueChange extends Change {
   }
 
   /**
-   * The redo method.
+   * Rollbacks the `undo` action by moving the change from the `redo` stack to the `undo` stack
+   * and updating the parameter with the new value.
    */
   redo() {
     if (!this.__param) return
@@ -44,8 +49,9 @@ class ParameterValueChange extends Change {
   }
 
   /**
-   * The update method.
-   * @param {any} updateData - The updateData param.
+   * Updates the state of the current parameter change value.
+   *
+   * @param {Parameter} updateData - The updateData param.
    */
   update(updateData) {
     if (!this.__param) return
@@ -55,15 +61,17 @@ class ParameterValueChange extends Change {
   }
 
   /**
-   * The toJSON method.
-   * @param {any} context - The context param.
-   * @return {any} The return value.
+   * Serializes `Parameter` instance value as a JSON object, allowing persistence/replication.
+   *
+   * @param {object} context - The context param.
+   * @return {object} The return value.
    */
   toJSON(context) {
     const j = {
       name: this.name,
       paramPath: this.__param.getPath(),
     }
+
     if (this.__nextValue != undefined) {
       if (this.__nextValue.toJSON) {
         j.value = this.__nextValue.toJSON()
@@ -75,9 +83,10 @@ class ParameterValueChange extends Change {
   }
 
   /**
-   * The fromJSON method.
-   * @param {any} j - The j param.
-   * @param {any} context - The context param.
+   * Restores `Parameter` instance's state with the specified JSON object.
+   *
+   * @param {object} j - The j param.
+   * @param {object} context - The context param.
    */
   fromJSON(j, context) {
     const param = context.appData.scene.getRoot().resolvePath(j.paramPath, 1)
@@ -95,8 +104,9 @@ class ParameterValueChange extends Change {
   }
 
   /**
-   * The changeFromJSON method.
-   * @param {any} j - The j param.
+   * Updates the state of an existing identified `Parameter` through replication.
+   *
+   * @param {object} j - The j param.
    */
   changeFromJSON(j) {
     if (!this.__param) return

@@ -3,14 +3,17 @@ import UndoRedoManager from './UndoRedoManager.js'
 import Change from './Change.js'
 
 /**
- * Class representing a treeItemeter value change.
+ * Class representing an `Add TreeItem` Change. Meaning that this should be called when you add a new `TreeItem` to the scene.
+ *
  * @extends Change
  */
 class TreeItemAddChange extends Change {
   /**
-   * Create a TreeItemAddChange.
-   * @treeItem {any} treeItem - The treeItem value.
-   * @treeItem {any} newValue - The newValue value.
+   * Creates an instance of TreeItemAddChange.
+   *
+   * @param {TreeItem} treeItem -
+   * @param {TreeItem} owner -
+   * @param {SelectionManager} selectionManager -
    */
   constructor(treeItem, owner, selectionManager) {
     if (treeItem) {
@@ -29,7 +32,7 @@ class TreeItemAddChange extends Change {
   }
 
   /**
-   * The undo method.
+   * Removes the newly added TreeItem from its owner.
    */
   undo() {
     if (this.treeItem instanceof Operator) {
@@ -49,7 +52,7 @@ class TreeItemAddChange extends Change {
   }
 
   /**
-   * The redo method.
+   * Restores undone `TreeItem`.
    */
   redo() {
     // Now re-attach all the detached operators.
@@ -70,9 +73,10 @@ class TreeItemAddChange extends Change {
   }
 
   /**
-   * The toJSON method.
-   * @treeItem {any} context - The context treeItem.
-   * @return {any} The return value.
+   * Serializes `TreeItem` like instanced class into a JSON object.
+   *
+   * @param {object} context - The context treeItem
+   * @return {object} - JSON object
    */
   toJSON(context) {
     const j = {
@@ -85,14 +89,15 @@ class TreeItemAddChange extends Change {
   }
 
   /**
-   * The fromJSON method.
-   * @treeItem {any} j - The j treeItem.
-   * @treeItem {any} context - The context treeItem.
+   * Reconstructs `TreeItem` like parameter from JSON object.
+   *
+   * @param {object} j -The j treeItem
+   * @param {object} context - The context treeItem
    */
   fromJSON(j, context) {
     const treeItem = sgFactory.constructClass(j.treeItem.type)
     if (!treeItem) {
-      console.warn('resolvePath is unable to conostruct', j.treeItem)
+      console.warn('resolvePath is unable to construct', j.treeItem)
       return
     }
     this.name = j.name
@@ -103,6 +108,9 @@ class TreeItemAddChange extends Change {
     this.treeItemIndex = this.owner.addChild(this.treeItem, false, false)
   }
 
+  /**
+   * Removes reference of the `TreeItem` from current change.
+   */
   destroy() {
     this.treeItem.removeRef(this)
   }

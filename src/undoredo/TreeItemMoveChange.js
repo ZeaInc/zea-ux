@@ -2,19 +2,21 @@ import UndoRedoManager from './UndoRedoManager.js'
 import Change from './Change.js'
 
 /**
- * Class representing a treeItemeter value change.
+ * Class representing a `Move TreeItem` Change(Moving a TreeItem from one parent to another).
+ *
  * @extends Change
  */
 class TreeItemMoveChange extends Change {
   /**
-   * Create a TreeItemMoveChange.
-   * @treeItem {any} treeItem - The treeItem value.
-   * @treeItem {any} newOwner - The newOwner value.
+   * Creates an instance of TreeItemMoveChange.
+   *
+   * @param {TreeItem} treeItem - The item to move.
+   * @param {TreeItem} newOwner - The new owner item.
+   * @memberof TreeItemMoveChange
    */
   constructor(treeItem, newOwner) {
     if (treeItem) {
-      console.log('TreeItemMoveChange')
-      super(treeItem.getName() + ' Added')
+      super(treeItem.getName() + ' Moved')
       this.treeItem = treeItem
       this.oldOwner = this.treeItem.getOwner()
       this.oldOwnerIndex = this.oldOwner.getChildIndex(this.treeItem)
@@ -26,23 +28,24 @@ class TreeItemMoveChange extends Change {
   }
 
   /**
-   * The undo method.
+   * Inserts back the moved TreeItem in the old owner item(Rollbacks the move action).
    */
   undo() {
     this.oldOwner.insertChild(this.treeItem, this.oldOwnerIndex, true)
   }
 
   /**
-   * The redo method.
+   * Executes the move action inserting the TreeItem back to the new owner item.
    */
   redo() {
     this.newOwner.addChild(this.treeItem, true)
   }
 
   /**
-   * The toJSON method.
-   * @treeItem {any} context - The context treeItem.
-   * @return {any} The return value.
+   * Returns a JSON object with the specifications of the change(Typically used for replication).
+   *
+   * @param {object} context - The context value
+   * @return {object} - JSON object of the change
    */
   toJSON(context) {
     const j = {
@@ -50,13 +53,15 @@ class TreeItemMoveChange extends Change {
       treeItemPath: this.treeItem.getPath(),
       newOwnerPath: this.newOwner.getPath(),
     }
+
     return j
   }
 
   /**
-   * The fromJSON method.
-   * @treeItem {any} j - The j treeItem.
-   * @treeItem {any} context - The context treeItem.
+   * Restores the Change state from the specified JSON object.
+   *
+   * @param {object} j - The serialized object with the change data.
+   * @param {object} context - The context value
    */
   fromJSON(j, context) {
     const treeItem = appData.scene.getRoot().resolvePath(j.treeItemPath, 1)
