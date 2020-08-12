@@ -1,6 +1,6 @@
 import { Vec3, Xfo } from '@zeainc/zea-engine'
 import Handle from './Handle.js'
-import ParameterValueChange from '../undoredo/ParameterValueChange.js'
+import ParameterValueChange from '../undoredo/Changes/ParameterValueChange.js'
 
 /**
  * Class representing an axial rotation scene widget.

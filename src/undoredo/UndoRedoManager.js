@@ -1,4 +1,4 @@
-import { EventEmitter } from '@zeainc/zea-engine'
+import { EventEmitter } from './node_modules/@zeainc/zea-engine'
 
 const __changeClasses = {}
 const __classNames = {}

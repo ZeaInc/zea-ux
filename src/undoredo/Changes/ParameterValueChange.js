@@ -1,6 +1,6 @@
 import { Parameter } from '@zeainc/zea-engine'
-import UndoRedoManager from './UndoRedoManager.js'
-import Change from './Change.js'
+import UndoRedoManager from '../UndoRedoManager'
+import Change from '../Change'
 
 /**
  * Represents a `Change` class for storing `Parameter` values.

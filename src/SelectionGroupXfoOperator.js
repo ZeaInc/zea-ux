@@ -1,44 +1,36 @@
-import {
-  Xfo,
-  TreeItem,
-  Group,
-  Operator,
-  OperatorInput,
-  OperatorOutput,
-} from '@zeainc/zea-engine'
+import { Xfo, Group, Operator, OperatorInput, OperatorOutput } from '@zeainc/zea-engine'
 
-/** An operator for aiming items at targets.
- * @extends Operator
+/**
+ * An operator for aiming items at targets.
  *
+ * @extends {Operator}
  */
-export default class SelectionGroupXfoOperator extends Operator {
+class SelectionGroupXfoOperator extends Operator {
   /**
-   * Create a GroupMemberXfoOperator operator.
-   * @param {Parameter} groupGlobalXfoParam - The GlobalXfo param found on the Group.
+   * Creates an instance of SelectionGroupXfoOperator.
+   *
+   * @param {number} initialXfoModeParam - Initial XFO Mode, check `INITIAL_XFO_MODES` in `Group` documentation
+   * @param {XfoParameter} globalXfoParam - The GlobalXfo param found on the Group.
    */
   constructor(initialXfoModeParam, globalXfoParam) {
     super()
-    this.addInput(new OperatorInput('InitialXfoMode')).setParam(
-      initialXfoModeParam
-    )
-    this.addOutput(new OperatorOutput('GroupGlobalXfo')).setParam(
-      globalXfoParam
-    )
+    this.addInput(new OperatorInput('InitialXfoMode')).setParam(initialXfoModeParam)
+    this.addOutput(new OperatorOutput('GroupGlobalXfo')).setParam(globalXfoParam)
   }
 
   /**
-   * adds a new item to the SelectionGroupXfoOperator.
+   * Updates operator inputs(`OperatorInput`) of current `Operator` using the specified `TreeItem`.
+   *
    * @param {TreeItem} item - The tree item being added
    */
   addItem(item) {
-    this.addInput(
-      new OperatorInput('MemberGlobalXfo' + this.getNumInputs())
-    ).setParam(item.getParameter('GlobalXfo'))
+    this.addInput(new OperatorInput('MemberGlobalXfo' + this.getNumInputs())).setParam(item.getParameter('GlobalXfo'))
     this.setDirty()
   }
 
   /**
-   * removes an item that was previously added to the SelectionGroupXfoOperator.
+   * Finds and removes the `OperatorInput` of the specified `TreeItem` from current`Operator`.
+   *
    * @param {TreeItem} item - The Bind Xfo calculated from the initial Transforms of the Group Members.
    */
   removeItem(item) {
@@ -56,7 +48,9 @@ export default class SelectionGroupXfoOperator extends Operator {
   }
 
   /**
-   * Move the group. When the selection group is manipulated, this method is called. Here we propagate the delta to each of the selection members.
+   * Move the group. When the selection group is manipulated, this method is called.
+   * Here we propagate the delta to each of the selection members.
+   *
    * @param {Xfo} xfo - The new value being set to the Groups GlobalXfo param.
    */
   setValue(xfo) {
@@ -73,7 +67,7 @@ export default class SelectionGroupXfoOperator extends Operator {
   }
 
   /**
-   * Calculate a new Xfo for the group based on the members.
+   * Calculates a new Xfo for the group based on the members.
    */
   evaluate() {
     const groupTransformOutput = this.getOutput('GroupGlobalXfo')
@@ -118,3 +112,6 @@ export default class SelectionGroupXfoOperator extends Operator {
     }
   }
 }
+
+export default SelectionGroupXfoOperator
+export { SelectionGroupXfoOperator }

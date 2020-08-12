@@ -12,7 +12,7 @@ import {
 } from '@zeainc/zea-engine'
 
 import { BaseLinearMovementHandle } from './BaseLinearMovementHandle.js'
-import ParameterValueChange from '../undoredo/ParameterValueChange.js'
+import ParameterValueChange from '../undoredo/Changes/ParameterValueChange.js'
 import './Shaders/HandleShader'
 import transformVertices from './transformVertices'
 

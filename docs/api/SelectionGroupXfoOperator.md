@@ -1,24 +1,33 @@
-### Functions
+<a name="SelectionGroupXfoOperator"></a>
 
-<dl>
-<dt><a href="#addItem">addItem(item)</a></dt>
-<dd><p>adds a new item to the SelectionGroupXfoOperator.</p>
-</dd>
-<dt><a href="#removeItem">removeItem(item)</a></dt>
-<dd><p>removes an item that was previously added to the SelectionGroupXfoOperator.</p>
-</dd>
-<dt><a href="#setValue">setValue(xfo)</a></dt>
-<dd><p>Move the group. When the selection group is manipulated, this method is called. Here we propagate the delta to each of the selection members.</p>
-</dd>
-<dt><a href="#evaluate">evaluate()</a></dt>
-<dd><p>Calculate a new Xfo for the group based on the members.</p>
-</dd>
-</dl>
+### SelectionGroupXfoOperator 
+An operator for aiming items at targets.
 
-<a name="addItem"></a>
+
+**Extends**: <code>Operator</code>  
+
+* [SelectionGroupXfoOperator ⇐ <code>Operator</code>](#SelectionGroupXfoOperator)
+    * [new SelectionGroupXfoOperator(initialXfoModeParam, globalXfoParam)](#new-SelectionGroupXfoOperator)
+    * [addItem(item)](#addItem)
+    * [removeItem(item)](#removeItem)
+    * [setValue(xfo)](#setValue)
+    * [evaluate()](#evaluate)
+
+<a name="new_SelectionGroupXfoOperator_new"></a>
+
+### new SelectionGroupXfoOperator
+Creates an instance of SelectionGroupXfoOperator.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| initialXfoModeParam | <code>number</code> | Initial XFO Mode, check `INITIAL_XFO_MODES` in `Group` documentation |
+| globalXfoParam | <code>XfoParameter</code> | The GlobalXfo param found on the Group. |
+
+<a name="SelectionGroupXfoOperator+addItem"></a>
 
 ### addItem
-adds a new item to the SelectionGroupXfoOperator.
+Updates operator inputs(`OperatorInput`) of current `Operator` using the specified `TreeItem`.
 
 
 
@@ -26,10 +35,10 @@ adds a new item to the SelectionGroupXfoOperator.
 | --- | --- | --- |
 | item | <code>TreeItem</code> | The tree item being added |
 
-<a name="removeItem"></a>
+<a name="SelectionGroupXfoOperator+removeItem"></a>
 
 ### removeItem
-removes an item that was previously added to the SelectionGroupXfoOperator.
+Finds and removes the `OperatorInput` of the specified `TreeItem` from current`Operator`.
 
 
 
@@ -37,10 +46,11 @@ removes an item that was previously added to the SelectionGroupXfoOperator.
 | --- | --- | --- |
 | item | <code>TreeItem</code> | The Bind Xfo calculated from the initial Transforms of the Group Members. |
 
-<a name="setValue"></a>
+<a name="SelectionGroupXfoOperator+setValue"></a>
 
 ### setValue
-Move the group. When the selection group is manipulated, this method is called. Here we propagate the delta to each of the selection members.
+Move the group. When the selection group is manipulated, this method is called.
+Here we propagate the delta to each of the selection members.
 
 
 
@@ -48,9 +58,9 @@ Move the group. When the selection group is manipulated, this method is called. 
 | --- | --- | --- |
 | xfo | <code>Xfo</code> | The new value being set to the Groups GlobalXfo param. |
 
-<a name="evaluate"></a>
+<a name="SelectionGroupXfoOperator+evaluate"></a>
 
 ### evaluate
-Calculate a new Xfo for the group based on the members.
+Calculates a new Xfo for the group based on the members.
 
 

@@ -1,4 +1,4 @@
-import { EventEmitter } from '@zeainc/zea-engine'
+import { EventEmitter } from './node_modules/@zeainc/zea-engine'
 import { UndoRedoManager } from './UndoRedoManager.js'
 
 /**

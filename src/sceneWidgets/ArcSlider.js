@@ -11,7 +11,7 @@ import {
 } from '@zeainc/zea-engine'
 
 import { BaseAxialRotationHandle } from './BaseAxialRotationHandle.js'
-import ParameterValueChange from '../undoredo/ParameterValueChange.js'
+import ParameterValueChange from '../UndoRedo/ParameterValueChange'
 import './Shaders/HandleShader'
 
 /** Class representing a slider scene widget.

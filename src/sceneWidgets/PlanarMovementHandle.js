@@ -1,5 +1,5 @@
 import Handle from './Handle.js'
-import ParameterValueChange from '../undoredo/ParameterValueChange.js'
+import ParameterValueChange from '../undoredo/Changes/ParameterValueChange.js'
 
 /** Class representing a planar movement scene widget.
  * @extends Handle

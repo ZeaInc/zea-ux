@@ -1,14 +1,4 @@
-import {
-  Color,
-  Vec3,
-  Xfo,
-  NumberParameter,
-  ColorParameter,
-  TreeItem,
-  GeomItem,
-  Material,
-  Cuboid,
-} from '@zeainc/zea-engine'
+import { Color, Vec3, Xfo, NumberParameter, TreeItem, GeomItem, Material, Cuboid } from '@zeainc/zea-engine'
 
 import Handle from './Handle.js'
 import { LinearMovementHandle } from './LinearMovementHandle.js'
@@ -101,36 +91,21 @@ export default class XfoHandle extends TreeItem {
     blue.a = 0.8
 
     {
-      const linearXWidget = new LinearMovementHandle(
-        'linearX',
-        size,
-        thickness,
-        red
-      )
+      const linearXWidget = new LinearMovementHandle('linearX', size, thickness, red)
       const xfo = new Xfo()
       xfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI * 0.5)
       linearXWidget.getParameter('LocalXfo').setValue(xfo)
       translationHandles.addChild(linearXWidget)
     }
     {
-      const linearYWidget = new LinearMovementHandle(
-        'linearY',
-        size,
-        thickness,
-        green
-      )
+      const linearYWidget = new LinearMovementHandle('linearY', size, thickness, green)
       const xfo = new Xfo()
       xfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * -0.5)
       linearYWidget.getParameter('LocalXfo').setValue(xfo)
       translationHandles.addChild(linearYWidget)
     }
     {
-      const linearZWidget = new LinearMovementHandle(
-        'linearZ',
-        size,
-        thickness,
-        blue
-      )
+      const linearZWidget = new LinearMovementHandle('linearZ', size, thickness, blue)
       translationHandles.addChild(linearZWidget)
     }
 
@@ -179,11 +154,7 @@ export default class XfoHandle extends TreeItem {
     rotationHandles.setVisible(false)
     this.addChild(rotationHandles)
     {
-      const rotationWidget = new SphericalRotationHandle(
-        'rotation',
-        size - thickness,
-        new Color(1, 1, 1, 0.4)
-      )
+      const rotationWidget = new SphericalRotationHandle('rotation', size - thickness, new Color(1, 1, 1, 0.4))
       rotationHandles.addChild(rotationWidget)
       // const maskMat = new Material('mask', 'HandleShader');
       // maskMat
@@ -194,36 +165,21 @@ export default class XfoHandle extends TreeItem {
       // rotationHandles.addChild(maskGeomItem);
     }
     {
-      const rotationXWidget = new AxialRotationHandle(
-        'rotationX',
-        size,
-        thickness,
-        red
-      )
+      const rotationXWidget = new AxialRotationHandle('rotationX', size, thickness, red)
       const xfo = new Xfo()
       xfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI * 0.5)
       rotationXWidget.getParameter('LocalXfo').setValue(xfo)
       rotationHandles.addChild(rotationXWidget)
     }
     {
-      const rotationYWidget = new AxialRotationHandle(
-        'rotationY',
-        size,
-        thickness,
-        green
-      )
+      const rotationYWidget = new AxialRotationHandle('rotationY', size, thickness, green)
       const xfo = new Xfo()
       xfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * 0.5)
       rotationYWidget.getParameter('LocalXfo').setValue(xfo)
       rotationHandles.addChild(rotationYWidget)
     }
     {
-      const rotationZWidget = new AxialRotationHandle(
-        'rotationZ',
-        size,
-        thickness,
-        blue
-      )
+      const rotationZWidget = new AxialRotationHandle('rotationZ', size, thickness, blue)
       rotationHandles.addChild(rotationZWidget)
     }
 
@@ -235,36 +191,21 @@ export default class XfoHandle extends TreeItem {
 
     const scaleHandleLength = size * 0.95
     {
-      const scaleXWidget = new LinearScaleHandle(
-        'scaleX',
-        scaleHandleLength,
-        thickness,
-        red
-      )
+      const scaleXWidget = new LinearScaleHandle('scaleX', scaleHandleLength, thickness, red)
       const xfo = new Xfo()
       xfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI * 0.5)
       scaleXWidget.getParameter('LocalXfo').setValue(xfo)
       scaleHandles.addChild(scaleXWidget)
     }
     {
-      const scaleYWidget = new LinearScaleHandle(
-        'scaleY',
-        scaleHandleLength,
-        thickness,
-        green
-      )
+      const scaleYWidget = new LinearScaleHandle('scaleY', scaleHandleLength, thickness, green)
       const xfo = new Xfo()
       xfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * -0.5)
       scaleYWidget.getParameter('LocalXfo').setValue(xfo)
       scaleHandles.addChild(scaleYWidget)
     }
     {
-      const scaleZWidget = new LinearScaleHandle(
-        'scaleZ',
-        scaleHandleLength,
-        thickness,
-        blue
-      )
+      const scaleZWidget = new LinearScaleHandle('scaleZ', scaleHandleLength, thickness, blue)
       scaleHandles.addChild(scaleZWidget)
     }
   }
@@ -272,7 +213,7 @@ export default class XfoHandle extends TreeItem {
   /**
    * Calculate the global Xfo for the handls.
    */
-  _cleanGlobalXfo(prevValue) {
+  _cleanGlobalXfo() {
     const parentItem = this.getParentItem()
     if (parentItem !== undefined) {
       const parentXfo = parentItem.getParameter('GlobalXfo').getValue().clone()

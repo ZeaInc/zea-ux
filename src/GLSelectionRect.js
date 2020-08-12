@@ -1,10 +1,10 @@
-import { Rect } from '../../SceneTree/Geometry/Shapes/Rect'
-import { GLLines } from '../GLLines.js'
-import { GLGeomItem } from '../GLGeomItem.js'
-import { GeomItem } from '../../SceneTree/GeomItem'
+import { Rect, GLLines, GLGeomItem, GeomItem } from '@zeainc/zea-engine'
 
-/** Class representing a GL selection rect.
+/**
+ * Class representing a GL selection rect.
+ *
  * @extends GLGeomItem
+ * @private
  */
 class GLSelectionRect extends GLGeomItem {
   /**
