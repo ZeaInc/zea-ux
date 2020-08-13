@@ -33,7 +33,7 @@ export default class Handle extends TreeItem {
    * @return {any} The return value.
    */
   getManipulationPlane() {
-    const xfo = this.getGlobalXfo()
+    const xfo = this.getParameter('GlobalXfo').getValue()
     return new Ray(xfo.tr, xfo.ori.getZaxis())
   }
 

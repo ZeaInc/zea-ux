@@ -43,7 +43,7 @@ class GLSelectionRect extends GLGeomItem {
    * @return {any} - The return value.
    */
   get globalXfo() {
-    return this.__selectionRectGeomItem.getGlobalXfo()
+    return this.__selectionRectGeomItem.getParameter('GlobalXfo').getValue()
   }
 
   /**

@@ -27,7 +27,7 @@ class BaseAxialRotationHandle extends Handle {
     this.param = param
     if (track) {
       const __updateGizmo = () => {
-        this.setGlobalXfo(param.getValue())
+        this.getParameter('GlobalXfo').setValue(param.getValue())
       }
       __updateGizmo()
       param.on('valueChanged', __updateGizmo)
@@ -46,7 +46,7 @@ class BaseAxialRotationHandle extends Handle {
    * @param {any} event - The event param.
    */
   onDragStart(event) {
-    this.baseXfo = this.getGlobalXfo().clone()
+    this.baseXfo = this.getParameter('GlobalXfo').getValue().clone()
     this.baseXfo.sc.set(1, 1, 1)
     this.deltaXfo = new Xfo()
 

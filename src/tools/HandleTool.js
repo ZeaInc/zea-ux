@@ -26,7 +26,7 @@ class HandleTool extends BaseTool {
     super.activateTool()
     console.log('activateTool.HandleTool')
 
-    this.appData.renderer.getDiv().style.cursor = 'crosshair'
+    // this.appData.renderer.getDiv().style.cursor = 'crosshair'
 
     const addIconToController = (controller) => {
       // The tool might already be deactivated.
@@ -43,7 +43,8 @@ class HandleTool extends BaseTool {
       for (const controller of xrvp.getControllers()) {
         addIconToController(controller)
       }
-      this.addIconToControllerId = xrvp.on('controllerAdded', 
+      this.addIconToControllerId = xrvp.on(
+        'controllerAdded',
         addIconToController
       )
     }

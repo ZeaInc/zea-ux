@@ -51,7 +51,7 @@ class SelectionTool extends BaseTool {
   deactivateTool() {
     super.deactivateTool()
     this.selectionRectXfo.sc.set(0, 0, 0)
-    this.rectItem.setGlobalXfo(this.selectionRectXfo)
+    this.rectItem.getParameter('GlobalXfo').setValue(this.selectionRectXfo)
   }
 
   /**
@@ -83,7 +83,7 @@ class SelectionTool extends BaseTool {
 
     this.selectionRectXfo.tr.x = tr.x
     this.selectionRectXfo.tr.y = -tr.y
-    this.rectItem.setGlobalXfo(this.selectionRectXfo)
+    this.rectItem.getParameter('GlobalXfo').setValue(this.selectionRectXfo)
   }
 
   /**
@@ -149,7 +149,9 @@ class SelectionTool extends BaseTool {
           }
 
           this.selectionRectXfo.sc.set(0, 0, 0)
-          this.rectItem.setGlobalXfo(this.selectionRectXfo)
+          this.rectItem
+            .getParameter('GlobalXfo')
+            .setValue(this.selectionRectXfo)
         }
       } else {
         const intersectionData = event.viewport.getGeomDataAtPos(event.mousePos)

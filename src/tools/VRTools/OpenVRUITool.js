@@ -66,7 +66,7 @@ class OpenVRUITool extends BaseTool {
     const headXfo = event.viewXfo
     const checkControllers = (ctrlA, ctrlB) => {
       if (!ctrlA) return false
-      const xfoA = ctrlA.getTreeItem().getGlobalXfo()
+      const xfoA = ctrlA.getTreeItem().getParameter('GlobalXfo').getValue()
       const headToCtrlA = xfoA.tr.subtract(headXfo.tr)
       headToCtrlA.normalizeInPlace()
       if (headToCtrlA.angleTo(xfoA.ori.getYaxis()) < Math.PI * 0.25) {

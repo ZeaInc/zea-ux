@@ -153,16 +153,19 @@ class SelectionManager extends EventEmitter {
       this.setRenderer(this.appData.renderer)
     }
   }
-  
+
   /**
    * The setRenderer method.
    * @param {any} renderer - The renderer param.
    */
   setRenderer(renderer) {
+    if (this.__renderer == renderer) {
+      console.warn(`Renderer already set on SelectionManager`)
+      return
+    }
     this.__renderer = renderer
     this.__renderer.addTreeItem(this.selectionGroup)
   }
-
 
   /**
    * The setRenderer method.
@@ -170,26 +173,24 @@ class SelectionManager extends EventEmitter {
    */
   setXfoMode(mode) {
     if (this.xfoHandle) {
-      this.selectionGroup.rebindInitialXfos();
-      this.selectionGroup.getParameter('InitialXfoMode').setValue(mode);
+      this.selectionGroup.getParameter('InitialXfoMode').setValue(mode)
     }
   }
 
-  
   /**
    * The setRenderer method.
    * @param {any} renderer - The renderer param.
    */
   showHandles(mode) {
     if (this.xfoHandle && this.currMode != mode) {
-      this.currMode = mode;
+      this.currMode = mode
       // eslint-disable-next-line guard-for-in
       for (const key in this.handleGroup) {
-        this.handleGroup[key].emit(mode == key);
+        this.handleGroup[key].emit(mode == key)
       }
-      this.xfoHandle.showHandles(mode);
+      this.xfoHandle.showHandles(mode)
     }
-  };
+  }
 
   /**
    * updateHandleVisiblity determines of the Xfo Manipulation

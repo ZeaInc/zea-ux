@@ -14,6 +14,7 @@ import {
 import { BaseLinearMovementHandle } from './BaseLinearMovementHandle.js'
 import ParameterValueChange from '../undoredo/ParameterValueChange.js'
 import './Shaders/HandleShader'
+import transformVertices from './transformVertices'
 
 /** Class representing a linear scale scene widget.
  * @extends BaseLinearMovementHandle
@@ -31,11 +32,11 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
 
     this.__color = color
     this.__hilightedColor = new Color(1, 1, 1)
-    this.colorParam = this.addParameter(new ColorParameter('BaseColor', color))
 
     const handleMat = new Material('handle', 'HandleShader')
     handleMat.getParameter('maintainScreenSize').setValue(1)
-    handleMat.replaceParameter(this.colorParam)
+    this.colorParam = handleMat.getParameter('BaseColor')
+    this.colorParam.setValue(color)
     const handleGeom = new Cylinder(thickness, length - thickness * 10, 64)
     handleGeom.getParameter('baseZAtZero').setValue(true)
     const tipGeom = new Cuboid(thickness * 10, thickness * 10, thickness * 10)
@@ -45,11 +46,11 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
     const tipXfo = new Xfo()
     tipXfo.tr.set(0, 0, length - thickness * 10)
     // tipXfo.tr.set(0, 0, length);
-    // tip.setLocalXfo(tipXfo);
+    // tip.getParameter('LocalXfo').setValue(tipXfo);
     // Note: the constant screen size shader
     // only works if all the handle geometries
     // are centered on the middle of the XfoHandle.
-    tipGeom.transformVertices(tipXfo)
+    transformVertices(tipGeom.getVertexAttribute('positions'), tipXfo)
 
     this.addChild(handle)
     this.addChild(tip)
@@ -78,7 +79,7 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
     this.param = param
     if (track) {
       const __updateGizmo = () => {
-        this.setGlobalXfo(param.getValue())
+        this.getParameter('GlobalXfo').setValue(param.getValue())
       }
       __updateGizmo()
       param.on('valueChanged', __updateGizmo)
@@ -98,8 +99,8 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
    */
   onDragStart(event) {
     this.grabDist = event.grabDist
-    this.oriXfo = this.getGlobalXfo()
-    this.tmplocalXfo = this.getLocalXfo()
+    this.oriXfo = this.getParameter('GlobalXfo').getValue()
+    this.tmplocalXfo = this.getParameter('LocalXfo').getValue()
     const param = this.getTargetParam()
     this.baseXfo = param.getValue()
     if (event.undoRedoManager) {
@@ -136,7 +137,7 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
     // This means we have to apply it here to see the scale
     // widget change size.
     this.tmplocalXfo.sc.set(1, 1, sc)
-    this.setLocalXfo(this.tmplocalXfo)
+    this.getParameter('LocalXfo').setValue(this.tmplocalXfo)
 
     if (this.change) {
       this.change.update({
@@ -155,12 +156,12 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
     this.change = null
 
     this.tmplocalXfo.sc.set(1, 1, 1)
-    this.setLocalXfo(this.tmplocalXfo)
+    this.getParameter('LocalXfo').setValue(this.tmplocalXfo)
 
     const tip = this.getChildByName('tip')
-    const tipXfo = tip.getLocalXfo()
+    const tipXfo = tip.getParameter('LocalXfo').getValue()
     tipXfo.sc.set(1, 1, 1)
-    tip.setLocalXfo(tipXfo)
+    tip.getParameter('LocalXfo').setValue(tipXfo)
   }
 }
 
