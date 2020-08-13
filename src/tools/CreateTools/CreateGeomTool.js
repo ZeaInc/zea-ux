@@ -298,21 +298,21 @@ class CreateGeomTool extends BaseCreateTool {
    * @param {any} key - The key param.
    * @param {any} event - The event param.
    */
-  onKeyPressed(key, event) {}
+  onKeyPressed(event) {}
 
   /**
    * The onKeyDown method.
    * @param {any} key - The key param.
    * @param {any} event - The event param.
    */
-  onKeyDown(key, event) {}
+  onKeyDown(event) {}
 
   /**
    * The onKeyUp method.
    * @param {any} key - The key param.
    * @param {any} event - The event param.
    */
-  onKeyUp(key, event) {}
+  onKeyUp(event) {}
 
   // ///////////////////////////////////
   // Touch events

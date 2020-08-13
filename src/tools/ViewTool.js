@@ -575,7 +575,7 @@ class ViewTool extends BaseTool {
    * @param {any} event - The event param.
    * @return {any} The return value.
    */
-  onKeyPressed(key, event) {
+  onKeyPressed(event) {
     // Note: onKeyPressed is called intiallly only once, and then we
     // get a series of calls. Here we ignore subsequent events.
     // (TODO: move this logic to a special controller)
@@ -623,7 +623,7 @@ class ViewTool extends BaseTool {
    * @param {any} key - The key param.
    * @param {any} event - The event param.
    */
-  onKeyDown(key, event) {}
+  onKeyDown(event) {}
 
   /**
    * The onKeyUp method.
@@ -631,7 +631,7 @@ class ViewTool extends BaseTool {
    * @param {any} event - The event param.
    * @return {any} The return value.
    */
-  onKeyUp(key, event) {
+  onKeyUp(event) {
     // (TODO: move this logic to a special controller)
     /*
     switch (key) {

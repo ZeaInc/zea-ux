@@ -1,12 +1,13 @@
-import {} from '@zeainc/zea-engine'
+import { EventEmitter } from '@zeainc/zea-engine'
 
 /** Class representing a tool manager. */
-class ToolManager {
+class ToolManager extends EventEmitter {
   /**
    * Create a tool manager.
    * @param {any} appData - The appData value.
    */
   constructor(appData) {
+    super()
     this.__toolStack = []
     this.appData = appData
 
@@ -82,7 +83,7 @@ class ToolManager {
       else {
         // Make sure to reset the pointer in case any tool
         // didn't close correctly.
-        this.appData.renderer.getDiv().style.cursor = 'pointer'
+        // this.appData.renderer.getDiv().style.cursor = 'pointer'
       }
     }
   }
@@ -179,10 +180,9 @@ class ToolManager {
     this.mouseDownId = viewport.on('mouseDown', this.onMouseDown.bind(this))
     this.mouseMoveId = viewport.on('mouseMove', this.onMouseMove.bind(this))
     this.mouseUpId = viewport.on('mouseUp', this.onMouseUp.bind(this))
-    this.mouseLeaveId = viewport.on('mouseLeave', 
-      this.onMouseLeave.bind(this)
-    )
-    this.mouseDoubleClickedId = viewport.on('mouseDoubleClicked', 
+    this.mouseLeaveId = viewport.on('mouseLeave', this.onMouseLeave.bind(this))
+    this.mouseDoubleClickedId = viewport.on(
+      'mouseDoubleClicked',
       this.onDoubleClick.bind(this)
     )
     this.mouseWheelId = viewport.on('mouseWheel', this.onWheel.bind(this))
@@ -191,37 +191,39 @@ class ToolManager {
     // Keyboard events
     this.keyDownId = viewport.on('keyDown', this.onKeyDown.bind(this))
     this.keyUpId = viewport.on('keyUp', this.onKeyUp.bind(this))
-    this.keyPressedId = viewport.on('keyPressed', 
-      this.onKeyPressed.bind(this)
-    )
+    this.keyPressedId = viewport.on('keyPressed', this.onKeyPressed.bind(this))
 
     // ///////////////////////////////////
     // Touch events
-    this.touchStartId = viewport.on('touchStart', 
-      this.onTouchStart.bind(this)
-    )
+    this.touchStartId = viewport.on('touchStart', this.onTouchStart.bind(this))
     this.touchMoveId = viewport.on('touchMove', this.onTouchMove.bind(this))
     this.touchEndId = viewport.on('touchEnd', this.onTouchEnd.bind(this))
-    this.touchCancelId = viewport.on('touchCancel', 
+    this.touchCancelId = viewport.on(
+      'touchCancel',
       this.onTouchCancel.bind(this)
     )
-    this.doubleTappedId = viewport.on('doubleTapped', 
+    this.doubleTappedId = viewport.on(
+      'doubleTapped',
       this.onDoubleTap.bind(this)
     )
 
     this.appData.renderer.getXRViewport().then((xrvp) => {
       // ///////////////////////////////////
       // VRController events
-      this.controllerDownId = xrvp.on('controllerButtonDown', 
+      this.controllerDownId = xrvp.on(
+        'controllerButtonDown',
         this.onVRControllerButtonDown.bind(this)
       )
-      this.controllerUpId = xrvp.on('controllerButtonUp', 
+      this.controllerUpId = xrvp.on(
+        'controllerButtonUp',
         this.onVRControllerButtonUp.bind(this)
       )
-      this.controllerDoubleClickId = xrvp.on('controllerDoubleClicked', 
+      this.controllerDoubleClickId = xrvp.on(
+        'controllerDoubleClicked',
         this.onVRControllerDoubleClicked.bind(this)
       )
-      this.onVRPoseChangedId = xrvp.on('viewChanged', 
+      this.onVRPoseChangedId = xrvp.on(
+        'viewChanged',
         this.onVRPoseChanged.bind(this)
       )
     })
@@ -348,7 +350,7 @@ class ToolManager {
    * @param {any} key - The event param.
    * @param {any} event - The event param.
    */
-  onKeyPressed(key, event) {
+  onKeyPressed(event) {
     event.undoRedoManager = this.appData.undoRedoManager
     let i = this.__toolStack.length
     while (i--) {
@@ -362,12 +364,12 @@ class ToolManager {
    * @param {any} key - The event param.
    * @param {any} event - The event param.
    */
-  onKeyDown(key, event) {
+  onKeyDown(event) {
     event.undoRedoManager = this.appData.undoRedoManager
     let i = this.__toolStack.length
     while (i--) {
       const tool = this.__toolStack[i]
-      if (tool && tool.onKeyDown(key, event) == true) break
+      if (tool && tool.onKeyDown(event) == true) break
     }
   }
 
@@ -376,12 +378,12 @@ class ToolManager {
    * @param {any} key - The event param.
    * @param {any} event - The event param.
    */
-  onKeyUp(key, event) {
+  onKeyUp(event) {
     event.undoRedoManager = this.appData.undoRedoManager
     let i = this.__toolStack.length
     while (i--) {
       const tool = this.__toolStack[i]
-      if (tool && tool.onKeyUp(key, event) == true) break
+      if (tool && tool.onKeyUp(event) == true) break
     }
   }
 

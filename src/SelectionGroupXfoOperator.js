@@ -59,7 +59,7 @@ export default class SelectionGroupXfoOperator extends Operator {
    * Move the group. When the selection group is manipulated, this method is called. Here we propagate the delta to each of the selection members.
    * @param {Xfo} xfo - The new value being set to the Groups GlobalXfo param.
    */
-  setValue(xfo) {
+  backPropagateValue(xfo) {
     const groupTransformOutput = this.getOutput('GroupGlobalXfo')
     const currGroupXfo = groupTransformOutput.getValue()
     const invXfo = currGroupXfo.inverse()
