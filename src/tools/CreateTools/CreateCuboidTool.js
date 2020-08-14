@@ -1,69 +1,30 @@
-import { Quat, Vec3, Cuboid, Material, GeomItem } from '@zeainc/zea-engine'
-import UndoRedoManager from '../../undoredo/UndoRedoManager.js'
-import { CreateGeomChange, CreateGeomTool } from './CreateGeomTool.js'
+import { Quat, Vec3 } from '@zeainc/zea-engine'
+import CreateGeomTool from './CreateGeomTool'
+import CreateCuboidChange from './Change/CreateCuboidChange'
 
 /**
- * Class representing a create cuboid change.
- * @extends CreateGeomChange
- */
-class CreateCuboidChange extends CreateGeomChange {
-  /**
-   * Create a create cuboid change.
-   * @param {any} parentItem - The parentItem value.
-   * @param {any} xfo - The xfo value.
-   */
-  constructor(parentItem, xfo) {
-    super('Create Cuboid')
-
-    this.cuboid = new Cuboid(0, 0, 0, true)
-    const material = new Material('Cuboid', 'SimpleSurfaceShader')
-    this.geomItem = new GeomItem('Cuboid')
-    this.geomItem.setGeometry(this.cuboid)
-    this.geomItem.setMaterial(material)
-
-    if (parentItem && xfo) {
-      this.setParentAndXfo(parentItem, xfo)
-    }
-  }
-
-  /**
-   * The update method.
-   * @param {any} updateData - The updateData param.
-   */
-  update(updateData) {
-    if (updateData.baseSize) {
-      this.cuboid.setBaseSize(updateData.baseSize[0], updateData.baseSize[1])
-    }
-    if (updateData.tr) {
-      const xfo = this.geomItem.getParameter('LocalXfo').getValue()
-      xfo.tr.fromJSON(updateData.tr)
-      this.geomItem.getParameter('LocalXfo').setValue(xfo)
-    }
-    if (updateData.height) {
-      this.cuboid.z = updateData.height
-    }
-    this.emit('updated', updateData)
-  }
-}
-UndoRedoManager.registerChange('CreateCuboidChange', CreateCuboidChange)
-
-/**
- * Class representing a create cuboid tool.
+ * Tool for creating Cuboid geometry.
+ *
+ * **Events**
+ * * **actionFinished:** Triggered when the creation of the geometry is completed.
+ *
  * @extends CreateGeomTool
  */
 class CreateCuboidTool extends CreateGeomTool {
   /**
    * Create a create cuboid tool.
-   * @param {any} appData - The appData value.
+   *
+   * @param {object} appData - The appData value.
    */
   constructor(appData) {
     super(appData)
   }
 
   /**
-   * The createStart method.
-   * @param {any} xfo - The xfo param.
-   * @param {any} parentItem - The parentItem param.
+   * Starts the creation of the cuboid.
+   *
+   * @param {Xfo} xfo - The xfo param.
+   * @param {TreeItem} parentItem - The parentItem param.
    */
   createStart(xfo, parentItem) {
     this.change = new CreateCuboidChange(parentItem, xfo)
@@ -76,8 +37,9 @@ class CreateCuboidTool extends CreateGeomTool {
   }
 
   /**
-   * The createMove method.
-   * @param {any} pt - The pt param.
+   * Updates cuboid structural properties.
+   *
+   * @param {Vec3} pt - The pt param.
    */
   createMove(pt) {
     if (this.stage == 1) {
@@ -95,9 +57,10 @@ class CreateCuboidTool extends CreateGeomTool {
   }
 
   /**
-   * The createRelease method.
-   * @param {any} pt - The pt param.
-   * @param {any} viewport - The viewport param.
+   * Finishes the creation of the cuboid.
+   *
+   * @param {Vec3} pt - The pt param.
+   * @param {GLViewport} viewport - The viewport param.
    */
   createRelease(pt, viewport) {
     if (this.stage == 1) {

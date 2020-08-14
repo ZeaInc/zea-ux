@@ -1,14 +1,15 @@
-import BaseTool from '../BaseTool.js'
+import BaseTool from '../BaseTool'
 
 /**
  * Class representing an open VR UI tool.
+ *
  * @extends BaseTool
  */
 class OpenVRUITool extends BaseTool {
   /**
    * Create an open VR UI tool.
-   * @param {any} appData - The appData value.
-   * @param {any} vrUITool - The vrUITool value.
+   * @param {object} appData - The appData value.
+   * @param {VRUITool} vrUITool - The vrUITool value.
    */
   constructor(appData, vrUITool) {
     super(appData)
@@ -25,8 +26,7 @@ class OpenVRUITool extends BaseTool {
     super.uninstall()
 
     // Also remove the UI tool
-    if (this.uiToolIndex > 0)
-      this.appData.toolManager.removeToolByHandle(this.vrUITool)
+    if (this.uiToolIndex > 0) this.appData.toolManager.removeToolByHandle(this.vrUITool)
   }
 
   // ///////////////////////////////////
@@ -34,13 +34,15 @@ class OpenVRUITool extends BaseTool {
 
   /**
    * The onVRControllerButtonDown method.
-   * @param {any} event - The event param.
+   *
+   * @param {object} event - The event param.
    */
   onVRControllerButtonDown(event) {}
 
   /**
    * The onVRControllerButtonUp method.
-   * @param {any} event - The event param.
+   *
+   * @param {object} event - The event param.
    */
   onVRControllerButtonUp(event) {}
 
@@ -53,8 +55,9 @@ class OpenVRUITool extends BaseTool {
 
   /**
    * The onVRPoseChanged method.
-   * @param {any} event - The event param.
-   * @return {any} The return value.
+   *
+   * @param {object} event - The event param.
+   * @return {boolean} The return value.
    */
   onVRPoseChanged(event) {
     if (this.vrUITool.installed()) return
@@ -81,13 +84,13 @@ class OpenVRUITool extends BaseTool {
     }
 
     if (event.controllers.length > 0) {
-      if (checkControllers(event.controllers[0], event.controllers[1]))
-        return true
-      if (checkControllers(event.controllers[1], event.controllers[0]))
-        return true
+      if (checkControllers(event.controllers[0], event.controllers[1])) return true
+      if (checkControllers(event.controllers[1], event.controllers[0])) return true
     }
     this.uiToolIndex = -1
     this.__stayClosed = false
   }
 }
+
+export default OpenVRUITool
 export { OpenVRUITool }

@@ -1,5 +1,4 @@
-export * from './SelectionManager.js'
-export * from './undoredo/index'
-export * from './tools/index'
-export * from './sceneWidgets/index'
-
+export * from './SelectionManager'
+export * from './UndoRedo/index'
+export * from './Tools/index'
+export * from './Handles/index'

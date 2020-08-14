@@ -1,109 +1,16 @@
-import {
-  Color,
-  Xfo,
-  Ray,
-  ColorParameter,
-  GeomItem,
-  Material,
-  Cross,
-} from '@zeainc/zea-engine'
-
-import BaseCreateTool from '../BaseCreateTool.js'
-import Change from '../../undoredo/Change.js'
+import { Color, Xfo, Ray, ColorParameter, GeomItem, Material, Cross } from '@zeainc/zea-engine'
+import BaseCreateTool from '../BaseCreateTool'
 
 /**
- * Class representing a create geom change.
- * @extends Change
- */
-class CreateGeomChange extends Change {
-  /**
-   * Create a create circle change.
-   * @param {any} name - The name value.
-   */
-  constructor(name) {
-    super(name)
-  }
-
-  /**
-   * The setParentAndXfo method.
-   * @param {any} parentItem - The parentItem param.
-   * @param {any} xfo - The xfo param.
-   */
-  setParentAndXfo(parentItem, xfo) {
-    this.parentItem = parentItem
-    const name = this.parentItem.generateUniqueName(this.geomItem.getName())
-    this.geomItem.setName(name)
-    this.geomItem.getParameter('GlobalXfo').setValue(xfo)
-    this.childIndex = this.parentItem.addChild(this.geomItem, true)
-
-    this.geomItem.addRef(this) // keep a ref to stop it being destroyed
-  }
-
-  /**
-   * The undo method.
-   */
-  undo() {
-    this.parentItem.removeChild(this.childIndex)
-  }
-
-  /**
-   * The redo method.
-   */
-  redo() {
-    this.parentItem.addChild(this.geomItem, false, false)
-  }
-
-  /**
-   * The toJSON method.
-   * @param {any} appData - The appData param.
-   * @return {any} The return value.
-   */
-  toJSON(context) {
-    const j = super.toJSON(context)
-    j.parentItemPath = this.parentItem.getPath()
-    j.geomItemName = this.geomItem.getName()
-    j.geomItemXfo = this.geomItem.getParameter('LocalXfo').getValue()
-    return j
-  }
-
-  /**
-   * The fromJSON method.
-   * @param {any} j - The j param.
-   * @param {any} appData - The appData param.
-   */
-  fromJSON(j, context) {
-    const sceneRoot = context.appData.scene.getRoot()
-    this.parentItem = sceneRoot.resolvePath(j.parentItemPath, 1)
-    this.geomItem.setName(this.parentItem.generateUniqueName(j.geomItemName))
-    const xfo = new Xfo()
-    xfo.fromJSON(j.geomItemXfo)
-    this.geomItem.getParameter('LocalXfo').setValue(xfo)
-    this.childIndex = this.parentItem.addChild(this.geomItem, false)
-  }
-
-  // changeFromJSON(j) {
-  //   if (this.__newValue.fromJSON)
-  //     this.__newValue.fromJSON(j.value);
-  //   else
-  //     this.__newValue = j.value;
-  // }
-
-  /**
-   * The destroy method.
-   */
-  destroy() {
-    this.geomItem.removeRef(this) // remove the tmp ref.
-  }
-}
-
-/**
- * Class representing a create geom tool.
+ * Base class for creating geometry tools.
+ *
  * @extends BaseCreateTool
  */
 class CreateGeomTool extends BaseCreateTool {
   /**
    * Create a create geom tool.
-   * @param {any} appData - The appData value.
+   *
+   * @param {object} appData - The appData value.
    */
   constructor(appData) {
     super(appData)
@@ -111,9 +18,7 @@ class CreateGeomTool extends BaseCreateTool {
     this.stage = 0
     this.removeToolOnRightClick = true
 
-    this.cp = this.addParameter(
-      new ColorParameter('Line Color', new Color(0.7, 0.2, 0.2))
-    )
+    this.cp = this.addParameter(new ColorParameter('Line Color', new Color(0.7, 0.2, 0.2)))
   }
 
   /**
@@ -127,31 +32,19 @@ class CreateGeomTool extends BaseCreateTool {
     this.appData.renderer.getXRViewport().then((xrvp) => {
       if (!this.vrControllerToolTip) {
         this.vrControllerToolTip = new Cross(0.05)
-        this.vrControllerToolTipMat = new Material(
-          'VRController Cross',
-          'LinesShader'
-        )
-        this.vrControllerToolTipMat
-          .getParameter('Color')
-          .setValue(this.cp.getValue())
+        this.vrControllerToolTipMat = new Material('VRController Cross', 'LinesShader')
+        this.vrControllerToolTipMat.getParameter('Color').setValue(this.cp.getValue())
         this.vrControllerToolTipMat.visibleInGeomDataBuffer = false
       }
       const addIconToController = (controller) => {
-        const geomItem = new GeomItem(
-          'CreateGeomToolTip',
-          this.vrControllerToolTip,
-          this.vrControllerToolTipMat
-        )
+        const geomItem = new GeomItem('CreateGeomToolTip', this.vrControllerToolTip, this.vrControllerToolTipMat)
         controller.getTipItem().removeAllChildren()
         controller.getTipItem().addChild(geomItem, false)
       }
       for (const controller of xrvp.getControllers()) {
         addIconToController(controller)
       }
-      this.addIconToControllerId = xrvp.on(
-        'controllerAdded',
-        addIconToController
-      )
+      this.addIconToControllerId = xrvp.on('controllerAdded', addIconToController)
     })
   }
 
@@ -172,21 +65,17 @@ class CreateGeomTool extends BaseCreateTool {
   }
 
   /**
-   * The screenPosToXfo method.
-   * @param {any} screenPos - The screenPos param.
-   * @param {any} viewport - The viewport param.
-   * @return {any} The return value.
+   * Transforms the screen position in the viewport to an Xfo object.
+   *
+   * @param {Vec2} screenPos - The screenPos param.
+   * @param {GLViewport} viewport - The viewport param.
+   * @return {Xfo} The return value.
    */
   screenPosToXfo(screenPos, viewport) {
-    //
-
     const ray = viewport.calcRayFromScreenPos(screenPos)
 
     // Raycast any working planes.
-    const planeRay = new Ray(
-      this.constructionPlane.tr,
-      this.constructionPlane.ori.getZaxis()
-    )
+    const planeRay = new Ray(this.constructionPlane.tr, this.constructionPlane.ori.getZaxis())
     const dist = ray.intersectRayPlane(planeRay)
     if (dist > 0.0) {
       const xfo = this.constructionPlane.clone()
@@ -202,9 +91,10 @@ class CreateGeomTool extends BaseCreateTool {
   }
 
   /**
-   * The createStart method.
-   * @param {any} xfo - The xfo param.
-   * @param {any} parentItem - The parentItem param.
+   * Starts the creation of the geometry.
+   *
+   * @param {Xfo} xfo - The xfo param.
+   * @param {TreeItem} parentItem - The parentItem param.
    */
   createStart(xfo, parentItem) {
     this.stage = 1
@@ -212,29 +102,39 @@ class CreateGeomTool extends BaseCreateTool {
 
   /**
    * The createPoint method.
-   * @param {any} pt - The pt param.
+   *
+   * @param {Vec3} pt - The pt param.
    */
-  createPoint(pt) {}
+  createPoint(pt) {
+    // console.warn('Implement me')
+  }
 
   /**
    * The createMove method.
-   * @param {any} pt - The pt param.
+   *
+   * @param {Vec3} pt - The pt param.
    */
-  createMove(pt) {}
+  createMove(pt) {
+    // console.warn('Implement me')
+  }
 
   /**
    * The createRelease method.
-   * @param {any} pt - The pt param.
+   *
+   * @param {Vec3} pt - The pt param.
    */
-  createRelease(pt) {}
+  createRelease(pt) {
+    // console.warn('Implement me')
+  }
 
   // ///////////////////////////////////
   // Mouse events
 
   /**
-   * The onMouseDown method.
-   * @param {any} event - The event param.
-   * @return {any} The return value.
+   * Event fired when a pointing device button is pressed over the viewport while the tool is activated.
+   *
+   * @param {MouseEvent} event - The event param.
+   * @return {boolean} The return value.
    */
   onMouseDown(event) {
     //
@@ -246,8 +146,7 @@ class CreateGeomTool extends BaseCreateTool {
         this.createStart(xfo, this.appData.scene.getRoot())
       } else if (event.button == 2) {
         // Cancel the tool.
-        if (this.removeToolOnRightClick)
-          this.appData.toolManager.removeTool(this.index)
+        if (this.removeToolOnRightClick) this.appData.toolManager.removeTool(this.index)
       }
       return true
     } else if (event.button == 2) {
@@ -259,9 +158,10 @@ class CreateGeomTool extends BaseCreateTool {
   }
 
   /**
-   * The onMouseMove method.
-   * @param {any} event - The event param.
-   * @return {any} The return value.
+   * Event fired when a pointing device is moved while the cursor's hotspot is inside the viewport, while tool is activated.
+   *
+   * @param {MouseEvent} event - The event param.
+   * @return {boolean} The return value.
    */
   onMouseMove(event) {
     if (this.stage > 0) {
@@ -272,9 +172,10 @@ class CreateGeomTool extends BaseCreateTool {
   }
 
   /**
-   * The onMouseUp method.
-   * @param {any} event - The event param.
-   * @return {any} The return value.
+   * Event fired when a pointing device button is released while the pointer is over the viewport, while the tool is activated.
+   *
+   * @param {MouseEvent} event - The event param.
+   * @return {boolean} The return value.
    */
   onMouseUp(event) {
     if (this.stage > 0) {
@@ -285,69 +186,91 @@ class CreateGeomTool extends BaseCreateTool {
   }
 
   /**
-   * The onWheel method.
-   * @param {any} event - The event param.
+   * Event fired when the user rotates the pointing device wheel, while the tool is activated.
+   *
+   * @param {MouseEvent} event - The event param.
    */
-  onWheel(event) {}
+  onWheel(event) {
+    // console.warn('Implement me')
+  }
 
   // ///////////////////////////////////
   // Keyboard events
 
   /**
-   * The onKeyPressed method.
-   * @param {any} key - The key param.
-   * @param {any} event - The event param.
+   * Event fired when the user presses a key on the keyboard, while the tool is activated.
+   *
+   * @param {KeyboardEvent} event - The event param.
    */
-  onKeyPressed(event) {}
+  onKeyPressed(event) {
+    // console.warn('Implement me')
+  }
 
   /**
-   * The onKeyDown method.
-   * @param {any} key - The key param.
-   * @param {any} event - The event param.
+   * Event fired when the user presses down a key on the keyboard, while the tool is activated.
+   *
+   * @param {KeyboardEvent} event - The event param.
    */
-  onKeyDown(event) {}
+  onKeyDown(event) {
+    // console.warn('Implement me')
+  }
 
   /**
-   * The onKeyUp method.
-   * @param {any} key - The key param.
-   * @param {any} event - The event param.
+   * Event fired when the user releases a key on the keyboard.
+   *
+   * @param {KeyboardEvent} event - The event param.
    */
-  onKeyUp(event) {}
+  onKeyUp(event) {
+    // console.warn('Implement me')
+  }
 
   // ///////////////////////////////////
   // Touch events
 
   /**
-   * The onTouchStart method.
-   * @param {any} event - The event param.
+   * Event fired when one or more touch points are placed on the touch surface inside the viewport, when the tool is activated.
+   *
+   * @param {TouchEvent} event - The event param.
    */
-  onTouchStart(event) {}
+  onTouchStart(event) {
+    // console.warn('Implement me')
+  }
 
   /**
-   * The onTouchMove method.
-   * @param {any} event - The event param.
+   * Event fired when the one or more touch points are moved along the touch surface inside the viewport, when the tool is activated.
+   *
+   * @param {TouchEvent} event - The event param.
    */
-  onTouchMove(event) {}
+  onTouchMove(event) {
+    // console.warn('Implement me')
+  }
 
   /**
-   * The onTouchEnd method.
-   * @param {any} event - The event param.
+   * Event fired when one or more touch points are removed from the touch surface inside the viewport, when the tool is activated.
+   *
+   * @param {TouchEvent} event - The event param.
    */
-  onTouchEnd(event) {}
+  onTouchEnd(event) {
+    // console.warn('Implement me')
+  }
 
   /**
-   * The onTouchCancel method.
-   * @param {any} event - The event param.
+   * Event fired when one or more touch points have been disrupted in an implementation-specific manner inside the viewport, when the tool is activated.
+   *
+   * @param {TouchEvent} event - The event param.
    */
-  onTouchCancel(event) {}
+  onTouchCancel(event) {
+    // console.warn('Implement me')
+  }
 
   // ///////////////////////////////////
   // VRController events
 
   /**
-   * The onVRControllerButtonDown method.
-   * @param {any} event - The event param.
-   * @return {any} The return value.
+   * Event fired when a VR controller button is pressed inside the viewport, when the tool is activated.
+   *
+   * @param {object} event - The event param.
+   * @return {boolean} The return value.
    */
   onVRControllerButtonDown(event) {
     if (!this.__activeController) {
@@ -363,8 +286,9 @@ class CreateGeomTool extends BaseCreateTool {
 
   /**
    * The onVRPoseChanged method.
-   * @param {any} event - The event param.
-   * @return {any} The return value.
+   *
+   * @param {object} event - The event param.
+   * @return {boolean} The return value.
    */
   onVRPoseChanged(event) {
     if (this.__activeController && this.stage > 0) {
@@ -376,9 +300,10 @@ class CreateGeomTool extends BaseCreateTool {
   }
 
   /**
-   * The onVRControllerButtonUp method.
-   * @param {any} event - The event param.
-   * @return {any} The return value.
+   * Event fired when a VR controller button is released inside the viewport, when the tool is activated.
+   *
+   * @param {object} event - The event param.
+   * @return {boolean} The return value.
    */
   onVRControllerButtonUp(event) {
     if (this.stage > 0) {
@@ -392,4 +317,5 @@ class CreateGeomTool extends BaseCreateTool {
   }
 }
 
-export { CreateGeomChange, CreateGeomTool }
+export default CreateGeomTool
+export { CreateGeomTool }

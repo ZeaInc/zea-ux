@@ -1,91 +1,16 @@
-import {
-  Color,
-  NumberParameter,
-  GeomItem,
-  Material,
-  Lines,
-} from '@zeainc/zea-engine'
-
-import UndoRedoManager from '../../undoredo/UndoRedoManager.js'
-import { CreateGeomChange, CreateGeomTool } from './CreateGeomTool.js'
+import { NumberParameter } from '@zeainc/zea-engine'
+import CreateGeomTool from './CreateGeomTool'
+import CreateLineChange from './Change/CreateLineChange'
 
 /**
- * Class representing a create line change.
- * @extends CreateGeomChange
- */
-class CreateLineChange extends CreateGeomChange {
-  /**
-   * Create a create line change.
-   * @param {any} parentItem - The parentItem value.
-   * @param {any} xfo - The xfo value.
-   * @param {any} color - The color value.
-   * @param {any} thickness - The thickness value.
-   */
-  constructor(parentItem, xfo, color, thickness) {
-    super('Create Line')
-
-    this.line = new Lines(0.0)
-    this.line.setNumVertices(2)
-    this.line.setNumSegments(1)
-    this.line.setSegment(0, 0, 1)
-    const material = new Material('Line', 'LinesShader')
-    material.getParameter('Color').setValue(new Color(0.7, 0.2, 0.2))
-    this.geomItem = new GeomItem('Line')
-    this.geomItem.setGeometry(this.line)
-    this.geomItem.setMaterial(material)
-
-    if (color) {
-      material.getParameter('Color').setValue(color)
-    }
-
-    if (thickness) {
-      this.line.lineThickness = thickness
-      // this.line.addVertexAttribute('lineThickness', Float32, 0.0);
-    }
-
-    if (parentItem && xfo) {
-      this.setParentAndXfo(parentItem, xfo)
-    }
-  }
-
-  /**
-   * The update method.
-   * @param {any} updateData - The updateData param.
-   */
-  update(updateData) {
-    if (updateData.p1) {
-      this.line.getVertex(1).setFromOther(updateData.p1)
-      this.line.geomDataChanged.emit()
-    }
-    this.emit('updated', updateData)
-  }
-
-  /**
-   * The fromJSON method.
-   * @param {any} j - The j param.
-   * @param {any} context - The context param.
-   */
-  fromJSON(j, context) {
-    super.fromJSON(j, context)
-    if (j.color) {
-      const color = new Color()
-      color.fromJSON(j.color)
-      material.getParameter('Color').setValue(color)
-    }
-
-    if (j.thickness) {
-      this.line.lineThickness = j.thickness
-      // this.line.addVertexAttribute('lineThickness', Float32, 0.0);
-    }
-  }
-}
-UndoRedoManager.registerChange('CreateLineChange', CreateLineChange)
-
-/**
- * Class representing a create line tool.
+ * Tool for creating a line tool.
+ *
+ * **Events**
+ * * **actionFinished:** Triggered when the creation of the geometry is completed.
+ *
  * @extends CreateGeomTool
  */
-export default class CreateLineTool extends CreateGeomTool {
+class CreateLineTool extends CreateGeomTool {
   /**
    * Create a create line tool.
    * @param {any} appData - The appData value.
@@ -93,9 +18,7 @@ export default class CreateLineTool extends CreateGeomTool {
   constructor(appData) {
     super(appData)
 
-    this.tp = this.addParameter(
-      new NumberParameter('Line Thickness', 0.06, [0, 0.1])
-    ) // 1cm.
+    this.tp = this.addParameter(new NumberParameter('Line Thickness', 0.06, [0, 0.1])) // 1cm.
   }
 
   // activateTool() {
@@ -139,9 +62,10 @@ export default class CreateLineTool extends CreateGeomTool {
   // }
 
   /**
-   * The createStart method.
-   * @param {any} xfo - The xfo param.
-   * @param {any} parentItem - The parentItem param.
+   * Starts line geometry creation.
+   *
+   * @param {Xfo} xfo - The xfo param.
+   * @param {TreeItem} parentItem - The parentItem param.
    */
   createStart(xfo, parentItem) {
     this.change = new CreateLineChange(parentItem, xfo)
@@ -153,8 +77,9 @@ export default class CreateLineTool extends CreateGeomTool {
   }
 
   /**
-   * The createMove method.
-   * @param {any} pt - The pt param.
+   * Updates line structural data.
+   *
+   * @param {Vec3} pt - The pt param.
    */
   createMove(pt) {
     const offet = this.xfo.transformVec3(pt)
@@ -163,8 +88,9 @@ export default class CreateLineTool extends CreateGeomTool {
   }
 
   /**
-   * The createRelease method.
-   * @param {any} pt - The pt param.
+   * Finishes Line geometry creation.
+   *
+   * @param {Vec3} pt - The pt param.
    */
   createRelease(pt) {
     if (this.length == 0) {
@@ -174,4 +100,6 @@ export default class CreateLineTool extends CreateGeomTool {
     this.emit('actionFinished')
   }
 }
+
+export default CreateLineTool
 export { CreateLineTool }

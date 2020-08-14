@@ -1,21 +1,24 @@
-import BaseTool from './BaseTool.js'
+import BaseTool from './BaseTool'
 
 /**
- * Class representing base create tool.
+ * Class representing a primary create tool.
+ *
  * @extends BaseTool
  */
 export default class BaseCreateTool extends BaseTool {
   /**
-   * Create a base create tool.
-   * @param {any} appData - The appData value.
+   * Creates an instance of BaseCreateTool.
+   *
+   * @param {object} appData - The appData value.
    */
   constructor(appData) {
     super(appData)
   }
 
   /**
-   * The isPrimaryTool method.
-   * @return {any} The return value.
+   * Checks if the tool is a primary tool or not.
+   *
+   * @return {boolean} - Returns `true`.
    */
   isPrimaryTool() {
     return true

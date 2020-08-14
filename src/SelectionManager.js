@@ -1,132 +1,20 @@
 import { EventEmitter } from '@zeainc/zea-engine'
-import UndoRedoManager from './undoredo/UndoRedoManager.js'
-import Change from './undoredo/Change.js'
-import XfoHandle from './sceneWidgets/XfoHandle.js'
-import SelectionGroup from './SelectionGroup.js'
+import XfoHandle from './Handles/XfoHandle'
+import SelectionGroup from './SelectionGroup'
+import SelectionChange from './UndoRedo/Changes/SelectionChange'
+import SelectionVisibilityChange from './UndoRedo/Changes/SelectionVisibilityChange'
 
-/** Class representing a selection change.
- * @extends Change
+/**
+ * Class representing a selection manager
+ *
+ * @extends {EventEmitter}
  */
-class SelectionChange extends Change {
-  /**
-   * Create a selection change.
-   * @param {any} selectionManager - The selectionManager value.
-   * @param {any} prevSelection - The prevSelection value.
-   * @param {any} newSelection - The newSelection value.
-   */
-  constructor(selectionManager, prevSelection, newSelection) {
-    super('SelectionChange')
-    this.__selectionManager = selectionManager
-    this.__prevSelection = prevSelection
-    this.__newSelection = newSelection
-  }
-
-  /**
-   * The undo method.
-   */
-  undo() {
-    this.__selectionManager.setSelection(this.__prevSelection, false)
-  }
-
-  /**
-   * The redo method.
-   */
-  redo() {
-    this.__selectionManager.setSelection(this.__newSelection, false)
-  }
-
-  /**
-   * The toJSON method.
-   * @param {any} appData - The appData param.
-   * @return {any} The return value.
-   */
-  toJSON(context) {
-    const j = super.toJSON(context)
-
-    const itemPaths = []
-    for (const treeItem of this.__newSelection) {
-      itemPaths.push(treeItem.getPath())
-    }
-    j.itemPaths = itemPaths
-    return j
-  }
-
-  /**
-   * The fromJSON method.
-   * @param {any} j - The j param.
-   * @param {any} context - The context param.
-   */
-  fromJSON(j, context) {
-    super.fromJSON(j, context)
-
-    this.__selectionManager = context.appData.selectionManager
-    this.__prevSelection = new Set(this.__selectionManager.getSelection())
-
-    const sceneRoot = context.appData.scene.getRoot()
-    const newSelection = new Set()
-    for (const itemPath of j.itemPaths) {
-      newSelection.add(sceneRoot.resolvePath(itemPath, 1))
-    }
-    this.__newSelection = newSelection
-
-    this.__selectionManager.setSelection(this.__newSelection, false)
-  }
-}
-
-UndoRedoManager.registerChange('SelectionChange', SelectionChange)
-
-/** Class representing a toggle selection visibility.
- * @extends Change
- */
-class ToggleSelectionVisibility extends Change {
-  /**
-   * Create a toggle selection visibilit.
-   * @param {any} selection - The selection value.
-   * @param {any} state - The state value.
-   */
-  constructor(selection, state) {
-    super('Selection Visibility Change')
-    this.selection = selection
-    this.state = state
-    this.do(this.state)
-  }
-
-  /**
-   * The undo method.
-   */
-  undo() {
-    this.do(!this.state)
-  }
-
-  /**
-   * The redo method.
-   */
-  redo() {
-    this.do(this.state)
-  }
-
-  /**
-   * The do method.
-   * @param {any} state - The state param.
-   */
-  do(state) {
-    for (const treeItem of this.selection) {
-      treeItem.getParameter('Visible').setValue(state)
-    }
-  }
-}
-
-UndoRedoManager.registerChange(
-  'ToggleSelectionVisibility',
-  ToggleSelectionVisibility
-)
-
-/** Class representing a selection manager */
 class SelectionManager extends EventEmitter {
   /**
-   * Create a selection manager.
-   * @param {object} options - The options object.
-   * @param {object} appData - The appData value.
+   * Creates an instance of SelectionManager.
+   *
+   * @param {object} appData - The options object.
+   * @param {object} [options={}] - The appData value.
    */
   constructor(appData, options = {}) {
     super()
@@ -138,14 +26,8 @@ class SelectionManager extends EventEmitter {
       const size = 0.1
       const thickness = size * 0.02
       this.xfoHandle = new XfoHandle(size, thickness)
-      this.xfoHandle.setTargetParam(
-        this.selectionGroup.getParameter('GlobalXfo'),
-        false
-      )
+      this.xfoHandle.setTargetParam(this.selectionGroup.getParameter('GlobalXfo'), false)
       this.xfoHandle.setVisible(false)
-      // this.xfoHandle.showHandles('Translate')
-      // this.xfoHandle.showHandles('Rotate')
-      // this.xfoHandle.showHandles('Scale')
       this.selectionGroup.addChild(this.xfoHandle)
     }
 
@@ -155,8 +37,9 @@ class SelectionManager extends EventEmitter {
   }
 
   /**
-   * The setRenderer method.
-   * @param {any} renderer - The renderer param.
+   * Adds specified the renderer to the `SelectionManager` and attaches the `SelectionGroup`.
+   *
+   * @param {GLBaseRenderer} renderer - The renderer param.
    */
   setRenderer(renderer) {
     if (this.__renderer == renderer) {
@@ -168,8 +51,11 @@ class SelectionManager extends EventEmitter {
   }
 
   /**
-   * The setRenderer method.
-   * @param {any} renderer - The renderer param.
+   * Sets initial Xfo mode of the selection group.
+   *
+   * @see `Group` class documentation
+   *
+   * @param {number} mode - The Xfo mode
    */
   setXfoMode(mode) {
     if (this.xfoHandle) {
@@ -178,25 +64,26 @@ class SelectionManager extends EventEmitter {
   }
 
   /**
-   * The setRenderer method.
-   * @param {any} renderer - The renderer param.
+   * Displays handles depending on the specified mode(Move, Rotate, Scale).
+   * If nothing is specified, it hides all of them.
+   *
+   * @param {number} handleManipulationMode - The mode of the Xfo parameter
    */
-  showHandles(mode) {
-    if (this.xfoHandle && this.currMode != mode) {
-      this.currMode = mode
+  showHandles(handleManipulationMode) {
+    if (this.xfoHandle && this.currMode != handleManipulationMode) {
+      this.currMode = handleManipulationMode
       // eslint-disable-next-line guard-for-in
       for (const key in this.handleGroup) {
-        this.handleGroup[key].emit(mode == key)
+        this.handleGroup[key].emit(handleManipulationMode == key)
       }
-      this.xfoHandle.showHandles(mode)
+      this.xfoHandle.showHandles(handleManipulationMode)
     }
   }
 
   /**
-   * updateHandleVisiblity determines of the Xfo Manipulation
-   * handle should be displayed or not.
+   * Determines if the Xfo Manipulation handle should be displayed or not.
    */
-  updateHandleVisiblity() {
+  updateHandleVisibility() {
     if (!this.xfoHandle) return
     const selection = this.selectionGroup.getItems()
     const visible = Array.from(selection).length > 0
@@ -205,16 +92,19 @@ class SelectionManager extends EventEmitter {
   }
 
   /**
-   * The getSelection method.
-   * @return {any} The return value.
+   * Returns an array with the selected items.
+   *
+   * @return {array} - The return value.
    */
   getSelection() {
     return this.selectionGroup.getItems()
   }
 
   /**
-   * The setSelection method.
-   * @param {any} newSelection - The newSelection param.
+   * Sets a new selection of items in the `SelectionManager`
+   *
+   * @param {Set} newSelection - The newSelection param
+   * @param {boolean} [createUndo=true] - The createUndo param
    */
   setSelection(newSelection, createUndo = true) {
     const selection = new Set(this.selectionGroup.getItems())
@@ -235,19 +125,21 @@ class SelectionManager extends EventEmitter {
     this.selectionGroup.setItems(selection)
 
     // Deselecting can change the lead selected item.
-    if (selection.size > 0)
-      this.__setLeadSelection(selection.values().next().value)
+    if (selection.size > 0) this.__setLeadSelection(selection.values().next().value)
     else this.__setLeadSelection()
-    this.updateHandleVisiblity()
+    this.updateHandleVisibility()
 
     if (createUndo) {
       const change = new SelectionChange(this, prevSelection, selection)
-      if (this.appData.undoRedoManager)
-        this.appData.undoRedoManager.addChange(change)
+      if (this.appData.undoRedoManager) this.appData.undoRedoManager.addChange(change)
     }
   }
 
-  // eslint-disable-next-line require-jsdoc
+  /**
+   *
+   * @param {TreeItem} treeItem - The treeItem value
+   * @private
+   */
   __setLeadSelection(treeItem) {
     if (this.leadSelection != treeItem) {
       this.leadSelection = treeItem
@@ -257,7 +149,8 @@ class SelectionManager extends EventEmitter {
 
   /**
    * The toggleItemSelection method.
-   * @param {any} treeItem - The treeItem param.
+   *
+   * @param {TreeItem} treeItem - The treeItem param.
    * @param {boolean} replaceSelection - The replaceSelection param.
    */
   toggleItemSelection(treeItem, replaceSelection = true) {
@@ -328,23 +221,22 @@ class SelectionManager extends EventEmitter {
       this.__setLeadSelection(treeItem)
     } else if (!sel) {
       // Deselecting can change the lead selected item.
-      if (selection.size === 1)
-        this.__setLeadSelection(selection.values().next().value)
+      if (selection.size === 1) this.__setLeadSelection(selection.values().next().value)
       else if (selection.size === 0) this.__setLeadSelection()
     }
 
     const change = new SelectionChange(this, prevSelection, selection)
-    if (this.appData.undoRedoManager)
-      this.appData.undoRedoManager.addChange(change)
+    if (this.appData.undoRedoManager) this.appData.undoRedoManager.addChange(change)
 
-    this.updateHandleVisiblity()
+    this.updateHandleVisibility()
     this.emit('selectionChanged', { prevSelection, selection })
   }
 
   /**
-   * The clearSelection method.
+   * Clears selection state by removing previous selected items and the Xfo handlers.
+   *
    * @param {boolean} newChange - The newChange param.
-   * @return {any} The return value.
+   * @return {boolean} - The return value.
    */
   clearSelection(newChange = true) {
     const selection = new Set(this.selectionGroup.getItems())
@@ -358,19 +250,19 @@ class SelectionManager extends EventEmitter {
     // }
     selection.clear()
     this.selectionGroup.setItems(selection)
-    this.updateHandleVisiblity()
+    this.updateHandleVisibility()
     if (newChange) {
       const change = new SelectionChange(this, prevSelection, selection)
-      if (this.appData.undoRedoManager)
-        this.appData.undoRedoManager.addChange(change)
+      if (this.appData.undoRedoManager) this.appData.undoRedoManager.addChange(change)
       this.emit('selectionChanged', { selection, prevSelection })
     }
     return true
   }
 
   /**
-   * The selectItems method.
-   * @param {any} treeItems - The treeItems param.
+   * Selects the specified items replacing previous selection or concatenating new items to it.
+   *
+   * @param {array} treeItems - The treeItems param.
    * @param {boolean} replaceSelection - The replaceSelection param.
    */
   selectItems(treeItems, replaceSelection = true) {
@@ -389,8 +281,7 @@ class SelectionManager extends EventEmitter {
 
     const change = new SelectionChange(this, prevSelection, selection)
 
-    if (this.appData.undoRedoManager)
-      this.appData.undoRedoManager.addChange(change)
+    if (this.appData.undoRedoManager) this.appData.undoRedoManager.addChange(change)
 
     this.selectionGroup.setItems(selection)
     if (selection.size === 1) {
@@ -398,13 +289,14 @@ class SelectionManager extends EventEmitter {
     } else if (selection.size === 0) {
       this.__setLeadSelection()
     }
-    this.updateHandleVisiblity()
+    this.updateHandleVisibility()
     this.emit('selectionChanged', { prevSelection, selection })
   }
 
   /**
-   * The deselectItems method.
-   * @param {any} treeItems - The treeItems param.
+   * Deselects the specified items from the selection group.
+   *
+   * @param {array} treeItems - The treeItems param.
    */
   deselectItems(treeItems) {
     const selection = this.selectionGroup.getItems()
@@ -426,40 +318,37 @@ class SelectionManager extends EventEmitter {
     this.selectionGroup.setItems(selection)
     const change = new SelectionChange(this, prevSelection, selection)
 
-    if (this.appData.undoRedoManager)
-      this.appData.undoRedoManager.addChange(change)
+    if (this.appData.undoRedoManager) this.appData.undoRedoManager.addChange(change)
 
     if (selection.size === 1) {
       this.__setLeadSelection(selection.values().next().value)
     } else if (selection.size === 0) {
       this.__setLeadSelection()
     }
-    this.updateHandleVisiblity()
+    this.updateHandleVisibility()
     this.emit('selectionChanged', { prevSelection, selection })
   }
 
   /**
-   * The toggleSelectionVisiblity method.
+   * Toggles selection visibility, if the visibility is `true`then sets it to `false` and vice versa.
    */
-  toggleSelectionVisiblity() {
+  toggleSelectionVisibility() {
     if (this.leadSelection) {
       const selection = this.selectionGroup.getItems()
       const state = !this.leadSelection.getVisible()
-      const change = new ToggleSelectionVisibility(selection, state)
-      if (this.appData.undoRedoManager)
-        this.appData.undoRedoManager.addChange(change)
+      const change = new SelectionVisibilityChange(selection, state)
+      if (this.appData.undoRedoManager) this.appData.undoRedoManager.addChange(change)
     }
   }
 
   // ////////////////////////////////////
-  //
-
   /**
    * The startPickingMode method.
-   * @param {any} label - The label param.
-   * @param {any} fn - The fn param.
-   * @param {any} filterFn - The filterFn param.
-   * @param {any} count - The count param.
+   *
+   * @param {string} label - The label param.
+   * @param {function} fn - The fn param.
+   * @param {function} filterFn - The filterFn param.
+   * @param {number} count - The count param.
    */
   startPickingMode(label, fn, filterFn, count) {
     // Display this in a status bar.
@@ -472,7 +361,8 @@ class SelectionManager extends EventEmitter {
 
   /**
    * The pickingFilter method.
-   * @param {any} item - The item param.
+   *
+   * @param {TreeItem} item - The item param.
    * @return {any} The return value.
    */
   pickingFilter(item) {
@@ -481,7 +371,8 @@ class SelectionManager extends EventEmitter {
 
   /**
    * The pickingModeActive method.
-   * @return {any} The return value.
+   *
+   * @return {boolean} The return value.
    */
   pickingModeActive() {
     return this.__pickCB != undefined
@@ -496,13 +387,12 @@ class SelectionManager extends EventEmitter {
 
   /**
    * The pick method.
-   * @param {any} item - The item param.
+   * @param {TreeItem} item - The item param.
    */
   pick(item) {
     if (this.__pickCB) {
       if (Array.isArray(item)) {
-        if (this.__pickFilter)
-          this.__picked = this.__picked.concat(item.filter(this.__pickFilter))
+        if (this.__pickFilter) this.__picked = this.__picked.concat(item.filter(this.__pickFilter))
         else this.__picked = this.__picked.concat(item)
       } else {
         if (this.__pickFilter && !this.__pickFilter(item)) return
@@ -517,5 +407,4 @@ class SelectionManager extends EventEmitter {
 }
 
 export default SelectionManager
-
 export { SelectionManager }

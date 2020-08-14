@@ -1,3 +1,4 @@
+/* eslint-disable require-jsdoc */
 const util = newUtil()
 const inliner = newInliner()
 const fontFaces = newFontFaces()
@@ -53,13 +54,15 @@ function toSvg(node, options) {
     .then(inlineImages)
     .then(applyOptions)
     .then(function (clone) {
-      return makeSvgDataUri(
-        clone,
-        options.width || util.width(node),
-        options.height || util.height(node)
-      )
+      return makeSvgDataUri(clone, options.width || util.width(node), options.height || util.height(node))
     })
 
+  /**
+   *
+   *
+   * @param {object} clone -
+   * @return {object} -
+   */
   function applyOptions(clone) {
     if (options.bgcolor) clone.style.backgroundColor = options.bgcolor
 
@@ -82,9 +85,7 @@ function toSvg(node, options) {
  * */
 function toPixelData(node, options) {
   return draw(node, options || {}).then(function (canvas) {
-    return canvas
-      .getContext('2d')
-      .getImageData(0, 0, util.width(node), util.height(node)).data
+    return canvas.getContext('2d').getImageData(0, 0, util.width(node), util.height(node)).data
   })
 }
 
@@ -131,6 +132,11 @@ function toBlob(node, options) {
   return draw(node, options || {}).then(util.canvasToBlob)
 }
 
+/**
+ *
+ *
+ * @param {object} options -
+ */
 function copyOptions(options) {
   // Copy options to impl options for use in impl
   if (typeof options.imagePlaceholder === 'undefined') {
@@ -145,7 +151,13 @@ function copyOptions(options) {
     domtoimage.impl.options.cacheBust = options.cacheBust
   }
 }
-
+/**
+ *
+ *
+ * @param {*} domNode -
+ * @param {*} options -
+ * @return {*}
+ */
 function draw(domNode, options) {
   return toSvg(domNode, options)
     .then(util.makeImage)
@@ -156,6 +168,12 @@ function draw(domNode, options) {
       return canvas
     })
 
+  /**
+   *
+   *
+   * @param {*} domNode -
+   * @return {*}
+   */
   function newCanvas(domNode) {
     const canvas = document.createElement('canvas')
     canvas.width = options.width || util.width(domNode)
@@ -184,8 +202,7 @@ function cloneNode(node, filter, root) {
     })
 
   function makeNodeCopy(node) {
-    if (node instanceof HTMLCanvasElement)
-      return util.makeImage(node.toDataURL())
+    if (node instanceof HTMLCanvasElement) return util.makeImage(node.toDataURL())
     return node.cloneNode(false)
   }
 
@@ -193,11 +210,9 @@ function cloneNode(node, filter, root) {
     const children = original.childNodes
     if (children.length === 0) return Promise.resolve(clone)
 
-    return cloneChildrenInOrder(clone, util.asArray(children), filter).then(
-      function () {
-        return clone
-      }
-    )
+    return cloneChildrenInOrder(clone, util.asArray(children), filter).then(function () {
+      return clone
+    })
 
     function cloneChildrenInOrder(parent, children, filter) {
       let done = Promise.resolve()
@@ -235,11 +250,7 @@ function cloneNode(node, filter, root) {
 
         function copyProperties(source, target) {
           util.asArray(source).forEach(function (name) {
-            target.setProperty(
-              name,
-              source.getPropertyValue(name),
-              source.getPropertyPriority(name)
-            )
+            target.setProperty(name, source.getPropertyValue(name), source.getPropertyPriority(name))
           })
         }
       }
@@ -259,16 +270,12 @@ function cloneNode(node, filter, root) {
         const className = util.uid()
         clone.className = clone.className + ' ' + className
         const styleElement = document.createElement('style')
-        styleElement.appendChild(
-          formatPseudoElementStyle(className, element, style)
-        )
+        styleElement.appendChild(formatPseudoElementStyle(className, element, style))
         clone.appendChild(styleElement)
 
         function formatPseudoElementStyle(className, element, style) {
           const selector = '.' + className + ':' + element
-          const cssText = style.cssText
-            ? formatCssText(style)
-            : formatCssProperties(style)
+          const cssText = style.cssText ? formatCssText(style) : formatCssProperties(style)
           return document.createTextNode(selector + '{' + cssText + '}')
 
           function formatCssText(style) {
@@ -280,12 +287,7 @@ function cloneNode(node, filter, root) {
             return util.asArray(style).map(formatProperty).join('; ') + ';'
 
             function formatProperty(name) {
-              return (
-                name +
-                ': ' +
-                style.getPropertyValue(name) +
-                (style.getPropertyPriority(name) ? ' !important' : '')
-              )
+              return name + ': ' + style.getPropertyValue(name) + (style.getPropertyPriority(name) ? ' !important' : '')
             }
           }
         }
@@ -293,10 +295,8 @@ function cloneNode(node, filter, root) {
     }
 
     function copyUserInput() {
-      if (original instanceof HTMLTextAreaElement)
-        clone.innerHTML = original.value
-      if (original instanceof HTMLInputElement)
-        clone.setAttribute('value', original.value)
+      if (original instanceof HTMLTextAreaElement) clone.innerHTML = original.value
+      if (original instanceof HTMLInputElement) clone.setAttribute('value', original.value)
     }
 
     function fixSvg() {
@@ -337,11 +337,7 @@ function makeSvgDataUri(node, width, height) {
     })
     .then(util.escapeXhtml)
     .then(function (xhtml) {
-      return (
-        '<foreignObject x="0" y="0" width="100%" height="100%">' +
-        xhtml +
-        '</foreignObject>'
-      )
+      return '<foreignObject x="0" y="0" width="100%" height="100%">' + xhtml + '</foreignObject>'
     })
     .then(function (foreignObject) {
       return (
@@ -421,8 +417,7 @@ function newUtil() {
       const length = binaryString.length
       const binaryArray = new Uint8Array(length)
 
-      for (let i = 0; i < length; i++)
-        binaryArray[i] = binaryString.charCodeAt(i)
+      for (let i = 0; i < length; i++) binaryArray[i] = binaryString.charCodeAt(i)
 
       resolve(
         new Blob([binaryArray], {
@@ -460,9 +455,7 @@ function newUtil() {
 
       function fourRandomChars() {
         /* see http://stackoverflow.com/a/6248722/2519373 */
-        return (
-          '0000' + ((Math.random() * Math.pow(36, 4)) << 0).toString(36)
-        ).slice(-4)
+        return ('0000' + ((Math.random() * Math.pow(36, 4)) << 0).toString(36)).slice(-4)
       }
     }
   }
@@ -511,9 +504,7 @@ function newUtil() {
           if (placeholder) {
             resolve(placeholder)
           } else {
-            fail(
-              'cannot fetch resource: ' + url + ', status: ' + request.status
-            )
+            fail('cannot fetch resource: ' + url + ', status: ' + request.status)
           }
 
           return
@@ -531,12 +522,7 @@ function newUtil() {
         if (placeholder) {
           resolve(placeholder)
         } else {
-          fail(
-            'timeout of ' +
-              TIMEOUT +
-              'ms occured while fetching resource: ' +
-              url
-          )
+          fail('timeout of ' + TIMEOUT + 'ms occured while fetching resource: ' + url)
         }
       }
 
@@ -635,10 +621,7 @@ function newInliner() {
       })
 
     function urlAsRegex(url) {
-      return new RegExp(
-        '(url\\([\'"]?)(' + util.escape(url) + ')([\'"]?\\))',
-        'g'
-      )
+      return new RegExp('(url\\([\'"]?)(' + util.escape(url) + ')([\'"]?\\))', 'g')
     }
   }
 
@@ -707,14 +690,9 @@ function newFontFaces() {
       const cssRules = []
       styleSheets.forEach(function (sheet) {
         try {
-          util
-            .asArray(sheet.cssRules || [])
-            .forEach(cssRules.push.bind(cssRules))
+          util.asArray(sheet.cssRules || []).forEach(cssRules.push.bind(cssRules))
         } catch (e) {
-          console.log(
-            'Error while reading CSS rules from ' + sheet.href,
-            e.toString()
-          )
+          console.log('Error while reading CSS rules from ' + sheet.href, e.toString())
         }
       })
       return cssRules
@@ -786,11 +764,7 @@ function newImages() {
       return inliner
         .inlineAll(background)
         .then(function (inlined) {
-          node.style.setProperty(
-            'background',
-            inlined,
-            node.style.getPropertyPriority('background')
-          )
+          node.style.setProperty('background', inlined, node.style.getPropertyPriority('background'))
         })
         .then(function () {
           return node
