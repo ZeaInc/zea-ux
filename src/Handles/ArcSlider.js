@@ -7,7 +7,7 @@ import {
   Material,
   Circle,
   Sphere,
-  sgFactory,
+  Registry,
 } from '@zeainc/zea-engine'
 import { BaseAxialRotationHandle } from './BaseAxialRotationHandle'
 import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
@@ -269,7 +269,7 @@ class ArcSlider extends BaseAxialRotationHandle {
   }
 }
 
-sgFactory.registerClass('ArcSlider', ArcSlider)
+Registry.register('ArcSlider', ArcSlider)
 
 export default ArcSlider
 export { ArcSlider }

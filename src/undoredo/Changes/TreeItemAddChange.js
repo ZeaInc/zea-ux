@@ -1,4 +1,4 @@
-import { TreeItem, Operator, sgFactory } from '@zeainc/zea-engine'
+import { TreeItem, Operator, Registry } from '@zeainc/zea-engine'
 import UndoRedoManager from '../UndoRedoManager.js'
 import Change from '../Change.js'
 
@@ -93,7 +93,7 @@ class TreeItemAddChange extends Change {
    * @param {object} context - The context treeItem
    */
   fromJSON(j, context) {
-    const treeItem = sgFactory.constructClass(j.treeItem.type)
+    const treeItem = Registry.constructClass(j.treeItem.type)
     if (!treeItem) {
       console.warn('resolvePath is unable to construct', j.treeItem)
       return
