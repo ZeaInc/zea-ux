@@ -1,6 +1,6 @@
 import { TreeItem, Operator, sgFactory } from '@zeainc/zea-engine'
-import UndoRedoManager from './UndoRedoManager.js'
-import Change from './Change.js'
+import UndoRedoManager from '../UndoRedoManager.js'
+import Change from '../Change.js'
 
 /**
  * Class representing an `Add TreeItem` Change. Meaning that this should be called when you add a new `TreeItem` to the scene.
@@ -47,8 +47,7 @@ class TreeItemAddChange extends Change {
       }, false)
     }
     this.owner.removeChild(this.treeItemIndex)
-    if (this.selectionManager)
-      this.selectionManager.setSelection(this.prevSelection, false)
+    if (this.selectionManager) this.selectionManager.setSelection(this.prevSelection, false)
   }
 
   /**
@@ -68,8 +67,7 @@ class TreeItemAddChange extends Change {
       }, false)
     }
     this.owner.addChild(this.treeItem)
-    if (this.selectionManager)
-      this.selectionManager.setSelection(new Set([this.treeItem]), false)
+    if (this.selectionManager) this.selectionManager.setSelection(new Set([this.treeItem]), false)
   }
 
   /**

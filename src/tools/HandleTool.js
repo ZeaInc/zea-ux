@@ -1,4 +1,4 @@
-import { Color, GeomItem, Material, Sphere } from './node_modules/@zeainc/zea-engine'
+import { Color, GeomItem, Material, Sphere } from '@zeainc/zea-engine'
 import BaseTool from './BaseTool'
 import Handle from '../Handles/Handle'
 

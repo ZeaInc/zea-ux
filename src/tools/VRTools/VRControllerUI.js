@@ -1,11 +1,4 @@
-import {
-  Vec3,
-  Xfo,
-  GeomItem,
-  Material,
-  Plane,
-  DataImage,
-} from './node_modules/@zeainc/zea-engine'
+import { Vec3, Xfo, GeomItem, Material, Plane, DataImage } from '@zeainc/zea-engine'
 
 import domtoimage from './dom-to-image.js'
 
@@ -73,10 +66,7 @@ export default class VRControllerUI extends GeomItem {
             break
           }
           // console.log(elem.classList)
-          if (
-            elem.classList.contains(VR_UI_ELEM_CLASS) ||
-            elem == this.__vrUIDOMElement
-          ) {
+          if (elem.classList.contains(VR_UI_ELEM_CLASS) || elem == this.__vrUIDOMElement) {
             if (mutatedElems.indexOf(elem) == -1) mutatedElems.push(elem)
             break
           }
@@ -151,17 +141,8 @@ export default class VRControllerUI extends GeomItem {
    * The updateUIImage method.
    */
   updateUIImage() {
-    const imageData = this.mainCtx.getImageData(
-      0,
-      0,
-      this.__rect.width,
-      this.__rect.height
-    )
-    this.__uiimage.setData(
-      this.__rect.width,
-      this.__rect.height,
-      new Uint8Array(imageData.data.buffer)
-    )
+    const imageData = this.mainCtx.getImageData(0, 0, this.__rect.width, this.__rect.height)
+    this.__uiimage.setData(this.__rect.width, this.__rect.height, new Uint8Array(imageData.data.buffer))
   }
 
   /**
@@ -177,17 +158,10 @@ export default class VRControllerUI extends GeomItem {
       if (rect.width * rect.height == 0) return
 
       // const dpm = 0.0003; //dots-per-meter (1 each 1/2mm)
-      if (
-        rect.width != this.__rect.width ||
-        rect.height != this.__rect.height
-      ) {
+      if (rect.width != this.__rect.width || rect.height != this.__rect.height) {
         this.__rect = rect
         const dpm = 0.0007 // dots-per-meter (1 each 1/2mm)
-        this.__uiGeomOffsetXfo.sc.set(
-          this.__rect.width * dpm,
-          this.__rect.height * dpm,
-          1.0
-        )
+        this.__uiGeomOffsetXfo.sc.set(this.__rect.width * dpm, this.__rect.height * dpm, 1.0)
         this.setGeomOffsetXfo(this.__uiGeomOffsetXfo)
 
         this.appData.session.pub('pose-message', {

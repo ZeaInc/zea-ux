@@ -1,4 +1,4 @@
-import { ParameterOwner } from './node_modules/@zeainc/zea-engine'
+import { ParameterOwner } from '@zeainc/zea-engine'
 
 /**
  * Abstract class representing a tool with methods representing mouse, keyboard, touch and VR events.

@@ -1,4 +1,4 @@
-import { Vec2, Color, Xfo, GeomItem, Material, Rect } from './node_modules/@zeainc/zea-engine'
+import { Vec2, Color, Xfo, GeomItem, Material, Rect } from '@zeainc/zea-engine'
 
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 import BaseTool from './BaseTool'

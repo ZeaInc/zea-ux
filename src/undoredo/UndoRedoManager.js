@@ -1,4 +1,4 @@
-import { EventEmitter } from './node_modules/@zeainc/zea-engine'
+import { EventEmitter } from '@zeainc/zea-engine'
 
 const __changeClasses = {}
 const __classNames = {}
@@ -167,10 +167,9 @@ class UndoRedoManager extends EventEmitter {
    * @param {Change} cls - The cls param.
    */
   static registerChange(name, cls) {
-    if (__classes.indexOf(cls) != -1)
-      console.warn('Class already registered:', name)
+    if (__classes.indexOf(cls) != -1) console.warn('Class already registered:', name)
 
-    const id = __classes.length;
+    const id = __classes.length
     __classes.push(cls)
     __changeClasses[name] = cls
     __classNames[id] = name
