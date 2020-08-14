@@ -10,7 +10,7 @@ Class representing an axial rotation scene widget.
     * [new AxialRotationHandle(name, radius, thickness, color)](#new-AxialRotationHandle)
     * [highlight()](#highlight)
     * [unhighlight()](#unhighlight)
-    * [getBaseXfo()](#getBaseXfo)
+    * [getBaseXfo() ⇒ <code>Xfo</code>](#getBaseXfo)
     * [onDragStart(event)](#onDragStart)
     * [onDrag(event)](#onDrag)
     * [onDragEnd(event)](#onDragEnd)
@@ -23,59 +23,60 @@ Create an axial rotation scene widget.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| name | <code>any</code> | The name value. |
-| radius | <code>any</code> | The radius value. |
-| thickness | <code>any</code> | The thickness value. |
-| color | <code>any</code> | The color value. |
+| name | <code>string</code> | The name value. |
+| radius | <code>number</code> | The radius value. |
+| thickness | <code>number</code> | The thickness value. |
+| color | <code>Color</code> | The color value. |
 
 <a name="AxialRotationHandle+highlight"></a>
 
 ### highlight
-The highlight method.
+Applies a special shinning shader to the handle to illustrate interaction with it.
 
 
 <a name="AxialRotationHandle+unhighlight"></a>
 
 ### unhighlight
-The unhighlight method.
+Removes the shining shader from the handle.
 
 
 <a name="AxialRotationHandle+getBaseXfo"></a>
 
 ### getBaseXfo
-The getBaseXfo method.
+Returns handle's global Xfo
 
 
+**Returns**: <code>Xfo</code> - - The Xfo value  
 <a name="AxialRotationHandle+onDragStart"></a>
 
 ### onDragStart
-The onDragStart method.
+Handles the initially drag interaction of the handle.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
 
 <a name="AxialRotationHandle+onDrag"></a>
 
 ### onDrag
-The onDrag method.
+Handles drag interaction of the handle.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
 
 <a name="AxialRotationHandle+onDragEnd"></a>
 
 ### onDragEnd
-The onDragEnd method.
+Handles the end of dragging interaction with the handle.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
 

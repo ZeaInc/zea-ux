@@ -1,27 +1,20 @@
-import {
-  Color,
-  Xfo,
-  NumberParameter,
-  ColorParameter,
-  GeomItem,
-  Material,
-  Torus,
-} from '@zeainc/zea-engine'
-
-import { BaseAxialRotationHandle } from './BaseAxialRotationHandle.js'
+import { Color, Xfo, NumberParameter, GeomItem, Material, Torus } from '@zeainc/zea-engine'
+import BaseAxialRotationHandle from './BaseAxialRotationHandle'
 import './Shaders/HandleShader'
 
 /**
  * Class representing an axial rotation scene widget.
+ *
  * @extends BaseAxialRotationHandle
  */
 class AxialRotationHandle extends BaseAxialRotationHandle {
   /**
    * Create an axial rotation scene widget.
-   * @param {any} name - The name value.
-   * @param {any} radius - The radius value.
-   * @param {any} thickness - The thickness value.
-   * @param {any} color - The color value.
+   *
+   * @param {string} name - The name value.
+   * @param {number} radius - The radius value.
+   * @param {number} thickness - The thickness value.
+   * @param {Color} color - The color value.
    */
   constructor(name, radius, thickness, color) {
     super(name)
@@ -50,29 +43,32 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
   }
 
   /**
-   * The highlight method.
+   * Applies a special shinning shader to the handle to illustrate interaction with it.
    */
   highlight() {
     this.colorParam.setValue(this.__hilightedColor)
   }
 
   /**
-   * The unhighlight method.
+   * Removes the shining shader from the handle.
    */
   unhighlight() {
     this.colorParam.setValue(this.__color)
   }
 
   /**
-   * The getBaseXfo method.
+   * Returns handle's global Xfo
+   *
+   * @return {Xfo} - The Xfo value
    */
   getBaseXfo() {
     return this.getParameter('GlobalXfo').getValue()
   }
 
   /**
-   * The onDragStart method.
-   * @param {any} event - The event param.
+   * Handles the initially drag interaction of the handle.
+   *
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onDragStart(event) {
     super.onDragStart(event)
@@ -82,20 +78,24 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
   }
 
   /**
-   * The onDrag method.
-   * @param {any} event - The event param.
+   * Handles drag interaction of the handle.
+   *
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onDrag(event) {
     super.onDrag(event)
   }
 
   /**
-   * The onDragEnd method.
-   * @param {any} event - The event param.
+   * Handles the end of dragging interaction with the handle.
+   *
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onDragEnd(event) {
     super.onDragEnd(event)
     this.colorParam.setValue(this.__color)
   }
 }
+
+export default AxialRotationHandle
 export { AxialRotationHandle }

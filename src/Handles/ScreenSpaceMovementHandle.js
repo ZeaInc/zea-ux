@@ -2,20 +2,25 @@ import { Ray } from '@zeainc/zea-engine'
 import Handle from './Handle.js'
 import ParameterValueChange from '../undoredo/ParameterValueChange.js'
 
-/** Class representing a planar movement scene widget.
+/**
+ * Class representing a planar movement scene widget.
+ *
  * @extends Handle
  */
 class ScreenSpaceMovementHandle extends Handle {
   /**
    * Create a planar movement scene widget.
+   *
+   * @param {string} name - The name value
    */
   constructor(name) {
     super(name)
   }
 
   /**
-   * The setTargetParam method.
-   * @param {any} param - The param param.
+   * Sets global xfo target parameter.
+   *
+   * @param {Parameter} param - The video param.
    * @param {boolean} track - The track param.
    */
   setTargetParam(param, track = true) {
@@ -30,7 +35,9 @@ class ScreenSpaceMovementHandle extends Handle {
   }
 
   /**
-   * The getTargetParam method.
+   * Returns target's global xfo parameter.
+   *
+   * @return {Parameter} - returns handle's target global Xfo.
    */
   getTargetParam() {
     return this.param ? this.param : this.getParameter('GlobalXfo')
@@ -40,9 +47,10 @@ class ScreenSpaceMovementHandle extends Handle {
   // Mouse events
 
   /**
-   * The handleMouseDown method.
-   * @param {any} event - The event param.
-   * @return {any} The return value.
+   * Handles mouse down interaction with the handle.
+   *
+   * @param {MouseEvent} event - The event param.
+   * @return {boolean} - The return value.
    */
   handleMouseDown(event) {
     this.gizmoRay = new Ray()
@@ -58,8 +66,10 @@ class ScreenSpaceMovementHandle extends Handle {
   }
 
   /**
-   * The handleMouseMove method.
-   * @param {any} event - The event param.
+   * Handles mouse move interaction with the handle.
+   *
+   * @param {MouseEvent} event - The event param
+   * @return {boolean} - The return value
    */
   handleMouseMove(event) {
     const dist = event.mouseRay.intersectRayPlane(this.gizmoRay)
@@ -69,9 +79,10 @@ class ScreenSpaceMovementHandle extends Handle {
   }
 
   /**
-   * The handleMouseUp method.
-   * @param {any} event - The event param.
-   * @return {any} The return value.
+   * Handles mouse up interaction with the handle.
+   *
+   * @param {MouseEvent} event - The event param.
+   * @return {boolean} - The return value.
    */
   handleMouseUp(event) {
     const dist = event.mouseRay.intersectRayPlane(this.gizmoRay)
@@ -84,8 +95,9 @@ class ScreenSpaceMovementHandle extends Handle {
   // Interaction events
 
   /**
-   * The onDragStart method.
-   * @param {any} event - The event param.
+   * Handles the initially drag of the handle.
+   *
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onDragStart(event) {
     this.grabPos = event.grabPos
@@ -98,8 +110,9 @@ class ScreenSpaceMovementHandle extends Handle {
   }
 
   /**
-   * The onDrag method.
-   * @param {any} event - The event param.
+   * Handles drag action of the handle.
+   *
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onDrag(event) {
     const dragVec = event.holdPos.subtract(this.grabPos)
@@ -118,11 +131,14 @@ class ScreenSpaceMovementHandle extends Handle {
   }
 
   /**
-   * The onDragEnd method.
-   * @param {any} event - The event param.
+   * Handles the end of dragging the handle.
+   *
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onDragEnd(event) {
     this.change = null
   }
 }
+
+export default ScreenSpaceMovementHandle
 export { ScreenSpaceMovementHandle }

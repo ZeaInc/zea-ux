@@ -12,7 +12,7 @@ Class representing an open VR UI tool.
     * [onVRControllerButtonDown(event)](#onVRControllerButtonDown)
     * [onVRControllerButtonUp(event)](#onVRControllerButtonUp)
     * [stayClosed()](#stayClosed)
-    * [onVRPoseChanged(event) ⇒ <code>any</code>](#onVRPoseChanged)
+    * [onVRPoseChanged(event) ⇒ <code>boolean</code>](#onVRPoseChanged)
 
 <a name="new_OpenVRUITool_new"></a>
 
@@ -22,8 +22,8 @@ Create an open VR UI tool.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| appData | <code>any</code> | The appData value. |
-| vrUITool | <code>any</code> | The vrUITool value. |
+| appData | <code>object</code> | The appData value. |
+| vrUITool | <code>VRUITool</code> | The vrUITool value. |
 
 <a name="OpenVRUITool+uninstall"></a>
 
@@ -40,7 +40,7 @@ The onVRControllerButtonDown method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>object</code> | The event param. |
 
 <a name="OpenVRUITool+onVRControllerButtonUp"></a>
 
@@ -51,7 +51,7 @@ The onVRControllerButtonUp method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>object</code> | The event param. |
 
 <a name="OpenVRUITool+stayClosed"></a>
 
@@ -65,9 +65,9 @@ The stayClosed method.
 The onVRPoseChanged method.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>object</code> | The event param. |
 

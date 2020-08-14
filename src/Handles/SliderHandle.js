@@ -10,40 +10,34 @@ import {
   sgFactory,
   MathFunctions,
 } from '@zeainc/zea-engine'
+import BaseLinearMovementHandle from './BaseLinearMovementHandle'
+import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
 
-import { BaseLinearMovementHandle } from './BaseLinearMovementHandle.js'
-import ParameterValueChange from '../undoredo/ParameterValueChange.js'
-
-/** Class representing a slider scene widget.
+/**
+ * Class representing a slider scene widget.
+ *
  * @extends BaseLinearMovementHandle
  */
 class SliderHandle extends BaseLinearMovementHandle {
   /**
    * Create a slider scene widget.
-   * @param {any} name - The name value.
-   * @param {any} length - The length value.
-   * @param {any} radius - The radius value.
-   * @param {any} color - The color value.
+   *
+   * @param {string} name - The name value.
+   * @param {number} length - The length value.
+   * @param {number} radius - The radius value.
+   * @param {Color} color - The color value.
    */
   constructor(name, length = 0.5, radius = 0.02, color = new Color('#F9CE03')) {
     super(name)
 
     this.lengthParam = this.addParameter(new NumberParameter('Length', length))
-    this.handleRadiusParam = this.addParameter(
-      new NumberParameter('Handle Radius', radius)
-    )
-    this.barRadiusParam = this.addParameter(
-      new NumberParameter('Bar Radius', radius * 0.25)
-    )
+    this.handleRadiusParam = this.addParameter(new NumberParameter('Handle Radius', radius))
+    this.barRadiusParam = this.addParameter(new NumberParameter('Bar Radius', radius * 0.25))
     this.colorParam = this.addParameter(new ColorParameter('Color', color))
-    this.hilghlightColorParam = this.addParameter(
-      new ColorParameter('Highlight Color', new Color(1, 1, 1))
-    )
+    this.hilghlightColorParam = this.addParameter(new ColorParameter('Highlight Color', new Color(1, 1, 1)))
 
     this.handleMat = new Material('handle', 'FlatSurfaceShader')
-    this.handleMat
-      .getParameter('BaseColor')
-      .setValue(this.colorParam.getValue())
+    this.handleMat.getParameter('BaseColor').setValue(this.colorParam.getValue())
     // const baseBarMat = new Material('baseBar', 'FlatSurfaceShader');
     // baseBarMat.replaceParameter(this.colorParam);
     const topBarMat = new Material('topBar', 'FlatSurfaceShader')
@@ -63,17 +57,13 @@ class SliderHandle extends BaseLinearMovementHandle {
       barGeom.getParameter('radius').setValue(this.barRadiusParam.getValue())
     })
     this.handleRadiusParam.on('valueChanged', () => {
-      handleGeom
-        .getParameter('radius')
-        .setValue(this.handleRadiusParam.getValue())
+      handleGeom.getParameter('radius').setValue(this.handleRadiusParam.getValue())
     })
     this.lengthParam.on('valueChanged', () => {
       this.__updateSlider(this.value)
     })
     this.colorParam.on('valueChanged', () => {
-      this.handleMat
-        .getParameter('BaseColor')
-        .setValue(this.colorParam.getValue())
+      this.handleMat.getParameter('BaseColor').setValue(this.colorParam.getValue())
     })
 
     this.addChild(this.handle)
@@ -84,26 +74,24 @@ class SliderHandle extends BaseLinearMovementHandle {
   }
 
   /**
-   * The highlight method.
+   * Applies a special shinning shader to the handle to illustrate interaction with it.
    */
   highlight() {
-    this.handleMat
-      .getParameter('BaseColor')
-      .setValue(this.hilghlightColorParam.getValue())
+    this.handleMat.getParameter('BaseColor').setValue(this.hilghlightColorParam.getValue())
   }
 
   /**
-   * The unhighlight method.
+   * Removes the shining shader from the handle.
    */
   unhighlight() {
-    this.handleMat
-      .getParameter('BaseColor')
-      .setValue(this.colorParam.getValue())
+    this.handleMat.getParameter('BaseColor').setValue(this.colorParam.getValue())
   }
 
   /**
-   * The setTargetParam method.
-   * @param {any} param - The param param.
+   * Sets global xfo target parameter.
+   *
+   * @param {Parameter} param - The video param.
+   * @param {boolean} track - The track param.
    */
   setTargetParam(param) {
     this.param = param
@@ -114,11 +102,15 @@ class SliderHandle extends BaseLinearMovementHandle {
     param.on('valueChanged', __updateSlider)
   }
 
-  // eslint-disable-next-line require-jsdoc
+  /**
+   *
+   *
+   * @param {*} value -
+   * @private
+   */
   __updateSlider(value) {
     this.value = value
-    const range =
-      this.param && this.param.getRange() ? this.param.getRange() : [0, 1]
+    const range = this.param && this.param.getRange() ? this.param.getRange() : [0, 1]
     const v = MathFunctions.remap(value, range[0], range[1], 0, 1)
     const length = this.lengthParam.getValue()
     this.baseBarXfo.sc.z = v * length
@@ -134,8 +126,9 @@ class SliderHandle extends BaseLinearMovementHandle {
   // Interaction events
 
   /**
-   * The onDragStart method.
-   * @param {any} event - The event param.
+   * Handles the initially drag of the handle.
+   *
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onDragStart(event) {
     // Hilight the material.
@@ -151,18 +144,14 @@ class SliderHandle extends BaseLinearMovementHandle {
   }
 
   /**
-   * The onDrag method.
-   * @param {any} event - The event param.
+   * Handles drag action of the handle.
+   *
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onDrag(event) {
     const length = this.lengthParam.getValue()
-    const range =
-      this.param && this.param.getRange() ? this.param.getRange() : [0, 1]
-    const value = Math.clamp(
-      MathFunctions.remap(event.value, 0, length, range[0], range[1]),
-      range[0],
-      range[1]
-    )
+    const range = this.param && this.param.getRange() ? this.param.getRange() : [0, 1]
+    const value = Math.clamp(MathFunctions.remap(event.value, 0, length, range[0], range[1]), range[0], range[1])
     if (!this.param) {
       this.__updateSlider(value)
       this.value = value
@@ -178,8 +167,9 @@ class SliderHandle extends BaseLinearMovementHandle {
   }
 
   /**
-   * The onDragEnd method.
-   * @param {any} event - The event param.
+   * Handles the end of dragging the handle.
+   *
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onDragEnd(event) {
     this.change = null
@@ -189,25 +179,25 @@ class SliderHandle extends BaseLinearMovementHandle {
   }
 
   /**
-   * The toJSON method.
-   * @param {any} context - The context param.
-   * @param {any} flags - The flags param.
-   * @return {any} The return value.
+   * Serializes handle item as a JSON object.
+   *
+   * @param {object} context - The context param.
+   * @return {object} The return value.
    */
-  toJSON(context, flags = 0) {
-    const json = super.toJSON(context, flags | SAVE_FLAG_SKIP_CHILDREN)
+  toJSON(context) {
+    const json = super.toJSON(context)
     if (this.param) json.targetParam = this.param.getPath()
     return json
   }
 
   /**
-   * The fromJSON method.
-   * @param {any} json - The json param.
-   * @param {any} context - The context param.
-   * @param {any} flags - The flags param.
+   * Restores handle item from a JSON object.
+   *
+   * @param {object} json - The json param.
+   * @param {object} context - The context param.
    */
-  fromJSON(json, context, flags) {
-    super.fromJSON(json, context, flags)
+  fromJSON(json, context) {
+    super.fromJSON(json, context)
 
     if (json.targetParam) {
       context.resolvePath(json.targetParam).then((param) => {
@@ -219,4 +209,5 @@ class SliderHandle extends BaseLinearMovementHandle {
 
 sgFactory.registerClass('SliderHandle', SliderHandle)
 
+export default SliderHandle
 export { SliderHandle }

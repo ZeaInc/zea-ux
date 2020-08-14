@@ -1,253 +1,230 @@
-### Functions
+<a name="Handle"></a>
 
-<dl>
-<dt><a href="#highlight">highlight()</a></dt>
-<dd><p>The highlight method.</p>
-</dd>
-<dt><a href="#unhighlight">unhighlight()</a></dt>
-<dd><p>The unhighlight method.</p>
-</dd>
-<dt><a href="#getManipulationPlane">getManipulationPlane()</a> ⇒ <code>any</code></dt>
-<dd><p>The getManipulationPlane method.</p>
-</dd>
-<dt><a href="#onMouseEnter">onMouseEnter(event)</a> ⇒ <code>any</code></dt>
-<dd><p>The onMouseEnter method.</p>
-</dd>
-<dt><a href="#onMouseLeave">onMouseLeave(event)</a> ⇒ <code>any</code></dt>
-<dd><p>The onMouseLeave method.</p>
-</dd>
-<dt><a href="#onMouseDown">onMouseDown(event)</a> ⇒ <code>any</code></dt>
-<dd><p>The onMouseDown method.</p>
-</dd>
-<dt><a href="#onMouseMove">onMouseMove(event)</a> ⇒ <code>any</code></dt>
-<dd><p>The onMouseMove method.</p>
-</dd>
-<dt><a href="#onMouseUp">onMouseUp(event)</a> ⇒ <code>any</code></dt>
-<dd><p>The onMouseUp method.</p>
-</dd>
-<dt><a href="#onWheel">onWheel(event)</a></dt>
-<dd><p>The onWheel method.</p>
-</dd>
-<dt><a href="#handleMouseDown">handleMouseDown(event)</a> ⇒ <code>any</code></dt>
-<dd><p>The handleMouseDown method.</p>
-</dd>
-<dt><a href="#handleMouseMove">handleMouseMove(event)</a></dt>
-<dd><p>The handleMouseMove method.</p>
-</dd>
-<dt><a href="#handleMouseUp">handleMouseUp(event)</a> ⇒ <code>any</code></dt>
-<dd><p>The handleMouseUp method.</p>
-</dd>
-<dt><a href="#onVRControllerButtonDown">onVRControllerButtonDown(event)</a> ⇒ <code>any</code></dt>
-<dd><p>The onVRControllerButtonDown method.</p>
-</dd>
-<dt><a href="#onVRPoseChanged">onVRPoseChanged(event)</a> ⇒ <code>any</code></dt>
-<dd><p>The onVRPoseChanged method.</p>
-</dd>
-<dt><a href="#onVRControllerButtonUp">onVRControllerButtonUp(event)</a> ⇒ <code>any</code></dt>
-<dd><p>The onVRControllerButtonUp method.</p>
-</dd>
-<dt><a href="#onDragStart">onDragStart(event)</a></dt>
-<dd><p>The onDragStart method.</p>
-</dd>
-<dt><a href="#onDrag">onDrag(event)</a></dt>
-<dd><p>The onDrag method.</p>
-</dd>
-<dt><a href="#onDragEnd">onDragEnd(event)</a></dt>
-<dd><p>The onDragEnd method.</p>
-</dd>
-</dl>
+### Handle 
+A Handle is a UI widget that lives in the scene.
+Much like a slider, it translates a series of mouse events into a higher level interaction.
 
-<a name="highlight"></a>
+
+**Extends**: <code>TreeItem</code>  
+
+* [Handle ⇐ <code>TreeItem</code>](#Handle)
+    * [new Handle(name)](#new-Handle)
+    * [highlight()](#highlight)
+    * [unhighlight()](#unhighlight)
+    * [getManipulationPlane() ⇒ <code>Ray</code>](#getManipulationPlane)
+    * [onMouseEnter(event)](#onMouseEnter)
+    * [onMouseLeave(event)](#onMouseLeave)
+    * [onMouseDown(event)](#onMouseDown)
+    * [onMouseMove(event)](#onMouseMove)
+    * [onMouseUp(event)](#onMouseUp)
+    * [onWheel(event)](#onWheel)
+    * [handleMouseDown(event) ⇒ <code>boolean</code>](#handleMouseDown)
+    * [handleMouseMove(event) ⇒ <code>boolean</code>](#handleMouseMove)
+    * [handleMouseUp(event) ⇒ <code>boolean</code>](#handleMouseUp)
+    * [onVRControllerButtonDown(event) ⇒ <code>boolean</code>](#onVRControllerButtonDown)
+    * [onVRPoseChanged(event) ⇒ <code>boolean</code>](#onVRPoseChanged)
+    * [onVRControllerButtonUp(event) ⇒ <code>boolean</code>](#onVRControllerButtonUp)
+    * [onDragStart(event)](#onDragStart)
+    * [onDrag(event)](#onDrag)
+    * [onDragEnd(event)](#onDragEnd)
+
+<a name="new_Handle_new"></a>
+
+### new Handle
+Creates an instance of Handle.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| name | <code>string</code> | The name value. |
+
+<a name="Handle+highlight"></a>
 
 ### highlight
-The highlight method.
+Applies a special shinning shader to the handle to illustrate interaction with it.
 
 
-<a name="unhighlight"></a>
+<a name="Handle+unhighlight"></a>
 
 ### unhighlight
-The unhighlight method.
+Removes the shining shader from the handle.
 
 
-<a name="getManipulationPlane"></a>
+<a name="Handle+getManipulationPlane"></a>
 
 ### getManipulationPlane
-The getManipulationPlane method.
+Returns the manipulation plane of the handle, denoting a start and a direction.
 
 
-**Returns**: <code>any</code> - The return value.  
-<a name="onMouseEnter"></a>
+**Returns**: <code>Ray</code> - The return value.  
+<a name="Handle+onMouseEnter"></a>
 
 ### onMouseEnter
-The onMouseEnter method.
+Event fired when a pointing device is initially moved within the space of the handle.
 
 
-**Returns**: <code>any</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
-<a name="onMouseLeave"></a>
+<a name="Handle+onMouseLeave"></a>
 
 ### onMouseLeave
-The onMouseLeave method.
+Event fired when a pointing device moves outside of the space of the handle.
 
 
-**Returns**: <code>any</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
-<a name="onMouseDown"></a>
+<a name="Handle+onMouseDown"></a>
 
 ### onMouseDown
-The onMouseDown method.
+Event fired when a pointing device button is pressed while the pointer is over the handle element.
 
 
-**Returns**: <code>any</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
-<a name="onMouseMove"></a>
+<a name="Handle+onMouseMove"></a>
 
 ### onMouseMove
-The onMouseMove method.
+Event fired when a pointing device is moved while the cursor's hotspot is over the handle.
 
 
-**Returns**: <code>any</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
-<a name="onMouseUp"></a>
+<a name="Handle+onMouseUp"></a>
 
 ### onMouseUp
-The onMouseUp method.
+Event fired when a pointing device button is released while the pointer is over the handle.
 
 
-**Returns**: <code>any</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
-<a name="onWheel"></a>
+<a name="Handle+onWheel"></a>
 
 ### onWheel
-The onWheel method.
+Event fired when the user rotates the pointing device wheel over the handle.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
-<a name="handleMouseDown"></a>
+<a name="Handle+handleMouseDown"></a>
 
 ### handleMouseDown
-The handleMouseDown method.
+Handles mouse down interaction with the handle.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
-<a name="handleMouseMove"></a>
+<a name="Handle+handleMouseMove"></a>
 
 ### handleMouseMove
-The handleMouseMove method.
+Handles mouse move interaction with the handle.
 
 
+**Returns**: <code>boolean</code> - - The return value  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param |
 
-<a name="handleMouseUp"></a>
+<a name="Handle+handleMouseUp"></a>
 
 ### handleMouseUp
-The handleMouseUp method.
+Handles mouse up interaction with the handle.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
-<a name="onVRControllerButtonDown"></a>
+<a name="Handle+onVRControllerButtonDown"></a>
 
 ### onVRControllerButtonDown
-The onVRControllerButtonDown method.
+Event fired when a VR controller button is pressed over the handle.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>object</code> | The event param. |
 
-<a name="onVRPoseChanged"></a>
+<a name="Handle+onVRPoseChanged"></a>
 
 ### onVRPoseChanged
 The onVRPoseChanged method.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>object</code> | The event param. |
 
-<a name="onVRControllerButtonUp"></a>
+<a name="Handle+onVRControllerButtonUp"></a>
 
 ### onVRControllerButtonUp
-The onVRControllerButtonUp method.
+Event fired when a VR controller button is released over the handle.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>object</code> | The event param. |
 
-<a name="onDragStart"></a>
+<a name="Handle+onDragStart"></a>
 
 ### onDragStart
-The onDragStart method.
+Handles the initially drag of the handle.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
 
-<a name="onDrag"></a>
+<a name="Handle+onDrag"></a>
 
 ### onDrag
-The onDrag method.
+Handles drag action of the handle.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
 
-<a name="onDragEnd"></a>
+<a name="Handle+onDragEnd"></a>
 
 ### onDragEnd
-The onDragEnd method.
+Handles the end of dragging the handle.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
 

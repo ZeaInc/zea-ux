@@ -1,6 +1,6 @@
 # Zea UX
 
-Zea library for building user experiences against the Zea engine.
+Zea Plugin for building user experiences against the Zea engine
 
 ## Installing
 

@@ -13,6 +13,10 @@
 <dd></dd>
 <dt><a href="#toBlob">toBlob(node, options)</a> ⇒ <code>Promise</code></dt>
 <dd></dd>
+<dt><a href="#copyOptions">copyOptions(options)</a></dt>
+<dd></dd>
+<dt><a href="#draw">draw(domNode, options)</a> ⇒ <code>*</code></dt>
+<dd></dd>
 </dl>
 
 <a name="toSvg"></a>
@@ -33,6 +37,16 @@
 | options.quality | <code>number</code> | a Number between 0 and 1 indicating image quality (applicable to JPEG only),                 defaults to 1.0. |
 | options.imagePlaceholder | <code>string</code> | dataURL to use as a placeholder for failed images, default behaviour is to fail fast on images we can't fetch |
 | options.cacheBust | <code>boolean</code> | set to true to cache bust by appending the time to the request url |
+
+<a name="toSvg..applyOptions"></a>
+
+### toSvg
+
+**Returns**: <code>object</code> - -  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| clone | <code>object</code> | - |
 
 <a name="toPixelData"></a>
 
@@ -88,4 +102,32 @@
 | --- | --- | --- |
 | node | <code>Node</code> | The DOM Node object to render |
 | options | <code>Object</code> | Rendering options, @see [toSvg](#toSvg) |
+
+<a name="copyOptions"></a>
+
+### copyOptions
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| options | <code>object</code> | - |
+
+<a name="draw"></a>
+
+### draw
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| domNode | <code>\*</code> | - |
+| options | <code>\*</code> | - |
+
+<a name="draw..newCanvas"></a>
+
+### draw
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| domNode | <code>\*</code> | - |
 

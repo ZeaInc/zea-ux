@@ -1,16 +1,16 @@
 import { TreeItem, Ray } from '@zeainc/zea-engine'
 
-// A Handle is a UI widget that lives in the scene.
-// Much like a slider, it translates a series of
-// mouse events into a higher level interaction.
-
-/** Class representing a scene widget.
+/**
+ * A Handle is a UI widget that lives in the scene.
+ * Much like a slider, it translates a series of mouse events into a higher level interaction.
+ *
  * @extends TreeItem
  */
-export default class Handle extends TreeItem {
+class Handle extends TreeItem {
   /**
-   * Create a scene widget.
-   * @param {any} name - The name value.
+   * Creates an instance of Handle.
+   *
+   * @param {string} name - The name value.
    */
   constructor(name) {
     super(name)
@@ -19,18 +19,23 @@ export default class Handle extends TreeItem {
   }
 
   /**
-   * The highlight method.
+   * Applies a special shinning shader to the handle to illustrate interaction with it.
    */
-  highlight() {}
+  highlight() {
+    console.warn('Implement me')
+  }
 
   /**
-   * The unhighlight method.
+   * Removes the shining shader from the handle.
    */
-  unhighlight() {}
+  unhighlight() {
+    console.warn('Implement me')
+  }
 
   /**
-   * The getManipulationPlane method.
-   * @return {any} The return value.
+   * Returns the manipulation plane of the handle, denoting a start and a direction.
+   *
+   * @return {Ray} The return value.
    */
   getManipulationPlane() {
     const xfo = this.getParameter('GlobalXfo').getValue()
@@ -41,27 +46,27 @@ export default class Handle extends TreeItem {
   // Mouse events
 
   /**
-   * The onMouseEnter method.
-   * @param {any} event - The event param.
-   * @return {any} The return value.
+   * Event fired when a pointing device is initially moved within the space of the handle.
+   *
+   * @param {MouseEvent} event - The event param.
    */
   onMouseEnter(event) {
     this.highlight()
   }
 
   /**
-   * The onMouseLeave method.
-   * @param {any} event - The event param.
-   * @return {any} The return value.
+   * Event fired when a pointing device moves outside of the space of the handle.
+   *
+   * @param {MouseEvent} event - The event param.
    */
   onMouseLeave(event) {
     this.unhighlight()
   }
 
   /**
-   * The onMouseDown method.
-   * @param {any} event - The event param.
-   * @return {any} The return value.
+   * Event fired when a pointing device button is pressed while the pointer is over the handle element.
+   *
+   * @param {MouseEvent} event - The event param.
    */
   onMouseDown(event) {
     event.setCapture(this)
@@ -72,9 +77,9 @@ export default class Handle extends TreeItem {
   }
 
   /**
-   * The onMouseMove method.
-   * @param {any} event - The event param.
-   * @return {any} The return value.
+   * Event fired when a pointing device is moved while the cursor's hotspot is over the handle.
+   *
+   * @param {MouseEvent} event - The event param.
    */
   onMouseMove(event) {
     if (this.captured) {
@@ -85,9 +90,9 @@ export default class Handle extends TreeItem {
   }
 
   /**
-   * The onMouseUp method.
-   * @param {any} event - The event param.
-   * @return {any} The return value.
+   * Event fired when a pointing device button is released while the pointer is over the handle.
+   *
+   * @param {MouseEvent} event - The event param.
    */
   onMouseUp(event) {
     if (this.captured) {
@@ -100,15 +105,17 @@ export default class Handle extends TreeItem {
   }
 
   /**
-   * The onWheel method.
-   * @param {any} event - The event param.
+   * Event fired when the user rotates the pointing device wheel over the handle.
+   *
+   * @param {MouseEvent} event - The event param.
    */
   onWheel(event) {}
 
   /**
-   * The handleMouseDown method.
-   * @param {any} event - The event param.
-   * @return {any} The return value.
+   * Handles mouse down interaction with the handle.
+   *
+   * @param {MouseEvent} event - The event param.
+   * @return {boolean} - The return value.
    */
   handleMouseDown(event) {
     this.gizmoRay = this.getManipulationPlane()
@@ -119,8 +126,10 @@ export default class Handle extends TreeItem {
   }
 
   /**
-   * The handleMouseMove method.
-   * @param {any} event - The event param.
+   * Handles mouse move interaction with the handle.
+   *
+   * @param {MouseEvent} event - The event param
+   * @return { boolean } - The return value
    */
   handleMouseMove(event) {
     const dist = event.mouseRay.intersectRayPlane(this.gizmoRay)
@@ -130,9 +139,10 @@ export default class Handle extends TreeItem {
   }
 
   /**
-   * The handleMouseUp method.
-   * @param {any} event - The event param.
-   * @return {any} The return value.
+   * Handles mouse up interaction with the handle.
+   *
+   * @param {MouseEvent} event - The event param.
+   * @return {boolean} - The return value.
    */
   handleMouseUp(event) {
     const dist = event.mouseRay.intersectRayPlane(this.gizmoRay)
@@ -145,9 +155,10 @@ export default class Handle extends TreeItem {
   // VRController events
 
   /**
-   * The onVRControllerButtonDown method.
-   * @param {any} event - The event param.
-   * @return {any} The return value.
+   * Event fired when a VR controller button is pressed over the handle.
+   *
+   * @param {object} event - The event param.
+   * @return {boolean} The return value.
    */
   onVRControllerButtonDown(event) {
     this.activeController = event.controller
@@ -155,9 +166,7 @@ export default class Handle extends TreeItem {
 
     const gizmoRay = this.getManipulationPlane()
     const offset = xfo.tr.subtract(gizmoRay.start)
-    const grabPos = xfo.tr.subtract(
-      gizmoRay.dir.scale(offset.dot(gizmoRay.dir))
-    )
+    const grabPos = xfo.tr.subtract(gizmoRay.dir.scale(offset.dot(gizmoRay.dir)))
     event.grabPos = grabPos
     this.onDragStart(event)
     return true
@@ -165,17 +174,16 @@ export default class Handle extends TreeItem {
 
   /**
    * The onVRPoseChanged method.
-   * @param {any} event - The event param.
-   * @return {any} The return value.
+   *
+   * @param {object} event - The event param.
+   * @return {boolean} - The return value.
    */
   onVRPoseChanged(event) {
     if (this.activeController) {
       const xfo = this.activeController.getTipXfo()
       const gizmoRay = this.getManipulationPlane()
       const offset = xfo.tr.subtract(gizmoRay.start)
-      const holdPos = xfo.tr.subtract(
-        gizmoRay.dir.scale(offset.dot(gizmoRay.dir))
-      )
+      const holdPos = xfo.tr.subtract(gizmoRay.dir.scale(offset.dot(gizmoRay.dir)))
       event.holdPos = holdPos
       this.onDrag(event)
       return true
@@ -183,9 +191,10 @@ export default class Handle extends TreeItem {
   }
 
   /**
-   * The onVRControllerButtonUp method.
-   * @param {any} event - The event param.
-   * @return {any} The return value.
+   * Event fired when a VR controller button is released over the handle.
+   *
+   * @param {object} event - The event param.
+   * @return {boolean} - The return value.
    */
   onVRControllerButtonUp(event) {
     if (this.activeController == event.controller) {
@@ -200,26 +209,32 @@ export default class Handle extends TreeItem {
   // Interaction events
 
   /**
-   * The onDragStart method.
-   * @param {any} event - The event param.
+   * Handles the initially drag of the handle.
+   *
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onDragStart(event) {
     console.log('onDragStart', event)
   }
 
   /**
-   * The onDrag method.
-   * @param {any} event - The event param.
+   * Handles drag action of the handle.
+   *
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onDrag(event) {
     console.log('onDrag', event)
   }
 
   /**
-   * The onDragEnd method.
-   * @param {any} event - The event param.
+   * Handles the end of dragging the handle.
+   *
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onDragEnd(event) {
     console.log('onDragEnd', event)
   }
 }
+
+export default Handle
+export { Handle }

@@ -7,12 +7,12 @@ Class representing a planar movement scene widget.
 **Extends**: <code>Handle</code>  
 
 * [ScreenSpaceMovementHandle ⇐ <code>Handle</code>](#ScreenSpaceMovementHandle)
-    * [new ScreenSpaceMovementHandle()](#new-ScreenSpaceMovementHandle)
+    * [new ScreenSpaceMovementHandle(name)](#new-ScreenSpaceMovementHandle)
     * [setTargetParam(param, track)](#setTargetParam)
-    * [getTargetParam()](#getTargetParam)
-    * [handleMouseDown(event) ⇒ <code>any</code>](#handleMouseDown)
-    * [handleMouseMove(event)](#handleMouseMove)
-    * [handleMouseUp(event) ⇒ <code>any</code>](#handleMouseUp)
+    * [getTargetParam() ⇒ <code>Parameter</code>](#getTargetParam)
+    * [handleMouseDown(event) ⇒ <code>boolean</code>](#handleMouseDown)
+    * [handleMouseMove(event) ⇒ <code>boolean</code>](#handleMouseMove)
+    * [handleMouseUp(event) ⇒ <code>boolean</code>](#handleMouseUp)
     * [onDragStart(event)](#onDragStart)
     * [onDrag(event)](#onDrag)
     * [onDragEnd(event)](#onDragEnd)
@@ -22,89 +22,96 @@ Class representing a planar movement scene widget.
 ### new ScreenSpaceMovementHandle
 Create a planar movement scene widget.
 
+
+| Param | Type | Description |
+| --- | --- | --- |
+| name | <code>string</code> | The name value |
+
 <a name="ScreenSpaceMovementHandle+setTargetParam"></a>
 
 ### setTargetParam
-The setTargetParam method.
+Sets global xfo target parameter.
 
 
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| param | <code>any</code> |  | The param param. |
+| param | <code>Parameter</code> |  | The video param. |
 | track | <code>boolean</code> | <code>true</code> | The track param. |
 
 <a name="ScreenSpaceMovementHandle+getTargetParam"></a>
 
 ### getTargetParam
-The getTargetParam method.
+Returns target's global xfo parameter.
 
 
+**Returns**: <code>Parameter</code> - - returns handle's target global Xfo.  
 <a name="ScreenSpaceMovementHandle+handleMouseDown"></a>
 
 ### handleMouseDown
-The handleMouseDown method.
+Handles mouse down interaction with the handle.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
 <a name="ScreenSpaceMovementHandle+handleMouseMove"></a>
 
 ### handleMouseMove
-The handleMouseMove method.
+Handles mouse move interaction with the handle.
 
 
+**Returns**: <code>boolean</code> - - The return value  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param |
 
 <a name="ScreenSpaceMovementHandle+handleMouseUp"></a>
 
 ### handleMouseUp
-The handleMouseUp method.
+Handles mouse up interaction with the handle.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
 <a name="ScreenSpaceMovementHandle+onDragStart"></a>
 
 ### onDragStart
-The onDragStart method.
+Handles the initially drag of the handle.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
 
 <a name="ScreenSpaceMovementHandle+onDrag"></a>
 
 ### onDrag
-The onDrag method.
+Handles drag action of the handle.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
 
 <a name="ScreenSpaceMovementHandle+onDragEnd"></a>
 
 ### onDragEnd
-The onDragEnd method.
+Handles the end of dragging the handle.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
 

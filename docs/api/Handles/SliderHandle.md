@@ -10,12 +10,12 @@ Class representing a slider scene widget.
     * [new SliderHandle(name, length, radius, color)](#new-SliderHandle)
     * [highlight()](#highlight)
     * [unhighlight()](#unhighlight)
-    * [setTargetParam(param)](#setTargetParam)
+    * [setTargetParam(param, track)](#setTargetParam)
     * [onDragStart(event)](#onDragStart)
     * [onDrag(event)](#onDrag)
     * [onDragEnd(event)](#onDragEnd)
-    * [toJSON(context, flags) ⇒ <code>any</code>](#toJSON)
-    * [fromJSON(json, context, flags)](#fromJSON)
+    * [toJSON(context) ⇒ <code>object</code>](#toJSON)
+    * [fromJSON(json, context)](#fromJSON)
 
 <a name="new_SliderHandle_new"></a>
 
@@ -25,90 +25,89 @@ Create a slider scene widget.
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| name | <code>any</code> |  | The name value. |
-| length | <code>any</code> | <code>0.5</code> | The length value. |
-| radius | <code>any</code> | <code>0.02</code> | The radius value. |
-| color | <code>any</code> |  | The color value. |
+| name | <code>string</code> |  | The name value. |
+| length | <code>number</code> | <code>0.5</code> | The length value. |
+| radius | <code>number</code> | <code>0.02</code> | The radius value. |
+| color | <code>Color</code> |  | The color value. |
 
 <a name="SliderHandle+highlight"></a>
 
 ### highlight
-The highlight method.
+Applies a special shinning shader to the handle to illustrate interaction with it.
 
 
 <a name="SliderHandle+unhighlight"></a>
 
 ### unhighlight
-The unhighlight method.
+Removes the shining shader from the handle.
 
 
 <a name="SliderHandle+setTargetParam"></a>
 
 ### setTargetParam
-The setTargetParam method.
+Sets global xfo target parameter.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| param | <code>any</code> | The param param. |
+| param | <code>Parameter</code> | The video param. |
+| track | <code>boolean</code> | The track param. |
 
 <a name="SliderHandle+onDragStart"></a>
 
 ### onDragStart
-The onDragStart method.
+Handles the initially drag of the handle.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
 
 <a name="SliderHandle+onDrag"></a>
 
 ### onDrag
-The onDrag method.
+Handles drag action of the handle.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
 
 <a name="SliderHandle+onDragEnd"></a>
 
 ### onDragEnd
-The onDragEnd method.
+Handles the end of dragging the handle.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
 
 <a name="SliderHandle+toJSON"></a>
 
 ### toJSON
-The toJSON method.
+Serializes handle item as a JSON object.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>object</code> - The return value.  
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| context | <code>any</code> |  | The context param. |
-| flags | <code>any</code> | <code>0</code> | The flags param. |
+| Param | Type | Description |
+| --- | --- | --- |
+| context | <code>object</code> | The context param. |
 
 <a name="SliderHandle+fromJSON"></a>
 
 ### fromJSON
-The fromJSON method.
+Restores handle item from a JSON object.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| json | <code>any</code> | The json param. |
-| context | <code>any</code> | The context param. |
-| flags | <code>any</code> | The flags param. |
+| json | <code>object</code> | The json param. |
+| context | <code>object</code> | The context param. |
 

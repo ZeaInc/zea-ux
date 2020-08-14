@@ -1,7 +1,17 @@
 import { Color, sgFactory, shaderLibrary, GLShader } from '@zeainc/zea-engine'
 import './HandleGeomDataShader'
 
+/**
+ * Class representing Handle Shader.
+ *
+ * @extends {GLShader}
+ */
 class HandleShader extends GLShader {
+  /**
+   * Creates an instance of HandleShader.
+   *
+   * @param {*} gl - The gl value
+   */
   constructor(gl) {
     super(gl)
 
@@ -109,6 +119,12 @@ void main(void) {
     this.finalize()
   }
 
+  /**
+   * Returns parameter declarations
+   *
+   * @static
+   * @return {array} - Params declarations
+   */
   static getParamDeclarations() {
     const paramDescs = super.getParamDeclarations()
     paramDescs.push({
@@ -122,10 +138,22 @@ void main(void) {
     return paramDescs
   }
 
+  /**
+   * Returns whether the shader's overlay is true or not.
+   *
+   * @static
+   * @return {boolean} - The overlay value
+   */
   static isOverlay() {
     return true
   }
 
+  /**
+   * Returns shader name
+   *
+   * @static
+   * @return {string} - The Geom Shader value
+   */
   static getGeomDataShaderName() {
     return 'HandleGeomDataShader'
   }
@@ -136,4 +164,6 @@ void main(void) {
 }
 
 sgFactory.registerClass('HandleShader', HandleShader)
+
+export default HandleShader
 export { HandleShader }

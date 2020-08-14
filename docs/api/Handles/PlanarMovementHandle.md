@@ -9,13 +9,13 @@ Class representing a planar movement scene widget.
 * [PlanarMovementHandle ⇐ <code>Handle</code>](#PlanarMovementHandle)
     * [new PlanarMovementHandle(name)](#new-PlanarMovementHandle)
     * [setTargetParam(param, track)](#setTargetParam)
-    * [getTargetParam()](#getTargetParam)
+    * [getTargetParam() ⇒ <code>Parameter</code>](#getTargetParam)
     * [onDragStart(event)](#onDragStart)
     * [onDrag(event)](#onDrag)
     * [onDragEnd(event)](#onDragEnd)
-    * [onVRControllerButtonDown(event) ⇒ <code>any</code>](#onVRControllerButtonDown)
-    * [onVRPoseChanged(event) ⇒ <code>any</code>](#onVRPoseChanged)
-    * [onVRControllerButtonUp(event) ⇒ <code>any</code>](#onVRControllerButtonUp)
+    * [onVRControllerButtonDown(event) ⇒ <code>boolean</code>](#onVRControllerButtonDown)
+    * [onVRPoseChanged(event)](#onVRPoseChanged)
+    * [onVRControllerButtonUp(event)](#onVRControllerButtonUp)
 
 <a name="new_PlanarMovementHandle_new"></a>
 
@@ -25,70 +25,71 @@ Create a planar movement scene widget.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| name | <code>any</code> | The name value. |
+| name | <code>string</code> | The name value. |
 
 <a name="PlanarMovementHandle+setTargetParam"></a>
 
 ### setTargetParam
-The setTargetParam method.
+Sets global xfo target parameter.
 
 
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| param | <code>any</code> |  | The param param. |
+| param | <code>Parameter</code> |  | The video param. |
 | track | <code>boolean</code> | <code>true</code> | The track param. |
 
 <a name="PlanarMovementHandle+getTargetParam"></a>
 
 ### getTargetParam
-The getTargetParam method.
+Returns target's global xfo parameter.
 
 
+**Returns**: <code>Parameter</code> - - returns handle's target global Xfo.  
 <a name="PlanarMovementHandle+onDragStart"></a>
 
 ### onDragStart
-The onDragStart method.
+Handles the initially drag of the handle.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
 
 <a name="PlanarMovementHandle+onDrag"></a>
 
 ### onDrag
-The onDrag method.
+Handles drag action of the handle.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
 
 <a name="PlanarMovementHandle+onDragEnd"></a>
 
 ### onDragEnd
-The onDragEnd method.
+Handles the end of dragging the handle.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
 
 <a name="PlanarMovementHandle+onVRControllerButtonDown"></a>
 
 ### onVRControllerButtonDown
-The onVRControllerButtonDown method.
+Event fired when a VR controller button is pressed over the handle.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>object</code> | The event param. |
 
 <a name="PlanarMovementHandle+onVRPoseChanged"></a>
 
@@ -96,21 +97,19 @@ The onVRControllerButtonDown method.
 The onVRPoseChanged method.
 
 
-**Returns**: <code>any</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>object</code> | The event param. |
 
 <a name="PlanarMovementHandle+onVRControllerButtonUp"></a>
 
 ### onVRControllerButtonUp
-The onVRControllerButtonUp method.
+Event fired when a VR controller button is released over the handle.
 
 
-**Returns**: <code>any</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>object</code> | The event param. |
 

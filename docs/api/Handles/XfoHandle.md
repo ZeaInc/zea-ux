@@ -1,89 +1,47 @@
-### Classes
+<a name="XfoHandle"></a>
 
-<dl>
-<dt><a href="#XfoPlanarMovementHandle">XfoPlanarMovementHandle</a> ⇐ <code>Handle</code></dt>
-<dd><p>Class representing a planar movement scene widget.</p>
-</dd>
-</dl>
-
-### Functions
-
-<dl>
-<dt><a href="#_cleanGlobalXfo">_cleanGlobalXfo()</a></dt>
-<dd><p>Calculate the global Xfo for the handls.</p>
-</dd>
-<dt><a href="#showHandles">showHandles(handleManipulationMode)</a> ⇒ <code>any</code></dt>
-<dd><p>The showHandles method.</p>
-</dd>
-<dt><a href="#setTargetParam">setTargetParam(param)</a></dt>
-<dd><p>The setTargetParam method.</p>
-</dd>
-</dl>
-
-<a name="XfoPlanarMovementHandle"></a>
-
-### XfoPlanarMovementHandle 
-Class representing a planar movement scene widget.
+### XfoHandle 
+Class representing an xfo handle.
 
 
-**Extends**: <code>Handle</code>  
+**Extends**: <code>TreeItem</code>  
 
-* [XfoPlanarMovementHandle ⇐ <code>Handle</code>](#XfoPlanarMovementHandle)
-    * [new XfoPlanarMovementHandle(name, size, color, offset)](#new-XfoPlanarMovementHandle)
-    * [highlight()](#highlight)
-    * [unhighlight()](#unhighlight)
+* [XfoHandle ⇐ <code>TreeItem</code>](#XfoHandle)
+    * [new XfoHandle(size, thickness)](#new-XfoHandle)
+    * [showHandles(handleManipulationMode)](#showHandles)
+    * [setTargetParam(param)](#setTargetParam)
 
-<a name="new_XfoPlanarMovementHandle_new"></a>
+<a name="new_XfoHandle_new"></a>
 
-### new XfoPlanarMovementHandle
-Create a planar movement scene widget.
+### new XfoHandle
+Create an axial rotation scene widget.
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| name | <code>any</code> | The name value. |
-| size | <code>any</code> | The size value. |
-| color | <code>any</code> | The color value. |
-| offset | <code>any</code> | The offset value. |
+| size | <code>number</code> | The size value. |
+| thickness | <code>number</code> | The thickness value. |
 
-<a name="XfoPlanarMovementHandle+highlight"></a>
-
-### highlight
-The highlight method.
-
-
-<a name="XfoPlanarMovementHandle+unhighlight"></a>
-
-### unhighlight
-The unhighlight method.
-
-
-<a name="_cleanGlobalXfo"></a>
-
-## \_cleanGlobalXfo()
-Calculate the global Xfo for the handls.
-
-
-<a name="showHandles"></a>
+<a name="XfoHandle+showHandles"></a>
 
 ### showHandles
-The showHandles method.
+Displays handles depending on the specified mode(Move, Rotate, Scale).
+If nothing is specified, it hides all of them.
 
 
-**Returns**: <code>any</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| handleManipulationMode | <code>any</code> | The name param. |
+| handleManipulationMode | <code>number</code> | The mode of the Xfo parameter |
 
-<a name="setTargetParam"></a>
+<a name="XfoHandle+setTargetParam"></a>
 
 ### setTargetParam
-The setTargetParam method.
+Sets global xfo target parameter.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| param | <code>any</code> | The param param. |
+| param | <code>Parameter</code> | The video param. |
 

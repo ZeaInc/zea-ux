@@ -1,28 +1,22 @@
-import {
-  Color,
-  Xfo,
-  ColorParameter,
-  GeomItem,
-  Material,
-  Cylinder,
-  Cone,
-} from '@zeainc/zea-engine'
-
-import { BaseLinearMovementHandle } from './BaseLinearMovementHandle.js'
-import ParameterValueChange from '../undoredo/Changes/ParameterValueChange.js'
+import { Color, Xfo, GeomItem, Material, Cylinder, Cone } from '@zeainc/zea-engine'
+import BaseLinearMovementHandle from './BaseLinearMovementHandle'
+import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
 import './Shaders/HandleShader'
 import transformVertices from './transformVertices'
 
-/** Class representing a linear movement scene widget.
+/**
+ * Class representing a linear movement scene widget.
+ *
  * @extends BaseLinearMovementHandle
  */
 class LinearMovementHandle extends BaseLinearMovementHandle {
   /**
    * Create a linear movement scene widget.
-   * @param {any} name - The name value.
-   * @param {any} length - The length value.
-   * @param {any} thickness - The thickness value.
-   * @param {any} color - The color value.
+   *
+   * @param {string} name - The name value.
+   * @param {number} length - The length value.
+   * @param {number} thickness - The thickness value.
+   * @param {Color} color - The color value.
    */
   constructor(name, length, thickness, color) {
     super(name)
@@ -49,22 +43,23 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
   }
 
   /**
-   * The highlight method.
+   * Applies a special shinning shader to the handle to illustrate interaction with it.
    */
   highlight() {
     this.colorParam.setValue(this.__hilightedColor)
   }
 
   /**
-   * The unhighlight method.
+   * Removes the shining shader from the handle.
    */
   unhighlight() {
     this.colorParam.setValue(this.__color)
   }
 
   /**
-   * The setTargetParam method.
-   * @param {any} param - The video param.
+   * Sets global xfo target parameter.
+   *
+   * @param {Parameter} param - The video param.
    * @param {boolean} track - The track param.
    */
   setTargetParam(param, track = true) {
@@ -79,15 +74,18 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
   }
 
   /**
-   * The getTargetParam method.
+   * Returns target's global xfo parameter.
+   *
+   * @return {Parameter} - returns handle's target global Xfo.
    */
   getTargetParam() {
     return this.param ? this.param : this.getParameter('GlobalXfo')
   }
 
   /**
-   * The onDragStart method.
-   * @param {any} event - The event param.
+   * Handles the initially drag of the handle.
+   *
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onDragStart(event) {
     this.grabPos = event.grabPos
@@ -100,8 +98,9 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
   }
 
   /**
-   * The onDrag method.
-   * @param {any} event - The event param.
+   * Handles drag action of the handle.
+   *
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onDrag(event) {
     const dragVec = event.holdPos.subtract(this.grabPos)
@@ -119,12 +118,14 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
   }
 
   /**
-   * The onDragEnd method.
-   * @param {any} event - The event param.
+   * Handles the end of dragging the handle.
+   *
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onDragEnd(event) {
     this.change = null
   }
 }
 
+export default LinearMovementHandle
 export { LinearMovementHandle }

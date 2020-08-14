@@ -9,46 +9,35 @@ import {
   Sphere,
   sgFactory,
 } from '@zeainc/zea-engine'
-
-import { BaseAxialRotationHandle } from './BaseAxialRotationHandle.js'
-import ParameterValueChange from '../UndoRedo/ParameterValueChange'
+import { BaseAxialRotationHandle } from './BaseAxialRotationHandle'
+import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
 import './Shaders/HandleShader'
 
-/** Class representing a slider scene widget.
+/**
+ * Class representing a slider scene widget.
+ *
  * @extends BaseAxialRotationHandle
  */
 class ArcSlider extends BaseAxialRotationHandle {
   /**
-   * Create a slider scene widget.
-   * @param {any} name - The name value.
-   * @param {any} length - The length value.
-   * @param {any} radius - The radius value.
-   * @param {any} color - The color value.
+   * Creates an instance of ArcSlider.
+   *
+   * @param {string} name - The name value
+   * @param {number} [arcRadius=1] - The arcRadius value
+   * @param {number} [arcAngle=1] - The arcAngle value
+   * @param {number} [handleRadius=0.02] - The handleRadius value
+   * @param {Color} [color=new Color(1, 1, 0)] - the color value
    */
-  constructor(
-    name,
-    arcRadius = 1,
-    arcAngle = 1,
-    handleRadius = 0.02,
-    color = new Color(1, 1, 0)
-  ) {
+  constructor(name, arcRadius = 1, arcAngle = 1, handleRadius = 0.02, color = new Color(1, 1, 0)) {
     super(name)
-    this.arcRadiusParam = this.addParameter(
-      new NumberParameter('Arc Radius', arcRadius)
-    )
-    this.arcAngleParam = this.addParameter(
-      new NumberParameter('Arc Angle', arcAngle)
-    )
-    this.handleRadiusParam = this.addParameter(
-      new NumberParameter('Handle Radius', handleRadius)
-    )
+    this.arcRadiusParam = this.addParameter(new NumberParameter('Arc Radius', arcRadius))
+    this.arcAngleParam = this.addParameter(new NumberParameter('Arc Angle', arcAngle))
+    this.handleRadiusParam = this.addParameter(new NumberParameter('Handle Radius', handleRadius))
     // this.barRadiusParam = this.addParameter(
     //   new NumberParameter('Bar Radius', radius * 0.25)
     // );
     this.colorParam = this.addParameter(new ColorParameter('Color', color))
-    this.hilghlightColorParam = this.addParameter(
-      new ColorParameter('Highlight Color', new Color(1, 1, 1))
-    )
+    this.hilghlightColorParam = this.addParameter(new ColorParameter('Highlight Color', new Color(1, 1, 1)))
 
     this.handleMat = new Material('handleMat', 'HandleShader')
     const arcGeom = new Circle(arcRadius, arcAngle, 64)
@@ -75,19 +64,13 @@ class ArcSlider extends BaseAxialRotationHandle {
       const arcRadius = this.arcRadiusParam.getValue()
       arcGeom.getParameter('Radius').setValue(arcRadius)
       this.handleGeomOffsetXfo.tr.x = arcRadius
-      this.handle
-        .getParameter('GeomOffsetXfo')
-        .setValue(this.handleGeomOffsetXfo)
+      this.handle.getParameter('GeomOffsetXfo').setValue(this.handleGeomOffsetXfo)
     })
     this.handleRadiusParam.on('valueChanged', () => {
-      handleGeom
-        .getParameter('radius')
-        .setValue(this.handleRadiusParam.getValue())
+      handleGeom.getParameter('radius').setValue(this.handleRadiusParam.getValue())
     })
     this.colorParam.on('valueChanged', () => {
-      this.handleMat
-        .getParameter('BaseColor')
-        .setValue(this.colorParam.getValue())
+      this.handleMat.getParameter('BaseColor').setValue(this.colorParam.getValue())
     })
 
     this.addChild(this.handle)
@@ -101,59 +84,47 @@ class ArcSlider extends BaseAxialRotationHandle {
   // Mouse events
 
   /**
-   * The onMouseEnter method.
-   * @param {any} event - The event param.
-   * @return {any} The return value.
+   * Event fired when a pointing device is initially moved within the space of the handle.
+   *
+   * @param {MouseEvent} event - The event param.
    */
   onMouseEnter(event) {
-    if (
-      event.intersectionData &&
-      event.intersectionData.geomItem == this.handle
-    )
-      this.highlight()
+    if (event.intersectionData && event.intersectionData.geomItem == this.handle) this.highlight()
   }
 
   /**
-   * The onMouseLeave method.
-   * @param {any} event - The event param.
-   * @return {any} The return value.
+   * Event fired when a pointing device moves outside of the space of the handle.
+   *
+   * @param {MouseEvent} event - The event param.
    */
   onMouseLeave(event) {
     this.unhighlight()
   }
 
   /**
-   * The onMouseDown method.
-   * @param {any} event - The event param.
-   * @return {any} The return value.
+   * Event fired when a pointing device button is pressed while the pointer is over the handle element.
+   *
+   * @param {MouseEvent} event - The event param.
    */
   onMouseDown(event) {
     // We do not want to handle events
     // that have propagated from children of
     // the slider.
-    if (
-      event.intersectionData &&
-      event.intersectionData.geomItem == this.handle
-    )
-      super.onMouseDown(event)
+    if (event.intersectionData && event.intersectionData.geomItem == this.handle) super.onMouseDown(event)
   }
 
   /**
-   * The highlight method.
+   * Applies a special shinning shader to the handle to illustrate interaction with it.
    */
   highlight() {
-    this.handleMat
-      .getParameter('BaseColor')
-      .setValue(this.hilghlightColorParam.getValue())
+    this.handleMat.getParameter('BaseColor').setValue(this.hilghlightColorParam.getValue())
   }
 
   /**
-   * The unhighlight method.
+   * Removes the shining shader from the handle.
    */
   unhighlight() {
-    this.handleMat
-      .getParameter('BaseColor')
-      .setValue(this.colorParam.getValue())
+    this.handleMat.getParameter('BaseColor').setValue(this.colorParam.getValue())
   }
 
   // /**
@@ -184,15 +155,18 @@ class ArcSlider extends BaseAxialRotationHandle {
   // Interaction events
 
   /**
-   * The getBaseXfo method.
+   * Returns handle's global Xfo
+   *
+   * @return {Xfo} - The Xfo value
    */
   getBaseXfo() {
     return this.handle.getParameter('GlobalXfo').getValue()
   }
 
   /**
-   * The onDragStart method.
-   * @param {any} event - The event param.
+   * Handles the initially drag interaction of the handle.
+   *
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onDragStart(event) {
     this.baseXfo = this.getParameter('GlobalXfo').getValue().clone()
@@ -217,16 +191,16 @@ class ArcSlider extends BaseAxialRotationHandle {
   }
 
   /**
-   * The onDrag method.
-   * @param {any} event - The event param.
+   * Handles drag interaction of the handle.
+   *
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onDrag(event) {
     const vec1 = event.holdPos.subtract(this.baseXfo.tr)
     vec1.normalizeInPlace()
 
     let angle = this.vec0.angleTo(vec1)
-    if (this.vec0.cross(vec1).dot(this.baseXfo.ori.getZaxis()) < 0)
-      angle = -angle
+    if (this.vec0.cross(vec1).dot(this.baseXfo.ori.getZaxis()) < 0) angle = -angle
 
     if (this.range) {
       angle = Math.clamp(angle, this.range[0], this.range[1])
@@ -241,7 +215,7 @@ class ArcSlider extends BaseAxialRotationHandle {
     this.deltaXfo.ori.setFromAxisAndAngle(new Vec3(0, 0, 1), angle)
 
     const newXfo = this.baseXfo.multiply(this.deltaXfo)
-    const value = newXfo //.multiply(this.offsetXfo);
+    const value = newXfo // .multiply(this.offsetXfo);
 
     if (this.change) {
       this.change.update({
@@ -254,8 +228,9 @@ class ArcSlider extends BaseAxialRotationHandle {
   }
 
   /**
-   * The onDragEnd method.
-   * @param {any} event - The event param.
+   * Handles the end of dragging interaction with the handle.
+   *
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onDragEnd(event) {
     this.change = null
@@ -266,25 +241,25 @@ class ArcSlider extends BaseAxialRotationHandle {
   }
 
   /**
-   * The toJSON method.
-   * @param {any} context - The context param.
-   * @param {any} flags - The flags param.
-   * @return {any} The return value.
+   * Serializes handle item as a JSON object.
+   *
+   * @param {object} context - The context param.
+   * @return {object} The return value.
    */
-  toJSON(context, flags = 0) {
-    const json = super.toJSON(context, flags | SAVE_FLAG_SKIP_CHILDREN)
+  toJSON(context) {
+    const json = super.toJSON(context)
     if (this.param) json.targetParam = this.param.getPath()
     return json
   }
 
   /**
-   * The fromJSON method.
-   * @param {any} json - The json param.
-   * @param {any} context - The context param.
-   * @param {any} flags - The flags param.
+   * Restores handle item from a JSON object.
+   *
+   * @param {object} json - The json param.
+   * @param {object} context - The context param.
    */
-  fromJSON(json, context, flags) {
-    super.fromJSON(json, context, flags)
+  fromJSON(json, context) {
+    super.fromJSON(json, context)
 
     if (json.targetParam) {
       context.resolvePath(json.targetParam).then((param) => {
@@ -296,4 +271,5 @@ class ArcSlider extends BaseAxialRotationHandle {
 
 sgFactory.registerClass('ArcSlider', ArcSlider)
 
+export default ArcSlider
 export { ArcSlider }

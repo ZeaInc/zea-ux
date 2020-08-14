@@ -8,12 +8,12 @@ Class representing a base linear movement scene widget.
 
 * [BaseLinearMovementHandle ⇐ <code>Handle</code>](#BaseLinearMovementHandle)
     * [new BaseLinearMovementHandle(name)](#new-BaseLinearMovementHandle)
-    * [handleMouseDown(event) ⇒ <code>any</code>](#handleMouseDown)
+    * [handleMouseDown(event) ⇒ <code>boolean</code>](#handleMouseDown)
     * [handleMouseMove(event)](#handleMouseMove)
-    * [handleMouseUp(event) ⇒ <code>any</code>](#handleMouseUp)
-    * [onVRControllerButtonDown(event) ⇒ <code>any</code>](#onVRControllerButtonDown)
-    * [onVRPoseChanged(event) ⇒ <code>any</code>](#onVRPoseChanged)
-    * [onVRControllerButtonUp(event) ⇒ <code>any</code>](#onVRControllerButtonUp)
+    * [handleMouseUp(event) ⇒ <code>boolean</code>](#handleMouseUp)
+    * [onVRControllerButtonDown(event) ⇒ <code>boolean</code>](#onVRControllerButtonDown)
+    * [onVRPoseChanged(event) ⇒ <code>boolean</code>](#onVRPoseChanged)
+    * [onVRControllerButtonUp(event) ⇒ <code>boolean</code>](#onVRControllerButtonUp)
 
 <a name="new_BaseLinearMovementHandle_new"></a>
 
@@ -23,54 +23,54 @@ Create base linear movement scene widget.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| name | <code>any</code> | The name value. |
+| name | <code>string</code> | The name value. |
 
 <a name="BaseLinearMovementHandle+handleMouseDown"></a>
 
 ### handleMouseDown
-The handleMouseDown method.
+Handles mouse down interaction with the handle.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
 <a name="BaseLinearMovementHandle+handleMouseMove"></a>
 
 ### handleMouseMove
-The handleMouseMove method.
+Handles mouse move interaction with the handle.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param |
 
 <a name="BaseLinearMovementHandle+handleMouseUp"></a>
 
 ### handleMouseUp
-The handleMouseUp method.
+Handles mouse up interaction with the handle.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
 <a name="BaseLinearMovementHandle+onVRControllerButtonDown"></a>
 
 ### onVRControllerButtonDown
-The onVRControllerButtonDown method.
+Event fired when a VR controller button is pressed over the handle.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>object</code> | The event param. |
 
 <a name="BaseLinearMovementHandle+onVRPoseChanged"></a>
 
@@ -78,21 +78,21 @@ The onVRControllerButtonDown method.
 The onVRPoseChanged method.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>object</code> | The event param. |
 
 <a name="BaseLinearMovementHandle+onVRControllerButtonUp"></a>
 
 ### onVRControllerButtonUp
-The onVRControllerButtonUp method.
+Event fired when a VR controller button is released over the handle.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>object</code> | The event param. |
 

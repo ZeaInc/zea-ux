@@ -22,7 +22,7 @@ Class representing a hold objects change.
     * [undo()](#undo)
     * [redo()](#redo)
     * [update(updateData)](#update)
-    * [toJSON(context) ⇒ <code>any</code>](#toJSON)
+    * [toJSON(context) ⇒ <code>object</code>](#toJSON)
     * [fromJSON(j, context)](#fromJSON)
 
 <a name="new_HoldObjectsChange_new"></a>
@@ -33,7 +33,7 @@ Create a hold objects change.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| data | <code>any</code> | The data value. |
+| data | <code>object</code> | The data value. |
 
 <a name="HoldObjectsChange+undo"></a>
 
@@ -56,7 +56,7 @@ The update method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| updateData | <code>any</code> | The updateData param. |
+| updateData | <code>object</code> | The updateData param. |
 
 <a name="HoldObjectsChange+toJSON"></a>
 
@@ -64,11 +64,11 @@ The update method.
 The toJSON method.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>object</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| context | <code>any</code> | The context param. |
+| context | <code>object</code> | The context param. |
 
 <a name="HoldObjectsChange+fromJSON"></a>
 
@@ -79,8 +79,8 @@ The fromJSON method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| j | <code>any</code> | The j param. |
-| context | <code>any</code> | The context param. |
+| j | <code>object</code> | The j param. |
+| context | <code>object</code> | The context param. |
 
 <a name="VRHoldObjectsTool"></a>
 
@@ -94,11 +94,11 @@ Class representing a VR hold objects tool.
     * [new VRHoldObjectsTool(appData)](#new-VRHoldObjectsTool)
     * [activateTool()](#activateTool)
     * [deactivateTool()](#deactivateTool)
-    * [computeGrabXfo(refs) ⇒ <code>any</code>](#computeGrabXfo)
+    * [computeGrabXfo(refs) ⇒ <code>Xfo</code>](#computeGrabXfo)
     * [initAction()](#initAction)
-    * [onVRControllerButtonDown(event) ⇒ <code>any</code>](#onVRControllerButtonDown)
-    * [onVRControllerButtonUp(event) ⇒ <code>any</code>](#onVRControllerButtonUp)
-    * [onVRPoseChanged(event) ⇒ <code>any</code>](#onVRPoseChanged)
+    * [onVRControllerButtonDown(event) ⇒ <code>boolean</code>](#onVRControllerButtonDown)
+    * [onVRControllerButtonUp(event) ⇒ <code>boolean</code>](#onVRControllerButtonUp)
+    * [onVRPoseChanged(event) ⇒ <code>boolean</code>](#onVRPoseChanged)
 
 <a name="new_VRHoldObjectsTool_new"></a>
 
@@ -108,7 +108,7 @@ Create a VR hold objects tool.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| appData | <code>any</code> | The appData value. |
+| appData | <code>object</code> | The appData value. |
 
 <a name="VRHoldObjectsTool+activateTool"></a>
 
@@ -128,11 +128,11 @@ The deactivateTool method.
 The computeGrabXfo method.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>Xfo</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| refs | <code>any</code> | The refs param. |
+| refs | <code>array</code> | The refs param. |
 
 <a name="VRHoldObjectsTool+initAction"></a>
 
@@ -146,11 +146,11 @@ The initAction method.
 The onVRControllerButtonDown method.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>object</code> | The event param. |
 
 <a name="VRHoldObjectsTool+onVRControllerButtonUp"></a>
 
@@ -158,11 +158,11 @@ The onVRControllerButtonDown method.
 The onVRControllerButtonUp method.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>object</code> | The event param. |
 
 <a name="VRHoldObjectsTool+onVRPoseChanged"></a>
 
@@ -170,9 +170,9 @@ The onVRControllerButtonUp method.
 The onVRPoseChanged method.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>object</code> | The event param. |
 

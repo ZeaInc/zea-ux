@@ -1,10 +1,15 @@
-import {
-  sgFactory,
-  shaderLibrary,
-  StandardSurfaceGeomDataShader,
-} from '@zeainc/zea-engine'
-
+import { sgFactory, shaderLibrary, StandardSurfaceGeomDataShader } from '@zeainc/zea-engine'
+/**
+ * Class representing Geometry Data Shader
+ *
+ * @extends {StandardSurfaceGeomDataShader}
+ */
 class HandleGeomDataShader extends StandardSurfaceGeomDataShader {
+  /**
+   * Creates an instance of HandleGeomDataShader.
+   * @param {*} gl - The gl value
+   * @param {*} floatGeomBuffer - The floatGeomBuffer value
+   */
   constructor(gl, floatGeomBuffer) {
     super(gl)
     this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader(
@@ -61,4 +66,5 @@ void main(void) {
 
 sgFactory.registerClass('HandleGeomDataShader', HandleGeomDataShader)
 
+export default HandleGeomDataShader
 export { HandleGeomDataShader }

@@ -7,142 +7,139 @@ Class representing a slider scene widget.
 **Extends**: <code>BaseAxialRotationHandle</code>  
 
 * [ArcSlider ⇐ <code>BaseAxialRotationHandle</code>](#ArcSlider)
-    * [new ArcSlider(name, length, radius, color)](#new-ArcSlider)
-    * [onMouseEnter(event) ⇒ <code>any</code>](#onMouseEnter)
-    * [onMouseLeave(event) ⇒ <code>any</code>](#onMouseLeave)
-    * [onMouseDown(event) ⇒ <code>any</code>](#onMouseDown)
+    * [new ArcSlider(name, [arcRadius], [arcAngle], [handleRadius], [color])](#new-ArcSlider)
+    * [onMouseEnter(event)](#onMouseEnter)
+    * [onMouseLeave(event)](#onMouseLeave)
+    * [onMouseDown(event)](#onMouseDown)
     * [highlight()](#highlight)
     * [unhighlight()](#unhighlight)
-    * [getBaseXfo()](#getBaseXfo)
+    * [getBaseXfo() ⇒ <code>Xfo</code>](#getBaseXfo)
     * [onDragStart(event)](#onDragStart)
     * [onDrag(event)](#onDrag)
     * [onDragEnd(event)](#onDragEnd)
-    * [toJSON(context, flags) ⇒ <code>any</code>](#toJSON)
-    * [fromJSON(json, context, flags)](#fromJSON)
+    * [toJSON(context) ⇒ <code>object</code>](#toJSON)
+    * [fromJSON(json, context)](#fromJSON)
 
 <a name="new_ArcSlider_new"></a>
 
 ### new ArcSlider
-Create a slider scene widget.
+Creates an instance of ArcSlider.
 
 
-| Param | Type | Description |
-| --- | --- | --- |
-| name | <code>any</code> | The name value. |
-| length | <code>any</code> | The length value. |
-| radius | <code>any</code> | The radius value. |
-| color | <code>any</code> | The color value. |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| name | <code>string</code> |  | The name value |
+| [arcRadius] | <code>number</code> | <code>1</code> | The arcRadius value |
+| [arcAngle] | <code>number</code> | <code>1</code> | The arcAngle value |
+| [handleRadius] | <code>number</code> | <code>0.02</code> | The handleRadius value |
+| [color] | <code>Color</code> | <code>new Color(1, 1, 0)</code> | the color value |
 
 <a name="ArcSlider+onMouseEnter"></a>
 
 ### onMouseEnter
-The onMouseEnter method.
+Event fired when a pointing device is initially moved within the space of the handle.
 
 
-**Returns**: <code>any</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
 <a name="ArcSlider+onMouseLeave"></a>
 
 ### onMouseLeave
-The onMouseLeave method.
+Event fired when a pointing device moves outside of the space of the handle.
 
 
-**Returns**: <code>any</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
 <a name="ArcSlider+onMouseDown"></a>
 
 ### onMouseDown
-The onMouseDown method.
+Event fired when a pointing device button is pressed while the pointer is over the handle element.
 
 
-**Returns**: <code>any</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
 <a name="ArcSlider+highlight"></a>
 
 ### highlight
-The highlight method.
+Applies a special shinning shader to the handle to illustrate interaction with it.
 
 
 <a name="ArcSlider+unhighlight"></a>
 
 ### unhighlight
-The unhighlight method.
+Removes the shining shader from the handle.
 
 
 <a name="ArcSlider+getBaseXfo"></a>
 
 ### getBaseXfo
-The getBaseXfo method.
+Returns handle's global Xfo
 
 
+**Returns**: <code>Xfo</code> - - The Xfo value  
 <a name="ArcSlider+onDragStart"></a>
 
 ### onDragStart
-The onDragStart method.
+Handles the initially drag interaction of the handle.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
 
 <a name="ArcSlider+onDrag"></a>
 
 ### onDrag
-The onDrag method.
+Handles drag interaction of the handle.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
 
 <a name="ArcSlider+onDragEnd"></a>
 
 ### onDragEnd
-The onDragEnd method.
+Handles the end of dragging interaction with the handle.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
 
 <a name="ArcSlider+toJSON"></a>
 
 ### toJSON
-The toJSON method.
+Serializes handle item as a JSON object.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>object</code> - The return value.  
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| context | <code>any</code> |  | The context param. |
-| flags | <code>any</code> | <code>0</code> | The flags param. |
+| Param | Type | Description |
+| --- | --- | --- |
+| context | <code>object</code> | The context param. |
 
 <a name="ArcSlider+fromJSON"></a>
 
 ### fromJSON
-The fromJSON method.
+Restores handle item from a JSON object.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| json | <code>any</code> | The json param. |
-| context | <code>any</code> | The context param. |
-| flags | <code>any</code> | The flags param. |
+| json | <code>object</code> | The json param. |
+| context | <code>object</code> | The context param. |
 

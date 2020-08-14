@@ -7,9 +7,9 @@ Class representing an axial rotation scene widget.
 **Extends**: <code>Handle</code>  
 
 * [BaseAxialRotationHandle ⇐ <code>Handle</code>](#BaseAxialRotationHandle)
-    * [new BaseAxialRotationHandle(name, radius, thickness, color)](#new-BaseAxialRotationHandle)
+    * [new BaseAxialRotationHandle(name)](#new-BaseAxialRotationHandle)
     * [setTargetParam(param, track)](#setTargetParam)
-    * [getTargetParam()](#getTargetParam)
+    * [getTargetParam() ⇒ <code>Parameter</code>](#getTargetParam)
     * [onDragStart(event)](#onDragStart)
     * [onDrag(event)](#onDrag)
     * [onDragEnd(event)](#onDragEnd)
@@ -22,59 +22,57 @@ Create an axial rotation scene widget.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| name | <code>any</code> | The name value. |
-| radius | <code>any</code> | The radius value. |
-| thickness | <code>any</code> | The thickness value. |
-| color | <code>any</code> | The color value. |
+| name | <code>string</code> | The name value. |
 
 <a name="BaseAxialRotationHandle+setTargetParam"></a>
 
 ### setTargetParam
-The setTargetParam method.
+Sets global xfo target parameter
 
 
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| param | <code>any</code> |  | The param param. |
+| param | <code>Parameter</code> |  | The param param. |
 | track | <code>boolean</code> | <code>true</code> | The track param. |
 
 <a name="BaseAxialRotationHandle+getTargetParam"></a>
 
 ### getTargetParam
-The getTargetParam method.
+Returns target's global xfo parameter.
 
 
+**Returns**: <code>Parameter</code> - - returns handle's target global Xfo.  
 <a name="BaseAxialRotationHandle+onDragStart"></a>
 
 ### onDragStart
-The onDragStart method.
+Handles the initially drag of the handle.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
 
 <a name="BaseAxialRotationHandle+onDrag"></a>
 
 ### onDrag
-The onDrag method.
+Handles drag action of the handle.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
 
 <a name="BaseAxialRotationHandle+onDragEnd"></a>
 
 ### onDragEnd
-The onDragEnd method.
+Handles the end of dragging the handle.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
 

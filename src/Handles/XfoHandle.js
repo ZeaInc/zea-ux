@@ -1,77 +1,23 @@
-import { Color, Vec3, Xfo, NumberParameter, TreeItem, GeomItem, Material, Cuboid } from '@zeainc/zea-engine'
-
-import Handle from './Handle.js'
-import { LinearMovementHandle } from './LinearMovementHandle.js'
-import { PlanarMovementHandle } from './PlanarMovementHandle.js'
-import { AxialRotationHandle } from './AxialRotationHandle.js'
-import { LinearScaleHandle } from './LinearScaleHandle.js'
-import { SphericalRotationHandle } from './SphericalRotationHandle.js'
+import { Color, Vec3, Xfo, TreeItem } from '@zeainc/zea-engine'
+import Handle from './Handle'
+import LinearMovementHandle from './LinearMovementHandle'
+import AxialRotationHandle from './AxialRotationHandle'
+import LinearScaleHandle from './LinearScaleHandle'
+import SphericalRotationHandle from './SphericalRotationHandle'
 import './Shaders/HandleShader'
-import transformVertices from './transformVertices'
-
-/** Class representing a planar movement scene widget.
- * @extends Handle
- */
-class XfoPlanarMovementHandle extends PlanarMovementHandle {
-  /**
-   * Create a planar movement scene widget.
-   * @param {any} name - The name value.
-   * @param {any} size - The size value.
-   * @param {any} color - The color value.
-   * @param {any} offset - The offset value.
-   */
-  constructor(name, size, color, offset) {
-    super(name)
-
-    this.__color = color
-    this.__hilightedColor = new Color(1, 1, 1)
-    this.sizeParam = this.addParameter(new NumberParameter('size', size))
-
-    const handleMat = new Material('handle', 'HandleShader')
-    handleMat.getParameter('maintainScreenSize').setValue(1)
-    this.colorParam = handleMat.getParameter('BaseColor')
-    this.colorParam.setValue(color)
-
-    const handleGeom = new Cuboid(size, size, size * 0.02)
-
-    const handleGeomXfo = new Xfo()
-    handleGeomXfo.tr = offset
-    transformVertices(handleGeom.getVertexAttribute('positions'), handleGeomXfo)
-    this.handle = new GeomItem('handle', handleGeom, handleMat)
-
-    this.sizeParam.on('valueChanged', () => {
-      size = this.sizeParam.getValue()
-      handleGeom.getParameter('size').setValue(size)
-      handleGeom.getParameter('height').setValue(size * 0.02)
-    })
-
-    this.addChild(this.handle)
-  }
-
-  /**
-   * The highlight method.
-   */
-  highlight() {
-    this.colorParam.setValue(this.__hilightedColor)
-  }
-
-  /**
-   * The unhighlight method.
-   */
-  unhighlight() {
-    this.colorParam.setValue(this.__color)
-  }
-}
+import XfoPlanarMovementHandle from './XfoPlanarMovementHandle'
 
 /**
  * Class representing an xfo handle.
+ *
  * @extends TreeItem
  */
-export default class XfoHandle extends TreeItem {
+class XfoHandle extends TreeItem {
   /**
    * Create an axial rotation scene widget.
-   * @param {any} size - The size value.
-   * @param {any} thickness - The thickness value.
+   *
+   * @param {number} size - The size value.
+   * @param {number} thickness - The thickness value.
    */
   constructor(size, thickness) {
     super('XfoHandle')
@@ -211,7 +157,10 @@ export default class XfoHandle extends TreeItem {
   }
 
   /**
-   * Calculate the global Xfo for the handls.
+   * Calculate the global Xfo for the handles.
+   *
+   * @return {Xfo} - The Xfo value
+   * @private
    */
   _cleanGlobalXfo() {
     const parentItem = this.getParentItem()
@@ -223,9 +172,10 @@ export default class XfoHandle extends TreeItem {
   }
 
   /**
-   * The showHandles method.
-   * @param {any} handleManipulationMode - The name param.
-   * @return {any} The return value.
+   * Displays handles depending on the specified mode(Move, Rotate, Scale).
+   * If nothing is specified, it hides all of them.
+   *
+   * @param {number} handleManipulationMode - The mode of the Xfo parameter
    */
   showHandles(handleManipulationMode) {
     this.traverse((item) => {
@@ -240,8 +190,9 @@ export default class XfoHandle extends TreeItem {
   }
 
   /**
-   * The setTargetParam method.
-   * @param {any} param - The param param.
+   * Sets global xfo target parameter.
+   *
+   * @param {Parameter} param - The video param.
    */
   setTargetParam(param) {
     this.param = param
@@ -250,3 +201,6 @@ export default class XfoHandle extends TreeItem {
     })
   }
 }
+
+export default XfoHandle
+export { XfoHandle }

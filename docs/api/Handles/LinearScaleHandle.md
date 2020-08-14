@@ -11,7 +11,7 @@ Class representing a linear scale scene widget.
     * [highlight()](#highlight)
     * [unhighlight()](#unhighlight)
     * [setTargetParam(param, track)](#setTargetParam)
-    * [getTargetParam()](#getTargetParam)
+    * [getTargetParam() ⇒ <code>Parameter</code>](#getTargetParam)
     * [onDragStart(event)](#onDragStart)
     * [onDrag(event)](#onDrag)
     * [onDragEnd(event)](#onDragEnd)
@@ -24,71 +24,72 @@ Create a linear scale scene widget.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| name | <code>any</code> | The name value. |
-| length | <code>any</code> | The length value. |
-| thickness | <code>any</code> | The thickness value. |
-| color | <code>any</code> | The color value. |
+| name | <code>string</code> | The name value. |
+| length | <code>number</code> | The length value. |
+| thickness | <code>number</code> | The thickness value. |
+| color | <code>Color</code> | The color value. |
 
 <a name="LinearScaleHandle+highlight"></a>
 
 ### highlight
-The highlight method.
+Applies a special shinning shader to the handle to illustrate interaction with it.
 
 
 <a name="LinearScaleHandle+unhighlight"></a>
 
 ### unhighlight
-The unhighlight method.
+Removes the shining shader from the handle.
 
 
 <a name="LinearScaleHandle+setTargetParam"></a>
 
 ### setTargetParam
-The setTargetParam method.
+Sets global xfo target parameter.
 
 
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| param | <code>any</code> |  | The param param. |
+| param | <code>Parameter</code> |  | The video param. |
 | track | <code>boolean</code> | <code>true</code> | The track param. |
 
 <a name="LinearScaleHandle+getTargetParam"></a>
 
 ### getTargetParam
-The getTargetParam method.
+Returns target's global xfo parameter.
 
 
+**Returns**: <code>Parameter</code> - - returns handle's target global Xfo.  
 <a name="LinearScaleHandle+onDragStart"></a>
 
 ### onDragStart
-The onDragStart method.
+Handles the initially drag of the handle.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
 
 <a name="LinearScaleHandle+onDrag"></a>
 
 ### onDrag
-The onDrag method.
+Handles drag action of the handle.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
 
 <a name="LinearScaleHandle+onDragEnd"></a>
 
 ### onDragEnd
-The onDragEnd method.
+Handles the end of dragging the handle.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
 

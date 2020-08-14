@@ -1,17 +1,19 @@
-import { Quat, Color, Xfo, GeomItem, Material, Cross } from './node_modules/@zeainc/zea-engine'
-import BaseTool from '../BaseTool.js'
-import Handle from '../../Handles/Handle.js'
-import UndoRedoManager from '../../undoredo/UndoRedoManager.js'
-import Change from '../../undoredo/Change.js'
+import { Quat, Color, Xfo, GeomItem, Material, Cross } from '@zeainc/zea-engine'
+import BaseTool from '../BaseTool'
+import Handle from '../../Handles/Handle'
+import UndoRedoManager from '../../UndoRedo/UndoRedoManager'
+import Change from '../../UndoRedo/Change'
 
 /**
  * Class representing a hold objects change.
+ *
  * @extends Change
  */
 class HoldObjectsChange extends Change {
   /**
    * Create a hold objects change.
-   * @param {any} data - The data value.
+   *
+   * @param {object} data - The data value.
    */
   constructor(data) {
     super('HoldObjectsChange')
@@ -29,9 +31,7 @@ class HoldObjectsChange extends Change {
   undo() {
     for (let i = 0; i < this.__selection.length; i++) {
       if (this.__selection[i]) {
-        this.__selection[i]
-          .getParameter('GlobalXfo')
-          .setValue(this.__prevXfos[i])
+        this.__selection[i].getParameter('GlobalXfo').setValue(this.__prevXfos[i])
       }
     }
   }
@@ -42,30 +42,24 @@ class HoldObjectsChange extends Change {
   redo() {
     for (let i = 0; i < this.__selection.length; i++) {
       if (this.__selection[i]) {
-        this.__selection[i]
-          .getParameter('GlobalXfo')
-          .setValue(this.__newXfos[i])
+        this.__selection[i].getParameter('GlobalXfo').setValue(this.__newXfos[i])
       }
     }
   }
 
   /**
    * The update method.
-   * @param {any} updateData - The updateData param.
+   * @param {object} updateData - The updateData param.
    */
   update(updateData) {
     if (updateData.newItem) {
       this.__selection[updateData.newItemId] = updateData.newItem
-      this.__prevXfos[updateData.newItemId] = updateData.newItem
-        .getParameter('GlobalXfo')
-        .getValue()
+      this.__prevXfos[updateData.newItemId] = updateData.newItem.getParameter('GlobalXfo').getValue()
     } else if (updateData.changeXfos) {
       for (let i = 0; i < updateData.changeXfoIds.length; i++) {
         const gidx = updateData.changeXfoIds[i]
         if (!this.__selection[gidx]) continue
-        this.__selection[gidx]
-          .getParameter('GlobalXfo')
-          .setValue(updateData.changeXfos[i])
+        this.__selection[gidx].getParameter('GlobalXfo').setValue(updateData.changeXfos[i])
         this.__newXfos[gidx] = updateData.changeXfos[i]
       }
     }
@@ -74,8 +68,8 @@ class HoldObjectsChange extends Change {
 
   /**
    * The toJSON method.
-   * @param {any} context - The context param.
-   * @return {any} The return value.
+   * @param {object} context - The context param.
+   * @return {object} The return value.
    */
   toJSON(context) {
     const j = super.toJSON(context)
@@ -95,8 +89,8 @@ class HoldObjectsChange extends Change {
 
   /**
    * The fromJSON method.
-   * @param {any} j - The j param.
-   * @param {any} context - The context param.
+   * @param {object} j - The j param.
+   * @param {object} context - The context param.
    */
   fromJSON(j, context) {
     super.fromJSON(j, context)
@@ -142,7 +136,7 @@ UndoRedoManager.registerChange('HoldObjectsChange', HoldObjectsChange)
 class VRHoldObjectsTool extends BaseTool {
   /**
    * Create a VR hold objects tool.
-   * @param {any} appData - The appData value.
+   * @param {object} appData - The appData value.
    */
   constructor(appData) {
     super(appData)
@@ -180,12 +174,8 @@ class VRHoldObjectsTool extends BaseTool {
     }
 
     this.appData.renderer.getXRViewport().then((xrvp) => {
-      for (const controller of xrvp.getControllers())
-        addIconToController(controller)
-      this.addIconToControllerId = xrvp.on(
-        'controllerAdded',
-        addIconToController
-      )
+      for (const controller of xrvp.getControllers()) addIconToController(controller)
+      this.addIconToControllerId = xrvp.on('controllerAdded', addIconToController)
     })
   }
 
@@ -208,8 +198,8 @@ class VRHoldObjectsTool extends BaseTool {
 
   /**
    * The computeGrabXfo method.
-   * @param {any} refs - The refs param.
-   * @return {any} The return value.
+   * @param {array} refs - The refs param.
+   * @return {Xfo} The return value.
    */
   computeGrabXfo(refs) {
     let grabXfo
@@ -250,16 +240,14 @@ class VRHoldObjectsTool extends BaseTool {
       const heldGeom = this.__heldGeomItems[i]
       if (!heldGeom) continue
       const grabXfo = this.computeGrabXfo(this.__heldGeomItemRefs[i])
-      this.__heldGeomItemOffsets[i] = grabXfo
-        .inverse()
-        .multiply(heldGeom.getParameter('GlobalXfo').getValue())
+      this.__heldGeomItemOffsets[i] = grabXfo.inverse().multiply(heldGeom.getParameter('GlobalXfo').getValue())
     }
   }
 
   /**
    * The onVRControllerButtonDown method.
-   * @param {any} event - The event param.
-   * @return {any} The return value.
+   * @param {object} event - The event param.
+   * @return {boolean} The return value.
    */
   onVRControllerButtonDown(event) {
     const id = event.controller.getId()
@@ -304,8 +292,8 @@ class VRHoldObjectsTool extends BaseTool {
 
   /**
    * The onVRControllerButtonUp method.
-   * @param {any} event - The event param.
-   * @return {any} The return value.
+   * @param {object} event - The event param.
+   * @return {boolean} The return value.
    */
   onVRControllerButtonUp(event) {
     const id = event.controller.getId()
@@ -329,8 +317,8 @@ class VRHoldObjectsTool extends BaseTool {
 
   /**
    * The onVRPoseChanged method.
-   * @param {any} event - The event param.
-   * @return {any} The return value.
+   * @param {object} event - The event param.
+   * @return {boolean} The return value.
    */
   onVRPoseChanged(event) {
     if (!this.change) return false
@@ -350,4 +338,6 @@ class VRHoldObjectsTool extends BaseTool {
     return true
   }
 }
+
+export default VRHoldObjectsTool
 export { VRHoldObjectsTool }

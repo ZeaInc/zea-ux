@@ -1,30 +1,19 @@
-import {
-  Color,
-  Xfo,
-  NumberParameter,
-  ColorParameter,
-  GeomItem,
-  Material,
-  Cylinder,
-  Cuboid,
-  Sphere,
-  Cone,
-} from '@zeainc/zea-engine'
-
-import Handle from './Handle.js'
+import { Color, Xfo, GeomItem, Material, Sphere } from '@zeainc/zea-engine'
+import Handle from './Handle'
 import './Shaders/HandleShader'
 
 /**
  * Class representing an axial rotation scene widget.
+ *
  * @extends Handle
  */
 class SphericalRotationHandle extends Handle {
   /**
    * Create an axial rotation scene widget.
-   * @param {any} name - The name value.
-   * @param {any} radius - The radius value.
-   * @param {any} thickness - The thickness value.
-   * @param {any} color - The color value.
+   *
+   * @param {string} name - The name value.
+   * @param {number} radius - The radius value.
+   * @param {Color} color - The color value.
    */
   constructor(name, radius, color) {
     super(name)
@@ -39,22 +28,23 @@ class SphericalRotationHandle extends Handle {
   }
 
   /**
-   * The highlight method.
+   * Applies a special shinning shader to the handle to illustrate interaction with it.
    */
   highlight() {
     // this.colorParam.setValue(this.__hilightedColor);
   }
 
   /**
-   * The unhighlight method.
+   * Removes the shining shader from the handle.
    */
   unhighlight() {
     // this.colorParam.setValue(this.__color);
   }
 
   /**
-   * The setTargetParam method.
-   * @param {any} param - The param param.
+   * Sets global xfo target parameter.
+   *
+   * @param {Parameter} param - The video param.
    * @param {boolean} track - The track param.
    */
   setTargetParam(param, track = true) {
@@ -69,7 +59,9 @@ class SphericalRotationHandle extends Handle {
   }
 
   /**
-   * The getTargetParam method.
+   * Returns target's global xfo parameter.
+   *
+   * @return {Parameter} - returns handle's target global Xfo.
    */
   getTargetParam() {
     return this.param ? this.param : this.getParameter('GlobalXfo')
@@ -79,9 +71,10 @@ class SphericalRotationHandle extends Handle {
   // Mouse events
 
   /**
-   * The handleMouseDown method.
-   * @param {any} event - The event param.
-   * @return {any} The return value.
+   * Handles mouse down interaction with the handle.
+   *
+   * @param {MouseEvent} event - The event param.
+   * @return {boolean} - The return value.
    */
   handleMouseDown(event) {
     // const xfo = this.getParameter('GlobalXfo').getValue();
@@ -96,8 +89,10 @@ class SphericalRotationHandle extends Handle {
   }
 
   /**
-   * The handleMouseMove method.
-   * @param {any} event - The event param.
+   * Handles mouse move interaction with the handle.
+   *
+   * @param {MouseEvent} event - The event param
+   * @return {boolean} - The return value
    */
   handleMouseMove(event) {
     // const dist = event.mouseRay.intersectRaySphere(this.sphere);
@@ -107,9 +102,10 @@ class SphericalRotationHandle extends Handle {
   }
 
   /**
-   * The handleMouseUp method.
-   * @param {any} event - The event param.
-   * @return {any} The return value.
+   * Handles mouse up interaction with the handle.
+   *
+   * @param {MouseEvent} event - The event param.
+   * @return {boolean} - The return value.
    */
   handleMouseUp(event) {
     // const dist = event.mouseRay.intersectRaySphere(this.sphere);
@@ -119,8 +115,9 @@ class SphericalRotationHandle extends Handle {
   }
 
   /**
-   * The onDragStart method.
-   * @param {any} event - The event param.
+   * Handles the initially drag of the handle.
+   *
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onDragStart(event) {
     this.baseXfo = this.getParameter('GlobalXfo').getValue()
@@ -142,8 +139,9 @@ class SphericalRotationHandle extends Handle {
   }
 
   /**
-   * The onDrag method.
-   * @param {any} event - The event param.
+   * Handles drag action of the handle.
+   *
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onDrag(event) {
     const vec1 = event.holdPos.subtract(this.baseXfo.tr)
@@ -168,8 +166,9 @@ class SphericalRotationHandle extends Handle {
   }
 
   /**
-   * The onDragEnd method.
-   * @param {any} event - The event param.
+   * Handles the end of dragging the handle.
+   *
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onDragEnd(event) {
     this.change = null
@@ -177,4 +176,6 @@ class SphericalRotationHandle extends Handle {
     this.colorParam.setValue(this.__color)
   }
 }
+
+export default SphericalRotationHandle
 export { SphericalRotationHandle }

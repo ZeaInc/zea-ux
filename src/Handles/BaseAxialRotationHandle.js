@@ -1,26 +1,26 @@
 import { Vec3, Xfo } from '@zeainc/zea-engine'
-import Handle from './Handle.js'
-import ParameterValueChange from '../undoredo/Changes/ParameterValueChange.js'
+import Handle from './Handle'
+import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
 
 /**
  * Class representing an axial rotation scene widget.
+ *
  * @extends Handle
  */
 class BaseAxialRotationHandle extends Handle {
   /**
    * Create an axial rotation scene widget.
-   * @param {any} name - The name value.
-   * @param {any} radius - The radius value.
-   * @param {any} thickness - The thickness value.
-   * @param {any} color - The color value.
+   *
+   * @param {string} name - The name value.
    */
   constructor(name) {
     super(name)
   }
 
   /**
-   * The setTargetParam method.
-   * @param {any} param - The param param.
+   * Sets global xfo target parameter
+   *
+   * @param {Parameter} param - The param param.
    * @param {boolean} track - The track param.
    */
   setTargetParam(param, track = true) {
@@ -35,15 +35,18 @@ class BaseAxialRotationHandle extends Handle {
   }
 
   /**
-   * The getTargetParam method.
+   * Returns target's global xfo parameter.
+   *
+   * @return {Parameter} - returns handle's target global Xfo.
    */
   getTargetParam() {
     return this.param ? this.param : this.getParameter('GlobalXfo')
   }
 
   /**
-   * The onDragStart method.
-   * @param {any} event - The event param.
+   * Handles the initially drag of the handle.
+   *
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onDragStart(event) {
     this.baseXfo = this.getParameter('GlobalXfo').getValue().clone()
@@ -65,8 +68,9 @@ class BaseAxialRotationHandle extends Handle {
   }
 
   /**
-   * The onDrag method.
-   * @param {any} event - The event param.
+   * Handles drag action of the handle.
+   *
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onDrag(event) {
     const vec1 = event.holdPos.subtract(this.baseXfo.tr)
@@ -79,8 +83,7 @@ class BaseAxialRotationHandle extends Handle {
     // 180 degrees in a single movement.
     const modulator = dragCircleRadius / this.grabCircleRadius
     let angle = this.vec0.angleTo(vec1) * modulator
-    if (this.vec0.cross(vec1).dot(this.baseXfo.ori.getZaxis()) < 0)
-      angle = -angle
+    if (this.vec0.cross(vec1).dot(this.baseXfo.ori.getZaxis()) < 0) angle = -angle
 
     if (this.range) {
       angle = Math.clamp(angle, this.range[0], this.range[1])
@@ -108,11 +111,14 @@ class BaseAxialRotationHandle extends Handle {
   }
 
   /**
-   * The onDragEnd method.
-   * @param {any} event - The event param.
+   * Handles the end of dragging the handle.
+   *
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onDragEnd(event) {
     this.change = null
   }
 }
+
+export default BaseAxialRotationHandle
 export { BaseAxialRotationHandle }

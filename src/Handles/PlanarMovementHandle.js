@@ -1,13 +1,16 @@
-import Handle from './Handle.js'
-import ParameterValueChange from '../undoredo/Changes/ParameterValueChange.js'
+import Handle from './Handle'
+import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
 
-/** Class representing a planar movement scene widget.
+/**
+ * Class representing a planar movement scene widget.
+ *
  * @extends Handle
  */
 class PlanarMovementHandle extends Handle {
   /**
    * Create a planar movement scene widget.
-   * @param {any} name - The name value.
+   *
+   * @param {string} name - The name value.
    */
   constructor(name) {
     super(name)
@@ -15,8 +18,9 @@ class PlanarMovementHandle extends Handle {
   }
 
   /**
-   * The setTargetParam method.
-   * @param {any} param - The param param.
+   * Sets global xfo target parameter.
+   *
+   * @param {Parameter} param - The video param.
    * @param {boolean} track - The track param.
    */
   setTargetParam(param, track = true) {
@@ -31,15 +35,18 @@ class PlanarMovementHandle extends Handle {
   }
 
   /**
-   * The getTargetParam method.
+   * Returns target's global xfo parameter.
+   *
+   * @return {Parameter} - returns handle's target global Xfo.
    */
   getTargetParam() {
     return this.param ? this.param : this.getParameter('GlobalXfo')
   }
 
   /**
-   * The onDragStart method.
-   * @param {any} event - The event param.
+   * Handles the initially drag of the handle.
+   *
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onDragStart(event) {
     this.grabPos = event.grabPos
@@ -52,8 +59,9 @@ class PlanarMovementHandle extends Handle {
   }
 
   /**
-   * The onDrag method.
-   * @param {any} event - The event param.
+   * Handles drag action of the handle.
+   *
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onDrag(event) {
     const dragVec = event.holdPos.subtract(this.grabPos)
@@ -72,8 +80,9 @@ class PlanarMovementHandle extends Handle {
   }
 
   /**
-   * The onDragEnd method.
-   * @param {any} event - The event param.
+   * Handles the end of dragging the handle.
+   *
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onDragEnd(event) {
     this.change = null
@@ -83,9 +92,10 @@ class PlanarMovementHandle extends Handle {
   // VRController events
 
   /**
-   * The onVRControllerButtonDown method.
-   * @param {any} event - The event param.
-   * @return {any} The return value.
+   * Event fired when a VR controller button is pressed over the handle.
+   *
+   * @param {object} event - The event param.
+   * @return {boolean} The return value.
    */
   onVRControllerButtonDown(event) {
     if (this.fullXfoManipulationInVR) {
@@ -101,8 +111,8 @@ class PlanarMovementHandle extends Handle {
 
   /**
    * The onVRPoseChanged method.
-   * @param {any} event - The event param.
-   * @return {any} The return value.
+   *
+   * @param {object} event - The event param.
    */
   onVRPoseChanged(event) {
     if (this.fullXfoManipulationInVR) {
@@ -122,9 +132,9 @@ class PlanarMovementHandle extends Handle {
   }
 
   /**
-   * The onVRControllerButtonUp method.
-   * @param {any} event - The event param.
-   * @return {any} The return value.
+   * Event fired when a VR controller button is released over the handle.
+   *
+   * @param {object} event - The event param.
    */
   onVRControllerButtonUp(event) {
     if (this.fullXfoManipulationInVR) {
@@ -134,4 +144,6 @@ class PlanarMovementHandle extends Handle {
     }
   }
 }
+
+export default PlanarMovementHandle
 export { PlanarMovementHandle }
