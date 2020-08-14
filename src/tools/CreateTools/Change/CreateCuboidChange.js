@@ -4,13 +4,18 @@ import CreateGeomChange from './CreateGeomChange'
 
 /**
  * Class representing a create cuboid change.
+ *
+ * **Events**
+ * * **updated:** Triggered when the change is updated
+ *
  * @extends CreateGeomChange
  */
 class CreateCuboidChange extends CreateGeomChange {
   /**
    * Create a create cuboid change.
-   * @param {any} parentItem - The parentItem value.
-   * @param {any} xfo - The xfo value.
+   *
+   * @param {TreeItem} parentItem - The parentItem value.
+   * @param {Xfo} xfo - The xfo value.
    */
   constructor(parentItem, xfo) {
     super('Create Cuboid')
@@ -27,8 +32,9 @@ class CreateCuboidChange extends CreateGeomChange {
   }
 
   /**
-   * The update method.
-   * @param {any} updateData - The updateData param.
+   * Updates cuboid using the specified data.
+   *
+   * @param {object} updateData - The updateData param.
    */
   update(updateData) {
     if (updateData.baseSize) {
@@ -45,6 +51,7 @@ class CreateCuboidChange extends CreateGeomChange {
     this.emit('updated', updateData)
   }
 }
+
 UndoRedoManager.registerChange('CreateCuboidChange', CreateCuboidChange)
 
 export default CreateCuboidChange

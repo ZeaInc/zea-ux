@@ -3,22 +3,28 @@ import CreateGeomTool from './CreateGeomTool'
 import CreateCuboidChange from './Change/CreateCuboidChange'
 
 /**
- * Class representing a create cuboid tool.
+ * Tool for creating Cuboid geometry.
+ *
+ * **Events**
+ * * **actionFinished:** Triggered when the creation of the geometry is completed.
+ *
  * @extends CreateGeomTool
  */
 class CreateCuboidTool extends CreateGeomTool {
   /**
    * Create a create cuboid tool.
-   * @param {any} appData - The appData value.
+   *
+   * @param {object} appData - The appData value.
    */
   constructor(appData) {
     super(appData)
   }
 
   /**
-   * The createStart method.
-   * @param {any} xfo - The xfo param.
-   * @param {any} parentItem - The parentItem param.
+   * Starts the creation of the cuboid.
+   *
+   * @param {Xfo} xfo - The xfo param.
+   * @param {TreeItem} parentItem - The parentItem param.
    */
   createStart(xfo, parentItem) {
     this.change = new CreateCuboidChange(parentItem, xfo)
@@ -31,8 +37,9 @@ class CreateCuboidTool extends CreateGeomTool {
   }
 
   /**
-   * The createMove method.
-   * @param {any} pt - The pt param.
+   * Updates cuboid structural properties.
+   *
+   * @param {Vec3} pt - The pt param.
    */
   createMove(pt) {
     if (this.stage == 1) {
@@ -50,9 +57,10 @@ class CreateCuboidTool extends CreateGeomTool {
   }
 
   /**
-   * The createRelease method.
-   * @param {any} pt - The pt param.
-   * @param {any} viewport - The viewport param.
+   * Finishes the creation of the cuboid.
+   *
+   * @param {Vec3} pt - The pt param.
+   * @param {GLViewport} viewport - The viewport param.
    */
   createRelease(pt, viewport) {
     if (this.stage == 1) {

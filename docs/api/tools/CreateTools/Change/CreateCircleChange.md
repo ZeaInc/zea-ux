@@ -3,52 +3,55 @@
 ### CreateCircleChange 
 Class representing a create circle change.
 
+**Events**
+* **updated:** Triggered when the change is updated
+
 
 **Extends**: <code>CreateGeomChange</code>  
 
 * [CreateCircleChange ⇐ <code>CreateGeomChange</code>](#CreateCircleChange)
     * [new CreateCircleChange(parentItem, xfo)](#new-CreateCircleChange)
     * [update(updateData)](#update)
-    * [toJSON() ⇒ <code>any</code>](#toJSON)
+    * [toJSON() ⇒ <code>object</code>](#toJSON)
     * [changeFromJSON(j)](#changeFromJSON)
 
 <a name="new_CreateCircleChange_new"></a>
 
 ### new CreateCircleChange
-Create a create circle change.
+Creates an instance of CreateCircleChange.
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| parentItem | <code>any</code> | The parentItem value. |
+| parentItem | <code>TreeItem</code> | The parentItem value. |
 | xfo | <code>Xfo</code> | The xfo value. |
 
 <a name="CreateCircleChange+update"></a>
 
 ### update
-The update method.
+Updates circle with the specified data.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| updateData | <code>any</code> | The updateData param. |
+| updateData | <code>object</code> | The updateData param. |
 
 <a name="CreateCircleChange+toJSON"></a>
 
 ### toJSON
-The toJSON method.
+Serializes change as a JSON object.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>object</code> - - The return value.  
 <a name="CreateCircleChange+changeFromJSON"></a>
 
 ### changeFromJSON
-The changeFromJSON method.
+Updates circle with the specified JSON
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| j | <code>any</code> | The j param. |
+| j | <code>object</code> | The j param. |
 

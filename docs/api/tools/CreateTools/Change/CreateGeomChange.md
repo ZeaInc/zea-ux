@@ -40,31 +40,31 @@ The setParentAndXfo method.
 <a name="CreateGeomChange+undo"></a>
 
 ### undo
-The undo method.
+Removes recently created geometry from its parent.
 
 
 <a name="CreateGeomChange+redo"></a>
 
 ### redo
-The redo method.
+Restores recently created geometry and adds it to the specified parent tree item.
 
 
 <a name="CreateGeomChange+toJSON"></a>
 
 ### toJSON
-The toJSON method.
+Serializes the change as a JSON object.
 
 
-**Returns**: <code>object</code> - -  
+**Returns**: <code>object</code> - - The serialized change  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| context | <code>object</code> | - |
+| context | <code>object</code> | The context value |
 
 <a name="CreateGeomChange+fromJSON"></a>
 
 ### fromJSON
-The fromJSON method.
+Restores geometry from using the specified JSON
 
 
 
@@ -76,6 +76,6 @@ The fromJSON method.
 <a name="CreateGeomChange+destroy"></a>
 
 ### destroy
-The destroy method.
+Removes geometry item reference from change change.
 
 

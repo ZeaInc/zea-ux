@@ -4,13 +4,18 @@ import CreateGeomChange from './CreateGeomChange'
 
 /**
  * Class representing a create cone change.
+ *
+ * **Events**
+ * * **updated:** Triggered when the change is updated
+ *
  * @extends CreateGeomChange
  */
 class CreateConeChange extends CreateGeomChange {
   /**
    * Create a create cone change.
-   * @param {any} parentItem - The parentItem value.
-   * @param {any} xfo - The xfo value.
+   *
+   * @param {TreeItem} parentItem - The parentItem value.
+   * @param {Xfo} xfo - The xfo value.
    */
   constructor(parentItem, xfo) {
     super('Create Cone')
@@ -27,8 +32,9 @@ class CreateConeChange extends CreateGeomChange {
   }
 
   /**
-   * The update method.
-   * @param {any} updateData - The updateData param.
+   * Updates cone with the specified data.
+   *
+   * @param {object} updateData - The updateData param.
    */
   update(updateData) {
     if (updateData.radius) this.geomItem.getGeometry().setRadius(updateData.radius)
@@ -36,6 +42,7 @@ class CreateConeChange extends CreateGeomChange {
     this.emit('updated', updateData)
   }
 }
+
 UndoRedoManager.registerChange('CreateCircleChange', CreateCircleChange)
 
 export default CreateConeChange

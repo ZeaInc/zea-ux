@@ -5,13 +5,17 @@ import CreateGeomChange from './CreateGeomChange'
 /**
  * Class representing a create rect change.
  *
+ * **Events**
+ * * **updated:** Triggered when the change is updated
+ *
  * @extends CreateGeomChange
  */
 class CreateRectChange extends CreateGeomChange {
   /**
    * Create a create rect change.
-   * @param {any} parentItem - The parentItem value.
-   * @param {any} xfo - The xfo value.
+   *
+   * @param {TreeItem} parentItem - The parentItem value.
+   * @param {Xfo} xfo - The xfo value.
    */
   constructor(parentItem, xfo) {
     super('Create Rect')
@@ -31,8 +35,9 @@ class CreateRectChange extends CreateGeomChange {
   }
 
   /**
-   * The update method.
-   * @param {any} updateData - The updateData param.
+   * Updates rectangle with the specified data.
+   *
+   * @param {object} updateData - The updateData param.
    */
   update(updateData) {
     if (updateData.baseSize) {
@@ -47,6 +52,7 @@ class CreateRectChange extends CreateGeomChange {
     this.emit('updated', updateData)
   }
 }
+
 UndoRedoManager.registerChange('CreateRectChange', CreateRectChange)
 
 export default CreateRectChange

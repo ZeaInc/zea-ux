@@ -1,22 +1,27 @@
 import CreateGeomTool from './CreateGeomTool'
 import CreateRectChange from './Change/CreateRectChange'
 /**
- * Class representing a create rect tool.
+ * Tool for creating a rectangle geometry.
+ *
+ * **Events**
+ * * **actionFinished:** Triggered when the creation of the geometry is completed.
+ *
  * @extends CreateGeomTool
  */
 class CreateRectTool extends CreateGeomTool {
   /**
    * Create a create rect tool.
-   * @param {any} appData - The appData value.
+   * @param {object} appData - The appData value.
    */
   constructor(appData) {
     super(appData)
   }
 
   /**
-   * The createStart method.
-   * @param {any} xfo - The xfo param.
-   * @param {any} parentItem - The parentItem param.
+   * Starts the creation of a rectangle geometry.
+   *
+   * @param {Xfo} xfo - The xfo param.
+   * @param {TreeItem} parentItem - The parentItem param.
    */
   createStart(xfo, parentItem) {
     this.change = new CreateRectChange(parentItem, xfo)
@@ -29,8 +34,9 @@ class CreateRectTool extends CreateGeomTool {
   }
 
   /**
-   * The createMove method.
-   * @param {any} pt - The pt param.
+   * Updated the rectangle geometry structural properties.
+   *
+   * @param {Vec3} pt - The pt param.
    */
   createMove(pt) {
     if (this.stage == 1) {
@@ -50,9 +56,10 @@ class CreateRectTool extends CreateGeomTool {
   }
 
   /**
-   * The createRelease method.
-   * @param {any} pt - The pt param.
-   * @param {any} viewport - The viewport param.
+   * Finishes the creation of a rectangle geometry.
+   *
+   * @param {Vec3} pt - The pt param.
+   * @param {GLViewport} viewport - The viewport param.
    */
   createRelease(pt, viewport) {
     if (this._size == 0) {

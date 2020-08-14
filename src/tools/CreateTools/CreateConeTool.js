@@ -1,22 +1,26 @@
 import CreateConeChange from './Change/CreateConeChange'
 
 /**
- * Class representing a create cone tool.
+ * Tool for creating a Cone geometry.
+ *
+ * **Events**
+ * * **actionFinished:** Triggered when the creation of the geometry is completed.
  *
  * @extends CreateGeomTool
  */
 class CreateConeTool extends CreateGeomTool {
   /**
    * Create a create cone tool.
-   * @param {any} appData - The appData value.
+   * @param {object} appData - The appData value.
    */
   constructor(appData) {
     super(appData)
   }
 
   /**
-   * The createStart method.
-   * @param {any} xfo - The xfo param.
+   * Starts the creation of the geometry.
+   *
+   * @param {Xfo} xfo - The xfo param.
    */
   createStart(xfo) {
     this.xfo = xfo
@@ -31,8 +35,9 @@ class CreateConeTool extends CreateGeomTool {
   }
 
   /**
-   * The createMove method.
-   * @param {any} pt - The pt param.
+   * Updates Cone geometry structural properties.
+   *
+   * @param {Vec3} pt - The pt param.
    */
   createMove(pt) {
     if (this.stage == 1) {
@@ -48,8 +53,9 @@ class CreateConeTool extends CreateGeomTool {
   }
 
   /**
-   * The createRelease method.
-   * @param {any} pt - The pt param.
+   * Finishes the creation of the Cone.
+   *
+   * @param {Vec3} pt - The pt param.
    */
   createRelease(pt) {
     if (this._radius == 0 || this._height == 0) {

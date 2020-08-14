@@ -3,13 +3,18 @@ import CreateLineTool from './CreateLineTool'
 import CreateFreehandLineChange from './Change/CreateFreehandLineChange'
 
 /**
- * Class representing a create freehand line tool.
+ * Tool for creating a free hand line.
+ *
+ * **Events**
+ * * **actionFinished:** Triggered when the creation of the geometry is completed.
+ *
  * @extends CreateLineTool
  */
 class CreateFreehandLineTool extends CreateLineTool {
   /**
    * Create a create freehand line tool.
-   * @param {any} appData - The appData value.
+   *
+   * @param {object} appData - The appData value.
    */
   constructor(appData) {
     super(appData)
@@ -18,9 +23,10 @@ class CreateFreehandLineTool extends CreateLineTool {
   }
 
   /**
-   * The createStart method.
-   * @param {any} xfo - The xfo param.
-   * @param {any} parentItem - The parentItem param.
+   * Starts the creation of a free hand line.
+   *
+   * @param {Xfo} xfo - The xfo param.
+   * @param {TreeItem} parentItem - The parentItem param.
    */
   createStart(xfo, parentItem) {
     const color = this.cp.getValue()
@@ -36,8 +42,9 @@ class CreateFreehandLineTool extends CreateLineTool {
   }
 
   /**
-   * The createMove method.
-   * @param {any} pt - The pt param.
+   * Updates the free hand line data.
+   *
+   * @param {Vec3} pt - The pt param.
    */
   createMove(pt) {
     const p = this.invxfo.transformVec3(pt)
@@ -53,8 +60,9 @@ class CreateFreehandLineTool extends CreateLineTool {
   }
 
   /**
-   * The createRelease method.
-   * @param {any} pt - The pt param.
+   * Finishes free hand line creation
+   *
+   * @param {Vec3} pt - The pt param.
    */
   createRelease(pt) {
     if (this.length == 0) {

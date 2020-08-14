@@ -2,13 +2,15 @@ import { Color, Xfo, Ray, ColorParameter, GeomItem, Material, Cross } from '@zea
 import BaseCreateTool from '../BaseCreateTool'
 
 /**
- * Class representing a create geom tool.
+ * Base class for creating geometry tools.
+ *
  * @extends BaseCreateTool
  */
 class CreateGeomTool extends BaseCreateTool {
   /**
    * Create a create geom tool.
-   * @param {any} appData - The appData value.
+   *
+   * @param {object} appData - The appData value.
    */
   constructor(appData) {
     super(appData)
@@ -63,14 +65,13 @@ class CreateGeomTool extends BaseCreateTool {
   }
 
   /**
-   * The screenPosToXfo method.
-   * @param {any} screenPos - The screenPos param.
-   * @param {any} viewport - The viewport param.
-   * @return {any} The return value.
+   * Transforms the screen position in the viewport to an Xfo object.
+   *
+   * @param {Vec2} screenPos - The screenPos param.
+   * @param {GLViewport} viewport - The viewport param.
+   * @return {Xfo} The return value.
    */
   screenPosToXfo(screenPos, viewport) {
-    //
-
     const ray = viewport.calcRayFromScreenPos(screenPos)
 
     // Raycast any working planes.
@@ -90,9 +91,10 @@ class CreateGeomTool extends BaseCreateTool {
   }
 
   /**
-   * The createStart method.
-   * @param {any} xfo - The xfo param.
-   * @param {any} parentItem - The parentItem param.
+   * Starts the creation of the geometry.
+   *
+   * @param {Xfo} xfo - The xfo param.
+   * @param {TreeItem} parentItem - The parentItem param.
    */
   createStart(xfo, parentItem) {
     this.stage = 1
@@ -100,29 +102,39 @@ class CreateGeomTool extends BaseCreateTool {
 
   /**
    * The createPoint method.
-   * @param {any} pt - The pt param.
+   *
+   * @param {Vec3} pt - The pt param.
    */
-  createPoint(pt) {}
+  createPoint(pt) {
+    console.warn('Implement me')
+  }
 
   /**
    * The createMove method.
-   * @param {any} pt - The pt param.
+   *
+   * @param {Vec3} pt - The pt param.
    */
-  createMove(pt) {}
+  createMove(pt) {
+    console.warn('Implement me')
+  }
 
   /**
    * The createRelease method.
-   * @param {any} pt - The pt param.
+   *
+   * @param {Vec3} pt - The pt param.
    */
-  createRelease(pt) {}
+  createRelease(pt) {
+    console.warn('Implement me')
+  }
 
   // ///////////////////////////////////
   // Mouse events
 
   /**
-   * The onMouseDown method.
-   * @param {any} event - The event param.
-   * @return {any} The return value.
+   * Event fired when a pointing device button is pressed over the viewport while the tool is activated.
+   *
+   * @param {MouseEvent} event - The event param.
+   * @return {boolean} The return value.
    */
   onMouseDown(event) {
     //
@@ -146,9 +158,10 @@ class CreateGeomTool extends BaseCreateTool {
   }
 
   /**
-   * The onMouseMove method.
-   * @param {any} event - The event param.
-   * @return {any} The return value.
+   * Event fired when a pointing device is moved while the cursor's hotspot is inside the viewport, while tool is activated.
+   *
+   * @param {MouseEvent} event - The event param.
+   * @return {boolean} The return value.
    */
   onMouseMove(event) {
     if (this.stage > 0) {
@@ -159,9 +172,10 @@ class CreateGeomTool extends BaseCreateTool {
   }
 
   /**
-   * The onMouseUp method.
-   * @param {any} event - The event param.
-   * @return {any} The return value.
+   * Event fired when a pointing device button is released while the pointer is over the viewport, while the tool is activated.
+   *
+   * @param {MouseEvent} event - The event param.
+   * @return {boolean} The return value.
    */
   onMouseUp(event) {
     if (this.stage > 0) {
@@ -172,69 +186,94 @@ class CreateGeomTool extends BaseCreateTool {
   }
 
   /**
-   * The onWheel method.
-   * @param {any} event - The event param.
+   * Event fired when the user rotates the pointing device wheel, while the tool is activated.
+   *
+   * @param {MouseEvent} event - The event param.
    */
-  onWheel(event) {}
+  onWheel(event) {
+    console.warn('Implement me')
+  }
 
   // ///////////////////////////////////
   // Keyboard events
 
   /**
-   * The onKeyPressed method.
-   * @param {any} key - The key param.
-   * @param {any} event - The event param.
+   * Event fired when the user presses a key on the keyboard, while the tool is activated.
+   *
+   * @param {string} key - The key param.
+   * @param {KeyboardEvent} event - The event param.
    */
-  onKeyPressed(key, event) {}
+  onKeyPressed(key, event) {
+    console.warn('Implement me')
+  }
 
   /**
-   * The onKeyDown method.
-   * @param {any} key - The key param.
-   * @param {any} event - The event param.
+   * Event fired when the user presses down a key on the keyboard, while the tool is activated.
+   *
+   * @param {string} key - The key param.
+   * @param {KeyboardEvent} event - The event param.
    */
-  onKeyDown(key, event) {}
+  onKeyDown(key, event) {
+    console.warn('Implement me')
+  }
 
   /**
-   * The onKeyUp method.
-   * @param {any} key - The key param.
-   * @param {any} event - The event param.
+   * Event fired when the user releases a key on the keyboard.
+   *
+   * @param {string} key - The key param.
+   * @param {KeyboardEvent} event - The event param.
    */
-  onKeyUp(key, event) {}
+  onKeyUp(key, event) {
+    console.warn('Implement me')
+  }
 
   // ///////////////////////////////////
   // Touch events
 
   /**
-   * The onTouchStart method.
-   * @param {any} event - The event param.
+   * Event fired when one or more touch points are placed on the touch surface inside the viewport, when the tool is activated.
+   *
+   * @param {TouchEvent} event - The event param.
    */
-  onTouchStart(event) {}
+  onTouchStart(event) {
+    console.warn('Implement me')
+  }
 
   /**
-   * The onTouchMove method.
-   * @param {any} event - The event param.
+   * Event fired when the one or more touch points are moved along the touch surface inside the viewport, when the tool is activated.
+   *
+   * @param {TouchEvent} event - The event param.
    */
-  onTouchMove(event) {}
+  onTouchMove(event) {
+    console.warn('Implement me')
+  }
 
   /**
-   * The onTouchEnd method.
-   * @param {any} event - The event param.
+   * Event fired when one or more touch points are removed from the touch surface inside the viewport, when the tool is activated.
+   *
+   * @param {TouchEvent} event - The event param.
    */
-  onTouchEnd(event) {}
+  onTouchEnd(event) {
+    console.warn('Implement me')
+  }
 
   /**
-   * The onTouchCancel method.
-   * @param {any} event - The event param.
+   * Event fired when one or more touch points have been disrupted in an implementation-specific manner inside the viewport, when the tool is activated.
+   *
+   * @param {TouchEvent} event - The event param.
    */
-  onTouchCancel(event) {}
+  onTouchCancel(event) {
+    console.warn('Implement me')
+  }
 
   // ///////////////////////////////////
   // VRController events
 
   /**
-   * The onVRControllerButtonDown method.
-   * @param {any} event - The event param.
-   * @return {any} The return value.
+   * Event fired when a VR controller button is pressed inside the viewport, when the tool is activated.
+   *
+   * @param {object} event - The event param.
+   * @return {boolean} The return value.
    */
   onVRControllerButtonDown(event) {
     if (!this.__activeController) {
@@ -250,8 +289,9 @@ class CreateGeomTool extends BaseCreateTool {
 
   /**
    * The onVRPoseChanged method.
-   * @param {any} event - The event param.
-   * @return {any} The return value.
+   *
+   * @param {object} event - The event param.
+   * @return {boolean} The return value.
    */
   onVRPoseChanged(event) {
     if (this.__activeController && this.stage > 0) {
@@ -263,9 +303,10 @@ class CreateGeomTool extends BaseCreateTool {
   }
 
   /**
-   * The onVRControllerButtonUp method.
-   * @param {any} event - The event param.
-   * @return {any} The return value.
+   * Event fired when a VR controller button is released inside the viewport, when the tool is activated.
+   *
+   * @param {object} event - The event param.
+   * @return {boolean} The return value.
    */
   onVRControllerButtonUp(event) {
     if (this.stage > 0) {

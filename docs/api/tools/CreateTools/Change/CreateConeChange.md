@@ -3,6 +3,9 @@
 ### CreateConeChange 
 Class representing a create cone change.
 
+**Events**
+* **updated:** Triggered when the change is updated
+
 
 **Extends**: <code>CreateGeomChange</code>  
 
@@ -18,17 +21,17 @@ Create a create cone change.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| parentItem | <code>any</code> | The parentItem value. |
-| xfo | <code>any</code> | The xfo value. |
+| parentItem | <code>TreeItem</code> | The parentItem value. |
+| xfo | <code>Xfo</code> | The xfo value. |
 
 <a name="CreateConeChange+update"></a>
 
 ### update
-The update method.
+Updates cone with the specified data.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| updateData | <code>any</code> | The updateData param. |
+| updateData | <code>object</code> | The updateData param. |
 

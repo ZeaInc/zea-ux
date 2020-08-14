@@ -3,10 +3,14 @@ import CreateGeomTool from './CreateGeomTool'
 import CreateLineChange from './Change/CreateLineChange'
 
 /**
- * Class representing a create line tool.
+ * Tool for creating a line tool.
+ *
+ * **Events**
+ * * **actionFinished:** Triggered when the creation of the geometry is completed.
+ *
  * @extends CreateGeomTool
  */
-export default class CreateLineTool extends CreateGeomTool {
+class CreateLineTool extends CreateGeomTool {
   /**
    * Create a create line tool.
    * @param {any} appData - The appData value.
@@ -58,9 +62,10 @@ export default class CreateLineTool extends CreateGeomTool {
   // }
 
   /**
-   * The createStart method.
-   * @param {any} xfo - The xfo param.
-   * @param {any} parentItem - The parentItem param.
+   * Starts line geometry creation.
+   *
+   * @param {Xfo} xfo - The xfo param.
+   * @param {TreeItem} parentItem - The parentItem param.
    */
   createStart(xfo, parentItem) {
     this.change = new CreateLineChange(parentItem, xfo)
@@ -72,8 +77,9 @@ export default class CreateLineTool extends CreateGeomTool {
   }
 
   /**
-   * The createMove method.
-   * @param {any} pt - The pt param.
+   * Updates line structural data.
+   *
+   * @param {Vec3} pt - The pt param.
    */
   createMove(pt) {
     const offet = this.xfo.transformVec3(pt)
@@ -82,8 +88,9 @@ export default class CreateLineTool extends CreateGeomTool {
   }
 
   /**
-   * The createRelease method.
-   * @param {any} pt - The pt param.
+   * Finishes Line geometry creation.
+   *
+   * @param {Vec3} pt - The pt param.
    */
   createRelease(pt) {
     if (this.length == 0) {
@@ -93,4 +100,6 @@ export default class CreateLineTool extends CreateGeomTool {
     this.emit('actionFinished')
   }
 }
+
+export default CreateLineTool
 export { CreateLineTool }

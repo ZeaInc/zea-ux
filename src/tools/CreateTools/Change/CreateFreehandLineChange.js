@@ -4,15 +4,20 @@ import CreateGeomChange from './CreateGeomChange'
 
 /**
  * Class representing a create freehand line change.
+ *
+ * **Events**
+ * * **updated:** Triggered when the change is updated
+ *
  * @extends CreateGeomChange
  */
 class CreateFreehandLineChange extends CreateGeomChange {
   /**
    * Create a create freehand line change.
-   * @param {any} parentItem - The parentItem value.
-   * @param {any} xfo - The xfo value.
-   * @param {any} color - The color value.
-   * @param {any} thickness - The thickness value.
+   *
+   * @param {TreeItem} parentItem - The parentItem value.
+   * @param {Xfo} xfo - The xfo value.
+   * @param {Color} color - The color value.
+   * @param {number} thickness - The thickness value.
    */
   constructor(parentItem, xfo, color, thickness) {
     super('Create Freehand Line')
@@ -49,8 +54,9 @@ class CreateFreehandLineChange extends CreateGeomChange {
   }
 
   /**
-   * The update method.
-   * @param {any} updateData - The updateData param.
+   * Updates free hand line using the specified data.
+   *
+   * @param {object} updateData - The updateData param.
    */
   update(updateData) {
     // console.log("update:", this.used)
@@ -82,9 +88,10 @@ class CreateFreehandLineChange extends CreateGeomChange {
   }
 
   /**
-   * The toJSON method.
-   * @param {any} appData - The appData param.
-   * @return {any} The return value.
+   * Serializes change as a JSON object.
+   *
+   * @param {object} context - The appData param.
+   * @return {object} The return value.
    */
   toJSON(context) {
     const j = super.toJSON(context)
@@ -94,9 +101,10 @@ class CreateFreehandLineChange extends CreateGeomChange {
   }
 
   /**
-   * The fromJSON method.
-   * @param {any} j - The j param.
-   * @param {any} appData - The appData param.
+   * Restores free hand line from a JSON object.
+   *
+   * @param {object} j - The j param.
+   * @param {object} context - The appData param.
    */
   fromJSON(j, context) {
     // Need to set line thickness before the geom is added to the tree.
@@ -114,6 +122,7 @@ class CreateFreehandLineChange extends CreateGeomChange {
     super.fromJSON(j, context)
   }
 }
+
 UndoRedoManager.registerChange('CreateFreehandLineChange', CreateFreehandLineChange)
 
 export default CreateFreehandLineChange

@@ -1,7 +1,10 @@
 <a name="CreateSphereTool"></a>
 
 ### CreateSphereTool 
-Class representing a create sphere tool.
+Tool for creating Sphere geometries.
+
+**Events**
+* **actionFinished:** Triggered when the creation of the geometry is completed.
 
 
 **Extends**: <code>CreateGeomTool</code>  
@@ -20,39 +23,39 @@ Create a create sphere tool.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| appData | <code>any</code> | The appData value. |
+| appData | <code>object</code> | The appData value. |
 
 <a name="CreateSphereTool+createStart"></a>
 
 ### createStart
-The createStart method.
+Starts the creation of the sphere geometry.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| xfo | <code>any</code> | The xfo param. |
-| parentItem | <code>any</code> | The parentItem param. |
+| xfo | <code>Xfo</code> | The xfo param. |
+| parentItem | <code>TreeItem</code> | The parentItem param. |
 
 <a name="CreateSphereTool+createMove"></a>
 
 ### createMove
-The createMove method.
+Updates the sphere geometry structural properties.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| pt | <code>any</code> | The pt param. |
+| pt | <code>vec3</code> | The pt param. |
 
 <a name="CreateSphereTool+createRelease"></a>
 
 ### createRelease
-The createRelease method.
+Finishes the creation of the sphere geometry.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| pt | <code>any</code> | The pt param. |
+| pt | <code>Vec3</code> | The pt param. |
 

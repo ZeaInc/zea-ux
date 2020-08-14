@@ -191,7 +191,7 @@ Event fired when the user releases a key on the keyboard.
 <a name="BaseTool+onTouchStart"></a>
 
 ### onTouchStart
-Event fired when one ro more touch points are placed on the touch surface over a tool.
+Event fired when one or more touch points are placed on the touch surface over a tool.
 
 
 

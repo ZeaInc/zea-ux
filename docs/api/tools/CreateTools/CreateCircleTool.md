@@ -1,7 +1,10 @@
 <a name="CreateCircleTool"></a>
 
 ### CreateCircleTool 
-Class representing a create circle tool.
+Tool for creating a circle geometry.
+
+**Events**
+* **actionFinished:** Triggered when the creation of the geometry is completed.
 
 
 **Extends**: <code>CreateGeomTool</code>  
@@ -20,39 +23,39 @@ Create a create circle tool.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| appData | <code>any</code> | The appData value. |
+| appData | <code>object</code> | The appData value. |
 
 <a name="CreateCircleTool+createStart"></a>
 
 ### createStart
-The createStart method.
+Starts the creation of the geometry.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| xfo | <code>any</code> | The xfo param. |
-| parentItem | <code>any</code> | The parentItem param. |
+| xfo | <code>Xfo</code> | The xfo param. |
+| parentItem | <code>TreeItem</code> | The parentItem param. |
 
 <a name="CreateCircleTool+createMove"></a>
 
 ### createMove
-The createMove method.
+Updates Circle geometry radius.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| pt | <code>any</code> | The pt param. |
+| pt | <code>Vec3</code> | The pt param. |
 
 <a name="CreateCircleTool+createRelease"></a>
 
 ### createRelease
-The createRelease method.
+Finishes geometry creation.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| pt | <code>any</code> | The pt param. |
+| pt | <code>Vec3</code> | The pt param. |
 

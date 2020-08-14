@@ -3,14 +3,17 @@
 ### CreateFreehandLineChange 
 Class representing a create freehand line change.
 
+**Events**
+* **updated:** Triggered when the change is updated
+
 
 **Extends**: <code>CreateGeomChange</code>  
 
 * [CreateFreehandLineChange ⇐ <code>CreateGeomChange</code>](#CreateFreehandLineChange)
     * [new CreateFreehandLineChange(parentItem, xfo, color, thickness)](#new-CreateFreehandLineChange)
     * [update(updateData)](#update)
-    * [toJSON(appData) ⇒ <code>any</code>](#toJSON)
-    * [fromJSON(j, appData)](#fromJSON)
+    * [toJSON(context) ⇒ <code>object</code>](#toJSON)
+    * [fromJSON(j, context)](#fromJSON)
 
 <a name="new_CreateFreehandLineChange_new"></a>
 
@@ -20,43 +23,43 @@ Create a create freehand line change.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| parentItem | <code>any</code> | The parentItem value. |
-| xfo | <code>any</code> | The xfo value. |
-| color | <code>any</code> | The color value. |
-| thickness | <code>any</code> | The thickness value. |
+| parentItem | <code>TreeItem</code> | The parentItem value. |
+| xfo | <code>Xfo</code> | The xfo value. |
+| color | <code>Color</code> | The color value. |
+| thickness | <code>number</code> | The thickness value. |
 
 <a name="CreateFreehandLineChange+update"></a>
 
 ### update
-The update method.
+Updates free hand line using the specified data.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| updateData | <code>any</code> | The updateData param. |
+| updateData | <code>object</code> | The updateData param. |
 
 <a name="CreateFreehandLineChange+toJSON"></a>
 
 ### toJSON
-The toJSON method.
+Serializes change as a JSON object.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>object</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| appData | <code>any</code> | The appData param. |
+| context | <code>object</code> | The appData param. |
 
 <a name="CreateFreehandLineChange+fromJSON"></a>
 
 ### fromJSON
-The fromJSON method.
+Restores free hand line from a JSON object.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| j | <code>any</code> | The j param. |
-| appData | <code>any</code> | The appData param. |
+| j | <code>object</code> | The j param. |
+| context | <code>object</code> | The appData param. |
 

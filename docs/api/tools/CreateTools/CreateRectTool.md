@@ -1,7 +1,10 @@
 <a name="CreateRectTool"></a>
 
 ### CreateRectTool 
-Class representing a create rect tool.
+Tool for creating a rectangle geometry.
+
+**Events**
+* **actionFinished:** Triggered when the creation of the geometry is completed.
 
 
 **Extends**: <code>CreateGeomTool</code>  
@@ -20,40 +23,40 @@ Create a create rect tool.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| appData | <code>any</code> | The appData value. |
+| appData | <code>object</code> | The appData value. |
 
 <a name="CreateRectTool+createStart"></a>
 
 ### createStart
-The createStart method.
+Starts the creation of a rectangle geometry.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| xfo | <code>any</code> | The xfo param. |
-| parentItem | <code>any</code> | The parentItem param. |
+| xfo | <code>Xfo</code> | The xfo param. |
+| parentItem | <code>TreeItem</code> | The parentItem param. |
 
 <a name="CreateRectTool+createMove"></a>
 
 ### createMove
-The createMove method.
+Updated the rectangle geometry structural properties.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| pt | <code>any</code> | The pt param. |
+| pt | <code>Vec3</code> | The pt param. |
 
 <a name="CreateRectTool+createRelease"></a>
 
 ### createRelease
-The createRelease method.
+Finishes the creation of a rectangle geometry.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| pt | <code>any</code> | The pt param. |
-| viewport | <code>any</code> | The viewport param. |
+| pt | <code>Vec3</code> | The pt param. |
+| viewport | <code>GLViewport</code> | The viewport param. |
 

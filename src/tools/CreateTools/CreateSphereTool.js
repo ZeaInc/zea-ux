@@ -2,22 +2,28 @@ import CreateGeomTool from './CreateGeomTool'
 import CreateSphereChange from './Change/CreateSphereChange'
 
 /**
- * Class representing a create sphere tool.
+ * Tool for creating Sphere geometries.
+ *
+ * **Events**
+ * * **actionFinished:** Triggered when the creation of the geometry is completed.
+ *
  * @extends CreateGeomTool
  */
 class CreateSphereTool extends CreateGeomTool {
   /**
    * Create a create sphere tool.
-   * @param {any} appData - The appData value.
+   *
+   * @param {object} appData - The appData value.
    */
   constructor(appData) {
     super(appData)
   }
 
   /**
-   * The createStart method.
-   * @param {any} xfo - The xfo param.
-   * @param {any} parentItem - The parentItem param.
+   * Starts the creation of the sphere geometry.
+   *
+   * @param {Xfo} xfo - The xfo param.
+   * @param {TreeItem} parentItem - The parentItem param.
    */
   createStart(xfo, parentItem) {
     this.change = new CreateSphereChange(parentItem, xfo)
@@ -29,8 +35,9 @@ class CreateSphereTool extends CreateGeomTool {
   }
 
   /**
-   * The createMove method.
-   * @param {any} pt - The pt param.
+   * Updates the sphere geometry structural properties.
+   *
+   * @param {vec3} pt - The pt param.
    */
   createMove(pt) {
     this.radius = pt.distanceTo(this.xfo.tr)
@@ -38,8 +45,9 @@ class CreateSphereTool extends CreateGeomTool {
   }
 
   /**
-   * The createRelease method.
-   * @param {any} pt - The pt param.
+   * Finishes the creation of the sphere geometry.
+   *
+   * @param {Vec3} pt - The pt param.
    */
   createRelease(pt) {
     if (this.radius == 0) {

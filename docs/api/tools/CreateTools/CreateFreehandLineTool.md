@@ -1,7 +1,10 @@
 <a name="CreateFreehandLineTool"></a>
 
 ### CreateFreehandLineTool 
-Class representing a create freehand line tool.
+Tool for creating a free hand line.
+
+**Events**
+* **actionFinished:** Triggered when the creation of the geometry is completed.
 
 
 **Extends**: <code>CreateLineTool</code>  
@@ -20,39 +23,39 @@ Create a create freehand line tool.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| appData | <code>any</code> | The appData value. |
+| appData | <code>object</code> | The appData value. |
 
 <a name="CreateFreehandLineTool+createStart"></a>
 
 ### createStart
-The createStart method.
+Starts the creation of a free hand line.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| xfo | <code>any</code> | The xfo param. |
-| parentItem | <code>any</code> | The parentItem param. |
+| xfo | <code>Xfo</code> | The xfo param. |
+| parentItem | <code>TreeItem</code> | The parentItem param. |
 
 <a name="CreateFreehandLineTool+createMove"></a>
 
 ### createMove
-The createMove method.
+Updates the free hand line data.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| pt | <code>any</code> | The pt param. |
+| pt | <code>Vec3</code> | The pt param. |
 
 <a name="CreateFreehandLineTool+createRelease"></a>
 
 ### createRelease
-The createRelease method.
+Finishes free hand line creation
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| pt | <code>any</code> | The pt param. |
+| pt | <code>Vec3</code> | The pt param. |
 

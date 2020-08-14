@@ -3,13 +3,16 @@
 ### CreateSphereChange 
 Class representing a create sphere change.
 
+**Events**
+* **updated:** Triggered when the change is updated
+
 
 **Extends**: <code>CreateGeomChange</code>  
 
 * [CreateSphereChange ⇐ <code>CreateGeomChange</code>](#CreateSphereChange)
     * [new CreateSphereChange(parentItem, xfo)](#new-CreateSphereChange)
     * [update(updateData)](#update)
-    * [toJSON() ⇒ <code>any</code>](#toJSON)
+    * [toJSON() ⇒ <code>object</code>](#toJSON)
     * [changeFromJSON(j)](#changeFromJSON)
 
 <a name="new_CreateSphereChange_new"></a>
@@ -20,35 +23,35 @@ Create a create sphere change.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| parentItem | <code>any</code> | The parentItem value. |
-| xfo | <code>any</code> | The xfo value. |
+| parentItem | <code>TreeItem</code> | The parentItem value. |
+| xfo | <code>Xfo</code> | The xfo value. |
 
 <a name="CreateSphereChange+update"></a>
 
 ### update
-The update method.
+Updates sphere geometry using the specified data.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| updateData | <code>any</code> | The updateData param. |
+| updateData | <code>object</code> | The updateData param. |
 
 <a name="CreateSphereChange+toJSON"></a>
 
 ### toJSON
-The toJSON method.
+Serializes sphere geometry as a JSON object.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>object</code> - The return value.  
 <a name="CreateSphereChange+changeFromJSON"></a>
 
 ### changeFromJSON
-The changeFromJSON method.
+Updates sphere geometry using a JSON object.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| j | <code>any</code> | The j param. |
+| j | <code>object</code> | The j param. |
 

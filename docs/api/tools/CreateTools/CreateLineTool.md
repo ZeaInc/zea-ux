@@ -1,48 +1,61 @@
-### Functions
+<a name="CreateLineTool"></a>
 
-<dl>
-<dt><a href="#createStart">createStart(xfo, parentItem)</a></dt>
-<dd><p>The createStart method.</p>
-</dd>
-<dt><a href="#createMove">createMove(pt)</a></dt>
-<dd><p>The createMove method.</p>
-</dd>
-<dt><a href="#createRelease">createRelease(pt)</a></dt>
-<dd><p>The createRelease method.</p>
-</dd>
-</dl>
+### CreateLineTool 
+Tool for creating a line tool.
 
-<a name="createStart"></a>
+**Events**
+* **actionFinished:** Triggered when the creation of the geometry is completed.
+
+
+**Extends**: <code>CreateGeomTool</code>  
+
+* [CreateLineTool ⇐ <code>CreateGeomTool</code>](#CreateLineTool)
+    * [new CreateLineTool(appData)](#new-CreateLineTool)
+    * [createStart(xfo, parentItem)](#createStart)
+    * [createMove(pt)](#createMove)
+    * [createRelease(pt)](#createRelease)
+
+<a name="new_CreateLineTool_new"></a>
+
+### new CreateLineTool
+Create a create line tool.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| appData | <code>any</code> | The appData value. |
+
+<a name="CreateLineTool+createStart"></a>
 
 ### createStart
-The createStart method.
+Starts line geometry creation.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| xfo | <code>any</code> | The xfo param. |
-| parentItem | <code>any</code> | The parentItem param. |
+| xfo | <code>Xfo</code> | The xfo param. |
+| parentItem | <code>TreeItem</code> | The parentItem param. |
 
-<a name="createMove"></a>
+<a name="CreateLineTool+createMove"></a>
 
 ### createMove
-The createMove method.
+Updates line structural data.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| pt | <code>any</code> | The pt param. |
+| pt | <code>Vec3</code> | The pt param. |
 
-<a name="createRelease"></a>
+<a name="CreateLineTool+createRelease"></a>
 
 ### createRelease
-The createRelease method.
+Finishes Line geometry creation.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| pt | <code>any</code> | The pt param. |
+| pt | <code>Vec3</code> | The pt param. |
 

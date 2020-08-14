@@ -1,7 +1,7 @@
 <a name="CreateGeomTool"></a>
 
 ### CreateGeomTool 
-Class representing a create geom tool.
+Base class for creating geometry tools.
 
 
 **Extends**: <code>BaseCreateTool</code>  
@@ -10,14 +10,14 @@ Class representing a create geom tool.
     * [new CreateGeomTool(appData)](#new-CreateGeomTool)
     * [activateTool()](#activateTool)
     * [deactivateTool()](#deactivateTool)
-    * [screenPosToXfo(screenPos, viewport) ⇒ <code>any</code>](#screenPosToXfo)
+    * [screenPosToXfo(screenPos, viewport) ⇒ <code>Xfo</code>](#screenPosToXfo)
     * [createStart(xfo, parentItem)](#createStart)
     * [createPoint(pt)](#createPoint)
     * [createMove(pt)](#createMove)
     * [createRelease(pt)](#createRelease)
-    * [onMouseDown(event) ⇒ <code>any</code>](#onMouseDown)
-    * [onMouseMove(event) ⇒ <code>any</code>](#onMouseMove)
-    * [onMouseUp(event) ⇒ <code>any</code>](#onMouseUp)
+    * [onMouseDown(event) ⇒ <code>boolean</code>](#onMouseDown)
+    * [onMouseMove(event) ⇒ <code>boolean</code>](#onMouseMove)
+    * [onMouseUp(event) ⇒ <code>boolean</code>](#onMouseUp)
     * [onWheel(event)](#onWheel)
     * [onKeyPressed(key, event)](#onKeyPressed)
     * [onKeyDown(key, event)](#onKeyDown)
@@ -26,9 +26,9 @@ Class representing a create geom tool.
     * [onTouchMove(event)](#onTouchMove)
     * [onTouchEnd(event)](#onTouchEnd)
     * [onTouchCancel(event)](#onTouchCancel)
-    * [onVRControllerButtonDown(event) ⇒ <code>any</code>](#onVRControllerButtonDown)
-    * [onVRPoseChanged(event) ⇒ <code>any</code>](#onVRPoseChanged)
-    * [onVRControllerButtonUp(event) ⇒ <code>any</code>](#onVRControllerButtonUp)
+    * [onVRControllerButtonDown(event) ⇒ <code>boolean</code>](#onVRControllerButtonDown)
+    * [onVRPoseChanged(event) ⇒ <code>boolean</code>](#onVRPoseChanged)
+    * [onVRControllerButtonUp(event) ⇒ <code>boolean</code>](#onVRControllerButtonUp)
 
 <a name="new_CreateGeomTool_new"></a>
 
@@ -38,7 +38,7 @@ Create a create geom tool.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| appData | <code>any</code> | The appData value. |
+| appData | <code>object</code> | The appData value. |
 
 <a name="CreateGeomTool+activateTool"></a>
 
@@ -55,27 +55,27 @@ The deactivateTool method.
 <a name="CreateGeomTool+screenPosToXfo"></a>
 
 ### screenPosToXfo
-The screenPosToXfo method.
+Transforms the screen position in the viewport to an Xfo object.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>Xfo</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| screenPos | <code>any</code> | The screenPos param. |
-| viewport | <code>any</code> | The viewport param. |
+| screenPos | <code>Vec2</code> | The screenPos param. |
+| viewport | <code>GLViewport</code> | The viewport param. |
 
 <a name="CreateGeomTool+createStart"></a>
 
 ### createStart
-The createStart method.
+Starts the creation of the geometry.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| xfo | <code>any</code> | The xfo param. |
-| parentItem | <code>any</code> | The parentItem param. |
+| xfo | <code>Xfo</code> | The xfo param. |
+| parentItem | <code>TreeItem</code> | The parentItem param. |
 
 <a name="CreateGeomTool+createPoint"></a>
 
@@ -86,7 +86,7 @@ The createPoint method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| pt | <code>any</code> | The pt param. |
+| pt | <code>Vec3</code> | The pt param. |
 
 <a name="CreateGeomTool+createMove"></a>
 
@@ -97,7 +97,7 @@ The createMove method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| pt | <code>any</code> | The pt param. |
+| pt | <code>Vec3</code> | The pt param. |
 
 <a name="CreateGeomTool+createRelease"></a>
 
@@ -108,146 +108,146 @@ The createRelease method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| pt | <code>any</code> | The pt param. |
+| pt | <code>Vec3</code> | The pt param. |
 
 <a name="CreateGeomTool+onMouseDown"></a>
 
 ### onMouseDown
-The onMouseDown method.
+Event fired when a pointing device button is pressed over the viewport while the tool is activated.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
 <a name="CreateGeomTool+onMouseMove"></a>
 
 ### onMouseMove
-The onMouseMove method.
+Event fired when a pointing device is moved while the cursor's hotspot is inside the viewport, while tool is activated.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
 <a name="CreateGeomTool+onMouseUp"></a>
 
 ### onMouseUp
-The onMouseUp method.
+Event fired when a pointing device button is released while the pointer is over the viewport, while the tool is activated.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
 <a name="CreateGeomTool+onWheel"></a>
 
 ### onWheel
-The onWheel method.
+Event fired when the user rotates the pointing device wheel, while the tool is activated.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
 <a name="CreateGeomTool+onKeyPressed"></a>
 
 ### onKeyPressed
-The onKeyPressed method.
+Event fired when the user presses a key on the keyboard, while the tool is activated.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| key | <code>any</code> | The key param. |
-| event | <code>any</code> | The event param. |
+| key | <code>string</code> | The key param. |
+| event | <code>KeyboardEvent</code> | The event param. |
 
 <a name="CreateGeomTool+onKeyDown"></a>
 
 ### onKeyDown
-The onKeyDown method.
+Event fired when the user presses down a key on the keyboard, while the tool is activated.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| key | <code>any</code> | The key param. |
-| event | <code>any</code> | The event param. |
+| key | <code>string</code> | The key param. |
+| event | <code>KeyboardEvent</code> | The event param. |
 
 <a name="CreateGeomTool+onKeyUp"></a>
 
 ### onKeyUp
-The onKeyUp method.
+Event fired when the user releases a key on the keyboard.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| key | <code>any</code> | The key param. |
-| event | <code>any</code> | The event param. |
+| key | <code>string</code> | The key param. |
+| event | <code>KeyboardEvent</code> | The event param. |
 
 <a name="CreateGeomTool+onTouchStart"></a>
 
 ### onTouchStart
-The onTouchStart method.
+Event fired when one or more touch points are placed on the touch surface inside the viewport, when the tool is activated.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>TouchEvent</code> | The event param. |
 
 <a name="CreateGeomTool+onTouchMove"></a>
 
 ### onTouchMove
-The onTouchMove method.
+Event fired when the one or more touch points are moved along the touch surface inside the viewport, when the tool is activated.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>TouchEvent</code> | The event param. |
 
 <a name="CreateGeomTool+onTouchEnd"></a>
 
 ### onTouchEnd
-The onTouchEnd method.
+Event fired when one or more touch points are removed from the touch surface inside the viewport, when the tool is activated.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>TouchEvent</code> | The event param. |
 
 <a name="CreateGeomTool+onTouchCancel"></a>
 
 ### onTouchCancel
-The onTouchCancel method.
+Event fired when one or more touch points have been disrupted in an implementation-specific manner inside the viewport, when the tool is activated.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>TouchEvent</code> | The event param. |
 
 <a name="CreateGeomTool+onVRControllerButtonDown"></a>
 
 ### onVRControllerButtonDown
-The onVRControllerButtonDown method.
+Event fired when a VR controller button is pressed inside the viewport, when the tool is activated.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>object</code> | The event param. |
 
 <a name="CreateGeomTool+onVRPoseChanged"></a>
 
@@ -255,21 +255,21 @@ The onVRControllerButtonDown method.
 The onVRPoseChanged method.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>object</code> | The event param. |
 
 <a name="CreateGeomTool+onVRControllerButtonUp"></a>
 
 ### onVRControllerButtonUp
-The onVRControllerButtonUp method.
+Event fired when a VR controller button is released inside the viewport, when the tool is activated.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>object</code> | The event param. |
 

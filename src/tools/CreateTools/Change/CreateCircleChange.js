@@ -5,20 +5,23 @@ import CreateGeomChange from './CreateGeomChange'
 /**
  * Class representing a create circle change.
  *
+ * **Events**
+ * * **updated:** Triggered when the change is updated
+ *
  * @extends CreateGeomChange
  */
 class CreateCircleChange extends CreateGeomChange {
   /**
-   * Create a create circle change.
-   * @param {any} parentItem - The parentItem value.
+   * Creates an instance of CreateCircleChange.
+   *
+   * @param {TreeItem} parentItem - The parentItem value.
    * @param {Xfo} xfo - The xfo value.
    */
   constructor(parentItem, xfo) {
-    super('Create Circle', parentItem)
+    super('Create Circle')
 
     this.circle = new Circle(0, 64)
     this.circle.lineThickness = 0.05
-    // const material = new Material('circle', 'LinesShader');
     const material = new Material('circle', 'FatLinesShader')
     material.getParameter('Color').setValue(new Color(0.7, 0.2, 0.2))
     this.geomItem = new GeomItem('Circle')
@@ -31,8 +34,9 @@ class CreateCircleChange extends CreateGeomChange {
   }
 
   /**
-   * The update method.
-   * @param {any} updateData - The updateData param.
+   * Updates circle with the specified data.
+   *
+   * @param {object} updateData - The updateData param.
    */
   update(updateData) {
     this.circle.getParameter('Radius').setValue(updateData.radius)
@@ -40,8 +44,9 @@ class CreateCircleChange extends CreateGeomChange {
   }
 
   /**
-   * The toJSON method.
-   * @return {any} The return value.
+   * Serializes change as a JSON object.
+   *
+   * @return {object} - The return value.
    */
   toJSON() {
     const j = super.toJSON()
@@ -50,14 +55,16 @@ class CreateCircleChange extends CreateGeomChange {
   }
 
   /**
-   * The changeFromJSON method.
-   * @param {any} j - The j param.
+   * Updates circle with the specified JSON
+   *
+   * @param {object} j - The j param.
    */
   changeFromJSON(j) {
     console.log('CreateCircleChange:', j)
     if (j.radius) this.circle.getParameter('Radius').setValue(j.radius)
   }
 }
+
 UndoRedoManager.registerChange('CreateCircleChange', CreateCircleChange)
 
 export default CreateCircleChange

@@ -4,15 +4,20 @@ import CreateGeomChange from './CreateGeomChange'
 
 /**
  * Class representing a create line change.
+ *
+ * **Events**
+ * * **updated:** Triggered when the change is updated
+ *
  * @extends CreateGeomChange
  */
 class CreateLineChange extends CreateGeomChange {
   /**
    * Create a create line change.
-   * @param {any} parentItem - The parentItem value.
-   * @param {any} xfo - The xfo value.
-   * @param {any} color - The color value.
-   * @param {any} thickness - The thickness value.
+   *
+   * @param {TreeItem} parentItem - The parentItem value.
+   * @param {Xfo} xfo - The xfo value.
+   * @param {Color} color - The color value.
+   * @param {number} thickness - The thickness value.
    */
   constructor(parentItem, xfo, color, thickness) {
     super('Create Line')
@@ -42,8 +47,9 @@ class CreateLineChange extends CreateGeomChange {
   }
 
   /**
-   * The update method.
-   * @param {any} updateData - The updateData param.
+   * Updates Line using the specified data.
+   *
+   * @param {object} updateData - The updateData param.
    */
   update(updateData) {
     if (updateData.p1) {
@@ -54,9 +60,10 @@ class CreateLineChange extends CreateGeomChange {
   }
 
   /**
-   * The fromJSON method.
-   * @param {any} j - The j param.
-   * @param {any} context - The context param.
+   * Restores line geometry using a JSON object.
+   *
+   * @param {object} j - The j param.
+   * @param {object} context - The context param.
    */
   fromJSON(j, context) {
     super.fromJSON(j, context)
@@ -72,6 +79,7 @@ class CreateLineChange extends CreateGeomChange {
     }
   }
 }
+
 UndoRedoManager.registerChange('CreateLineChange', CreateLineChange)
 
 export default CreateLineChange

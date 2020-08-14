@@ -2,22 +2,27 @@ import CreateCircleChange from './Change/CreateCircleChange'
 import CreateGeomTool from './CreateGeomTool'
 
 /**
- * Class representing a create circle tool.
+ * Tool for creating a circle geometry.
+ *
+ * **Events**
+ * * **actionFinished:** Triggered when the creation of the geometry is completed.
+ *
  * @extends CreateGeomTool
  */
 class CreateCircleTool extends CreateGeomTool {
   /**
    * Create a create circle tool.
-   * @param {any} appData - The appData value.
+   * @param {object} appData - The appData value.
    */
   constructor(appData) {
     super(appData)
   }
 
   /**
-   * The createStart method.
-   * @param {any} xfo - The xfo param.
-   * @param {any} parentItem - The parentItem param.
+   * Starts the creation of the geometry.
+   *
+   * @param {Xfo} xfo - The xfo param.
+   * @param {TreeItem} parentItem - The parentItem param.
    */
   createStart(xfo, parentItem) {
     this.change = new CreateCircleChange(parentItem, xfo)
@@ -29,8 +34,9 @@ class CreateCircleTool extends CreateGeomTool {
   }
 
   /**
-   * The createMove method.
-   * @param {any} pt - The pt param.
+   * Updates Circle geometry radius.
+   *
+   * @param {Vec3} pt - The pt param.
    */
   createMove(pt) {
     this.radius = pt.distanceTo(this.xfo.tr)
@@ -38,8 +44,9 @@ class CreateCircleTool extends CreateGeomTool {
   }
 
   /**
-   * The createRelease method.
-   * @param {any} pt - The pt param.
+   * Finishes geometry creation.
+   *
+   * @param {Vec3} pt - The pt param.
    */
   createRelease(pt) {
     if (this.radius == 0) {

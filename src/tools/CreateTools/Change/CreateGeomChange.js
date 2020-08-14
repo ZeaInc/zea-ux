@@ -31,24 +31,24 @@ class CreateGeomChange extends Change {
   }
 
   /**
-   * The undo method.
+   * Removes recently created geometry from its parent.
    */
   undo() {
     this.parentItem.removeChild(this.childIndex)
   }
 
   /**
-   * The redo method.
+   * Restores recently created geometry and adds it to the specified parent tree item.
    */
   redo() {
     this.parentItem.addChild(this.geomItem, false, false)
   }
 
   /**
-   * The toJSON method.
+   * Serializes the change as a JSON object.
    *
-   * @param {object} context -
-   * @return {object} -
+   * @param {object} context - The context value
+   * @return {object} - The serialized change
    */
   toJSON(context) {
     const j = super.toJSON(context)
@@ -59,7 +59,8 @@ class CreateGeomChange extends Change {
   }
 
   /**
-   * The fromJSON method.
+   * Restores geometry from using the specified JSON
+   *
    * @param {object} j - The j param.
    * @param {object} context - The appData param.
    */
@@ -81,7 +82,7 @@ class CreateGeomChange extends Change {
   // }
 
   /**
-   * The destroy method.
+   * Removes geometry item reference from change change.
    */
   destroy() {
     this.geomItem.removeRef(this) // remove the tmp ref.

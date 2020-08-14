@@ -1,7 +1,10 @@
 <a name="CreateConeTool"></a>
 
 ### CreateConeTool 
-Class representing a create cone tool.
+Tool for creating a Cone geometry.
+
+**Events**
+* **actionFinished:** Triggered when the creation of the geometry is completed.
 
 
 **Extends**: <code>CreateGeomTool</code>  
@@ -20,38 +23,38 @@ Create a create cone tool.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| appData | <code>any</code> | The appData value. |
+| appData | <code>object</code> | The appData value. |
 
 <a name="CreateConeTool+createStart"></a>
 
 ### createStart
-The createStart method.
+Starts the creation of the geometry.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| xfo | <code>any</code> | The xfo param. |
+| xfo | <code>Xfo</code> | The xfo param. |
 
 <a name="CreateConeTool+createMove"></a>
 
 ### createMove
-The createMove method.
+Updates Cone geometry structural properties.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| pt | <code>any</code> | The pt param. |
+| pt | <code>Vec3</code> | The pt param. |
 
 <a name="CreateConeTool+createRelease"></a>
 
 ### createRelease
-The createRelease method.
+Finishes the creation of the Cone.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| pt | <code>any</code> | The pt param. |
+| pt | <code>Vec3</code> | The pt param. |
 
