@@ -1,5 +1,5 @@
 import { EventEmitter } from '@zeainc/zea-engine'
-import XfoHandle from './sceneWidgets/XfoHandle'
+import XfoHandle from './Handles/XfoHandle'
 import SelectionGroup from './SelectionGroup'
 import SelectionChange from './UndoRedo/Changes/SelectionChange'
 import SelectionVisibilityChange from './UndoRedo/Changes/SelectionVisibilityChange'
@@ -60,19 +60,19 @@ class SelectionManager extends EventEmitter {
   }
 
   /**
-   * _todo_
+   * Displays handles depending on the specified mode(Move, Rotate, Scale).
+   * If nothing is specified, it hides all of them.
    *
-   * @param {number} mode - The mode of the Xfo parameter
-   * @private
+   * @param {number} handleManipulationMode - The mode of the Xfo parameter
    */
-  showHandles(mode) {
-    if (this.xfoHandle && this.currMode != mode) {
-      this.currMode = mode
+  showHandles(handleManipulationMode) {
+    if (this.xfoHandle && this.currMode != handleManipulationMode) {
+      this.currMode = handleManipulationMode
       // eslint-disable-next-line guard-for-in
       for (const key in this.handleGroup) {
-        this.handleGroup[key].emit(mode == key)
+        this.handleGroup[key].emit(handleManipulationMode == key)
       }
-      this.xfoHandle.showHandles(mode)
+      this.xfoHandle.showHandles(handleManipulationMode)
     }
   }
 

@@ -1,15 +1,17 @@
-import { Color, GeomItem, Material, Sphere } from '@zeainc/zea-engine'
-import BaseTool from './BaseTool.js'
-import Handle from '../sceneWidgets/Handle.js'
+import { Color, GeomItem, Material, Sphere } from './node_modules/@zeainc/zea-engine'
+import BaseTool from './BaseTool'
+import Handle from '../Handles/Handle'
 
 /**
- * Class representing a scene widget tool.
+ * Class representing a Handle tool.
+ *
  * @extends BaseTool
  */
 class HandleTool extends BaseTool {
   /**
-   * Create a scene widget tool
-   * @param {any} appData - The appData value.
+   * Creates an instance of HandleTool.
+   *
+   * @param {object} appData - The appData value.
    */
   constructor(appData) {
     super(appData)
@@ -20,7 +22,7 @@ class HandleTool extends BaseTool {
   }
 
   /**
-   * The activateTool method.
+   * Activates handle tool, which adds icons to VR Controllers.
    */
   activateTool() {
     super.activateTool()
@@ -43,9 +45,7 @@ class HandleTool extends BaseTool {
       for (const controller of xrvp.getControllers()) {
         addIconToController(controller)
       }
-      this.addIconToControllerId = xrvp.on('controllerAdded', 
-        addIconToController
-      )
+      this.addIconToControllerId = xrvp.on('controllerAdded', addIconToController)
     }
 
     this.appData.renderer.getXRViewport().then((xrvp) => {
@@ -54,7 +54,7 @@ class HandleTool extends BaseTool {
   }
 
   /**
-   * The deactivateTool method.
+   * Deactivates handle tool, which removes icons from controllers.
    */
   deactivateTool() {
     super.deactivateTool()
@@ -71,9 +71,10 @@ class HandleTool extends BaseTool {
   // Mouse events
 
   /**
-   * The onMouseDown method.
-   * @param {any} event - The event param.
-   * @return {any} The return value.
+   * Event fired when a pointing device button is pressed while the pointer is over the tool.
+   *
+   * @param {MouseEvent} event - The event param.
+   * @return {boolean} The return value.
    */
   onMouseDown(event) {
     //
@@ -83,18 +84,17 @@ class HandleTool extends BaseTool {
       if (intersectionData == undefined) return
       if (intersectionData.geomItem.getOwner() instanceof Handle) {
         this.activeHandle = intersectionData.geomItem.getOwner()
-        this.activeHandle.handleMouseDown(
-          Object.assign(event, { intersectionData })
-        )
+        this.activeHandle.handleMouseDown(Object.assign(event, { intersectionData }))
         return true
       }
     }
   }
 
   /**
-   * The onMouseMove method.
-   * @param {any} event - The event param.
-   * @return {any} The return value.
+   * Event fired when a pointing device is moved while the cursor's hotspot is inside it.
+   *
+   * @param {MouseEvent} event - The event param.
+   * @return {boolean} - The return value.
    */
   onMouseMove(event) {
     if (this.activeHandle) {
@@ -106,10 +106,7 @@ class HandleTool extends BaseTool {
       if (event.button == 0 && event.buttons == 1) return false
 
       const intersectionData = event.viewport.getGeomDataAtPos(event.mousePos)
-      if (
-        intersectionData != undefined &&
-        intersectionData.geomItem.getOwner() instanceof Handle
-      ) {
+      if (intersectionData != undefined && intersectionData.geomItem.getOwner() instanceof Handle) {
         const handle = intersectionData.geomItem.getOwner()
         if (this.__highlightedHandle) this.__highlightedHandle.unhighlight()
 
@@ -124,9 +121,10 @@ class HandleTool extends BaseTool {
   }
 
   /**
-   * The onMouseUp method.
-   * @param {any} event - The event param.
-   * @return {any} The return value.
+   * Event fired when a pointing device button is released while the pointer is over the tool.
+   *
+   * @param {MouseEvent} event - The event param.
+   * @return {boolean} - The return value.
    */
   onMouseUp(event) {
     if (this.activeHandle) {
@@ -137,41 +135,15 @@ class HandleTool extends BaseTool {
   }
 
   /**
-   * The onWheel method.
-   * @param {any} event - The event param.
+   * Event fired when the user rotates the pointing device wheel.
+   *
+   * @param {MouseEvent} event - The event param.
    */
   onWheel(event) {
     if (this.activeHandle) {
       this.activeHandle.onWheel(event)
     }
   }
-
-  // ///////////////////////////////////
-  // Touch events
-
-  /**
-   * The onTouchStart method.
-   * @param {any} event - The event param.
-   */
-  onTouchStart(event) {}
-
-  /**
-   * The onTouchMove method.
-   * @param {any} event - The event param.
-   */
-  onTouchMove(event) {}
-
-  /**
-   * The onTouchEnd method.
-   * @param {any} event - The event param.
-   */
-  onTouchEnd(event) {}
-
-  /**
-   * The onTouchCancel method.
-   * @param {any} event - The event param.
-   */
-  onTouchCancel(event) {}
 
   // ///////////////////////////////////
   // VRController events
@@ -195,9 +167,9 @@ class HandleTool extends BaseTool {
   }
 
   /**
-   * The onVRControllerButtonDown method.
+   * Event fired when a VR controller button is pressed over a tool.
+   *
    * @param {any} event - The event param.
-   * @return {any} The return value.
    */
   onVRControllerButtonDown(event) {
     const id = event.controller.getId()
@@ -218,7 +190,6 @@ class HandleTool extends BaseTool {
   /**
    * The onVRPoseChanged method.
    * @param {any} event - The event param.
-   * @return {any} The return value.
    */
   onVRPoseChanged(event) {
     for (const controller of event.controllers) {
@@ -231,8 +202,7 @@ class HandleTool extends BaseTool {
           event.intersectionData = intersectionData
           event.geomItem = intersectionData.geomItem
           if (intersectionData.geomItem != this.mouseOverItems[id]) {
-            if (this.mouseOverItems[id])
-              this.mouseOverItems[id].onMouseLeave(event)
+            if (this.mouseOverItems[id]) this.mouseOverItems[id].onMouseLeave(event)
             this.mouseOverItems[id] = intersectionData.geomItem
             this.mouseOverItems[id].onMouseEnter(event)
           }
@@ -246,9 +216,9 @@ class HandleTool extends BaseTool {
   }
 
   /**
-   * The onVRControllerButtonUp method.
+   * Event fired when a VR controller button is released over a tool.
+   *
    * @param {any} event - The event param.
-   * @return {any} The return value.
    */
   onVRControllerButtonUp(event) {
     this.__prepareVREvent(event)
@@ -267,4 +237,5 @@ class HandleTool extends BaseTool {
   }
 }
 
+export default HandleTool
 export { HandleTool }

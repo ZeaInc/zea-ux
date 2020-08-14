@@ -12,7 +12,7 @@
 <dt><a href="#_cleanGlobalXfo">_cleanGlobalXfo()</a></dt>
 <dd><p>Calculate the global Xfo for the handls.</p>
 </dd>
-<dt><a href="#showHandles">showHandles(name)</a> ⇒ <code>any</code></dt>
+<dt><a href="#showHandles">showHandles(handleManipulationMode)</a> ⇒ <code>any</code></dt>
 <dd><p>The showHandles method.</p>
 </dd>
 <dt><a href="#setTargetParam">setTargetParam(param)</a></dt>
@@ -74,7 +74,7 @@ The showHandles method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| name | <code>any</code> | The name param. |
+| handleManipulationMode | <code>any</code> | The name param. |
 
 <a name="setTargetParam"></a>
 

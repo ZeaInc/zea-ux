@@ -1,317 +1,289 @@
-### Functions
+<a name="BaseTool"></a>
 
-<dl>
-<dt><a href="#getName">getName()</a> ⇒ <code>any</code></dt>
-<dd><p>The getName method.</p>
-</dd>
-<dt><a href="#isPrimaryTool">isPrimaryTool()</a> ⇒ <code>any</code></dt>
-<dd><p>The isPrimaryTool method.</p>
-</dd>
-<dt><a href="#installed">installed()</a> ⇒ <code>any</code></dt>
-<dd><p>The installed method.</p>
-</dd>
-<dt><a href="#install">install(index)</a></dt>
-<dd><p>The install method.</p>
-</dd>
-<dt><a href="#uninstall">uninstall()</a></dt>
-<dd><p>The uninstall method.</p>
-</dd>
-<dt><a href="#activateTool">activateTool()</a></dt>
-<dd><p>The activateTool method.</p>
-</dd>
-<dt><a href="#deactivateTool">deactivateTool()</a></dt>
-<dd><p>The deactivateTool method.</p>
-</dd>
-<dt><a href="#onMouseDown">onMouseDown(event)</a></dt>
-<dd><p>The onMouseDown method.</p>
-</dd>
-<dt><a href="#onMouseMove">onMouseMove(event)</a></dt>
-<dd><p>The onMouseMove method.</p>
-</dd>
-<dt><a href="#onMouseUp">onMouseUp(event)</a></dt>
-<dd><p>The onMouseUp method.</p>
-</dd>
-<dt><a href="#onDoubleClick">onDoubleClick(event)</a></dt>
-<dd><p>The onDoubleClick method.</p>
-</dd>
-<dt><a href="#onWheel">onWheel(event)</a></dt>
-<dd><p>The onWheel method.</p>
-</dd>
-<dt><a href="#onKeyPressed">onKeyPressed(key, event)</a></dt>
-<dd><p>The onKeyPressed method.</p>
-</dd>
-<dt><a href="#onKeyDown">onKeyDown(key, event)</a></dt>
-<dd><p>The onKeyDown method.</p>
-</dd>
-<dt><a href="#onKeyUp">onKeyUp(key, event)</a></dt>
-<dd><p>The onKeyUp method.</p>
-</dd>
-<dt><a href="#onTouchStart">onTouchStart(event)</a></dt>
-<dd><p>The onTouchStart method.</p>
-</dd>
-<dt><a href="#onTouchMove">onTouchMove(event)</a></dt>
-<dd><p>The onTouchMove method.</p>
-</dd>
-<dt><a href="#onTouchEnd">onTouchEnd(event)</a></dt>
-<dd><p>The onTouchEnd method.</p>
-</dd>
-<dt><a href="#onTouchCancel">onTouchCancel(event)</a></dt>
-<dd><p>The onTouchCancel method.</p>
-</dd>
-<dt><a href="#onDoubleTap">onDoubleTap(event)</a></dt>
-<dd><p>The onDoubleTap method.</p>
-</dd>
-<dt><a href="#onVRControllerButtonDown">onVRControllerButtonDown(event)</a></dt>
-<dd><p>The onVRControllerButtonDown method.</p>
-</dd>
-<dt><a href="#onVRControllerButtonUp">onVRControllerButtonUp(event)</a></dt>
-<dd><p>The onVRControllerButtonUp method.</p>
-</dd>
-<dt><a href="#onVRControllerDoubleClicked">onVRControllerDoubleClicked(event)</a></dt>
-<dd><p>The onVRControllerDoubleClicked method.</p>
-</dd>
-<dt><a href="#onVRPoseChanged">onVRPoseChanged(event)</a></dt>
-<dd><p>The onVRPoseChanged method.</p>
-</dd>
-</dl>
+### BaseTool 
+Abstract class representing a tool with methods representing mouse, keyboard, touch and VR events.
 
-<a name="getName"></a>
+**Events**
+* **installChanged:** Triggered when the tool is installed or uninstalled.
+* **activatedChanged:** Triggered when a tool is activated or deactivated.
+
+
+**Extends**: <code>ParameterOwner</code>  
+
+* [BaseTool ⇐ <code>ParameterOwner</code>](#BaseTool)
+    * [new BaseTool(appData)](#new-BaseTool)
+    * [getName() ⇒ <code>string</code>](#getName)
+    * [isPrimaryTool() ⇒ <code>boolean</code>](#isPrimaryTool)
+    * [installed() ⇒ <code>boolean</code>](#installed)
+    * [install(index)](#install)
+    * [uninstall()](#uninstall)
+    * [activateTool()](#activateTool)
+    * [deactivateTool()](#deactivateTool)
+    * [onMouseDown(event)](#onMouseDown)
+    * [onMouseMove(event)](#onMouseMove)
+    * [onMouseUp(event)](#onMouseUp)
+    * [onDoubleClick(event)](#onDoubleClick)
+    * [onWheel(event)](#onWheel)
+    * [onKeyPressed(key, event)](#onKeyPressed)
+    * [onKeyDown(key, event)](#onKeyDown)
+    * [onKeyUp(key, event)](#onKeyUp)
+    * [onTouchStart(event)](#onTouchStart)
+    * [onTouchMove(event)](#onTouchMove)
+    * [onTouchEnd(event)](#onTouchEnd)
+    * [onTouchCancel(event)](#onTouchCancel)
+    * [onDoubleTap(event)](#onDoubleTap)
+    * [onVRControllerButtonDown(event)](#onVRControllerButtonDown)
+    * [onVRControllerButtonUp(event)](#onVRControllerButtonUp)
+    * [onVRControllerDoubleClicked(event)](#onVRControllerDoubleClicked)
+    * [onVRPoseChanged(event)](#onVRPoseChanged)
+
+<a name="new_BaseTool_new"></a>
+
+### new BaseTool
+Creates an instance of BaseTool.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| appData | <code>object</code> | The appData value. |
+
+<a name="BaseTool+getName"></a>
 
 ### getName
-The getName method.
+Returns the name of the tool class.
 
 
-**Returns**: <code>any</code> - The return value.  
-<a name="isPrimaryTool"></a>
+**Returns**: <code>string</code> - The return value.  
+<a name="BaseTool+isPrimaryTool"></a>
 
 ### isPrimaryTool
-The isPrimaryTool method.
+Checks if the tool is a primary tool or not.
 
 
-**Returns**: <code>any</code> - The return value.  
-<a name="installed"></a>
+**Returns**: <code>boolean</code> - - The return value.  
+<a name="BaseTool+installed"></a>
 
 ### installed
-The installed method.
+Checks whether the tool is already installed or not.
 
 
-**Returns**: <code>any</code> - The return value.  
-<a name="install"></a>
+**Returns**: <code>boolean</code> - The return value.  
+<a name="BaseTool+install"></a>
 
 ### install
-The install method.
+Installs the tool.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| index | <code>any</code> | The index param. |
+| index | <code>number</code> | The index param. |
 
-<a name="uninstall"></a>
+<a name="BaseTool+uninstall"></a>
 
 ### uninstall
-The uninstall method.
+Uninstalls tool.
 
 
-<a name="activateTool"></a>
+<a name="BaseTool+activateTool"></a>
 
 ### activateTool
-The activateTool method.
+Enables tools usage.
 
 
-<a name="deactivateTool"></a>
+<a name="BaseTool+deactivateTool"></a>
 
 ### deactivateTool
-The deactivateTool method.
+Disables tool usage.
 
 
-<a name="onMouseDown"></a>
+<a name="BaseTool+onMouseDown"></a>
 
 ### onMouseDown
-The onMouseDown method.
+Event fired when a pointing device button is pressed while the pointer is over the tool.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
-<a name="onMouseMove"></a>
+<a name="BaseTool+onMouseMove"></a>
 
 ### onMouseMove
-The onMouseMove method.
+Event fired when a pointing device is moved while the cursor's hotspot is inside it.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
-<a name="onMouseUp"></a>
+<a name="BaseTool+onMouseUp"></a>
 
 ### onMouseUp
-The onMouseUp method.
+Event fired when a pointing device button is released while the pointer is over the tool.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
-<a name="onDoubleClick"></a>
+<a name="BaseTool+onDoubleClick"></a>
 
 ### onDoubleClick
-The onDoubleClick method.
+Event fired when a pointing device button is double clicked on the tool.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
-<a name="onWheel"></a>
+<a name="BaseTool+onWheel"></a>
 
 ### onWheel
-The onWheel method.
+Event fired when the user rotates the pointing device wheel.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
-<a name="onKeyPressed"></a>
+<a name="BaseTool+onKeyPressed"></a>
 
 ### onKeyPressed
-The onKeyPressed method.
+Event fired when the user presses a key on the keyboard.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| key | <code>any</code> | The key param. |
-| event | <code>any</code> | The event param. |
+| key | <code>string</code> | The key param. |
+| event | <code>KeyboardEvent</code> | The event param. |
 
-<a name="onKeyDown"></a>
+<a name="BaseTool+onKeyDown"></a>
 
 ### onKeyDown
-The onKeyDown method.
+Event fired when the user presses down a key on the keyboard.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| key | <code>any</code> | The key param. |
-| event | <code>any</code> | The event param. |
+| key | <code>string</code> | The key param. |
+| event | <code>KeyboardEvent</code> | The event param. |
 
-<a name="onKeyUp"></a>
+<a name="BaseTool+onKeyUp"></a>
 
 ### onKeyUp
-The onKeyUp method.
+Event fired when the user releases a key on the keyboard.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| key | <code>any</code> | The key param. |
-| event | <code>any</code> | The event param. |
+| key | <code>string</code> | The key param. |
+| event | <code>KeyboardEvent</code> | The event param. |
 
-<a name="onTouchStart"></a>
+<a name="BaseTool+onTouchStart"></a>
 
 ### onTouchStart
-The onTouchStart method.
+Event fired when one ro more touch points are placed on the touch surface over a tool.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>TouchEvent</code> | The event param. |
 
-<a name="onTouchMove"></a>
+<a name="BaseTool+onTouchMove"></a>
 
 ### onTouchMove
-The onTouchMove method.
+Event fired when the one or more touch points are moved along the touch surface over a tool.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>TouchEvent</code> | The event param. |
 
-<a name="onTouchEnd"></a>
+<a name="BaseTool+onTouchEnd"></a>
 
 ### onTouchEnd
-The onTouchEnd method.
+Event fired when one or more touch points are removed from the touch surface over a tool.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>TouchEvent</code> | The event param. |
 
-<a name="onTouchCancel"></a>
+<a name="BaseTool+onTouchCancel"></a>
 
 ### onTouchCancel
-The onTouchCancel method.
+Event fired when one or more touch points have been disrupted in an implementation-specific manner.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>TouchEvent</code> | The event param. |
 
-<a name="onDoubleTap"></a>
+<a name="BaseTool+onDoubleTap"></a>
 
 ### onDoubleTap
-The onDoubleTap method.
+Event fired when two continuos touch point are placed on the touch surface over a tool.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>TouchEvent</code> | The event param. |
 
-<a name="onVRControllerButtonDown"></a>
+<a name="BaseTool+onVRControllerButtonDown"></a>
 
 ### onVRControllerButtonDown
-The onVRControllerButtonDown method.
+Event fired when a VR controller button is pressed over a tool.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>object</code> | The event param. |
 
-<a name="onVRControllerButtonUp"></a>
+<a name="BaseTool+onVRControllerButtonUp"></a>
 
 ### onVRControllerButtonUp
-The onVRControllerButtonUp method.
+Event fired when a VR controller button is released over a tool.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>object</code> | The event param. |
 
-<a name="onVRControllerDoubleClicked"></a>
+<a name="BaseTool+onVRControllerDoubleClicked"></a>
 
 ### onVRControllerDoubleClicked
-The onVRControllerDoubleClicked method.
+Event fired when a VR controller button is pressed twice over a tool.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>object</code> | The event param. |
 
-<a name="onVRPoseChanged"></a>
+<a name="BaseTool+onVRPoseChanged"></a>
 
 ### onVRPoseChanged
-The onVRPoseChanged method.
+Event fired when a VR controller...
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>object</code> | The event param. |
 

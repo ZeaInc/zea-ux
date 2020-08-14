@@ -10,6 +10,7 @@ Class representing a selection manager
     * [new SelectionManager(appData, [options])](#new-SelectionManager)
     * [setRenderer(renderer)](#setRenderer)
     * [setXfoMode(mode)](#setXfoMode)
+    * [showHandles(handleManipulationMode)](#showHandles)
     * [updateHandleVisibility()](#updateHandleVisibility)
     * [getSelection() ⇒ <code>array</code>](#getSelection)
     * [setSelection(newSelection, [createUndo])](#setSelection)
@@ -57,6 +58,18 @@ Sets initial Xfo mode of the selection group.
 | Param | Type | Description |
 | --- | --- | --- |
 | mode | <code>number</code> | The Xfo mode |
+
+<a name="SelectionManager+showHandles"></a>
+
+### showHandles
+Displays handles depending on the specified mode(Move, Rotate, Scale).
+If nothing is specified, it hides all of them.
+
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| handleManipulationMode | <code>number</code> | The mode of the Xfo parameter |
 
 <a name="SelectionManager+updateHandleVisibility"></a>
 

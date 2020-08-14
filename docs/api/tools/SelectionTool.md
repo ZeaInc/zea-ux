@@ -10,78 +10,78 @@ Class representing a selection tool.
     * [new SelectionTool(appData)](#new-SelectionTool)
     * [activateTool()](#activateTool)
     * [deactivateTool()](#deactivateTool)
-    * [onMouseDown(event) ⇒ <code>any</code>](#onMouseDown)
-    * [onMouseMove(event) ⇒ <code>any</code>](#onMouseMove)
-    * [onMouseUp(event) ⇒ <code>any</code>](#onMouseUp)
-    * [onVRControllerButtonDown(event) ⇒ <code>any</code>](#onVRControllerButtonDown)
+    * [onMouseDown(event) ⇒ <code>boolean</code>](#onMouseDown)
+    * [onMouseMove(event) ⇒ <code>boolean</code>](#onMouseMove)
+    * [onMouseUp(event) ⇒ <code>boolean</code>](#onMouseUp)
+    * [onVRControllerButtonDown(event) ⇒ <code>boolean</code>](#onVRControllerButtonDown)
 
 <a name="new_SelectionTool_new"></a>
 
 ### new SelectionTool
-Create a selection tool.
+Creates an instance of SelectionTool.
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| appData | <code>any</code> | The appData value. |
+| appData | <code>object</code> | The appData value |
 
 <a name="SelectionTool+activateTool"></a>
 
 ### activateTool
-The activateTool method.
+Activates selection tool.
 
 
 <a name="SelectionTool+deactivateTool"></a>
 
 ### deactivateTool
-The deactivateTool method.
+Deactivates the selection tool.
 
 
 <a name="SelectionTool+onMouseDown"></a>
 
 ### onMouseDown
-The onMouseDown method.
+Event fired when a pointing device button is pressed while the pointer is over the tool.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
 <a name="SelectionTool+onMouseMove"></a>
 
 ### onMouseMove
-The onMouseMove method.
+Event fired when a pointing device is moved while the cursor's hotspot is inside it.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
 <a name="SelectionTool+onMouseUp"></a>
 
 ### onMouseUp
-The onMouseUp method.
+Event fired when a pointing device button is released while the pointer is over the tool.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
 <a name="SelectionTool+onVRControllerButtonDown"></a>
 
 ### onVRControllerButtonDown
-The onVRControllerButtonDown method.
+Event fired when a VR controller button is pressed over a tool.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>object</code> | The event param. |
 

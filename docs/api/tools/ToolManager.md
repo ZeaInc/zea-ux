@@ -8,16 +8,16 @@ Class representing a tool manager.
 * [ToolManager](#ToolManager)
     * [new ToolManager(appData)](#new-ToolManager)
     * [insertTool(tool, index)](#insertTool)
-    * [insertToolBefore(tool, beforeTool) ⇒ <code>any</code>](#insertToolBefore)
-    * [insertToolAfter(tool, afterTool) ⇒ <code>any</code>](#insertToolAfter)
-    * [getToolIndex(tool) ⇒ <code>any</code>](#getToolIndex)
+    * [insertToolBefore(tool, beforeTool) ⇒ <code>number</code>](#insertToolBefore)
+    * [insertToolAfter(tool, afterTool) ⇒ <code>number</code>](#insertToolAfter)
+    * [getToolIndex(tool) ⇒ <code>number</code>](#getToolIndex)
     * [removeTool(index)](#removeTool)
     * [removeToolByHandle(tool)](#removeToolByHandle)
-    * [pushTool(tool) ⇒ <code>any</code>](#pushTool)
+    * [pushTool(tool) ⇒ <code>number</code>](#pushTool)
     * [popTool()](#popTool)
     * [replaceCurrentTool(tool)](#replaceCurrentTool)
-    * [currTool() ⇒ <code>any</code>](#currTool)
-    * [currToolName() ⇒ <code>any</code>](#currToolName)
+    * [currTool() ⇒ <code>BaseTool</code>](#currTool)
+    * [currToolName() ⇒ <code>string</code>](#currToolName)
     * [bind(renderer)](#bind)
     * [onMouseDown(event)](#onMouseDown)
     * [onMouseMove(event)](#onMouseMove)
@@ -42,12 +42,12 @@ Class representing a tool manager.
 <a name="new_ToolManager_new"></a>
 
 ### new ToolManager
-Create a tool manager.
+Creates an instance of ToolManager.
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| appData | <code>any</code> | The appData value. |
+| appData | <code>object</code> | The appData value. |
 
 <a name="ToolManager+insertTool"></a>
 
@@ -58,8 +58,8 @@ The insertTool method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| tool | <code>any</code> | The tool param. |
-| index | <code>any</code> | The index param. |
+| tool | <code>BaseTool</code> | The tool param. |
+| index | <code>number</code> | The index param. |
 
 <a name="ToolManager+insertToolBefore"></a>
 
@@ -67,12 +67,12 @@ The insertTool method.
 The insertToolBefore method.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>number</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| tool | <code>any</code> | The tool param. |
-| beforeTool | <code>any</code> | The beforeTool param. |
+| tool | <code>BaseTool</code> | The tool param. |
+| beforeTool | <code>BaseTool</code> | The beforeTool param. |
 
 <a name="ToolManager+insertToolAfter"></a>
 
@@ -80,12 +80,12 @@ The insertToolBefore method.
 The insertToolAfter method.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>number</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| tool | <code>any</code> | The tool param. |
-| afterTool | <code>any</code> | The afterTool param. |
+| tool | <code>BaseTool</code> | The tool param. |
+| afterTool | <code>BaseTool</code> | The afterTool param. |
 
 <a name="ToolManager+getToolIndex"></a>
 
@@ -93,11 +93,11 @@ The insertToolAfter method.
 The getToolIndex method.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>number</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| tool | <code>any</code> | The tool param. |
+| tool | <code>BaseTool</code> | The tool param. |
 
 <a name="ToolManager+removeTool"></a>
 
@@ -108,7 +108,7 @@ The removeTool method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| index | <code>any</code> | The index param. |
+| index | <code>number</code> | The index param. |
 
 <a name="ToolManager+removeToolByHandle"></a>
 
@@ -119,7 +119,7 @@ The removeToolByHandle method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| tool | <code>any</code> | The tool param. |
+| tool | <code>BaseTool</code> | The tool param. |
 
 <a name="ToolManager+pushTool"></a>
 
@@ -127,11 +127,11 @@ The removeToolByHandle method.
 The pushTool method.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>number</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| tool | <code>any</code> | The tool param. |
+| tool | <code>BaseTool</code> | The tool param. |
 
 <a name="ToolManager+popTool"></a>
 
@@ -148,7 +148,7 @@ The replaceCurrentTool method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| tool | <code>any</code> | The tool param. |
+| tool | <code>BaseTool</code> | The tool param. |
 
 <a name="ToolManager+currTool"></a>
 
@@ -156,14 +156,14 @@ The replaceCurrentTool method.
 The currTool method.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>BaseTool</code> - The return value.  
 <a name="ToolManager+currToolName"></a>
 
 ### currToolName
 The currToolName method.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>string</code> - The return value.  
 <a name="ToolManager+bind"></a>
 
 ### bind
@@ -173,7 +173,7 @@ The bind method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| renderer | <code>any</code> | The renderer param. |
+| renderer | <code>GLBaseRenderer</code> | The renderer param. |
 
 <a name="ToolManager+onMouseDown"></a>
 
@@ -184,7 +184,7 @@ The onMouseDown method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
 <a name="ToolManager+onMouseMove"></a>
 
@@ -195,7 +195,7 @@ The onMouseMove method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
 <a name="ToolManager+onMouseUp"></a>
 
@@ -206,7 +206,7 @@ The onMouseUp method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
 <a name="ToolManager+onMouseLeave"></a>
 
@@ -217,7 +217,7 @@ The onMouseLeave method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
 <a name="ToolManager+onDoubleClick"></a>
 
@@ -228,7 +228,7 @@ The onDoubleClick method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
 <a name="ToolManager+onWheel"></a>
 
@@ -239,7 +239,7 @@ The onWheel method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
 <a name="ToolManager+onKeyPressed"></a>
 
@@ -250,8 +250,8 @@ The onKeyPressed method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| key | <code>any</code> | The event param. |
-| event | <code>any</code> | The event param. |
+| key | <code>string</code> | The event param. |
+| event | <code>KeyboardEvent</code> | The event param. |
 
 <a name="ToolManager+onKeyDown"></a>
 
@@ -262,8 +262,8 @@ The onKeyDown method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| key | <code>any</code> | The event param. |
-| event | <code>any</code> | The event param. |
+| key | <code>string</code> | The event param. |
+| event | <code>KeyboardEvent</code> | The event param. |
 
 <a name="ToolManager+onKeyUp"></a>
 
@@ -274,8 +274,8 @@ The onKeyUp method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| key | <code>any</code> | The event param. |
-| event | <code>any</code> | The event param. |
+| key | <code>string</code> | The event param. |
+| event | <code>KeyboardEvent</code> | The event param. |
 
 <a name="ToolManager+onTouchStart"></a>
 
@@ -286,7 +286,7 @@ The onTouchStart method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>TouchEvent</code> | The event param. |
 
 <a name="ToolManager+onTouchMove"></a>
 
@@ -297,7 +297,7 @@ The onTouchMove method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>TouchEvent</code> | The event param. |
 
 <a name="ToolManager+onTouchEnd"></a>
 
@@ -308,7 +308,7 @@ The onTouchEnd method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>TouchEvent</code> | The event param. |
 
 <a name="ToolManager+onTouchCancel"></a>
 
@@ -319,7 +319,7 @@ The onTouchCancel method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>TouchEvent</code> | The event param. |
 
 <a name="ToolManager+onDoubleTap"></a>
 
@@ -330,7 +330,7 @@ The onDoubleTap method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>TouchEvent</code> | The event param. |
 
 <a name="ToolManager+onVRControllerButtonDown"></a>
 
@@ -341,7 +341,7 @@ The onVRControllerButtonDown method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>object</code> | The event param. |
 
 <a name="ToolManager+onVRControllerButtonUp"></a>
 
@@ -352,7 +352,7 @@ The onVRControllerButtonUp method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>object</code> | The event param. |
 
 <a name="ToolManager+onVRControllerDoubleClicked"></a>
 
@@ -363,7 +363,7 @@ The onVRControllerDoubleClicked method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>object</code> | The event param. |
 
 <a name="ToolManager+onVRPoseChanged"></a>
 
@@ -374,7 +374,7 @@ The onVRPoseChanged method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>object</code> | The event param. |
 
 <a name="ToolManager+destroy"></a>
 

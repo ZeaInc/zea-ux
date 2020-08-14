@@ -6,7 +6,7 @@ import {
   GeomItem,
   Material,
   Lines,
-} from '@zeainc/zea-engine'
+} from './node_modules/@zeainc/zea-engine'
 import BaseTool from '../BaseTool.js'
 import VRControllerUI from './VRControllerUI.js'
 

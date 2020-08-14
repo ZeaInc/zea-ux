@@ -7,7 +7,7 @@ Class representing a view tool
 **Extends**: <code>BaseTool</code>  
 
 * [ViewTool ⇐ <code>BaseTool</code>](#ViewTool)
-    * [new ViewTool(appData, maipulationModel)](#new-ViewTool)
+    * [new ViewTool(appData, [manipulationModel])](#new-ViewTool)
     * [activateTool()](#activateTool)
     * [deactivateTool()](#deactivateTool)
     * [setDefaultMode(mode)](#setDefaultMode)
@@ -18,38 +18,34 @@ Class representing a view tool
     * [panAndZoom(panDelta, dragDist, viewport)](#panAndZoom)
     * [initDrag(viewport)](#initDrag)
     * [aimFocus(camera, pos)](#aimFocus)
-    * [onMouseMove(event)](#onMouseMove)
     * [onDragStart(event)](#onDragStart)
     * [onDrag(event)](#onDrag)
-    * [onDragEnd(event) ⇒ <code>any</code>](#onDragEnd)
-    * [onMouseDown(event) ⇒ <code>any</code>](#onMouseDown)
-    * [onMouseUp(event) ⇒ <code>any</code>](#onMouseUp)
-    * [onMouseMove(event) ⇒ <code>any</code>](#onMouseMove)
+    * [onDragEnd(event) ⇒ <code>boolean</code>](#onDragEnd)
+    * [onMouseDown(event) ⇒ <code>boolean</code>](#onMouseDown)
+    * [onMouseUp(event) ⇒ <code>boolean</code>](#onMouseUp)
+    * [onMouseMove(event) ⇒ <code>boolean</code>](#onMouseMove)
     * [onDoubleClick(event)](#onDoubleClick)
-    * [onWheel(event) ⇒ <code>any</code>](#onWheel)
-    * [onKeyPressed(key, event) ⇒ <code>any</code>](#onKeyPressed)
-    * [onKeyDown(key, event)](#onKeyDown)
-    * [onKeyUp(key, event) ⇒ <code>any</code>](#onKeyUp)
-    * [onTouchStart(event) ⇒ <code>any</code>](#onTouchStart)
-    * [onTouchMove(event) ⇒ <code>any</code>](#onTouchMove)
-    * [onTouchEnd(event) ⇒ <code>any</code>](#onTouchEnd)
-    * [onTouchCancel(event) ⇒ <code>any</code>](#onTouchCancel)
+    * [onWheel(event) ⇒ <code>boolean</code>](#onWheel)
+    * [onTouchStart(event) ⇒ <code>boolean</code>](#onTouchStart)
+    * [onTouchMove(event) ⇒ <code>boolean</code>](#onTouchMove)
+    * [onTouchEnd(event) ⇒ <code>boolean</code>](#onTouchEnd)
+    * [onTouchCancel(event) ⇒ <code>boolean</code>](#onTouchCancel)
     * [onDoubleTap(event)](#onDoubleTap)
-    * [onVRControllerButtonDown(event) ⇒ <code>any</code>](#onVRControllerButtonDown)
-    * [onVRControllerButtonUp(event) ⇒ <code>any</code>](#onVRControllerButtonUp)
+    * [onVRControllerButtonDown(event) ⇒ <code>boolean</code>](#onVRControllerButtonDown)
+    * [onVRControllerButtonUp(event) ⇒ <code>boolean</code>](#onVRControllerButtonUp)
     * [onVRControllerDoubleClicked(event)](#onVRControllerDoubleClicked)
-    * [onVRPoseChanged(event) ⇒ <code>any</code>](#onVRPoseChanged)
+    * [onVRPoseChanged(event) ⇒ <code>boolean</code>](#onVRPoseChanged)
 
 <a name="new_ViewTool_new"></a>
 
 ### new ViewTool
-Create an axial rotation scene widget.
+Creates an instance of ViewTool.
 
 
-| Param | Type | Description |
-| --- | --- | --- |
-| appData | <code>any</code> | The appData value. |
-| maipulationModel | <code>any</code> | The maipulationModel value. |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| appData | <code>object</code> |  | The appData value. |
+| [manipulationModel] | <code>number</code> | <code>VIEW_TOOL_MODELS.VIEWER</code> | The manipulationModel value |
 
 <a name="ViewTool+activateTool"></a>
 
@@ -72,7 +68,7 @@ The setDefaultMode method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| mode | <code>any</code> | The mode param. |
+| mode | <code>string</code> | The mode param. |
 
 <a name="ViewTool+look"></a>
 
@@ -83,8 +79,8 @@ The look method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| dragVec | <code>any</code> | The dragVec param. |
-| viewport | <code>any</code> | The viewport param. |
+| dragVec | <code>Vec2</code> | The dragVec param. |
+| viewport | <code>GLViewport</code> | The viewport param. |
 
 <a name="ViewTool+orbit"></a>
 
@@ -95,8 +91,8 @@ The orbit method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| dragVec | <code>any</code> | The dragVec param. |
-| viewport | <code>any</code> | The viewport param. |
+| dragVec | <code>Vec2</code> | The dragVec param. |
+| viewport | <code>GLViewport</code> | The viewport param. |
 
 <a name="ViewTool+pan"></a>
 
@@ -107,8 +103,8 @@ The pan method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| dragVec | <code>any</code> | The dragVec param. |
-| viewport | <code>any</code> | The viewport param. |
+| dragVec | <code>Vec2</code> | The dragVec param. |
+| viewport | <code>GLViewport</code> | The viewport param. |
 
 <a name="ViewTool+dolly"></a>
 
@@ -119,8 +115,8 @@ The dolly method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| dragVec | <code>any</code> | The dragVec param. |
-| viewport | <code>any</code> | The viewport param. |
+| dragVec | <code>Vec2</code> | The dragVec param. |
+| viewport | <code>GLViewport</code> | The viewport param. |
 
 <a name="ViewTool+panAndZoom"></a>
 
@@ -131,9 +127,9 @@ The panAndZoom method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| panDelta | <code>any</code> | The panDelta param. |
-| dragDist | <code>any</code> | The dragDist param. |
-| viewport | <code>any</code> | The viewport param. |
+| panDelta | <code>Vec2</code> | The panDelta param. |
+| dragDist | <code>number</code> | The dragDist param. |
+| viewport | <code>GLViewport</code> | The viewport param. |
 
 <a name="ViewTool+initDrag"></a>
 
@@ -144,7 +140,7 @@ The initDrag method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| viewport | <code>any</code> | The viewport param. |
+| viewport | <code>GLViewport</code> | The viewport param. |
 
 <a name="ViewTool+aimFocus"></a>
 
@@ -155,19 +151,8 @@ The aimFocus method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| camera | <code>any</code> | The camera param. |
-| pos | <code>any</code> | The pos param. |
-
-<a name="ViewTool+onMouseMove"></a>
-
-### onMouseMove
-The onMouseMove method.
-
-
-
-| Param | Type | Description |
-| --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| camera | <code>Camera</code> | The camera param. |
+| pos | <code>Vec3</code> | The pos param. |
 
 <a name="ViewTool+onDragStart"></a>
 
@@ -178,7 +163,7 @@ The onDragStart method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
 <a name="ViewTool+onDrag"></a>
 
@@ -189,7 +174,7 @@ The onDrag method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
 <a name="ViewTool+onDragEnd"></a>
 
@@ -197,11 +182,11 @@ The onDrag method.
 The onDragEnd method.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
 <a name="ViewTool+onMouseDown"></a>
 
@@ -209,11 +194,11 @@ The onDragEnd method.
 The onMouseDown method.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
 <a name="ViewTool+onMouseUp"></a>
 
@@ -221,11 +206,11 @@ The onMouseDown method.
 The onMouseUp method.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
 <a name="ViewTool+onMouseMove"></a>
 
@@ -233,11 +218,11 @@ The onMouseUp method.
 The onMouseMove method.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
 <a name="ViewTool+onDoubleClick"></a>
 
@@ -248,7 +233,7 @@ The onDoubleClick method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
 <a name="ViewTool+onWheel"></a>
 
@@ -256,49 +241,11 @@ The onDoubleClick method.
 The onWheel method.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
-
-<a name="ViewTool+onKeyPressed"></a>
-
-### onKeyPressed
-The onKeyPressed method.
-
-
-**Returns**: <code>any</code> - The return value.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| key | <code>any</code> | The key param. |
-| event | <code>any</code> | The event param. |
-
-<a name="ViewTool+onKeyDown"></a>
-
-### onKeyDown
-The onKeyDown method.
-
-
-
-| Param | Type | Description |
-| --- | --- | --- |
-| key | <code>any</code> | The key param. |
-| event | <code>any</code> | The event param. |
-
-<a name="ViewTool+onKeyUp"></a>
-
-### onKeyUp
-The onKeyUp method.
-
-
-**Returns**: <code>any</code> - The return value.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| key | <code>any</code> | The key param. |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
 <a name="ViewTool+onTouchStart"></a>
 
@@ -306,11 +253,11 @@ The onKeyUp method.
 The onTouchStart method.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>TouchEvent</code> | The event param. |
 
 <a name="ViewTool+onTouchMove"></a>
 
@@ -318,11 +265,11 @@ The onTouchStart method.
 The onTouchMove method.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>TouchEvent</code> | The event param. |
 
 <a name="ViewTool+onTouchEnd"></a>
 
@@ -330,11 +277,11 @@ The onTouchMove method.
 The onTouchEnd method.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>TouchEvent</code> | The event param. |
 
 <a name="ViewTool+onTouchCancel"></a>
 
@@ -342,11 +289,11 @@ The onTouchEnd method.
 The onTouchCancel method.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>TouchEvent</code> | The event param. |
 
 <a name="ViewTool+onDoubleTap"></a>
 
@@ -357,7 +304,7 @@ The onDoubleTap method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>TouchEvent</code> | The event param. |
 
 <a name="ViewTool+onVRControllerButtonDown"></a>
 
@@ -365,11 +312,11 @@ The onDoubleTap method.
 The onVRControllerButtonDown method.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>object</code> | The event param. |
 
 <a name="ViewTool+onVRControllerButtonUp"></a>
 
@@ -377,11 +324,11 @@ The onVRControllerButtonDown method.
 The onVRControllerButtonUp method.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>object</code> | The event param. |
 
 <a name="ViewTool+onVRControllerDoubleClicked"></a>
 
@@ -392,7 +339,7 @@ The onVRControllerDoubleClicked method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>object</code> | The event param. |
 
 <a name="ViewTool+onVRPoseChanged"></a>
 
@@ -400,9 +347,9 @@ The onVRControllerDoubleClicked method.
 The onVRPoseChanged method.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>object</code> | The event param. |
 

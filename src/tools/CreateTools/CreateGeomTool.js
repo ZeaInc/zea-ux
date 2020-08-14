@@ -1,100 +1,5 @@
-import {
-  Color,
-  Xfo,
-  Ray,
-  ColorParameter,
-  GeomItem,
-  Material,
-  Cross,
-} from '@zeainc/zea-engine'
-
-import BaseCreateTool from '../BaseCreateTool.js'
-import Change from '../../undoredo/Change.js'
-
-/**
- * Class representing a create geom change.
- * @extends Change
- */
-class CreateGeomChange extends Change {
-  /**
-   * Create a create circle change.
-   * @param {any} name - The name value.
-   */
-  constructor(name) {
-    super(name)
-  }
-
-  /**
-   * The setParentAndXfo method.
-   * @param {any} parentItem - The parentItem param.
-   * @param {any} xfo - The xfo param.
-   */
-  setParentAndXfo(parentItem, xfo) {
-    this.parentItem = parentItem
-    const name = this.parentItem.generateUniqueName(this.geomItem.getName())
-    this.geomItem.setName(name)
-    this.geomItem.getParameter('GlobalXfo').setValue(xfo)
-    this.childIndex = this.parentItem.addChild(this.geomItem, true)
-
-    this.geomItem.addRef(this) // keep a ref to stop it being destroyed
-  }
-
-  /**
-   * The undo method.
-   */
-  undo() {
-    this.parentItem.removeChild(this.childIndex)
-  }
-
-  /**
-   * The redo method.
-   */
-  redo() {
-    this.parentItem.addChild(this.geomItem, false, false)
-  }
-
-  /**
-   * The toJSON method.
-   * @param {any} appData - The appData param.
-   * @return {any} The return value.
-   */
-  toJSON(context) {
-    const j = super.toJSON(context)
-    j.parentItemPath = this.parentItem.getPath()
-    j.geomItemName = this.geomItem.getName()
-    j.geomItemXfo = this.geomItem.getParameter('LocalXfo').getValue()
-    return j
-  }
-
-  /**
-   * The fromJSON method.
-   * @param {any} j - The j param.
-   * @param {any} appData - The appData param.
-   */
-  fromJSON(j, context) {
-    const sceneRoot = context.appData.scene.getRoot()
-    this.parentItem = sceneRoot.resolvePath(j.parentItemPath, 1)
-    this.geomItem.setName(this.parentItem.generateUniqueName(j.geomItemName))
-    const xfo = new Xfo()
-    xfo.fromJSON(j.geomItemXfo)
-    this.geomItem.getParameter('LocalXfo').setValue(xfo)
-    this.childIndex = this.parentItem.addChild(this.geomItem, false)
-  }
-
-  // changeFromJSON(j) {
-  //   if (this.__newValue.fromJSON)
-  //     this.__newValue.fromJSON(j.value);
-  //   else
-  //     this.__newValue = j.value;
-  // }
-
-  /**
-   * The destroy method.
-   */
-  destroy() {
-    this.geomItem.removeRef(this) // remove the tmp ref.
-  }
-}
+import { Color, Xfo, Ray, ColorParameter, GeomItem, Material, Cross } from '@zeainc/zea-engine'
+import BaseCreateTool from '../BaseCreateTool'
 
 /**
  * Class representing a create geom tool.
@@ -111,9 +16,7 @@ class CreateGeomTool extends BaseCreateTool {
     this.stage = 0
     this.removeToolOnRightClick = true
 
-    this.cp = this.addParameter(
-      new ColorParameter('Line Color', new Color(0.7, 0.2, 0.2))
-    )
+    this.cp = this.addParameter(new ColorParameter('Line Color', new Color(0.7, 0.2, 0.2)))
   }
 
   /**
@@ -127,31 +30,19 @@ class CreateGeomTool extends BaseCreateTool {
     this.appData.renderer.getXRViewport().then((xrvp) => {
       if (!this.vrControllerToolTip) {
         this.vrControllerToolTip = new Cross(0.05)
-        this.vrControllerToolTipMat = new Material(
-          'VRController Cross',
-          'LinesShader'
-        )
-        this.vrControllerToolTipMat
-          .getParameter('Color')
-          .setValue(this.cp.getValue())
+        this.vrControllerToolTipMat = new Material('VRController Cross', 'LinesShader')
+        this.vrControllerToolTipMat.getParameter('Color').setValue(this.cp.getValue())
         this.vrControllerToolTipMat.visibleInGeomDataBuffer = false
       }
       const addIconToController = (controller) => {
-        const geomItem = new GeomItem(
-          'CreateGeomToolTip',
-          this.vrControllerToolTip,
-          this.vrControllerToolTipMat
-        )
+        const geomItem = new GeomItem('CreateGeomToolTip', this.vrControllerToolTip, this.vrControllerToolTipMat)
         controller.getTipItem().removeAllChildren()
         controller.getTipItem().addChild(geomItem, false)
       }
       for (const controller of xrvp.getControllers()) {
         addIconToController(controller)
       }
-      this.addIconToControllerId = xrvp.on(
-        'controllerAdded',
-        addIconToController
-      )
+      this.addIconToControllerId = xrvp.on('controllerAdded', addIconToController)
     })
   }
 
@@ -183,10 +74,7 @@ class CreateGeomTool extends BaseCreateTool {
     const ray = viewport.calcRayFromScreenPos(screenPos)
 
     // Raycast any working planes.
-    const planeRay = new Ray(
-      this.constructionPlane.tr,
-      this.constructionPlane.ori.getZaxis()
-    )
+    const planeRay = new Ray(this.constructionPlane.tr, this.constructionPlane.ori.getZaxis())
     const dist = ray.intersectRayPlane(planeRay)
     if (dist > 0.0) {
       const xfo = this.constructionPlane.clone()
@@ -246,8 +134,7 @@ class CreateGeomTool extends BaseCreateTool {
         this.createStart(xfo, this.appData.scene.getRoot())
       } else if (event.button == 2) {
         // Cancel the tool.
-        if (this.removeToolOnRightClick)
-          this.appData.toolManager.removeTool(this.index)
+        if (this.removeToolOnRightClick) this.appData.toolManager.removeTool(this.index)
       }
       return true
     } else if (event.button == 2) {
@@ -392,4 +279,5 @@ class CreateGeomTool extends BaseCreateTool {
   }
 }
 
-export { CreateGeomChange, CreateGeomTool }
+export default CreateGeomTool
+export { CreateGeomTool }

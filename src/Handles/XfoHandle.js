@@ -224,10 +224,10 @@ export default class XfoHandle extends TreeItem {
 
   /**
    * The showHandles method.
-   * @param {any} name - The name param.
+   * @param {any} handleManipulationMode - The name param.
    * @return {any} The return value.
    */
-  showHandles(name) {
+  showHandles(handleManipulationMode) {
     this.traverse((item) => {
       if (item != this) {
         item.setVisible(false)
@@ -235,7 +235,7 @@ export default class XfoHandle extends TreeItem {
       }
     })
 
-    const child = this.getChildByName(name)
+    const child = this.getChildByName(handleManipulationMode)
     if (child) child.setVisible(true)
   }
 

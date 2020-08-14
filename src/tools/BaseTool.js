@@ -1,13 +1,19 @@
-import { ParameterOwner } from '@zeainc/zea-engine'
+import { ParameterOwner } from './node_modules/@zeainc/zea-engine'
 
 /**
- * Class representing a base tool.
+ * Abstract class representing a tool with methods representing mouse, keyboard, touch and VR events.
+ *
+ * **Events**
+ * * **installChanged:** Triggered when the tool is installed or uninstalled.
+ * * **activatedChanged:** Triggered when a tool is activated or deactivated.
+ *
  * @extends ParameterOwner
  */
-export default class BaseTool extends ParameterOwner {
+class BaseTool extends ParameterOwner {
   /**
-   * Create a base tool.
-   * @param {any} appData - The appData value.
+   * Creates an instance of BaseTool.
+   *
+   * @param {object} appData - The appData value.
    */
   constructor(appData) {
     super()
@@ -20,16 +26,18 @@ export default class BaseTool extends ParameterOwner {
   }
 
   /**
-   * The getName method.
-   * @return {any} The return value.
+   * Returns the name of the tool class.
+   *
+   * @return {string} The return value.
    */
   getName() {
     return this.constructor.name
   }
 
   /**
-   * The isPrimaryTool method.
-   * @return {any} The return value.
+   * Checks if the tool is a primary tool or not.
+   *
+   * @return {boolean} - The return value.
    */
   isPrimaryTool() {
     return false
@@ -39,16 +47,18 @@ export default class BaseTool extends ParameterOwner {
   // Tools on the tool stack.
 
   /**
-   * The installed method.
-   * @return {any} The return value.
+   * Checks whether the tool is already installed or not.
+   *
+   * @return {boolean} The return value.
    */
   installed() {
     return this.__installed
   }
 
   /**
-   * The install method.
-   * @param {any} index - The index param.
+   * Installs the tool.
+   *
+   * @param {number} index - The index param.
    */
   install(index) {
     if (this.__installed) throw new Error('Tool already installed')
@@ -58,7 +68,7 @@ export default class BaseTool extends ParameterOwner {
   }
 
   /**
-   * The uninstall method.
+   * Uninstalls tool.
    */
   uninstall() {
     this.__installed = false
@@ -66,7 +76,7 @@ export default class BaseTool extends ParameterOwner {
   }
 
   /**
-   * The activateTool method.
+   * Enables tools usage.
    */
   activateTool() {
     if (this.__activated) throw new Error('Tool already activate')
@@ -75,7 +85,7 @@ export default class BaseTool extends ParameterOwner {
   }
 
   /**
-   * The deactivateTool method.
+   * Disables tool usage.
    */
   deactivateTool() {
     this.__activated = false
@@ -86,116 +96,170 @@ export default class BaseTool extends ParameterOwner {
   // Mouse events
 
   /**
-   * The onMouseDown method.
-   * @param {any} event - The event param.
+   * Event fired when a pointing device button is pressed while the pointer is over the tool.
+   *
+   * @param {MouseEvent} event - The event param.
    */
-  onMouseDown(event) {}
+  onMouseDown(event) {
+    console.warn('Implement me')
+  }
 
   /**
-   * The onMouseMove method.
-   * @param {any} event - The event param.
+   * Event fired when a pointing device is moved while the cursor's hotspot is inside it.
+   *
+   * @param {MouseEvent} event - The event param.
    */
-  onMouseMove(event) {}
+  onMouseMove(event) {
+    console.warn('Implement me')
+  }
 
   /**
-   * The onMouseUp method.
-   * @param {any} event - The event param.
+   * Event fired when a pointing device button is released while the pointer is over the tool.
+   *
+   * @param {MouseEvent} event - The event param.
    */
-  onMouseUp(event) {}
+  onMouseUp(event) {
+    console.warn('Implement me')
+  }
 
   /**
-   * The onDoubleClick method.
-   * @param {any} event - The event param.
+   * Event fired when a pointing device button is double clicked on the tool.
+   *
+   * @param {MouseEvent} event - The event param.
    */
-  onDoubleClick(event) {}
+  onDoubleClick(event) {
+    console.warn('Implement me')
+  }
 
   /**
-   * The onWheel method.
-   * @param {any} event - The event param.
+   * Event fired when the user rotates the pointing device wheel.
+   *
+   * @param {MouseEvent} event - The event param.
    */
-  onWheel(event) {}
+  onWheel(event) {
+    console.warn('Implement me')
+  }
 
   // ///////////////////////////////////
   // Keyboard events
 
   /**
-   * The onKeyPressed method.
-   * @param {any} key - The key param.
-   * @param {any} event - The event param.
+   * Event fired when the user presses a key on the keyboard.
+   *
+   * @param {string} key - The key param.
+   * @param {KeyboardEvent} event - The event param.
    */
-  onKeyPressed(key, event) {}
+  onKeyPressed(key, event) {
+    console.warn('Implement me')
+  }
 
   /**
-   * The onKeyDown method.
-   * @param {any} key - The key param.
-   * @param {any} event - The event param.
+   * Event fired when the user presses down a key on the keyboard.
+   *
+   * @param {string} key - The key param.
+   * @param {KeyboardEvent} event - The event param.
    */
-  onKeyDown(key, event) {}
+  onKeyDown(key, event) {
+    console.warn('Implement me')
+  }
 
   /**
-   * The onKeyUp method.
-   * @param {any} key - The key param.
-   * @param {any} event - The event param.
+   * Event fired when the user releases a key on the keyboard.
+   *
+   * @param {string} key - The key param.
+   * @param {KeyboardEvent} event - The event param.
    */
-  onKeyUp(key, event) {}
+  onKeyUp(key, event) {
+    console.warn('Implement me')
+  }
 
   // ///////////////////////////////////
   // Touch events
 
   /**
-   * The onTouchStart method.
-   * @param {any} event - The event param.
+   * Event fired when one ro more touch points are placed on the touch surface over a tool.
+   *
+   * @param {TouchEvent} event - The event param.
    */
-  onTouchStart(event) {}
+  onTouchStart(event) {
+    console.warn('Implement me')
+  }
 
   /**
-   * The onTouchMove method.
-   * @param {any} event - The event param.
+   * Event fired when the one or more touch points are moved along the touch surface over a tool.
+   *
+   * @param {TouchEvent} event - The event param.
    */
-  onTouchMove(event) {}
+  onTouchMove(event) {
+    console.warn('Implement me')
+  }
 
   /**
-   * The onTouchEnd method.
-   * @param {any} event - The event param.
+   * Event fired when one or more touch points are removed from the touch surface over a tool.
+   *
+   * @param {TouchEvent} event - The event param.
    */
-  onTouchEnd(event) {}
+  onTouchEnd(event) {
+    console.warn('Implement me')
+  }
 
   /**
-   * The onTouchCancel method.
-   * @param {any} event - The event param.
+   * Event fired when one or more touch points have been disrupted in an implementation-specific manner.
+   *
+   * @param {TouchEvent} event - The event param.
    */
-  onTouchCancel(event) {}
+  onTouchCancel(event) {
+    console.warn('Implement me')
+  }
 
   /**
-   * The onDoubleTap method.
-   * @param {any} event - The event param.
+   * Event fired when two continuos touch point are placed on the touch surface over a tool.
+   *
+   * @param {TouchEvent} event - The event param.
    */
-  onDoubleTap(event) {}
+  onDoubleTap(event) {
+    console.warn('Implement me')
+  }
 
   // ///////////////////////////////////
   // VRController events
 
   /**
-   * The onVRControllerButtonDown method.
-   * @param {any} event - The event param.
+   * Event fired when a VR controller button is pressed over a tool.
+   *
+   * @param {object} event - The event param.
    */
-  onVRControllerButtonDown(event) {}
+  onVRControllerButtonDown(event) {
+    console.warn('Implement me')
+  }
 
   /**
-   * The onVRControllerButtonUp method.
-   * @param {any} event - The event param.
+   * Event fired when a VR controller button is released over a tool.
+   *
+   * @param {object} event - The event param.
    */
-  onVRControllerButtonUp(event) {}
+  onVRControllerButtonUp(event) {
+    console.warn('Implement me')
+  }
 
   /**
-   * The onVRControllerDoubleClicked method.
-   * @param {any} event - The event param.
+   * Event fired when a VR controller button is pressed twice over a tool.
+   *
+   * @param {object} event - The event param.
    */
-  onVRControllerDoubleClicked(event) {}
+  onVRControllerDoubleClicked(event) {
+    console.warn('Implement me')
+  }
 
   /**
-   * The onVRPoseChanged method.
-   * @param {any} event - The event param.
+   * Event fired when a VR controller...
+   *
+   * @param {object} event - The event param.
    */
-  onVRPoseChanged(event) {}
+  onVRPoseChanged(event) {
+    console.warn('Implement me')
+  }
 }
+
+export default BaseTool
+export { BaseTool }

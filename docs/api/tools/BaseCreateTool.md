@@ -1,7 +1,7 @@
 <a name="isPrimaryTool"></a>
 
 ### isPrimaryTool
-The isPrimaryTool method.
+Checks if the tool is a primary tool or not.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - - Returns `true`.  

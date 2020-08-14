@@ -1,6 +1,6 @@
-import { Quat, Color, Xfo, GeomItem, Material, Cross } from '@zeainc/zea-engine'
+import { Quat, Color, Xfo, GeomItem, Material, Cross } from './node_modules/@zeainc/zea-engine'
 import BaseTool from '../BaseTool.js'
-import Handle from '../../sceneWidgets/Handle.js'
+import Handle from '../../Handles/Handle.js'
 import UndoRedoManager from '../../undoredo/UndoRedoManager.js'
 import Change from '../../undoredo/Change.js'
 

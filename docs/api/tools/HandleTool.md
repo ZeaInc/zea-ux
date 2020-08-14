@@ -1,7 +1,7 @@
 <a name="HandleTool"></a>
 
 ### HandleTool 
-Class representing a scene widget tool.
+Class representing a Handle tool.
 
 
 **Extends**: <code>BaseTool</code>  
@@ -10,138 +10,89 @@ Class representing a scene widget tool.
     * [new HandleTool(appData)](#new-HandleTool)
     * [activateTool()](#activateTool)
     * [deactivateTool()](#deactivateTool)
-    * [onMouseDown(event) ⇒ <code>any</code>](#onMouseDown)
-    * [onMouseMove(event) ⇒ <code>any</code>](#onMouseMove)
-    * [onMouseUp(event) ⇒ <code>any</code>](#onMouseUp)
+    * [onMouseDown(event) ⇒ <code>boolean</code>](#onMouseDown)
+    * [onMouseMove(event) ⇒ <code>boolean</code>](#onMouseMove)
+    * [onMouseUp(event) ⇒ <code>boolean</code>](#onMouseUp)
     * [onWheel(event)](#onWheel)
-    * [onTouchStart(event)](#onTouchStart)
-    * [onTouchMove(event)](#onTouchMove)
-    * [onTouchEnd(event)](#onTouchEnd)
-    * [onTouchCancel(event)](#onTouchCancel)
-    * [onVRControllerButtonDown(event) ⇒ <code>any</code>](#onVRControllerButtonDown)
-    * [onVRPoseChanged(event) ⇒ <code>any</code>](#onVRPoseChanged)
-    * [onVRControllerButtonUp(event) ⇒ <code>any</code>](#onVRControllerButtonUp)
+    * [onVRControllerButtonDown(event)](#onVRControllerButtonDown)
+    * [onVRPoseChanged(event)](#onVRPoseChanged)
+    * [onVRControllerButtonUp(event)](#onVRControllerButtonUp)
 
 <a name="new_HandleTool_new"></a>
 
 ### new HandleTool
-Create a scene widget tool
+Creates an instance of HandleTool.
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| appData | <code>any</code> | The appData value. |
+| appData | <code>object</code> | The appData value. |
 
 <a name="HandleTool+activateTool"></a>
 
 ### activateTool
-The activateTool method.
+Activates handle tool, which adds icons to VR Controllers.
 
 
 <a name="HandleTool+deactivateTool"></a>
 
 ### deactivateTool
-The deactivateTool method.
+Deactivates handle tool, which removes icons from controllers.
 
 
 <a name="HandleTool+onMouseDown"></a>
 
 ### onMouseDown
-The onMouseDown method.
+Event fired when a pointing device button is pressed while the pointer is over the tool.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
 <a name="HandleTool+onMouseMove"></a>
 
 ### onMouseMove
-The onMouseMove method.
+Event fired when a pointing device is moved while the cursor's hotspot is inside it.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
 <a name="HandleTool+onMouseUp"></a>
 
 ### onMouseUp
-The onMouseUp method.
+Event fired when a pointing device button is released while the pointer is over the tool.
 
 
-**Returns**: <code>any</code> - The return value.  
+**Returns**: <code>boolean</code> - - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
 <a name="HandleTool+onWheel"></a>
 
 ### onWheel
-The onWheel method.
+Event fired when the user rotates the pointing device wheel.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>any</code> | The event param. |
-
-<a name="HandleTool+onTouchStart"></a>
-
-### onTouchStart
-The onTouchStart method.
-
-
-
-| Param | Type | Description |
-| --- | --- | --- |
-| event | <code>any</code> | The event param. |
-
-<a name="HandleTool+onTouchMove"></a>
-
-### onTouchMove
-The onTouchMove method.
-
-
-
-| Param | Type | Description |
-| --- | --- | --- |
-| event | <code>any</code> | The event param. |
-
-<a name="HandleTool+onTouchEnd"></a>
-
-### onTouchEnd
-The onTouchEnd method.
-
-
-
-| Param | Type | Description |
-| --- | --- | --- |
-| event | <code>any</code> | The event param. |
-
-<a name="HandleTool+onTouchCancel"></a>
-
-### onTouchCancel
-The onTouchCancel method.
-
-
-
-| Param | Type | Description |
-| --- | --- | --- |
-| event | <code>any</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
 <a name="HandleTool+onVRControllerButtonDown"></a>
 
 ### onVRControllerButtonDown
-The onVRControllerButtonDown method.
+Event fired when a VR controller button is pressed over a tool.
 
 
-**Returns**: <code>any</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -153,7 +104,6 @@ The onVRControllerButtonDown method.
 The onVRPoseChanged method.
 
 
-**Returns**: <code>any</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -162,10 +112,9 @@ The onVRPoseChanged method.
 <a name="HandleTool+onVRControllerButtonUp"></a>
 
 ### onVRControllerButtonUp
-The onVRControllerButtonUp method.
+Event fired when a VR controller button is released over a tool.
 
 
-**Returns**: <code>any</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |

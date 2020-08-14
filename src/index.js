@@ -1,4 +1,4 @@
 export * from './SelectionManager'
 export * from './UndoRedo/index'
-export * from './tools/index'
-export * from './sceneWidgets/index'
+export * from './Tools/index'
+export * from './Handles/index'
