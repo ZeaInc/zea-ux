@@ -1,4 +1,4 @@
-import { Color, sgFactory, shaderLibrary, GLShader } from '@zeainc/zea-engine'
+import { Color, Registry, shaderLibrary, GLShader } from '@zeainc/zea-engine'
 import './HandleGeomDataShader'
 
 /**
@@ -163,7 +163,7 @@ void main(void) {
   // }
 }
 
-sgFactory.registerClass('HandleShader', HandleShader)
+Registry.register('HandleShader', HandleShader)
 
 export default HandleShader
 export { HandleShader }

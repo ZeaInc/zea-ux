@@ -106,7 +106,7 @@ class CreateGeomTool extends BaseCreateTool {
    * @param {Vec3} pt - The pt param.
    */
   createPoint(pt) {
-    console.warn('Implement me')
+    // console.warn('Implement me')
   }
 
   /**
@@ -115,7 +115,7 @@ class CreateGeomTool extends BaseCreateTool {
    * @param {Vec3} pt - The pt param.
    */
   createMove(pt) {
-    console.warn('Implement me')
+    // console.warn('Implement me')
   }
 
   /**
@@ -124,7 +124,7 @@ class CreateGeomTool extends BaseCreateTool {
    * @param {Vec3} pt - The pt param.
    */
   createRelease(pt) {
-    console.warn('Implement me')
+    // console.warn('Implement me')
   }
 
   // ///////////////////////////////////
@@ -191,7 +191,7 @@ class CreateGeomTool extends BaseCreateTool {
    * @param {MouseEvent} event - The event param.
    */
   onWheel(event) {
-    console.warn('Implement me')
+    // console.warn('Implement me')
   }
 
   // ///////////////////////////////////
@@ -200,31 +200,28 @@ class CreateGeomTool extends BaseCreateTool {
   /**
    * Event fired when the user presses a key on the keyboard, while the tool is activated.
    *
-   * @param {string} key - The key param.
    * @param {KeyboardEvent} event - The event param.
    */
-  onKeyPressed(key, event) {
-    console.warn('Implement me')
+  onKeyPressed(event) {
+    // console.warn('Implement me')
   }
 
   /**
    * Event fired when the user presses down a key on the keyboard, while the tool is activated.
    *
-   * @param {string} key - The key param.
    * @param {KeyboardEvent} event - The event param.
    */
-  onKeyDown(key, event) {
-    console.warn('Implement me')
+  onKeyDown(event) {
+    // console.warn('Implement me')
   }
 
   /**
    * Event fired when the user releases a key on the keyboard.
    *
-   * @param {string} key - The key param.
    * @param {KeyboardEvent} event - The event param.
    */
-  onKeyUp(key, event) {
-    console.warn('Implement me')
+  onKeyUp(event) {
+    // console.warn('Implement me')
   }
 
   // ///////////////////////////////////
@@ -236,7 +233,7 @@ class CreateGeomTool extends BaseCreateTool {
    * @param {TouchEvent} event - The event param.
    */
   onTouchStart(event) {
-    console.warn('Implement me')
+    // console.warn('Implement me')
   }
 
   /**
@@ -245,7 +242,7 @@ class CreateGeomTool extends BaseCreateTool {
    * @param {TouchEvent} event - The event param.
    */
   onTouchMove(event) {
-    console.warn('Implement me')
+    // console.warn('Implement me')
   }
 
   /**
@@ -254,7 +251,7 @@ class CreateGeomTool extends BaseCreateTool {
    * @param {TouchEvent} event - The event param.
    */
   onTouchEnd(event) {
-    console.warn('Implement me')
+    // console.warn('Implement me')
   }
 
   /**
@@ -263,7 +260,7 @@ class CreateGeomTool extends BaseCreateTool {
    * @param {TouchEvent} event - The event param.
    */
   onTouchCancel(event) {
-    console.warn('Implement me')
+    // console.warn('Implement me')
   }
 
   // ///////////////////////////////////

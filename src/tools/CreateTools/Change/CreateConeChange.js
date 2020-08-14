@@ -43,7 +43,7 @@ class CreateConeChange extends CreateGeomChange {
   }
 }
 
-UndoRedoManager.registerChange('CreateCircleChange', CreateCircleChange)
+UndoRedoManager.registerChange('CreateConeChange', CreateConeChange)
 
 export default CreateConeChange
 export { CreateConeChange }

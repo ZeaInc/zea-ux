@@ -1,5 +1,5 @@
-import UndoRedoManager from './UndoRedoManager.js'
-import Change from './Change.js'
+import UndoRedoManager from '../UndoRedoManager.js'
+import Change from '../Change.js'
 
 /**
  * Class representing a `Move TreeItem` Change(Moving a TreeItem from one parent to another).

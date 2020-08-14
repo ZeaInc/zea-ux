@@ -7,7 +7,7 @@ import {
   Material,
   Cylinder,
   Sphere,
-  sgFactory,
+  Registry,
   MathFunctions,
 } from '@zeainc/zea-engine'
 import BaseLinearMovementHandle from './BaseLinearMovementHandle'
@@ -207,7 +207,7 @@ class SliderHandle extends BaseLinearMovementHandle {
   }
 }
 
-sgFactory.registerClass('SliderHandle', SliderHandle)
+Registry.register('SliderHandle', SliderHandle)
 
 export default SliderHandle
 export { SliderHandle }

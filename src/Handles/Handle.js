@@ -22,14 +22,14 @@ class Handle extends TreeItem {
    * Applies a special shinning shader to the handle to illustrate interaction with it.
    */
   highlight() {
-    console.warn('Implement me')
+    // console.warn('Implement me')
   }
 
   /**
    * Removes the shining shader from the handle.
    */
   unhighlight() {
-    console.warn('Implement me')
+    // console.warn('Implement me')
   }
 
   /**

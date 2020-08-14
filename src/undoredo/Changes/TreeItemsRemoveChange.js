@@ -1,6 +1,6 @@
 import { TreeItem, Operator } from '@zeainc/zea-engine'
-import UndoRedoManager from './UndoRedoManager.js'
-import Change from './Change.js'
+import UndoRedoManager from '../UndoRedoManager.js'
+import Change from '../Change.js'
 
 /**
  * Class representing a TreeItems removal Change,
@@ -37,8 +37,7 @@ class TreeItemsRemoveChange extends Change {
         this.itemPaths.push(item.getPath())
         this.itemIndices.push(itemIndex)
 
-        if (this.selectionManager && this.newSelection.has(item))
-          this.newSelection.delete(item)
+        if (this.selectionManager && this.newSelection.has(item)) this.newSelection.delete(item)
         if (item instanceof Operator) {
           const op = item
           op.detach()
@@ -48,8 +47,7 @@ class TreeItemsRemoveChange extends Change {
               const op = subTreeItem
               op.detach()
             }
-            if (this.selectionManager && this.newSelection.has(subTreeItem))
-              this.newSelection.delete(subTreeItem)
+            if (this.selectionManager && this.newSelection.has(subTreeItem)) this.newSelection.delete(subTreeItem)
           }, false)
         }
 
@@ -66,12 +64,7 @@ class TreeItemsRemoveChange extends Change {
    */
   undo() {
     this.items.forEach((item, index) => {
-      this.itemOwners[index].insertChild(
-        item,
-        this.itemIndices[index],
-        false,
-        false
-      )
+      this.itemOwners[index].insertChild(item, this.itemIndices[index], false, false)
 
       // Now re-attach all the detached operators.
       if (item instanceof Operator) {
@@ -86,16 +79,14 @@ class TreeItemsRemoveChange extends Change {
         }, false)
       }
     })
-    if (this.selectionManager)
-      this.selectionManager.setSelection(this.prevSelection, false)
+    if (this.selectionManager) this.selectionManager.setSelection(this.prevSelection, false)
   }
 
   /**
    * Executes initial change to remove items from their owners.
    */
   redo() {
-    if (this.selectionManager)
-      this.selectionManager.setSelection(this.newSelection, false)
+    if (this.selectionManager) this.selectionManager.setSelection(this.newSelection, false)
 
     // Now re-detach all the operators.
     this.items.forEach((item, index) => {

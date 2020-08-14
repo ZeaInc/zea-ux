@@ -42,6 +42,10 @@ class SelectionManager extends EventEmitter {
    * @param {GLBaseRenderer} renderer - The renderer param.
    */
   setRenderer(renderer) {
+    if (this.__renderer == renderer) {
+      console.warn(`Renderer already set on SelectionManager`)
+      return
+    }
     this.__renderer = renderer
     this.__renderer.addTreeItem(this.selectionGroup)
   }

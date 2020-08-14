@@ -53,7 +53,7 @@ class SelectionGroupXfoOperator extends Operator {
    *
    * @param {Xfo} xfo - The new value being set to the Groups GlobalXfo param.
    */
-  setValue(xfo) {
+  backPropagateValue(xfo) {
     const groupTransformOutput = this.getOutput('GroupGlobalXfo')
     const currGroupXfo = groupTransformOutput.getValue()
     const invXfo = currGroupXfo.inverse()

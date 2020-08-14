@@ -1,4 +1,4 @@
-import { EventEmitter } from './node_modules/@zeainc/zea-engine'
+import { EventEmitter } from '@zeainc/zea-engine'
 import { UndoRedoManager } from './UndoRedoManager.js'
 
 /**
@@ -20,7 +20,7 @@ class Change extends EventEmitter {
   }
 
   /**
-   * Called by the `UndoRedoManager` in the `undo` method, and contains the code you wanna run when the undo action is triggered, 
+   * Called by the `UndoRedoManager` in the `undo` method, and contains the code you wanna run when the undo action is triggered,
    * of course it depends on what you're doing.
    *
    * @note This method needs to be implemented, otherwise it will throw an Error.

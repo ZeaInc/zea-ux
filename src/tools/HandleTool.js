@@ -1,4 +1,4 @@
-import { Color, GeomItem, Material, Sphere } from './node_modules/@zeainc/zea-engine'
+import { Color, GeomItem, Material, Sphere } from '@zeainc/zea-engine'
 import BaseTool from './BaseTool'
 import Handle from '../Handles/Handle'
 
@@ -28,7 +28,7 @@ class HandleTool extends BaseTool {
     super.activateTool()
     console.log('activateTool.HandleTool')
 
-    this.appData.renderer.getDiv().style.cursor = 'crosshair'
+    // this.appData.renderer.getDiv().style.cursor = 'crosshair'
 
     const addIconToController = (controller) => {
       // The tool might already be deactivated.

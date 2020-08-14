@@ -1,4 +1,4 @@
-import { sgFactory, shaderLibrary, StandardSurfaceGeomDataShader } from '@zeainc/zea-engine'
+import { Registry, shaderLibrary, StandardSurfaceGeomDataShader } from '@zeainc/zea-engine'
 /**
  * Class representing Geometry Data Shader
  *
@@ -64,7 +64,7 @@ void main(void) {
   }
 }
 
-sgFactory.registerClass('HandleGeomDataShader', HandleGeomDataShader)
+Registry.register('HandleGeomDataShader', HandleGeomDataShader)
 
 export default HandleGeomDataShader
 export { HandleGeomDataShader }

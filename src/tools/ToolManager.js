@@ -1,13 +1,16 @@
+import { EventEmitter } from '@zeainc/zea-engine'
+
 /**
  * Class representing a tool manager.
  */
-class ToolManager {
+class ToolManager extends EventEmitter {
   /**
    * Creates an instance of ToolManager.
    *
    * @param {object} appData - The appData value.
    */
   constructor(appData) {
+    super()
     this.__toolStack = []
     this.appData = appData
 
@@ -88,7 +91,7 @@ class ToolManager {
       else {
         // Make sure to reset the pointer in case any tool
         // didn't close correctly.
-        this.appData.renderer.getDiv().style.cursor = 'pointer'
+        // this.appData.renderer.getDiv().style.cursor = 'pointer'
       }
     }
   }
@@ -347,10 +350,9 @@ class ToolManager {
   /**
    * The onKeyPressed method.
    *
-   * @param {string} key - The event param.
    * @param {KeyboardEvent} event - The event param.
    */
-  onKeyPressed(key, event) {
+  onKeyPressed(event) {
     event.undoRedoManager = this.appData.undoRedoManager
     let i = this.__toolStack.length
     while (i--) {
@@ -362,30 +364,28 @@ class ToolManager {
   /**
    * The onKeyDown method.
    *
-   * @param {string} key - The event param.
    * @param {KeyboardEvent} event - The event param.
    */
-  onKeyDown(key, event) {
+  onKeyDown(event) {
     event.undoRedoManager = this.appData.undoRedoManager
     let i = this.__toolStack.length
     while (i--) {
       const tool = this.__toolStack[i]
-      if (tool && tool.onKeyDown(key, event) == true) break
+      if (tool && tool.onKeyDown(event) == true) break
     }
   }
 
   /**
    * The onKeyUp method.
    *
-   * @param {string} key - The event param.
    * @param {KeyboardEvent} event - The event param.
    */
-  onKeyUp(key, event) {
+  onKeyUp(event) {
     event.undoRedoManager = this.appData.undoRedoManager
     let i = this.__toolStack.length
     while (i--) {
       const tool = this.__toolStack[i]
-      if (tool && tool.onKeyUp(key, event) == true) break
+      if (tool && tool.onKeyUp(event) == true) break
     }
   }
 
