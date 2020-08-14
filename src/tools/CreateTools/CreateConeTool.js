@@ -1,61 +1,26 @@
-import { GeomItem, Material, Cone } from '@zeainc/zea-engine'
-import UndoRedoManager from '../../undoredo/UndoRedoManager.js'
-import { CreateGeomChange, CreateGeomTool } from './CreateGeomTool.js'
+import CreateConeChange from './Change/CreateConeChange'
 
 /**
- * Class representing a create cone change.
- * @extends CreateGeomChange
- */
-class CreateConeChange extends CreateGeomChange {
-  /**
-   * Create a create cone change.
-   * @param {any} parentItem - The parentItem value.
-   * @param {any} xfo - The xfo value.
-   */
-  constructor(parentItem, xfo) {
-    super('Create Cone')
-
-    const cone = new Cone(0.0, 0.0)
-    const material = new Material('Sphere')
-    this.geomItem = new GeomItem('Sphere')
-    this.geomItem.setGeometry(cone)
-    this.geomItem.setMaterial(material)
-
-    if (parentItem && xfo) {
-      this.setParentAndXfo(parentItem, xfo)
-    }
-  }
-
-  /**
-   * The update method.
-   * @param {any} updateData - The updateData param.
-   */
-  update(updateData) {
-    if (updateData.radius)
-      this.geomItem.getGeometry().setRadius(updateData.radius)
-    if (updateData.height)
-      this.geomItem.getGeometry().setHeight(updateData.height)
-    this.emit('updated', updateData)
-  }
-}
-UndoRedoManager.registerChange('CreateCircleChange', CreateCircleChange)
-
-/**
- * Class representing a create cone tool.
+ * Tool for creating a Cone geometry.
+ *
+ * **Events**
+ * * **actionFinished:** Triggered when the creation of the geometry is completed.
+ *
  * @extends CreateGeomTool
  */
 class CreateConeTool extends CreateGeomTool {
   /**
    * Create a create cone tool.
-   * @param {any} appData - The appData value.
+   * @param {object} appData - The appData value.
    */
   constructor(appData) {
     super(appData)
   }
 
   /**
-   * The createStart method.
-   * @param {any} xfo - The xfo param.
+   * Starts the creation of the geometry.
+   *
+   * @param {Xfo} xfo - The xfo param.
    */
   createStart(xfo) {
     this.xfo = xfo
@@ -70,8 +35,9 @@ class CreateConeTool extends CreateGeomTool {
   }
 
   /**
-   * The createMove method.
-   * @param {any} pt - The pt param.
+   * Updates Cone geometry structural properties.
+   *
+   * @param {Vec3} pt - The pt param.
    */
   createMove(pt) {
     if (this.stage == 1) {
@@ -87,8 +53,9 @@ class CreateConeTool extends CreateGeomTool {
   }
 
   /**
-   * The createRelease method.
-   * @param {any} pt - The pt param.
+   * Finishes the creation of the Cone.
+   *
+   * @param {Vec3} pt - The pt param.
    */
   createRelease(pt) {
     if (this._radius == 0 || this._height == 0) {
@@ -105,4 +72,5 @@ class CreateConeTool extends CreateGeomTool {
   }
 }
 
+export default CreateConeTool
 export { CreateConeTool }

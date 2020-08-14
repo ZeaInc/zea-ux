@@ -5,7 +5,7 @@ import {
   Material,
   Plane,
   DataImage,
-} from '@zeainc/zea-engine'
+} from './node_modules/@zeainc/zea-engine'
 
 import domtoimage from './dom-to-image.js'
 

@@ -1,70 +1,27 @@
-import { Color, Rect, Material, GeomItem } from '@zeainc/zea-engine'
-import UndoRedoManager from '../../undoredo/UndoRedoManager.js'
-import { CreateGeomChange, CreateGeomTool } from './CreateGeomTool.js'
-
+import CreateGeomTool from './CreateGeomTool'
+import CreateRectChange from './Change/CreateRectChange'
 /**
- * Class representing a create rect change.
- * @extends CreateGeomChange
- */
-class CreateRectChange extends CreateGeomChange {
-  /**
-   * Create a create rect change.
-   * @param {any} parentItem - The parentItem value.
-   * @param {any} xfo - The xfo value.
-   */
-  constructor(parentItem, xfo) {
-    super('Create Rect')
-
-    this.rect = new Rect(0, 0)
-    this.rect.lineThickness = 0.05
-    // const material = new Material('rect', 'LinesShader');
-    const material = new Material('circle', 'FatLinesShader')
-    material.getParameter('Color').setValue(new Color(0.7, 0.2, 0.2))
-    this.geomItem = new GeomItem('Rect')
-    this.geomItem.setGeometry(this.rect)
-    this.geomItem.setMaterial(material)
-
-    if (parentItem && xfo) {
-      this.setParentAndXfo(parentItem, xfo)
-    }
-  }
-
-  /**
-   * The update method.
-   * @param {any} updateData - The updateData param.
-   */
-  update(updateData) {
-    if (updateData.baseSize) {
-      this.rect.setSize(updateData.baseSize[0], updateData.baseSize[1])
-    }
-    if (updateData.tr) {
-      const xfo = this.geomItem.getParameter('LocalXfo').getValue()
-      xfo.tr.fromJSON(updateData.tr)
-      this.geomItem.getParameter('LocalXfo').setValue(xfo)
-    }
-
-    this.emit('updated', updateData)
-  }
-}
-UndoRedoManager.registerChange('CreateRectChange', CreateRectChange)
-
-/**
- * Class representing a create rect tool.
+ * Tool for creating a rectangle geometry.
+ *
+ * **Events**
+ * * **actionFinished:** Triggered when the creation of the geometry is completed.
+ *
  * @extends CreateGeomTool
  */
 class CreateRectTool extends CreateGeomTool {
   /**
    * Create a create rect tool.
-   * @param {any} appData - The appData value.
+   * @param {object} appData - The appData value.
    */
   constructor(appData) {
     super(appData)
   }
 
   /**
-   * The createStart method.
-   * @param {any} xfo - The xfo param.
-   * @param {any} parentItem - The parentItem param.
+   * Starts the creation of a rectangle geometry.
+   *
+   * @param {Xfo} xfo - The xfo param.
+   * @param {TreeItem} parentItem - The parentItem param.
    */
   createStart(xfo, parentItem) {
     this.change = new CreateRectChange(parentItem, xfo)
@@ -77,8 +34,9 @@ class CreateRectTool extends CreateGeomTool {
   }
 
   /**
-   * The createMove method.
-   * @param {any} pt - The pt param.
+   * Updated the rectangle geometry structural properties.
+   *
+   * @param {Vec3} pt - The pt param.
    */
   createMove(pt) {
     if (this.stage == 1) {
@@ -98,9 +56,10 @@ class CreateRectTool extends CreateGeomTool {
   }
 
   /**
-   * The createRelease method.
-   * @param {any} pt - The pt param.
-   * @param {any} viewport - The viewport param.
+   * Finishes the creation of a rectangle geometry.
+   *
+   * @param {Vec3} pt - The pt param.
+   * @param {GLViewport} viewport - The viewport param.
    */
   createRelease(pt, viewport) {
     if (this._size == 0) {
@@ -111,4 +70,5 @@ class CreateRectTool extends CreateGeomTool {
   }
 }
 
+export default CreateRectTool
 export { CreateRectTool }
