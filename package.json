@@ -6,10 +6,8 @@
   "module": "dist/index.esm.js",
   "rawimport": "dist/index.rawimport.js",
   "files": [
-    "/dist/index.cjs.js",
-    "/dist/index.esm.js",
-    "/dist/index.rawimport.js",
-    "/css/**"
+    "dist/",
+    "css/"
   ],
   "keywords": [],
   "scripts": {
@@ -21,6 +19,7 @@
     "docs-w": "adg -w --config=adg.config.json",
     "lint": "eslint src/",
     "prepare": "yarn run build",
+    "to-cleanup": "rm -Rf dist/ node_modules/ yarn.lock",
     "to-link-packages": "yarn link @zeainc/zea-engine @zeainc/zea-collab"
   },
   "repository": {
@@ -36,6 +35,7 @@
   "devDependencies": {
     "@zeainc/jsdocs2md": "^0.0.3",
     "documentation": "^12.1.1",
+    "es-dev-server": "^1.57.3",
     "eslint": "^6.2.1",
     "eslint-config-google": "^0.13.0",
     "eslint-config-prettier": "^6.1.0",
