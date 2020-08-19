@@ -30,13 +30,6 @@
       scene.setupGrid(1.0, 10)
 
       const arcSlider = new ArcSlider('BrakePedalSlider')
-      // const xfo = new Xfo()
-      // xfo.tr.set(0.0, 0.123, 0.038)
-      // xfo.ori.setFromEulerAngles(new EulerAngles(0, Math.PI * -0.5, Math.PI * 0.5))
-      // const q = new Quat()
-      // q.setFromAxisAndAngle(new Vec3(0, 0, 1), 0.8)
-      // xfo.ori = xfo.ori.multiply(q)
-      // arcSlider.getParameter('GlobalXfo').setValue(xfo)
 
       arcSlider.getParameter('Handle Radius').setValue(0.013)
       arcSlider.getParameter('Arc Radius').setValue(0.7)
@@ -44,6 +37,22 @@
       scene.getRoot().addChild(arcSlider)
 
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-1, 1, 1), new Vec3(0, 0, 0.0))
+
+      // {{{ Messages handler.
+      const handleMessage = (event) => {
+        const { data } = event
+
+        if (data === 'front') {
+          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(1, 1, 1.7), new Vec3(0, 0, 0))
+          window.postMessage(`done-${data}`)
+        } else if (data === 'back') {
+          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-1, -1, 1.7), new Vec3(0, 0, 0))
+          window.postMessage(`done-${data}`)
+        }
+      }
+
+      window.addEventListener('message', handleMessage, false)
+      // }}}
     </script>
   </body>
 </html>

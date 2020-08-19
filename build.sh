@@ -1,1 +1,1 @@
-yarn run start
+yarn run build:watch
