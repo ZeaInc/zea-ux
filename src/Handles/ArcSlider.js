@@ -43,7 +43,7 @@ class ArcSlider extends BaseAxialRotationHandle {
     this.hilghlightColorParam = this.addParameter(new ColorParameter('Highlight Color', new Color(1, 1, 1)))
 
     this.handleMat = new Material('handleMat', 'HandleShader')
-    const arcGeom = new Circle(arcRadius, arcAngle, 64)
+    const arcGeom = new Circle(arcRadius, 64, arcAngle)
     const handleGeom = new Sphere(handleRadius, 64)
 
     this.handle = new GeomItem('handle', handleGeom, this.handleMat)
