@@ -1,4 +1,4 @@
-import { Vec3, Xfo } from '@zeainc/zea-engine'
+import { MathFunctions, Vec3, Xfo } from '@zeainc/zea-engine'
 import Handle from './Handle'
 import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
 
@@ -86,7 +86,7 @@ class BaseAxialRotationHandle extends Handle {
     if (this.vec0.cross(vec1).dot(this.baseXfo.ori.getZaxis()) < 0) angle = -angle
 
     if (this.range) {
-      angle = Math.clamp(angle, this.range[0], this.range[1])
+      angle = MathFunctions.clamp(angle, this.range[0], this.range[1])
     }
 
     if (event.shiftKey) {

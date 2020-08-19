@@ -1,5 +1,7 @@
 import {
+  MathFunctions,
   Color,
+  Vec3,
   Xfo,
   NumberParameter,
   ColorParameter,
@@ -203,7 +205,7 @@ class ArcSlider extends BaseAxialRotationHandle {
     if (this.vec0.cross(vec1).dot(this.baseXfo.ori.getZaxis()) < 0) angle = -angle
 
     if (this.range) {
-      angle = Math.clamp(angle, this.range[0], this.range[1])
+      angle = MathFunctions.clamp(angle, this.range[0], this.range[1])
     }
 
     if (event.shiftKey) {

@@ -151,7 +151,11 @@ class SliderHandle extends BaseLinearMovementHandle {
   onDrag(event) {
     const length = this.lengthParam.getValue()
     const range = this.param && this.param.getRange() ? this.param.getRange() : [0, 1]
-    const value = Math.clamp(MathFunctions.remap(event.value, 0, length, range[0], range[1]), range[0], range[1])
+    const value = MathFunctions.clamp(
+      MathFunctions.remap(event.value, 0, length, range[0], range[1]),
+      range[0],
+      range[1]
+    )
     if (!this.param) {
       this.__updateSlider(value)
       this.value = value
