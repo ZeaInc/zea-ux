@@ -14,12 +14,13 @@
   "keywords": [],
   "scripts": {
     "build": "rollup -c",
+    "build:watch": "rollup -c rollup.config.dev.js -w",
+    "start": "./launch-e2e.sh",
     "dist": "yarn publish --access=public",
     "docs": "adg --config adg.config.json",
     "docs-w": "adg -w --config=adg.config.json",
     "lint": "eslint src/",
     "prepare": "yarn run build",
-    "start": "rollup -c rollup.config.dev.js -w",
     "to-link-packages": "yarn link @zeainc/zea-engine @zeainc/zea-collab"
   },
   "repository": {
