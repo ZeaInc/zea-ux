@@ -1,4 +1,5 @@
 import { EventEmitter } from '@zeainc/zea-engine'
+import { Change } from './Change'
 
 const __changeClasses = {}
 const __classNames = {}
@@ -53,13 +54,14 @@ class UndoRedoManager extends EventEmitter {
    */
   addChange(change) {
     // console.log("AddChange:", change.name)
-    if (this.__currChange) {
+    if (!(change instanceof Change)) console.warn('Change object is not derived from Change.')
+    if (this.__currChange && this.__currChange.off) {
       this.__currChange.off('updated', this.__currChangeUpdated)
     }
 
     this.__undoStack.push(change)
     this.__currChange = change
-    this.__currChange.on('updated', this.__currChangeUpdated)
+    if (this.__currChange.on) this.__currChange.on('updated', this.__currChangeUpdated)
 
     for (const change of this.__redoStack) change.destroy()
     this.__redoStack = []

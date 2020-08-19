@@ -47,7 +47,7 @@ void main(void) {
 
   if(maintainScreenSize != 0) {
     float dist = modelViewMatrix[3][2];
-    float sc = dist;
+    float sc = abs(dist); // Note: items in front of the camera will have a negative value here.
     mat4 scmat = mat4(
       sc, 0.0, 0.0, 0.0,
       0.0, sc, 0.0, 0.0,
