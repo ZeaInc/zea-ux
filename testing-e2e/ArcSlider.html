@@ -2,9 +2,18 @@
 <html>
   <head>
     <title>Zea Ux</title>
+    <style>
+      #angle-display {
+        position: fixed;
+        bottom: 15px;
+        right: 20px;
+        color: white;
+      }
+    </style>
   </head>
   <body>
     <div id="app"></div>
+    <div id="angle-display" class="angle-display"></div>
 
     <script type="module">
       import {
@@ -19,6 +28,7 @@
         Cylinder,
         Material,
         GeomItem,
+        NumberParameter,
       } from './libs/zea-engine/dist/index.esm.js'
       import { ArcSlider } from './libs/zea-ux/dist/index.rawimport.js'
 
@@ -33,10 +43,25 @@
 
       arcSlider.getParameter('Handle Radius').setValue(0.013)
       arcSlider.getParameter('Arc Radius').setValue(0.7)
-      arcSlider.getParameter('Arc Angle').setValue(0.7)
+      arcSlider.getParameter('Arc Angle').setValue(0.9)
       scene.getRoot().addChild(arcSlider)
 
-      renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-1, 1, 1), new Vec3(0, 0, 0.0))
+      const angleParam = new NumberParameter('Angle')
+      scene.getRoot().addParameter(angleParam)
+      arcSlider.setTargetParam(angleParam)
+
+      const angleElement = document.getElementById('angle-display')
+      arcSlider.on('dragStart', () => {
+        angleElement.textContent = `dragEnd: ${angleParam.getValue()}`
+      })
+      arcSlider.on('dragEnd', () => {
+        angleElement.textContent = `dragEnd: ${angleParam.getValue()}`
+      })
+      angleParam.on('valueChanged', () => {
+        angleElement.textContent = `Angle: ${angleParam.getValue()}`
+      })
+
+      renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(2, 2, 1), new Vec3(0.5, 0, 0.0))
 
       // {{{ Messages handler.
       const handleMessage = (event) => {
