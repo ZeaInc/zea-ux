@@ -70,7 +70,7 @@ class ArcSlider extends BaseAxialRotationHandle {
       this.handle.getParameter('GeomOffsetXfo').setValue(this.handleGeomOffsetXfo)
     })
     this.handleRadiusParam.on('valueChanged', () => {
-      handleGeom.getParameter('radius').setValue(this.handleRadiusParam.getValue())
+      handleGeom.getParameter('Radius').setValue(this.handleRadiusParam.getValue())
     })
     this.colorParam.on('valueChanged', () => {
       this.handleMat.getParameter('BaseColor').setValue(this.colorParam.getValue())
