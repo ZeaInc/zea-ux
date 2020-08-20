@@ -1,0 +1,10 @@
+session_name: Zea UX
+windows:
+  - layout: main-vertical
+    panes:
+      - yarn build:watch
+      - ${EDITOR} -S
+  - panes:
+      - shell_command:
+          - g fetch
+          - g s
