@@ -6,20 +6,22 @@
   "module": "dist/index.esm.js",
   "rawimport": "dist/index.rawimport.js",
   "files": [
-    "/dist/index.cjs.js",
-    "/dist/index.esm.js",
-    "/dist/index.rawimport.js",
-    "/css/**"
+    "dist/",
+    "css/"
   ],
   "keywords": [],
   "scripts": {
     "build": "rollup -c",
+    "build:watch": "rollup -c rollup.config.dev.js -w",
+    "start": "./launch-e2e.sh",
     "dist": "yarn publish --access=public",
     "docs": "adg --config adg.config.json",
     "docs-w": "adg -w --config=adg.config.json",
     "lint": "eslint src/",
     "prepare": "yarn run build",
-    "start": "rollup -c rollup.config.dev.js -w",
+    "test:e2e": "percy exec cypress run --browser chrome --headless",
+    "test:e2e:watch": "percy exec cypress open",
+    "to-cleanup": "rm -Rf dist/ node_modules/ yarn.lock",
     "to-link-packages": "yarn link @zeainc/zea-engine @zeainc/zea-collab"
   },
   "repository": {
@@ -33,8 +35,11 @@
   "author": "Zea Inc.",
   "license": "MIT",
   "devDependencies": {
+    "@percy/cypress": "^2.3.1",
     "@zeainc/jsdocs2md": "^0.0.3",
+    "cypress": "^5.0.0",
     "documentation": "^12.1.1",
+    "es-dev-server": "^1.57.3",
     "eslint": "^6.2.1",
     "eslint-config-google": "^0.13.0",
     "eslint-config-prettier": "^6.1.0",
@@ -45,7 +50,7 @@
   },
   "dependencies": {
     "@jaames/iro": "^4.5.1",
-    "@zeainc/zea-engine": "^1.0.4",
+    "@zeainc/zea-engine": "^1.3.0",
     "dom-to-image": "^2.6.0"
   },
   "externals": {

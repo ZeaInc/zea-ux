@@ -29,7 +29,7 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
     this.colorParam = handleMat.getParameter('BaseColor')
     this.colorParam.setValue(color)
     const handleGeom = new Cylinder(thickness, length, 64)
-    handleGeom.getParameter('baseZAtZero').setValue(true)
+    handleGeom.getParameter('BaseZAtZero').setValue(true)
     const tipGeom = new Cone(thickness * 4, thickness * 10, 64, true)
     const handle = new GeomItem('handle', handleGeom, handleMat)
 
