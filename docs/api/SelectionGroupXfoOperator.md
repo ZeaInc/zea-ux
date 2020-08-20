@@ -10,7 +10,7 @@ An operator for aiming items at targets.
     * [new SelectionGroupXfoOperator(initialXfoModeParam, globalXfoParam)](#new-SelectionGroupXfoOperator)
     * [addItem(item)](#addItem)
     * [removeItem(item)](#removeItem)
-    * [setValue(xfo)](#setValue)
+    * [backPropagateValue(xfo)](#backPropagateValue)
     * [evaluate()](#evaluate)
 
 <a name="new_SelectionGroupXfoOperator_new"></a>
@@ -46,9 +46,9 @@ Finds and removes the `OperatorInput` of the specified `TreeItem` from current`O
 | --- | --- | --- |
 | item | <code>TreeItem</code> | The Bind Xfo calculated from the initial Transforms of the Group Members. |
 
-<a name="SelectionGroupXfoOperator+setValue"></a>
+<a name="SelectionGroupXfoOperator+backPropagateValue"></a>
 
-### setValue
+### backPropagateValue
 Move the group. When the selection group is manipulated, this method is called.
 Here we propagate the delta to each of the selection members.
 

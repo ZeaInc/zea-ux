@@ -25,9 +25,9 @@ Class representing a tool manager.
     * [onMouseLeave(event)](#onMouseLeave)
     * [onDoubleClick(event)](#onDoubleClick)
     * [onWheel(event)](#onWheel)
-    * [onKeyPressed(key, event)](#onKeyPressed)
-    * [onKeyDown(key, event)](#onKeyDown)
-    * [onKeyUp(key, event)](#onKeyUp)
+    * [onKeyPressed(event)](#onKeyPressed)
+    * [onKeyDown(event)](#onKeyDown)
+    * [onKeyUp(event)](#onKeyUp)
     * [onTouchStart(event)](#onTouchStart)
     * [onTouchMove(event)](#onTouchMove)
     * [onTouchEnd(event)](#onTouchEnd)
@@ -250,7 +250,6 @@ The onKeyPressed method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| key | <code>string</code> | The event param. |
 | event | <code>KeyboardEvent</code> | The event param. |
 
 <a name="ToolManager+onKeyDown"></a>
@@ -262,7 +261,6 @@ The onKeyDown method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| key | <code>string</code> | The event param. |
 | event | <code>KeyboardEvent</code> | The event param. |
 
 <a name="ToolManager+onKeyUp"></a>
@@ -274,7 +272,6 @@ The onKeyUp method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| key | <code>string</code> | The event param. |
 | event | <code>KeyboardEvent</code> | The event param. |
 
 <a name="ToolManager+onTouchStart"></a>
