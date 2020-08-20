@@ -54,10 +54,10 @@ class SliderHandle extends BaseLinearMovementHandle {
     this.topBarXfo = new Xfo()
 
     this.barRadiusParam.on('valueChanged', () => {
-      barGeom.getParameter('radius').setValue(this.barRadiusParam.getValue())
+      barGeom.getParameter('Radius').setValue(this.barRadiusParam.getValue())
     })
     this.handleRadiusParam.on('valueChanged', () => {
-      handleGeom.getParameter('radius').setValue(this.handleRadiusParam.getValue())
+      handleGeom.getParameter('Radius').setValue(this.handleRadiusParam.getValue())
     })
     this.lengthParam.on('valueChanged', () => {
       this.__updateSlider(this.value)
