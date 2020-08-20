@@ -1,26 +1,36 @@
-import {
-  Color,
-  ColorParameter,
-  BaseItem,
-  TreeItem,
-  Group,
-} from '@zeainc/zea-engine'
+import { Color, ColorParameter, BaseItem, TreeItem, Group } from '@zeainc/zea-engine'
+import SelectionGroupXfoOperator from './SelectionGroupXfoOperator.js'
 
-/** Class representing a selection group */
-export default class SelectionGroup extends Group {
+/**
+ * A specific type of `Group` class that contains/handles selection of one or more items from the scene.
+ *
+ * **Option parameter values**
+ *
+ * | Option | type | default | Description |
+ * | --- | --- | --- | --- |
+ * | selectionOutlineColor | `Color` | `new Color('#03e3ac'))`  and opacity of `0.1` | See `Color` documentation |
+ * | branchSelectionOutlineColor | `Color` | `new Color('#81f1d5')` and opacity of `0.55` | See `Color` documentation |
+ *
+ * @extends {Group}
+ */
+class SelectionGroup extends Group {
+  /**
+   * Creates an instance of SelectionGroup.
+   *
+   *
+   * **Parameters**
+   * @param {object} options - Custom options for selection
+   */
   constructor(options) {
     super()
 
     let selectionColor
     let subtreeColor
-    if (options.selectionOutlineColor)
-      selectionColor = options.selectionOutlineColor
-    else {
-      selectionColor = new Color('#03E3AC')
-      selectionColor.a = 0.1
-    }
-    if (options.branchSelectionOutlineColor)
-      subtreeColor = options.branchSelectionOutlineColor
+    options.selectionOutlineColor
+      ? (selectionColor = options.selectionOutlineColor)
+      : (selectionColor = new Color(3, 227, 172, 0.1))
+
+    if (options.branchSelectionOutlineColor) subtreeColor = options.branchSelectionOutlineColor
     else {
       subtreeColor = selectionColor.lerp(new Color('white'), 0.5)
       subtreeColor.a = 0.1
@@ -29,139 +39,69 @@ export default class SelectionGroup extends Group {
     this.getParameter('HighlightColor').setValue(selectionColor)
     this.addParameter(new ColorParameter('SubtreeHighlightColor', subtreeColor))
 
-    this.propagatingSelectionToItems = options.setItemsSelected != false
-    this.getParameter('InitialXfoMode').setValue(
-      Group.INITIAL_XFO_MODES.average
-    )
+    this.getParameter('InitialXfoMode').setValue(Group.INITIAL_XFO_MODES.average)
     this.__itemsParam.setFilterFn((item) => item instanceof BaseItem)
+
+    this.selectionGroupXfoOp = new SelectionGroupXfoOperator(
+      this.getParameter('InitialXfoMode'),
+      this.getParameter('GlobalXfo')
+    )
   }
 
-  clone(flags) {
+  /**
+   * Constructs a new selection group by copying the values from current one and returns it.
+   *
+   * @return {SelectionGroup} - Cloned selection group.
+   */
+  clone() {
     const cloned = new SelectionGroup()
-    cloned.copyFrom(this, flags)
+    cloned.copyFrom(this)
     return cloned
   }
 
-  rebindInitialXfos() {
-    const items = Array.from(this.__itemsParam.getValue())
-    items.forEach((item, index) => {
-      if (item instanceof TreeItem) {
-        this.__initialXfos[index] = item.getGlobalXfo()
-      }
-    })
-  }
-
   /**
-   * The getSelectionOutlineColor method.
-   * @return {any} - The return value.
-  getSelectionOutlineColor() {
-    return this.selectionOutlineColor
-  }
+   *
+   * @param {TreeItem} item -
+   * @param {number} index -
+   * @private
    */
-
-  /**
-   * The setSelectionOutlineColor method.
-   * @param {any} color - The color param.
-  setSelectionOutlineColor(color) {
-    this.selectionOutlineColor = color
-    subtreeColor = color.lerp(
-      new Color('white'),
-      0.5
-    )
-    subtreeColor.a = 0.1
-  }
-   */
-
-  // eslint-disable-next-line require-jsdoc
   __bindItem(item, index) {
-    if (this.propagatingSelectionToItems) item.setSelected(this)
-
-    const signalIndices = {}
-
     if (item instanceof TreeItem) {
       const highlightColor = this.getParameter('HighlightColor').getValue()
       highlightColor.a = this.getParameter('HighlightFill').getValue()
       const subTreeColor = this.getParameter('SubtreeHighlightColor').getValue()
       item.addHighlight('selected' + this.getId(), highlightColor, false)
       item.getChildren().forEach((childItem) => {
-        if (childItem instanceof TreeItem)
-          childItem.addHighlight(
-            'branchselected' + this.getId(),
-            subTreeColor,
-            true
-          )
+        if (childItem instanceof TreeItem) childItem.addHighlight('branchselected' + this.getId(), subTreeColor, true)
       })
 
-      signalIndices.globalXfoChangedIndex = item.on('globalXfoChanged',
-        (mode) => {
-          // Then the item xfo changes, we update the group xfo.
-          if (!this.calculatingGroupXfo && !this.propagatingXfoToItems) {
-            this.__initialXfos[index] = item.getGlobalXfo()
-            this.groupXfoDirty = true
-            this._setGlobalXfoDirty()
-          }
-          // else if (mode != ValueSetMode.OPERATOR_SETVALUE &&  mode != ValueSetMode.OPERATOR_DIRTIED)
-        }
-      )
-      this.__initialXfos[index] = item.getGlobalXfo()
-      this.groupXfoDirty = true
+      this.selectionGroupXfoOp.addItem(item, index)
     }
-
-    this.__signalIndices[index] = signalIndices
-  }
-
-  // eslint-disable-next-line require-jsdoc
-  __unbindItem(item, index) {
-    if (this.propagatingSelectionToItems) item.setSelected(false)
-
-    if (item instanceof TreeItem) {
-      item.removeHighlight('selected' + this.getId())
-      item.getChildren().forEach((childItem) => {
-        if (childItem instanceof TreeItem)
-          childItem.removeHighlight('branchselected' + this.getId(), true)
-      })
-
-      item.removeListenerById('globalXfoChanged',
-        this.__signalIndices[index].globalXfoChangedIndex
-      )
-
-      this.__initialXfos.splice(index, 1)
-      this.groupXfoDirty = true
-    }
-
-    this.__signalIndices.splice(index, 1)
   }
 
   /**
-   * The _propagateDirtyXfoToItems method.
+   *
+   * @param {TreeItem} item -
+   * @param {number} index -
    * @private
    */
-  _propagateDirtyXfoToItems() {
-    if (this.groupXfoDirty || this.calculatingGroupXfo) return
-
-    const items = Array.from(this.__itemsParam.getValue())
-    // Only after all the items are resolved do we have an invXfo and we can tranform our items.
-    if (
-      !this.calculatingGroupXfo &&
-      items.length > 0 &&
-      this.invGroupXfo &&
-      !this.dirty
-    ) {
-      const xfo = this.__globalXfoParam.getValue()
-      const delta = xfo.multiply(this.invGroupXfo)
-
-      this.propagatingXfoToItems = true // Note: selection group needs this set.
-      const setGlobal = (item, initialXfo) => {
-        const param = item.getParameter('GlobalXfo')
-        const result = delta.multiply(initialXfo)
-        param.setValue(result)
-      }
-      items.forEach((item, index) => {
-        if (item instanceof TreeItem) {
-          setGlobal(item, this.__initialXfos[index])
-        }
+  __unbindItem(item, index) {
+    if (item instanceof TreeItem) {
+      item.removeHighlight('selected' + this.getId())
+      item.getChildren().forEach((childItem) => {
+        if (childItem instanceof TreeItem) childItem.removeHighlight('branchselected' + this.getId(), true)
       })
-      this.propagatingXfoToItems = false
+
+      this.selectionGroupXfoOp.removeItem(item, index)
     }
   }
+
+  /**
+   * calc Group Xfo
+   * @private
+   */
+  calcGroupXfo() {}
 }
+
+export default SelectionGroup
+export { SelectionGroup }

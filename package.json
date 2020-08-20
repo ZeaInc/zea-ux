@@ -1,6 +1,6 @@
 {
   "name": "@zeainc/zea-ux",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -15,9 +15,8 @@
   "scripts": {
     "build": "rollup -c",
     "dist": "yarn publish --access=public",
-    "docs": "documentation build src/** -f html -o docs",
-    "docs:lint": "documentation lint src/**",
-    "docs:serve": "documentation serve --watch src/**",
+    "docs": "adg --config adg.config.json",
+    "docs-w": "adg -w --config=adg.config.json",
     "lint": "eslint src/",
     "prepare": "yarn run build",
     "start": "rollup -c rollup.config.dev.js -w",
@@ -32,8 +31,9 @@
   },
   "homepage": "https://github.com/ZeaInc/zea-ux#readme",
   "author": "Zea Inc.",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
+    "@zeainc/jsdocs2md": "^0.0.3",
     "documentation": "^12.1.1",
     "eslint": "^6.2.1",
     "eslint-config-google": "^0.13.0",

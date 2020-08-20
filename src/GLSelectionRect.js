@@ -1,10 +1,10 @@
-import { Rect } from '../../SceneTree/Geometry/Shapes/Rect'
-import { GLLines } from '../GLLines.js'
-import { GLGeomItem } from '../GLGeomItem.js'
-import { GeomItem } from '../../SceneTree/GeomItem'
+import { Rect, GLLines, GLGeomItem, GeomItem } from '@zeainc/zea-engine'
 
-/** Class representing a GL selection rect.
+/**
+ * Class representing a GL selection rect.
+ *
  * @extends GLGeomItem
+ * @private
  */
 class GLSelectionRect extends GLGeomItem {
   /**
@@ -43,7 +43,7 @@ class GLSelectionRect extends GLGeomItem {
    * @return {any} - The return value.
    */
   get globalXfo() {
-    return this.__selectionRectGeomItem.getGlobalXfo()
+    return this.__selectionRectGeomItem.getParameter('GlobalXfo').getValue()
   }
 
   /**
