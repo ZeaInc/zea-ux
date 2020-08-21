@@ -80,14 +80,9 @@
           // Examine the text in the response
           response.json().then(function(data) {
             const search = {
-              paths: [
-                '/',
-                '/guide',
-                '/get-started',
-                '/tutorials/',
-                ...data.searchToc
-              ],
+              paths: 'auto',
               depth: 6,
+              namespace: 'ux-nsp'
             }
 
             window.$docsify = {
