@@ -29,6 +29,9 @@ class ParameterValueChange extends Change {
     } else {
       super()
     }
+
+    this.suppressPrimaryChange = false
+    this.secondaryChanges = []
   }
 
   /**
@@ -36,7 +39,10 @@ class ParameterValueChange extends Change {
    */
   undo() {
     if (!this.__param) return
-    this.__param.setValue(this.__prevValue)
+
+    if (!this.suppressPrimaryChange) this.__param.setValue(this.__prevValue)
+
+    this.secondaryChanges.forEach((change) => change.undo())
   }
 
   /**
@@ -45,7 +51,9 @@ class ParameterValueChange extends Change {
    */
   redo() {
     if (!this.__param) return
-    this.__param.setValue(this.__nextValue)
+    if (!this.suppressPrimaryChange) this.__param.setValue(this.__nextValue)
+
+    this.secondaryChanges.forEach((change) => change.undo())
   }
 
   /**
