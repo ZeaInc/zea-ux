@@ -18,7 +18,7 @@ yarn run docs
 ## Installing
 
 ```bash
-npm install @zea/ux
+npm install @zeainc/zea-ux
 ```
 
 ## Pack without publishing

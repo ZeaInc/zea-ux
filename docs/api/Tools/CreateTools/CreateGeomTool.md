@@ -19,9 +19,9 @@ Base class for creating geometry tools.
     * [onMouseMove(event) ⇒ <code>boolean</code>](#onMouseMove)
     * [onMouseUp(event) ⇒ <code>boolean</code>](#onMouseUp)
     * [onWheel(event)](#onWheel)
-    * [onKeyPressed(key, event)](#onKeyPressed)
-    * [onKeyDown(key, event)](#onKeyDown)
-    * [onKeyUp(key, event)](#onKeyUp)
+    * [onKeyPressed(event)](#onKeyPressed)
+    * [onKeyDown(event)](#onKeyDown)
+    * [onKeyUp(event)](#onKeyUp)
     * [onTouchStart(event)](#onTouchStart)
     * [onTouchMove(event)](#onTouchMove)
     * [onTouchEnd(event)](#onTouchEnd)
@@ -166,7 +166,6 @@ Event fired when the user presses a key on the keyboard, while the tool is activ
 
 | Param | Type | Description |
 | --- | --- | --- |
-| key | <code>string</code> | The key param. |
 | event | <code>KeyboardEvent</code> | The event param. |
 
 <a name="CreateGeomTool+onKeyDown"></a>
@@ -178,7 +177,6 @@ Event fired when the user presses down a key on the keyboard, while the tool is 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| key | <code>string</code> | The key param. |
 | event | <code>KeyboardEvent</code> | The event param. |
 
 <a name="CreateGeomTool+onKeyUp"></a>
@@ -190,7 +188,6 @@ Event fired when the user releases a key on the keyboard.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| key | <code>string</code> | The key param. |
 | event | <code>KeyboardEvent</code> | The event param. |
 
 <a name="CreateGeomTool+onTouchStart"></a>

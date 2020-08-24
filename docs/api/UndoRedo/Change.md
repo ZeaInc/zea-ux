@@ -31,7 +31,7 @@ It is used by the `UndoRedoManager` factory to re-construct the class of the spe
 <a name="Change+undo"></a>
 
 ### undo
-Called by the `UndoRedoManager` in the `undo` method, and contains the code you wanna run when the undo action is triggered, 
+Called by the `UndoRedoManager` in the `undo` method, and contains the code you wanna run when the undo action is triggered,
 of course it depends on what you're doing.
 
 
