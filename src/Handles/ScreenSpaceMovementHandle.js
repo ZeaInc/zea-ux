@@ -1,6 +1,7 @@
 import { Ray } from '@zeainc/zea-engine'
 import Handle from './Handle.js'
 import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange.js'
+import UndoRedoManager from '../UndoRedo/UndoRedoManager.js'
 
 /**
  * Class representing a planar movement scene widget.
@@ -103,9 +104,9 @@ class ScreenSpaceMovementHandle extends Handle {
     this.grabPos = event.grabPos
     const param = this.getTargetParam()
     this.baseXfo = param.getValue()
-    if (event.undoRedoManager) {
+    {
       this.change = new ParameterValueChange(param)
-      event.undoRedoManager.addChange(this.change)
+      UndoRedoManager.getInstance().addChange(this.change)
     }
   }
 

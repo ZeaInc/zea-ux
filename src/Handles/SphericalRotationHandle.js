@@ -1,6 +1,7 @@
 import { Color, Xfo, GeomItem, Material, Sphere } from '@zeainc/zea-engine'
 import Handle from './Handle'
 import './Shaders/HandleShader'
+import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 
 /**
  * Class representing an axial rotation scene widget.
@@ -132,9 +133,9 @@ class SphericalRotationHandle extends Handle {
     // Hilight the material.
     this.colorParam.setValue(new Color(1, 1, 1))
 
-    if (event.undoRedoManager) {
+    {
       this.change = new ParameterValueChange(param)
-      event.undoRedoManager.addChange(this.change)
+      UndoRedoManager.getInstance().addChange(this.change)
     }
   }
 
