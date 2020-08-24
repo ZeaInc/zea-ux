@@ -3,6 +3,7 @@ import BaseLinearMovementHandle from './BaseLinearMovementHandle'
 import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
 import './Shaders/HandleShader'
 import transformVertices from './transformVertices'
+import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 
 /**
  * Class representing a linear movement scene widget.
@@ -91,9 +92,9 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
     this.grabPos = event.grabPos
     const param = this.getTargetParam()
     this.baseXfo = param.getValue()
-    if (event.undoRedoManager) {
+    {
       this.change = new ParameterValueChange(param)
-      event.undoRedoManager.addChange(this.change)
+      UndoRedoManager.getInstance().addChange(this.change)
     }
   }
 

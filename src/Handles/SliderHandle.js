@@ -12,6 +12,7 @@ import {
 } from '@zeainc/zea-engine'
 import BaseLinearMovementHandle from './BaseLinearMovementHandle'
 import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
+import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 
 /**
  * Class representing a slider scene widget.
@@ -137,9 +138,9 @@ class SliderHandle extends BaseLinearMovementHandle {
     if (!this.param) {
       return
     }
-    if (event.undoRedoManager) {
+    {
       this.change = new ParameterValueChange(this.param)
-      event.undoRedoManager.addChange(this.change)
+      UndoRedoManager.getInstance().addChange(this.change)
     }
   }
 
