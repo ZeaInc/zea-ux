@@ -104,10 +104,9 @@ class ScreenSpaceMovementHandle extends Handle {
     this.grabPos = event.grabPos
     const param = this.getTargetParam()
     this.baseXfo = param.getValue()
-    {
-      this.change = new ParameterValueChange(param)
-      UndoRedoManager.getInstance().addChange(this.change)
-    }
+
+    this.change = new ParameterValueChange(param)
+    UndoRedoManager.getInstance().addChange(this.change)
   }
 
   /**
@@ -121,14 +120,9 @@ class ScreenSpaceMovementHandle extends Handle {
     const newXfo = this.baseXfo.clone()
     newXfo.tr.addInPlace(dragVec)
 
-    if (this.change) {
-      this.change.update({
-        value: newXfo,
-      })
-    } else {
-      const param = this.getTargetParam()
-      param.setValue(newXfo)
-    }
+    this.change.update({
+      value: newXfo,
+    })
   }
 
   /**

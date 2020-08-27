@@ -99,10 +99,9 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
     this.tmplocalXfo = this.getParameter('LocalXfo').getValue()
     const param = this.getTargetParam()
     this.baseXfo = param.getValue()
-    {
-      this.change = new ParameterValueChange(param)
-      UndoRedoManager.getInstance().addChange(this.change)
-    }
+
+    this.change = new ParameterValueChange(param)
+    UndoRedoManager.getInstance().addChange(this.change)
   }
 
   /**
@@ -132,13 +131,9 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
     this.tmplocalXfo.sc.set(1, 1, sc)
     this.getParameter('LocalXfo').setValue(this.tmplocalXfo)
 
-    if (this.change) {
-      this.change.update({
-        value: newXfo,
-      })
-    } else {
-      this.param.setValue(newXfo)
-    }
+    this.change.update({
+      value: newXfo,
+    })
   }
 
   /**
