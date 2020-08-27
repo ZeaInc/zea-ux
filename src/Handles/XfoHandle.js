@@ -62,7 +62,7 @@ class XfoHandle extends TreeItem {
       const planarXYWidget = new XfoPlanarMovementHandle(
         'planarXY',
         planarSize,
-        green,
+        blue,
         new Vec3(planarSize * 0.5, planarSize * 0.5, 0.0)
       )
       const xfo = new Xfo()
@@ -85,7 +85,7 @@ class XfoHandle extends TreeItem {
       const planarXZWidget = new XfoPlanarMovementHandle(
         'planarXZ',
         planarSize,
-        blue,
+        green,
         new Vec3(planarSize * 0.5, planarSize * 0.5, 0.0)
       )
       const xfo = new Xfo()
