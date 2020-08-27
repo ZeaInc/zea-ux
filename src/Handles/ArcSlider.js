@@ -208,10 +208,8 @@ class ArcSlider extends BaseAxialRotationHandle {
     // this.grabCircleRadius = this.arcRadiusParam.getValue();
     this.vec0.normalizeInPlace()
 
-    {
-      this.change = new ParameterValueChange(this.param)
-      UndoRedoManager.getInstance().addChange(this.change)
-    }
+    this.change = new ParameterValueChange(this.param)
+    UndoRedoManager.getInstance().addChange(this.change)
 
     // Hilight the material.
     this.handleGeomOffsetXfo.sc.x = this.handleGeomOffsetXfo.sc.y = this.handleGeomOffsetXfo.sc.z = 1.2

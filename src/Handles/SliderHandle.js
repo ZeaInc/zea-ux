@@ -138,10 +138,9 @@ class SliderHandle extends BaseLinearMovementHandle {
     if (!this.param) {
       return
     }
-    {
-      this.change = new ParameterValueChange(this.param)
-      UndoRedoManager.getInstance().addChange(this.change)
-    }
+
+    this.change = new ParameterValueChange(this.param)
+    UndoRedoManager.getInstance().addChange(this.change)
   }
 
   /**
@@ -162,13 +161,10 @@ class SliderHandle extends BaseLinearMovementHandle {
       this.value = value
       return
     }
-    if (this.change) {
-      this.change.update({
-        value,
-      })
-    } else {
-      this.param.setValue(value)
-    }
+
+    this.change.update({
+      value,
+    })
   }
 
   /**

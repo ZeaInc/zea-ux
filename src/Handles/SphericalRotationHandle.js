@@ -133,10 +133,8 @@ class SphericalRotationHandle extends Handle {
     // Hilight the material.
     this.colorParam.setValue(new Color(1, 1, 1))
 
-    {
-      this.change = new ParameterValueChange(param)
-      UndoRedoManager.getInstance().addChange(this.change)
-    }
+    this.change = new ParameterValueChange(param)
+    UndoRedoManager.getInstance().addChange(this.change)
   }
 
   /**
@@ -156,14 +154,9 @@ class SphericalRotationHandle extends Handle {
     const newXfo = this.baseXfo.multiply(this.deltaXfo)
     const value = newXfo.multiply(this.offsetXfo)
 
-    if (this.change) {
-      this.change.update({
-        value,
-      })
-    } else {
-      const param = this.getTargetParam()
-      param.setValue(newXfo)
-    }
+    this.change.update({
+      value,
+    })
   }
 
   /**
