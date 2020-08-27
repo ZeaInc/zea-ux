@@ -53,7 +53,7 @@ class ParameterValueChange extends Change {
     if (!this.__param) return
     if (!this.suppressPrimaryChange) this.__param.setValue(this.__nextValue)
 
-    this.secondaryChanges.forEach((change) => change.undo())
+    this.secondaryChanges.forEach((change) => change.redo())
   }
 
   /**
