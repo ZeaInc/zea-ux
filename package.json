@@ -1,6 +1,6 @@
 {
   "name": "@zeainc/zea-ux",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -58,5 +58,10 @@
   "externals": {
     "@zeainc/zea-engine": "@zeainc/zea-engine",
     "@zeainc/zea-collab": "@zeainc/zea-collab"
+  },
+  "standard-version": {
+    "skip": {
+      "commit": true
+    }
   }
 }
