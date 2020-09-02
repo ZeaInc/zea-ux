@@ -4,7 +4,7 @@
 Represents a `Change` class for storing `Selection` values.
 
 
-**Extends**: <code>Change</code>  
+**Extends**: <code>[Change](api/UndoRedo/Change.md)</code>  
 
 * [SelectionChange ⇐ <code>Change</code>](#SelectionChange)
     * [new SelectionChange(selectionManager, prevSelection, newSelection)](#new-SelectionChange)
@@ -21,7 +21,7 @@ Creates an instance of SelectionChange.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| selectionManager | <code>SelectionManager</code> | The selectionManager value. |
+| selectionManager | <code>[SelectionManager](api/SelectionManager.md)</code> | The selectionManager value. |
 | prevSelection | <code>Set</code> | The prevSelection value. |
 | newSelection | <code>Set</code> | The newSelection value. |
 

@@ -1678,10 +1678,10 @@
   resolved "https://registry.yarnpkg.com/@webcomponents/webcomponentsjs/-/webcomponentsjs-2.4.4.tgz#14b7e78da47f8f0071ff96c35335b871534179bc"
   integrity sha512-UWXZYbaDLLfhm+xONXTiDciyhOSwKRrZieGQHFMSMGSxY4mbjZ5uYzOKgnuX0luYFvjJw32G3r0sCwQZPJIR4Q==
 
-"@zeainc/jsdocs2md@^0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@zeainc/jsdocs2md/-/jsdocs2md-0.0.3.tgz#ed33bb5eebe6ce4da526acdddded070b789b3893"
-  integrity sha512-lETXqXnMRua9wqRyYvZzlFvJ/5uoKGruthZvnHUIN61vC7gK8NoLBrAQ8DvlfFRjAoDm6X/mwsk2hOMxMT3zbQ==
+"@zeainc/jsdocs2md@^0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@zeainc/jsdocs2md/-/jsdocs2md-0.0.7.tgz#bd35fbd1a65dae976fedbd7ee584ac0c30f1e47c"
+  integrity sha512-2TogOjsBFv7lwrjtivN0loe+e4YR2FdlSVKyOniZRBYU3GMHekJHLbeeZut5jQ0p45dONQnfSQFEHzk42BrMzw==
   dependencies:
     chokidar "^3.4.0"
     colors "^1.4.0"

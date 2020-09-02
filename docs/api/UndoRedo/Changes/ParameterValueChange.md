@@ -7,7 +7,7 @@ Represents a `Change` class for storing `Parameter` values.
 * **updated:** Triggered when the `ParameterValueChange` value is updated.
 
 
-**Extends**: <code>Change</code>  
+**Extends**: <code>[Change](api/UndoRedo/Change.md)</code>  
 
 * [ParameterValueChange ⇐ <code>Change</code>](#ParameterValueChange)
     * [new ParameterValueChange(param, newValue)](#new-ParameterValueChange)

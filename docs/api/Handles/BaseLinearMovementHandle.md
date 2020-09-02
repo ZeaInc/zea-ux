@@ -4,7 +4,7 @@
 Class representing a base linear movement scene widget.
 
 
-**Extends**: <code>Handle</code>  
+**Extends**: <code>[Handle](api/Handles/Handle.md)</code>  
 
 * [BaseLinearMovementHandle ⇐ <code>Handle</code>](#BaseLinearMovementHandle)
     * [new BaseLinearMovementHandle(name)](#new-BaseLinearMovementHandle)

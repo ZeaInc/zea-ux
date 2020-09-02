@@ -7,7 +7,7 @@ Tool for creating a free hand line.
 * **actionFinished:** Triggered when the creation of the geometry is completed.
 
 
-**Extends**: <code>CreateLineTool</code>  
+**Extends**: <code>[CreateLineTool](api/Tools/CreateTools/CreateLineTool.md)</code>  
 
 * [CreateFreehandLineTool ⇐ <code>CreateLineTool</code>](#CreateFreehandLineTool)
     * [new CreateFreehandLineTool(appData)](#new-CreateFreehandLineTool)

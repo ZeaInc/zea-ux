@@ -4,7 +4,7 @@
 Class representing a create geom change.
 
 
-**Extends**: <code>Change</code>  
+**Extends**: <code>[Change](api/UndoRedo/Change.md)</code>  
 
 * [CreateGeomChange ⇐ <code>Change</code>](#CreateGeomChange)
     * [new CreateGeomChange(name)](#new-CreateGeomChange)

@@ -7,7 +7,7 @@ Tool for creating a line tool.
 * **actionFinished:** Triggered when the creation of the geometry is completed.
 
 
-**Extends**: <code>CreateGeomTool</code>  
+**Extends**: <code>[CreateGeomTool](api/Tools/CreateTools/CreateGeomTool.md)</code>  
 
 * [CreateLineTool ⇐ <code>CreateGeomTool</code>](#CreateLineTool)
     * [new CreateLineTool(appData)](#new-CreateLineTool)

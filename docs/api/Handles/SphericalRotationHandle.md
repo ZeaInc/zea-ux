@@ -4,7 +4,7 @@
 Class representing an axial rotation scene widget.
 
 
-**Extends**: <code>Handle</code>  
+**Extends**: <code>[Handle](api/Handles/Handle.md)</code>  
 
 * [SphericalRotationHandle ⇐ <code>Handle</code>](#SphericalRotationHandle)
     * [new SphericalRotationHandle(name, radius, color)](#new-SphericalRotationHandle)

@@ -4,7 +4,7 @@
 Class representing a planar movement scene widget.
 
 
-**Extends**: <code>Handle</code>  
+**Extends**: <code>[Handle](api/Handles/Handle.md)</code>  
 
 * [PlanarMovementHandle ⇐ <code>Handle</code>](#PlanarMovementHandle)
     * [new PlanarMovementHandle(name)](#new-PlanarMovementHandle)

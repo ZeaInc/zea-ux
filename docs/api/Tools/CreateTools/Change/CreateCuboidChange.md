@@ -7,7 +7,7 @@ Class representing a create cuboid change.
 * **updated:** Triggered when the change is updated
 
 
-**Extends**: <code>CreateGeomChange</code>  
+**Extends**: <code>[CreateGeomChange](api/Tools/CreateTools/Change/CreateGeomChange.md)</code>  
 
 * [CreateCuboidChange ⇐ <code>CreateGeomChange</code>](#CreateCuboidChange)
     * [new CreateCuboidChange(parentItem, xfo)](#new-CreateCuboidChange)

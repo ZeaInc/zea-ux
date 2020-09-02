@@ -7,7 +7,7 @@ Class representing a create freehand line change.
 * **updated:** Triggered when the change is updated
 
 
-**Extends**: <code>CreateGeomChange</code>  
+**Extends**: <code>[CreateGeomChange](api/Tools/CreateTools/Change/CreateGeomChange.md)</code>  
 
 * [CreateFreehandLineChange ⇐ <code>CreateGeomChange</code>](#CreateFreehandLineChange)
     * [new CreateFreehandLineChange(parentItem, xfo, color, thickness)](#new-CreateFreehandLineChange)

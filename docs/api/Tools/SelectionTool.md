@@ -4,7 +4,7 @@
 Class representing a selection tool.
 
 
-**Extends**: <code>BaseTool</code>  
+**Extends**: <code>[BaseTool](api/Tools/BaseTool.md)</code>  
 
 * [SelectionTool ⇐ <code>BaseTool</code>](#SelectionTool)
     * [new SelectionTool(appData)](#new-SelectionTool)

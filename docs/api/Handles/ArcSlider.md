@@ -4,7 +4,7 @@
 Class representing a slider scene widget.
 
 
-**Extends**: <code>BaseAxialRotationHandle</code>  
+**Extends**: <code>[BaseAxialRotationHandle](api/Handles/BaseAxialRotationHandle.md)</code>  
 
 * [ArcSlider ⇐ <code>BaseAxialRotationHandle</code>](#ArcSlider)
     * [new ArcSlider(name, [arcRadius], [arcAngle], [handleRadius], [color])](#new-ArcSlider)
@@ -13,6 +13,7 @@ Class representing a slider scene widget.
     * [onMouseDown(event)](#onMouseDown)
     * [highlight()](#highlight)
     * [unhighlight()](#unhighlight)
+    * [setTargetParam(param, track)](#setTargetParam)
     * [getBaseXfo() ⇒ <code>Xfo</code>](#getBaseXfo)
     * [onDragStart(event)](#onDragStart)
     * [onDrag(event)](#onDrag)
@@ -78,6 +79,18 @@ Applies a special shinning shader to the handle to illustrate interaction with i
 ### unhighlight
 Removes the shining shader from the handle.
 
+
+<a name="ArcSlider+setTargetParam"></a>
+
+### setTargetParam
+Sets global xfo target parameter
+
+
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| param | <code>Parameter</code> |  | The param param. |
+| track | <code>boolean</code> | <code>true</code> | The track param. |
 
 <a name="ArcSlider+getBaseXfo"></a>
 

@@ -4,7 +4,7 @@
 Class representing a linear scale scene widget.
 
 
-**Extends**: <code>BaseLinearMovementHandle</code>  
+**Extends**: <code>[BaseLinearMovementHandle](api/Handles/BaseLinearMovementHandle.md)</code>  
 
 * [LinearScaleHandle ⇐ <code>BaseLinearMovementHandle</code>](#LinearScaleHandle)
     * [new LinearScaleHandle(name, length, thickness, color)](#new-LinearScaleHandle)

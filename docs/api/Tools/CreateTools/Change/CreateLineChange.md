@@ -7,7 +7,7 @@ Class representing a create line change.
 * **updated:** Triggered when the change is updated
 
 
-**Extends**: <code>CreateGeomChange</code>  
+**Extends**: <code>[CreateGeomChange](api/Tools/CreateTools/Change/CreateGeomChange.md)</code>  
 
 * [CreateLineChange ⇐ <code>CreateGeomChange</code>](#CreateLineChange)
     * [new CreateLineChange(parentItem, xfo, color, thickness)](#new-CreateLineChange)
