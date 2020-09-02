@@ -20,6 +20,7 @@
     "docs-w": "adg -w --config=adg.config.json",
     "lint": "eslint src/",
     "prepare": "yarn run build",
+    "test": "./launch-tests.sh",
     "test:e2e": "percy exec cypress run --browser chrome --headless",
     "test:e2e:watch": "percy exec cypress open",
     "to-cleanup": "rm -Rf dist/ node_modules/ yarn.lock",
