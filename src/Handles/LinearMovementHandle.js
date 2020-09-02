@@ -26,7 +26,7 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
     this.__hilightedColor = new Color(1, 1, 1)
 
     const handleMat = new Material('handle', 'HandleShader')
-    handleMat.getParameter('maintainScreenSize').setValue(1)
+    handleMat.getParameter('MaintainScreenSize').setValue(1)
     this.colorParam = handleMat.getParameter('BaseColor')
     this.colorParam.setValue(color)
     const handleGeom = new Cylinder(thickness, length, 64)
