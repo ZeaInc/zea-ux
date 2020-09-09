@@ -11,7 +11,7 @@
   ],
   "keywords": [],
   "scripts": {
-    "build": "rollup -c",
+    "build": "rollup -c rollup.config.prod.js",
     "build:watch": "rollup -c rollup.config.dev.js -w",
     "release": "standard-version",
     "start": "./launch-e2e.sh",
