@@ -28,6 +28,7 @@ attribute vec2 texCoords;
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
 uniform int MaintainScreenSize;
+uniform float Overlay;
 
 <%include file="stack-gl/transpose.glsl"/>
 <%include file="drawItemId.glsl"/>
@@ -59,7 +60,7 @@ void main(void) {
 
   vec4 viewPos = modelViewMatrix * vec4(positions, 1.0);
   gl_Position = projectionMatrix * viewPos;
-  
+
   if(Overlay > 0.0){
     gl_Position.z = mix(gl_Position.z, -1.0, Overlay);
   }
