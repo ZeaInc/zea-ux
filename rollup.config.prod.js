@@ -3,9 +3,6 @@ import { terser } from 'rollup-plugin-terser'
 import pkg from './package.json'
 
 const external = ['@zeainc/zea-engine']
-const globals = {
-  '@zeainc/zea-engine': 'zeaEngine',
-}
 
 export default [
   // Browser-friendly UMD build.
@@ -16,7 +13,9 @@ export default [
       name: 'zeaUx',
       file: pkg.browser,
       format: 'umd',
-      globals,
+      globals: {
+        '@zeainc/zea-engine': 'zeaEngine',
+      },
     },
     plugins: [terser()],
   },
@@ -31,8 +30,8 @@ export default [
     input: 'src/index.js',
     external,
     output: [
-      { file: pkg.main, format: 'cjs', globals },
-      { file: pkg.module, format: 'es', globals },
+      { file: pkg.main, format: 'cjs' },
+      { file: pkg.module, format: 'es' },
     ],
     plugins: [terser()],
   },

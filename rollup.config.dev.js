@@ -1,9 +1,6 @@
 import pkg from './package.json'
 
 const external = ['@zeainc/zea-engine']
-const globals = {
-  '@zeainc/zea-engine': 'zeaEngine',
-}
 
 export default [
   // Browser-friendly UMD build.
@@ -14,7 +11,9 @@ export default [
       name: 'zeaUx',
       file: pkg.browser,
       format: 'umd',
-      globals,
+      globals: {
+        '@zeainc/zea-engine': 'zeaEngine',
+      },
       sourcemap: true,
     },
   },
@@ -29,8 +28,8 @@ export default [
     input: 'src/index.js',
     external,
     output: [
-      { file: pkg.main, format: 'cjs', sourcemap: true, globals },
-      { file: pkg.module, format: 'es', sourcemap: true, globals },
+      { file: pkg.main, format: 'cjs', sourcemap: true },
+      { file: pkg.module, format: 'es', sourcemap: true },
     ],
   },
 ]
