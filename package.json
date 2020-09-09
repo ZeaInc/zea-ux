@@ -24,7 +24,7 @@
     "test:e2e": "percy exec cypress run --browser chrome --headless",
     "test:e2e:watch": "percy exec cypress open",
     "to-cleanup": "rm -Rf dist/ node_modules/ yarn.lock",
-    "to-link-packages": "yarn link @zeainc/zea-engine @zeainc/zea-collab"
+    "to-link-packages": "yarn link @zeainc/zea-engine"
   },
   "repository": {
     "type": "git",
