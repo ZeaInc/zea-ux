@@ -1,4 +1,16 @@
+import { terser } from 'rollup-plugin-terser'
+
 import pkg from './package.json'
+
+const isProduction = !process.env.ROLLUP_WATCH
+
+const sourcemap = true
+
+const plugins = []
+
+if (isProduction) {
+  plugins.push(terser())
+}
 
 const external = ['@zeainc/zea-engine']
 
@@ -11,11 +23,12 @@ export default [
       name: 'zeaUx',
       file: pkg.browser,
       format: 'umd',
+      sourcemap,
       globals: {
         '@zeainc/zea-engine': 'zeaEngine',
       },
-      sourcemap: true,
     },
+    plugins,
   },
 
   // CommonJS (for Node) and ES module (for bundlers) build.
@@ -28,8 +41,9 @@ export default [
     input: 'src/index.js',
     external,
     output: [
-      { file: pkg.main, format: 'cjs', sourcemap: true },
-      { file: pkg.module, format: 'es', sourcemap: true },
+      { file: pkg.main, format: 'cjs', sourcemap },
+      { file: pkg.module, format: 'es', sourcemap },
     ],
+    plugins,
   },
 ]

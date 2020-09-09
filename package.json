@@ -11,8 +11,8 @@
   ],
   "keywords": [],
   "scripts": {
-    "build": "rollup -c rollup.config.prod.js",
-    "build:watch": "rollup -c rollup.config.dev.js -w",
+    "build": "rollup -c rollup.config.js",
+    "build:watch": "rollup -w -c rollup.config.js",
     "release": "standard-version",
     "start": "./launch-e2e.sh",
     "dist": "yarn publish --access=public",
