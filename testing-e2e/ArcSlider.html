@@ -15,8 +15,11 @@
     <div id="app"></div>
     <div id="angle-display" class="angle-display"></div>
 
-    <script type="module">
-      import {
+    <script src="./libs/zea-engine/dist/index.umd.js"></script>
+    <script src="./libs/zea-ux/dist/index.umd.js"></script>
+
+    <script>
+      const {
         GLRenderer,
         Scene,
         Vec3,
@@ -29,8 +32,8 @@
         Material,
         GeomItem,
         NumberParameter,
-      } from './libs/zea-engine/dist/index.esm.js'
-      import { ArcSlider } from './libs/zea-ux/dist/index.rawimport.js'
+      } = zeaEngine
+      const { ArcSlider } = zeaUx
 
       const scene = new Scene()
       const domElement = document.getElementById('app')
