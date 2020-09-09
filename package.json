@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
-  "rawimport": "dist/index.rawimport.js",
+  "browser": "dist/index.umd.js",
   "files": [
     "dist/*.js",
     "css/"
@@ -54,10 +54,6 @@
   "dependencies": {
     "@zeainc/zea-engine": "^1.3.0",
     "dom-to-image": "^2.6.0"
-  },
-  "externals": {
-    "@zeainc/zea-engine": "@zeainc/zea-engine",
-    "@zeainc/zea-collab": "@zeainc/zea-collab"
   },
   "standard-version": {
     "skip": {
