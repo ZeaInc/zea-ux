@@ -7,7 +7,7 @@ Tool for creating a Cone geometry.
 * **actionFinished:** Triggered when the creation of the geometry is completed.
 
 
-**Extends**: <code>CreateGeomTool</code>  
+**Extends**: <code>[CreateGeomTool](api/Tools/CreateTools/CreateGeomTool.md)</code>  
 
 * [CreateConeTool ⇐ <code>CreateGeomTool</code>](#CreateConeTool)
     * [new CreateConeTool(appData)](#new-CreateConeTool)

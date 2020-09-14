@@ -4,7 +4,7 @@
 Class representing a view tool
 
 
-**Extends**: <code>BaseTool</code>  
+**Extends**: <code>[BaseTool](api/Tools/BaseTool.md)</code>  
 
 * [ViewTool ⇐ <code>BaseTool</code>](#ViewTool)
     * [new ViewTool(appData, [manipulationModel])](#new-ViewTool)

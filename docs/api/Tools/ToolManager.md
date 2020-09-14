@@ -58,7 +58,7 @@ The insertTool method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| tool | <code>BaseTool</code> | The tool param. |
+| tool | <code>[BaseTool](api/Tools/BaseTool.md)</code> | The tool param. |
 | index | <code>number</code> | The index param. |
 
 <a name="ToolManager+insertToolBefore"></a>
@@ -71,8 +71,8 @@ The insertToolBefore method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| tool | <code>BaseTool</code> | The tool param. |
-| beforeTool | <code>BaseTool</code> | The beforeTool param. |
+| tool | <code>[BaseTool](api/Tools/BaseTool.md)</code> | The tool param. |
+| beforeTool | <code>[BaseTool](api/Tools/BaseTool.md)</code> | The beforeTool param. |
 
 <a name="ToolManager+insertToolAfter"></a>
 
@@ -84,8 +84,8 @@ The insertToolAfter method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| tool | <code>BaseTool</code> | The tool param. |
-| afterTool | <code>BaseTool</code> | The afterTool param. |
+| tool | <code>[BaseTool](api/Tools/BaseTool.md)</code> | The tool param. |
+| afterTool | <code>[BaseTool](api/Tools/BaseTool.md)</code> | The afterTool param. |
 
 <a name="ToolManager+getToolIndex"></a>
 
@@ -97,7 +97,7 @@ The getToolIndex method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| tool | <code>BaseTool</code> | The tool param. |
+| tool | <code>[BaseTool](api/Tools/BaseTool.md)</code> | The tool param. |
 
 <a name="ToolManager+removeTool"></a>
 
@@ -119,7 +119,7 @@ The removeToolByHandle method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| tool | <code>BaseTool</code> | The tool param. |
+| tool | <code>[BaseTool](api/Tools/BaseTool.md)</code> | The tool param. |
 
 <a name="ToolManager+pushTool"></a>
 
@@ -131,7 +131,7 @@ The pushTool method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| tool | <code>BaseTool</code> | The tool param. |
+| tool | <code>[BaseTool](api/Tools/BaseTool.md)</code> | The tool param. |
 
 <a name="ToolManager+popTool"></a>
 
@@ -148,7 +148,7 @@ The replaceCurrentTool method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| tool | <code>BaseTool</code> | The tool param. |
+| tool | <code>[BaseTool](api/Tools/BaseTool.md)</code> | The tool param. |
 
 <a name="ToolManager+currTool"></a>
 
@@ -156,7 +156,7 @@ The replaceCurrentTool method.
 The currTool method.
 
 
-**Returns**: <code>BaseTool</code> - The return value.  
+**Returns**: <code>[BaseTool](api/Tools/BaseTool.md)</code> - The return value.  
 <a name="ToolManager+currToolName"></a>
 
 ### currToolName

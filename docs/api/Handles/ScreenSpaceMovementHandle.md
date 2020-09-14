@@ -4,7 +4,7 @@
 Class representing a planar movement scene widget.
 
 
-**Extends**: <code>Handle</code>  
+**Extends**: <code>[Handle](api/Handles/Handle.md)</code>  
 
 * [ScreenSpaceMovementHandle ⇐ <code>Handle</code>](#ScreenSpaceMovementHandle)
     * [new ScreenSpaceMovementHandle(name)](#new-ScreenSpaceMovementHandle)

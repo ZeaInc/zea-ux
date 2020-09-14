@@ -7,7 +7,7 @@ Tool for creating a circle geometry.
 * **actionFinished:** Triggered when the creation of the geometry is completed.
 
 
-**Extends**: <code>CreateGeomTool</code>  
+**Extends**: <code>[CreateGeomTool](api/Tools/CreateTools/CreateGeomTool.md)</code>  
 
 * [CreateCircleTool ⇐ <code>CreateGeomTool</code>](#CreateCircleTool)
     * [new CreateCircleTool(appData)](#new-CreateCircleTool)

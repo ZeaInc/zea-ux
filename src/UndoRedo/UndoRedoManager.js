@@ -176,7 +176,16 @@ class UndoRedoManager extends EventEmitter {
     __changeClasses[name] = cls
     __classNames[id] = name
   }
+
+  static getInstance() {
+    if (!inst) {
+      inst = new UndoRedoManager()
+    }
+    return inst
+  }
 }
+
+let inst
 
 export default UndoRedoManager
 export { UndoRedoManager }

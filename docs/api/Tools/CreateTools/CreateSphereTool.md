@@ -7,7 +7,7 @@ Tool for creating Sphere geometries.
 * **actionFinished:** Triggered when the creation of the geometry is completed.
 
 
-**Extends**: <code>CreateGeomTool</code>  
+**Extends**: <code>[CreateGeomTool](api/Tools/CreateTools/CreateGeomTool.md)</code>  
 
 * [CreateSphereTool ⇐ <code>CreateGeomTool</code>](#CreateSphereTool)
     * [new CreateSphereTool(appData)](#new-CreateSphereTool)

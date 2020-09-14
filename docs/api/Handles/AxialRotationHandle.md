@@ -4,7 +4,7 @@
 Class representing an axial rotation scene widget.
 
 
-**Extends**: <code>BaseAxialRotationHandle</code>  
+**Extends**: <code>[BaseAxialRotationHandle](api/Handles/BaseAxialRotationHandle.md)</code>  
 
 * [AxialRotationHandle ⇐ <code>BaseAxialRotationHandle</code>](#AxialRotationHandle)
     * [new AxialRotationHandle(name, radius, thickness, color)](#new-AxialRotationHandle)

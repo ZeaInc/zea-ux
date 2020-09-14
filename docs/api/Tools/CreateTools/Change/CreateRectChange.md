@@ -7,7 +7,7 @@ Class representing a create rect change.
 * **updated:** Triggered when the change is updated
 
 
-**Extends**: <code>CreateGeomChange</code>  
+**Extends**: <code>[CreateGeomChange](api/Tools/CreateTools/Change/CreateGeomChange.md)</code>  
 
 * [CreateRectChange ⇐ <code>CreateGeomChange</code>](#CreateRectChange)
     * [new CreateRectChange(parentItem, xfo)](#new-CreateRectChange)

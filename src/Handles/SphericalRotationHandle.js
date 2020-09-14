@@ -1,6 +1,7 @@
 import { Color, Xfo, GeomItem, Material, Sphere } from '@zeainc/zea-engine'
 import Handle from './Handle'
 import './Shaders/HandleShader'
+import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 
 /**
  * Class representing an axial rotation scene widget.
@@ -20,7 +21,7 @@ class SphericalRotationHandle extends Handle {
 
     this.radius = radius
     const maskMat = new Material('mask', 'HandleShader')
-    maskMat.getParameter('maintainScreenSize').setValue(1)
+    maskMat.getParameter('MaintainScreenSize').setValue(1)
     maskMat.getParameter('BaseColor').setValue(color)
     const maskGeom = new Sphere(radius, 64)
     const maskGeomItem = new GeomItem('mask', maskGeom, maskMat)
@@ -132,10 +133,8 @@ class SphericalRotationHandle extends Handle {
     // Hilight the material.
     this.colorParam.setValue(new Color(1, 1, 1))
 
-    if (event.undoRedoManager) {
-      this.change = new ParameterValueChange(param)
-      event.undoRedoManager.addChange(this.change)
-    }
+    this.change = new ParameterValueChange(param)
+    UndoRedoManager.getInstance().addChange(this.change)
   }
 
   /**
@@ -155,14 +154,9 @@ class SphericalRotationHandle extends Handle {
     const newXfo = this.baseXfo.multiply(this.deltaXfo)
     const value = newXfo.multiply(this.offsetXfo)
 
-    if (this.change) {
-      this.change.update({
-        value,
-      })
-    } else {
-      const param = this.getTargetParam()
-      param.setValue(newXfo)
-    }
+    this.change.update({
+      value,
+    })
   }
 
   /**

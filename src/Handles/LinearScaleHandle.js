@@ -3,6 +3,7 @@ import BaseLinearMovementHandle from './BaseLinearMovementHandle'
 import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
 import './Shaders/HandleShader'
 import transformVertices from './transformVertices'
+import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 
 /**
  * Class representing a linear scale scene widget.
@@ -25,7 +26,7 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
     this.__hilightedColor = new Color(1, 1, 1)
 
     const handleMat = new Material('handle', 'HandleShader')
-    handleMat.getParameter('maintainScreenSize').setValue(1)
+    handleMat.getParameter('MaintainScreenSize').setValue(1)
     this.colorParam = handleMat.getParameter('BaseColor')
     this.colorParam.setValue(color)
     const handleGeom = new Cylinder(thickness, length - thickness * 10, 64)
@@ -98,10 +99,9 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
     this.tmplocalXfo = this.getParameter('LocalXfo').getValue()
     const param = this.getTargetParam()
     this.baseXfo = param.getValue()
-    if (event.undoRedoManager) {
-      this.change = new ParameterValueChange(param)
-      event.undoRedoManager.addChange(this.change)
-    }
+
+    this.change = new ParameterValueChange(param)
+    UndoRedoManager.getInstance().addChange(this.change)
   }
 
   /**
@@ -131,13 +131,9 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
     this.tmplocalXfo.sc.set(1, 1, sc)
     this.getParameter('LocalXfo').setValue(this.tmplocalXfo)
 
-    if (this.change) {
-      this.change.update({
-        value: newXfo,
-      })
-    } else {
-      this.param.setValue(newXfo)
-    }
+    this.change.update({
+      value: newXfo,
+    })
   }
 
   /**

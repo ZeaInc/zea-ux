@@ -7,7 +7,7 @@ Class representing a create sphere change.
 * **updated:** Triggered when the change is updated
 
 
-**Extends**: <code>CreateGeomChange</code>  
+**Extends**: <code>[CreateGeomChange](api/Tools/CreateTools/Change/CreateGeomChange.md)</code>  
 
 * [CreateSphereChange ⇐ <code>CreateGeomChange</code>](#CreateSphereChange)
     * [new CreateSphereChange(parentItem, xfo)](#new-CreateSphereChange)

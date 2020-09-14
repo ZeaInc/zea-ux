@@ -24,7 +24,7 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
     this.radiusParam = this.addParameter(new NumberParameter('radius', radius))
 
     const handleMat = new Material('handle', 'HandleShader')
-    handleMat.getParameter('maintainScreenSize').setValue(1)
+    handleMat.getParameter('MaintainScreenSize').setValue(1)
     this.colorParam = handleMat.getParameter('BaseColor')
     this.colorParam.setValue(color)
 

@@ -51,7 +51,7 @@ Also, resets the redo stack(Calls destroy method when doing it).
 
 | Param | Type | Description |
 | --- | --- | --- |
-| change | <code>Change</code> | The change param. |
+| change | <code>[Change](api/UndoRedo/Change.md)</code> | The change param. |
 
 <a name="UndoRedoManager+getCurrentChange"></a>
 
@@ -84,7 +84,7 @@ Emits the `changeRedone` event, if you want to subscribe to it.
 Basically returns a new instance of the derived `Change` class. This is why we need the `name` attribute.
 
 
-**Returns**: <code>Change</code> - - The return value.  
+**Returns**: <code>[Change](api/UndoRedo/Change.md)</code> - - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -100,7 +100,7 @@ Checks if a class of an instantiated object is registered in the UndoRedo Factor
 
 | Param | Type | Description |
 | --- | --- | --- |
-| inst | <code>Change</code> | The instance of the Change class. |
+| inst | <code>[Change](api/UndoRedo/Change.md)</code> | The instance of the Change class. |
 
 <a name="UndoRedoManager.getChangeClassName"></a>
 
@@ -113,7 +113,7 @@ if not then checks the `name` attribute declared in constructor.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| inst | <code>Change</code> | The instance of the Change class. |
+| inst | <code>[Change](api/UndoRedo/Change.md)</code> | The instance of the Change class. |
 
 <a name="UndoRedoManager.registerChange"></a>
 
@@ -127,5 +127,5 @@ Because when the code is transpiled, the defined class names change, so it won't
 | Param | Type | Description |
 | --- | --- | --- |
 | name | <code>string</code> | The name param. |
-| cls | <code>Change</code> | The cls param. |
+| cls | <code>[Change](api/UndoRedo/Change.md)</code> | The cls param. |
 

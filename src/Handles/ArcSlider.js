@@ -15,6 +15,7 @@ import {
 import { BaseAxialRotationHandle } from './BaseAxialRotationHandle'
 import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
 import './Shaders/HandleShader'
+import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 
 /**
  * Class representing a slider scene widget.
@@ -207,10 +208,8 @@ class ArcSlider extends BaseAxialRotationHandle {
     // this.grabCircleRadius = this.arcRadiusParam.getValue();
     this.vec0.normalizeInPlace()
 
-    if (event.undoRedoManager) {
-      this.change = new ParameterValueChange(this.param)
-      event.undoRedoManager.addChange(this.change)
-    }
+    this.change = new ParameterValueChange(this.param)
+    UndoRedoManager.getInstance().addChange(this.change)
 
     // Hilight the material.
     this.handleGeomOffsetXfo.sc.x = this.handleGeomOffsetXfo.sc.y = this.handleGeomOffsetXfo.sc.z = 1.2

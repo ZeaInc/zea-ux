@@ -1,6 +1,21 @@
 # Changelog
 
 
+## 1.5.0 (2020-08-27)
+
+
+### Features
+
+* ParameterValueChange now supports nested changes.
+
+
+### Bug Fixes
+
+* Docs search now have their own namespace.
+* Generated docs for tools.
+* Generated docs, they were removed in a previous commit.
+
+
 ## 1.4.0 (2020-08-20)
 
 
@@ -13,7 +28,7 @@
 ### Bug Fixes
 
 * Addressed compatibility issue with zea-web-components that it is not constructing Change objects.
-* ArcSlider'r Radius param name.
+* ArcSlider's Radius param name.
 * Docs for classes under UndoRedo module.
 * Bug causing Handle geoms to be flipped in the view.
 * Coverage file.

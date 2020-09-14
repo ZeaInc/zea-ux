@@ -15,7 +15,7 @@
 Class representing a hold objects change.
 
 
-**Extends**: <code>Change</code>  
+**Extends**: <code>[Change](api/UndoRedo/Change.md)</code>  
 
 * [HoldObjectsChange ⇐ <code>Change</code>](#HoldObjectsChange)
     * [new HoldObjectsChange(data)](#new-HoldObjectsChange)
@@ -88,7 +88,7 @@ The fromJSON method.
 Class representing a VR hold objects tool.
 
 
-**Extends**: <code>BaseTool</code>  
+**Extends**: <code>[BaseTool](api/Tools/BaseTool.md)</code>  
 
 * [VRHoldObjectsTool ⇐ <code>BaseTool</code>](#VRHoldObjectsTool)
     * [new VRHoldObjectsTool(appData)](#new-VRHoldObjectsTool)

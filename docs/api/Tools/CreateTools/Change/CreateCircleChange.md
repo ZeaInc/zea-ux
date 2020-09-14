@@ -7,7 +7,7 @@ Class representing a create circle change.
 * **updated:** Triggered when the change is updated
 
 
-**Extends**: <code>CreateGeomChange</code>  
+**Extends**: <code>[CreateGeomChange](api/Tools/CreateTools/Change/CreateGeomChange.md)</code>  
 
 * [CreateCircleChange ⇐ <code>CreateGeomChange</code>](#CreateCircleChange)
     * [new CreateCircleChange(parentItem, xfo)](#new-CreateCircleChange)

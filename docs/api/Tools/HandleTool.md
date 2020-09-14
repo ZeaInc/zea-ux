@@ -4,7 +4,7 @@
 Class representing a Handle tool.
 
 
-**Extends**: <code>BaseTool</code>  
+**Extends**: <code>[BaseTool](api/Tools/BaseTool.md)</code>  
 
 * [HandleTool ⇐ <code>BaseTool</code>](#HandleTool)
     * [new HandleTool(appData)](#new-HandleTool)

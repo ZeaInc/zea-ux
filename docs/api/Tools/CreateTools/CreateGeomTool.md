@@ -4,7 +4,7 @@
 Base class for creating geometry tools.
 
 
-**Extends**: <code>BaseCreateTool</code>  
+**Extends**: <code>[BaseCreateTool](api/Tools/BaseCreateTool.md)</code>  
 
 * [CreateGeomTool ⇐ <code>BaseCreateTool</code>](#CreateGeomTool)
     * [new CreateGeomTool(appData)](#new-CreateGeomTool)

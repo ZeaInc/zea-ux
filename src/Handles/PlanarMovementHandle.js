@@ -1,5 +1,6 @@
 import Handle from './Handle'
 import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
+import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 
 /**
  * Class representing a planar movement scene widget.
@@ -52,10 +53,9 @@ class PlanarMovementHandle extends Handle {
     this.grabPos = event.grabPos
     const param = this.getTargetParam()
     this.baseXfo = param.getValue()
-    if (event.undoRedoManager) {
-      this.change = new ParameterValueChange(param)
-      event.undoRedoManager.addChange(this.change)
-    }
+
+    this.change = new ParameterValueChange(param)
+    UndoRedoManager.getInstance().addChange(this.change)
   }
 
   /**
@@ -69,14 +69,9 @@ class PlanarMovementHandle extends Handle {
     const newXfo = this.baseXfo.clone()
     newXfo.tr.addInPlace(dragVec)
 
-    if (this.change) {
-      this.change.update({
-        value: newXfo,
-      })
-    } else {
-      const param = this.getTargetParam()
-      param.setValue(newXfo)
-    }
+    this.change.update({
+      value: newXfo,
+    })
   }
 
   /**

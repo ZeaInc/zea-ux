@@ -1115,11 +1115,6 @@
     enabled "2.0.x"
     kuler "^2.0.0"
 
-"@jaames/iro@^4.5.1":
-  version "4.5.3"
-  resolved "https://registry.yarnpkg.com/@jaames/iro/-/iro-4.5.3.tgz#4fbeabaf119b9f53ef5b88e262dbfc3477fa9e9a"
-  integrity sha512-knBqezLEprrpHCb9hHZbQLApzCZyI/AuWg3mqQVkgTtQX3MNX3W2uVkX1hFwS6pmEUHbA022rid9fRqV0IshMA==
-
 "@koa/cors@^3.1.0":
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/@koa/cors/-/cors-3.1.0.tgz#618bb073438cfdbd3ebd0e648a76e33b84f3a3b2"
@@ -1678,10 +1673,10 @@
   resolved "https://registry.yarnpkg.com/@webcomponents/webcomponentsjs/-/webcomponentsjs-2.4.4.tgz#14b7e78da47f8f0071ff96c35335b871534179bc"
   integrity sha512-UWXZYbaDLLfhm+xONXTiDciyhOSwKRrZieGQHFMSMGSxY4mbjZ5uYzOKgnuX0luYFvjJw32G3r0sCwQZPJIR4Q==
 
-"@zeainc/jsdocs2md@^0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@zeainc/jsdocs2md/-/jsdocs2md-0.0.3.tgz#ed33bb5eebe6ce4da526acdddded070b789b3893"
-  integrity sha512-lETXqXnMRua9wqRyYvZzlFvJ/5uoKGruthZvnHUIN61vC7gK8NoLBrAQ8DvlfFRjAoDm6X/mwsk2hOMxMT3zbQ==
+"@zeainc/jsdocs2md@^0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@zeainc/jsdocs2md/-/jsdocs2md-0.0.7.tgz#bd35fbd1a65dae976fedbd7ee584ac0c30f1e47c"
+  integrity sha512-2TogOjsBFv7lwrjtivN0loe+e4YR2FdlSVKyOniZRBYU3GMHekJHLbeeZut5jQ0p45dONQnfSQFEHzk42BrMzw==
   dependencies:
     chokidar "^3.4.0"
     colors "^1.4.0"

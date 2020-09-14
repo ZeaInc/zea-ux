@@ -1,4 +1,4 @@
-describe('Zea Engine', () => {
+describe('Zea UX', () => {
   it('Renders an arch slider', () => {
     cy.visit('ArcSlider.html', {
       onBeforeLoad(win) {

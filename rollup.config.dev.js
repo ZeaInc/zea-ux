@@ -14,11 +14,8 @@ import pkg from './package.json'
 const plugin = {
   name: 'transform-imports',
   renderChunk(code, chunk, options) {
-    return code.replace(
-      '@zeainc/zea-engine',
-      '../../zea-engine/dist/index.esm.js'
-    )
-  }
+    return code.replace('@zeainc/zea-engine', '../../zea-engine/dist/index.esm.js')
+  },
 }
 
 export default [
@@ -33,9 +30,9 @@ export default [
     external: [...Object.keys(pkg.dependencies)],
     plugins: [],
     output: [
-      { file: pkg.main, format: 'cjs' },
-      { file: pkg.module, format: 'es' },
-      { file: pkg.rawimport, format: 'es', plugins: [plugin] },
+      { file: pkg.main, format: 'cjs', sourcemap: true },
+      { file: pkg.module, format: 'es', sourcemap: true },
+      { file: pkg.rawimport, format: 'es', plugins: [plugin], sourcemap: true },
     ],
   },
 ]

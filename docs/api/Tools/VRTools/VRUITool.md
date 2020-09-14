@@ -4,7 +4,7 @@
 Class representing a VR UI tool.
 
 
-**Extends**: <code>BaseTool</code>  
+**Extends**: <code>[BaseTool](api/Tools/BaseTool.md)</code>  
 
 * [VRUITool ⇐ <code>BaseTool</code>](#VRUITool)
     * [new VRUITool(appData)](#new-VRUITool)

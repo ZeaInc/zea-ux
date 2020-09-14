@@ -1,6 +1,7 @@
 import { MathFunctions, Vec3, Xfo } from '@zeainc/zea-engine'
 import Handle from './Handle'
 import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
+import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 
 /**
  * Class representing an axial rotation scene widget.
@@ -61,10 +62,8 @@ class BaseAxialRotationHandle extends Handle {
     this.grabCircleRadius = this.vec0.length()
     this.vec0.normalizeInPlace()
 
-    if (event.undoRedoManager) {
-      this.change = new ParameterValueChange(param)
-      event.undoRedoManager.addChange(this.change)
-    }
+    this.change = new ParameterValueChange(param)
+    UndoRedoManager.getInstance().addChange(this.change)
   }
 
   /**
@@ -100,14 +99,9 @@ class BaseAxialRotationHandle extends Handle {
     const newXfo = this.baseXfo.multiply(this.deltaXfo)
     const value = newXfo.multiply(this.offsetXfo)
 
-    if (this.change) {
-      this.change.update({
-        value,
-      })
-    } else {
-      const param = this.getTargetParam()
-      param.setValue(value)
-    }
+    this.change.update({
+      value,
+    })
   }
 
   /**

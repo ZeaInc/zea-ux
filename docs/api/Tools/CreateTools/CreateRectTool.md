@@ -7,7 +7,7 @@ Tool for creating a rectangle geometry.
 * **actionFinished:** Triggered when the creation of the geometry is completed.
 
 
-**Extends**: <code>CreateGeomTool</code>  
+**Extends**: <code>[CreateGeomTool](api/Tools/CreateTools/CreateGeomTool.md)</code>  
 
 * [CreateRectTool ⇐ <code>CreateGeomTool</code>](#CreateRectTool)
     * [new CreateRectTool(appData)](#new-CreateRectTool)

@@ -4,7 +4,7 @@
 Class representing a slider scene widget.
 
 
-**Extends**: <code>BaseLinearMovementHandle</code>  
+**Extends**: <code>[BaseLinearMovementHandle](api/Handles/BaseLinearMovementHandle.md)</code>  
 
 * [SliderHandle ⇐ <code>BaseLinearMovementHandle</code>](#SliderHandle)
     * [new SliderHandle(name, length, radius, color)](#new-SliderHandle)

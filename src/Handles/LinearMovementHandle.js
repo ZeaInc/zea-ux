@@ -3,6 +3,7 @@ import BaseLinearMovementHandle from './BaseLinearMovementHandle'
 import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
 import './Shaders/HandleShader'
 import transformVertices from './transformVertices'
+import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 
 /**
  * Class representing a linear movement scene widget.
@@ -25,7 +26,7 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
     this.__hilightedColor = new Color(1, 1, 1)
 
     const handleMat = new Material('handle', 'HandleShader')
-    handleMat.getParameter('maintainScreenSize').setValue(1)
+    handleMat.getParameter('MaintainScreenSize').setValue(1)
     this.colorParam = handleMat.getParameter('BaseColor')
     this.colorParam.setValue(color)
     const handleGeom = new Cylinder(thickness, length, 64)
@@ -91,10 +92,9 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
     this.grabPos = event.grabPos
     const param = this.getTargetParam()
     this.baseXfo = param.getValue()
-    if (event.undoRedoManager) {
-      this.change = new ParameterValueChange(param)
-      event.undoRedoManager.addChange(this.change)
-    }
+
+    this.change = new ParameterValueChange(param)
+    UndoRedoManager.getInstance().addChange(this.change)
   }
 
   /**
@@ -108,13 +108,9 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
     const newXfo = this.baseXfo.clone()
     newXfo.tr.addInPlace(dragVec)
 
-    if (this.change) {
-      this.change.update({
-        value: newXfo,
-      })
-    } else {
-      this.param.setValue(newXfo)
-    }
+    this.change.update({
+      value: newXfo,
+    })
   }
 
   /**

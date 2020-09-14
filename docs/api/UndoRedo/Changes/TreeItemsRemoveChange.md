@@ -5,7 +5,7 @@ Class representing a TreeItems removal Change,
 taking into account that it would remove all the specified items ti their children
 
 
-**Extends**: <code>Change</code>  
+**Extends**: <code>[Change](api/UndoRedo/Change.md)</code>  
 
 * [TreeItemsRemoveChange ⇐ <code>Change</code>](#TreeItemsRemoveChange)
     * [new TreeItemsRemoveChange(items, appData)](#new-TreeItemsRemoveChange)

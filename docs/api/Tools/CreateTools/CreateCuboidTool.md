@@ -7,7 +7,7 @@ Tool for creating Cuboid geometry.
 * **actionFinished:** Triggered when the creation of the geometry is completed.
 
 
-**Extends**: <code>CreateGeomTool</code>  
+**Extends**: <code>[CreateGeomTool](api/Tools/CreateTools/CreateGeomTool.md)</code>  
 
 * [CreateCuboidTool ⇐ <code>CreateGeomTool</code>](#CreateCuboidTool)
     * [new CreateCuboidTool(appData)](#new-CreateCuboidTool)

@@ -4,7 +4,7 @@
 Class representing a change of visibility state for selected items.
 
 
-**Extends**: <code>Change</code>  
+**Extends**: <code>[Change](api/UndoRedo/Change.md)</code>  
 
 * [SelectionVisibilityChange ⇐ <code>Change</code>](#SelectionVisibilityChange)
     * [new SelectionVisibilityChange(selection, state)](#new-SelectionVisibilityChange)
