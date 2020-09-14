@@ -1,6 +1,29 @@
 # Changelog
 
 
+## 2.0.0 (2020-09-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* **npm:** Raw imports are no longer supported.
+
+
+### Features
+
+* ParameterValueChange now support nested changes. This makes it possible to append more changes to a simple value change command.
+
+
+### Bug Fixes
+
+* HandleShader
+
+
+### build
+
+* **npm:** Add UMD support
+
+
 ## 1.5.0 (2020-08-27)
 
 
