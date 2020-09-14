@@ -1,6 +1,6 @@
 describe('Zea UX', () => {
   it('Renders an arch slider', () => {
-    cy.visit('ArcSlider.html', {
+    cy.visit('testing-e2e/arc-slider.html', {
       onBeforeLoad(win) {
         cy.spy(win, 'postMessage').as('postMessage')
       },
