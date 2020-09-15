@@ -21,7 +21,8 @@ attribute vec3 positions;
 
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
-uniform int maintainScreenSize;
+uniform int MaintainScreenSize;
+uniform float Overlay;
 
 <%include file="stack-gl/transpose.glsl"/>
 <%include file="drawItemId.glsl"/>
@@ -40,7 +41,7 @@ void main(void) {
   mat4 modelMatrix = getModelMatrix(drawItemId);
   mat4 modelViewMatrix = viewMatrix * modelMatrix;
   
-  if(maintainScreenSize != 0) {
+  if(MaintainScreenSize != 0) {
     float dist = modelViewMatrix[3][2];
     float sc = abs(dist); // Note: items in front of the camera will have a negative value here.
     mat4 scmat = mat4(
@@ -54,6 +55,10 @@ void main(void) {
 
   vec4 viewPos = modelViewMatrix * vec4(positions, 1.0);
   gl_Position = projectionMatrix * viewPos;
+
+  if(Overlay > 0.0){
+    gl_Position.z = mix(gl_Position.z, -1.0, Overlay);
+  }
 
   v_viewPos = -viewPos.xyz;
 
