@@ -12,7 +12,7 @@ if (isProduction) {
   plugins.push(terser())
 }
 
-const sourcemap = !isProduction
+const sourcemap = true
 
 export default [
   // Browser-friendly UMD build.
