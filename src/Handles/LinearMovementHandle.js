@@ -19,7 +19,7 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
    * @param {number} thickness - The thickness value.
    * @param {Color} color - The color value.
    */
-  constructor(name, length, thickness, color) {
+  constructor(name, length = 0.1, thickness = 0.003, color) {
     super(name)
 
     this.__color = color

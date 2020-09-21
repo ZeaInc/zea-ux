@@ -33,7 +33,7 @@
         NumberParameter,
         TreeItem,
       } = window.zeaEngine
-      const { XfoHandle } = window.zeaUx
+      const { LinearMovementHandle } = window.zeaUx
       const domElement = document.getElementById('app')
 
       const scene = new Scene()
@@ -44,38 +44,29 @@
       const renderer = new GLRenderer(domElement, { hideSplash: true })
       renderer.setScene(scene)
 
-      const translationTreeItem = new TreeItem('TranslateTarget')
-      scene.getRoot().addChild(translationTreeItem)
-      const translationXfoHandle = new XfoHandle()
-      translationTreeItem.addChild(translationXfoHandle)
-      translationXfoHandle.setTargetParam(translationTreeItem.getParameter('GlobalXfo'))
-      translationXfoHandle.showHandles('Translate')
+      const linearMovementTreeItem1 = new TreeItem('TranslateTarget')
+      scene.getRoot().addChild(linearMovementTreeItem1)
+      const linearWidget1 = new LinearMovementHandle('linear1', 0.2, 0.002, new Color('#6600FF'))
+      const xfo1 = new Xfo()
+      xfo1.ori.setFromAxisAndAngle(new Vec3(-1, -1, 6), Math.PI * 0.5)
+      linearWidget1.getParameter('LocalXfo').setValue(xfo1)
+      linearMovementTreeItem1.addChild(linearWidget1)
 
-      const rotateTreeItem = new TreeItem('RotateTarget')
-      scene.getRoot().addChild(rotateTreeItem)
+      const linearMovementTreeItem2 = new TreeItem('TranslateTarget')
+      scene.getRoot().addChild(linearMovementTreeItem2)
+      const linearWidget2 = new LinearMovementHandle('linear2', 0.3, 0.005, new Color('#AA1122'))
+      const xfo2 = new Xfo()
+      xfo2.ori.setFromAxisAndAngle(new Vec3(-1, -1, 1), Math.PI * 0.5)
+      linearWidget2.getParameter('LocalXfo').setValue(xfo2)
+      linearMovementTreeItem2.addChild(linearWidget2)
 
-      const rotateXfoHandle = new XfoHandle()
-      rotateTreeItem.addChild(rotateXfoHandle)
-      rotateXfoHandle.setTargetParam(rotateTreeItem.getParameter('GlobalXfo'))
-      rotateXfoHandle.showHandles('Rotate')
+      const linealMovementXfo1 = new Xfo(new Vec3(1.5, 0.2, 0.3))
+      linearMovementTreeItem2.getParameter('GlobalXfo').setValue(linealMovementXfo1)
 
-      const rotateXfo = new Xfo(new Vec3(-1, 1, 1))
-      rotateTreeItem.getParameter('GlobalXfo').setValue(rotateXfo)
+      renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(1, 5, 1), new Vec3(0, 0, 0))
 
-      const scaleTreeItem = new TreeItem('ScaleTarget')
-      scene.getRoot().addChild(scaleTreeItem)
+      //linearWidget.setTargetParam(linearMovementTreeItem.getParameter('GlobalXfo'))
 
-      const scaleXfoHandle = new XfoHandle()
-      scaleTreeItem.addChild(scaleXfoHandle)
-      scaleXfoHandle.setTargetParam(scaleTreeItem.getParameter('GlobalXfo'))
-      scaleXfoHandle.showHandles('Scale')
-
-      const scaleXfo = new Xfo(new Vec3(1, -1, 1))
-      scaleTreeItem.getParameter('GlobalXfo').setValue(scaleXfo)
-
-      //renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(2, 2, 1), new Vec3(0.5, 0, 0.0))
-
-      // {{{ Messages handler.
       const handleMessage = (event) => {
         const { data } = event
 

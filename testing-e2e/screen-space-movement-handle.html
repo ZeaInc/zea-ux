@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Zea UX</title>
+    <style>
+      #angle-display {
+        position: fixed;
+        bottom: 15px;
+        right: 20px;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <script src="../node_modules/@zeainc/zea-engine/dist/index.umd.js"></script>
+    <script src="../dist/index.umd.js"></script>
+
+    <script>
+      const {
+        GLRenderer,
+        Scene,
+        Vec3,
+        Xfo,
+        Quat,
+        EulerAngles,
+        Color,
+        AssetItem,
+        Sphere,
+        Material,
+        GeomItem,
+        NumberParameter,
+        TreeItem,
+      } = window.zeaEngine
+      const { ScreenSpaceMovementHandle } = window.zeaUx
+      const domElement = document.getElementById('app')
+
+      const scene = new Scene()
+      scene.setupGrid(10, 10)
+      const color = new Color('#E5E5E5')
+      scene.getSettings().getParameter('BackgroundColor').setValue(color)
+
+      const renderer = new GLRenderer(domElement, { hideSplash: true })
+      renderer.setScene(scene)
+
+      const treeItem1 = new TreeItem('TranslateTarget')
+      const handleGeom = new Sphere(0.5, 64)
+      const geomItem = new GeomItem('handle', handleGeom, new Material('handle', 'FlatSurfaceShader'))
+
+      const screenSpaceMovementHandle = new ScreenSpaceMovementHandle('FooScreenSpaceMovementHandle')
+      screenSpaceMovementHandle.addChild(geomItem)
+
+      scene.getRoot().addChild(treeItem1)
+      treeItem1.addChild(screenSpaceMovementHandle)
+
+      // renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(1, 5, 1), new Vec3(0, 0, 0))
+    </script>
+  </body>
+</html>
