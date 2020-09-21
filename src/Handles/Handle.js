@@ -72,6 +72,11 @@ class Handle extends TreeItem {
     event.setCapture(this)
     event.stopPropagation()
     this.captured = true
+
+    if (event.changedTouches) {
+      this.highlight()
+    }
+
     if (event.viewport) this.handleMouseDown(event)
     else if (event.vrviewport) this.onVRControllerButtonDown(event)
   }
@@ -99,6 +104,9 @@ class Handle extends TreeItem {
       event.releaseCapture()
       event.stopPropagation()
       this.captured = false
+      if (event.changedTouches) {
+        this.unhighlight()
+      }
       if (event.viewport) this.handleMouseUp(event)
       else if (event.vrviewport) this.onVRControllerButtonUp(event)
     }
