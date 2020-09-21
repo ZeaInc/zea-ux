@@ -119,8 +119,9 @@ class Handle extends TreeItem {
    */
   handleMouseDown(event) {
     this.gizmoRay = this.getManipulationPlane()
-    const dist = event.mouseRay.intersectRayPlane(this.gizmoRay)
-    event.grabPos = event.mouseRay.pointAtDist(dist)
+    const ray = event.mouseRay || event.touchRay
+    const dist = ray.intersectRayPlane(this.gizmoRay)
+    event.grabPos = ray.pointAtDist(dist)
     this.onDragStart(event)
     return true
   }
@@ -132,8 +133,9 @@ class Handle extends TreeItem {
    * @return { boolean } - The return value
    */
   handleMouseMove(event) {
-    const dist = event.mouseRay.intersectRayPlane(this.gizmoRay)
-    event.holdPos = event.mouseRay.pointAtDist(dist)
+    const ray = event.mouseRay || event.touchRay
+    const dist = ray.intersectRayPlane(this.gizmoRay)
+    event.holdPos = ray.pointAtDist(dist)
     this.onDrag(event)
     return true
   }
@@ -145,8 +147,12 @@ class Handle extends TreeItem {
    * @return {boolean} - The return value.
    */
   handleMouseUp(event) {
-    const dist = event.mouseRay.intersectRayPlane(this.gizmoRay)
-    event.releasePos = event.mouseRay.pointAtDist(dist)
+    const ray = event.mouseRay || event.touchRay
+    if (ray) {
+      const dist = ray.intersectRayPlane(this.gizmoRay)
+      event.releasePos = ray.pointAtDist(dist)
+    }
+
     this.onDragEnd(event)
     return true
   }

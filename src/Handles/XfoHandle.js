@@ -19,7 +19,7 @@ class XfoHandle extends TreeItem {
    * @param {number} size - The size value.
    * @param {number} thickness - The thickness value.
    */
-  constructor(size, thickness) {
+  constructor(size = 0.1, thickness = 0.003) {
     super('XfoHandle')
 
     // ////////////////////////////////
@@ -175,7 +175,7 @@ class XfoHandle extends TreeItem {
    * Displays handles depending on the specified mode(Move, Rotate, Scale).
    * If nothing is specified, it hides all of them.
    *
-   * @param {number} handleManipulationMode - The mode of the Xfo parameter
+   * @param {string} handleManipulationMode - The mode of the Xfo parameter
    */
   showHandles(handleManipulationMode) {
     this.traverse((item) => {

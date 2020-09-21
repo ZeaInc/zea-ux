@@ -117,6 +117,10 @@ class ArcSlider extends BaseAxialRotationHandle {
     if (event.intersectionData && event.intersectionData.geomItem == this.handle) super.onMouseDown(event)
   }
 
+  onTouchStart(event) {
+    super.onMouseMove(event)
+  }
+
   /**
    * Applies a special shinning shader to the handle to illustrate interaction with it.
    */

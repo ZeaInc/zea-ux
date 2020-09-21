@@ -25,7 +25,8 @@ class BaseLinearMovementHandle extends Handle {
    */
   handleMouseDown(event) {
     this.gizmoRay = this.getManipulationPlane()
-    this.grabDist = event.mouseRay.intersectRayVector(this.gizmoRay)[1]
+    const ray = event.mouseRay || event.touchRay
+    this.grabDist = ray.intersectRayVector(this.gizmoRay)[1]
     const grabPos = this.gizmoRay.pointAtDist(this.grabDist)
     event.grabDist = this.grabDist
     event.grabPos = grabPos
@@ -39,7 +40,8 @@ class BaseLinearMovementHandle extends Handle {
    * @param {MouseEvent} event - The event param
    */
   handleMouseMove(event) {
-    const dist = event.mouseRay.intersectRayVector(this.gizmoRay)[1]
+    const ray = event.mouseRay || event.touchRay
+    const dist = ray.intersectRayVector(this.gizmoRay)[1]
     const holdPos = this.gizmoRay.pointAtDist(dist)
     event.holdDist = dist
     event.holdPos = holdPos
@@ -55,9 +57,13 @@ class BaseLinearMovementHandle extends Handle {
    * @return {boolean} - The return value.
    */
   handleMouseUp(event) {
-    const dist = event.mouseRay.intersectRayVector(this.gizmoRay)[1]
-    const releasePos = this.gizmoRay.pointAtDist(dist)
-    event.releasePos = releasePos
+    const ray = event.mouseRay || event.touchRay
+    if (ray) {
+      const dist = ray.intersectRayVector(this.gizmoRay)[1]
+      const releasePos = this.gizmoRay.pointAtDist(dist)
+      event.releasePos = releasePos
+    }
+
     this.onDragEnd(event)
     return true
   }

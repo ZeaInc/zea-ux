@@ -33,31 +33,29 @@
         GeomItem,
         NumberParameter,
       } = window.zeaEngine
-      const { ArcSlider } = window.zeaUx
+      const { SliderHandle } = window.zeaUx
+      const domElement = document.getElementById('app')
 
       const scene = new Scene()
-      const domElement = document.getElementById('app')
+      const color = new Color('#E5E5E5')
+      scene.getSettings().getParameter('BackgroundColor').setValue(color)
+
       const renderer = new GLRenderer(domElement, { hideSplash: true })
       renderer.setScene(scene)
 
-      scene.setupGrid(1.0, 10)
+      const sliderHandle = new SliderHandle('SliderHandleFoo')
 
-      const arcSlider = new ArcSlider('BrakePedalSlider')
-
-      arcSlider.getParameter('Handle Radius').setValue(0.013)
-      arcSlider.getParameter('Arc Radius').setValue(0.7)
-      arcSlider.getParameter('Arc Angle').setValue(0.9)
-      scene.getRoot().addChild(arcSlider)
+      scene.getRoot().addChild(sliderHandle)
 
       const angleParam = new NumberParameter('Angle')
       scene.getRoot().addParameter(angleParam)
-      arcSlider.setTargetParam(angleParam)
+      sliderHandle.setTargetParam(angleParam)
 
       const angleElement = document.getElementById('angle-display')
-      arcSlider.on('dragStart', () => {
+      sliderHandle.on('dragStart', () => {
         angleElement.textContent = `dragEnd: ${angleParam.getValue()}`
       })
-      arcSlider.on('dragEnd', () => {
+      sliderHandle.on('dragEnd', () => {
         angleElement.textContent = `dragEnd: ${angleParam.getValue()}`
       })
       angleParam.on('valueChanged', () => {
