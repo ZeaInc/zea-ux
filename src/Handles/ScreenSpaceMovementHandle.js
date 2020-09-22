@@ -57,7 +57,8 @@ class ScreenSpaceMovementHandle extends Handle {
     this.gizmoRay = new Ray()
     // this.gizmoRay.dir = event.viewport.getCamera().getParameter('GlobalXfo').getValue().ori.getZaxis().negate()
     const ray = event.mouseRay || event.touchRay
-    this.gizmoRay.dir = ray.dir.negate()
+    const cameraXfo = event.viewport.getCamera().getParameter('GlobalXfo').getValue()
+    this.gizmoRay.dir = cameraXfo.ori.getZaxis()
     const param = this.getTargetParam()
     const baseXfo = param.getValue()
     this.gizmoRay.pos = baseXfo.tr

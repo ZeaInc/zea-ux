@@ -45,7 +45,7 @@
       renderer.setScene(scene)
 
       const treeItem1 = new TreeItem('TranslateTarget')
-      const handleGeom = new Sphere(0.5, 64)
+      const handleGeom = new Sphere(0.03, 64)
       const geomItem = new GeomItem('handle', handleGeom, new Material('handle', 'FlatSurfaceShader'))
 
       const screenSpaceMovementHandle = new ScreenSpaceMovementHandle('FooScreenSpaceMovementHandle')
@@ -54,7 +54,7 @@
       scene.getRoot().addChild(treeItem1)
       treeItem1.addChild(screenSpaceMovementHandle)
 
-      // renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(1, 5, 1), new Vec3(0, 0, 0))
+      renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(0, 0, 1), new Vec3(0, 0, 0))
     </script>
   </body>
 </html>
