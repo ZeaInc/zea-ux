@@ -37,32 +37,39 @@
       const domElement = document.getElementById('app')
 
       const scene = new Scene()
+      scene.setupGrid(10, 10)
       const color = new Color('#E5E5E5')
       scene.getSettings().getParameter('BackgroundColor').setValue(color)
 
       const renderer = new GLRenderer(domElement, { hideSplash: true })
       renderer.setScene(scene)
 
-      const sliderHandle = new SliderHandle('SliderHandleFoo')
+      const sliderHandle1 = new SliderHandle('SliderHandleFoo')
+      scene.getRoot().addChild(sliderHandle1)
 
-      scene.getRoot().addChild(sliderHandle)
+      const sliderHandle2 = new SliderHandle('SliderHandleFoo2', 0.75, 0.05, new Color('#19AA22'))
+      sliderHandle2.getParameter('Highlight Color').setValue(new Color('#0000FF'))
+      const xfo = new Xfo()
+      xfo.tr = new Vec3(0.5, 0, 0)
+      sliderHandle2.getParameter('GlobalXfo').setValue(xfo)
+      scene.getRoot().addChild(sliderHandle2)
 
       const angleParam = new NumberParameter('Angle')
       scene.getRoot().addParameter(angleParam)
-      sliderHandle.setTargetParam(angleParam)
+      sliderHandle1.setTargetParam(angleParam)
 
       const angleElement = document.getElementById('angle-display')
-      sliderHandle.on('dragStart', () => {
+      sliderHandle1.on('dragStart', () => {
         angleElement.textContent = `dragEnd: ${angleParam.getValue()}`
       })
-      sliderHandle.on('dragEnd', () => {
+      sliderHandle1.on('dragEnd', () => {
         angleElement.textContent = `dragEnd: ${angleParam.getValue()}`
       })
       angleParam.on('valueChanged', () => {
         angleElement.textContent = `Angle: ${angleParam.getValue()}`
       })
 
-      renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(2, 2, 1), new Vec3(0, 0, 0))
+      renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(0.25, 2, 0.5), new Vec3(0.25, 0, 0))
 
       // {{{ Messages handler.
       const handleMessage = (event) => {
