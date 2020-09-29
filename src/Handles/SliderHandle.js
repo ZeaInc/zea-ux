@@ -39,8 +39,7 @@ class SliderHandle extends BaseLinearMovementHandle {
 
     this.handleMat = new Material('handle', 'FlatSurfaceShader')
     this.handleMat.getParameter('BaseColor').setValue(this.colorParam.getValue())
-    // const baseBarMat = new Material('baseBar', 'FlatSurfaceShader');
-    // baseBarMat.replaceParameter(this.colorParam);
+
     const topBarMat = new Material('topBar', 'FlatSurfaceShader')
     topBarMat.getParameter('BaseColor').setValue(new Color(0.5, 0.5, 0.5))
 

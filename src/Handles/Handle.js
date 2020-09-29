@@ -92,6 +92,8 @@ class Handle extends TreeItem {
       if (event.viewport) this.handlePointerMove(event)
       else if (event.vrviewport) this.onVRPoseChanged(event)
     }
+
+    event.preventDefault()
   }
 
   /**
