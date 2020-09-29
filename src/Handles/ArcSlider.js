@@ -92,7 +92,7 @@ class ArcSlider extends BaseAxialRotationHandle {
    *
    * @param {MouseEvent} event - The event param.
    */
-  onMouseEnter(event) {
+  onPointerEnter(event) {
     if (event.intersectionData && event.intersectionData.geomItem == this.handle) this.highlight()
   }
 
@@ -101,7 +101,7 @@ class ArcSlider extends BaseAxialRotationHandle {
    *
    * @param {MouseEvent} event - The event param.
    */
-  onMouseLeave(event) {
+  onPointerLeave(event) {
     this.unhighlight()
   }
 
@@ -110,15 +110,11 @@ class ArcSlider extends BaseAxialRotationHandle {
    *
    * @param {MouseEvent} event - The event param.
    */
-  onMouseDown(event) {
+  onPointerDown(event) {
     // We do not want to handle events
     // that have propagated from children of
     // the slider.
-    if (event.intersectionData && event.intersectionData.geomItem == this.handle) super.onMouseDown(event)
-  }
-
-  onTouchStart(event) {
-    super.onMouseMove(event)
+    if (event.intersectionData && event.intersectionData.geomItem == this.handle) super.onPointerDown(event)
   }
 
   /**

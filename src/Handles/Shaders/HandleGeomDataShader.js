@@ -40,7 +40,8 @@ void main(void) {
   int drawItemId = getDrawItemId();
   mat4 modelMatrix = getModelMatrix(drawItemId);
   mat4 modelViewMatrix = viewMatrix * modelMatrix;
-  
+  v_geomItemData = getInstanceData(drawItemId);
+
   if(MaintainScreenSize != 0) {
     float dist = modelViewMatrix[3][2];
     float sc = abs(dist); // Note: items in front of the camera will have a negative value here.

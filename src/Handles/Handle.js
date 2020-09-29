@@ -50,7 +50,7 @@ class Handle extends TreeItem {
    *
    * @param {MouseEvent} event - The event param.
    */
-  onMouseEnter(event) {
+  onPointerEnter(event) {
     this.highlight()
   }
 
@@ -59,7 +59,7 @@ class Handle extends TreeItem {
    *
    * @param {MouseEvent} event - The event param.
    */
-  onMouseLeave(event) {
+  onPointerLeave(event) {
     this.unhighlight()
   }
 
@@ -68,7 +68,7 @@ class Handle extends TreeItem {
    *
    * @param {MouseEvent} event - The event param.
    */
-  onMouseDown(event) {
+  onPointerDown(event) {
     event.setCapture(this)
     event.stopPropagation()
     this.captured = true
@@ -77,7 +77,7 @@ class Handle extends TreeItem {
       this.highlight()
     }
 
-    if (event.viewport) this.handleMouseDown(event)
+    if (event.viewport) this.handlePointerDown(event)
     else if (event.vrviewport) this.onVRControllerButtonDown(event)
   }
 
@@ -86,10 +86,10 @@ class Handle extends TreeItem {
    *
    * @param {MouseEvent} event - The event param.
    */
-  onMouseMove(event) {
+  onPointerMove(event) {
     if (this.captured) {
       event.stopPropagation()
-      if (event.viewport) this.handleMouseMove(event)
+      if (event.viewport) this.handlePointerMove(event)
       else if (event.vrviewport) this.onVRPoseChanged(event)
     }
   }
@@ -99,7 +99,7 @@ class Handle extends TreeItem {
    *
    * @param {MouseEvent} event - The event param.
    */
-  onMouseUp(event) {
+  onPointerUp(event) {
     if (this.captured) {
       event.releaseCapture()
       event.stopPropagation()
@@ -107,7 +107,7 @@ class Handle extends TreeItem {
       if (event.changedTouches) {
         this.unhighlight()
       }
-      if (event.viewport) this.handleMouseUp(event)
+      if (event.viewport) this.handlePointerUp(event)
       else if (event.vrviewport) this.onVRControllerButtonUp(event)
     }
   }
@@ -125,9 +125,9 @@ class Handle extends TreeItem {
    * @param {MouseEvent} event - The event param.
    * @return {boolean} - The return value.
    */
-  handleMouseDown(event) {
+  handlePointerDown(event) {
     this.gizmoRay = this.getManipulationPlane()
-    const ray = event.mouseRay || event.touchRay
+    const ray = event.pointerRay
     const dist = ray.intersectRayPlane(this.gizmoRay)
     event.grabPos = ray.pointAtDist(dist)
     this.onDragStart(event)
@@ -140,8 +140,8 @@ class Handle extends TreeItem {
    * @param {MouseEvent} event - The event param
    * @return { boolean } - The return value
    */
-  handleMouseMove(event) {
-    const ray = event.mouseRay || event.touchRay
+  handlePointerMove(event) {
+    const ray = event.pointerRay
     const dist = ray.intersectRayPlane(this.gizmoRay)
     event.holdPos = ray.pointAtDist(dist)
     this.onDrag(event)
@@ -154,8 +154,8 @@ class Handle extends TreeItem {
    * @param {MouseEvent} event - The event param.
    * @return {boolean} - The return value.
    */
-  handleMouseUp(event) {
-    const ray = event.mouseRay || event.touchRay
+  handlePointerUp(event) {
+    const ray = event.pointerRay
     if (ray) {
       const dist = ray.intersectRayPlane(this.gizmoRay)
       event.releasePos = ray.pointAtDist(dist)

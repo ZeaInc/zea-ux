@@ -151,7 +151,8 @@ void main(void) {
    * @return {boolean} - The overlay value
    */
   static isOverlay() {
-    return true
+    // Handles are now rendered in the GLStandardGeomPass, and we now use the overlay parameter to move the geom closer to the screen.
+    return false
   }
 
   /**
