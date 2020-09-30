@@ -49,6 +49,8 @@
       const translationTreeItem = new TreeItem('TranslateTarget')
       scene.getRoot().addChild(translationTreeItem)
       const translationXfoHandle = new XfoHandle()
+      translationXfoHandle.getParameter('Highlight Color').setValue(new Color(1, 1, 0))
+
       translationTreeItem.addChild(translationXfoHandle)
       translationXfoHandle.setTargetParam(translationTreeItem.getParameter('GlobalXfo'))
       translationXfoHandle.showHandles('Translate')
@@ -57,6 +59,7 @@
       scene.getRoot().addChild(rotateTreeItem)
 
       const rotateXfoHandle = new XfoHandle()
+      rotateXfoHandle.getParameter('Highlight Color').setValue(new Color(1, 1, 0))
       rotateTreeItem.addChild(rotateXfoHandle)
       rotateXfoHandle.setTargetParam(rotateTreeItem.getParameter('GlobalXfo'))
       rotateXfoHandle.showHandles('Rotate')
@@ -68,7 +71,7 @@
       scene.getRoot().addChild(scaleTreeItem)
 
       const scaleXfoHandle = new XfoHandle()
-      scaleXfoHandle.getParameter('Highlight Color').setValue(new Color('#0000FF'))
+      scaleXfoHandle.getParameter('Highlight Color').setValue(new Color(1, 1, 0))
       scaleTreeItem.addChild(scaleXfoHandle)
       scaleXfoHandle.setTargetParam(scaleTreeItem.getParameter('GlobalXfo'))
       scaleXfoHandle.showHandles('Scale')

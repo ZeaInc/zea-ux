@@ -1,4 +1,4 @@
-import { Color, Vec3, Xfo, TreeItem, ColorParameter } from '@zeainc/zea-engine'
+import { Color, Vec3, Xfo, TreeItem, ColorParameter, Sphere } from '@zeainc/zea-engine'
 import Handle from './Handle'
 import LinearMovementHandle from './LinearMovementHandle'
 import AxialRotationHandle from './AxialRotationHandle'
@@ -71,8 +71,8 @@ class XfoHandle extends TreeItem {
       const planarXYWidget = new XfoPlanarMovementHandle(
         'planarXY',
         planarSize,
-        blue,
-        new Vec3(planarSize * 0.5, planarSize * 0.5, 0.0)
+        new Vec3(planarSize * 0.5, planarSize * 0.5, 0.0),
+        blue
       )
       const xfo = new Xfo()
       planarXYWidget.getParameter('LocalXfo').setValue(xfo)
@@ -82,8 +82,8 @@ class XfoHandle extends TreeItem {
       const planarYZWidget = new XfoPlanarMovementHandle(
         'planarYZ',
         planarSize,
-        red,
-        new Vec3(planarSize * -0.5, planarSize * 0.5, 0.0)
+        new Vec3(planarSize * -0.5, planarSize * 0.5, 0.0),
+        red
       )
       const xfo = new Xfo()
       xfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI * 0.5)
@@ -94,8 +94,8 @@ class XfoHandle extends TreeItem {
       const planarXZWidget = new XfoPlanarMovementHandle(
         'planarXZ',
         planarSize,
-        green,
-        new Vec3(planarSize * 0.5, planarSize * 0.5, 0.0)
+        new Vec3(planarSize * 0.5, planarSize * 0.5, 0.0),
+        green
       )
       const xfo = new Xfo()
       xfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * 0.5)
@@ -111,13 +111,6 @@ class XfoHandle extends TreeItem {
     {
       const rotationWidget = new SphericalRotationHandle('rotation', size - thickness, new Color(1, 1, 1, 0.4))
       rotationHandles.addChild(rotationWidget)
-      // const maskMat = new Material('mask', 'HandleShader');
-      // maskMat
-      //   .getParameter('BaseColor')
-      //   .setValue(new Color(1, 1, 1, 0.4));
-      // const maskGeom = new Sphere(size - thickness, 64);
-      // const maskGeomItem = new GeomItem('mask', maskGeom, maskMat);
-      // rotationHandles.addChild(maskGeomItem);
     }
     {
       const rotationXWidget = new AxialRotationHandle('rotationX', size, thickness, red)

@@ -19,22 +19,20 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
    * @param {number} thickness - The thickness value.
    * @param {Color} color - The color value.
    */
-  constructor(name, length, thickness, color) {
+  constructor(name, length, thickness, color = new Color()) {
     super(name)
 
-    this.__color = color
-    this.__hilightedColor = new Color(1, 1, 1)
-
-    const handleMat = new Material('handle', 'HandleShader')
-    handleMat.getParameter('MaintainScreenSize').setValue(1)
-    this.colorParam = handleMat.getParameter('BaseColor')
     this.colorParam.setValue(color)
+    this.handleMat = new Material('handle', 'HandleShader')
+    this.handleMat.getParameter('BaseColor').setValue(color)
+    this.handleMat.getParameter('MaintainScreenSize').setValue(1)
+
     const handleGeom = new Cylinder(thickness, length - thickness * 10, 64)
     handleGeom.getParameter('BaseZAtZero').setValue(true)
     const tipGeom = new Cuboid(thickness * 10, thickness * 10, thickness * 10)
-    const handle = new GeomItem('handle', handleGeom, handleMat)
+    const handle = new GeomItem('handle', handleGeom, this.handleMat)
 
-    const tip = new GeomItem('tip', tipGeom, handleMat)
+    const tip = new GeomItem('tip', tipGeom, this.handleMat)
     const tipXfo = new Xfo()
     tipXfo.tr.set(0, 0, length - thickness * 10)
     // tipXfo.tr.set(0, 0, length);
@@ -44,6 +42,9 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
     // are centered on the middle of the XfoHandle.
     transformVertices(tipGeom.getVertexAttribute('positions'), tipXfo)
 
+    this.colorParam.on('valueChanged', () => {
+      this.handleMat.getParameter('BaseColor').setValue(this.colorParam.getValue())
+    })
     this.addChild(handle)
     this.addChild(tip)
   }
@@ -52,14 +53,14 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
    * Applies a special shinning shader to the handle to illustrate interaction with it.
    */
   highlight() {
-    this.colorParam.setValue(this.__hilightedColor)
+    this.handleMat.getParameter('BaseColor').setValue(this.highlightColorParam.getValue())
   }
 
   /**
    * Removes the shining shader from the handle.
    */
   unhighlight() {
-    this.colorParam.setValue(this.__color)
+    this.handleMat.getParameter('BaseColor').setValue(this.colorParam.getValue())
   }
 
   /**

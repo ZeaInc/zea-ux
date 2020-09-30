@@ -29,6 +29,11 @@ class SphericalRotationHandle extends Handle {
 
     const maskGeom = new Sphere(radius, 64)
     const maskGeomItem = new GeomItem('mask', maskGeom, this.maskMat)
+
+    this.colorParam.on('valueChanged', () => {
+      this.maskMat.getParameter('BaseColor').setValue(this.colorParam.getValue())
+    })
+
     this.addChild(maskGeomItem)
   }
 
@@ -81,7 +86,7 @@ class SphericalRotationHandle extends Handle {
    * @param {MouseEvent} event - The event param.
    * @return {boolean} - The return value.
    */
-  handleMouseDown(event) {
+  handlePointerDown(event) {
     // const xfo = this.getParameter('GlobalXfo').getValue();
     // this.sphere = {
     //   tr: xfo,
@@ -99,7 +104,7 @@ class SphericalRotationHandle extends Handle {
    * @param {MouseEvent} event - The event param
    * @return {boolean} - The return value
    */
-  handleMouseMove(event) {
+  handlePointerMove(event) {
     // const dist = event.mouseRay.intersectRaySphere(this.sphere);
     // event.holdPos = event.mouseRay.pointAtDist(dist);
     // this.onDrag(event);
@@ -112,7 +117,7 @@ class SphericalRotationHandle extends Handle {
    * @param {MouseEvent} event - The event param.
    * @return {boolean} - The return value.
    */
-  handleMouseUp(event) {
+  handlePointerUp(event) {
     // const dist = event.mouseRay.intersectRaySphere(this.sphere);
     // event.releasePos = event.mouseRay.pointAtDist(dist);
     // this.onDragEnd(event);
