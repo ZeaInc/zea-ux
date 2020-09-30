@@ -1,4 +1,4 @@
-import { Color, Vec3, Xfo, TreeItem } from '@zeainc/zea-engine'
+import { Color, Vec3, Xfo, TreeItem, ColorParameter } from '@zeainc/zea-engine'
 import Handle from './Handle'
 import LinearMovementHandle from './LinearMovementHandle'
 import AxialRotationHandle from './AxialRotationHandle'
@@ -22,6 +22,15 @@ class XfoHandle extends TreeItem {
   constructor(size = 0.1, thickness = 0.003) {
     super('XfoHandle')
 
+    this.highlightColorParam = this.addParameter(new ColorParameter('Highlight Color', new Color(1, 1, 1)))
+
+    this.highlightColorParam.on('valueChanged', () => {
+      const color = this.highlightColorParam.getValue()
+
+      this.traverse((item) => {
+        if (item instanceof Handle) item.getParameter('Highlight Color').setValue(color)
+      })
+    })
     // ////////////////////////////////
     // LinearMovementHandle
 

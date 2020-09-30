@@ -2,6 +2,7 @@ import { Color, Xfo, GeomItem, Material, Sphere } from '@zeainc/zea-engine'
 import Handle from './Handle'
 import './Shaders/HandleShader'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
+import { ParameterValueChange } from '../UndoRedo/Changes/ParameterValueChange'
 
 /**
  * Class representing an axial rotation scene widget.
@@ -16,15 +17,18 @@ class SphericalRotationHandle extends Handle {
    * @param {number} radius - The radius value.
    * @param {Color} color - The color value.
    */
-  constructor(name, radius, color) {
+  constructor(name, radius, color = new Color()) {
     super(name)
 
     this.radius = radius
-    const maskMat = new Material('mask', 'HandleShader')
-    maskMat.getParameter('MaintainScreenSize').setValue(1)
-    maskMat.getParameter('BaseColor').setValue(color)
+
+    this.colorParam.setValue(color)
+    this.maskMat = new Material('mask', 'HandleShader')
+    this.maskMat.getParameter('MaintainScreenSize').setValue(1)
+    this.maskMat.getParameter('BaseColor').setValue(color)
+
     const maskGeom = new Sphere(radius, 64)
-    const maskGeomItem = new GeomItem('mask', maskGeom, maskMat)
+    const maskGeomItem = new GeomItem('mask', maskGeom, this.maskMat)
     this.addChild(maskGeomItem)
   }
 
@@ -32,14 +36,14 @@ class SphericalRotationHandle extends Handle {
    * Applies a special shinning shader to the handle to illustrate interaction with it.
    */
   highlight() {
-    // this.colorParam.setValue(this.__hilightedColor);
+    // Nothing happens here
   }
 
   /**
    * Removes the shining shader from the handle.
    */
   unhighlight() {
-    // this.colorParam.setValue(this.__color);
+    // Nothing happens here
   }
 
   /**
@@ -166,8 +170,6 @@ class SphericalRotationHandle extends Handle {
    */
   onDragEnd(event) {
     this.change = null
-
-    this.colorParam.setValue(this.__color)
   }
 }
 

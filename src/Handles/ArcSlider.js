@@ -4,7 +4,6 @@ import {
   Vec3,
   Xfo,
   NumberParameter,
-  ColorParameter,
   XfoParameter,
   GeomItem,
   Material,
@@ -40,10 +39,11 @@ class ArcSlider extends BaseAxialRotationHandle {
     // this.barRadiusParam = this.addParameter(
     //   new NumberParameter('Bar Radius', radius * 0.25)
     // );
-    this.colorParam = this.addParameter(new ColorParameter('Color', color))
-    this.hilghlightColorParam = this.addParameter(new ColorParameter('Highlight Color', new Color(1, 1, 1)))
+    this.colorParam.setValue(color)
 
     this.handleMat = new Material('handleMat', 'HandleShader')
+    this.handleMat.getParameter('BaseColor').setValue(color)
+
     const arcGeom = new Circle(arcRadius, 64, arcAngle)
     const handleGeom = new Sphere(handleRadius, 64)
 
@@ -73,6 +73,7 @@ class ArcSlider extends BaseAxialRotationHandle {
     this.handleRadiusParam.on('valueChanged', () => {
       handleGeom.getParameter('Radius').setValue(this.handleRadiusParam.getValue())
     })
+
     this.colorParam.on('valueChanged', () => {
       this.handleMat.getParameter('BaseColor').setValue(this.colorParam.getValue())
     })
@@ -121,7 +122,7 @@ class ArcSlider extends BaseAxialRotationHandle {
    * Applies a special shinning shader to the handle to illustrate interaction with it.
    */
   highlight() {
-    this.handleMat.getParameter('BaseColor').setValue(this.hilghlightColorParam.getValue())
+    this.handleMat.getParameter('BaseColor').setValue(this.highlightColorParam.getValue())
   }
 
   /**

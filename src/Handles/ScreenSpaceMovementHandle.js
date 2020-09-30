@@ -53,7 +53,7 @@ class ScreenSpaceMovementHandle extends Handle {
    * @param {MouseEvent} event - The event param.
    * @return {boolean} - The return value.
    */
-  handleMouseDown(event) {
+  handlePointerDown(event) {
     this.gizmoRay = new Ray()
     // this.gizmoRay.dir = event.viewport.getCamera().getParameter('GlobalXfo').getValue().ori.getZaxis().negate()
     const ray = event.pointerRay
@@ -71,10 +71,10 @@ class ScreenSpaceMovementHandle extends Handle {
   /**
    * Handles mouse move interaction with the handle.
    *
-   * @param {MouseEvent} event - The event param
+   * @param {MouseEvent|TouchEvent} event - The event param
    * @return {boolean} - The return value
    */
-  handleMouseMove(event) {
+  handlePointerMove(event) {
     const ray = event.pointerRay
     const dist = ray.intersectRayPlane(this.gizmoRay)
     event.holdPos = ray.pointAtDist(dist)
@@ -85,10 +85,10 @@ class ScreenSpaceMovementHandle extends Handle {
   /**
    * Handles mouse up interaction with the handle.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param {MouseEvent|TouchEvent} event - The event param.
    * @return {boolean} - The return value.
    */
-  handleMouseUp(event) {
+  handlePointerUp(event) {
     const ray = event.pointerRay
     if (ray) {
       const dist = ray.intersectRayPlane(this.gizmoRay)

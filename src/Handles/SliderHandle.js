@@ -34,8 +34,7 @@ class SliderHandle extends BaseLinearMovementHandle {
     this.lengthParam = this.addParameter(new NumberParameter('Length', length))
     this.handleRadiusParam = this.addParameter(new NumberParameter('Handle Radius', radius))
     this.barRadiusParam = this.addParameter(new NumberParameter('Bar Radius', radius * 0.25))
-    this.colorParam = this.addParameter(new ColorParameter('Color', color))
-    this.hilghlightColorParam = this.addParameter(new ColorParameter('Highlight Color', new Color(1, 1, 1)))
+    this.colorParam.setValue(color)
 
     this.handleMat = new Material('handle', 'FlatSurfaceShader')
     this.handleMat.getParameter('BaseColor').setValue(this.colorParam.getValue())
@@ -77,7 +76,7 @@ class SliderHandle extends BaseLinearMovementHandle {
    * Applies a special shinning shader to the handle to illustrate interaction with it.
    */
   highlight() {
-    this.handleMat.getParameter('BaseColor').setValue(this.hilghlightColorParam.getValue())
+    this.handleMat.getParameter('BaseColor').setValue(this.highlightColorParam.getValue())
   }
 
   /**

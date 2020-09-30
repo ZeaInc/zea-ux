@@ -61,7 +61,10 @@
       arcSlider2.getParameter('Handle Radius').setValue(0.03)
       arcSlider2.getParameter('Arc Radius').setValue(0.5)
       arcSlider2.getParameter('Arc Angle').setValue(3)
+      arcSlider2.getParameter('Highlight Color').setValue(new Color(0, 1, 1))
+      arcSlider2.getParameter('Color').setValue(new Color(0, 0, 1))
       scene.getRoot().addChild(arcSlider2)
+
       const xfo = new Xfo()
       xfo.ori.rotateZ(Math.PI * 0.5)
       arcSlider2.getParameter('GlobalXfo').setValue(xfo)

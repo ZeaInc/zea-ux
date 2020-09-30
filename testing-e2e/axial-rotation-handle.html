@@ -48,7 +48,8 @@
 
       const treeItem1 = new TreeItem('TranslateTarget')
       scene.getRoot().addChild(treeItem1)
-      const widget1 = new AxialRotationHandle('axial1', 0.2, 0.002, new Color('#6600FF'))
+      const widget1 = new AxialRotationHandle('axial1', 0.2, 0.007, new Color('#6600FF'))
+      widget1.getParameter('Highlight Color').setValue(new Color(1, 0.5, 1))
       const xfo1 = new Xfo()
       xfo1.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI * 0.5)
       widget1.getParameter('LocalXfo').setValue(xfo1)
@@ -63,7 +64,9 @@
 
       const treeItem2 = new TreeItem('TranslateTarget')
       scene.getRoot().addChild(treeItem2)
-      const widget2 = new AxialRotationHandle('axial2', 0.15, 0.005, new Color('#AA1122'))
+      const widget2 = new AxialRotationHandle('axial2', 0.15, 0.004)
+      widget2.getParameter('Color').setValue(new Color('#AA1122'))
+
       const xfo2 = new Xfo()
       xfo2.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * 0.5)
       widget2.getParameter('LocalXfo').setValue(xfo2)

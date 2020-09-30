@@ -1,4 +1,4 @@
-import { TreeItem, Ray } from '@zeainc/zea-engine'
+import { TreeItem, Ray, ColorParameter, Color } from '@zeainc/zea-engine'
 
 /**
  * A Handle is a UI widget that lives in the scene.
@@ -16,6 +16,8 @@ class Handle extends TreeItem {
     super(name)
 
     this.captured = false
+    this.colorParam = this.addParameter(new ColorParameter('Color', new Color()))
+    this.highlightColorParam = this.addParameter(new ColorParameter('Highlight Color', new Color(1, 1, 1)))
   }
 
   /**
