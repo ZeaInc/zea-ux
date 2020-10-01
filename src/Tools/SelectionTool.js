@@ -26,6 +26,10 @@ class SelectionTool extends BaseTool {
     this.selectionRectXfo = new Xfo()
     this.selectionRectXfo.tr.set(0.5, 0.5, 0)
     this.selectionRectXfo.sc.set(0, 0, 0)
+
+    this.rectItem = new GeomItem('selectionRect', this.selectionRect, this.selectionRectMat)
+    this.rectItem.getParameter('Visible').setValue(false)
+    this.appData.renderer.addTreeItem(this.rectItem)
   }
 
   /**
@@ -33,12 +37,6 @@ class SelectionTool extends BaseTool {
    */
   activateTool() {
     super.activateTool()
-
-    if (!this.rectItem) {
-      this.rectItem = new GeomItem('selectionRect', this.selectionRect, this.selectionRectMat)
-      this.rectItem.getParameter('Visible').setValue(false)
-      this.appData.renderer.addTreeItem(this.rectItem)
-    }
   }
 
   /**
@@ -48,6 +46,7 @@ class SelectionTool extends BaseTool {
     super.deactivateTool()
     this.selectionRectXfo.sc.set(0, 0, 0)
     this.rectItem.getParameter('GlobalXfo').setValue(this.selectionRectXfo)
+    this.rectItem.getParameter('Visible').setValue(false)
   }
 
   /**
