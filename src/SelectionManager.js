@@ -23,11 +23,12 @@ class SelectionManager extends EventEmitter {
     this.selectionGroup = new SelectionGroup(options)
 
     if (options.enableXfoHandles === true) {
-      const size = 0.1
+      const size = 0.2
       const thickness = size * 0.02
       this.xfoHandle = new XfoHandle(size, thickness)
       this.xfoHandle.setTargetParam(this.selectionGroup.getParameter('GlobalXfo'), false)
       this.xfoHandle.setVisible(false)
+      this.xfoHandle.getParameter('Highlight Color').setValue(new Color(1, 1, 0))
       this.selectionGroup.addChild(this.xfoHandle)
     }
 
