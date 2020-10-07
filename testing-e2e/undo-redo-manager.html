@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Zea UX</title>
+    <style>
+      html,
+      body {
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      #controllers {
+        display: flex;
+      }
+
+      #controllers > button {
+        text-align: center;
+        margin: 5px;
+      }
+
+      ul#color-list {
+        list-style: none;
+      }
+
+      ul#color-list > li {
+        width: 30%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="controllers">
+      <button id="undo">Undo</button>
+      <button id="random-color">Generate Random Color</button>
+      <button id="redo">Redo</button>
+    </div>
+    <ul id="color-list"></ul>
+
+    <script src="../node_modules/@zeainc/zea-engine/dist/index.umd.js"></script>
+    <script src="../dist/index.umd.js"></script>
+
+    <script defer>
+      const { UndoRedoManager } = window.zeaUx
+
+      const $undoBtn = document.getElementById('undo')
+      const $redoBtn = document.getElementById('redo')
+      const $randomColorBtn = document.getElementById('random-color')
+      const $colorList = document.getElementById('color-list')
+
+      const generateRandomColor = () => ('00000' + ((Math.random() * (1 << 24)) | 0).toString(16)).slice(-6)
+
+      const undoRedoManager = UndoRedoManager.getInstance()
+
+      // Event handlers
+      {
+        $undoBtn.addEventListener('click', (e) => {
+          console.log('Undo')
+          undoRedoManager.undo()
+        })
+
+        $redoBtn.addEventListener('click', (e) => {
+          console.log('Redo')
+          undoRedoManager.redo()
+        })
+
+        $randomColorBtn.addEventListener('click', (e) => {
+          const randomColor = generateRandomColor()
+
+          const li = document.createElement('li')
+          li.style.backgroundColor = `#${randomColor}`
+          li.innerHTML = `#${randomColor}`
+          $colorList.appendChild(li)
+        })
+      }
+    </script>
+  </body>
+</html>
