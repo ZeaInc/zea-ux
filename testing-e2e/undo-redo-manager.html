@@ -25,7 +25,7 @@
       }
 
       ul#color-list > li {
-        width: 30%;
+        width: 100px;
       }
     </style>
   </head>
@@ -40,8 +40,38 @@
     <script src="../node_modules/@zeainc/zea-engine/dist/index.umd.js"></script>
     <script src="../dist/index.umd.js"></script>
 
-    <script defer>
-      const { UndoRedoManager } = window.zeaUx
+    <script>
+      const { UndoRedoManager, Change } = window.zeaUx
+
+      /** ColorListChange Start */
+      class ColorListChange extends Change {
+        constructor($colorList, itemColor) {
+          super('ColorChange')
+          this.$colorList = $colorList
+          this.itemColor = itemColor
+
+          this.__addColor()
+        }
+
+        /**
+         * @private
+         */
+        __addColor() {
+          const li = document.createElement('li')
+          li.style.backgroundColor = `#${this.itemColor}`
+          li.innerHTML = `#${this.itemColor}`
+          this.$colorList.appendChild(li)
+        }
+
+        undo() {
+          this.$colorList.removeChild(this.$colorList.lastChild)
+        }
+
+        redo() {
+          this.__addColor()
+        }
+      }
+      /** ColorListChange End */
 
       const $undoBtn = document.getElementById('undo')
       const $redoBtn = document.getElementById('redo')
@@ -66,11 +96,8 @@
 
         $randomColorBtn.addEventListener('click', (e) => {
           const randomColor = generateRandomColor()
-
-          const li = document.createElement('li')
-          li.style.backgroundColor = `#${randomColor}`
-          li.innerHTML = `#${randomColor}`
-          $colorList.appendChild(li)
+          const colorListChange = new ColorListChange($colorList, randomColor)
+          undoRedoManager.addChange(colorListChange)
         })
       }
     </script>
