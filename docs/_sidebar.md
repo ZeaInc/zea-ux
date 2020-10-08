@@ -9,6 +9,7 @@
     * [Screen space Movement Handle](how-to/handles/screen-space-movement-handle)
   * [**Manipulators**](how-to/manipulators/README)
     * [Selection Manager](how-to/manipulators/selection-manager)
+  * [Undo/Redo Manager](how-to/undoredo/undo-redo-manager)
 
 
 
