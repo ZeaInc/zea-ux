@@ -10,9 +10,9 @@ Class representing a planar movement scene widget.
     * [new ScreenSpaceMovementHandle(name)](#new-ScreenSpaceMovementHandle)
     * [setTargetParam(param, track)](#setTargetParam)
     * [getTargetParam() ⇒ <code>Parameter</code>](#getTargetParam)
-    * [handleMouseDown(event) ⇒ <code>boolean</code>](#handleMouseDown)
-    * [handleMouseMove(event) ⇒ <code>boolean</code>](#handleMouseMove)
-    * [handleMouseUp(event) ⇒ <code>boolean</code>](#handleMouseUp)
+    * [handlePointerDown(event) ⇒ <code>boolean</code>](#handlePointerDown)
+    * [handlePointerMove(event) ⇒ <code>boolean</code>](#handlePointerMove)
+    * [handlePointerUp(event) ⇒ <code>boolean</code>](#handlePointerUp)
     * [onDragStart(event)](#onDragStart)
     * [onDrag(event)](#onDrag)
     * [onDragEnd(event)](#onDragEnd)
@@ -46,9 +46,9 @@ Returns target's global xfo parameter.
 
 
 **Returns**: <code>Parameter</code> - - returns handle's target global Xfo.  
-<a name="ScreenSpaceMovementHandle+handleMouseDown"></a>
+<a name="ScreenSpaceMovementHandle+handlePointerDown"></a>
 
-### handleMouseDown
+### handlePointerDown
 Handles mouse down interaction with the handle.
 
 
@@ -58,9 +58,9 @@ Handles mouse down interaction with the handle.
 | --- | --- | --- |
 | event | <code>MouseEvent</code> | The event param. |
 
-<a name="ScreenSpaceMovementHandle+handleMouseMove"></a>
+<a name="ScreenSpaceMovementHandle+handlePointerMove"></a>
 
-### handleMouseMove
+### handlePointerMove
 Handles mouse move interaction with the handle.
 
 
@@ -68,11 +68,11 @@ Handles mouse move interaction with the handle.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> | The event param |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> | The event param |
 
-<a name="ScreenSpaceMovementHandle+handleMouseUp"></a>
+<a name="ScreenSpaceMovementHandle+handlePointerUp"></a>
 
-### handleMouseUp
+### handlePointerUp
 Handles mouse up interaction with the handle.
 
 
@@ -80,7 +80,7 @@ Handles mouse up interaction with the handle.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> | The event param. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> | The event param. |
 
 <a name="ScreenSpaceMovementHandle+onDragStart"></a>
 

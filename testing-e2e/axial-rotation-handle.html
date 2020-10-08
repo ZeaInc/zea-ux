@@ -49,7 +49,7 @@
       const treeItem1 = new TreeItem('TranslateTarget')
       scene.getRoot().addChild(treeItem1)
       const widget1 = new AxialRotationHandle('axial1', 0.2, 0.007, new Color('#6600FF'))
-      widget1.getParameter('Highlight Color').setValue(new Color(1, 0.5, 1))
+      widget1.getParameter('HighlightColor').setValue(new Color(1, 0.5, 1))
       const xfo1 = new Xfo()
       xfo1.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI * 0.5)
       widget1.getParameter('LocalXfo').setValue(xfo1)

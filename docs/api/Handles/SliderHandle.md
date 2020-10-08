@@ -1,7 +1,13 @@
 <a name="SliderHandle"></a>
 
 ### SliderHandle 
-Class representing a slider scene widget.
+Class representing a slider scene widget. There are two parts in this widget, the slider and the handle.<br>
+The **Handle** is the moving part of the widget, the object you interact with. The **Slider** is the path that the **handle** follows.
+
+**Parameters**
+* **Length(`NumberParameter`):** Specifies the length of the slider.
+* **HandleRadius(`NumberParameter`):** Specifies the handle radius.
+* **BarRadius(`NumberParameter`):** Specifies the radius of the slider.
 
 
 **Extends**: <code>[BaseLinearMovementHandle](api/Handles/BaseLinearMovementHandle.md)</code>  

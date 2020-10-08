@@ -1,8 +1,11 @@
 import { TreeItem, Ray, ColorParameter, Color } from '@zeainc/zea-engine'
 
 /**
- * A Handle is a UI widget that lives in the scene.
- * Much like a slider, it translates a series of mouse events into a higher level interaction.
+ * A Handle is an UI widget that lives in the scene, it translates a series of pointer events into a higher level interaction.
+ *
+ * **Parameters**
+ * * **Color(`ColorParameter`):** Specifies the color of the handle.
+ * * **HighlightColor(`ColorParameter`):** Specifies the highlight color of the handle.
  *
  * @extends TreeItem
  */
@@ -17,21 +20,21 @@ class Handle extends TreeItem {
 
     this.captured = false
     this.colorParam = this.addParameter(new ColorParameter('Color', new Color()))
-    this.highlightColorParam = this.addParameter(new ColorParameter('Highlight Color', new Color(1, 1, 1)))
+    this.highlightColorParam = this.addParameter(new ColorParameter('HighlightColor', new Color(1, 1, 1)))
   }
 
   /**
    * Applies a special shinning shader to the handle to illustrate interaction with it.
    */
   highlight() {
-    // console.warn('Implement me')
+    console.warn('@Handle#highlight - Implement me!')
   }
 
   /**
    * Removes the shining shader from the handle.
    */
   unhighlight() {
-    // console.warn('Implement me')
+    console.warn('@Handle#unhighlight - Implement me!')
   }
 
   /**
@@ -50,7 +53,7 @@ class Handle extends TreeItem {
   /**
    * Event fired when a pointing device is initially moved within the space of the handle.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onPointerEnter(event) {
     this.highlight()
@@ -59,7 +62,7 @@ class Handle extends TreeItem {
   /**
    * Event fired when a pointing device moves outside of the space of the handle.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onPointerLeave(event) {
     this.unhighlight()
@@ -68,7 +71,7 @@ class Handle extends TreeItem {
   /**
    * Event fired when a pointing device button is pressed while the pointer is over the handle element.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onPointerDown(event) {
     event.setCapture(this)
@@ -86,7 +89,7 @@ class Handle extends TreeItem {
   /**
    * Event fired when a pointing device is moved while the cursor's hotspot is over the handle.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onPointerMove(event) {
     if (this.captured) {
@@ -101,7 +104,7 @@ class Handle extends TreeItem {
   /**
    * Event fired when a pointing device button is released while the pointer is over the handle.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onPointerUp(event) {
     if (this.captured) {
@@ -232,7 +235,7 @@ class Handle extends TreeItem {
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onDragStart(event) {
-    console.log('onDragStart', event)
+    console.warn('@Handle#onDragStart - Implement me!', event)
   }
 
   /**
@@ -241,7 +244,7 @@ class Handle extends TreeItem {
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onDrag(event) {
-    console.log('onDrag', event)
+    console.warn('@Handle#onDrag - Implement me!', event)
   }
 
   /**
@@ -250,7 +253,7 @@ class Handle extends TreeItem {
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onDragEnd(event) {
-    console.log('onDragEnd', event)
+    console.warn('@Handle#onDragEnd - Implement me!', event)
   }
 }
 

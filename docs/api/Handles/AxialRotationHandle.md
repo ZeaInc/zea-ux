@@ -1,7 +1,17 @@
 <a name="AxialRotationHandle"></a>
 
 ### AxialRotationHandle 
-Class representing an axial rotation scene widget.
+Class representing an axial rotation scene widget. It has a `Torus` shape and is used to rotate objects around the specified axes.
+You can do it by specifying the localXfo orientation:
+
+```javascript
+const xfo1 = new Xfo()
+// This is rotation over `Y` axis
+xfo1.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI * 0.5)
+axialRotationHandle.getParameter('LocalXfo').setValue(xfo1)
+```
+**Parameters**
+* **Radius(`NumberParameter`):** Specifies the radius of the handler.
 
 
 **Extends**: <code>[BaseAxialRotationHandle](api/Handles/BaseAxialRotationHandle.md)</code>  

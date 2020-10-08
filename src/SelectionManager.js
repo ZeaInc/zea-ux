@@ -7,6 +7,10 @@ import SelectionVisibilityChange from './UndoRedo/Changes/SelectionVisibilityCha
 /**
  * Class representing a selection manager
  *
+ * **Events**
+ * **leadSelectionChanged:** Triggered when selecting one item.
+ * **selectionChanged:** Triggered when the selected objects change.
+ *
  * @extends {EventEmitter}
  */
 class SelectionManager extends EventEmitter {
@@ -28,7 +32,7 @@ class SelectionManager extends EventEmitter {
       this.xfoHandle = new XfoHandle(size, thickness)
       this.xfoHandle.setTargetParam(this.selectionGroup.getParameter('GlobalXfo'), false)
       this.xfoHandle.setVisible(false)
-      this.xfoHandle.getParameter('Highlight Color').setValue(new Color(1, 1, 0))
+      this.xfoHandle.getParameter('HighlightColor').setValue(new Color(1, 1, 0))
       this.selectionGroup.addChild(this.xfoHandle)
     }
 

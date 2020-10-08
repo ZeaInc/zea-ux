@@ -57,7 +57,7 @@
       scene.getRoot().addChild(sliderHandle1)
 
       const sliderHandle2 = new SliderHandle('SliderHandleFoo2', 0.75, 0.05, new Color('#19AA22'))
-      sliderHandle2.getParameter('Highlight Color').setValue(new Color('#0000FF'))
+      sliderHandle2.getParameter('HighlightColor').setValue(new Color('#0000FF'))
       const xfo = new Xfo()
       xfo.tr = new Vec3(0.5, 0, 0)
       sliderHandle2.getParameter('GlobalXfo').setValue(xfo)

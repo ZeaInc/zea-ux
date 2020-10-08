@@ -10,9 +10,9 @@ Class representing a selection tool.
     * [new SelectionTool(appData)](#new-SelectionTool)
     * [activateTool()](#activateTool)
     * [deactivateTool()](#deactivateTool)
-    * [onMouseDown(event) ⇒ <code>boolean</code>](#onMouseDown)
-    * [onMouseMove(event) ⇒ <code>boolean</code>](#onMouseMove)
-    * [onMouseUp(event) ⇒ <code>boolean</code>](#onMouseUp)
+    * [onPointerDown(event) ⇒ <code>boolean</code>](#onPointerDown)
+    * [onPointerMove(event) ⇒ <code>boolean</code>](#onPointerMove)
+    * [onPointerUp(event) ⇒ <code>boolean</code>](#onPointerUp)
     * [onVRControllerButtonDown(event) ⇒ <code>boolean</code>](#onVRControllerButtonDown)
 
 <a name="new_SelectionTool_new"></a>
@@ -37,9 +37,9 @@ Activates selection tool.
 Deactivates the selection tool.
 
 
-<a name="SelectionTool+onMouseDown"></a>
+<a name="SelectionTool+onPointerDown"></a>
 
-### onMouseDown
+### onPointerDown
 Event fired when a pointing device button is pressed while the pointer is over the tool.
 
 
@@ -47,11 +47,11 @@ Event fired when a pointing device button is pressed while the pointer is over t
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> | The event param. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
 
-<a name="SelectionTool+onMouseMove"></a>
+<a name="SelectionTool+onPointerMove"></a>
 
-### onMouseMove
+### onPointerMove
 Event fired when a pointing device is moved while the cursor's hotspot is inside it.
 
 
@@ -59,11 +59,11 @@ Event fired when a pointing device is moved while the cursor's hotspot is inside
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> | The event param. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
 
-<a name="SelectionTool+onMouseUp"></a>
+<a name="SelectionTool+onPointerUp"></a>
 
-### onMouseUp
+### onPointerUp
 Event fired when a pointing device button is released while the pointer is over the tool.
 
 
@@ -71,7 +71,7 @@ Event fired when a pointing device button is released while the pointer is over 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> | The event param. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
 
 <a name="SelectionTool+onVRControllerButtonDown"></a>
 

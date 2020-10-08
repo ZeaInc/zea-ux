@@ -204,5 +204,4 @@ class SelectionTool extends BaseTool {
 
 UndoRedoManager.registerChange('SelectionTool', SelectionTool)
 
-export default SelectionTool
 export { SelectionTool }

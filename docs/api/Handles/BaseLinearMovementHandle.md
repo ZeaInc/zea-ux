@@ -8,9 +8,9 @@ Class representing a base linear movement scene widget.
 
 * [BaseLinearMovementHandle ⇐ <code>Handle</code>](#BaseLinearMovementHandle)
     * [new BaseLinearMovementHandle(name)](#new-BaseLinearMovementHandle)
-    * [handleMouseDown(event) ⇒ <code>boolean</code>](#handleMouseDown)
-    * [handleMouseMove(event)](#handleMouseMove)
-    * [handleMouseUp(event) ⇒ <code>boolean</code>](#handleMouseUp)
+    * [handlePointerDown(event) ⇒ <code>boolean</code>](#handlePointerDown)
+    * [handlePointerMove(event)](#handlePointerMove)
+    * [handlePointerUp(event) ⇒ <code>boolean</code>](#handlePointerUp)
     * [onVRControllerButtonDown(event) ⇒ <code>boolean</code>](#onVRControllerButtonDown)
     * [onVRPoseChanged(event) ⇒ <code>boolean</code>](#onVRPoseChanged)
     * [onVRControllerButtonUp(event) ⇒ <code>boolean</code>](#onVRControllerButtonUp)
@@ -25,9 +25,9 @@ Create base linear movement scene widget.
 | --- | --- | --- |
 | name | <code>string</code> | The name value. |
 
-<a name="BaseLinearMovementHandle+handleMouseDown"></a>
+<a name="BaseLinearMovementHandle+handlePointerDown"></a>
 
-### handleMouseDown
+### handlePointerDown
 Handles mouse down interaction with the handle.
 
 
@@ -35,22 +35,22 @@ Handles mouse down interaction with the handle.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> | The event param. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
 
-<a name="BaseLinearMovementHandle+handleMouseMove"></a>
+<a name="BaseLinearMovementHandle+handlePointerMove"></a>
 
-### handleMouseMove
+### handlePointerMove
 Handles mouse move interaction with the handle.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> | The event param |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param |
 
-<a name="BaseLinearMovementHandle+handleMouseUp"></a>
+<a name="BaseLinearMovementHandle+handlePointerUp"></a>
 
-### handleMouseUp
+### handlePointerUp
 Handles mouse up interaction with the handle.
 
 
@@ -58,7 +58,7 @@ Handles mouse up interaction with the handle.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> | The event param. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
 
 <a name="BaseLinearMovementHandle+onVRControllerButtonDown"></a>
 

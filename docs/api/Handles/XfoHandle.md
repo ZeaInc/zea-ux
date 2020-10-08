@@ -1,7 +1,10 @@
 <a name="XfoHandle"></a>
 
 ### XfoHandle 
-Class representing an xfo handle.
+Class representing a xfo handle. Base manipulators for
+
+**Parameters**
+* **HighlightColor(`ColorParameter`):** Specifies the highlight color of the handle.
 
 
 **Extends**: <code>TreeItem</code>  
@@ -17,10 +20,10 @@ Class representing an xfo handle.
 Create an axial rotation scene widget.
 
 
-| Param | Type | Description |
-| --- | --- | --- |
-| size | <code>number</code> | The size value. |
-| thickness | <code>number</code> | The thickness value. |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| size | <code>number</code> | <code>0.1</code> | The size value. |
+| thickness | <code>number</code> | <code>0.003</code> | The thickness value. |
 
 <a name="XfoHandle+showHandles"></a>
 
@@ -32,7 +35,7 @@ If nothing is specified, it hides all of them.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| handleManipulationMode | <code>number</code> | The mode of the Xfo parameter |
+| handleManipulationMode | <code>string</code> | The mode of the Xfo parameter |
 
 <a name="XfoHandle+setTargetParam"></a>
 

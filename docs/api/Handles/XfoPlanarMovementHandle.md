@@ -3,11 +3,14 @@
 ### XfoPlanarMovementHandle 
 Class representing a planar movement scene widget.
 
+**Parameters**
+* **Size(`NumberParameter`):** Specifies the size of the plane handle.
+
 
 **Extends**: <code>[Handle](api/Handles/Handle.md)</code>  
 
 * [XfoPlanarMovementHandle ⇐ <code>Handle</code>](#XfoPlanarMovementHandle)
-    * [new XfoPlanarMovementHandle(name, size, color, offset)](#new-XfoPlanarMovementHandle)
+    * [new XfoPlanarMovementHandle(name, size, offset, color)](#new-XfoPlanarMovementHandle)
     * [highlight()](#highlight)
     * [unhighlight()](#unhighlight)
 
@@ -21,8 +24,8 @@ Create a planar movement scene widget.
 | --- | --- | --- |
 | name | <code>string</code> | The name value. |
 | size | <code>number</code> | The size value. |
-| color | <code>Color</code> | The color value. |
 | offset | <code>Vec3</code> | The offset value. |
+| color | <code>Color</code> | The color value. |
 
 <a name="XfoPlanarMovementHandle+highlight"></a>
 

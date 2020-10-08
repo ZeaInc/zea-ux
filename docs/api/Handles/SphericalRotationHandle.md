@@ -12,9 +12,9 @@ Class representing an axial rotation scene widget.
     * [unhighlight()](#unhighlight)
     * [setTargetParam(param, track)](#setTargetParam)
     * [getTargetParam() ⇒ <code>Parameter</code>](#getTargetParam)
-    * [handleMouseDown(event) ⇒ <code>boolean</code>](#handleMouseDown)
-    * [handleMouseMove(event) ⇒ <code>boolean</code>](#handleMouseMove)
-    * [handleMouseUp(event) ⇒ <code>boolean</code>](#handleMouseUp)
+    * [handlePointerDown(event) ⇒ <code>boolean</code>](#handlePointerDown)
+    * [handlePointerMove(event) ⇒ <code>boolean</code>](#handlePointerMove)
+    * [handlePointerUp(event) ⇒ <code>boolean</code>](#handlePointerUp)
     * [onDragStart(event)](#onDragStart)
     * [onDrag(event)](#onDrag)
     * [onDragEnd(event)](#onDragEnd)
@@ -62,9 +62,9 @@ Returns target's global xfo parameter.
 
 
 **Returns**: <code>Parameter</code> - - returns handle's target global Xfo.  
-<a name="SphericalRotationHandle+handleMouseDown"></a>
+<a name="SphericalRotationHandle+handlePointerDown"></a>
 
-### handleMouseDown
+### handlePointerDown
 Handles mouse down interaction with the handle.
 
 
@@ -74,9 +74,9 @@ Handles mouse down interaction with the handle.
 | --- | --- | --- |
 | event | <code>MouseEvent</code> | The event param. |
 
-<a name="SphericalRotationHandle+handleMouseMove"></a>
+<a name="SphericalRotationHandle+handlePointerMove"></a>
 
-### handleMouseMove
+### handlePointerMove
 Handles mouse move interaction with the handle.
 
 
@@ -86,9 +86,9 @@ Handles mouse move interaction with the handle.
 | --- | --- | --- |
 | event | <code>MouseEvent</code> | The event param |
 
-<a name="SphericalRotationHandle+handleMouseUp"></a>
+<a name="SphericalRotationHandle+handlePointerUp"></a>
 
-### handleMouseUp
+### handlePointerUp
 Handles mouse up interaction with the handle.
 
 

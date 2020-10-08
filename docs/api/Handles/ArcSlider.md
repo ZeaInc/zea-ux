@@ -1,16 +1,27 @@
 <a name="ArcSlider"></a>
 
 ### ArcSlider 
-Class representing a slider scene widget.
+Class representing a slider scene widget with an arc shape. There are two parts in this widget, the slider and the handle.<br>
+The **Handle** is the moving part of the widget, the object you interact with. The **Slider** is the path that the **handle** follows.
+
+
+**Parameters**
+* **ArcRadius(`NumberParameter`):** Specifies the radius of the slider.
+* **ArcAngle(`NumberParameter`):** Specifies the arc angle of the slider.
+* **HandleRadius(`NumberParameter`):** Specifies the radius of the handle in the slider.
+
+**Events**
+* **dragStart:** Triggered when the pointer is down.
+* **dragEnd:** Triggered when the pointer is released.
 
 
 **Extends**: <code>[BaseAxialRotationHandle](api/Handles/BaseAxialRotationHandle.md)</code>  
 
 * [ArcSlider ⇐ <code>BaseAxialRotationHandle</code>](#ArcSlider)
     * [new ArcSlider(name, [arcRadius], [arcAngle], [handleRadius], [color])](#new-ArcSlider)
-    * [onMouseEnter(event)](#onMouseEnter)
-    * [onMouseLeave(event)](#onMouseLeave)
-    * [onMouseDown(event)](#onMouseDown)
+    * [onPointerEnter(event)](#onPointerEnter)
+    * [onPointerLeave(event)](#onPointerLeave)
+    * [onPointerDown(event)](#onPointerDown)
     * [highlight()](#highlight)
     * [unhighlight()](#unhighlight)
     * [setTargetParam(param, track)](#setTargetParam)
@@ -35,9 +46,9 @@ Creates an instance of ArcSlider.
 | [handleRadius] | <code>number</code> | <code>0.02</code> | The handleRadius value |
 | [color] | <code>Color</code> | <code>new Color(1, 1, 0)</code> | the color value |
 
-<a name="ArcSlider+onMouseEnter"></a>
+<a name="ArcSlider+onPointerEnter"></a>
 
-### onMouseEnter
+### onPointerEnter
 Event fired when a pointing device is initially moved within the space of the handle.
 
 
@@ -46,9 +57,9 @@ Event fired when a pointing device is initially moved within the space of the ha
 | --- | --- | --- |
 | event | <code>MouseEvent</code> | The event param. |
 
-<a name="ArcSlider+onMouseLeave"></a>
+<a name="ArcSlider+onPointerLeave"></a>
 
-### onMouseLeave
+### onPointerLeave
 Event fired when a pointing device moves outside of the space of the handle.
 
 
@@ -57,9 +68,9 @@ Event fired when a pointing device moves outside of the space of the handle.
 | --- | --- | --- |
 | event | <code>MouseEvent</code> | The event param. |
 
-<a name="ArcSlider+onMouseDown"></a>
+<a name="ArcSlider+onPointerDown"></a>
 
-### onMouseDown
+### onPointerDown
 Event fired when a pointing device button is pressed while the pointer is over the handle element.
 
 

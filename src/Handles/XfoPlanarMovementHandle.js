@@ -6,6 +6,9 @@ import transformVertices from './transformVertices'
 /**
  * Class representing a planar movement scene widget.
  *
+ * **Parameters**
+ * * **Size(`NumberParameter`):** Specifies the size of the plane handle.
+ *
  * @extends Handle
  */
 class XfoPlanarMovementHandle extends PlanarMovementHandle {
@@ -19,7 +22,7 @@ class XfoPlanarMovementHandle extends PlanarMovementHandle {
   constructor(name, size, offset, color = new Color()) {
     super(name)
 
-    this.sizeParam = this.addParameter(new NumberParameter('size', size))
+    this.sizeParam = this.addParameter(new NumberParameter('Size', size))
     this.colorParam.setValue(color)
 
     this.handleMat = new Material('handle', 'HandleShader')
@@ -35,8 +38,9 @@ class XfoPlanarMovementHandle extends PlanarMovementHandle {
 
     this.sizeParam.on('valueChanged', () => {
       size = this.sizeParam.getValue()
-      handleGeom.getParameter('size').setValue(size)
-      handleGeom.getParameter('height').setValue(size * 0.02)
+      handleGeom.getParameter('X').setValue(size)
+      handleGeom.getParameter('Y').setValue(size)
+      handleGeom.getParameter('Z').setValue(size * 0.02)
     })
 
     this.colorParam.on('valueChanged', () => {

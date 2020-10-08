@@ -1,8 +1,11 @@
 <a name="Handle"></a>
 
 ### Handle 
-A Handle is a UI widget that lives in the scene.
-Much like a slider, it translates a series of mouse events into a higher level interaction.
+A Handle is an UI widget that lives in the scene, it translates a series of pointer events into a higher level interaction.
+
+**Parameters**
+* **Color(`ColorParameter`):** Specifies the color of the handle.
+* **HighlightColor(`ColorParameter`):** Specifies the highlight color of the handle.
 
 
 **Extends**: <code>TreeItem</code>  
@@ -12,15 +15,15 @@ Much like a slider, it translates a series of mouse events into a higher level i
     * [highlight()](#highlight)
     * [unhighlight()](#unhighlight)
     * [getManipulationPlane() ⇒ <code>Ray</code>](#getManipulationPlane)
-    * [onMouseEnter(event)](#onMouseEnter)
-    * [onMouseLeave(event)](#onMouseLeave)
-    * [onMouseDown(event)](#onMouseDown)
-    * [onMouseMove(event)](#onMouseMove)
-    * [onMouseUp(event)](#onMouseUp)
+    * [onPointerEnter(event)](#onPointerEnter)
+    * [onPointerLeave(event)](#onPointerLeave)
+    * [onPointerDown(event)](#onPointerDown)
+    * [onPointerMove(event)](#onPointerMove)
+    * [onPointerUp(event)](#onPointerUp)
     * [onWheel(event)](#onWheel)
-    * [handleMouseDown(event) ⇒ <code>boolean</code>](#handleMouseDown)
-    * [handleMouseMove(event) ⇒ <code>boolean</code>](#handleMouseMove)
-    * [handleMouseUp(event) ⇒ <code>boolean</code>](#handleMouseUp)
+    * [handlePointerDown(event) ⇒ <code>boolean</code>](#handlePointerDown)
+    * [handlePointerMove(event) ⇒ <code>boolean</code>](#handlePointerMove)
+    * [handlePointerUp(event) ⇒ <code>boolean</code>](#handlePointerUp)
     * [onVRControllerButtonDown(event) ⇒ <code>boolean</code>](#onVRControllerButtonDown)
     * [onVRPoseChanged(event) ⇒ <code>boolean</code>](#onVRPoseChanged)
     * [onVRControllerButtonUp(event) ⇒ <code>boolean</code>](#onVRControllerButtonUp)
@@ -57,60 +60,60 @@ Returns the manipulation plane of the handle, denoting a start and a direction.
 
 
 **Returns**: <code>Ray</code> - The return value.  
-<a name="Handle+onMouseEnter"></a>
+<a name="Handle+onPointerEnter"></a>
 
-### onMouseEnter
+### onPointerEnter
 Event fired when a pointing device is initially moved within the space of the handle.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> | The event param. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
 
-<a name="Handle+onMouseLeave"></a>
+<a name="Handle+onPointerLeave"></a>
 
-### onMouseLeave
+### onPointerLeave
 Event fired when a pointing device moves outside of the space of the handle.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> | The event param. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
 
-<a name="Handle+onMouseDown"></a>
+<a name="Handle+onPointerDown"></a>
 
-### onMouseDown
+### onPointerDown
 Event fired when a pointing device button is pressed while the pointer is over the handle element.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> | The event param. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
 
-<a name="Handle+onMouseMove"></a>
+<a name="Handle+onPointerMove"></a>
 
-### onMouseMove
+### onPointerMove
 Event fired when a pointing device is moved while the cursor's hotspot is over the handle.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> | The event param. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
 
-<a name="Handle+onMouseUp"></a>
+<a name="Handle+onPointerUp"></a>
 
-### onMouseUp
+### onPointerUp
 Event fired when a pointing device button is released while the pointer is over the handle.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> | The event param. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
 
 <a name="Handle+onWheel"></a>
 
@@ -123,9 +126,9 @@ Event fired when the user rotates the pointing device wheel over the handle.
 | --- | --- | --- |
 | event | <code>MouseEvent</code> | The event param. |
 
-<a name="Handle+handleMouseDown"></a>
+<a name="Handle+handlePointerDown"></a>
 
-### handleMouseDown
+### handlePointerDown
 Handles mouse down interaction with the handle.
 
 
@@ -135,9 +138,9 @@ Handles mouse down interaction with the handle.
 | --- | --- | --- |
 | event | <code>MouseEvent</code> | The event param. |
 
-<a name="Handle+handleMouseMove"></a>
+<a name="Handle+handlePointerMove"></a>
 
-### handleMouseMove
+### handlePointerMove
 Handles mouse move interaction with the handle.
 
 
@@ -147,9 +150,9 @@ Handles mouse move interaction with the handle.
 | --- | --- | --- |
 | event | <code>MouseEvent</code> | The event param |
 
-<a name="Handle+handleMouseUp"></a>
+<a name="Handle+handlePointerUp"></a>
 
-### handleMouseUp
+### handlePointerUp
 Handles mouse up interaction with the handle.
 
 

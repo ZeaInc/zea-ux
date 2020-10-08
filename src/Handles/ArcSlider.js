@@ -17,7 +17,18 @@ import './Shaders/HandleShader'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 
 /**
- * Class representing a slider scene widget.
+ * Class representing a slider scene widget with an arc shape. There are two parts in this widget, the slider and the handle.<br>
+ * The **Handle** is the moving part of the widget, the object you interact with. The **Slider** is the path that the **handle** follows.
+ *
+ *
+ * **Parameters**
+ * * **ArcRadius(`NumberParameter`):** Specifies the radius of the slider.
+ * * **ArcAngle(`NumberParameter`):** Specifies the arc angle of the slider.
+ * * **HandleRadius(`NumberParameter`):** Specifies the radius of the handle in the slider.
+ *
+ * **Events**
+ * * **dragStart:** Triggered when the pointer is down.
+ * * **dragEnd:** Triggered when the pointer is released.
  *
  * @extends BaseAxialRotationHandle
  */
@@ -33,9 +44,9 @@ class ArcSlider extends BaseAxialRotationHandle {
    */
   constructor(name, arcRadius = 1, arcAngle = 1, handleRadius = 0.02, color = new Color(1, 1, 0)) {
     super(name)
-    this.arcRadiusParam = this.addParameter(new NumberParameter('Arc Radius', arcRadius))
-    this.arcAngleParam = this.addParameter(new NumberParameter('Arc Angle', arcAngle))
-    this.handleRadiusParam = this.addParameter(new NumberParameter('Handle Radius', handleRadius))
+    this.arcRadiusParam = this.addParameter(new NumberParameter('ArcRadius', arcRadius))
+    this.arcAngleParam = this.addParameter(new NumberParameter('ArcAngle', arcAngle))
+    this.handleRadiusParam = this.addParameter(new NumberParameter('HandleRadius', handleRadius))
     // this.barRadiusParam = this.addParameter(
     //   new NumberParameter('Bar Radius', radius * 0.25)
     // );

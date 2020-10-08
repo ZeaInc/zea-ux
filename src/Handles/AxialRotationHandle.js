@@ -3,7 +3,17 @@ import BaseAxialRotationHandle from './BaseAxialRotationHandle'
 import './Shaders/HandleShader'
 
 /**
- * Class representing an axial rotation scene widget.
+ * Class representing an axial rotation scene widget. It has a `Torus` shape and is used to rotate objects around the specified axes.
+ * You can do it by specifying the localXfo orientation:
+ *
+ * ```javascript
+ * const xfo1 = new Xfo()
+ * // This is rotation over `Y` axis
+ * xfo1.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI * 0.5)
+ * axialRotationHandle.getParameter('LocalXfo').setValue(xfo1)
+ * ```
+ * **Parameters**
+ * * **Radius(`NumberParameter`):** Specifies the radius of the handler.
  *
  * @extends BaseAxialRotationHandle
  */
@@ -19,7 +29,7 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
   constructor(name, radius, thickness, color = new Color(1, 1, 0)) {
     super(name)
 
-    this.radiusParam = this.addParameter(new NumberParameter('radius', radius))
+    this.radiusParam = this.addParameter(new NumberParameter('Radius', radius))
     this.colorParam.setValue(color)
 
     this.handleMat = new Material('handle', 'HandleShader')
