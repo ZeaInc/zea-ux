@@ -1,4 +1,4 @@
-describe('Zea UX', () => {
+describe.skip('Zea UX', () => {
   it('Renders an arch slider', () => {
     cy.visit('testing-e2e/arc-slider.html', {
       onBeforeLoad(win) {
