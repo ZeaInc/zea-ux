@@ -78,6 +78,16 @@ class SelectionTool extends BaseTool {
   }
 
   /**
+   *
+   *
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @private
+   */
+  onPointerDoublePress(event) {
+    console.log('DoublePointerPress')
+  }
+
+  /**
    * Event fired when a pointing device button is pressed while the pointer is over the tool.
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.

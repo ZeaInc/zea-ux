@@ -47,7 +47,7 @@
       renderer.setScene(scene)
 
       const treeItem1 = new TreeItem('TranslateTarget')
-      const handleGeom = new Sphere(0.03, 64)
+      const handleGeom = new Sphere(0.1, 64)
       const geomItem = new GeomItem('handle', handleGeom, new Material('handle', 'FlatSurfaceShader'))
 
       const screenSpaceMovementHandle = new ScreenSpaceMovementHandle('FooScreenSpaceMovementHandle')
@@ -57,6 +57,20 @@
       treeItem1.addChild(screenSpaceMovementHandle)
 
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(0, 0, 1), new Vec3(0, 0, 0))
+
+      const handleMessage = (event) => {
+        const { data } = event
+
+        if (data === 'x-axis') {
+          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(4, 0, 1.7), new Vec3(0, 0, 0))
+          window.postMessage(`done-${data}`)
+        } else if (data === 'y-axis') {
+          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-0.03, -4, 1.7), new Vec3(0, 0, 0))
+          window.postMessage(`done-${data}`)
+        }
+      }
+
+      window.addEventListener('message', handleMessage, false)
     </script>
   </body>
 </html>

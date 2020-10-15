@@ -7,14 +7,14 @@ describe.skip('Zea UX', () => {
     })
 
     cy.window().then((win) => {
-      const variant = 'front'
+      const variant = 'x-axis'
       win.postMessage(variant)
       cy.get('@postMessage').its('lastCall.args.0').should('equal', `done-${variant}`)
       cy.get('canvas').percySnapshot(`Arch slider ${variant}`)
     })
 
     cy.window().then((win) => {
-      const variant = 'back'
+      const variant = 'y-axis'
       win.postMessage(variant)
       cy.get('@postMessage').its('lastCall.args.0').should('equal', `done-${variant}`)
       cy.get('canvas').percySnapshot(`Arch slider ${variant}`)
