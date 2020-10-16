@@ -83,9 +83,7 @@ class SelectionTool extends BaseTool {
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    * @private
    */
-  onPointerDoublePress(event) {
-    console.log('DoublePointerPress')
-  }
+  onPointerDoublePress(event) {}
 
   /**
    * Event fired when a pointing device button is pressed while the pointer is over the tool.
@@ -94,7 +92,7 @@ class SelectionTool extends BaseTool {
    * @return {boolean} The return value.
    */
   onPointerDown(event) {
-    if (event.button == 0 && !event.altKey) {
+    if (event.pointerType === 'touch' || (event.button == 0 && !event.altKey)) {
       this.pointerDownPos = event.pointerPos
       this.dragging = false
 
@@ -136,6 +134,7 @@ class SelectionTool extends BaseTool {
    * @return {boolean} The return value.
    */
   onPointerUp(event) {
+    console.log('PointerUp')
     if (this.pointerDownPos) {
       // event.viewport.renderGeomDataFbo();
       if (this.dragging) {
