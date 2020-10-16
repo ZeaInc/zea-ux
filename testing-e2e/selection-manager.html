@@ -82,7 +82,7 @@
         const material2 = new Material('material2', 'SimpleSurfaceShader')
         material2.getParameter('BaseColor').setValue(new Color('#35257D'))
 
-        const geomItem2 = new GeomItem('CuboidGeometryItem', new Torus(0.15, 0.5), material2)
+        const geomItem2 = new GeomItem('TorusGeometryItem', new Torus(0.15, 0.5), material2)
 
         const geomItem2Xfo = new Xfo()
         geomItem2Xfo.tr = new Vec3(-1, 0, 0.35)

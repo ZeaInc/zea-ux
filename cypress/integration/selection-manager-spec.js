@@ -9,11 +9,23 @@ describe('Selection Manager', () => {
     })
   })
 
+  it('Multi Select Geometry - Mouse', () => {
+    cy.get('#selection-cbx').click()
+
+    cy.get('canvas').click(400, 250)
+    cy.wait(150)
+    cy.get('canvas').click(630, 250, { ctrlKey: true })
+    cy.get('canvas').percySnapshot('MultiSelectGeometryMouseSelect')
+    cy.wait(150)
+    cy.get('canvas').click(400, 250)
+    cy.get('canvas').percySnapshot('MultiSelectGeometryMouseUnSelect')
+  })
+
   it('Select Geometry - Translate - Mouse', () => {
     cy.get('#selection-cbx').click()
 
     const canvas = cy.get('canvas')
-    canvas.click(400, 250)
+    canvas.click(400, 240)
     canvas.percySnapshot('SelectGeometryTranslateMouse')
   })
 
@@ -49,6 +61,7 @@ describe('Selection Manager', () => {
     cy.get('#selection-cbx').click()
     cy.get('canvas').click(400, 250)
     cy.get('#scale').click()
+    cy.get('canvas').percySnapshot('SelectGeometryScaleMouse')
   })
 
   it('Select Geometry - Scale Move - Mouse', () => {
@@ -62,7 +75,7 @@ describe('Selection Manager', () => {
   })
 
   // Tap is not working here, triggers double click
-  it.skip('Select Geometry - Tap', () => {
+  it('Select Geometry - Tap', () => {
     cy.get('#selection-cbx').click()
     cyFocusCanvas()
 

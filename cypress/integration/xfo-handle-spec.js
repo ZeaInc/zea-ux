@@ -46,4 +46,37 @@ describe('Xfo Handle', () => {
       .trigger('mouseup', 860, 290)
       .percySnapshot('XfoHandleRotateRotatesMouse')
   })
+
+  it('Xfo Handle Performs Actions - Touch', () => {
+    cyFocusCanvas()
+    const canvas = cy.get('canvas')
+
+    const trTouchStart = createTouchEvents([500, 485])
+    const trTouchEnd = createTouchEvents([500, 400])
+
+    canvas
+      .trigger('touchstart', trTouchStart)
+      .trigger('touchmove', trTouchEnd)
+      .trigger('touchend', trTouchEnd)
+      .percySnapshot('XfoHandleTranslateMovesTouch')
+
+    cyFocusCanvas()
+    const scTouchStart = createTouchEvents([250, 290])
+    const scTouchEnd = createTouchEvents([250, 250])
+    canvas
+      .trigger('touchstart', scTouchStart)
+      .trigger('touchmove', scTouchEnd)
+      .trigger('touchend', scTouchEnd)
+      .percySnapshot('XfoHandleScaleScalesTouch')
+
+    cyFocusCanvas()
+    const rtTouchStart = createTouchEvents([815, 290])
+    const rtTouchEnd = createTouchEvents([860, 250])
+
+    canvas
+      .trigger('touchstart', rtTouchStart)
+      .trigger('touchmove', rtTouchEnd)
+      .trigger('touchend', rtTouchEnd)
+      .percySnapshot('XfoHandleRotateRotatesTouch')
+  })
 })

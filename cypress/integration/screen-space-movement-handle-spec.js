@@ -32,7 +32,7 @@ describe('Planar Movement Handle', () => {
     })
   })
 
-  it.only('Screen Space Movement Handle Moves - Touch', () => {
+  it('Screen Space Movement Handle Moves - Touch', () => {
     cyFocusCanvas()
 
     cy.window().then((win) => {
