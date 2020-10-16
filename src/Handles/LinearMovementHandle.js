@@ -21,7 +21,6 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
    */
   constructor(name, length = 0.1, thickness = 0.003, color = new Color()) {
     super(name)
-
     this.colorParam.setValue(color)
 
     this.handleMat = new Material('handle', 'HandleShader')
@@ -36,7 +35,8 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
     const tip = new GeomItem('tip', tipGeom, this.handleMat)
     const tipXfo = new Xfo()
     tipXfo.tr.set(0, 0, length)
-    transformVertices(tipGeom.getVertexAttribute('positions'), tipXfo)
+
+    transformVertices(tipGeom, tipXfo)
 
     this.colorParam.on('valueChanged', () => {
       this.handleMat.getParameter('BaseColor').setValue(this.colorParam.getValue())

@@ -33,7 +33,7 @@ class XfoPlanarMovementHandle extends PlanarMovementHandle {
 
     const handleGeomXfo = new Xfo()
     handleGeomXfo.tr = offset
-    transformVertices(handleGeom.getVertexAttribute('positions'), handleGeomXfo)
+    transformVertices(handleGeom, handleGeomXfo)
     this.handle = new GeomItem('handle', handleGeom, this.handleMat)
 
     this.sizeParam.on('valueChanged', () => {

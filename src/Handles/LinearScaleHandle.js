@@ -40,7 +40,7 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
     // Note: the constant screen size shader
     // only works if all the handle geometries
     // are centered on the middle of the XfoHandle.
-    transformVertices(tipGeom.getVertexAttribute('positions'), tipXfo)
+    transformVertices(tipGeom, tipXfo)
 
     this.colorParam.on('valueChanged', () => {
       this.handleMat.getParameter('BaseColor').setValue(this.colorParam.getValue())
