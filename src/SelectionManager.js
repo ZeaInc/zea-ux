@@ -27,7 +27,7 @@ class SelectionManager extends EventEmitter {
     this.selectionGroup = new SelectionGroup(options)
 
     if (options.enableXfoHandles === true) {
-      const size = 0.2
+      const size = 0.1
       const thickness = size * 0.02
       this.xfoHandle = new XfoHandle(size, thickness)
       this.xfoHandle.setTargetParam(this.selectionGroup.getParameter('GlobalXfo'), false)
