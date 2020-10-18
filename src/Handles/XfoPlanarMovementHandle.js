@@ -28,6 +28,7 @@ class XfoPlanarMovementHandle extends PlanarMovementHandle {
     this.handleMat = new Material('handle', 'HandleShader')
     this.handleMat.getParameter('BaseColor').setValue(color)
     this.handleMat.getParameter('MaintainScreenSize').setValue(1)
+    this.handleMat.getParameter('Overlay').setValue(0.9)
 
     const handleGeom = new Cuboid(size, size, size * 0.02)
 

@@ -112,7 +112,7 @@ class XfoHandle extends TreeItem {
     rotationHandles.setVisible(false)
     this.addChild(rotationHandles)
     {
-      const rotationWidget = new SphericalRotationHandle('rotation', size - thickness, new Color(1, 1, 1, 0.4))
+      const rotationWidget = new SphericalRotationHandle('rotation', size - thickness, new Color(1, 1, 1, 0))
       rotationHandles.addChild(rotationWidget)
     }
     {

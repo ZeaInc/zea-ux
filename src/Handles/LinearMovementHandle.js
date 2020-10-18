@@ -24,8 +24,9 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
     this.colorParam.setValue(color)
 
     this.handleMat = new Material('handle', 'HandleShader')
-    this.handleMat.getParameter('MaintainScreenSize').setValue(1)
     this.handleMat.getParameter('BaseColor').setValue(color)
+    this.handleMat.getParameter('MaintainScreenSize').setValue(1)
+    this.handleMat.getParameter('Overlay').setValue(0.9)
 
     const handleGeom = new Cylinder(thickness, length, 64)
     handleGeom.getParameter('BaseZAtZero').setValue(true)

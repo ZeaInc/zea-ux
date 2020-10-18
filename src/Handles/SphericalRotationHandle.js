@@ -24,8 +24,9 @@ class SphericalRotationHandle extends Handle {
 
     this.colorParam.setValue(color)
     this.maskMat = new Material('mask', 'HandleShader')
-    this.maskMat.getParameter('MaintainScreenSize').setValue(1)
     this.maskMat.getParameter('BaseColor').setValue(color)
+    this.maskMat.getParameter('MaintainScreenSize').setValue(1)
+    this.maskMat.getParameter('Overlay').setValue(0.9)
 
     const maskGeom = new Sphere(radius, 64)
     const maskGeomItem = new GeomItem('mask', maskGeom, this.maskMat)
