@@ -19,7 +19,7 @@
     "dev": "npm-run-all --parallel build:watch start:watch",
     "release": "standard-version",
     "start": "es-dev-server",
-    "start:watch": "es-dev-server --watch",
+    "start:watch": "es-dev-server --app-index testing-e2e/index.html --open --watch",
     "dist": "yarn publish --access=public",
     "docs": "adg --config adg.config.json",
     "docs-w": "adg -w --config=adg.config.json",
