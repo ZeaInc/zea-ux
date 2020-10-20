@@ -24,6 +24,6 @@ const createTouchEvents = (touchPoints = []) => {
 // Sometimes we need to focus the viewport in order to trigger other DOM events like `wheel` or `mousemove` without clicking
 // Just to test pointer enter or pointer leave.
 const cyFocusCanvas = (elSelector = 'canvas', x = 1, y = 1) => {
-  cy.get(elSelector).click(x, y)
+  cy.get(elSelector).click(x, y, { multiple: true })
 }
 export { createTouchEvents, cyFocusCanvas }
