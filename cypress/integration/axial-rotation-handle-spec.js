@@ -11,34 +11,42 @@ describe('Axial Rotation Handle', () => {
 
   it('Axial Rotation Handle Highlights', () => {
     cyFocusCanvas()
-    const canvas = cy.get('canvas')
-    canvas.trigger('mousemove', 400, 40).trigger('mousemove', 475, 330)
-    canvas.percySnapshot('AxialRotationHandleHighlights')
+
+    cy.get('canvas')
+      .trigger('mousemove', 400, 40)
+      .trigger('mousemove', 475, 330)
+      .percySnapshot('AxialRotationHandleHighlights')
   })
 
   it('Axial Rotation Handle Highlights Different Color', () => {
     cyFocusCanvas()
-    const canvas = cy.get('canvas')
-    canvas.trigger('mousemove', 700, 40).trigger('mousemove', 700, 240)
-    canvas.percySnapshot('AxialRotationHandleHighlightsDifferentColor')
+
+    cy.get('canvas')
+      .trigger('mousemove', 700, 40)
+      .trigger('mousemove', 700, 240)
+      .percySnapshot('AxialRotationHandleHighlightsDifferentColor')
   })
 
   it('Axial Rotation Handle Moves - Mouse', () => {
     cyFocusCanvas()
-    const canvas = cy.get('canvas')
-    canvas.trigger('mousedown', 475, 330).trigger('mousemove', 475, 530).trigger('mouseup', 475, 530)
-    canvas.percySnapshot('AxialRotationHandleMovesMouse')
+
+    cy.get('canvas')
+      .trigger('mousedown', 475, 330)
+      .trigger('mousemove', 475, 530)
+      .trigger('mouseup', 475, 530)
+      .percySnapshot('AxialRotationHandleMovesMouse')
   })
 
   it('Axial Rotation Handle Moves - Touch', () => {
     cyFocusCanvas()
-    const canvas = cy.get('canvas')
 
     const eTouchStart = createTouchEvents([700, 240])
     const eTouch = createTouchEvents([700, 40])
 
-    cy.get('canvas').trigger('touchstart', eTouchStart).trigger('touchmove', eTouch).trigger('touchend', eTouch)
-
-    canvas.percySnapshot(`AxialRotationHandleMovesTouch`)
+    cy.get('canvas')
+      .trigger('touchstart', eTouchStart)
+      .trigger('touchmove', eTouch)
+      .trigger('touchend', eTouch)
+      .percySnapshot(`AxialRotationHandleMovesTouch`)
   })
 })
