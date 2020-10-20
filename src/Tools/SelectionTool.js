@@ -19,6 +19,7 @@ class SelectionTool extends BaseTool {
     super(appData)
 
     this.dragging = false
+    this.selectionManager = appData.selectionManager
 
     this.selectionRect = new Rect(1, 1)
     this.selectionRectMat = new Material('marker', 'ScreenSpaceShader')
@@ -26,6 +27,17 @@ class SelectionTool extends BaseTool {
     this.selectionRectXfo = new Xfo()
     this.selectionRectXfo.tr.set(0.5, 0.5, 0)
     this.selectionRectXfo.sc.set(0, 0, 0)
+
+    this.rectItem = new GeomItem('selectionRect', this.selectionRect, this.selectionRectMat)
+    this.rectItem.getParameter('Visible').setValue(false)
+    this.appData.renderer.addTreeItem(this.rectItem)
+  }
+
+  /**
+   * Activates selection tool.
+   */
+  setSelectionManager(selectionManager) {
+    this.selectionManager = selectionManager
   }
 
   /**
@@ -33,12 +45,6 @@ class SelectionTool extends BaseTool {
    */
   activateTool() {
     super.activateTool()
-
-    if (!this.rectItem) {
-      this.rectItem = new GeomItem('selectionRect', this.selectionRect, this.selectionRectMat)
-      this.rectItem.getParameter('Visible').setValue(false)
-      this.appData.renderer.addTreeItem(this.rectItem)
-    }
   }
 
   /**
@@ -48,6 +54,7 @@ class SelectionTool extends BaseTool {
     super.deactivateTool()
     this.selectionRectXfo.sc.set(0, 0, 0)
     this.rectItem.getParameter('GlobalXfo').setValue(this.selectionRectXfo)
+    this.rectItem.getParameter('Visible').setValue(false)
   }
 
   /**
@@ -127,16 +134,17 @@ class SelectionTool extends BaseTool {
         const br = new Vec2(Math.max(this.mouseDownPos.x, mouseUpPos.x), Math.max(this.mouseDownPos.y, mouseUpPos.y))
         const geomItems = event.viewport.getGeomItemsInRect(tl, br)
 
-        if (this.appData.selectionManager.pickingModeActive()) {
-          this.appData.selectionManager.pick(geomItems)
+        if (!this.selectionManager) throw 'Please set the Selection Manager on the Selection Tool before using it.'
+        if (this.selectionManager.pickingModeActive()) {
+          this.selectionManager.pick(geomItems)
         } else {
           // Remove all the scene widgets. (UI elements should not be selectable.)
           const regularGeomItems = new Set([...geomItems].filter((x) => !(x.getOwner() instanceof Handle)))
 
           if (!event.shiftKey) {
-            this.appData.selectionManager.selectItems(regularGeomItems, !event.ctrlKey)
+            this.selectionManager.selectItems(regularGeomItems, !event.ctrlKey)
           } else {
-            this.appData.selectionManager.deselectItems(regularGeomItems)
+            this.selectionManager.deselectItems(regularGeomItems)
           }
 
           this.selectionRectXfo.sc.set(0, 0, 0)
@@ -145,19 +153,19 @@ class SelectionTool extends BaseTool {
       } else {
         const intersectionData = event.viewport.getGeomDataAtPos(event.mousePos)
         if (intersectionData != undefined && !(intersectionData.geomItem.getOwner() instanceof Handle)) {
-          if (this.appData.selectionManager.pickingModeActive()) {
-            this.appData.selectionManager.pick(intersectionData.geomItem)
+          if (this.selectionManager.pickingModeActive()) {
+            this.selectionManager.pick(intersectionData.geomItem)
           } else {
             if (!event.shiftKey) {
-              this.appData.selectionManager.toggleItemSelection(intersectionData.geomItem, !event.ctrlKey)
+              this.selectionManager.toggleItemSelection(intersectionData.geomItem, !event.ctrlKey)
             } else {
               const items = new Set()
               items.add(intersectionData.geomItem)
-              this.appData.selectionManager.deselectItems(items)
+              this.selectionManager.deselectItems(items)
             }
           }
         } else {
-          this.appData.selectionManager.clearSelection()
+          this.selectionManager.clearSelection()
         }
       }
 
@@ -177,9 +185,10 @@ class SelectionTool extends BaseTool {
    */
   onVRControllerButtonDown(event) {
     if (event.button == 1) {
+      if (!this.selectionManager) throw 'Please set the Selection Manager on the Selection Tool before using it.'
       const intersectionData = event.controller.getGeomItemAtTip()
       if (intersectionData != undefined && !(intersectionData.geomItem.getOwner() instanceof Handle)) {
-        this.appData.selectionManager.toggleItemSelection(intersectionData.geomItem)
+        this.selectionManager.toggleItemSelection(intersectionData.geomItem)
         return true
       }
     }
