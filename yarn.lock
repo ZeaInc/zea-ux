@@ -1712,10 +1712,10 @@
     meow "^7.0.1"
     rimraf "^3.0.2"
 
-"@zeainc/zea-engine@2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@zeainc/zea-engine/-/zea-engine-2.1.0.tgz#913d05aa9eb34dfd28e7e1249f3e054cc11d7646"
-  integrity sha512-cL4secTwUwOwlcEFcRSHrEmqRiTCkAwd5eWMRyBQI+hKG+6gKJd4QoYnmDKXrVWV5dvBJWQyg8OU/qCYlMcg8g==
+"@zeainc/zea-engine@2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@zeainc/zea-engine/-/zea-engine-2.2.0.tgz#351bce2cce7bbd5d40da7b8ada000f44a90d0af1"
+  integrity sha512-eNGmY6PXwvllIBm586m2TxgUUpDpWdMKtgQorxRJEURbDfYMX5x4NDaHdzw1JopSIbgLM3oqQ3yVVr4tHPYOUQ==
 
 JSONStream@^1.0.3, JSONStream@^1.0.4:
   version "1.3.5"
