@@ -1,5 +1,5 @@
 describe.skip('Zea UX', () => {
-  it('Renders an arch slider', () => {
+  it('Renders an arc slider', () => {
     cy.visit('testing-e2e/arc-slider.html', {
       onBeforeLoad(win) {
         cy.spy(win, 'postMessage').as('postMessage')
@@ -10,14 +10,14 @@ describe.skip('Zea UX', () => {
       const variant = 'x-axis'
       win.postMessage(variant)
       cy.get('@postMessage').its('lastCall.args.0').should('equal', `done-${variant}`)
-      cy.get('canvas').percySnapshot(`Arch slider ${variant}`)
+      cy.get('canvas').percySnapshot(`Arc slider ${variant}`)
     })
 
     cy.window().then((win) => {
       const variant = 'y-axis'
       win.postMessage(variant)
       cy.get('@postMessage').its('lastCall.args.0').should('equal', `done-${variant}`)
-      cy.get('canvas').percySnapshot(`Arch slider ${variant}`)
+      cy.get('canvas').percySnapshot(`Arc slider ${variant}`)
     })
   })
 })
