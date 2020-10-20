@@ -35,7 +35,7 @@ describe('Selection Manager', () => {
     const canvas = cy.get('canvas')
     canvas.click(400, 250)
 
-    canvas.trigger('mousedown', 300, 270).trigger('mousemove', 200, 270).trigger('mouseup', 200, 270)
+    canvas.trigger('mousedown', 350, 270).trigger('mousemove', 200, 270).trigger('mouseup', 200, 270)
     canvas.percySnapshot('SelectGeometryTranslateMoveMouse')
   })
 
@@ -53,7 +53,7 @@ describe('Selection Manager', () => {
 
     const canvas = cy.get('canvas')
     canvas.click(400, 250)
-    canvas.trigger('mousedown', 400, 130).trigger('mousemove', 300, 130).trigger('mouseup', 300, 130)
+    canvas.trigger('mousedown', 410, 205).trigger('mousemove', 380, 205).trigger('mouseup', 380, 205)
     canvas.percySnapshot('SelectGeometryRotateMoveMouse')
   })
 
@@ -70,7 +70,7 @@ describe('Selection Manager', () => {
 
     const canvas = cy.get('canvas')
     canvas.click(400, 250)
-    canvas.trigger('mousedown', 320, 270).trigger('mousemove', 280, 270).trigger('mouseup', 280, 270)
+    canvas.trigger('mousedown', 370, 270).trigger('mousemove', 300, 270).trigger('mouseup', 300, 270)
     canvas.percySnapshot('SelectGeometryRotateMoveMouse')
   })
 
