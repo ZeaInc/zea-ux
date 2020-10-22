@@ -39,24 +39,17 @@ class MeasurementOperator extends Operator {
     const endXfo = this.getInput(IO_NAMES.EndXfo).getValue()
     const distanceOutput = this.getOutput(IO_NAMES.Distance)
     const labelXfoOutput = this.getOutput(IO_NAMES.LabelXfo)
-    const lineXfoOutput = this.getOutput(IO_NAMES.LabelXfo)
+    const lineXfoOutput = this.getOutput(IO_NAMES.LineXfo)
     const vector = endXfo.tr.subtract(startXfo.tr)
     const distance = vector.length()
-    console.log('MeasurementOperator Evaluation Started with dist:', distance)
 
     vector.normalizeInPlace()
     const midPoint = startXfo.tr.add(vector.scale(distance * 0.5))
 
-    distanceOutput.setClean(`${distance}${this.unitsParameter.getValue()}`)
+    distanceOutput.setClean(`${parseFloat(distance.toFixed(3))}${this.unitsParameter.getValue()}`)
 
     const newLabelXfo = new Xfo(midPoint)
-
-    /* const angle = this.__calcAngle(startXfo.tr, endXfo.tr)
-    if (angle) {
-      const eulerAngles = new EulerAngles(angle, 0, 0)
-      console.log('Euler:', eulerAngles)
-      newLabelXfo.ori.setFromEulerAngles(eulerAngles)
-    }*/
+    newLabelXfo.ori.setFromDirectionAndUpvector(vector, new Vec3(vector.z, vector.x, vector.y))
 
     labelXfoOutput.setClean(newLabelXfo)
     const lineXfo = startXfo.clone()
@@ -65,20 +58,6 @@ class MeasurementOperator extends Operator {
     lineXfoOutput.setClean(lineXfo)
   }
 
-  /**
-   *
-   *
-   * @param {Ve3} initialPoint
-   * @param {Vec3} finalPoint
-   * @return {number}
-   * @private
-   */
-  __calcAngle(initialPoint, finalPoint) {
-    const dot = initialPoint.dot(finalPoint)
-    const angleInRad = Math.acos(dot / (initialPoint.length() * finalPoint.length()))
-    console.log('Deg Angle:', (180 * angleInRad) / Math.PI)
-    return (180 * angleInRad) / Math.PI
-  }
   /**
    *
    *
