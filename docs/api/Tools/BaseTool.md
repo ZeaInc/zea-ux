@@ -19,9 +19,9 @@ Abstract class representing a tool with methods representing mouse, keyboard, to
     * [uninstall()](#uninstall)
     * [activateTool()](#activateTool)
     * [deactivateTool()](#deactivateTool)
-    * [onMouseDown(event)](#onMouseDown)
-    * [onMouseMove(event)](#onMouseMove)
-    * [onMouseUp(event)](#onMouseUp)
+    * [onPointerDown(event)](#onPointerDown)
+    * [onPointerMove(event)](#onPointerMove)
+    * [onPointerUp(event)](#onPointerUp)
     * [onDoubleClick(event)](#onDoubleClick)
     * [onWheel(event)](#onWheel)
     * [onKeyPressed(event)](#onKeyPressed)
@@ -97,9 +97,9 @@ Enables tools usage.
 Disables tool usage.
 
 
-<a name="BaseTool+onMouseDown"></a>
+<a name="BaseTool+onPointerDown"></a>
 
-### onMouseDown
+### onPointerDown
 Event fired when a pointing device button is pressed while the pointer is over the tool.
 
 
@@ -108,9 +108,9 @@ Event fired when a pointing device button is pressed while the pointer is over t
 | --- | --- | --- |
 | event | <code>MouseEvent</code> | The event param. |
 
-<a name="BaseTool+onMouseMove"></a>
+<a name="BaseTool+onPointerMove"></a>
 
-### onMouseMove
+### onPointerMove
 Event fired when a pointing device is moved while the cursor's hotspot is inside it.
 
 
@@ -119,9 +119,9 @@ Event fired when a pointing device is moved while the cursor's hotspot is inside
 | --- | --- | --- |
 | event | <code>MouseEvent</code> | The event param. |
 
-<a name="BaseTool+onMouseUp"></a>
+<a name="BaseTool+onPointerUp"></a>
 
-### onMouseUp
+### onPointerUp
 Event fired when a pointing device button is released while the pointer is over the tool.
 
 

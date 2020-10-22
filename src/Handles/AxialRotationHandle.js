@@ -3,7 +3,17 @@ import BaseAxialRotationHandle from './BaseAxialRotationHandle'
 import './Shaders/HandleShader'
 
 /**
- * Class representing an axial rotation scene widget.
+ * Class representing an axial rotation scene widget. It has a `Torus` shape and is used to rotate objects around the specified axes.
+ * You can do it by specifying the localXfo orientation:
+ *
+ * ```javascript
+ * const xfo1 = new Xfo()
+ * // This is rotation over `Y` axis
+ * xfo1.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI * 0.5)
+ * axialRotationHandle.getParameter('LocalXfo').setValue(xfo1)
+ * ```
+ * **Parameters**
+ * * **Radius(`NumberParameter`):** Specifies the radius of the handler.
  *
  * @extends BaseAxialRotationHandle
  */
@@ -16,27 +26,30 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
    * @param {number} thickness - The thickness value.
    * @param {Color} color - The color value.
    */
-  constructor(name, radius, thickness, color) {
+  constructor(name, radius, thickness, color = new Color(1, 1, 0)) {
     super(name)
 
-    this.__color = color
-    this.__hilightedColor = new Color(1, 1, 1)
-    this.radiusParam = this.addParameter(new NumberParameter('radius', radius))
-
-    const handleMat = new Material('handle', 'HandleShader')
-    handleMat.getParameter('MaintainScreenSize').setValue(1)
-    this.colorParam = handleMat.getParameter('BaseColor')
+    this.radiusParam = this.addParameter(new NumberParameter('Radius', radius))
     this.colorParam.setValue(color)
+
+    this.handleMat = new Material('handle', 'HandleShader')
+    this.handleMat.getParameter('BaseColor').setValue(color)
+    this.handleMat.getParameter('MaintainScreenSize').setValue(1)
+    this.handleMat.getParameter('Overlay').setValue(0.9)
 
     // const handleGeom = new Cylinder(radius, thickness * 2, 64, 2, false);
     const handleGeom = new Torus(thickness, radius, 64)
-    this.handle = new GeomItem('handle', handleGeom, handleMat)
+    this.handle = new GeomItem('handle', handleGeom, this.handleMat)
     this.handleXfo = new Xfo()
 
     this.radiusParam.on('valueChanged', () => {
       radius = this.radiusParam.getValue()
       handleGeom.getParameter('OuterRadius').setValue(radius)
       handleGeom.getParameter('InnerRadius').setValue(radius * 0.02)
+    })
+
+    this.colorParam.on('valueChanged', () => {
+      this.handleMat.getParameter('BaseColor').setValue(this.colorParam.getValue())
     })
 
     this.addChild(this.handle)
@@ -46,14 +59,14 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
    * Applies a special shinning shader to the handle to illustrate interaction with it.
    */
   highlight() {
-    this.colorParam.setValue(this.__hilightedColor)
+    this.handleMat.getParameter('BaseColor').setValue(this.highlightColorParam.getValue())
   }
 
   /**
    * Removes the shining shader from the handle.
    */
   unhighlight() {
-    this.colorParam.setValue(this.__color)
+    this.handleMat.getParameter('BaseColor').setValue(this.colorParam.getValue())
   }
 
   /**
@@ -72,9 +85,6 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
    */
   onDragStart(event) {
     super.onDragStart(event)
-
-    // Hilight the material.
-    this.colorParam.setValue(new Color(1, 1, 1))
   }
 
   /**
@@ -93,7 +103,6 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
    */
   onDragEnd(event) {
     super.onDragEnd(event)
-    this.colorParam.setValue(this.__color)
   }
 }
 

@@ -3,6 +3,15 @@
   <head>
     <title>Zea UX</title>
     <style>
+      html,
+      body,
+      #canvas {
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        height: 100%;
+      }
+
       #angle-display {
         position: fixed;
         bottom: 15px;
@@ -12,7 +21,7 @@
     </style>
   </head>
   <body>
-    <div id="app"></div>
+    <canvas id="canvas"></canvas>
     <div id="angle-display" class="angle-display"></div>
 
     <script src="../node_modules/@zeainc/zea-engine/dist/index.umd.js"></script>
@@ -32,39 +41,35 @@
         Material,
         GeomItem,
         NumberParameter,
-      } = zeaEngine
-      const { ArcSlider } = zeaUx
+      } = window.zeaEngine
+      const { ArcSlider } = window.zeaUx
 
       const scene = new Scene()
-      const domElement = document.getElementById('app')
+      const domElement = document.getElementById('canvas')
       const renderer = new GLRenderer(domElement, { hideSplash: true })
       renderer.setScene(scene)
 
-      scene.setupGrid(1.0, 10)
+      scene.setupGrid(10, 10)
 
-      const arcSlider = new ArcSlider('BrakePedalSlider')
+      const arcSlider1 = new ArcSlider('BrakePedalSlider')
+      arcSlider1.getParameter('HandleRadius').setValue(0.013)
+      arcSlider1.getParameter('ArcRadius').setValue(0.7)
+      arcSlider1.getParameter('ArcAngle').setValue(0.9)
+      scene.getRoot().addChild(arcSlider1)
 
-      arcSlider.getParameter('Handle Radius').setValue(0.013)
-      arcSlider.getParameter('Arc Radius').setValue(0.7)
-      arcSlider.getParameter('Arc Angle').setValue(0.9)
-      scene.getRoot().addChild(arcSlider)
+      const arcSlider2 = new ArcSlider('BrakePedalSlider')
+      arcSlider2.getParameter('HandleRadius').setValue(0.03)
+      arcSlider2.getParameter('ArcRadius').setValue(0.5)
+      arcSlider2.getParameter('ArcAngle').setValue(3)
+      arcSlider2.getParameter('HighlightColor').setValue(new Color(0, 1, 1))
+      arcSlider2.getParameter('Color').setValue(new Color(0, 0, 1))
+      scene.getRoot().addChild(arcSlider2)
 
-      const angleParam = new NumberParameter('Angle')
-      scene.getRoot().addParameter(angleParam)
-      arcSlider.setTargetParam(angleParam)
+      const xfo = new Xfo()
+      xfo.ori.rotateZ(Math.PI * 0.5)
+      arcSlider2.getParameter('GlobalXfo').setValue(xfo)
 
-      const angleElement = document.getElementById('angle-display')
-      arcSlider.on('dragStart', () => {
-        angleElement.textContent = `dragEnd: ${angleParam.getValue()}`
-      })
-      arcSlider.on('dragEnd', () => {
-        angleElement.textContent = `dragEnd: ${angleParam.getValue()}`
-      })
-      angleParam.on('valueChanged', () => {
-        angleElement.textContent = `Angle: ${angleParam.getValue()}`
-      })
-
-      renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(2, 2, 1), new Vec3(0.5, 0, 0.0))
+      renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(0, 0, 2), new Vec3(0, 0, 0))
 
       // {{{ Messages handler.
       const handleMessage = (event) => {

@@ -100,7 +100,7 @@ class BaseTool extends ParameterOwner {
    *
    * @param {MouseEvent} event - The event param.
    */
-  onMouseDown(event) {
+  onPointerDown(event) {
     // console.warn('Implement me')
   }
 
@@ -109,7 +109,7 @@ class BaseTool extends ParameterOwner {
    *
    * @param {MouseEvent} event - The event param.
    */
-  onMouseMove(event) {
+  onPointerMove(event) {
     // console.warn('Implement me')
   }
 
@@ -118,7 +118,7 @@ class BaseTool extends ParameterOwner {
    *
    * @param {MouseEvent} event - The event param.
    */
-  onMouseUp(event) {
+  onPointerUp(event) {
     // console.warn('Implement me')
   }
 

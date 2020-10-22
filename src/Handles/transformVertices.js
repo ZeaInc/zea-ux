@@ -1,4 +1,7 @@
-const transformVertices = (positions, xfo) => {
+const transformVertices = (geometry, xfo) => {
+  geometry.update()
+
+  const positions = geometry.getVertexAttribute('positions')
   for (let i = 0; i < positions.length; i++) {
     const v = positions.getValueRef(i)
     const v2 = xfo.transformVec3(v)

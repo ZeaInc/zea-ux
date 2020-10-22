@@ -4,7 +4,6 @@ import {
   Vec3,
   Xfo,
   NumberParameter,
-  ColorParameter,
   XfoParameter,
   GeomItem,
   Material,
@@ -18,7 +17,18 @@ import './Shaders/HandleShader'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 
 /**
- * Class representing a slider scene widget.
+ * Class representing a slider scene widget with an arc shape. There are two parts in this widget, the slider and the handle.<br>
+ * The **Handle** is the moving part of the widget, the object you interact with. The **Slider** is the path that the **handle** follows.
+ *
+ *
+ * **Parameters**
+ * * **ArcRadius(`NumberParameter`):** Specifies the radius of the slider.
+ * * **ArcAngle(`NumberParameter`):** Specifies the arc angle of the slider.
+ * * **HandleRadius(`NumberParameter`):** Specifies the radius of the handle in the slider.
+ *
+ * **Events**
+ * * **dragStart:** Triggered when the pointer is down.
+ * * **dragEnd:** Triggered when the pointer is released.
  *
  * @extends BaseAxialRotationHandle
  */
@@ -34,16 +44,17 @@ class ArcSlider extends BaseAxialRotationHandle {
    */
   constructor(name, arcRadius = 1, arcAngle = 1, handleRadius = 0.02, color = new Color(1, 1, 0)) {
     super(name)
-    this.arcRadiusParam = this.addParameter(new NumberParameter('Arc Radius', arcRadius))
-    this.arcAngleParam = this.addParameter(new NumberParameter('Arc Angle', arcAngle))
-    this.handleRadiusParam = this.addParameter(new NumberParameter('Handle Radius', handleRadius))
+    this.arcRadiusParam = this.addParameter(new NumberParameter('ArcRadius', arcRadius))
+    this.arcAngleParam = this.addParameter(new NumberParameter('ArcAngle', arcAngle))
+    this.handleRadiusParam = this.addParameter(new NumberParameter('HandleRadius', handleRadius))
     // this.barRadiusParam = this.addParameter(
     //   new NumberParameter('Bar Radius', radius * 0.25)
     // );
-    this.colorParam = this.addParameter(new ColorParameter('Color', color))
-    this.hilghlightColorParam = this.addParameter(new ColorParameter('Highlight Color', new Color(1, 1, 1)))
+    this.colorParam.setValue(color)
 
     this.handleMat = new Material('handleMat', 'HandleShader')
+    this.handleMat.getParameter('BaseColor').setValue(color)
+
     const arcGeom = new Circle(arcRadius, 64, arcAngle)
     const handleGeom = new Sphere(handleRadius, 64)
 
@@ -73,6 +84,7 @@ class ArcSlider extends BaseAxialRotationHandle {
     this.handleRadiusParam.on('valueChanged', () => {
       handleGeom.getParameter('Radius').setValue(this.handleRadiusParam.getValue())
     })
+
     this.colorParam.on('valueChanged', () => {
       this.handleMat.getParameter('BaseColor').setValue(this.colorParam.getValue())
     })
@@ -92,7 +104,7 @@ class ArcSlider extends BaseAxialRotationHandle {
    *
    * @param {MouseEvent} event - The event param.
    */
-  onMouseEnter(event) {
+  onPointerEnter(event) {
     if (event.intersectionData && event.intersectionData.geomItem == this.handle) this.highlight()
   }
 
@@ -101,7 +113,7 @@ class ArcSlider extends BaseAxialRotationHandle {
    *
    * @param {MouseEvent} event - The event param.
    */
-  onMouseLeave(event) {
+  onPointerLeave(event) {
     this.unhighlight()
   }
 
@@ -110,18 +122,18 @@ class ArcSlider extends BaseAxialRotationHandle {
    *
    * @param {MouseEvent} event - The event param.
    */
-  onMouseDown(event) {
+  onPointerDown(event) {
     // We do not want to handle events
     // that have propagated from children of
     // the slider.
-    if (event.intersectionData && event.intersectionData.geomItem == this.handle) super.onMouseDown(event)
+    if (event.intersectionData && event.intersectionData.geomItem == this.handle) super.onPointerDown(event)
   }
 
   /**
    * Applies a special shinning shader to the handle to illustrate interaction with it.
    */
   highlight() {
-    this.handleMat.getParameter('BaseColor').setValue(this.hilghlightColorParam.getValue())
+    this.handleMat.getParameter('BaseColor').setValue(this.highlightColorParam.getValue())
   }
 
   /**

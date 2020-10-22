@@ -22,12 +22,12 @@ Class representing a linear movement scene widget.
 Create a linear movement scene widget.
 
 
-| Param | Type | Description |
-| --- | --- | --- |
-| name | <code>string</code> | The name value. |
-| length | <code>number</code> | The length value. |
-| thickness | <code>number</code> | The thickness value. |
-| color | <code>Color</code> | The color value. |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| name | <code>string</code> |  | The name value. |
+| length | <code>number</code> | <code>0.1</code> | The length value. |
+| thickness | <code>number</code> | <code>0.003</code> | The thickness value. |
+| color | <code>Color</code> |  | The color value. |
 
 <a name="LinearMovementHandle+highlight"></a>
 

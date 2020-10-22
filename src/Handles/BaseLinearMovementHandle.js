@@ -20,12 +20,13 @@ class BaseLinearMovementHandle extends Handle {
   /**
    * Handles mouse down interaction with the handle.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
    * @return {boolean} - The return value.
    */
-  handleMouseDown(event) {
+  handlePointerDown(event) {
     this.gizmoRay = this.getManipulationPlane()
-    this.grabDist = event.mouseRay.intersectRayVector(this.gizmoRay)[1]
+    const ray = event.pointerRay
+    this.grabDist = ray.intersectRayVector(this.gizmoRay)[1]
     const grabPos = this.gizmoRay.pointAtDist(this.grabDist)
     event.grabDist = this.grabDist
     event.grabPos = grabPos
@@ -36,10 +37,11 @@ class BaseLinearMovementHandle extends Handle {
   /**
    * Handles mouse move interaction with the handle.
    *
-   * @param {MouseEvent} event - The event param
+   * @param {MouseEvent|TouchEvent|object} event - The event param
    */
-  handleMouseMove(event) {
-    const dist = event.mouseRay.intersectRayVector(this.gizmoRay)[1]
+  handlePointerMove(event) {
+    const ray = event.pointerRay
+    const dist = ray.intersectRayVector(this.gizmoRay)[1]
     const holdPos = this.gizmoRay.pointAtDist(dist)
     event.holdDist = dist
     event.holdPos = holdPos
@@ -51,13 +53,17 @@ class BaseLinearMovementHandle extends Handle {
   /**
    * Handles mouse up interaction with the handle.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
    * @return {boolean} - The return value.
    */
-  handleMouseUp(event) {
-    const dist = event.mouseRay.intersectRayVector(this.gizmoRay)[1]
-    const releasePos = this.gizmoRay.pointAtDist(dist)
-    event.releasePos = releasePos
+  handlePointerUp(event) {
+    const ray = event.pointerRay
+    if (ray) {
+      const dist = ray.intersectRayVector(this.gizmoRay)[1]
+      const releasePos = this.gizmoRay.pointAtDist(dist)
+      event.releasePos = releasePos
+    }
+
     this.onDragEnd(event)
     return true
   }

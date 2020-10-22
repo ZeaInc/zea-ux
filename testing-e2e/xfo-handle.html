@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Zea UX</title>
+    <style>
+      html,
+      body,
+      #canvas {
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+
+    <script src="../node_modules/@zeainc/zea-engine/dist/index.umd.js"></script>
+    <script src="../dist/index.umd.js"></script>
+
+    <script>
+      const {
+        GLRenderer,
+        Scene,
+        Vec3,
+        Xfo,
+        Quat,
+        EulerAngles,
+        Color,
+        AssetItem,
+        Cylinder,
+        Material,
+        GeomItem,
+        NumberParameter,
+        TreeItem,
+      } = window.zeaEngine
+      const { XfoHandle } = window.zeaUx
+      const domElement = document.getElementById('canvas')
+
+      const scene = new Scene()
+      scene.setupGrid(10, 10)
+      const color = new Color('#E5E5E5')
+      scene.getSettings().getParameter('BackgroundColor').setValue(color)
+
+      const renderer = new GLRenderer(domElement, { hideSplash: true })
+      renderer.setScene(scene)
+
+      const translationTreeItem = new TreeItem('TranslateTarget')
+      scene.getRoot().addChild(translationTreeItem)
+      const translationXfoHandle = new XfoHandle()
+      translationXfoHandle.getParameter('HighlightColor').setValue(new Color(1, 1, 0))
+
+      translationTreeItem.addChild(translationXfoHandle)
+      translationXfoHandle.setTargetParam(translationTreeItem.getParameter('GlobalXfo'))
+      translationXfoHandle.showHandles('Translate')
+
+      const rotateTreeItem = new TreeItem('RotateTarget')
+      scene.getRoot().addChild(rotateTreeItem)
+
+      const rotateXfoHandle = new XfoHandle()
+      rotateXfoHandle.getParameter('HighlightColor').setValue(new Color(1, 1, 0))
+      rotateTreeItem.addChild(rotateXfoHandle)
+      rotateXfoHandle.setTargetParam(rotateTreeItem.getParameter('GlobalXfo'))
+      rotateXfoHandle.showHandles('Rotate')
+
+      const rotateXfo = new Xfo(new Vec3(-1, 1, 1))
+      rotateTreeItem.getParameter('GlobalXfo').setValue(rotateXfo)
+
+      const scaleTreeItem = new TreeItem('ScaleTarget')
+      scene.getRoot().addChild(scaleTreeItem)
+
+      const scaleXfoHandle = new XfoHandle()
+      scaleXfoHandle.getParameter('HighlightColor').setValue(new Color(1, 1, 0))
+      scaleTreeItem.addChild(scaleXfoHandle)
+      scaleXfoHandle.setTargetParam(scaleTreeItem.getParameter('GlobalXfo'))
+      scaleXfoHandle.showHandles('Scale')
+
+      const scaleXfo = new Xfo(new Vec3(1, -1, 1))
+      scaleTreeItem.getParameter('GlobalXfo').setValue(scaleXfo)
+
+      //renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(2, 2, 1), new Vec3(0.5, 0, 0.0))
+
+      // {{{ Messages handler.
+      const handleMessage = (event) => {
+        const { data } = event
+
+        if (data === 'front') {
+          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(1, 1, 1.7), new Vec3(0, 0, 0))
+          window.postMessage(`done-${data}`)
+        } else if (data === 'back') {
+          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-1, -1, 1.7), new Vec3(0, 0, 0))
+          window.postMessage(`done-${data}`)
+        }
+      }
+
+      window.addEventListener('message', handleMessage, false)
+      // }}}
+    </script>
+  </body>
+</html>

@@ -1,8 +1,11 @@
-import { TreeItem, Ray } from '@zeainc/zea-engine'
+import { TreeItem, Ray, ColorParameter, Color } from '@zeainc/zea-engine'
 
 /**
- * A Handle is a UI widget that lives in the scene.
- * Much like a slider, it translates a series of mouse events into a higher level interaction.
+ * A Handle is an UI widget that lives in the scene, it translates a series of pointer events into a higher level interaction.
+ *
+ * **Parameters**
+ * * **Color(`ColorParameter`):** Specifies the color of the handle.
+ * * **HighlightColor(`ColorParameter`):** Specifies the highlight color of the handle.
  *
  * @extends TreeItem
  */
@@ -16,20 +19,22 @@ class Handle extends TreeItem {
     super(name)
 
     this.captured = false
+    this.colorParam = this.addParameter(new ColorParameter('Color', new Color()))
+    this.highlightColorParam = this.addParameter(new ColorParameter('HighlightColor', new Color(1, 1, 1)))
   }
 
   /**
    * Applies a special shinning shader to the handle to illustrate interaction with it.
    */
   highlight() {
-    // console.warn('Implement me')
+    console.warn('@Handle#highlight - Implement me!')
   }
 
   /**
    * Removes the shining shader from the handle.
    */
   unhighlight() {
-    // console.warn('Implement me')
+    console.warn('@Handle#unhighlight - Implement me!')
   }
 
   /**
@@ -48,58 +53,68 @@ class Handle extends TreeItem {
   /**
    * Event fired when a pointing device is initially moved within the space of the handle.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onMouseEnter(event) {
+  onPointerEnter(event) {
     this.highlight()
   }
 
   /**
    * Event fired when a pointing device moves outside of the space of the handle.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onMouseLeave(event) {
+  onPointerLeave(event) {
     this.unhighlight()
   }
 
   /**
    * Event fired when a pointing device button is pressed while the pointer is over the handle element.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onMouseDown(event) {
+  onPointerDown(event) {
     event.setCapture(this)
     event.stopPropagation()
     this.captured = true
-    if (event.viewport) this.handleMouseDown(event)
+
+    if (event.changedTouches) {
+      this.highlight()
+    }
+
+    if (event.viewport) this.handlePointerDown(event)
     else if (event.vrviewport) this.onVRControllerButtonDown(event)
   }
 
   /**
    * Event fired when a pointing device is moved while the cursor's hotspot is over the handle.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onMouseMove(event) {
+  onPointerMove(event) {
     if (this.captured) {
       event.stopPropagation()
-      if (event.viewport) this.handleMouseMove(event)
+      if (event.viewport) this.handlePointerMove(event)
       else if (event.vrviewport) this.onVRPoseChanged(event)
     }
+
+    event.preventDefault()
   }
 
   /**
    * Event fired when a pointing device button is released while the pointer is over the handle.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onMouseUp(event) {
+  onPointerUp(event) {
     if (this.captured) {
       event.releaseCapture()
       event.stopPropagation()
       this.captured = false
-      if (event.viewport) this.handleMouseUp(event)
+      if (event.changedTouches) {
+        this.unhighlight()
+      }
+      if (event.viewport) this.handlePointerUp(event)
       else if (event.vrviewport) this.onVRControllerButtonUp(event)
     }
   }
@@ -117,10 +132,11 @@ class Handle extends TreeItem {
    * @param {MouseEvent} event - The event param.
    * @return {boolean} - The return value.
    */
-  handleMouseDown(event) {
+  handlePointerDown(event) {
     this.gizmoRay = this.getManipulationPlane()
-    const dist = event.mouseRay.intersectRayPlane(this.gizmoRay)
-    event.grabPos = event.mouseRay.pointAtDist(dist)
+    const ray = event.pointerRay
+    const dist = ray.intersectRayPlane(this.gizmoRay)
+    event.grabPos = ray.pointAtDist(dist)
     this.onDragStart(event)
     return true
   }
@@ -131,9 +147,10 @@ class Handle extends TreeItem {
    * @param {MouseEvent} event - The event param
    * @return { boolean } - The return value
    */
-  handleMouseMove(event) {
-    const dist = event.mouseRay.intersectRayPlane(this.gizmoRay)
-    event.holdPos = event.mouseRay.pointAtDist(dist)
+  handlePointerMove(event) {
+    const ray = event.pointerRay
+    const dist = ray.intersectRayPlane(this.gizmoRay)
+    event.holdPos = ray.pointAtDist(dist)
     this.onDrag(event)
     return true
   }
@@ -144,9 +161,13 @@ class Handle extends TreeItem {
    * @param {MouseEvent} event - The event param.
    * @return {boolean} - The return value.
    */
-  handleMouseUp(event) {
-    const dist = event.mouseRay.intersectRayPlane(this.gizmoRay)
-    event.releasePos = event.mouseRay.pointAtDist(dist)
+  handlePointerUp(event) {
+    const ray = event.pointerRay
+    if (ray) {
+      const dist = ray.intersectRayPlane(this.gizmoRay)
+      event.releasePos = ray.pointAtDist(dist)
+    }
+
     this.onDragEnd(event)
     return true
   }
@@ -214,7 +235,7 @@ class Handle extends TreeItem {
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onDragStart(event) {
-    console.log('onDragStart', event)
+    console.warn('@Handle#onDragStart - Implement me!', event)
   }
 
   /**
@@ -223,7 +244,7 @@ class Handle extends TreeItem {
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onDrag(event) {
-    console.log('onDrag', event)
+    console.warn('@Handle#onDrag - Implement me!', event)
   }
 
   /**
@@ -232,7 +253,7 @@ class Handle extends TreeItem {
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onDragEnd(event) {
-    console.log('onDragEnd', event)
+    console.warn('@Handle#onDragEnd - Implement me!', event)
   }
 }
 

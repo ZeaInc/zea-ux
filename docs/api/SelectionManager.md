@@ -3,6 +3,10 @@
 ### SelectionManager 
 Class representing a selection manager
 
+**Events**
+**leadSelectionChanged:** Triggered when selecting one item.
+**selectionChanged:** Triggered when the selected objects change.
+
 
 **Extends**: <code>EventEmitter</code>  
 

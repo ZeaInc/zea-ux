@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Zea UX</title>
+    <style>
+      html,
+      body {
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      #controllers {
+        display: flex;
+      }
+
+      #controllers > button {
+        text-align: center;
+        margin: 5px;
+      }
+
+      ul#color-list {
+        list-style: none;
+      }
+
+      ul#color-list > li {
+        width: 100px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="controllers">
+      <button id="undo">Undo</button>
+      <button id="random-color">Generate Random Color</button>
+      <button id="redo">Redo</button>
+    </div>
+    <ul id="color-list"></ul>
+
+    <script src="../node_modules/@zeainc/zea-engine/dist/index.umd.js"></script>
+    <script src="../dist/index.umd.js"></script>
+
+    <script>
+      const { UndoRedoManager, Change } = window.zeaUx
+
+      /** ColorListChange Start */
+      class ColorListChange extends Change {
+        constructor($colorList, itemColor) {
+          super('ColorChange')
+          this.$colorList = $colorList
+          this.itemColor = itemColor
+
+          this.__addColor()
+        }
+
+        /**
+         * @private
+         */
+        __addColor() {
+          const li = document.createElement('li')
+          li.style.backgroundColor = `#${this.itemColor}`
+          li.innerHTML = `#${this.itemColor}`
+          this.$colorList.appendChild(li)
+        }
+
+        undo() {
+          this.$colorList.removeChild(this.$colorList.lastChild)
+        }
+
+        redo() {
+          this.__addColor()
+        }
+      }
+      /** ColorListChange End */
+
+      const $undoBtn = document.getElementById('undo')
+      const $redoBtn = document.getElementById('redo')
+      const $randomColorBtn = document.getElementById('random-color')
+      const $colorList = document.getElementById('color-list')
+
+      const generateRandomColor = () => ('00000' + ((Math.random() * (1 << 24)) | 0).toString(16)).slice(-6)
+
+      const undoRedoManager = UndoRedoManager.getInstance()
+
+      // Event handlers
+      {
+        $undoBtn.addEventListener('click', (e) => {
+          console.log('Undo')
+          undoRedoManager.undo()
+        })
+
+        $redoBtn.addEventListener('click', (e) => {
+          console.log('Redo')
+          undoRedoManager.redo()
+        })
+
+        $randomColorBtn.addEventListener('click', (e) => {
+          const randomColor = generateRandomColor()
+          const colorListChange = new ColorListChange($colorList, randomColor)
+          undoRedoManager.addChange(colorListChange)
+        })
+      }
+    </script>
+  </body>
+</html>

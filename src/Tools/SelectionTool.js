@@ -58,22 +58,6 @@ class SelectionTool extends BaseTool {
   }
 
   /**
-   * Event fired when a pointing device button is pressed while the pointer is over the tool.
-   *
-   * @param {MouseEvent} event - The event param.
-   * @return {boolean} The return value.
-   */
-  onMouseDown(event) {
-    if (event.button == 0 && !event.altKey) {
-      console.log('onMouseDown')
-      this.mouseDownPos = event.mousePos
-      this.dragging = false
-      return true
-    }
-    return false
-  }
-
-  /**
    *
    *
    * @param {GLViewport} viewport - The viewport value
@@ -85,7 +69,7 @@ class SelectionTool extends BaseTool {
     const size = delta.multiply(sc)
     this.selectionRectXfo.sc.set(Math.abs(size.x), Math.abs(size.y), 1)
 
-    const center = this.mouseDownPos.subtract(delta.scale(0.5))
+    const center = this.pointerDownPos.subtract(delta.scale(0.5))
     const tr = center.multiply(sc).subtract(new Vec2(1, 1))
 
     this.selectionRectXfo.tr.x = tr.x
@@ -94,14 +78,39 @@ class SelectionTool extends BaseTool {
   }
 
   /**
-   * Event fired when a pointing device is moved while the cursor's hotspot is inside it.
    *
-   * @param {MouseEvent} event - The event param.
+   *
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @private
+   */
+  onPointerDoublePress(event) {}
+
+  /**
+   * Event fired when a pointing device button is pressed while the pointer is over the tool.
+   *
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
    * @return {boolean} The return value.
    */
-  onMouseMove(event) {
-    if (this.mouseDownPos) {
-      const delta = this.mouseDownPos.subtract(event.mousePos)
+  onPointerDown(event) {
+    if (event.pointerType === 'touch' || (event.button == 0 && !event.altKey)) {
+      this.pointerDownPos = event.pointerPos
+      this.dragging = false
+
+      return true
+    }
+
+    return false
+  }
+
+  /**
+   * Event fired when a pointing device is moved while the cursor's hotspot is inside it.
+   *
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @return {boolean} The return value.
+   */
+  onPointerMove(event) {
+    if (this.pointerDownPos) {
+      const delta = this.pointerDownPos.subtract(event.pointerPos)
       if (this.dragging) {
         this.__resizeRect(event.viewport, delta)
       }
@@ -121,17 +130,24 @@ class SelectionTool extends BaseTool {
   /**
    * Event fired when a pointing device button is released while the pointer is over the tool.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param {MouseEvent|TouchEvent|object} event - The event param.
    * @return {boolean} The return value.
    */
-  onMouseUp(event) {
-    if (this.mouseDownPos) {
+  onPointerUp(event) {
+    console.log('PointerUp')
+    if (this.pointerDownPos) {
       // event.viewport.renderGeomDataFbo();
       if (this.dragging) {
         this.rectItem.getParameter('Visible').setValue(false)
-        const mouseUpPos = event.mousePos
-        const tl = new Vec2(Math.min(this.mouseDownPos.x, mouseUpPos.x), Math.min(this.mouseDownPos.y, mouseUpPos.y))
-        const br = new Vec2(Math.max(this.mouseDownPos.x, mouseUpPos.x), Math.max(this.mouseDownPos.y, mouseUpPos.y))
+        const pointerUpPos = event.pointerPos
+        const tl = new Vec2(
+          Math.min(this.pointerDownPos.x, pointerUpPos.x),
+          Math.min(this.pointerDownPos.y, pointerUpPos.y)
+        )
+        const br = new Vec2(
+          Math.max(this.pointerDownPos.x, pointerUpPos.x),
+          Math.max(this.pointerDownPos.y, pointerUpPos.y)
+        )
         const geomItems = event.viewport.getGeomItemsInRect(tl, br)
 
         if (!this.selectionManager) throw 'Please set the Selection Manager on the Selection Tool before using it.'
@@ -151,7 +167,7 @@ class SelectionTool extends BaseTool {
           this.rectItem.getParameter('GlobalXfo').setValue(this.selectionRectXfo)
         }
       } else {
-        const intersectionData = event.viewport.getGeomDataAtPos(event.mousePos)
+        const intersectionData = event.viewport.getGeomDataAtPos(event.pointerPos)
         if (intersectionData != undefined && !(intersectionData.geomItem.getOwner() instanceof Handle)) {
           if (this.selectionManager.pickingModeActive()) {
             this.selectionManager.pick(intersectionData.geomItem)
@@ -169,7 +185,7 @@ class SelectionTool extends BaseTool {
         }
       }
 
-      this.mouseDownPos = undefined
+      this.pointerDownPos = undefined
       return true
     }
   }
@@ -197,5 +213,4 @@ class SelectionTool extends BaseTool {
 
 UndoRedoManager.registerChange('SelectionTool', SelectionTool)
 
-export default SelectionTool
 export { SelectionTool }

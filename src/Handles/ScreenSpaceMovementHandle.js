@@ -53,15 +53,17 @@ class ScreenSpaceMovementHandle extends Handle {
    * @param {MouseEvent} event - The event param.
    * @return {boolean} - The return value.
    */
-  handleMouseDown(event) {
+  handlePointerDown(event) {
     this.gizmoRay = new Ray()
     // this.gizmoRay.dir = event.viewport.getCamera().getParameter('GlobalXfo').getValue().ori.getZaxis().negate()
-    this.gizmoRay.dir = event.mouseRay.dir.negate()
+    const ray = event.pointerRay
+    const cameraXfo = event.viewport.getCamera().getParameter('GlobalXfo').getValue()
+    this.gizmoRay.dir = cameraXfo.ori.getZaxis()
     const param = this.getTargetParam()
     const baseXfo = param.getValue()
     this.gizmoRay.pos = baseXfo.tr
-    const dist = event.mouseRay.intersectRayPlane(this.gizmoRay)
-    event.grabPos = event.mouseRay.pointAtDist(dist)
+    const dist = ray.intersectRayPlane(this.gizmoRay)
+    event.grabPos = ray.pointAtDist(dist)
     this.onDragStart(event)
     return true
   }
@@ -69,12 +71,13 @@ class ScreenSpaceMovementHandle extends Handle {
   /**
    * Handles mouse move interaction with the handle.
    *
-   * @param {MouseEvent} event - The event param
+   * @param {MouseEvent|TouchEvent} event - The event param
    * @return {boolean} - The return value
    */
-  handleMouseMove(event) {
-    const dist = event.mouseRay.intersectRayPlane(this.gizmoRay)
-    event.holdPos = event.mouseRay.pointAtDist(dist)
+  handlePointerMove(event) {
+    const ray = event.pointerRay
+    const dist = ray.intersectRayPlane(this.gizmoRay)
+    event.holdPos = ray.pointAtDist(dist)
     this.onDrag(event)
     return true
   }
@@ -82,12 +85,16 @@ class ScreenSpaceMovementHandle extends Handle {
   /**
    * Handles mouse up interaction with the handle.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param {MouseEvent|TouchEvent} event - The event param.
    * @return {boolean} - The return value.
    */
-  handleMouseUp(event) {
-    const dist = event.mouseRay.intersectRayPlane(this.gizmoRay)
-    event.releasePos = event.mouseRay.pointAtDist(dist)
+  handlePointerUp(event) {
+    const ray = event.pointerRay
+    if (ray) {
+      const dist = ray.intersectRayPlane(this.gizmoRay)
+      event.releasePos = ray.pointAtDist(dist)
+    }
+
     this.onDragEnd(event)
     return true
   }

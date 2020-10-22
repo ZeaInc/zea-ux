@@ -2,7 +2,6 @@ import {
   Color,
   Xfo,
   NumberParameter,
-  ColorParameter,
   GeomItem,
   Material,
   Cylinder,
@@ -15,7 +14,14 @@ import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 
 /**
- * Class representing a slider scene widget.
+ * Class representing a slider scene widget. There are two parts in this widget, the slider and the handle.<br>
+ * The **Handle** is the moving part of the widget, the object you interact with. The **Slider** is the path that the **handle** follows.
+ *
+ * **Parameters**
+ * * **Length(`NumberParameter`):** Specifies the length of the slider.
+ * * **HandleRadius(`NumberParameter`):** Specifies the handle radius.
+ * * **BarRadius(`NumberParameter`):** Specifies the radius of the slider.
+ *
  *
  * @extends BaseLinearMovementHandle
  */
@@ -32,15 +38,13 @@ class SliderHandle extends BaseLinearMovementHandle {
     super(name)
 
     this.lengthParam = this.addParameter(new NumberParameter('Length', length))
-    this.handleRadiusParam = this.addParameter(new NumberParameter('Handle Radius', radius))
-    this.barRadiusParam = this.addParameter(new NumberParameter('Bar Radius', radius * 0.25))
-    this.colorParam = this.addParameter(new ColorParameter('Color', color))
-    this.hilghlightColorParam = this.addParameter(new ColorParameter('Highlight Color', new Color(1, 1, 1)))
+    this.handleRadiusParam = this.addParameter(new NumberParameter('HandleRadius', radius))
+    this.barRadiusParam = this.addParameter(new NumberParameter('BarRadius', radius * 0.25))
+    this.colorParam.setValue(color)
 
     this.handleMat = new Material('handle', 'FlatSurfaceShader')
     this.handleMat.getParameter('BaseColor').setValue(this.colorParam.getValue())
-    // const baseBarMat = new Material('baseBar', 'FlatSurfaceShader');
-    // baseBarMat.replaceParameter(this.colorParam);
+
     const topBarMat = new Material('topBar', 'FlatSurfaceShader')
     topBarMat.getParameter('BaseColor').setValue(new Color(0.5, 0.5, 0.5))
 
@@ -78,7 +82,7 @@ class SliderHandle extends BaseLinearMovementHandle {
    * Applies a special shinning shader to the handle to illustrate interaction with it.
    */
   highlight() {
-    this.handleMat.getParameter('BaseColor').setValue(this.hilghlightColorParam.getValue())
+    this.handleMat.getParameter('BaseColor').setValue(this.highlightColorParam.getValue())
   }
 
   /**
