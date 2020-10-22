@@ -19,8 +19,10 @@ class MeasurementTool extends BaseTool {
     this.renderer = renderer
 
     this.dragging = false
-    this.markerMaterial = new Material('Marker', 'ScreenSpaceShader')
+    this.markerMaterial = new Material('Marker', 'HandleShader')
     this.markerMaterial.getParameter('BaseColor').setValue(new Color('#FCFC00'))
+    this.markerMaterial.getParameter('MaintainScreenSize').setValue(1)
+    this.markerMaterial.getParameter('Overlay').setValue(0.9)
 
     this.lineMaterial = new Material('Line', 'LinesShader')
     this.lineMaterial.getParameter('BaseColor').setValue(new Color(0.7, 0.2, 0.2))
@@ -35,9 +37,16 @@ class MeasurementTool extends BaseTool {
    * @param {MouseEvent|TouchEvent} event - The event value
    */
   onPointerDown(event) {
+    const ray = event.pointerRay
+    const startPos = ray.start.add(ray.dir.scale(event.intersectionData.dist))
+
+    event.intersectionData.dist
     const measurementItem = new TreeItem('')
     this.startMarker = new GeomItem('', new Sphere(0.01), this.markerMaterial)
+    this.startMarker.getParameter('GlobalXfo').setValue(new Xfo(startPos))
     this.endMarker = new GeomItem('', new Sphere(0.01), this.markerMaterial)
+    this.endMarker.getParameter('GlobalXfo').setValue(new Xfo(startPos))
+
     this.measurementOperator = new MeasurementOperator('')
     this.measurementOperator
       .getInput(MeasurementOperator.IO_NAMES.StartXfo)
@@ -47,13 +56,13 @@ class MeasurementTool extends BaseTool {
       .setParam(this.endMarker.getParameter('GlobalXfo'))
 
     const label = new Label('Distance')
-    label.getParameter('FontSize').setValue(12)
-    label.getParameter('BackgroundColor').setValue(new Color('#94C47D'))
+    label.getParameter('FontSize').setValue(20)
+    label.getParameter('BackgroundColor').setValue(new Color('#CFE2F3'))
 
     const billboard = new BillboardItem('DistanceBillboard', label)
     billboard.getParameter('LocalXfo').setValue(new Xfo())
     billboard.getParameter('PixelsPerMeter').setValue(300)
-    billboard.getParameter('AlignedToCamera').setValue(true)
+    billboard.getParameter('AlignedToCamera').setValue(false)
     billboard.getParameter('DrawOnTop').setValue(true)
     billboard.getParameter('Alpha').setValue(1)
 
@@ -89,9 +98,12 @@ class MeasurementTool extends BaseTool {
    */
   onPointerMove(event) {
     if (this.dragging) {
-      const dist = event.pointerRay.intersectRayPlane(this.gizmoRay)
-      event.holdPos = event.pointerRay.pointAtDist(dist)
-      console.log('holdPos', event.holdPos)
+      const ray = event.pointerRay
+      if (event.intersectionData) {
+        const endPos = ray.start.add(ray.dir.scale(event.intersectionData.dist))
+        this.endMarker.getParameter('GlobalXfo').setValue(new Xfo(endPos))
+        this.line.getVertexAttribute('positions').getValueRef(1).setFromOther(endPos)
+      }
     }
   }
 
@@ -101,16 +113,6 @@ class MeasurementTool extends BaseTool {
    * @param {MouseEvent|TouchEvent} event - The event value
    */
   onPointerUp(event) {
-    if (event.intersectionData) {
-      const geomItem = event.intersectionData.geomItem
-      this.endMarker.getParameter('GlobalXfo').setValue(geomItem.getParameter('GlobalXfo').getValue())
-      this.line
-        .getVertexAttribute('positions')
-        .getValueRef(1)
-        .setFromOther(geomItem.getParameter('GlobalXfo').getValue())
-    }
-
-    console.log('PointerUp')
     this.dragging = false
     this.measurementOperator = undefined
     this.startMarker = undefined

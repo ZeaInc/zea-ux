@@ -57,7 +57,7 @@
 
     <script type="module">
       const { GLRenderer, Scene, GeomItem, Material, Vec3, Xfo, Color, Cuboid, Torus } = window.zeaEngine
-      const { MeasurementTool } = window.zeaUx
+      const { MeasurementTool, Measurement } = window.zeaUx
 
       const $canvas = document.getElementById('renderer')
 
@@ -67,7 +67,12 @@
       const renderer = new GLRenderer($canvas, { hideSplash: true })
       renderer.setScene(scene)
 
-      {
+      const measurement = new Measurement('M1')
+      measurement.setStartMarkerPos(new Vec3(-1, -1, 0))
+      measurement.setEndMarkerPos(new Vec3(1, 0, 1))
+
+      scene.getRoot().addChild(measurement)
+      /* {
         const material1 = new Material('material1', 'SimpleSurfaceShader')
         material1.getParameter('BaseColor').setValue(new Color('#94C47D'))
 
@@ -100,9 +105,9 @@
         geomItem3.getParameter('GlobalXfo').setValue(geomItem3Xfo)
 
         scene.getRoot().addChild(geomItem3)
-      }
+      } */
 
-      /** */
+      /** 
       {
         const measurementTool = new MeasurementTool(renderer)
         measurementTool.activateTool()
@@ -139,7 +144,7 @@
         $measurementCheckbox.addEventListener('change', (e) => {
           event.target.checked ? setToolToMeasurementTool() : setToolToCameraManipulator()
         })
-      }
+      }*/
 
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(0, 6, 5), new Vec3(0, 0, 0))
     </script>

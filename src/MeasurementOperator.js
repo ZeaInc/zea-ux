@@ -1,18 +1,11 @@
-import {
-  Operator,
-  OperatorInput,
-  OperatorOutput,
-  StringParameter,
-  OperatorOutputMode,
-  Vec3,
-  Xfo,
-} from '@zeainc/zea-engine'
+import { Operator, OperatorInput, OperatorOutput, StringParameter, Vec3, Xfo, Registry } from '@zeainc/zea-engine'
 
 const IO_NAMES = {
   StartXfo: 'StartXfo',
   EndXfo: 'EndXfo',
   Distance: 'Distance',
   LabelXfo: 'LabelXfo',
+  LineXfo: 'LineXfo',
 }
 
 /**
@@ -31,10 +24,11 @@ class MeasurementOperator extends Operator {
     this.unitsParameter = this.addParameter(new StringParameter('Units', 'm'))
     this.unitsParameter.on('valueChange', () => console.log('Units Changed'))
 
-    this.addInput(new OperatorInput('StartXfo'))
-    this.addInput(new OperatorInput('EndXfo'))
-    this.addOutput(new OperatorOutput('Distance', OperatorOutputMode.OP_READ_WRITE))
-    this.addOutput(new OperatorOutput('LabelXfo', OperatorOutputMode.OP_READ_WRITE))
+    this.addInput(new OperatorInput(IO_NAMES.StartXfo))
+    this.addInput(new OperatorInput(IO_NAMES.EndXfo))
+    this.addOutput(new OperatorOutput(IO_NAMES.Distance))
+    this.addOutput(new OperatorOutput(IO_NAMES.LabelXfo))
+    this.addOutput(new OperatorOutput(IO_NAMES.LineXfo))
   }
 
   /**
@@ -45,30 +39,46 @@ class MeasurementOperator extends Operator {
     const endXfo = this.getInput(IO_NAMES.EndXfo).getValue()
     const distanceOutput = this.getOutput(IO_NAMES.Distance)
     const labelXfoOutput = this.getOutput(IO_NAMES.LabelXfo)
+    const lineXfoOutput = this.getOutput(IO_NAMES.LabelXfo)
+    const vector = endXfo.tr.subtract(startXfo.tr)
+    const distance = vector.length()
+    console.log('MeasurementOperator Evaluation Started with dist:', distance)
 
-    distanceOutput.setClean(`${startXfo.tr.distanceTo(endXfo.tr)}${this.unitsParameter.getValue()}`)
+    vector.normalizeInPlace()
+    const midPoint = startXfo.tr.add(vector.scale(distance * 0.5))
 
-    const newLabelXfo = new Xfo()
-    newLabelXfo.tr = this.__calcMidPoint(startXfo.tr, endXfo.tr)
+    distanceOutput.setClean(`${distance}${this.unitsParameter.getValue()}`)
+
+    const newLabelXfo = new Xfo(midPoint)
+
+    /* const angle = this.__calcAngle(startXfo.tr, endXfo.tr)
+    if (angle) {
+      const eulerAngles = new EulerAngles(angle, 0, 0)
+      console.log('Euler:', eulerAngles)
+      newLabelXfo.ori.setFromEulerAngles(eulerAngles)
+    }*/
+
     labelXfoOutput.setClean(newLabelXfo)
+    const lineXfo = startXfo.clone()
+    lineXfo.ori.setFromDirectionAndUpvector(vector, new Vec3(vector.z, vector.x, vector.y))
+    lineXfo.sc.z = distance
+    lineXfoOutput.setClean(lineXfo)
   }
 
   /**
    *
-   * @param {Vec3} initialPoint
+   *
+   * @param {Ve3} initialPoint
    * @param {Vec3} finalPoint
-   * @return {Vec3} -
+   * @return {number}
    * @private
    */
-  __calcMidPoint(initialPoint, finalPoint) {
-    const midPoint = new Vec3()
-    midPoint.x = (initialPoint.x + finalPoint.x) / 2
-    midPoint.y = (initialPoint.y + finalPoint.y) / 2
-    midPoint.z = (initialPoint.z + finalPoint.z) / 2
-
-    return midPoint
+  __calcAngle(initialPoint, finalPoint) {
+    const dot = initialPoint.dot(finalPoint)
+    const angleInRad = Math.acos(dot / (initialPoint.length() * finalPoint.length()))
+    console.log('Deg Angle:', (180 * angleInRad) / Math.PI)
+    return (180 * angleInRad) / Math.PI
   }
-
   /**
    *
    *
@@ -79,5 +89,7 @@ class MeasurementOperator extends Operator {
     return IO_NAMES
   }
 }
+
+Registry.register('MeasurementOperator', MeasurementOperator)
 
 export { MeasurementOperator }
