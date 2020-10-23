@@ -1,4 +1,4 @@
-import BaseTool from './BaseTool'
+import BaseTool from '../Tools/BaseTool'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 import { Measurement } from './Measurement'
 import { Ray, Vec3 } from '@zeainc/zea-engine'
@@ -23,7 +23,6 @@ class MeasurementTool extends BaseTool {
    * @param {MouseEvent|TouchEvent} event - The event value
    */
   onPointerDown(event) {
-    console.log('Down')
     const ray = event.pointerRay
     let startPos
     if (event.intersectionData) {
@@ -57,7 +56,6 @@ class MeasurementTool extends BaseTool {
         const plane = new Ray(new Vec3(), new Vec3(0, 0, 1))
         const distance = ray.intersectRayPlane(plane)
         endPos = ray.start.add(ray.dir.scale(distance))
-        console.log('endPos', endPos.toString())
       }
 
       this.measurement.setEndMarkerPos(endPos)

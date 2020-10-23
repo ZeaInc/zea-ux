@@ -1,5 +1,5 @@
 import { GeomItem } from '@zeainc/zea-engine'
-import { ScreenSpaceMovementHandle } from './ScreenSpaceMovementHandle'
+import { ScreenSpaceMovementHandle } from '../Handles/ScreenSpaceMovementHandle'
 
 /**
  *

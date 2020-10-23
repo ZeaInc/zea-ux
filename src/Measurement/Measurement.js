@@ -1,6 +1,18 @@
-import { TreeItem, Material, Color, Sphere, Lines, BillboardItem, Label, GeomItem, Xfo, Vec3 } from '@zeainc/zea-engine'
-import { MeasurementOperator } from '../MeasurementOperator'
-import { MeasurementHandle } from '../Handles/MeasurementHandle'
+import {
+  TreeItem,
+  Material,
+  Color,
+  Sphere,
+  Lines,
+  BillboardItem,
+  Label,
+  GeomItem,
+  Xfo,
+  Vec3,
+  ColorParameter,
+} from '@zeainc/zea-engine'
+import { MeasurementOperator } from './MeasurementOperator'
+import { MeasurementHandle } from './MeasurementHandle'
 
 /**
  *
@@ -15,14 +27,15 @@ class Measurement extends TreeItem {
   constructor(name) {
     super(name)
 
-    const color = new Color('#FCFC00')
+    this.baseColor = this.addParameter(new ColorParameter('BaseColor', new Color('#FCFC00')))
+
     this.markerMaterial = new Material('Marker', 'HandleShader')
-    this.markerMaterial.getParameter('BaseColor').setValue(color)
+    this.markerMaterial.getParameter('BaseColor').setValue(this.baseColor.getValue())
     this.markerMaterial.getParameter('MaintainScreenSize').setValue(1)
     this.markerMaterial.getParameter('Overlay').setValue(0.9)
 
     this.lineMaterial = new Material('Line', 'LinesShader')
-    this.lineMaterial.getParameter('BaseColor').setValue(color)
+    this.lineMaterial.getParameter('BaseColor').setValue(this.baseColor.getValue())
     this.lineMaterial.getParameter('Overlay').setValue(0.9)
 
     this.startMarker = new GeomItem(`${name}StartMarker`, new Sphere(0.005), this.markerMaterial)
@@ -38,7 +51,7 @@ class Measurement extends TreeItem {
 
     this.label = new Label('Distance')
     this.label.getParameter('FontSize').setValue(20)
-    this.label.getParameter('BackgroundColor').setValue(color)
+    this.label.getParameter('BackgroundColor').setValue(this.baseColor.getValue())
 
     const billboard = new BillboardItem('DistanceBillboard', this.label)
     billboard.getParameter('LocalXfo').setValue(new Xfo())
@@ -69,6 +82,13 @@ class Measurement extends TreeItem {
     measurementOperator.getOutput(MeasurementOperator.IO_NAMES.Distance).setParam(this.label.getParameter('Text'))
     measurementOperator.getOutput(MeasurementOperator.IO_NAMES.LabelXfo).setParam(billboard.getParameter('GlobalXfo'))
     measurementOperator.getOutput(MeasurementOperator.IO_NAMES.LineXfo).setParam(lineGeomItem.getParameter('GlobalXfo'))
+
+    this.baseColor.on('valueChanged', () => {
+      const color = this.baseColor.getValue()
+      this.markerMaterial.getParameter('BaseColor').setValue(color)
+      this.lineMaterial.getParameter('BaseColor').setValue(color)
+      this.label.getParameter('BackgroundColor').setValue(color)
+    })
   }
 
   /**

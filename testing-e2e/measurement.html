@@ -70,6 +70,7 @@
       const measurement = new Measurement('M1')
       measurement.setStartMarkerPos(new Vec3(-1, -1, 0))
       measurement.setEndMarkerPos(new Vec3(1, 0, 1))
+      measurement.getParameter('BaseColor').setValue(new Color('#94C47D'))
 
       scene.getRoot().addChild(measurement)
       {
