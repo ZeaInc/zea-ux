@@ -59,7 +59,7 @@
     "standard-version": "^9.0.0"
   },
   "dependencies": {
-    "@zeainc/zea-engine": "2.2.0",
+    "@zeainc/zea-engine": "^2.0.0",
     "dom-to-image": "^2.6.0"
   },
   "standard-version": {
