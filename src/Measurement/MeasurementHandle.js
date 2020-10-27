@@ -1,4 +1,4 @@
-import { GeomItem } from '@zeainc/zea-engine'
+import { GeomItem, Registry } from '@zeainc/zea-engine'
 import { ScreenSpaceMovementHandle } from '../Handles/ScreenSpaceMovementHandle'
 
 /**
@@ -75,4 +75,5 @@ class MeasurementHandle extends ScreenSpaceMovementHandle {
   }
 }
 
+Registry.register('MeasurementHandle', MeasurementHandle)
 export { MeasurementHandle }

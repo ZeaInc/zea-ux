@@ -1,7 +1,7 @@
 import BaseTool from '../Tools/BaseTool'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
-import { Measurement } from './Measurement'
 import { Ray, Vec3 } from '@zeainc/zea-engine'
+import { MeasurementChange } from './MeasurementChange'
 /**
  * UI Tool for measurements
  *
@@ -15,6 +15,7 @@ class MeasurementTool extends BaseTool {
    */
   constructor(appData) {
     super(appData)
+    this.measurementChange = undefined
   }
 
   /**
@@ -33,11 +34,8 @@ class MeasurementTool extends BaseTool {
       startPos = ray.start.add(ray.dir.scale(distance))
     }
 
-    this.measurement = new Measurement()
-    this.measurement.setStartMarkerPos(startPos)
-    this.measurement.setEndMarkerPos(startPos)
-    this.measurement.setGeomBuffersVisibility(false)
-    this.appData.scene.getRoot().addChild(this.measurement)
+    this.measurementChange = new MeasurementChange(this.appData.scene.getRoot(), startPos)
+    UndoRedoManager.getInstance().addChange(this.measurementChange)
     this.dragging = true
   }
 
@@ -58,7 +56,7 @@ class MeasurementTool extends BaseTool {
         endPos = ray.start.add(ray.dir.scale(distance))
       }
 
-      this.measurement.setEndMarkerPos(endPos)
+      this.measurementChange.update(endPos)
     }
   }
 
@@ -68,9 +66,9 @@ class MeasurementTool extends BaseTool {
    * @param {MouseEvent|TouchEvent} event - The event value
    */
   onPointerUp(event) {
-    this.measurement.setGeomBuffersVisibility(true)
     this.dragging = false
-    this.measurement = undefined
+    this.measurementChange.end()
+    this.measurementChange = undefined
   }
 }
 

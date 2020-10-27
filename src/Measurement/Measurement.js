@@ -10,6 +10,7 @@ import {
   Xfo,
   Vec3,
   ColorParameter,
+  Registry,
 } from '@zeainc/zea-engine'
 import { MeasurementOperator } from './MeasurementOperator'
 import { MeasurementHandle } from './MeasurementHandle'
@@ -24,7 +25,7 @@ class Measurement extends TreeItem {
    * Creates an instance of Measurement.
    * @param {string} name
    */
-  constructor(name) {
+  constructor(name = 'Measurement') {
     super(name)
 
     this.baseColor = this.addParameter(new ColorParameter('BaseColor', new Color('#FCFC00')))
@@ -131,5 +132,7 @@ class Measurement extends TreeItem {
     return this.label.getParameter('Text').getValue()
   }
 }
+
+Registry.register('Measurement', Measurement)
 
 export { Measurement }

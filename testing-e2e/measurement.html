@@ -57,8 +57,9 @@
 
     <script type="module">
       const { GLRenderer, Scene, GeomItem, Material, Vec3, Xfo, Color, Cuboid, Torus } = window.zeaEngine
-      const { MeasurementTool, Measurement } = window.zeaUx
+      const { UndoRedoManager, MeasurementTool, Measurement } = window.zeaUx
 
+      const undoRedoManager = UndoRedoManager.getInstance()
       const $canvas = document.getElementById('renderer')
 
       const scene = new Scene()
@@ -68,8 +69,8 @@
       renderer.setScene(scene)
 
       const measurement = new Measurement('M1')
-      measurement.setStartMarkerPos(new Vec3(-1, -1, 0))
-      measurement.setEndMarkerPos(new Vec3(1, 0, 1))
+      measurement.setStartMarkerPos(new Vec3(-1, -0.5, 0.5))
+      measurement.setEndMarkerPos(new Vec3(1, -0.5, 0.5))
       measurement.getParameter('BaseColor').setValue(new Color('#94C47D'))
 
       scene.getRoot().addChild(measurement)
@@ -139,6 +140,21 @@
           }
         })
 
+        {
+          const $undoBtn = document.getElementById('undo')
+          const $redoBtn = document.getElementById('redo')
+
+          $undoBtn.addEventListener('click', (e) => {
+            console.log('Undo')
+            undoRedoManager.undo()
+          })
+
+          $redoBtn.addEventListener('click', (e) => {
+            console.log('Redo')
+            undoRedoManager.redo()
+          })
+        }
+
         const $measurementCheckbox = document.getElementById('measurement-cbx')
 
         $measurementCheckbox.addEventListener('change', (e) => {
@@ -151,6 +167,8 @@
   </head>
   <body>
     <div id="controllers">
+      <button id="undo">Undo</button>
+      <button id="redo">Redo</button>
       <div>
         <label for="measurement-cbx">Measurement Tool</label>
         <input type="checkbox" name="measurement-cbx" id="measurement-cbx" />
