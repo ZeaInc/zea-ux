@@ -1,5 +1,5 @@
 import { Color, GeomItem, Material, Circle } from '@zeainc/zea-engine'
-import UndoRedoManager from '../../../UndoRedo/UndoRedoManager'
+import { UndoRedoManager } from '../../../UndoRedo/index'
 import CreateGeomChange from './CreateGeomChange'
 
 /**
@@ -18,15 +18,15 @@ class CreateCircleChange extends CreateGeomChange {
    * @param {Xfo} xfo - The xfo value.
    */
   constructor(parentItem, xfo) {
-    super('Create Circle')
+    super('CreateCircle')
 
     this.circle = new Circle(0, 64)
     this.circle.lineThickness = 0.05
+
     const material = new Material('circle', 'FatLinesShader')
-    material.getParameter('Color').setValue(new Color(0.7, 0.2, 0.2))
-    this.geomItem = new GeomItem('Circle')
-    this.geomItem.setGeometry(this.circle)
-    this.geomItem.setMaterial(material)
+    material.getParameter('BaseColor').setValue(new Color(0.7, 0.2, 0.2))
+
+    this.geomItem = new GeomItem('Circle', this.circle, material)
 
     if (parentItem && xfo) {
       this.setParentAndXfo(parentItem, xfo)

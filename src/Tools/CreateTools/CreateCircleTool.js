@@ -1,5 +1,6 @@
 import CreateCircleChange from './Change/CreateCircleChange'
 import CreateGeomTool from './CreateGeomTool'
+import { UndoRedoManager } from '../../UndoRedo/index'
 
 /**
  * Tool for creating a circle geometry.
@@ -26,7 +27,7 @@ class CreateCircleTool extends CreateGeomTool {
    */
   createStart(xfo, parentItem) {
     this.change = new CreateCircleChange(parentItem, xfo)
-    this.appData.undoRedoManager.addChange(this.change)
+    UndoRedoManager.getInstance().addChange(this.change)
 
     this.xfo = xfo
     this.stage = 1
@@ -50,8 +51,9 @@ class CreateCircleTool extends CreateGeomTool {
    */
   createRelease(pt) {
     if (this.radius == 0) {
-      this.appData.undoRedoManager.undo(false)
+      UndoRedoManager.getInstance().undo(false)
     }
+
     this.change = null
     this.stage = 0
     this.emit('actionFinished')

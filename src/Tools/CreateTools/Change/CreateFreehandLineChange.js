@@ -30,17 +30,12 @@ class CreateFreehandLineChange extends CreateGeomChange {
     this.line.setNumSegments(this.vertexCount - 1)
     this.line.getVertexAttribute('positions').setValue(0, new Vec3())
 
-    const material = new Material('freeHandLine', 'LinesShader')
+    const material = new Material('freeHandLine', 'FatLinesShader')
     if (color) {
       material.getParameter('BaseColor').setValue(color)
     }
 
     this.geomItem = new GeomItem('freeHandLine', this.line, material)
-
-    // if (thickness) {
-    //   this.line.lineThickness = thickness
-    //   // this.line.addVertexAttribute('lineThickness', Float32, 0.0);
-    // }
 
     if (parentItem && xfo) {
       this.setParentAndXfo(parentItem, xfo)

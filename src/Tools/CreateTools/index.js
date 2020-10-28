@@ -1,5 +1,6 @@
 // Create Geom Tools
 export * from './CreateLineTool'
+export * from './CreateConeTool'
 export * from './CreateCircleTool'
 export * from './CreateRectTool'
 export * from './CreateFreehandLineTool'
