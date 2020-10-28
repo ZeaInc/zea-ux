@@ -25,15 +25,15 @@ class CreateLineChange extends CreateGeomChange {
     this.line = new Lines(0.0)
     this.line.setNumVertices(2)
     this.line.setNumSegments(1)
-    this.line.setSegment(0, 0, 1)
+    this.line.setSegmentVertexIndices(0, 0, 1)
     const material = new Material('Line', 'LinesShader')
-    material.getParameter('Color').setValue(new Color(0.7, 0.2, 0.2))
+    material.getParameter('BaseColor').setValue(new Color(0.7, 0.2, 0.2))
     this.geomItem = new GeomItem('Line')
-    this.geomItem.setGeometry(this.line)
+    this.geomItem.getParameter('Geometry').setValue(this.line)
     this.geomItem.setMaterial(material)
 
     if (color) {
-      material.getParameter('Color').setValue(color)
+      material.getParameter('BaseColor').setValue(color)
     }
 
     if (thickness) {
@@ -70,7 +70,7 @@ class CreateLineChange extends CreateGeomChange {
     if (j.color) {
       const color = new Color()
       color.fromJSON(j.color)
-      material.getParameter('Color').setValue(color)
+      material.getParameter('BaseColor').setValue(color)
     }
 
     if (j.thickness) {

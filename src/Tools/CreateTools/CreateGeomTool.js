@@ -1,5 +1,6 @@
 import { Color, Xfo, Ray, ColorParameter, GeomItem, Material, Cross } from '@zeainc/zea-engine'
 import BaseCreateTool from '../BaseCreateTool'
+import { UndoRedoManager } from '../../UndoRedo/index'
 
 /**
  * Base class for creating geometry tools.
@@ -18,7 +19,7 @@ class CreateGeomTool extends BaseCreateTool {
     this.stage = 0
     this.removeToolOnRightClick = true
 
-    this.cp = this.addParameter(new ColorParameter('Line Color', new Color(0.7, 0.2, 0.2)))
+    this.lineColor = this.addParameter(new ColorParameter('LineColor', new Color(0.7, 0.2, 0.2)))
   }
 
   /**
@@ -27,13 +28,11 @@ class CreateGeomTool extends BaseCreateTool {
   activateTool() {
     super.activateTool()
 
-    this.appData.renderer.getDiv().style.cursor = 'crosshair'
-
     this.appData.renderer.getXRViewport().then((xrvp) => {
       if (!this.vrControllerToolTip) {
         this.vrControllerToolTip = new Cross(0.05)
         this.vrControllerToolTipMat = new Material('VRController Cross', 'LinesShader')
-        this.vrControllerToolTipMat.getParameter('Color').setValue(this.cp.getValue())
+        this.vrControllerToolTipMat.getParameter('Color').setValue(this.lineColor.getValue())
         this.vrControllerToolTipMat.visibleInGeomDataBuffer = false
       }
       const addIconToController = (controller) => {
@@ -133,16 +132,16 @@ class CreateGeomTool extends BaseCreateTool {
   /**
    * Event fired when a pointing device button is pressed over the viewport while the tool is activated.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param {MouseEvent|TouchEvent} event - The event param.
    * @return {boolean} The return value.
    */
-  onMouseDown(event) {
+  onPointerDown(event) {
     //
     if (this.stage == 0) {
       if (event.button == 0) {
         this.constructionPlane = new Xfo()
 
-        const xfo = this.screenPosToXfo(event.mousePos, event.viewport)
+        const xfo = this.screenPosToXfo(event.pointerPos, event.viewport)
         this.createStart(xfo, this.appData.scene.getRoot())
       } else if (event.button == 2) {
         // Cancel the tool.
@@ -150,7 +149,7 @@ class CreateGeomTool extends BaseCreateTool {
       }
       return true
     } else if (event.button == 2) {
-      this.appData.undoRedoManager.undo(false)
+      UndoRedoManager.getInstance().undo(false)
       this.stage = 0
       return true
     }
@@ -160,12 +159,12 @@ class CreateGeomTool extends BaseCreateTool {
   /**
    * Event fired when a pointing device is moved while the cursor's hotspot is inside the viewport, while tool is activated.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param {MouseEvent|TouchEvent} event - The event param.
    * @return {boolean} The return value.
    */
-  onMouseMove(event) {
+  onPointerMove(event) {
     if (this.stage > 0) {
-      const xfo = this.screenPosToXfo(event.mousePos, event.viewport)
+      const xfo = this.screenPosToXfo(event.pointerPos, event.viewport)
       this.createMove(xfo.tr)
       return true
     }
@@ -174,12 +173,12 @@ class CreateGeomTool extends BaseCreateTool {
   /**
    * Event fired when a pointing device button is released while the pointer is over the viewport, while the tool is activated.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param {MouseEvent|TouchEvent} event - The event param.
    * @return {boolean} The return value.
    */
-  onMouseUp(event) {
+  onPointerUp(event) {
     if (this.stage > 0) {
-      const xfo = this.screenPosToXfo(event.mousePos, event.viewport)
+      const xfo = this.screenPosToXfo(event.pointerPos, event.viewport)
       this.createRelease(xfo.tr)
       return true
     }
@@ -225,34 +224,6 @@ class CreateGeomTool extends BaseCreateTool {
   }
 
   // ///////////////////////////////////
-  // Touch events
-
-  /**
-   * Event fired when one or more touch points are placed on the touch surface inside the viewport, when the tool is activated.
-   *
-   * @param {TouchEvent} event - The event param.
-   */
-  onTouchStart(event) {
-    // console.warn('Implement me')
-  }
-
-  /**
-   * Event fired when the one or more touch points are moved along the touch surface inside the viewport, when the tool is activated.
-   *
-   * @param {TouchEvent} event - The event param.
-   */
-  onTouchMove(event) {
-    // console.warn('Implement me')
-  }
-
-  /**
-   * Event fired when one or more touch points are removed from the touch surface inside the viewport, when the tool is activated.
-   *
-   * @param {TouchEvent} event - The event param.
-   */
-  onTouchEnd(event) {
-    // console.warn('Implement me')
-  }
 
   /**
    * Event fired when one or more touch points have been disrupted in an implementation-specific manner inside the viewport, when the tool is activated.

@@ -1,5 +1,5 @@
 import { Vec3, Color, GeomItem, Material, Lines } from '@zeainc/zea-engine'
-import UndoRedoManager from '../../../UndoRedo/UndoRedoManager'
+import { UndoRedoManager } from '../../../UndoRedo/index'
 import CreateGeomChange from './CreateGeomChange'
 
 /**
@@ -19,8 +19,8 @@ class CreateFreehandLineChange extends CreateGeomChange {
    * @param {Color} color - The color value.
    * @param {number} thickness - The thickness value.
    */
-  constructor(parentItem, xfo, color, thickness) {
-    super('Create Freehand Line')
+  constructor(parentItem, xfo, color, thickness = 0.001) {
+    super('CreateFreehandLine')
 
     this.used = 0
     this.vertexCount = 100
@@ -28,25 +28,19 @@ class CreateFreehandLineChange extends CreateGeomChange {
     this.line = new Lines()
     this.line.setNumVertices(this.vertexCount)
     this.line.setNumSegments(this.vertexCount - 1)
-    this.line.vertices.setValue(0, new Vec3())
+    this.line.getVertexAttribute('positions').setValue(0, new Vec3())
 
-    // const material = new Material('freeHandLine', 'LinesShader');
-    // this.line.lineThickness = 0.5;
-    // const material = new Material('freeHandLine', 'LinesShader');
-    const material = new Material('freeHandLine', 'FatLinesShader')
-
-    this.geomItem = new GeomItem('freeHandLine')
-    this.geomItem.setGeometry(this.line)
-    this.geomItem.setMaterial(material)
-
+    const material = new Material('freeHandLine', 'LinesShader')
     if (color) {
-      material.getParameter('Color').setValue(color)
+      material.getParameter('BaseColor').setValue(color)
     }
 
-    if (thickness) {
-      this.line.lineThickness = thickness
-      // this.line.addVertexAttribute('lineThickness', Float32, 0.0);
-    }
+    this.geomItem = new GeomItem('freeHandLine', this.line, material)
+
+    // if (thickness) {
+    //   this.line.lineThickness = thickness
+    //   // this.line.addVertexAttribute('lineThickness', Float32, 0.0);
+    // }
 
     if (parentItem && xfo) {
       this.setParentAndXfo(parentItem, xfo)
@@ -71,16 +65,16 @@ class CreateFreehandLineChange extends CreateGeomChange {
       realloc = true
     }
 
-    this.line.vertices.setValue(this.used, updateData.point)
+    this.line.getVertexAttribute('positions').setValue(this.used, updateData.point)
     // this.line.getVertexAttributes().lineThickness.setValue(this.used, updateData.lineThickness);
-    this.line.setSegment(this.used - 1, this.used - 1, this.used)
+    this.line.setSegmentVertexIndices(this.used - 1, this.used - 1, this.used)
 
     if (realloc) {
-      this.line.geomDataTopologyChanged.emit({
+      this.line.emit('geomDataTopologyChanged', {
         indicesChanged: true,
       })
     } else {
-      this.line.geomDataChanged.emit({
+      this.line.emit('geomDataChanged', {
         indicesChanged: true,
       })
     }
@@ -96,7 +90,7 @@ class CreateFreehandLineChange extends CreateGeomChange {
   toJSON(context) {
     const j = super.toJSON(context)
     j.lineThickness = this.line.lineThickness
-    j.color = this.geomItem.getMaterial().getParameter('Color').getValue()
+    j.color = this.geomItem.getMaterial().getParameter('BaseColor').getValue()
     return j
   }
 
@@ -117,7 +111,7 @@ class CreateFreehandLineChange extends CreateGeomChange {
     if (j.color) {
       color.fromJSON(j.color)
     }
-    this.geomItem.getMaterial().getParameter('Color').setValue(color)
+    this.geomItem.getMaterial().getParameter('BaseColor').setValue(color)
 
     super.fromJSON(j, context)
   }
