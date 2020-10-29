@@ -12,26 +12,25 @@ describe('Slider Handle', () => {
   it('Slider Handle Highlights', () => {
     cyFocusCanvas()
 
-    cy.get('canvas').trigger('mousemove', 500, 325).trigger('mousemove', 595, 325).percySnapshot('ArcSliderHighlights')
+    cy.get('canvas').trigger('mousemove', 500, 325).trigger('mousemove', 595, 325)
+    cy.wait(100)
+    cy.get('canvas').percySnapshot('ArcSliderHighlights')
   })
 
   it('Slider Handle Highlights Different Color', () => {
     cyFocusCanvas()
 
-    cy.get('canvas')
-      .trigger('mousemove', 500, 325)
-      .trigger('mousemove', 400, 325)
-      .percySnapshot('ArcSliderHighlightsDifferentColor')
+    cy.get('canvas').trigger('mousemove', 500, 325).trigger('mousemove', 400, 325)
+    cy.wait(100)
+    cy.get('canvas').percySnapshot('ArcSliderHighlightsDifferentColor')
   })
 
   it('Slider Handle Moves - Mouse', () => {
     cyFocusCanvas()
 
-    cy.get('canvas')
-      .trigger('mousedown', 595, 325)
-      .trigger('mousemove', 595, 225)
-      .trigger('mouseup', 595, 225)
-      .percySnapshot('ArcSliderMovesMouse')
+    cy.get('canvas').trigger('mousedown', 595, 325).trigger('mousemove', 595, 225).trigger('mouseup', 595, 225)
+    cy.wait(100)
+    cy.get('canvas').percySnapshot('ArcSliderMovesMouse')
   })
 
   it('Slider Handle Moves - Touch', () => {
@@ -40,10 +39,8 @@ describe('Slider Handle', () => {
     const eTouchStart = createTouchEvents([400, 325])
     const eTouch = createTouchEvents([400, 125])
 
-    cy.get('canvas')
-      .trigger('touchstart', eTouchStart)
-      .trigger('touchmove', eTouch)
-      .trigger('touchend', eTouch)
-      .percySnapshot(`ArcSliderMovesTouch`)
+    cy.get('canvas').trigger('touchstart', eTouchStart).trigger('touchmove', eTouch).trigger('touchend', eTouch)
+    cy.wait(100)
+    cy.get('canvas').percySnapshot(`ArcSliderMovesTouch`)
   })
 })
