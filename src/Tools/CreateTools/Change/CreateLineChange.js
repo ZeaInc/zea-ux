@@ -26,11 +26,10 @@ class CreateLineChange extends CreateGeomChange {
     this.line.setNumVertices(2)
     this.line.setNumSegments(1)
     this.line.setSegmentVertexIndices(0, 0, 1)
+
     const material = new Material('Line', 'LinesShader')
     material.getParameter('BaseColor').setValue(new Color(0.7, 0.2, 0.2))
-    this.geomItem = new GeomItem('Line')
-    this.geomItem.getParameter('Geometry').setValue(this.line)
-    this.geomItem.setMaterial(material)
+    this.geomItem = new GeomItem('Line', this.line, material)
 
     if (color) {
       material.getParameter('BaseColor').setValue(color)
@@ -38,7 +37,6 @@ class CreateLineChange extends CreateGeomChange {
 
     if (thickness) {
       this.line.lineThickness = thickness
-      // this.line.addVertexAttribute('lineThickness', Float32, 0.0);
     }
 
     if (parentItem && xfo) {
@@ -53,9 +51,10 @@ class CreateLineChange extends CreateGeomChange {
    */
   update(updateData) {
     if (updateData.p1) {
-      this.line.getVertex(1).setFromOther(updateData.p1)
-      this.line.geomDataChanged.emit()
+      this.line.getVertexAttribute('positions').getValueRef(1).setFromOther(updateData.p1)
+      this.line.emit('geomDataChanged')
     }
+
     this.emit('updated', updateData)
   }
 
@@ -75,7 +74,6 @@ class CreateLineChange extends CreateGeomChange {
 
     if (j.thickness) {
       this.line.lineThickness = j.thickness
-      // this.line.addVertexAttribute('lineThickness', Float32, 0.0);
     }
   }
 }

@@ -1,5 +1,7 @@
 import CreateGeomTool from './CreateGeomTool'
 import CreateRectChange from './Change/CreateRectChange'
+import { UndoRedoManager } from '../../UndoRedo/index'
+
 /**
  * Tool for creating a rectangle geometry.
  *
@@ -25,10 +27,10 @@ class CreateRectTool extends CreateGeomTool {
    */
   createStart(xfo, parentItem) {
     this.change = new CreateRectChange(parentItem, xfo)
-    this.appData.undoRedoManager.addChange(this.change)
+    UndoRedoManager.getInstance().addChange(this.change)
 
     this.xfo = xfo
-    this.invxfo = xfo.inverse()
+    this.invXfo = xfo.inverse()
     this.stage = 1
     this._size = 0.0
   }
@@ -40,7 +42,7 @@ class CreateRectTool extends CreateGeomTool {
    */
   createMove(pt) {
     if (this.stage == 1) {
-      const delta = this.invxfo.transformVec3(pt)
+      const delta = this.invXfo.transformVec3(pt)
 
       ;(this._size = Math.abs(delta.x)), Math.abs(delta.y)
 
@@ -50,7 +52,7 @@ class CreateRectTool extends CreateGeomTool {
         tr: this.xfo.tr.add(delta.scale(0.5)),
       })
     } else {
-      const vec = this.invxfo.transformVec3(pt)
+      const vec = this.invXfo.transformVec3(pt)
       this.change.update({ height: vec.y })
     }
   }
@@ -63,7 +65,7 @@ class CreateRectTool extends CreateGeomTool {
    */
   createRelease(pt, viewport) {
     if (this._size == 0) {
-      this.appData.undoRedoManager.undo(false)
+      UndoRedoManager.getInstance().undo(false)
     }
     this.stage = 0
     this.emit('actionFinished')

@@ -18,16 +18,14 @@ class CreateRectChange extends CreateGeomChange {
    * @param {Xfo} xfo - The xfo value.
    */
   constructor(parentItem, xfo) {
-    super('Create Rect')
+    super('CreateRect')
 
     this.rect = new Rect(0, 0)
     this.rect.lineThickness = 0.05
-    // const material = new Material('rect', 'LinesShader');
+
     const material = new Material('circle', 'FatLinesShader')
-    material.getParameter('Color').setValue(new Color(0.7, 0.2, 0.2))
-    this.geomItem = new GeomItem('Rect')
-    this.geomItem.setGeometry(this.rect)
-    this.geomItem.setMaterial(material)
+    material.getParameter('BaseColor').setValue(new Color(0.7, 0.2, 0.2))
+    this.geomItem = new GeomItem('Rect', this.rect, material)
 
     if (parentItem && xfo) {
       this.setParentAndXfo(parentItem, xfo)
@@ -41,7 +39,8 @@ class CreateRectChange extends CreateGeomChange {
    */
   update(updateData) {
     if (updateData.baseSize) {
-      this.rect.setSize(updateData.baseSize[0], updateData.baseSize[1])
+      this.rect.getParameter('X').setValue(updateData.baseSize[0])
+      this.rect.getParameter('Y').setValue(updateData.baseSize[1])
     }
     if (updateData.tr) {
       const xfo = this.geomItem.getParameter('LocalXfo').getValue()

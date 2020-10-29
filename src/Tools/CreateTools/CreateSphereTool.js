@@ -1,5 +1,6 @@
 import CreateGeomTool from './CreateGeomTool'
 import CreateSphereChange from './Change/CreateSphereChange'
+import { UndoRedoManager } from '../../UndoRedo/index'
 
 /**
  * Tool for creating Sphere geometries.
@@ -27,7 +28,7 @@ class CreateSphereTool extends CreateGeomTool {
    */
   createStart(xfo, parentItem) {
     this.change = new CreateSphereChange(parentItem, xfo)
-    this.appData.undoRedoManager.addChange(this.change)
+    UndoRedoManager.getInstance().addChange(this.change)
 
     this.xfo = xfo
     this.stage = 1
@@ -51,7 +52,7 @@ class CreateSphereTool extends CreateGeomTool {
    */
   createRelease(pt) {
     if (this.radius == 0) {
-      this.appData.undoRedoManager.undo(false)
+      UndoRedoManager.getInstance().undo(false)
     }
     this.stage = 0
     this.emit('actionFinished')
