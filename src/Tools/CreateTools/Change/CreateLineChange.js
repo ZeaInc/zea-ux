@@ -27,7 +27,7 @@ class CreateLineChange extends CreateGeomChange {
     this.line.setNumSegments(1)
     this.line.setSegmentVertexIndices(0, 0, 1)
 
-    const material = new Material('Line', 'LinesShader')
+    const material = new Material('Line', 'FatLinesShader')
     material.getParameter('BaseColor').setValue(new Color(0.7, 0.2, 0.2))
     this.geomItem = new GeomItem('Line', this.line, material)
 

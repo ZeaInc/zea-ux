@@ -25,10 +25,9 @@ class CreateCuboidTool extends CreateGeomTool {
    * Starts the creation of the cuboid.
    *
    * @param {Xfo} xfo - The xfo param.
-   * @param {TreeItem} parentItem - The parentItem param.
    */
-  createStart(xfo, parentItem) {
-    this.change = new CreateCuboidChange(parentItem, xfo)
+  createStart(xfo) {
+    this.change = new CreateCuboidChange(this.parentItem, xfo)
     UndoRedoManager.getInstance().addChange(this.change)
 
     this.xfo = xfo
@@ -61,9 +60,8 @@ class CreateCuboidTool extends CreateGeomTool {
    * Finishes the creation of the cuboid.
    *
    * @param {Vec3} pt - The pt param.
-   * @param {GLViewport} viewport - The viewport param.
    */
-  createRelease(pt, viewport) {
+  createRelease(pt) {
     if (this.stage == 1) {
       this.stage = 2
       this.pt1 = pt

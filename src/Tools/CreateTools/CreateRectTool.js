@@ -23,10 +23,9 @@ class CreateRectTool extends CreateGeomTool {
    * Starts the creation of a rectangle geometry.
    *
    * @param {Xfo} xfo - The xfo param.
-   * @param {TreeItem} parentItem - The parentItem param.
    */
-  createStart(xfo, parentItem) {
-    this.change = new CreateRectChange(parentItem, xfo)
+  createStart(xfo) {
+    this.change = new CreateRectChange(this.parentItem, xfo)
     UndoRedoManager.getInstance().addChange(this.change)
 
     this.xfo = xfo
@@ -61,9 +60,8 @@ class CreateRectTool extends CreateGeomTool {
    * Finishes the creation of a rectangle geometry.
    *
    * @param {Vec3} pt - The pt param.
-   * @param {GLViewport} viewport - The viewport param.
    */
-  createRelease(pt, viewport) {
+  createRelease(pt) {
     if (this._size == 0) {
       UndoRedoManager.getInstance().undo(false)
     }

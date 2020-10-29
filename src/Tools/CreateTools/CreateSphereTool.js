@@ -24,10 +24,9 @@ class CreateSphereTool extends CreateGeomTool {
    * Starts the creation of the sphere geometry.
    *
    * @param {Xfo} xfo - The xfo param.
-   * @param {TreeItem} parentItem - The parentItem param.
    */
-  createStart(xfo, parentItem) {
-    this.change = new CreateSphereChange(parentItem, xfo)
+  createStart(xfo) {
+    this.change = new CreateSphereChange(this.parentItem, xfo)
     UndoRedoManager.getInstance().addChange(this.change)
 
     this.xfo = xfo

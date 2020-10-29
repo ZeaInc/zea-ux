@@ -1,4 +1,4 @@
-import { Color, Xfo, Ray, ColorParameter, GeomItem, Material, Cross } from '@zeainc/zea-engine'
+import { Color, Xfo, Ray, ColorParameter, GeomItem, Material, Cross, Vec3 } from '@zeainc/zea-engine'
 import BaseCreateTool from '../BaseCreateTool'
 import { UndoRedoManager } from '../../UndoRedo/index'
 
@@ -18,6 +18,7 @@ class CreateGeomTool extends BaseCreateTool {
 
     this.stage = 0
     this.removeToolOnRightClick = true
+    this.parentItem = 'parentItem' in appData ? appData.parentItem : appData.scene.getRoot()
 
     this.lineColor = this.addParameter(new ColorParameter('LineColor', new Color(0.7, 0.2, 0.2)))
   }
@@ -66,14 +67,18 @@ class CreateGeomTool extends BaseCreateTool {
   /**
    * Transforms the screen position in the viewport to an Xfo object.
    *
-   * @param {Vec2} screenPos - The screenPos param.
-   * @param {GLViewport} viewport - The viewport param.
+   * @param {MouseEvent|TouchEvent} event - The event param
    * @return {Xfo} The return value.
    */
-  screenPosToXfo(screenPos, viewport) {
-    const ray = viewport.calcRayFromScreenPos(screenPos)
+  screenPosToXfo(event) {
+    const ray = event.pointerRay
 
-    // Raycast any working planes.
+    if (event.intersectionData) {
+      const xfo = this.constructionPlane.clone()
+      xfo.tr = ray.start.add(ray.dir.scale(event.intersectionData.dist))
+      return xfo
+    }
+
     const planeRay = new Ray(this.constructionPlane.tr, this.constructionPlane.ori.getZaxis())
     const dist = ray.intersectRayPlane(planeRay)
     if (dist > 0.0) {
@@ -82,20 +87,19 @@ class CreateGeomTool extends BaseCreateTool {
       return xfo
     }
 
-    // else project based on focal dist.
-    const camera = viewport.getCamera()
+    const camera = event.viewport.getCamera()
     const xfo = camera.getParameter('GlobalXfo').getValue().clone()
     xfo.tr = ray.pointAtDist(camera.getFocalDistance())
     return xfo
   }
 
+
   /**
    * Starts the creation of the geometry.
    *
    * @param {Xfo} xfo - The xfo param.
-   * @param {TreeItem} parentItem - The parentItem param.
    */
-  createStart(xfo, parentItem) {
+  createStart(xfo) {
     this.stage = 1
   }
 
@@ -141,8 +145,8 @@ class CreateGeomTool extends BaseCreateTool {
       if (event.button == 0) {
         this.constructionPlane = new Xfo()
 
-        const xfo = this.screenPosToXfo(event.pointerPos, event.viewport)
-        this.createStart(xfo, this.appData.scene.getRoot())
+        const xfo = this.screenPosToXfo(event)
+        this.createStart(xfo)
       } else if (event.button == 2) {
         // Cancel the tool.
         if (this.removeToolOnRightClick) this.appData.toolManager.removeTool(this.index)
@@ -164,7 +168,7 @@ class CreateGeomTool extends BaseCreateTool {
    */
   onPointerMove(event) {
     if (this.stage > 0) {
-      const xfo = this.screenPosToXfo(event.pointerPos, event.viewport)
+      const xfo = this.screenPosToXfo(event)
       this.createMove(xfo.tr)
       return true
     }
@@ -178,7 +182,7 @@ class CreateGeomTool extends BaseCreateTool {
    */
   onPointerUp(event) {
     if (this.stage > 0) {
-      const xfo = this.screenPosToXfo(event.pointerPos, event.viewport)
+      const xfo = this.screenPosToXfo(event)
       this.createRelease(xfo.tr)
       return true
     }

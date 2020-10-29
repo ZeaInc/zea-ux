@@ -37,13 +37,12 @@ class CreateFreehandLineTool extends CreateLineTool {
    * Starts the creation of a free hand line.
    *
    * @param {Xfo} xfo - The xfo param.
-   * @param {TreeItem} parentItem - The parentItem param.
    */
-  createStart(xfo, parentItem) {
+  createStart(xfo) {
     const color = this.lineColor.getValue()
     const lineThickness = this.lineThickness.getValue()
 
-    this.change = new CreateFreehandLineChange(parentItem, xfo, color, lineThickness)
+    this.change = new CreateFreehandLineChange(this.parentItem, xfo, color, lineThickness)
     UndoRedoManager.getInstance().addChange(this.change)
 
     this.xfo = xfo
@@ -65,6 +64,8 @@ class CreateFreehandLineTool extends CreateLineTool {
       this.change.update({
         point: p,
       })
+
+      this.appData.renderer.forceRender()
     }
 
     this.length += delta

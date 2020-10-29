@@ -23,10 +23,9 @@ class CreateCircleTool extends CreateGeomTool {
    * Starts the creation of the geometry.
    *
    * @param {Xfo} xfo - The xfo param.
-   * @param {TreeItem} parentItem - The parentItem param.
    */
-  createStart(xfo, parentItem) {
-    this.change = new CreateCircleChange(parentItem, xfo)
+  createStart(xfo) {
+    this.change = new CreateCircleChange(this.parentItem, xfo)
     UndoRedoManager.getInstance().addChange(this.change)
 
     this.xfo = xfo
@@ -42,6 +41,7 @@ class CreateCircleTool extends CreateGeomTool {
   createMove(pt) {
     this.radius = pt.distanceTo(this.xfo.tr)
     this.change.update({ radius: this.radius })
+    this.appData.renderer.forceRender()
   }
 
   /**

@@ -26,10 +26,9 @@ class CreateLineTool extends CreateGeomTool {
    * Starts line geometry creation.
    *
    * @param {Xfo} xfo - The xfo param.
-   * @param {TreeItem} parentItem - The parentItem param.
    */
-  createStart(xfo, parentItem) {
-    this.change = new CreateLineChange(parentItem, xfo)
+  createStart(xfo) {
+    this.change = new CreateLineChange(this.parentItem, xfo)
     UndoRedoManager.getInstance().addChange(this.change)
 
     this.xfo = xfo.inverse()

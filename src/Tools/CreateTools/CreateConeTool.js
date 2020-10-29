@@ -26,9 +26,7 @@ class CreateConeTool extends CreateGeomTool {
    */
   createStart(xfo) {
     this.xfo = xfo
-
-    const scene = this.appData.scene
-    this.change = new CreateConeChange(scene.getRoot(), xfo)
+    this.change = new CreateConeChange(this.parentItem, xfo)
     UndoRedoManager.getInstance().addChange(this.change)
 
     this.stage = 1
@@ -48,7 +46,6 @@ class CreateConeTool extends CreateGeomTool {
       this._radius = vec.length()
       this.change.update({ radius: this._radius })
     } else {
-      console.log('second stage')
       this._height = vec.dot(this.xfo.ori.getZaxis())
       this.change.update({ height: this._height })
     }

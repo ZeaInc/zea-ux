@@ -57,7 +57,7 @@
 
     <script type="module">
       const { GLRenderer, Scene, GeomItem, Material, Vec3, Xfo, Color, Cuboid, Torus } = window.zeaEngine
-      const { CreateSphereTool } = window.zeaUx
+      const { CreateFreehandLineTool } = window.zeaUx
 
       const $canvas = document.getElementById('renderer')
 
@@ -98,7 +98,7 @@
           renderer,
         }
 
-        const createFreeHandLineTool = new CreateSphereTool(appData)
+        const createFreeHandLineTool = new CreateFreehandLineTool(appData)
 
         const cameraManipulator = renderer.getViewport().getManipulator()
 
