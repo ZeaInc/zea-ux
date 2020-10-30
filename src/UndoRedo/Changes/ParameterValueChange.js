@@ -32,8 +32,20 @@ class ParameterValueChange extends Change {
 
     this.suppressPrimaryChange = false
     this.secondaryChanges = []
+    this.secondaryChangesStack = []
   }
 
+  /**
+   * Adds a new secondary change onto this Change object. The secondary changes can contain more secondary changes, creating a tree of changes all generated from a sigle user action.
+   *
+   * This system is used to track all the possible changes made to a scene by a single user action.
+   * E.g. if a user moves a selection of objects, The change in the global Xfo for each object is stored as a secondary change on the main change created for the movement of the SelectionGroup
+   * If the moved items were driven by keyframe tracks, and the movement generated new keyframes, then secondary changes for those keyframes would be stored in each change for the modification of the GlobalXfo
+   *
+   * If the user presses undo, then all changes withing the tree must be reverted.
+   *
+   * @param {Change} secondaryChange - The change to make as the new top of the stack. new secondary changes will be added to that if needed.
+   */
   addSecondaryChange(secondaryChange) {
     const index = this.secondaryChanges.length
     secondaryChange.on('updated', (updateData) => {
@@ -53,6 +65,40 @@ class ParameterValueChange extends Change {
       suppressPrimaryChange: this.suppressPrimaryChange,
     })
     return index
+  }
+
+  /**
+   * Returns the current top of the stack.
+   *
+   * @return {Change} The Change that was currently the top of the stack.
+   */
+  topChangeStack() {
+    if (this.secondaryChangesStack.length == 0) return this
+    else return this.secondaryChangesStack[this.secondaryChangesStack.length - 1]
+  }
+
+  /**
+   * Pushes a new change onto the stack. Subsequent calls to topChangeStack will then return this change.
+   *
+   * @param {Change} secondaryChange - The change to make as the new top of the stack. new secondary changes will be added to that if needed.
+   */
+  pushSecondaryChange(secondaryChange) {
+    if (!this.secondaryChanges.includes(secondaryChange))
+      console.error(
+        'A secondary change must already be added to a ParameterValueChange instance before being pushed on the stack'
+      )
+    this.secondaryChangesStack.push(secondaryChange)
+  }
+
+  /**
+   * Pops the current top of the secondary change stack so that the previous value is now the top.
+   * Note: only the owner of the secondary change should pop it off the stack.
+   * Always check that the returned value is the change you pushed on the stack earlier.
+   *
+   * @return {Change} The Change that was previously the top of the stack.
+   */
+  popSecondaryChange() {
+    return this.secondaryChangesStack.pop()
   }
 
   /**

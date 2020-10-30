@@ -20,6 +20,7 @@ class SelectionGroupXfoOperator extends Operator {
     this.addOutput(new OperatorOutput('GroupGlobalXfo')).setParam(globalXfoParam)
 
     this.currChange = null
+    this.secondaryChanges = []
     this.initialItemXfos = []
   }
 
@@ -62,7 +63,7 @@ class SelectionGroupXfoOperator extends Operator {
     const groupTransformOutput = this.getOutput('GroupGlobalXfo')
     const currGroupXfo = groupTransformOutput.getValue()
 
-    const currChange = UndoRedoManager.getInstance().getCurrentChange()
+    const currChange = UndoRedoManager.getInstance().getCurrentChange().topChangeStack()
     if (this.currChange != currChange) {
       this.currChange = currChange
       if (this.currChange) this.currChange.suppressPrimaryChange = true
@@ -74,6 +75,7 @@ class SelectionGroupXfoOperator extends Operator {
           const param = this.getInputByIndex(i).getParam()
           const secondaryChange = new ParameterValueChange(param)
           this.currChange.addSecondaryChange(secondaryChange)
+          this.secondaryChanges[i] = secondaryChange
         }
       }
       this.initialGroupXfo = currGroupXfo
@@ -85,9 +87,14 @@ class SelectionGroupXfoOperator extends Operator {
       const value = delta.multiply(this.initialItemXfos[i])
 
       if (this.currChange) {
-        this.currChange.secondaryChanges[i - 1].update({
+        const secondaryChange = this.secondaryChanges[i]
+        this.currChange.pushSecondaryChange(secondaryChange)
+        secondaryChange.update({
           value,
         })
+        const res = this.currChange.popSecondaryChange()
+        if (res !== secondaryChange)
+          throw 'Invalid secondary change stack. An unmatched push pop has occurred on the secondary change stack.'
       } else {
         const input = this.getInputByIndex(i)
         input.setValue(value)
