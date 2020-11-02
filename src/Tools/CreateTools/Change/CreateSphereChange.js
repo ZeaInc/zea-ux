@@ -17,13 +17,11 @@ class CreateSphereChange extends CreateGeomChange {
    * @param {Xfo} xfo - The xfo value.
    */
   constructor(parentItem, xfo) {
-    super('Create Sphere', parentItem)
+    super('CreateSphere', parentItem)
 
     this.sphere = new Sphere(0, 64, 32)
     const material = new Material('Sphere', 'SimpleSurfaceShader')
-    this.geomItem = new GeomItem('Sphere')
-    this.geomItem.setGeometry(this.sphere)
-    this.geomItem.setMaterial(material)
+    this.geomItem = new GeomItem('Sphere', this.sphere, material)
 
     if (parentItem && xfo) {
       this.setParentAndXfo(parentItem, xfo)
@@ -36,7 +34,8 @@ class CreateSphereChange extends CreateGeomChange {
    * @param {object} updateData - The updateData param.
    */
   update(updateData) {
-    this.sphere.radius = updateData.radius
+    this.sphere.getParameter('Radius').setValue(updateData.radius)
+
     this.emit('updated', updateData)
   }
 
@@ -47,7 +46,7 @@ class CreateSphereChange extends CreateGeomChange {
    */
   toJSON() {
     const j = super.toJSON()
-    j.radius = this.geomItem.getGeometry().radius
+    j.radius = this.sphere.getParameter('Radius').getValue()
     return j
   }
 
@@ -57,7 +56,7 @@ class CreateSphereChange extends CreateGeomChange {
    * @param {object} j - The j param.
    */
   changeFromJSON(j) {
-    if (j.radius) this.geomItem.getGeometry().radius = j.radius
+    if (j.radius) this.sphere.getParameter('Radius').setValue(j.radius)
   }
 }
 
