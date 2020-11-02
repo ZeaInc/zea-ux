@@ -1,6 +1,6 @@
 {
   "name": "@zeainc/zea-ux",
-  "version": "2.1.0",
+  "version": "2.1.1-rc",
   "description": "Zea UX",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -26,6 +26,10 @@
     "docs:serve": "docsify serve docs/",
     "lint": "eslint src/",
     "prepare": "yarn run build",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "test:debug": "node --inspect ./node_modules/jest/bin/jest.js --runInBand --watch",
+    "test:watch": "jest --watch",
     "test:e2e": "percy exec cypress run --browser chrome --headless",
     "test:e2e:watch": "percy exec cypress open",
     "to-cleanup": "rm -Rf dist/ node_modules/ yarn.lock",
@@ -42,9 +46,11 @@
   "author": "Zea Inc.",
   "license": "MIT",
   "devDependencies": {
-    "@percy/cypress": "^2.3.2",
+    "@babel/preset-env": "^7.12.1",
+    "@percy/cypress": "^2.3.1",
     "@zeainc/jsdocs2md": "^0.0.7",
-    "cypress": "^5.4.0",
+    "canvas": "^2.6.1",
+    "cypress": "^5.2.0",
     "docsify-cli": "^4.4.1",
     "documentation": "^13.0.2",
     "es-dev-server": "^1.57.8",
@@ -52,6 +58,8 @@
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^6.13.0",
     "eslint-plugin-prettier": "^3.1.0",
+    "husky": "^4.3.0",
+    "jest": "^26.6.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.1.2",
     "rollup": "^2.32.0",
@@ -61,6 +69,12 @@
   "dependencies": {
     "@zeainc/zea-engine": "^2.0.0",
     "dom-to-image": "^2.6.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm test",
+      "pre-push": "npm test"
+    }
   },
   "standard-version": {
     "skip": {
