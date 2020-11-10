@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Zea Inc. Demo</title>
+
+    <style>
+      body {
+        height: 100vh;
+        margin: 0;
+      }
+
+      #renderer {
+        width: 100%;
+        height: calc(100% - 35px);
+      }
+
+      #controllers {
+        display: flex;
+        align-items: center;
+        padding: 0.5em;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      #xfo-handlers {
+        display: flex;
+      }
+
+      #xfo-handlers > div,
+      #xfo-handlers span {
+        display: flex;
+        margin: 0 0.6em;
+      }
+
+      #controllers > button {
+        text-align: center;
+        margin: 5px;
+      }
+
+      ul#color-list {
+        list-style: none;
+      }
+
+      ul#color-list > li {
+        width: 100px;
+      }
+    </style>
+
+    <script src="../node_modules/@zeainc/zea-engine/dist/index.umd.js"></script>
+    <script src="../dist/index.umd.js"></script>
+
+    <script type="module">
+      const { GLRenderer, Scene, GeomItem, Material, Vec3, Xfo, Color, Cuboid, Torus } = window.zeaEngine
+      const { CreateFreehandLineTool } = window.zeaUx
+
+      const $canvas = document.getElementById('renderer')
+
+      const scene = new Scene()
+      scene.setupGrid(10, 10)
+
+      const renderer = new GLRenderer($canvas, { hideSplash: true })
+      renderer.setScene(scene)
+
+      {
+        const material1 = new Material('material1', 'SimpleSurfaceShader')
+        material1.getParameter('BaseColor').setValue(new Color('#94C47D'))
+
+        const geomItem1 = new GeomItem('CuboidGeometryItem', new Cuboid(0.7, 0.7, 0.7), material1)
+
+        const geomItem1Xfo = new Xfo()
+        geomItem1Xfo.tr = new Vec3(0.5, 0, 0.35)
+        geomItem1.getParameter('GlobalXfo').setValue(geomItem1Xfo)
+
+        scene.getRoot().addChild(geomItem1)
+
+        const material2 = new Material('material2', 'SimpleSurfaceShader')
+        material2.getParameter('BaseColor').setValue(new Color('#35257D'))
+
+        const geomItem2 = new GeomItem('TorusGeometryItem', new Torus(0.15, 0.5), material2)
+
+        const geomItem2Xfo = new Xfo()
+        geomItem2Xfo.tr = new Vec3(-1, 0, 0.35)
+        geomItem2.getParameter('GlobalXfo').setValue(geomItem2Xfo)
+
+        scene.getRoot().addChild(geomItem2)
+      }
+
+      /** */
+      {
+        const appData = {
+          scene,
+          renderer,
+        }
+
+        const createFreeHandLineTool = new CreateFreehandLineTool(appData)
+
+        const cameraManipulator = renderer.getViewport().getManipulator()
+
+        let createToolOn = false
+        const setFreeHandLineTool = () => {
+          renderer.getViewport().setManipulator(createFreeHandLineTool)
+          createToolOn = true
+          createFreeHandLineTool.activateTool()
+        }
+
+        const setToolToCameraManipulator = () => {
+          renderer.getViewport().setManipulator(cameraManipulator)
+          createToolOn = false
+          createFreeHandLineTool.deactivateTool()
+          renderer.getGLCanvas().style.cursor = 'default'
+        }
+
+        document.addEventListener('keydown', (e) => {
+          switch (e.key) {
+            case 'b':
+              if (createToolOn) {
+                setToolToCameraManipulator()
+                return
+              }
+              setFreeHandLineTool()
+              break
+          }
+        })
+
+        const $selectionCheckbox = document.getElementById('freehandline-cbx')
+
+        $selectionCheckbox.addEventListener('change', (e) => {
+          if (event.target.checked) {
+            setFreeHandLineTool()
+          } else {
+            setToolToCameraManipulator()
+          }
+        })
+      }
+
+      renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(0, 4, 3), new Vec3(0, 0, 0))
+    </script>
+  </head>
+  <body>
+    <div id="controllers">
+      <div>
+        <label for="freehandline-cbx">Free Hand Line Tool</label>
+        <input type="checkbox" name="freehandline-cbx" id="freehandline-cbx" />
+      </div>
+
+      <div id="xfo-handlers" class="hidden">
+        <span>=></span>
+        <div>
+          <label for="translate">Translate</label>
+          <input type="radio" id="translate" name="xfo-type" value="Translate" checked="true" />
+        </div>
+        <div>
+          <label for="rotate">Rotate</label>
+          <input type="radio" id="rotate" name="xfo-type" value="Rotate" />
+        </div>
+        <div>
+          <label for="scale">Scale</label>
+          <input type="radio" id="scale" name="xfo-type" value="Scale" />
+        </div>
+      </div>
+    </div>
+    <canvas id="renderer"></canvas>
+  </body>
+</html>

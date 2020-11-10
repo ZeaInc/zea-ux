@@ -25,9 +25,9 @@ class CreateGeomChange extends Change {
     const name = this.parentItem.generateUniqueName(this.geomItem.getName())
     this.geomItem.setName(name)
     this.geomItem.getParameter('GlobalXfo').setValue(xfo)
-    this.childIndex = this.parentItem.addChild(this.geomItem, true)
+    this.childIndex = this.parentItem.addChild(this.geomItem)
 
-    this.geomItem.addRef(this) // keep a ref to stop it being destroyed
+    // this.geomItem.addRef(this) // keep a ref to stop it being destroyed
   }
 
   /**
@@ -85,7 +85,7 @@ class CreateGeomChange extends Change {
    * Removes geometry item reference from change change.
    */
   destroy() {
-    this.geomItem.removeRef(this) // remove the tmp ref.
+    // this.geomItem.removeRef(this) // remove the tmp ref.
   }
 }
 

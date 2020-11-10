@@ -1,6 +1,7 @@
 import { BooleanParameter } from '@zeainc/zea-engine'
 import CreateLineTool from './CreateLineTool'
 import CreateFreehandLineChange from './Change/CreateFreehandLineChange'
+import { UndoRedoManager } from '../../UndoRedo/index'
 
 /**
  * Tool for creating a free hand line.
@@ -23,19 +24,29 @@ class CreateFreehandLineTool extends CreateLineTool {
   }
 
   /**
+   *
+   *
+   * @memberof CreateFreehandLineTool
+   */
+  activateTool() {
+    super.activateTool()
+    this.appData.renderer.getGLCanvas().style.cursor = 'crosshair'
+  }
+
+  /**
    * Starts the creation of a free hand line.
    *
    * @param {Xfo} xfo - The xfo param.
-   * @param {TreeItem} parentItem - The parentItem param.
    */
-  createStart(xfo, parentItem) {
-    const color = this.cp.getValue()
-    const lineThickness = this.tp.getValue()
-    this.change = new CreateFreehandLineChange(parentItem, xfo, color, lineThickness)
-    this.appData.undoRedoManager.addChange(this.change)
+  createStart(xfo) {
+    const color = this.lineColor.getValue()
+    const lineThickness = this.lineThickness.getValue()
+
+    this.change = new CreateFreehandLineChange(this.parentItem, xfo, color, lineThickness)
+    UndoRedoManager.getInstance().addChange(this.change)
 
     this.xfo = xfo
-    this.invxfo = xfo.inverse()
+    this.invXfo = xfo.inverse()
     this.stage = 1
     this.prevP = xfo.tr
     this.length = 0
@@ -47,12 +58,14 @@ class CreateFreehandLineTool extends CreateLineTool {
    * @param {Vec3} pt - The pt param.
    */
   createMove(pt) {
-    const p = this.invxfo.transformVec3(pt)
+    const p = this.invXfo.transformVec3(pt)
     const delta = p.subtract(this.prevP).length()
     if (delta > 0.001) {
       this.change.update({
         point: p,
       })
+
+      this.appData.renderer.forceRender()
     }
 
     this.length += delta
@@ -66,8 +79,9 @@ class CreateFreehandLineTool extends CreateLineTool {
    */
   createRelease(pt) {
     if (this.length == 0) {
-      this.appData.undoRedoManager.undo(false)
+      UndoRedoManager.getInstance().undo(false)
     }
+
     this.stage = 0
     this.emit('actionFinished')
   }

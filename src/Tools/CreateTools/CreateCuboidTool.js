@@ -1,6 +1,7 @@
 import { Quat, Vec3 } from '@zeainc/zea-engine'
 import CreateGeomTool from './CreateGeomTool'
 import CreateCuboidChange from './Change/CreateCuboidChange'
+import { UndoRedoManager } from '../../UndoRedo/index'
 
 /**
  * Tool for creating Cuboid geometry.
@@ -24,14 +25,13 @@ class CreateCuboidTool extends CreateGeomTool {
    * Starts the creation of the cuboid.
    *
    * @param {Xfo} xfo - The xfo param.
-   * @param {TreeItem} parentItem - The parentItem param.
    */
-  createStart(xfo, parentItem) {
-    this.change = new CreateCuboidChange(parentItem, xfo)
-    this.appData.undoRedoManager.addChange(this.change)
+  createStart(xfo) {
+    this.change = new CreateCuboidChange(this.parentItem, xfo)
+    UndoRedoManager.getInstance().addChange(this.change)
 
     this.xfo = xfo
-    this.invxfo = xfo.inverse()
+    this.invXfo = xfo.inverse()
     this.stage = 1
     this._height = 0.0
   }
@@ -43,7 +43,7 @@ class CreateCuboidTool extends CreateGeomTool {
    */
   createMove(pt) {
     if (this.stage == 1) {
-      const delta = this.invxfo.transformVec3(pt)
+      const delta = this.invXfo.transformVec3(pt)
 
       // const delta = pt.subtract(this.xfo.tr)
       this.change.update({
@@ -51,7 +51,7 @@ class CreateCuboidTool extends CreateGeomTool {
         tr: this.xfo.tr.add(delta.scale(0.5)),
       })
     } else {
-      const vec = this.invxfo.transformVec3(pt)
+      const vec = this.invXfo.transformVec3(pt)
       this.change.update({ height: vec.y })
     }
   }
@@ -60,9 +60,8 @@ class CreateCuboidTool extends CreateGeomTool {
    * Finishes the creation of the cuboid.
    *
    * @param {Vec3} pt - The pt param.
-   * @param {GLViewport} viewport - The viewport param.
    */
-  createRelease(pt, viewport) {
+  createRelease(pt) {
     if (this.stage == 1) {
       this.stage = 2
       this.pt1 = pt
@@ -71,7 +70,7 @@ class CreateCuboidTool extends CreateGeomTool {
       quat.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * 0.5)
       this.constructionPlane.ori = this.constructionPlane.ori.multiply(quat)
       this.constructionPlane.tr = pt
-      this.invxfo = this.constructionPlane.inverse()
+      this.invXfo = this.constructionPlane.inverse()
     } else if (this.stage == 2) {
       this.stage = 0
       this.emit('actionFinished')
