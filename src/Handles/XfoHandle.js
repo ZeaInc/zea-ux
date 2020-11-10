@@ -1,4 +1,4 @@
-import { Color, Vec3, Xfo, TreeItem, ColorParameter } from '@zeainc/zea-engine'
+import { Color, Vec3, Xfo, EulerAngles, TreeItem, ColorParameter } from '@zeainc/zea-engine'
 import Handle from './Handle'
 import LinearMovementHandle from './LinearMovementHandle'
 import AxialRotationHandle from './AxialRotationHandle'
@@ -38,7 +38,7 @@ class XfoHandle extends TreeItem {
     // LinearMovementHandle
 
     const translationHandles = new TreeItem('Translate')
-    translationHandles.setVisible(false)
+    // translationHandles.setVisible(false)
     this.addChild(translationHandles)
 
     const red = new Color(1, 0.1, 0.1)
@@ -109,31 +109,34 @@ class XfoHandle extends TreeItem {
     // ////////////////////////////////
     // Rotation
     const rotationHandles = new TreeItem('Rotate')
-    rotationHandles.setVisible(false)
+    // rotationHandles.setVisible(false)
     this.addChild(rotationHandles)
+    // {
+    //   const rotationWidget = new SphericalRotationHandle('rotation', size - thickness, new Color(1, 1, 1, 0))
+    //   rotationHandles.addChild(rotationWidget)
+    // }
     {
-      const rotationWidget = new SphericalRotationHandle('rotation', size - thickness, new Color(1, 1, 1, 0))
-      rotationHandles.addChild(rotationWidget)
-    }
-    {
-      const rotationXWidget = new AxialRotationHandle('rotationX', size, thickness, red)
+      const rotationXWidget = new AxialRotationHandle('rotationX', size * 0.75, thickness, red)
       const xfo = new Xfo()
-      xfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI * 0.5)
+      xfo.ori.setFromEulerAngles(new EulerAngles(Math.PI * -0.5, Math.PI * -0.5, 0))
       rotationXWidget.getParameter('LocalXfo').setValue(xfo)
       rotationHandles.addChild(rotationXWidget)
     }
     {
-      const rotationYWidget = new AxialRotationHandle('rotationY', size, thickness, green)
+      const rotationYWidget = new AxialRotationHandle('rotationY', size * 0.75, thickness, green)
       const xfo = new Xfo()
-      xfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * 0.5)
+      xfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * -0.5)
       rotationYWidget.getParameter('LocalXfo').setValue(xfo)
       rotationHandles.addChild(rotationYWidget)
     }
     {
-      const rotationZWidget = new AxialRotationHandle('rotationZ', size, thickness, blue)
+      const rotationZWidget = new AxialRotationHandle('rotationZ', size * 0.75, thickness, blue)
+      const xfo = new Xfo()
+      xfo.ori.setFromAxisAndAngle(new Vec3(0, 0, 1), Math.PI * 0.5)
+      rotationZWidget.getParameter('LocalXfo').setValue(xfo)
       rotationHandles.addChild(rotationZWidget)
     }
-
+    /*
     // ////////////////////////////////
     // Scale - Not supported
     const scaleHandles = new TreeItem('Scale')
@@ -159,6 +162,7 @@ class XfoHandle extends TreeItem {
       const scaleZWidget = new LinearScaleHandle('scaleZ', scaleHandleLength, thickness, blue)
       scaleHandles.addChild(scaleZWidget)
     }
+    */
   }
 
   /**
@@ -183,15 +187,17 @@ class XfoHandle extends TreeItem {
    * @param {string} handleManipulationMode - The mode of the Xfo parameter
    */
   showHandles(handleManipulationMode) {
-    this.traverse((item) => {
-      if (item != this) {
-        item.setVisible(false)
-        return false
-      }
-    })
+    console.log('handleManipulationMode', handleManipulationMode)
+    this.setVisible(true)
+    // this.traverse((item) => {
+    //   // if (item != this) {
+    //   //   item.setVisible(false)
+    //   //   return false
+    //   // }
+    // })
 
-    const child = this.getChildByName(handleManipulationMode)
-    if (child) child.setVisible(true)
+    // const child = this.getChildByName(handleManipulationMode)
+    // if (child) child.setVisible(true)
   }
 
   /**
