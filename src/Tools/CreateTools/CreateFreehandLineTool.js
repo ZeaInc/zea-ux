@@ -24,16 +24,6 @@ class CreateFreehandLineTool extends CreateLineTool {
   }
 
   /**
-   *
-   *
-   * @memberof CreateFreehandLineTool
-   */
-  activateTool() {
-    super.activateTool()
-    this.appData.renderer.getGLCanvas().style.cursor = 'crosshair'
-  }
-
-  /**
    * Starts the creation of a free hand line.
    *
    * @param {Xfo} xfo - The xfo param.
@@ -60,13 +50,9 @@ class CreateFreehandLineTool extends CreateLineTool {
   createMove(pt) {
     const p = this.invXfo.transformVec3(pt)
     const delta = p.subtract(this.prevP).length()
-    if (delta > 0.001) {
-      this.change.update({
-        point: p,
-      })
-
-      this.appData.renderer.forceRender()
-    }
+    this.change.update({
+      point: p,
+    })
 
     this.length += delta
     this.prevP = p
