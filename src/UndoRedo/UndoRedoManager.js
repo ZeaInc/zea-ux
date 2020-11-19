@@ -1,9 +1,4 @@
-import { EventEmitter } from '@zeainc/zea-engine'
-import { Change } from './Change'
-
-const __changeClasses = {}
-const __classNames = {}
-const __classes = []
+import { EventEmitter, Registry } from '@zeainc/zea-engine'
 
 /**
  * `UndoRedoManager` is a mixture of the [Factory Design Pattern](https://en.wikipedia.org/wiki/Factory_method_pattern) and the actual changes stacks manager.
@@ -54,7 +49,6 @@ class UndoRedoManager extends EventEmitter {
    */
   addChange(change) {
     // console.log("AddChange:", change.name)
-    if (!(change instanceof Change)) console.warn('Change object is not derived from Change.')
     if (this.__currChange && this.__currChange.off) {
       this.__currChange.off('updated', this.__currChangeUpdated)
     }
