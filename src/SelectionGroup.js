@@ -1,4 +1,4 @@
-import { Color, ColorParameter, BaseItem, TreeItem, Group } from '@zeainc/zea-engine'
+import { Color, ColorParameter, BaseItem, TreeItem, SelectionSet } from '@zeainc/zea-engine'
 import SelectionGroupXfoOperator from './SelectionGroupXfoOperator.js'
 
 /**
@@ -13,7 +13,7 @@ import SelectionGroupXfoOperator from './SelectionGroupXfoOperator.js'
  *
  * @extends {Group}
  */
-class SelectionGroup extends Group {
+class SelectionGroup extends SelectionSet {
   /**
    * Creates an instance of SelectionGroup.
    *
@@ -28,7 +28,7 @@ class SelectionGroup extends Group {
     let subtreeColor
     options.selectionOutlineColor
       ? (selectionColor = options.selectionOutlineColor)
-      : (selectionColor = new Color(3, 227, 172, 0.1))
+      : (selectionColor = new Color(3 / 255, 227 / 255, 172 / 255, 0.1))
 
     if (options.branchSelectionOutlineColor) subtreeColor = options.branchSelectionOutlineColor
     else {
@@ -39,7 +39,6 @@ class SelectionGroup extends Group {
     this.getParameter('HighlightColor').setValue(selectionColor)
     this.addParameter(new ColorParameter('SubtreeHighlightColor', subtreeColor))
 
-    this.getParameter('InitialXfoMode').setValue(Group.INITIAL_XFO_MODES.average)
     this.__itemsParam.setFilterFn((item) => item instanceof BaseItem)
 
     this.selectionGroupXfoOp = new SelectionGroupXfoOperator(
@@ -69,10 +68,13 @@ class SelectionGroup extends Group {
     if (item instanceof TreeItem) {
       const highlightColor = this.getParameter('HighlightColor').getValue()
       highlightColor.a = this.getParameter('HighlightFill').getValue()
-      const subTreeColor = this.getParameter('SubtreeHighlightColor').getValue()
       item.addHighlight('selected' + this.getId(), highlightColor, false)
+
+      const subTreeColor = this.getParameter('SubtreeHighlightColor').getValue()
       item.getChildren().forEach((childItem) => {
-        if (childItem instanceof TreeItem) childItem.addHighlight('branchselected' + this.getId(), subTreeColor, true)
+        if (childItem instanceof TreeItem) {
+          childItem.addHighlight('branchselected' + this.getId(), subTreeColor, true)
+        }
       })
 
       this.selectionGroupXfoOp.addItem(item, index)
@@ -89,18 +91,14 @@ class SelectionGroup extends Group {
     if (item instanceof TreeItem) {
       item.removeHighlight('selected' + this.getId())
       item.getChildren().forEach((childItem) => {
-        if (childItem instanceof TreeItem) childItem.removeHighlight('branchselected' + this.getId(), true)
+        if (childItem instanceof TreeItem) {
+          childItem.removeHighlight('branchselected' + this.getId(), true)
+        }
       })
 
       this.selectionGroupXfoOp.removeItem(item, index)
     }
   }
-
-  /**
-   * calc Group Xfo
-   * @private
-   */
-  calcGroupXfo() {}
 }
 
 export default SelectionGroup
