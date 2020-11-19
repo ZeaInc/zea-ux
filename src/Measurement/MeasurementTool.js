@@ -1,6 +1,6 @@
 import BaseTool from '../Tools/BaseTool'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
-import { Ray, Vec3 } from '@zeainc/zea-engine'
+import { Ray, Vec3, Color, ColorParameter } from '@zeainc/zea-engine'
 import { MeasurementChange } from './MeasurementChange'
 /**
  * UI Tool for measurements
@@ -14,8 +14,29 @@ class MeasurementTool extends BaseTool {
    * @param {object} appData - The appData value
    */
   constructor(appData) {
-    super(appData)
+    super()
+
+    this.colorParam = this.addParameter(new ColorParameter('Color', new Color('#FCFC00')))
+    if (!appData) console.error('App data not provided to tool')
+    this.appData = appData
     this.measurementChange = undefined
+  }
+
+  /**
+   * The activateTool method.
+   */
+  activateTool() {
+    super.activateTool()
+    this.prevCursor = this.appData.renderer.getGLCanvas().style.cursor
+    if (this.appData) this.appData.renderer.getGLCanvas().style.cursor = 'crosshair'
+  }
+
+  /**
+   * The deactivateTool method.
+   */
+  deactivateTool() {
+    super.deactivateTool()
+    if (this.appData) this.appData.renderer.getGLCanvas().style.cursor = this.prevCursor
   }
 
   /**
@@ -24,6 +45,9 @@ class MeasurementTool extends BaseTool {
    * @param {MouseEvent|TouchEvent} event - The event value
    */
   onPointerDown(event) {
+    // skip if the alt key is held. Allows the camera tool to work
+    if (event.altKey) return
+
     const ray = event.pointerRay
     let startPos
     if (event.intersectionData) {
@@ -34,9 +58,13 @@ class MeasurementTool extends BaseTool {
       startPos = ray.start.add(ray.dir.scale(distance))
     }
 
-    this.measurementChange = new MeasurementChange(this.appData.scene.getRoot(), startPos)
+    const color = this.colorParam.getValue()
+
+    this.measurementChange = new MeasurementChange(this.appData.scene.getRoot(), startPos, color)
     UndoRedoManager.getInstance().addChange(this.measurementChange)
     this.dragging = true
+
+    event.stopPropagation()
   }
 
   /**
@@ -57,6 +85,8 @@ class MeasurementTool extends BaseTool {
       }
 
       this.measurementChange.update(endPos)
+
+      event.stopPropagation()
     }
   }
 
@@ -66,9 +96,12 @@ class MeasurementTool extends BaseTool {
    * @param {MouseEvent|TouchEvent} event - The event value
    */
   onPointerUp(event) {
-    this.dragging = false
-    this.measurementChange.end()
-    this.measurementChange = undefined
+    if (this.dragging) {
+      this.dragging = false
+      this.measurementChange.end()
+      this.measurementChange = undefined
+      event.stopPropagation()
+    }
   }
 }
 

@@ -24,23 +24,25 @@ class Measurement extends TreeItem {
   /**
    * Creates an instance of Measurement.
    * @param {string} name
+   * @param {Color} color
    */
-  constructor(name = 'Measurement') {
+  constructor(name = 'Measurement', color = new Color('#FCFC00')) {
     super(name)
 
-    this.baseColor = this.addParameter(new ColorParameter('BaseColor', new Color('#FCFC00')))
+    this.colorParam = this.addParameter(new ColorParameter('Color', color))
 
     this.markerMaterial = new Material('Marker', 'HandleShader')
-    this.markerMaterial.getParameter('BaseColor').setValue(this.baseColor.getValue())
+    this.markerMaterial.getParameter('BaseColor').setValue(this.colorParam.getValue())
     this.markerMaterial.getParameter('MaintainScreenSize').setValue(1)
-    this.markerMaterial.getParameter('Overlay').setValue(0.9)
+    this.markerMaterial.getParameter('Overlay').setValue(0.5)
 
     this.lineMaterial = new Material('Line', 'LinesShader')
-    this.lineMaterial.getParameter('BaseColor').setValue(this.baseColor.getValue())
-    this.lineMaterial.getParameter('Overlay').setValue(0.9)
+    this.lineMaterial.getParameter('BaseColor').setValue(this.colorParam.getValue())
+    this.lineMaterial.getParameter('Overlay').setValue(0.5)
 
-    this.startMarker = new GeomItem(`${name}StartMarker`, new Sphere(0.005), this.markerMaterial)
-    this.endMarker = new GeomItem(`${name}EndMarker`, new Sphere(0.005), this.markerMaterial)
+    const sphere = new Sphere(0.003)
+    this.startMarker = new GeomItem(`${name}StartMarker`, sphere, this.markerMaterial)
+    this.endMarker = new GeomItem(`${name}EndMarker`, sphere, this.markerMaterial)
 
     this.startMarkerHandle = new MeasurementHandle('StartMarkerHandle')
     this.startMarkerHandle.addChild(this.startMarker)
@@ -52,11 +54,11 @@ class Measurement extends TreeItem {
 
     this.label = new Label('Distance')
     this.label.getParameter('FontSize').setValue(20)
-    this.label.getParameter('BackgroundColor').setValue(this.baseColor.getValue())
+    this.label.getParameter('BackgroundColor').setValue(this.colorParam.getValue())
 
     const billboard = new BillboardItem('DistanceBillboard', this.label)
     billboard.getParameter('LocalXfo').setValue(new Xfo())
-    billboard.getParameter('PixelsPerMeter').setValue(300)
+    billboard.getParameter('PixelsPerMeter').setValue(1000)
     billboard.getParameter('AlignedToCamera').setValue(true)
     billboard.getParameter('DrawOnTop').setValue(true)
     billboard.getParameter('Alpha').setValue(1)
@@ -84,8 +86,8 @@ class Measurement extends TreeItem {
     measurementOperator.getOutput(MeasurementOperator.IO_NAMES.LabelXfo).setParam(billboard.getParameter('GlobalXfo'))
     measurementOperator.getOutput(MeasurementOperator.IO_NAMES.LineXfo).setParam(lineGeomItem.getParameter('GlobalXfo'))
 
-    this.baseColor.on('valueChanged', () => {
-      const color = this.baseColor.getValue()
+    this.colorParam.on('valueChanged', () => {
+      const color = this.colorParam.getValue()
       this.markerMaterial.getParameter('BaseColor').setValue(color)
       this.lineMaterial.getParameter('BaseColor').setValue(color)
       this.label.getParameter('BackgroundColor').setValue(color)
