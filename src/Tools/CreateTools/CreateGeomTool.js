@@ -14,8 +14,10 @@ class CreateGeomTool extends BaseCreateTool {
    * @param {object} appData - The appData value.
    */
   constructor(appData) {
-    super(appData)
+    super()
 
+    if (!appData) console.error('App data not provided to tool')
+    this.appData = appData
     this.stage = 0
     this.removeToolOnRightClick = true
     this.parentItem = 'parentItem' in appData ? appData.parentItem : appData.scene.getRoot()
@@ -28,6 +30,9 @@ class CreateGeomTool extends BaseCreateTool {
    */
   activateTool() {
     super.activateTool()
+
+    this.prevCursor = this.appData.renderer.getGLCanvas().style.cursor
+    this.appData.renderer.getGLCanvas().style.cursor = 'crosshair'
 
     this.appData.renderer.getXRViewport().then((xrvp) => {
       if (!this.vrControllerToolTip) {
@@ -54,7 +59,7 @@ class CreateGeomTool extends BaseCreateTool {
   deactivateTool() {
     super.deactivateTool()
 
-    this.appData.renderer.getDiv().style.cursor = 'pointer'
+    this.appData.renderer.getGLCanvas().style.cursor = this.prevCursor
 
     this.appData.renderer.getXRViewport().then((xrvp) => {
       // for(let controller of xrvp.getControllers()) {
@@ -92,7 +97,6 @@ class CreateGeomTool extends BaseCreateTool {
     xfo.tr = ray.pointAtDist(camera.getFocalDistance())
     return xfo
   }
-
 
   /**
    * Starts the creation of the geometry.
@@ -140,6 +144,9 @@ class CreateGeomTool extends BaseCreateTool {
    * @return {boolean} The return value.
    */
   onPointerDown(event) {
+    // skip if the alt key is held. Allows the camera tool to work
+    if (event.altKey) return
+
     //
     if (this.stage == 0) {
       if (event.button == 0) {
@@ -147,12 +154,14 @@ class CreateGeomTool extends BaseCreateTool {
 
         const xfo = this.screenPosToXfo(event)
         this.createStart(xfo)
+        event.stopPropagation()
       } else if (event.button == 2) {
         // Cancel the tool.
-        if (this.removeToolOnRightClick) this.appData.toolManager.removeTool(this.index)
+        // if (this.removeToolOnRightClick) this.appData.toolManager.removeTool(this.index)
       }
       return true
     } else if (event.button == 2) {
+      // Cancel the draw action.
       UndoRedoManager.getInstance().undo(false)
       this.stage = 0
       return true
