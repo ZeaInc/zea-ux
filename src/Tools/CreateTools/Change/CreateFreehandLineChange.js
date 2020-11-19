@@ -31,6 +31,7 @@ class CreateFreehandLineChange extends CreateGeomChange {
     this.line.getVertexAttribute('positions').setValue(0, new Vec3())
 
     const material = new Material('freeHandLine', 'FatLinesShader')
+    material.getParameter('LineThickness').setValue(thickness)
     if (color) {
       material.getParameter('BaseColor').setValue(color)
     }
@@ -66,11 +67,11 @@ class CreateFreehandLineChange extends CreateGeomChange {
 
     if (realloc) {
       this.line.emit('geomDataTopologyChanged', {
-        indicesChanged: true,
+        topologyChanged: true,
       })
     } else {
       this.line.emit('geomDataChanged', {
-        indicesChanged: true,
+        topologyChanged: true,
       })
     }
     this.emit('updated', updateData)
