@@ -80,7 +80,10 @@ class BaseAxialRotationHandle extends Handle {
     // away from the center of the handle.
     // This makes it possible to rotate the object more than
     // 180 degrees in a single movement.
-    const modulator = dragCircleRadius / this.grabCircleRadius
+    // Note: this modulator made rotations quite unpredictable
+    // especially when the angle between the ray and the plane is acute.
+    // disabling for now.
+    const modulator = 1.0 //dragCircleRadius / this.grabCircleRadius
     let angle = this.vec0.angleTo(vec1) * modulator
     if (this.vec0.cross(vec1).dot(this.baseXfo.ori.getZaxis()) < 0) angle = -angle
 
