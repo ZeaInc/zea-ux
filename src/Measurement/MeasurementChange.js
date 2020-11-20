@@ -14,12 +14,12 @@ class MeasurementChange extends Change {
    * @param {TreeItem} parentItem - The parentItem value
    * @param {Xfo} startPos - The startPos Value
    */
-  constructor(parentItem, startPos) {
+  constructor(parentItem, startPos, color) {
     super('MeasurementChange')
 
     this.parentItem = parentItem
 
-    this.measurement = new Measurement()
+    this.measurement = new Measurement('Measurement', color)
     this.measurement.setStartMarkerPos(startPos)
     this.measurement.setEndMarkerPos(startPos)
     this.measurement.setGeomBuffersVisibility(false)
