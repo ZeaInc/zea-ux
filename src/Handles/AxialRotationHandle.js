@@ -38,7 +38,7 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
     this.handleMat.getParameter('Overlay').setValue(0.9)
 
     // const handleGeom = new Cylinder(radius, thickness * 2, 64, 2, false);
-    const handleGeom = new Torus(thickness, radius, 64)
+    const handleGeom = new Torus(thickness, radius, 64, Math.PI * 0.5)
     this.handle = new GeomItem('handle', handleGeom, this.handleMat)
     this.handleXfo = new Xfo()
 
