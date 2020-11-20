@@ -1,4 +1,4 @@
-import { EventEmitter, Color, SelectionSet } from '@zeainc/zea-engine'
+import { EventEmitter, Color } from '@zeainc/zea-engine'
 import XfoHandle from './Handles/XfoHandle'
 import SelectionGroup from './SelectionGroup'
 import SelectionChange from './UndoRedo/Changes/SelectionChange'
