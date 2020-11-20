@@ -55,32 +55,6 @@
       translationXfoHandle.setTargetParam(translationTreeItem.getParameter('GlobalXfo'))
       translationXfoHandle.showHandles('Translate')
 
-      const rotateTreeItem = new TreeItem('RotateTarget')
-      scene.getRoot().addChild(rotateTreeItem)
-
-      const rotateXfoHandle = new XfoHandle()
-      rotateXfoHandle.getParameter('HighlightColor').setValue(new Color(1, 1, 0))
-      rotateTreeItem.addChild(rotateXfoHandle)
-      rotateXfoHandle.setTargetParam(rotateTreeItem.getParameter('GlobalXfo'))
-      rotateXfoHandle.showHandles('Rotate')
-
-      const rotateXfo = new Xfo(new Vec3(-1, 1, 1))
-      rotateTreeItem.getParameter('GlobalXfo').setValue(rotateXfo)
-
-      const scaleTreeItem = new TreeItem('ScaleTarget')
-      scene.getRoot().addChild(scaleTreeItem)
-
-      const scaleXfoHandle = new XfoHandle()
-      scaleXfoHandle.getParameter('HighlightColor').setValue(new Color(1, 1, 0))
-      scaleTreeItem.addChild(scaleXfoHandle)
-      scaleXfoHandle.setTargetParam(scaleTreeItem.getParameter('GlobalXfo'))
-      scaleXfoHandle.showHandles('Scale')
-
-      const scaleXfo = new Xfo(new Vec3(1, -1, 1))
-      scaleTreeItem.getParameter('GlobalXfo').setValue(scaleXfo)
-
-      //renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(2, 2, 1), new Vec3(0.5, 0, 0.0))
-
       // {{{ Messages handler.
       const handleMessage = (event) => {
         const { data } = event

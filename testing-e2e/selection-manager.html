@@ -28,16 +28,6 @@
         display: none !important;
       }
 
-      #xfo-handlers {
-        display: flex;
-      }
-
-      #xfo-handlers > div,
-      #xfo-handlers span {
-        display: flex;
-        margin: 0 0.6em;
-      }
-
       #controllers > button {
         text-align: center;
         margin: 5px;
@@ -113,7 +103,6 @@
         const setToolToSelectionTool = () => {
           renderer.getViewport().setManipulator(selectionTool)
           selectionOn = true
-          selectionManager.showHandles('Translate')
         }
 
         const setToolToCameraManipulator = () => {
@@ -130,29 +119,16 @@
               }
               setToolToSelectionTool()
               break
-            case 't':
-              selectionManager.showHandles('Translate')
-              break
-            case 'r':
-              selectionManager.showHandles('Rotate')
-              break
-            case 's':
-              selectionManager.showHandles('Scale')
-              break
           }
         })
 
         const $selectionCheckbox = document.getElementById('selection-cbx')
-        const xfoHandlers = document.getElementById('xfo-handlers')
 
         $selectionCheckbox.addEventListener('change', (e) => {
           if (event.target.checked) {
             setToolToSelectionTool()
-            xfoHandlers.classList.remove('hidden')
-            document.getElementById('translate').checked = true
           } else {
             setToolToCameraManipulator()
-            xfoHandlers.classList.add('hidden')
           }
         })
 
@@ -173,22 +149,6 @@
       <div>
         <label for="selection-cbx">Select Tool</label>
         <input type="checkbox" name="selection-cbx" id="selection-cbx" />
-      </div>
-
-      <div id="xfo-handlers" class="hidden">
-        <span>=></span>
-        <div>
-          <label for="translate">Translate</label>
-          <input type="radio" id="translate" name="xfo-type" value="Translate" checked="true" />
-        </div>
-        <div>
-          <label for="rotate">Rotate</label>
-          <input type="radio" id="rotate" name="xfo-type" value="Rotate" />
-        </div>
-        <div>
-          <label for="scale">Scale</label>
-          <input type="radio" id="scale" name="xfo-type" value="Scale" />
-        </div>
       </div>
     </div>
     <canvas id="renderer" />

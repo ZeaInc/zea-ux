@@ -21,7 +21,7 @@ describe('Selection Manager', () => {
     cy.get('canvas').percySnapshot('MultiSelectGeometryMouseUnSelect')
   })
 
-  it('Select Geometry - Translate - Mouse', () => {
+  it('Select single Geometry - Mouse', () => {
     cy.get('#selection-cbx').click()
 
     cy.get('canvas').click(400, 240).percySnapshot('SelectGeometryTranslateMouse')
@@ -39,82 +39,27 @@ describe('Selection Manager', () => {
     cy.get('canvas').percySnapshot('SelectGeometryTranslateMoveMouse')
   })
 
-  it('Select Geometry - Rotate - Mouse', () => {
-    cy.get('#selection-cbx').click()
-    cy.get('#rotate').click()
-
-    cy.get('canvas').click(400, 250)
-    cy.wait(100)
-    cy.get('canvas').percySnapshot('SelectGeometryRotateMouse')
-  })
-
   it('Select Geometry - Rotate Move - Mouse', () => {
     cy.get('#selection-cbx').click()
-    cy.get('#rotate').click()
 
     cy.get('canvas')
       .click(400, 250)
-      .trigger('mousedown', 410, 205)
-      .trigger('mousemove', 380, 205)
-      .trigger('mouseup', 380, 205)
+      .trigger('mousedown', 375, 235)
+      .trigger('mousemove', 410, 235)
+      .trigger('mouseup', 410, 235)
     cy.wait(100)
     cy.get('canvas').percySnapshot('SelectGeometryRotateMoveMouse')
   })
 
-  it('Select Geometry - Scale - Mouse', () => {
+  it('Select Geometry - Planar Move - Mouse', () => {
     cy.get('#selection-cbx').click()
-    cy.get('#scale').click()
-
-    cy.get('canvas').click(400, 250)
-    cy.wait(100)
-    cy.get('canvas').percySnapshot('SelectGeometryScaleMouse')
-  })
-
-  it('Select Geometry - Scale Move - Mouse', () => {
-    cy.get('#selection-cbx').click()
-    cy.get('#scale').click()
 
     cy.get('canvas')
       .click(400, 250)
-      .trigger('mousedown', 370, 270)
-      .trigger('mousemove', 300, 270)
-      .trigger('mouseup', 300, 270)
+      .trigger('mousedown', 400, 260)
+      .trigger('mousemove', 380, 280)
+      .trigger('mouseup', 380, 280)
     cy.wait(100)
-    cy.get('canvas').percySnapshot('SelectGeometryRotateMoveMouse')
-  })
-
-  it('Select Geometry - Translate - Touch', () => {
-    cy.get('#selection-cbx').click()
-
-    const eTouch = createTouchEvents([400, 250])
-    cy.get('canvas')
-      .trigger('touchstart', eTouch)
-      .trigger('touchend', { ...eTouch, touches: [] })
-    cy.wait(100)
-    cy.get('canvas').percySnapshot('SelectGeometryTranslateTouch')
-  })
-
-  it('Select Geometry - Rotate - Touch', () => {
-    cy.get('#selection-cbx').click()
-    cy.get('#rotate').click()
-
-    const eTouch = createTouchEvents([400, 250])
-    cy.get('canvas')
-      .trigger('touchstart', eTouch)
-      .trigger('touchend', { ...eTouch, touches: [] })
-    cy.wait(100)
-    cy.get('canvas').percySnapshot('SelectGeometryRotateTouch')
-  })
-
-  it('Select Geometry - Scale - Mouse', () => {
-    cy.get('#selection-cbx').click()
-    cy.get('#scale').click()
-
-    const eTouch = createTouchEvents([400, 250])
-    cy.get('canvas')
-      .trigger('touchstart', eTouch)
-      .trigger('touchend', { ...eTouch, touches: [] })
-    cy.wait(100)
-    cy.get('canvas').percySnapshot('SelectGeometryScaleMouse')
+    cy.get('canvas').percySnapshot('SelectGeometryPlanarMoveMouse')
   })
 })
