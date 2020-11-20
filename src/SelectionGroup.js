@@ -1,5 +1,13 @@
-import { Color, ColorParameter, BaseItem, TreeItem, Group } from '@zeainc/zea-engine'
+import { Color, ColorParameter, BaseItem, TreeItem, SelectionSet, MultiChoiceParameter } from '@zeainc/zea-engine'
 import SelectionGroupXfoOperator from './SelectionGroupXfoOperator.js'
+
+const GROUP_XFO_MODES = {
+  disabled: 0,
+  manual: 1,
+  first: 2,
+  average: 3,
+  globalOri: 4,
+}
 
 /**
  * A specific type of `Group` class that contains/handles selection of one or more items from the scene.
@@ -13,7 +21,7 @@ import SelectionGroupXfoOperator from './SelectionGroupXfoOperator.js'
  *
  * @extends {Group}
  */
-class SelectionGroup extends Group {
+class SelectionGroup extends SelectionSet {
   /**
    * Creates an instance of SelectionGroup.
    *
@@ -28,7 +36,7 @@ class SelectionGroup extends Group {
     let subtreeColor
     options.selectionOutlineColor
       ? (selectionColor = options.selectionOutlineColor)
-      : (selectionColor = new Color(3, 227, 172, 0.1))
+      : (selectionColor = new Color(3 / 255, 227 / 255, 172 / 255, 0.1))
 
     if (options.branchSelectionOutlineColor) subtreeColor = options.branchSelectionOutlineColor
     else {
@@ -39,13 +47,30 @@ class SelectionGroup extends Group {
     this.getParameter('HighlightColor').setValue(selectionColor)
     this.addParameter(new ColorParameter('SubtreeHighlightColor', subtreeColor))
 
-    this.getParameter('InitialXfoMode').setValue(Group.INITIAL_XFO_MODES.average)
     this.__itemsParam.setFilterFn((item) => item instanceof BaseItem)
+
+    this.__initialXfoModeParam = this.addParameter(
+      new MultiChoiceParameter('InitialXfoMode', GROUP_XFO_MODES.average, ['manual', 'first', 'average', 'global'])
+    )
 
     this.selectionGroupXfoOp = new SelectionGroupXfoOperator(
       this.getParameter('InitialXfoMode'),
       this.getParameter('GlobalXfo')
     )
+  }
+
+  /**
+   * Returns enum of available xfo modes.
+   *
+   * | Name | Default |
+   * | --- | --- |
+   * | manual | <code>0</code> |
+   * | first | <code>1</code> |
+   * | average | <code>2</code> |
+   * | globalOri | <code>3</code> |
+   */
+  static get INITIAL_XFO_MODES() {
+    return GROUP_XFO_MODES
   }
 
   /**
@@ -69,10 +94,13 @@ class SelectionGroup extends Group {
     if (item instanceof TreeItem) {
       const highlightColor = this.getParameter('HighlightColor').getValue()
       highlightColor.a = this.getParameter('HighlightFill').getValue()
-      const subTreeColor = this.getParameter('SubtreeHighlightColor').getValue()
       item.addHighlight('selected' + this.getId(), highlightColor, false)
+
+      const subTreeColor = this.getParameter('SubtreeHighlightColor').getValue()
       item.getChildren().forEach((childItem) => {
-        if (childItem instanceof TreeItem) childItem.addHighlight('branchselected' + this.getId(), subTreeColor, true)
+        if (childItem instanceof TreeItem) {
+          childItem.addHighlight('branchselected' + this.getId(), subTreeColor, true)
+        }
       })
 
       this.selectionGroupXfoOp.addItem(item, index)
@@ -89,18 +117,14 @@ class SelectionGroup extends Group {
     if (item instanceof TreeItem) {
       item.removeHighlight('selected' + this.getId())
       item.getChildren().forEach((childItem) => {
-        if (childItem instanceof TreeItem) childItem.removeHighlight('branchselected' + this.getId(), true)
+        if (childItem instanceof TreeItem) {
+          childItem.removeHighlight('branchselected' + this.getId(), true)
+        }
       })
 
       this.selectionGroupXfoOp.removeItem(item, index)
     }
   }
-
-  /**
-   * calc Group Xfo
-   * @private
-   */
-  calcGroupXfo() {}
 }
 
 export default SelectionGroup
