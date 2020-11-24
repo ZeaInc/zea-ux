@@ -14,7 +14,7 @@ class CreateGeomTool extends BaseCreateTool {
    * @param {object} appData - The appData value.
    */
   constructor(appData) {
-    super()
+    super(appData)
 
     if (!appData) console.error('App data not provided to tool')
     this.appData = appData
