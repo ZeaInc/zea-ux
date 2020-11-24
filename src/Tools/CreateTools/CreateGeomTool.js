@@ -149,7 +149,7 @@ class CreateGeomTool extends BaseCreateTool {
 
     //
     if (this.stage == 0) {
-      if (event.button == 0) {
+      if (event.button == 0 || event.pointerType !== 'mouse') {
         this.constructionPlane = new Xfo()
 
         const xfo = this.screenPosToXfo(event)
@@ -162,10 +162,11 @@ class CreateGeomTool extends BaseCreateTool {
       return true
     } else if (event.button == 2) {
       // Cancel the draw action.
-      UndoRedoManager.getInstance().undo(false)
+      UndoRedoManager.getInstance().cancel()
       this.stage = 0
       return true
     }
+
     return true
   }
 

@@ -21,6 +21,7 @@ class SelectionTool extends BaseTool {
     if (!appData) console.error('App data not provided to tool')
     this.appData = appData
     this.dragging = false
+    if (!appData.selectionManager) console.error('`SelectionTool` requires `SelectionManager` to be provided in the `appData` object')
     this.selectionManager = appData.selectionManager
 
     this.selectionRect = new Rect(1, 1)

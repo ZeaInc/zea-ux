@@ -54,7 +54,7 @@ class CreateLineTool extends CreateGeomTool {
    */
   createRelease(pt) {
     if (this.length == 0) {
-      UndoRedoManager.getInstance().undo(false)
+      UndoRedoManager.getInstance().cancel()
     }
     this.stage = 0
     this.emit('actionFinished')
