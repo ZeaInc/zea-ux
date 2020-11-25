@@ -81,7 +81,7 @@
         geomItem1Xfo.tr = new Vec3(0.5, 0, 0.35)
         geomItem1.getParameter('GlobalXfo').setValue(geomItem1Xfo)
 
-        scene.getRoot().addChild(geomItem1)
+        // scene.getRoot().addChild(geomItem1)
 
         const material2 = new Material('material2', 'SimpleSurfaceShader')
         material2.getParameter('BaseColor').setValue(new Color('#35257D'))
@@ -92,7 +92,8 @@
         geomItem2Xfo.tr = new Vec3(-1, 0, 0.35)
         geomItem2.getParameter('GlobalXfo').setValue(geomItem2Xfo)
 
-        scene.getRoot().addChild(geomItem2)
+        
+        // scene.getRoot().addChild(geomItem2)
       }
 
       /** */
@@ -159,7 +160,7 @@
       </div>
       <div>
         <label for="sphere-cbx">Sphere</label>
-        <input type="radio" name="tool-radio" id="sphere-cbx" value="" />
+        <input type="radio" name="tool-radio" id="sphere-cbx" value="sphereTool" />
       </div>
     </div>
     <canvas id="renderer"></canvas>

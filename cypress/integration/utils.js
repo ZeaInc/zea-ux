@@ -26,4 +26,9 @@ const createTouchEvents = (touchPoints = []) => {
 const cyFocusCanvas = (elSelector = 'canvas', x = 1, y = 1) => {
   cy.get(elSelector).click(x, y)
 }
-export { createTouchEvents, cyFocusCanvas }
+
+const mouseEvent = (x, y, button = 0) => {
+  return { button, x, y }
+}
+
+export { createTouchEvents, cyFocusCanvas, mouseEvent }
