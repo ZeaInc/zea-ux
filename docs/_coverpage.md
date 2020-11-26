@@ -4,11 +4,11 @@
 ![logo](_media/logo-zea.svg)
 
 # Zea UX
+[![NPM Package][npm]][npm-url]
+[![Build Size][build-size]][build-size-url]
+[![NPM Downloads][npm-downloads]][npmtrends-url]
 
 Zea Plugin for building user experiences against the Zea engine
-
-[![npm](https://img.shields.io/npm/v/@zeainc/zea-ux?style=flat-square)](https://www.npmjs.com/package/@zeainc/zea-ux)
-[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
 
 <ul style="display:inline-block">
@@ -42,3 +42,10 @@ Reach
 <!-- background color -->
 
 ![color](#333333)
+
+[npm]: https://badge.fury.io/js/%40zeainc%2Fzea-ux.svg
+[npm-url]: https://www.npmjs.com/package/@zeainc/zea-ux
+[build-size]: https://badgen.net/bundlephobia/minzip/@zeainc/zea-ux
+[build-size-url]: https://bundlephobia.com/result?p=@zeainc/zea-ux
+[npm-downloads]: https://img.shields.io/npm/dw/@zeainc/zea-ux
+[npmtrends-url]: https://www.npmtrends.com/@zeainc/zea-ux
