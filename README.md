@@ -42,7 +42,7 @@ For static websites or quick implementation you can always use CDNs like JsDeliv
 ### *Use it*
 ```html
 <script>
-  const { Scene } = globalThis.zeaUx
+  const { UndoRedoManager } = globalThis.zeaUx
 </script>
 ```
 
@@ -57,7 +57,7 @@ yarn add @zeainc/zea-ux
 
 ### *Use it*
 ```javascript
-import { Scene } from '@zeainc/zea-ux'
+import { UndoRedoManager } from '@zeainc/zea-ux'
 // ...
 ```
 </br>
