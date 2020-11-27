@@ -61,6 +61,12 @@ import { UndoRedoManager } from '@zeainc/zea-ux'
 // ...
 ```
 </br>
+</br>
+</br>
+
+# Dependencies
+This plug-in depends on [ZeaEngine](https://docs.zea.live/zea-engine). So, if you're using CDNs, make sure to import it before UX.
+</br>
 
 > For questions on licensing, please fill out the contact form on our website: [_zea.live_](https://www.zea.live/contact-us)
 
