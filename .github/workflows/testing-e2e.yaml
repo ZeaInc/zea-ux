@@ -8,6 +8,7 @@ on:
 jobs:
   testing-e2e:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     strategy:
       matrix:
