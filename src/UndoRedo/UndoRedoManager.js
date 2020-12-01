@@ -103,6 +103,22 @@ class UndoRedoManager extends EventEmitter {
   }
 
   /**
+   * Method to cancel the current change added to the UndoRedoManager.
+   * Reverts the change and discards it.
+   */
+  cancel() {
+    if (this.__undoStack.length > 0) {
+      if (this.__currChange) {
+        this.__currChange.off('updated', this.__currChangeUpdated)
+        this.__currChange = null
+      }
+
+      const change = this.__undoStack.pop()
+      change.undo()
+    }
+  }
+
+  /**
    * Rollbacks the `undo` action by moving the change from the `redo` stack to the `undo` stack.
    * Emits the `changeRedone` event, if you want to subscribe to it.
    */

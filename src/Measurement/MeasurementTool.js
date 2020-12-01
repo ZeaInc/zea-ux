@@ -46,7 +46,7 @@ class MeasurementTool extends BaseTool {
    */
   onPointerDown(event) {
     // skip if the alt key is held. Allows the camera tool to work
-    if (event.altKey) return
+    if (event.altKey || (event.pointerType === 'mouse' && event.button !== 0)) return
 
     const ray = event.pointerRay
     let startPos
