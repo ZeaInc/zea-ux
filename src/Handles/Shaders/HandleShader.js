@@ -62,7 +62,7 @@ void main(void) {
   gl_Position = projectionMatrix * viewPos;
 
   if(Overlay > 0.0){
-    gl_Position.z = mix(gl_Position.z, -1.0, Overlay);
+    gl_Position.z = mix(gl_Position.z, -gl_Position.w, Overlay);
   }
 
   v_viewPos = viewPos.xyz;
@@ -152,7 +152,7 @@ void main(void) {
    */
   static isOverlay() {
     // Handles are now rendered in the GLStandardGeomPass, and we now use the overlay parameter to move the geom closer to the screen.
-    return false
+    return true
   }
 
   /**

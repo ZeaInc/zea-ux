@@ -3,6 +3,7 @@ import XfoHandle from './Handles/XfoHandle'
 import SelectionGroup from './SelectionGroup'
 import SelectionChange from './UndoRedo/Changes/SelectionChange'
 import SelectionVisibilityChange from './UndoRedo/Changes/SelectionVisibilityChange'
+import UndoRedoManager from './UndoRedo/UndoRedoManager'
 
 /**
  * Class representing a selection manager
@@ -136,8 +137,10 @@ class SelectionManager extends EventEmitter {
 
     if (createUndo) {
       const change = new SelectionChange(this, prevSelection, selection)
-      if (this.appData.undoRedoManager) this.appData.undoRedoManager.addChange(change)
+      UndoRedoManager.getInstance().addChange(change)
     }
+
+    this.emit('selectionChanged', { prevSelection, selection })
   }
 
   /**
@@ -231,7 +234,7 @@ class SelectionManager extends EventEmitter {
     }
 
     const change = new SelectionChange(this, prevSelection, selection)
-    if (this.appData.undoRedoManager) this.appData.undoRedoManager.addChange(change)
+    UndoRedoManager.getInstance().addChange(change)
 
     this.updateHandleVisibility()
     this.emit('selectionChanged', { prevSelection, selection })
@@ -258,7 +261,7 @@ class SelectionManager extends EventEmitter {
     this.updateHandleVisibility()
     if (newChange) {
       const change = new SelectionChange(this, prevSelection, selection)
-      if (this.appData.undoRedoManager) this.appData.undoRedoManager.addChange(change)
+      UndoRedoManager.getInstance().addChange(change)
       this.emit('selectionChanged', { selection, prevSelection })
     }
     return true
@@ -286,7 +289,7 @@ class SelectionManager extends EventEmitter {
 
     const change = new SelectionChange(this, prevSelection, selection)
 
-    if (this.appData.undoRedoManager) this.appData.undoRedoManager.addChange(change)
+    UndoRedoManager.getInstance().addChange(change)
 
     this.selectionGroup.setItems(selection)
     if (selection.size === 1) {
@@ -323,7 +326,7 @@ class SelectionManager extends EventEmitter {
     this.selectionGroup.setItems(selection)
     const change = new SelectionChange(this, prevSelection, selection)
 
-    if (this.appData.undoRedoManager) this.appData.undoRedoManager.addChange(change)
+    UndoRedoManager.getInstance().addChange(change)
 
     if (selection.size === 1) {
       this.__setLeadSelection(selection.values().next().value)
@@ -342,7 +345,7 @@ class SelectionManager extends EventEmitter {
       const selection = this.selectionGroup.getItems()
       const state = !this.leadSelection.getVisible()
       const change = new SelectionVisibilityChange(selection, state)
-      if (this.appData.undoRedoManager) this.appData.undoRedoManager.addChange(change)
+      UndoRedoManager.getInstance().addChange(change)
     }
   }
 

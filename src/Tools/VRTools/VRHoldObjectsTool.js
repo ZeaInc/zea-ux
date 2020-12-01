@@ -159,7 +159,7 @@ class VRHoldObjectsTool extends BaseTool {
     super.activateTool()
     console.log('activateTool.VRHoldObjectsTool')
 
-    this.appData.renderer.getDiv().style.cursor = 'crosshair'
+    this.appData.renderer.getGLCanvas().style.cursor = 'crosshair'
 
     const addIconToController = (controller) => {
       // The tool might already be deactivated.

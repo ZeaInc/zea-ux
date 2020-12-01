@@ -16,9 +16,12 @@ class SelectionTool extends BaseTool {
    * @param {object} appData - The appData value
    */
   constructor(appData) {
-    super(appData)
+    super()
 
+    if (!appData) console.error('App data not provided to tool')
+    this.appData = appData
     this.dragging = false
+    if (!appData.selectionManager) console.error('`SelectionTool` requires `SelectionManager` to be provided in the `appData` object')
     this.selectionManager = appData.selectionManager
 
     this.selectionRect = new Rect(1, 1)
@@ -34,10 +37,31 @@ class SelectionTool extends BaseTool {
   }
 
   /**
+   * activate this tool
+   */
+  activateTool() {
+    super.activateTool()
+    this.prevCursor = this.appData.renderer.getGLCanvas().style.cursor
+    this.appData.renderer.getGLCanvas().style.cursor = 'auto'
+  }
+
+  /**
+   * Disables tool usage.
+   */
+  deactivateTool() {
+    super.deactivateTool()
+    this.appData.renderer.getGLCanvas().style.cursor = this.prevCursor
+  }
+
+  /**
    * Activates selection tool.
    */
   setSelectionManager(selectionManager) {
     this.selectionManager = selectionManager
+  }
+
+  setSelectionFilter(fn) {
+    this.__selectionFilterFn = fn
   }
 
   /**
@@ -96,10 +120,8 @@ class SelectionTool extends BaseTool {
       this.pointerDownPos = event.pointerPos
       this.dragging = false
 
-      return true
+      event.stopPropagation()
     }
-
-    return false
   }
 
   /**
@@ -123,8 +145,8 @@ class SelectionTool extends BaseTool {
         this.rectItem.getParameter('Visible').setValue(true)
         this.__resizeRect(event.viewport, delta)
       }
+      event.stopPropagation()
     }
-    return true
   }
 
   /**
@@ -134,7 +156,6 @@ class SelectionTool extends BaseTool {
    * @return {boolean} The return value.
    */
   onPointerUp(event) {
-    console.log('PointerUp')
     if (this.pointerDownPos) {
       // event.viewport.renderGeomDataFbo();
       if (this.dragging) {
@@ -148,7 +169,19 @@ class SelectionTool extends BaseTool {
           Math.max(this.pointerDownPos.x, pointerUpPos.x),
           Math.max(this.pointerDownPos.y, pointerUpPos.y)
         )
-        const geomItems = event.viewport.getGeomItemsInRect(tl, br)
+
+        let geomItems = event.viewport.getGeomItemsInRect(tl, br)
+
+        if (this.__selectionFilterFn) {
+          const newSet = []
+          for (let i = 0; i < geomItems.length; i++) {
+            const treeItem = this.__selectionFilterFn(geomItems[i])
+            if (!newSet.includes(treeItem)) {
+              newSet.push(treeItem)
+            }
+          }
+          geomItems = newSet
+        }
 
         if (!this.selectionManager) throw 'Please set the Selection Manager on the Selection Tool before using it.'
         if (this.selectionManager.pickingModeActive()) {
@@ -169,14 +202,17 @@ class SelectionTool extends BaseTool {
       } else {
         const intersectionData = event.viewport.getGeomDataAtPos(event.pointerPos)
         if (intersectionData != undefined && !(intersectionData.geomItem.getOwner() instanceof Handle)) {
+          let treeItem = intersectionData.geomItem
+          if (this.__selectionFilterFn) treeItem = this.__selectionFilterFn(treeItem)
+
           if (this.selectionManager.pickingModeActive()) {
-            this.selectionManager.pick(intersectionData.geomItem)
+            this.selectionManager.pick(treeItem)
           } else {
             if (!event.shiftKey) {
-              this.selectionManager.toggleItemSelection(intersectionData.geomItem, !event.ctrlKey)
+              this.selectionManager.toggleItemSelection(treeItem, !event.ctrlKey)
             } else {
               const items = new Set()
-              items.add(intersectionData.geomItem)
+              items.add(treeItem)
               this.selectionManager.deselectItems(items)
             }
           }
@@ -184,9 +220,8 @@ class SelectionTool extends BaseTool {
           this.selectionManager.clearSelection()
         }
       }
-
       this.pointerDownPos = undefined
-      return true
+      event.stopPropagation()
     }
   }
 
@@ -205,7 +240,7 @@ class SelectionTool extends BaseTool {
       const intersectionData = event.controller.getGeomItemAtTip()
       if (intersectionData != undefined && !(intersectionData.geomItem.getOwner() instanceof Handle)) {
         this.selectionManager.toggleItemSelection(intersectionData.geomItem)
-        return true
+        event.stopPropagation()
       }
     }
   }

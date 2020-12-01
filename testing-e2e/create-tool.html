@@ -57,7 +57,7 @@
 
     <script type="module">
       const { GLRenderer, Scene, GeomItem, Material, Vec3, Xfo, Color, Cuboid, Torus } = window.zeaEngine
-      const { CreateFreehandLineTool } = window.zeaUx
+      const { CreateFreehandLineTool, UndoRedoManager } = window.zeaUx
 
       const $canvas = document.getElementById('renderer')
 
@@ -66,6 +66,9 @@
 
       const renderer = new GLRenderer($canvas, { hideSplash: true })
       renderer.setScene(scene)
+
+      const color = new Color('#aaaaaa')
+      scene.getSettings().getParameter('BackgroundColor').setValue(color)
 
       {
         const material1 = new Material('material1', 'SimpleSurfaceShader')
@@ -125,6 +128,18 @@
               }
               setFreeHandLineTool()
               break
+            case 'z':
+              if (e.ctrlKey) {
+                const undoRedoManager = UndoRedoManager.getInstance()
+                undoRedoManager.undo()
+              }
+              break
+            case 'y':
+              if (e.ctrlKey) {
+                const undoRedoManager = UndoRedoManager.getInstance()
+                undoRedoManager.redo()
+              }
+              break
           }
         })
 
@@ -140,6 +155,23 @@
       }
 
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(0, 4, 3), new Vec3(0, 0, 0))
+
+      const $undoBtn = document.getElementById('undo')
+      const $redoBtn = document.getElementById('redo')
+      const undoRedoManager = UndoRedoManager.getInstance()
+
+      // Event handlers
+      {
+        $undoBtn.addEventListener('click', (e) => {
+          console.log('Undo')
+          undoRedoManager.undo()
+        })
+
+        $redoBtn.addEventListener('click', (e) => {
+          console.log('Redo')
+          undoRedoManager.redo()
+        })
+      }
     </script>
   </head>
   <body>
@@ -147,6 +179,9 @@
       <div>
         <label for="freehandline-cbx">Free Hand Line Tool</label>
         <input type="checkbox" name="freehandline-cbx" id="freehandline-cbx" />
+
+        <button id="undo">Undo</button>
+        <button id="redo">Redo</button>
       </div>
 
       <div id="xfo-handlers" class="hidden">

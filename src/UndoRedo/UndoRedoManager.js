@@ -1,9 +1,4 @@
-import { EventEmitter } from '@zeainc/zea-engine'
-import { Change } from './Change'
-
-const __changeClasses = {}
-const __classNames = {}
-const __classes = []
+import { EventEmitter, Registry } from '@zeainc/zea-engine'
 
 /**
  * `UndoRedoManager` is a mixture of the [Factory Design Pattern](https://en.wikipedia.org/wiki/Factory_method_pattern) and the actual changes stacks manager.
@@ -54,7 +49,6 @@ class UndoRedoManager extends EventEmitter {
    */
   addChange(change) {
     // console.log("AddChange:", change.name)
-    if (!(change instanceof Change)) console.warn('Change object is not derived from Change.')
     if (this.__currChange && this.__currChange.off) {
       this.__currChange.off('updated', this.__currChangeUpdated)
     }
@@ -109,6 +103,22 @@ class UndoRedoManager extends EventEmitter {
   }
 
   /**
+   * Method to cancel the current change added to the UndoRedoManager.
+   * Reverts the change and discards it.
+   */
+  cancel() {
+    if (this.__undoStack.length > 0) {
+      if (this.__currChange) {
+        this.__currChange.off('updated', this.__currChangeUpdated)
+        this.__currChange = null
+      }
+
+      const change = this.__undoStack.pop()
+      change.undo()
+    }
+  }
+
+  /**
    * Rollbacks the `undo` action by moving the change from the `redo` stack to the `undo` stack.
    * Emits the `changeRedone` event, if you want to subscribe to it.
    */
@@ -132,7 +142,7 @@ class UndoRedoManager extends EventEmitter {
    * @return {Change} - The return value.
    */
   constructChange(className) {
-    return new __changeClasses[className]()
+    return Registry.constructClass(className)
   }
 
   /**
@@ -142,8 +152,12 @@ class UndoRedoManager extends EventEmitter {
    * @return {boolean} - Returns 'true' if the class has been registered.
    */
   static isChangeClassRegistered(inst) {
-    const id = __classes.indexOf(inst.constructor)
-    return id != -1
+    try {
+      const name = Registry.getBlueprintName(inst)
+      return true
+    } catch (e) {
+      return false
+    }
   }
 
   /**
@@ -154,10 +168,7 @@ class UndoRedoManager extends EventEmitter {
    * @return {string} - The return value.
    */
   static getChangeClassName(inst) {
-    const id = __classes.indexOf(inst.constructor)
-    if (__classNames[id]) return __classNames[id]
-    console.warn('Change not registered:', inst.constructor.name)
-    return ''
+    return Registry.getBlueprintName(inst)
   }
 
   /**
@@ -169,12 +180,7 @@ class UndoRedoManager extends EventEmitter {
    * @param {Change} cls - The cls param.
    */
   static registerChange(name, cls) {
-    if (__classes.indexOf(cls) != -1) console.warn('Class already registered:', name)
-
-    const id = __classes.length
-    __classes.push(cls)
-    __changeClasses[name] = cls
-    __classNames[id] = name
+    Registry.register(name, cls)
   }
 
   static getInstance() {

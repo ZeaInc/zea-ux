@@ -51,7 +51,7 @@ class CreateSphereTool extends CreateGeomTool {
    */
   createRelease(pt) {
     if (this.radius == 0) {
-      UndoRedoManager.getInstance().undo(false)
+      UndoRedoManager.getInstance().cancel()
     }
     this.stage = 0
     this.emit('actionFinished')
