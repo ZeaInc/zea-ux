@@ -1,5 +1,4 @@
-import { Quat, Color, Xfo, GeomItem, Material, Cross } from '@zeainc/zea-engine'
-import BaseTool from '../BaseTool'
+import { Quat, Color, Xfo, GeomItem, Material, Cross, BaseTool } from '@zeainc/zea-engine'
 import Handle from '../../Handles/Handle'
 import UndoRedoManager from '../../UndoRedo/UndoRedoManager'
 import Change from '../../UndoRedo/Change'

@@ -1,6 +1,5 @@
-import BaseTool from '../Tools/BaseTool'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
-import { Ray, Vec3, Color, ColorParameter } from '@zeainc/zea-engine'
+import { Ray, Vec3, Color, ColorParameter, BaseTool } from '@zeainc/zea-engine'
 import { MeasurementChange } from './MeasurementChange'
 /**
  * UI Tool for measurements
