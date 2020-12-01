@@ -1,7 +1,6 @@
-import { Vec2, Color, Xfo, GeomItem, Material, Rect } from '@zeainc/zea-engine'
+import { Vec2, Color, Xfo, GeomItem, Material, Rect, BaseTool } from '@zeainc/zea-engine'
 
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
-import BaseTool from './BaseTool'
 import Handle from '../Handles/Handle'
 
 /**

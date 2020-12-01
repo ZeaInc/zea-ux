@@ -1,4 +1,4 @@
-import BaseTool from './BaseTool'
+import { BaseTool } from '@zeainc/zea-engine'
 
 /**
  * Class representing a primary create tool.

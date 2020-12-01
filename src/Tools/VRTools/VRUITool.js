@@ -1,5 +1,4 @@
-import { Vec3, Color, Xfo, Ray, GeomItem, Material, Lines } from '@zeainc/zea-engine'
-import BaseTool from '../BaseTool'
+import { Vec3, Color, Xfo, Ray, GeomItem, Material, Lines, BaseTool } from '@zeainc/zea-engine'
 import VRControllerUI from './VRControllerUI'
 
 /**
