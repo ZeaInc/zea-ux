@@ -109,14 +109,11 @@
         const setFreeHandLineTool = () => {
           renderer.getViewport().setManipulator(createFreeHandLineTool)
           createToolOn = true
-          createFreeHandLineTool.activateTool()
         }
 
         const setToolToCameraManipulator = () => {
           renderer.getViewport().setManipulator(cameraManipulator)
           createToolOn = false
-          createFreeHandLineTool.deactivateTool()
-          renderer.getGLCanvas().style.cursor = 'default'
         }
 
         document.addEventListener('keydown', (e) => {
