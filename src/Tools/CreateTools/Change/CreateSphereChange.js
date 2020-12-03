@@ -55,7 +55,7 @@ class CreateSphereChange extends CreateGeomChange {
    *
    * @param {object} j - The j param.
    */
-  changeFromJSON(j) {
+  updateFromJSON(j) {
     if (j.radius) this.sphere.getParameter('Radius').setValue(j.radius)
   }
 }
