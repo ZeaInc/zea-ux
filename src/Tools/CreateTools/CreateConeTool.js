@@ -65,7 +65,6 @@ class CreateConeTool extends CreateGeomTool {
       this.emit('actionFinished')
     }
     if (this.stage == 1) {
-      console.log('Going in boy')
       this.stage = 2
 
       const quat = new Quat()
