@@ -29,6 +29,7 @@ class CreateFreehandLineChange extends CreateGeomChange {
     this.line.setNumVertices(this.vertexCount)
     this.line.setNumSegments(this.vertexCount - 1)
     this.line.getVertexAttribute('positions').setValue(0, new Vec3())
+    this.line.lineThickness = thickness
 
     const material = new Material('freeHandLine', 'FatLinesShader')
     material.getParameter('LineThickness').setValue(thickness)
