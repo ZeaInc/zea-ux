@@ -102,6 +102,7 @@
         }
 
         const createFreeHandLineTool = new CreateFreehandLineTool(appData)
+        createFreeHandLineTool.getParameter('LineThickness').setValue(0.01)
 
         const cameraManipulator = renderer.getViewport().getManipulator()
 
