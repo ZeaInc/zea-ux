@@ -1,5 +1,37 @@
 # Changelog
 
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+## [3.0.0] (2020-12-03)
+
+
+### ⚠ BREAKING CHANGES
+
+* renamed 'changeFromJSON' to 'updateFromJSON' to be more consistent.
+
+* refactor: no need to register tools with the UndoRedoManager.
+
+Co-authored-by: Philip Taylor <phil@zea.live>
+Co-authored-by: Alvaro Pajaro <alvaroe.pajaro@gmail.com>
+
+### Features
+
+* Added Measurement tool to the library, it includes a measurement item, and operator and a handler ([a6ac0cd](https://github.com/ZeaInc/zea-ux/commit/a6ac0cd194a33f828456c3365ecb5d06f826feff))
+* Added Measurement tool to the library, it includes a measurement item, and operator and a handler ([d910597](https://github.com/ZeaInc/zea-ux/commit/d910597957b43f7b1efb52f7833baa8e53df1596))
+* Added ToolManager with e2e tests ([#110](https://github.com/ZeaInc/zea-ux/issues/110)) ([04b0b3d](https://github.com/ZeaInc/zea-ux/commit/04b0b3d622789db5f4216fc31c11570385385ec1))
+* Added UndoRedo System to the Measurement tool ([3a1c045](https://github.com/ZeaInc/zea-ux/commit/3a1c04527834cb42d8e722fbce9af4b4f60d8f98))
+* MeasurementTool can now generate measurements with a custom color. ([#102](https://github.com/ZeaInc/zea-ux/issues/102)) ([e7fc34c](https://github.com/ZeaInc/zea-ux/commit/e7fc34c06ad1fd0e1ed9cccfafaf9c8fa74da985))
+
+
+### Bug Fixes
+
+* Fixed overlay depth manipulation in the HandleShader. Resolves issues with excessive clipping on overlay geoms. ([#99](https://github.com/ZeaInc/zea-ux/issues/99)) ([29c36a1](https://github.com/ZeaInc/zea-ux/commit/29c36a14a403d545534ac6b2948c80072a6c616f))
+* rotation handel now has a more intuitive rotation behavior. ([#103](https://github.com/ZeaInc/zea-ux/issues/103)) ([642eb1b](https://github.com/ZeaInc/zea-ux/commit/642eb1be9128d44a0adac68c275b73a284890dca))
+* when drawing lines, the 'geomDataChanged event needed to be emitted with the correct json. ([#104](https://github.com/ZeaInc/zea-ux/issues/104)) ([1fb2f4b](https://github.com/ZeaInc/zea-ux/commit/1fb2f4b64feaa20f4e67d896a96b8ce6f6404184))
+
+
+* Rename change from json to update from json (#112) ([68fd934](https://github.com/ZeaInc/zea-ux/commit/68fd9349149b38a255af372f7e926b4655130c5d)), closes [#112](https://github.com/ZeaInc/zea-ux/issues/112)
+
 ## [2.1.0](https://github.com/ZeaInc/zea-ux/compare/v2.0.1...v2.1.0) (2020-10-26)
 
 
@@ -13,8 +45,8 @@
 ### Bug Fixes
 
 * Added checks for ray on mouse events ([af0e33e](https://github.com/ZeaInc/zea-ux/commit/af0e33e44b923200f5cd41dc71035cbe827936d3))
-* cleaned up regression in Materials configutation. All handles are now rendered as overlay. ([144f4ae](https://github.com/ZeaInc/zea-ux/commit/144f4ae93f12283bdb6b6a840282205483645af3))
-* Fixed issue with screen space movement handle, now it correctly moves in pararell to the camera ([1a95c8f](https://github.com/ZeaInc/zea-ux/commit/1a95c8f94a9d2e44b7133d95775b12057cf198a2))
+* cleaned up regression in Materials configuration. All handles are now rendered as overlay. ([144f4ae](https://github.com/ZeaInc/zea-ux/commit/144f4ae93f12283bdb6b6a840282205483645af3))
+* Fixed issue with screen space movement handle, now it correctly moves in parallel to the camera ([1a95c8f](https://github.com/ZeaInc/zea-ux/commit/1a95c8f94a9d2e44b7133d95775b12057cf198a2))
 * Fixed issue with version in the package.json ([bd67c37](https://github.com/ZeaInc/zea-ux/commit/bd67c376c94864d4c23fd913cd796992317ab4f0))
 * Fixed SelectionTool events ([0c85050](https://github.com/ZeaInc/zea-ux/commit/0c85050624ebf9d9445c96eae90af46b06bd97a0))
 * Fixed touch events for handle base classes ([debe73f](https://github.com/ZeaInc/zea-ux/commit/debe73f7374e83729d2513da42c9efc43edca396))
@@ -78,7 +110,7 @@
 * Coverage file.
 * Regression caused by clamp now is MathFunctions.
 * Regression in display of arc geometry in the ArcSlider.
-* Regressions due to new captialization of parameter names.
+* Regressions due to new capitalization of parameter names.
 * Tools dir name.
 * UndoRedo dir name.
 * UndoRedo import.
