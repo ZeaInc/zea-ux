@@ -80,7 +80,7 @@ class Change extends EventEmitter {
    *
    * @param {object} j - The j param.
    */
-  changeFromJSON(j) {
+  updateFromJSON(j) {
     // Many change objects can load json directly
     // in the update method.
     this.update(j)

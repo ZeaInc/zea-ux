@@ -105,7 +105,7 @@ class HoldObjectsChange extends Change {
     this.__selection = newSelection
   }
 
-  // changeFromJSON(j) {
+  // updateFromJSON(j) {
 
   //   if(updateData.newItem) {
   //     this.__selection[updateData.newItemId] = updateData.newItem;

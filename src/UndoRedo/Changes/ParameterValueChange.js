@@ -108,7 +108,7 @@ class ParameterValueChange extends Change {
     else this.__nextValue = this.__prevValue
 
     this.name = j.name
-    if (j.value != undefined) this.changeFromJSON(j)
+    if (j.value != undefined) this.updateFromJSON(j)
   }
 
   /**
@@ -116,7 +116,7 @@ class ParameterValueChange extends Change {
    *
    * @param {object} j - The j param.
    */
-  changeFromJSON(j) {
+  updateFromJSON(j) {
     if (!this.__param) return
     if (this.__nextValue.fromJSON) this.__nextValue.fromJSON(j.value)
     else this.__nextValue = j.value
