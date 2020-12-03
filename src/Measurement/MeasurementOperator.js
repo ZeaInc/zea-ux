@@ -21,7 +21,7 @@ class MeasurementOperator extends Operator {
   constructor(name) {
     super(name)
 
-    this.unitsParameter = this.addParameter(new StringParameter('Units', 'm'))
+    this.unitsParameter = this.addParameter(new StringParameter('Units', 'mm'))
     this.unitsParameter.on('valueChange', () => console.log('Units Changed'))
 
     this.addInput(new OperatorInput(IO_NAMES.StartXfo))
@@ -46,7 +46,7 @@ class MeasurementOperator extends Operator {
     vector.normalizeInPlace()
     const midPoint = startXfo.tr.add(vector.scale(distance * 0.5))
 
-    distanceOutput.setClean(`${parseFloat(distance.toFixed(3))}${this.unitsParameter.getValue()}`)
+    distanceOutput.setClean(`${parseFloat(distance.toFixed(4))}${this.unitsParameter.getValue()}`)
 
     const newLabelXfo = new Xfo(midPoint)
     newLabelXfo.ori.setFromDirectionAndUpvector(vector, new Vec3(vector.z, vector.x, vector.y))

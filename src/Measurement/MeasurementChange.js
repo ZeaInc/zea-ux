@@ -29,12 +29,13 @@ class MeasurementChange extends Change {
   /**
    *
    *
-   * @param {Xfo} endPos - The endPos value
+   * @param {object} data - An object containing potentially the start and end positions.
    * @memberof MeasurementChange
    */
-  update(endPos) {
-    this.measurement.setEndMarkerPos(endPos)
-    this.emit('updated', endPos)
+  update(data) {
+    if (data.startPos) this.measurement.setStartMarkerPos(data.startPos)
+    if (data.endPos) this.measurement.setEndMarkerPos(data.endPos)
+    this.emit('updated', data)
   }
 
   /**

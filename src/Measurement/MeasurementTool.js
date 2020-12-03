@@ -83,7 +83,7 @@ class MeasurementTool extends BaseTool {
         endPos = ray.start.add(ray.dir.scale(distance))
       }
 
-      this.measurementChange.update(endPos)
+      this.measurementChange.update({ endPos })
 
       event.stopPropagation()
     }
@@ -103,7 +103,5 @@ class MeasurementTool extends BaseTool {
     }
   }
 }
-
-UndoRedoManager.registerChange('MeasurementTool', MeasurementTool)
 
 export { MeasurementTool }
