@@ -65,7 +65,7 @@ class CreateFreehandLineTool extends CreateLineTool {
    */
   createRelease(pt) {
     if (this.length == 0) {
-      UndoRedoManager.getInstance().undo(false)
+      UndoRedoManager.getInstance().cancel()
     }
 
     this.stage = 0

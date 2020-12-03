@@ -1,6 +1,5 @@
-import BaseTool from '../Tools/BaseTool'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
-import { Ray, Vec3, Color, ColorParameter } from '@zeainc/zea-engine'
+import { Ray, Vec3, Color, ColorParameter, BaseTool } from '@zeainc/zea-engine'
 import { MeasurementChange } from './MeasurementChange'
 /**
  * UI Tool for measurements
@@ -46,7 +45,7 @@ class MeasurementTool extends BaseTool {
    */
   onPointerDown(event) {
     // skip if the alt key is held. Allows the camera tool to work
-    if (event.altKey) return
+    if (event.altKey || (event.pointerType === 'mouse' && event.button !== 0)) return
 
     const ray = event.pointerRay
     let startPos

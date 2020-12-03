@@ -59,8 +59,8 @@ class CreateConeTool extends CreateGeomTool {
    * @param {Vec3} pt - The pt param.
    */
   createRelease(pt) {
-    if (this._radius == 0) {
-      UndoRedoManager.getInstance().undo(false)
+    if (this._radius == 0 || this._height == 0) {
+      UndoRedoManager.getInstance().cancel()
       this.stage = 0
       this.emit('actionFinished')
     }
