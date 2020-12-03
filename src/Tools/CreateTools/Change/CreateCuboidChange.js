@@ -44,7 +44,7 @@ class CreateCuboidChange extends CreateGeomChange {
       this.geomItem.getParameter('LocalXfo').setValue(xfo)
     }
     if (updateData.height) {
-      this.cuboid.z = updateData.height
+      this.cuboid.getParameter('Z').setValue(updateData.height)
     }
     this.emit('updated', updateData)
   }
