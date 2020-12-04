@@ -1,6 +1,6 @@
 {
   "name": "@zeainc/zea-ux",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Zea UX",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -67,7 +67,7 @@
     "standard-version": "^9.0.0"
   },
   "dependencies": {
-    "@zeainc/zea-engine": "^3.0.0",
+    "@zeainc/zea-engine": "^3.0.1",
     "dom-to-image": "^2.6.0"
   },
   "husky": {

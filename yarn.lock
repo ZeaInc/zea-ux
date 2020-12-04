@@ -2099,10 +2099,10 @@
     meow "^7.0.1"
     rimraf "^3.0.2"
 
-"@zeainc/zea-engine@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@zeainc/zea-engine/-/zea-engine-3.0.0.tgz#79797487cc3793cd5452c89cf4d22239a64c1c86"
-  integrity sha512-1Qe2i1vcpE4LholksgQPSOq8mHtyeNgNLNPSRgwtOhjCI9ns/xW+kD3hmhdkcQ/PuVIh718JcSJcq1n22R7iKQ==
+"@zeainc/zea-engine@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@zeainc/zea-engine/-/zea-engine-3.0.1.tgz#f9effc74932907a50acba12a99d026c8acebee0a"
+  integrity sha512-9fwm6uRSaJzYV6/lwE/hx9bN5brOPV9hCtg2QSy08p7NWsphpFpLz52+Fpkvc6j7pLT44H+latG8pgm9GgITwg==
   dependencies:
     debug "^4.1.1"
     semver "^7.3.2"
