@@ -49,8 +49,7 @@ Finds and removes the `OperatorInput` of the specified `TreeItem` from current`O
 <a name="SelectionGroupXfoOperator+backPropagateValue"></a>
 
 ### backPropagateValue
-Move the group. When the selection group is manipulated, this method is called.
-Here we propagate the delta to each of the selection members.
+Move the group. When the selection group is manipulated, this method is called.Here we propagate the delta to each of the selection members.
 
 
 

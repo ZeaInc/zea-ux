@@ -1,13 +1,10 @@
 <a name="XfoPlanarMovementHandle"></a>
 
 ### XfoPlanarMovementHandle 
-Class representing a planar movement scene widget.
-
-**Parameters**
-* **Size(`NumberParameter`):** Specifies the size of the plane handle.
+Class representing a planar movement scene widget.**Parameters*** **Size(`NumberParameter`):** Specifies the size of the plane handle.
 
 
-**Extends**: <code>[Handle](api/Handles/Handle.md)</code>  
+**Extends**: <code>[Handle](api/Handles\Handle.md)</code>  
 
 * [XfoPlanarMovementHandle ⇐ <code>Handle</code>](#XfoPlanarMovementHandle)
     * [new XfoPlanarMovementHandle(name, size, offset, color)](#new-XfoPlanarMovementHandle)

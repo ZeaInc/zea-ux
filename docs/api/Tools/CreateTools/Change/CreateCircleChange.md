@@ -1,19 +1,16 @@
 <a name="CreateCircleChange"></a>
 
 ### CreateCircleChange 
-Class representing a create circle change.
-
-**Events**
-* **updated:** Triggered when the change is updated
+Class representing a create circle change.**Events*** **updated:** Triggered when the change is updated
 
 
-**Extends**: <code>[CreateGeomChange](api/Tools/CreateTools/Change/CreateGeomChange.md)</code>  
+**Extends**: <code>[CreateGeomChange](api/Tools\CreateTools\Change\CreateGeomChange.md)</code>  
 
 * [CreateCircleChange ⇐ <code>CreateGeomChange</code>](#CreateCircleChange)
     * [new CreateCircleChange(parentItem, xfo)](#new-CreateCircleChange)
     * [update(updateData)](#update)
     * [toJSON() ⇒ <code>object</code>](#toJSON)
-    * [changeFromJSON(j)](#changeFromJSON)
+    * [updateFromJSON(j)](#updateFromJSON)
 
 <a name="new_CreateCircleChange_new"></a>
 
@@ -44,9 +41,9 @@ Serializes change as a JSON object.
 
 
 **Returns**: <code>object</code> - - The return value.  
-<a name="CreateCircleChange+changeFromJSON"></a>
+<a name="CreateCircleChange+updateFromJSON"></a>
 
-### changeFromJSON
+### updateFromJSON
 Updates circle with the specified JSON
 
 

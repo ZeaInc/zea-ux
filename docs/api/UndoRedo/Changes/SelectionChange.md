@@ -4,7 +4,7 @@
 Represents a `Change` class for storing `Selection` values.
 
 
-**Extends**: <code>[Change](api/UndoRedo/Change.md)</code>  
+**Extends**: <code>[Change](api/UndoRedo\Change.md)</code>  
 
 * [SelectionChange ⇐ <code>Change</code>](#SelectionChange)
     * [new SelectionChange(selectionManager, prevSelection, newSelection)](#new-SelectionChange)

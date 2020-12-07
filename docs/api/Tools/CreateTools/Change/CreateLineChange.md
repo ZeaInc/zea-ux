@@ -1,13 +1,10 @@
 <a name="CreateLineChange"></a>
 
 ### CreateLineChange 
-Class representing a create line change.
-
-**Events**
-* **updated:** Triggered when the change is updated
+Class representing a create line change.**Events*** **updated:** Triggered when the change is updated
 
 
-**Extends**: <code>[CreateGeomChange](api/Tools/CreateTools/Change/CreateGeomChange.md)</code>  
+**Extends**: <code>[CreateGeomChange](api/Tools\CreateTools\Change\CreateGeomChange.md)</code>  
 
 * [CreateLineChange ⇐ <code>CreateGeomChange</code>](#CreateLineChange)
     * [new CreateLineChange(parentItem, xfo, color, thickness)](#new-CreateLineChange)

@@ -1,19 +1,16 @@
 <a name="CreateSphereChange"></a>
 
 ### CreateSphereChange 
-Class representing a create sphere change.
-
-**Events**
-* **updated:** Triggered when the change is updated
+Class representing a create sphere change.**Events*** **updated:** Triggered when the change is updated
 
 
-**Extends**: <code>[CreateGeomChange](api/Tools/CreateTools/Change/CreateGeomChange.md)</code>  
+**Extends**: <code>[CreateGeomChange](api/Tools\CreateTools\Change\CreateGeomChange.md)</code>  
 
 * [CreateSphereChange ⇐ <code>CreateGeomChange</code>](#CreateSphereChange)
     * [new CreateSphereChange(parentItem, xfo)](#new-CreateSphereChange)
     * [update(updateData)](#update)
     * [toJSON() ⇒ <code>object</code>](#toJSON)
-    * [changeFromJSON(j)](#changeFromJSON)
+    * [updateFromJSON(j)](#updateFromJSON)
 
 <a name="new_CreateSphereChange_new"></a>
 
@@ -44,9 +41,9 @@ Serializes sphere geometry as a JSON object.
 
 
 **Returns**: <code>object</code> - The return value.  
-<a name="CreateSphereChange+changeFromJSON"></a>
+<a name="CreateSphereChange+updateFromJSON"></a>
 
-### changeFromJSON
+### updateFromJSON
 Updates sphere geometry using a JSON object.
 
 

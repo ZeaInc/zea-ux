@@ -1,11 +1,10 @@
 <a name="TreeItemsRemoveChange"></a>
 
 ### TreeItemsRemoveChange 
-Class representing a TreeItems removal Change,
-taking into account that it would remove all the specified items ti their children
+Class representing a TreeItems removal Change,taking into account that it would remove all the specified items ti their children
 
 
-**Extends**: <code>[Change](api/UndoRedo/Change.md)</code>  
+**Extends**: <code>[Change](api/UndoRedo\Change.md)</code>  
 
 * [TreeItemsRemoveChange ⇐ <code>Change</code>](#TreeItemsRemoveChange)
     * [new TreeItemsRemoveChange(items, appData)](#new-TreeItemsRemoveChange)
@@ -65,8 +64,6 @@ Restores Change action from a JSON object.
 <a name="TreeItemsRemoveChange+destroy"></a>
 
 ### destroy
-The destroy method cleans up any data requiring manual cleanup.
-Deleted items still on the undo stack are then flushed and any
-GPU resources cleaned up.
+The destroy method cleans up any data requiring manual cleanup.Deleted items still on the undo stack are then flushed and anyGPU resources cleaned up.
 
 

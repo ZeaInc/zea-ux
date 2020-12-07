@@ -4,7 +4,7 @@
 Class representing an open VR UI tool.
 
 
-**Extends**: <code>[BaseTool](api/Tools/BaseTool.md)</code>  
+**Extends**: <code>BaseTool</code>  
 
 * [OpenVRUITool ⇐ <code>BaseTool</code>](#OpenVRUITool)
     * [new OpenVRUITool(appData, vrUITool)](#new-OpenVRUITool)
@@ -23,7 +23,7 @@ Create an open VR UI tool.
 | Param | Type | Description |
 | --- | --- | --- |
 | appData | <code>object</code> | The appData value. |
-| vrUITool | <code>[VRUITool](api/Tools/VRTools/VRUITool.md)</code> | The vrUITool value. |
+| vrUITool | <code>[VRUITool](api/Tools\VRTools\VRUITool.md)</code> | The vrUITool value. |
 
 <a name="OpenVRUITool+uninstall"></a>
 

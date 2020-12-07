@@ -1,55 +1,58 @@
-<a name="CreateGeomChange"></a>
+<a name="MeasurementChange"></a>
 
-### CreateGeomChange 
-Class representing a create geom change.
+### MeasurementChange 
+Represents a Measurement change.
 
 
 **Extends**: <code>[Change](api/UndoRedo\Change.md)</code>  
 
-* [CreateGeomChange ⇐ <code>Change</code>](#CreateGeomChange)
-    * [new CreateGeomChange(name)](#new-CreateGeomChange)
-    * [setParentAndXfo(parentItem, xfo)](#setParentAndXfo)
+* [MeasurementChange ⇐ <code>Change</code>](#MeasurementChange)
+    * [new MeasurementChange(parentItem, startPos)](#new-MeasurementChange)
+    * [update(endPos)](#update)
+    * [end()](#end)
     * [undo()](#undo)
     * [redo()](#redo)
     * [toJSON(context) ⇒ <code>object</code>](#toJSON)
     * [fromJSON(j, context)](#fromJSON)
     * [destroy()](#destroy)
 
-<a name="new_CreateGeomChange_new"></a>
+<a name="new_MeasurementChange_new"></a>
 
-### new CreateGeomChange
-Create a create circle change.
-
-
-| Param | Type | Description |
-| --- | --- | --- |
-| name | <code>string</code> | The name value. |
-
-<a name="CreateGeomChange+setParentAndXfo"></a>
-
-### setParentAndXfo
-The setParentAndXfo method.
-
+### new MeasurementChange
+Creates an instance of MeasurementChange.
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| parentItem | <code>TreeItem</code> | The parentItem param. |
-| xfo | <code>Xfo</code> | The xfo param. |
+| parentItem | <code>TreeItem</code> | The parentItem value |
+| startPos | <code>Xfo</code> | The startPos Value |
 
-<a name="CreateGeomChange+undo"></a>
+<a name="MeasurementChange+update"></a>
+
+### update
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| endPos | <code>Xfo</code> | The endPos value |
+
+<a name="MeasurementChange+end"></a>
+
+### end
+
+<a name="MeasurementChange+undo"></a>
 
 ### undo
 Removes recently created geometry from its parent.
 
 
-<a name="CreateGeomChange+redo"></a>
+<a name="MeasurementChange+redo"></a>
 
 ### redo
 Restores recently created geometry and adds it to the specified parent tree item.
 
 
-<a name="CreateGeomChange+toJSON"></a>
+<a name="MeasurementChange+toJSON"></a>
 
 ### toJSON
 Serializes the change as a JSON object.
@@ -61,7 +64,7 @@ Serializes the change as a JSON object.
 | --- | --- | --- |
 | context | <code>object</code> | The context value |
 
-<a name="CreateGeomChange+fromJSON"></a>
+<a name="MeasurementChange+fromJSON"></a>
 
 ### fromJSON
 Restores geometry from using the specified JSON
@@ -73,7 +76,7 @@ Restores geometry from using the specified JSON
 | j | <code>object</code> | The j param. |
 | context | <code>object</code> | The appData param. |
 
-<a name="CreateGeomChange+destroy"></a>
+<a name="MeasurementChange+destroy"></a>
 
 ### destroy
 Removes geometry item reference from change change.

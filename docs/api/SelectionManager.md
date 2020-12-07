@@ -1,11 +1,7 @@
 <a name="SelectionManager"></a>
 
 ### SelectionManager 
-Class representing a selection manager
-
-**Events**
-**leadSelectionChanged:** Triggered when selecting one item.
-**selectionChanged:** Triggered when the selected objects change.
+Class representing a selection manager**Events****leadSelectionChanged:** Triggered when selecting one item.**selectionChanged:** Triggered when the selected objects change.
 
 
 **Extends**: <code>EventEmitter</code>  
@@ -66,8 +62,7 @@ Sets initial Xfo mode of the selection group.
 <a name="SelectionManager+showHandles"></a>
 
 ### showHandles
-Displays handles depending on the specified mode(Move, Rotate, Scale).
-If nothing is specified, it hides all of them.
+Displays handles depending on the specified mode(Move, Rotate, Scale).If nothing is specified, it hides all of them.
 
 
 

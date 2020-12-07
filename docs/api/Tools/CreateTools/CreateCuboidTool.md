@@ -1,19 +1,16 @@
 <a name="CreateCuboidTool"></a>
 
 ### CreateCuboidTool 
-Tool for creating Cuboid geometry.
-
-**Events**
-* **actionFinished:** Triggered when the creation of the geometry is completed.
+Tool for creating Cuboid geometry.**Events*** **actionFinished:** Triggered when the creation of the geometry is completed.
 
 
-**Extends**: <code>[CreateGeomTool](api/Tools/CreateTools/CreateGeomTool.md)</code>  
+**Extends**: <code>[CreateGeomTool](api/Tools\CreateTools\CreateGeomTool.md)</code>  
 
 * [CreateCuboidTool ⇐ <code>CreateGeomTool</code>](#CreateCuboidTool)
     * [new CreateCuboidTool(appData)](#new-CreateCuboidTool)
-    * [createStart(xfo, parentItem)](#createStart)
+    * [createStart(xfo)](#createStart)
     * [createMove(pt)](#createMove)
-    * [createRelease(pt, viewport)](#createRelease)
+    * [createRelease(pt)](#createRelease)
 
 <a name="new_CreateCuboidTool_new"></a>
 
@@ -35,7 +32,6 @@ Starts the creation of the cuboid.
 | Param | Type | Description |
 | --- | --- | --- |
 | xfo | <code>Xfo</code> | The xfo param. |
-| parentItem | <code>TreeItem</code> | The parentItem param. |
 
 <a name="CreateCuboidTool+createMove"></a>
 
@@ -58,5 +54,4 @@ Finishes the creation of the cuboid.
 | Param | Type | Description |
 | --- | --- | --- |
 | pt | <code>Vec3</code> | The pt param. |
-| viewport | <code>GLViewport</code> | The viewport param. |
 

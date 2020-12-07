@@ -1,13 +1,10 @@
 <a name="CreateFreehandLineChange"></a>
 
 ### CreateFreehandLineChange 
-Class representing a create freehand line change.
-
-**Events**
-* **updated:** Triggered when the change is updated
+Class representing a create freehand line change.**Events*** **updated:** Triggered when the change is updated
 
 
-**Extends**: <code>[CreateGeomChange](api/Tools/CreateTools/Change/CreateGeomChange.md)</code>  
+**Extends**: <code>[CreateGeomChange](api/Tools\CreateTools\Change\CreateGeomChange.md)</code>  
 
 * [CreateFreehandLineChange ⇐ <code>CreateGeomChange</code>](#CreateFreehandLineChange)
     * [new CreateFreehandLineChange(parentItem, xfo, color, thickness)](#new-CreateFreehandLineChange)
@@ -21,12 +18,12 @@ Class representing a create freehand line change.
 Create a create freehand line change.
 
 
-| Param | Type | Description |
-| --- | --- | --- |
-| parentItem | <code>TreeItem</code> | The parentItem value. |
-| xfo | <code>Xfo</code> | The xfo value. |
-| color | <code>Color</code> | The color value. |
-| thickness | <code>number</code> | The thickness value. |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| parentItem | <code>TreeItem</code> |  | The parentItem value. |
+| xfo | <code>Xfo</code> |  | The xfo value. |
+| color | <code>Color</code> |  | The color value. |
+| thickness | <code>number</code> | <code>0.001</code> | The thickness value. |
 
 <a name="CreateFreehandLineChange+update"></a>
 
