@@ -1,6 +1,6 @@
 {
   "name": "@zeainc/zea-ux",
-  "version": "2.1.1-rc",
+  "version": "3.0.0-rc.0",
   "description": "Zea UX",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
