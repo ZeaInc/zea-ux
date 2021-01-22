@@ -44,9 +44,9 @@ class XfoHandle extends TreeItem {
     const red = new Color(1, 0.1, 0.1)
     const green = new Color('#32CD32') // limegreen https://www.rapidtables.com/web/color/green-color.html
     const blue = new Color('#1E90FF') // dodgerblue https://www.rapidtables.com/web/color/blue-color.html
-    red.a = 0.8
-    green.a = 0.8
-    blue.a = 0.8
+    red.a = 1
+    green.a = 1
+    blue.a = 1
 
     {
       const linearXWidget = new LinearMovementHandle('linearX', size, thickness, red)
