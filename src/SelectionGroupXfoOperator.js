@@ -16,6 +16,8 @@ class SelectionGroupXfoOperator extends Operator {
     super()
     this.addInput(new OperatorInput('InitialXfoMode')).setParam(initialXfoModeParam)
     this.addOutput(new OperatorOutput('GroupGlobalXfo')).setParam(globalXfoParam)
+
+    this.currGroupXfo = new Xfo()
   }
 
   /**
@@ -54,10 +56,18 @@ class SelectionGroupXfoOperator extends Operator {
    * @param {Xfo} xfo - The new value being set to the Groups GlobalXfo param.
    */
   backPropagateValue(xfo) {
-    const groupTransformOutput = this.getOutput('GroupGlobalXfo')
-    const currGroupXfo = groupTransformOutput.getValue()
-    const invXfo = currGroupXfo.inverse()
+    const invXfo = this.currGroupXfo.inverse()
     const delta = xfo.multiply(invXfo)
+    delta.ori.normalizeInPlace()
+
+    // During interactive manipulation, it is possible on heavy scenes
+    // that multiple backPropagateValue calls occur between renders.
+    // Note: that the currGroupXfo would not be re-computed in that time,
+    // and to this means that we cannot calculate the delta based on the current
+    // Value of the output. ('GroupGlobalXfo')
+    // By updating the cache of the currGroupXfo value, a successive call to
+    // backPropagateValue will apply to the result of the previous call to backPropagateValue
+    this.currGroupXfo = delta.multiply(this.currGroupXfo)
     for (let i = 1; i < this.getNumInputs(); i++) {
       const input = this.getInputByIndex(i)
       const currXfo = input.getValue()
@@ -71,45 +81,46 @@ class SelectionGroupXfoOperator extends Operator {
    */
   evaluate() {
     const groupTransformOutput = this.getOutput('GroupGlobalXfo')
-    const xfo = new Xfo()
+    this.currGroupXfo = new Xfo()
 
     if (this.getNumInputs() == 1) {
-      groupTransformOutput.setClean(xfo)
+      groupTransformOutput.setClean(this.currGroupXfo)
       return
     }
 
     const initialXfoMode = this.getInput('InitialXfoMode').getValue()
     if (initialXfoMode == Group.INITIAL_XFO_MODES.manual) {
       // The xfo is manually set by the current global xfo.
-      groupTransformOutput.setClean(groupTransformOutput.getValue())
+      this.currGroupXfo = groupTransformOutput.getValue().clone()
       return
     } else if (initialXfoMode == Group.INITIAL_XFO_MODES.first) {
-      groupTransformOutput.setClean(this.getInputByIndex(1).getValue())
+      const itemXfo = this.getInputByIndex(1).getValue()
+      this.currGroupXfo.tr = itemXfo.tr.clone()
+      this.currGroupXfo.ori = itemXfo.ori.clone()
     } else if (initialXfoMode == Group.INITIAL_XFO_MODES.average) {
-      xfo.ori.set(0, 0, 0, 0)
+      this.currGroupXfo.ori.set(0, 0, 0, 0)
       let numTreeItems = 0
       for (let i = 1; i < this.getNumInputs(); i++) {
         const itemXfo = this.getInputByIndex(i).getValue()
-        xfo.tr.addInPlace(itemXfo.tr)
-        xfo.ori.addInPlace(itemXfo.ori)
+        this.currGroupXfo.tr.addInPlace(itemXfo.tr)
+        this.currGroupXfo.ori.addInPlace(itemXfo.ori)
         numTreeItems++
       }
-      xfo.tr.scaleInPlace(1 / numTreeItems)
-      xfo.ori.normalizeInPlace()
-      // xfo.sc.scaleInPlace(1/ numTreeItems);
-      groupTransformOutput.setClean(xfo)
+      this.currGroupXfo.tr.scaleInPlace(1 / numTreeItems)
+      // this.currGroupXfo.sc.scaleInPlace(1 / numTreeItems);
     } else if (initialXfoMode == Group.INITIAL_XFO_MODES.globalOri) {
       let numTreeItems = 0
       for (let i = 1; i < this.getNumInputs(); i++) {
         const itemXfo = this.getInputByIndex(i).getValue()
-        xfo.tr.addInPlace(itemXfo.tr)
+        this.currGroupXfo.tr.addInPlace(itemXfo.tr)
         numTreeItems++
       }
-      xfo.tr.scaleInPlace(1 / numTreeItems)
-      groupTransformOutput.setClean(xfo)
+      this.currGroupXfo.tr.scaleInPlace(1 / numTreeItems)
     } else {
       throw new Error('Invalid Group.INITIAL_XFO_MODES.')
     }
+    this.currGroupXfo.ori.normalizeInPlace()
+    groupTransformOutput.setClean(this.currGroupXfo)
   }
 }
 
