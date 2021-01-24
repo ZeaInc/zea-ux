@@ -50,7 +50,7 @@ class SelectionGroup extends SelectionSet {
     this.__itemsParam.setFilterFn((item) => item instanceof BaseItem)
 
     this.__initialXfoModeParam = this.addParameter(
-      new MultiChoiceParameter('InitialXfoMode', GROUP_XFO_MODES.average, ['manual', 'first', 'average', 'global'])
+      new MultiChoiceParameter('InitialXfoMode', GROUP_XFO_MODES.first, ['manual', 'first', 'average', 'global'])
     )
 
     this.selectionGroupXfoOp = new SelectionGroupXfoOperator(
