@@ -39,20 +39,6 @@ class SphericalRotationHandle extends Handle {
   }
 
   /**
-   * Applies a special shinning shader to the handle to illustrate interaction with it.
-   */
-  highlight() {
-    // Nothing happens here
-  }
-
-  /**
-   * Removes the shining shader from the handle.
-   */
-  unhighlight() {
-    // Nothing happens here
-  }
-
-  /**
    * Sets global xfo target parameter.
    *
    * @param {Parameter} param - The video param.
