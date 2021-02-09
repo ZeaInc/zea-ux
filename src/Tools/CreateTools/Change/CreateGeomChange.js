@@ -74,7 +74,7 @@ class CreateGeomChange extends Change {
     this.childIndex = this.parentItem.addChild(this.geomItem, false)
   }
 
-  // changeFromJSON(j) {
+  // updateFromJSON(j) {
   //   if (this.__newValue.fromJSON)
   //     this.__newValue.fromJSON(j.value);
   //   else

@@ -4,7 +4,7 @@
 Class representing an `Add TreeItem` Change. Meaning that this should be called when you add a new `TreeItem` to the scene.
 
 
-**Extends**: <code>[Change](api/UndoRedo/Change.md)</code>  
+**Extends**: <code>[Change](api/UndoRedo\Change.md)</code>  
 
 * [TreeItemAddChange ⇐ <code>Change</code>](#TreeItemAddChange)
     * [new TreeItemAddChange(treeItem, owner, selectionManager)](#new-TreeItemAddChange)

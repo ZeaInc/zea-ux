@@ -14,14 +14,13 @@ Kind of an abstract class, that represents the mandatory structure of a change c
     * [update(updateData)](#update)
     * [toJSON(context) ⇒ <code>object</code>](#toJSON)
     * [fromJSON(j, context)](#fromJSON)
-    * [changeFromJSON(j)](#changeFromJSON)
+    * [updateFromJSON(j)](#updateFromJSON)
     * [destroy()](#destroy)
 
 <a name="new_Change_new"></a>
 
 ### new Change
-Every class that extends from `Change` must contain a global `name` attribute.
-It is used by the `UndoRedoManager` factory to re-construct the class of the specific implementation of the `Change` class.
+Every class that extends from `Change` must contain a global `name` attribute.It is used by the `UndoRedoManager` factory to re-construct the class of the specific implementation of the `Change` class.
 
 
 | Param | Type | Description |
@@ -31,8 +30,7 @@ It is used by the `UndoRedoManager` factory to re-construct the class of the spe
 <a name="Change+undo"></a>
 
 ### undo
-Called by the `UndoRedoManager` in the `undo` method, and contains the code you wanna run when the undo action is triggered,
-of course it depends on what you're doing.
+Called by the `UndoRedoManager` in the `undo` method, and contains the code you wanna run when the undo action is triggered,of course it depends on what you're doing.
 
 
 **Note**: This method needs to be implemented, otherwise it will throw an Error.  
@@ -71,9 +69,7 @@ Serializes the `Change` instance as a JSON object, allowing persistence/replicat
 <a name="Change+fromJSON"></a>
 
 ### fromJSON
-The counterpart of the `toJSON` method, restoring `Change` instance's state with the specified JSON object.
-Each `Change` class must implement the logic for reconstructing itself.
-Very often used to restore from persisted/replicated JSON.
+The counterpart of the `toJSON` method, restoring `Change` instance's state with the specified JSON object.Each `Change` class must implement the logic for reconstructing itself.Very often used to restore from persisted/replicated JSON.
 
 
 **Note**: This method needs to be implemented, otherwise it will do nothing.  
@@ -83,9 +79,9 @@ Very often used to restore from persisted/replicated JSON.
 | j | <code>object</code> | The j param. |
 | context | <code>object</code> | The context param. |
 
-<a name="Change+changeFromJSON"></a>
+<a name="Change+updateFromJSON"></a>
 
-### changeFromJSON
+### updateFromJSON
 Useful method to update the state of an existing identified `Change` through replication.
 
 
@@ -98,8 +94,6 @@ Useful method to update the state of an existing identified `Change` through rep
 <a name="Change+destroy"></a>
 
 ### destroy
-Method destined to clean up things that would need to be cleaned manually.
-It is executed when flushing the undo/redo stacks or adding a new change to the undo stack,
-so it is require in any class that represents a change.
+Method destined to clean up things that would need to be cleaned manually.It is executed when flushing the undo/redo stacks or adding a new change to the undo stack,so it is require in any class that represents a change.
 
 

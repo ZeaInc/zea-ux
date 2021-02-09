@@ -59,7 +59,7 @@ class CreateCircleChange extends CreateGeomChange {
    *
    * @param {object} j - The j param.
    */
-  changeFromJSON(j) {
+  updateFromJSON(j) {
     console.log('CreateCircleChange:', j)
     if (j.radius) this.circle.getParameter('Radius').setValue(j.radius)
   }

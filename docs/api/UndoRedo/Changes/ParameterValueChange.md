@@ -1,13 +1,10 @@
 <a name="ParameterValueChange"></a>
 
 ### ParameterValueChange 
-Represents a `Change` class for storing `Parameter` values.
-
-**Events**
-* **updated:** Triggered when the `ParameterValueChange` value is updated.
+Represents a `Change` class for storing `Parameter` values.**Events*** **updated:** Triggered when the `ParameterValueChange` value is updated.
 
 
-**Extends**: <code>[Change](api/UndoRedo/Change.md)</code>  
+**Extends**: <code>[Change](api/UndoRedo\Change.md)</code>  
 
 * [ParameterValueChange ⇐ <code>Change</code>](#ParameterValueChange)
     * [new ParameterValueChange(param, newValue)](#new-ParameterValueChange)
@@ -16,7 +13,7 @@ Represents a `Change` class for storing `Parameter` values.
     * [update(updateData)](#update)
     * [toJSON(context) ⇒ <code>object</code>](#toJSON)
     * [fromJSON(j, context)](#fromJSON)
-    * [changeFromJSON(j)](#changeFromJSON)
+    * [updateFromJSON(j)](#updateFromJSON)
 
 <a name="new_ParameterValueChange_new"></a>
 
@@ -38,8 +35,7 @@ Rollbacks the value of the parameter to the previous one, passing it to the redo
 <a name="ParameterValueChange+redo"></a>
 
 ### redo
-Rollbacks the `undo` action by moving the change from the `redo` stack to the `undo` stack
-and updating the parameter with the new value.
+Rollbacks the `undo` action by moving the change from the `redo` stack to the `undo` stackand updating the parameter with the new value.
 
 
 <a name="ParameterValueChange+update"></a>
@@ -77,9 +73,9 @@ Restores `Parameter` instance's state with the specified JSON object.
 | j | <code>object</code> | The j param. |
 | context | <code>object</code> | The context param. |
 
-<a name="ParameterValueChange+changeFromJSON"></a>
+<a name="ParameterValueChange+updateFromJSON"></a>
 
-### changeFromJSON
+### updateFromJSON
 Updates the state of an existing identified `Parameter` through replication.
 
 

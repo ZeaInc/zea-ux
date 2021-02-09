@@ -4,10 +4,13 @@
 Class representing a selection tool.
 
 
-**Extends**: <code>[BaseTool](api/Tools/BaseTool.md)</code>  
+**Extends**: <code>BaseTool</code>  
 
 * [SelectionTool ⇐ <code>BaseTool</code>](#SelectionTool)
     * [new SelectionTool(appData)](#new-SelectionTool)
+    * [activateTool()](#activateTool)
+    * [deactivateTool()](#deactivateTool)
+    * [setSelectionManager()](#setSelectionManager)
     * [activateTool()](#activateTool)
     * [deactivateTool()](#deactivateTool)
     * [onPointerDown(event) ⇒ <code>boolean</code>](#onPointerDown)
@@ -24,6 +27,24 @@ Creates an instance of SelectionTool.
 | Param | Type | Description |
 | --- | --- | --- |
 | appData | <code>object</code> | The appData value |
+
+<a name="SelectionTool+activateTool"></a>
+
+### activateTool
+activate this tool
+
+
+<a name="SelectionTool+deactivateTool"></a>
+
+### deactivateTool
+Disables tool usage.
+
+
+<a name="SelectionTool+setSelectionManager"></a>
+
+### setSelectionManager
+Activates selection tool.
+
 
 <a name="SelectionTool+activateTool"></a>
 

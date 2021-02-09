@@ -1,11 +1,7 @@
 <a name="Handle"></a>
 
 ### Handle 
-A Handle is an UI widget that lives in the scene, it translates a series of pointer events into a higher level interaction.
-
-**Parameters**
-* **Color(`ColorParameter`):** Specifies the color of the handle.
-* **HighlightColor(`ColorParameter`):** Specifies the highlight color of the handle.
+A Handle is an UI widget that lives in the scene, it translates a series of pointer events into a higher level interaction.**Parameters*** **Color(`ColorParameter`):** Specifies the color of the handle.* **HighlightColor(`ColorParameter`):** Specifies the highlight color of the handle.
 
 
 **Extends**: <code>TreeItem</code>  

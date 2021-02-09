@@ -52,6 +52,7 @@ class CreateCuboidTool extends CreateGeomTool {
       })
     } else {
       const vec = this.invXfo.transformVec3(pt)
+      console.log('vecY:', vec.y)
       this.change.update({ height: vec.y })
     }
   }

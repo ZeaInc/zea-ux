@@ -4,27 +4,24 @@
 Base class for creating geometry tools.
 
 
-**Extends**: <code>[BaseCreateTool](api/Tools/BaseCreateTool.md)</code>  
+**Extends**: <code>[BaseCreateTool](api/Tools\BaseCreateTool.md)</code>  
 
 * [CreateGeomTool ⇐ <code>BaseCreateTool</code>](#CreateGeomTool)
     * [new CreateGeomTool(appData)](#new-CreateGeomTool)
     * [activateTool()](#activateTool)
     * [deactivateTool()](#deactivateTool)
-    * [screenPosToXfo(screenPos, viewport) ⇒ <code>Xfo</code>](#screenPosToXfo)
-    * [createStart(xfo, parentItem)](#createStart)
+    * [screenPosToXfo(event) ⇒ <code>Xfo</code>](#screenPosToXfo)
+    * [createStart(xfo)](#createStart)
     * [createPoint(pt)](#createPoint)
     * [createMove(pt)](#createMove)
     * [createRelease(pt)](#createRelease)
-    * [onMouseDown(event) ⇒ <code>boolean</code>](#onMouseDown)
-    * [onMouseMove(event) ⇒ <code>boolean</code>](#onMouseMove)
-    * [onMouseUp(event) ⇒ <code>boolean</code>](#onMouseUp)
+    * [onPointerDown(event) ⇒ <code>boolean</code>](#onPointerDown)
+    * [onPointerMove(event) ⇒ <code>boolean</code>](#onPointerMove)
+    * [onPointerUp(event) ⇒ <code>boolean</code>](#onPointerUp)
     * [onWheel(event)](#onWheel)
     * [onKeyPressed(event)](#onKeyPressed)
     * [onKeyDown(event)](#onKeyDown)
     * [onKeyUp(event)](#onKeyUp)
-    * [onTouchStart(event)](#onTouchStart)
-    * [onTouchMove(event)](#onTouchMove)
-    * [onTouchEnd(event)](#onTouchEnd)
     * [onTouchCancel(event)](#onTouchCancel)
     * [onVRControllerButtonDown(event) ⇒ <code>boolean</code>](#onVRControllerButtonDown)
     * [onVRPoseChanged(event) ⇒ <code>boolean</code>](#onVRPoseChanged)
@@ -62,8 +59,7 @@ Transforms the screen position in the viewport to an Xfo object.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| screenPos | <code>Vec2</code> | The screenPos param. |
-| viewport | <code>GLViewport</code> | The viewport param. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> | The event param |
 
 <a name="CreateGeomTool+createStart"></a>
 
@@ -75,7 +71,6 @@ Starts the creation of the geometry.
 | Param | Type | Description |
 | --- | --- | --- |
 | xfo | <code>Xfo</code> | The xfo param. |
-| parentItem | <code>TreeItem</code> | The parentItem param. |
 
 <a name="CreateGeomTool+createPoint"></a>
 
@@ -110,9 +105,9 @@ The createRelease method.
 | --- | --- | --- |
 | pt | <code>Vec3</code> | The pt param. |
 
-<a name="CreateGeomTool+onMouseDown"></a>
+<a name="CreateGeomTool+onPointerDown"></a>
 
-### onMouseDown
+### onPointerDown
 Event fired when a pointing device button is pressed over the viewport while the tool is activated.
 
 
@@ -120,11 +115,11 @@ Event fired when a pointing device button is pressed over the viewport while the
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> | The event param. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> | The event param. |
 
-<a name="CreateGeomTool+onMouseMove"></a>
+<a name="CreateGeomTool+onPointerMove"></a>
 
-### onMouseMove
+### onPointerMove
 Event fired when a pointing device is moved while the cursor's hotspot is inside the viewport, while tool is activated.
 
 
@@ -132,11 +127,11 @@ Event fired when a pointing device is moved while the cursor's hotspot is inside
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> | The event param. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> | The event param. |
 
-<a name="CreateGeomTool+onMouseUp"></a>
+<a name="CreateGeomTool+onPointerUp"></a>
 
-### onMouseUp
+### onPointerUp
 Event fired when a pointing device button is released while the pointer is over the viewport, while the tool is activated.
 
 
@@ -144,7 +139,7 @@ Event fired when a pointing device button is released while the pointer is over 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> | The event param. |
+| event | <code>MouseEvent</code> \| <code>TouchEvent</code> | The event param. |
 
 <a name="CreateGeomTool+onWheel"></a>
 
@@ -189,39 +184,6 @@ Event fired when the user releases a key on the keyboard.
 | Param | Type | Description |
 | --- | --- | --- |
 | event | <code>KeyboardEvent</code> | The event param. |
-
-<a name="CreateGeomTool+onTouchStart"></a>
-
-### onTouchStart
-Event fired when one or more touch points are placed on the touch surface inside the viewport, when the tool is activated.
-
-
-
-| Param | Type | Description |
-| --- | --- | --- |
-| event | <code>TouchEvent</code> | The event param. |
-
-<a name="CreateGeomTool+onTouchMove"></a>
-
-### onTouchMove
-Event fired when the one or more touch points are moved along the touch surface inside the viewport, when the tool is activated.
-
-
-
-| Param | Type | Description |
-| --- | --- | --- |
-| event | <code>TouchEvent</code> | The event param. |
-
-<a name="CreateGeomTool+onTouchEnd"></a>
-
-### onTouchEnd
-Event fired when one or more touch points are removed from the touch surface inside the viewport, when the tool is activated.
-
-
-
-| Param | Type | Description |
-| --- | --- | --- |
-| event | <code>TouchEvent</code> | The event param. |
 
 <a name="CreateGeomTool+onTouchCancel"></a>
 

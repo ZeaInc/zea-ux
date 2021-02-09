@@ -1,13 +1,10 @@
 <a name="CreateConeTool"></a>
 
 ### CreateConeTool 
-Tool for creating a Cone geometry.
-
-**Events**
-* **actionFinished:** Triggered when the creation of the geometry is completed.
+Tool for creating a Cone geometry.**Events*** **actionFinished:** Triggered when the creation of the geometry is completed.
 
 
-**Extends**: <code>[CreateGeomTool](api/Tools/CreateTools/CreateGeomTool.md)</code>  
+**Extends**: <code>[CreateGeomTool](api/Tools\CreateTools\CreateGeomTool.md)</code>  
 
 * [CreateConeTool ⇐ <code>CreateGeomTool</code>](#CreateConeTool)
     * [new CreateConeTool(appData)](#new-CreateConeTool)

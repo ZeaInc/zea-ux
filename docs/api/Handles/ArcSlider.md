@@ -1,21 +1,10 @@
 <a name="ArcSlider"></a>
 
 ### ArcSlider 
-Class representing a slider scene widget with an arc shape. There are two parts in this widget, the slider and the handle.<br>
-The **Handle** is the moving part of the widget, the object you interact with. The **Slider** is the path that the **handle** follows.
+Class representing a slider scene widget with an arc shape. There are two parts in this widget, the slider and the handle.<br>The **Handle** is the moving part of the widget, the object you interact with. The **Slider** is the path that the **handle** follows.**Parameters*** **ArcRadius(`NumberParameter`):** Specifies the radius of the slider.* **ArcAngle(`NumberParameter`):** Specifies the arc angle of the slider.* **HandleRadius(`NumberParameter`):** Specifies the radius of the handle in the slider.**Events*** **dragStart:** Triggered when the pointer is down.* **dragEnd:** Triggered when the pointer is released.
 
 
-**Parameters**
-* **ArcRadius(`NumberParameter`):** Specifies the radius of the slider.
-* **ArcAngle(`NumberParameter`):** Specifies the arc angle of the slider.
-* **HandleRadius(`NumberParameter`):** Specifies the radius of the handle in the slider.
-
-**Events**
-* **dragStart:** Triggered when the pointer is down.
-* **dragEnd:** Triggered when the pointer is released.
-
-
-**Extends**: <code>[BaseAxialRotationHandle](api/Handles/BaseAxialRotationHandle.md)</code>  
+**Extends**: <code>[BaseAxialRotationHandle](api/Handles\BaseAxialRotationHandle.md)</code>  
 
 * [ArcSlider ⇐ <code>BaseAxialRotationHandle</code>](#ArcSlider)
     * [new ArcSlider(name, [arcRadius], [arcAngle], [handleRadius], [color])](#new-ArcSlider)

@@ -1,17 +1,14 @@
 <a name="CreateFreehandLineTool"></a>
 
 ### CreateFreehandLineTool 
-Tool for creating a free hand line.
-
-**Events**
-* **actionFinished:** Triggered when the creation of the geometry is completed.
+Tool for creating a free hand line.**Events*** **actionFinished:** Triggered when the creation of the geometry is completed.
 
 
-**Extends**: <code>[CreateLineTool](api/Tools/CreateTools/CreateLineTool.md)</code>  
+**Extends**: <code>[CreateLineTool](api/Tools\CreateTools\CreateLineTool.md)</code>  
 
 * [CreateFreehandLineTool ⇐ <code>CreateLineTool</code>](#CreateFreehandLineTool)
     * [new CreateFreehandLineTool(appData)](#new-CreateFreehandLineTool)
-    * [createStart(xfo, parentItem)](#createStart)
+    * [createStart(xfo)](#createStart)
     * [createMove(pt)](#createMove)
     * [createRelease(pt)](#createRelease)
 
@@ -35,7 +32,6 @@ Starts the creation of a free hand line.
 | Param | Type | Description |
 | --- | --- | --- |
 | xfo | <code>Xfo</code> | The xfo param. |
-| parentItem | <code>TreeItem</code> | The parentItem param. |
 
 <a name="CreateFreehandLineTool+createMove"></a>
 

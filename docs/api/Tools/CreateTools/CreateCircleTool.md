@@ -1,17 +1,14 @@
 <a name="CreateCircleTool"></a>
 
 ### CreateCircleTool 
-Tool for creating a circle geometry.
-
-**Events**
-* **actionFinished:** Triggered when the creation of the geometry is completed.
+Tool for creating a circle geometry.**Events*** **actionFinished:** Triggered when the creation of the geometry is completed.
 
 
-**Extends**: <code>[CreateGeomTool](api/Tools/CreateTools/CreateGeomTool.md)</code>  
+**Extends**: <code>[CreateGeomTool](api/Tools\CreateTools\CreateGeomTool.md)</code>  
 
 * [CreateCircleTool ⇐ <code>CreateGeomTool</code>](#CreateCircleTool)
     * [new CreateCircleTool(appData)](#new-CreateCircleTool)
-    * [createStart(xfo, parentItem)](#createStart)
+    * [createStart(xfo)](#createStart)
     * [createMove(pt)](#createMove)
     * [createRelease(pt)](#createRelease)
 
@@ -35,7 +32,6 @@ Starts the creation of the geometry.
 | Param | Type | Description |
 | --- | --- | --- |
 | xfo | <code>Xfo</code> | The xfo param. |
-| parentItem | <code>TreeItem</code> | The parentItem param. |
 
 <a name="CreateCircleTool+createMove"></a>
 

@@ -1,10 +1,7 @@
 <a name="XfoHandle"></a>
 
 ### XfoHandle 
-Class representing a xfo handle. Base manipulators for
-
-**Parameters**
-* **HighlightColor(`ColorParameter`):** Specifies the highlight color of the handle.
+Class representing a xfo handle. Base transformations for objects in the scene**Parameters*** **HighlightColor(`ColorParameter`):** Specifies the highlight color of the handle.
 
 
 **Extends**: <code>TreeItem</code>  
@@ -28,8 +25,7 @@ Create an axial rotation scene widget.
 <a name="XfoHandle+showHandles"></a>
 
 ### showHandles
-Displays handles depending on the specified mode(Move, Rotate, Scale).
-If nothing is specified, it hides all of them.
+Displays handles depending on the specified mode(Move, Rotate, Scale).If nothing is specified, it hides all of them.
 
 
 

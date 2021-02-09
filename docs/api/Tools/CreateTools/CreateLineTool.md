@@ -1,17 +1,14 @@
 <a name="CreateLineTool"></a>
 
 ### CreateLineTool 
-Tool for creating a line tool.
-
-**Events**
-* **actionFinished:** Triggered when the creation of the geometry is completed.
+Tool for creating a line tool.**Events*** **actionFinished:** Triggered when the creation of the geometry is completed.
 
 
-**Extends**: <code>[CreateGeomTool](api/Tools/CreateTools/CreateGeomTool.md)</code>  
+**Extends**: <code>[CreateGeomTool](api/Tools\CreateTools\CreateGeomTool.md)</code>  
 
 * [CreateLineTool ⇐ <code>CreateGeomTool</code>](#CreateLineTool)
     * [new CreateLineTool(appData)](#new-CreateLineTool)
-    * [createStart(xfo, parentItem)](#createStart)
+    * [createStart(xfo)](#createStart)
     * [createMove(pt)](#createMove)
     * [createRelease(pt)](#createRelease)
 
@@ -23,7 +20,7 @@ Create a create line tool.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| appData | <code>any</code> | The appData value. |
+| appData | <code>object</code> | The appData value. |
 
 <a name="CreateLineTool+createStart"></a>
 
@@ -35,7 +32,6 @@ Starts line geometry creation.
 | Param | Type | Description |
 | --- | --- | --- |
 | xfo | <code>Xfo</code> | The xfo param. |
-| parentItem | <code>TreeItem</code> | The parentItem param. |
 
 <a name="CreateLineTool+createMove"></a>
 

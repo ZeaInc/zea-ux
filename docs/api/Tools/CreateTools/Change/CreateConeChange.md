@@ -1,13 +1,10 @@
 <a name="CreateConeChange"></a>
 
 ### CreateConeChange 
-Class representing a create cone change.
-
-**Events**
-* **updated:** Triggered when the change is updated
+Class representing a create cone change.**Events*** **updated:** Triggered when the change is updated
 
 
-**Extends**: <code>[CreateGeomChange](api/Tools/CreateTools/Change/CreateGeomChange.md)</code>  
+**Extends**: <code>[CreateGeomChange](api/Tools\CreateTools\Change\CreateGeomChange.md)</code>  
 
 * [CreateConeChange ⇐ <code>CreateGeomChange</code>](#CreateConeChange)
     * [new CreateConeChange(parentItem, xfo)](#new-CreateConeChange)

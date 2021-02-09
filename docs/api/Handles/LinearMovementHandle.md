@@ -4,7 +4,7 @@
 Class representing a linear movement scene widget.
 
 
-**Extends**: <code>[BaseLinearMovementHandle](api/Handles/BaseLinearMovementHandle.md)</code>  
+**Extends**: <code>[BaseLinearMovementHandle](api/Handles\BaseLinearMovementHandle.md)</code>  
 
 * [LinearMovementHandle ⇐ <code>BaseLinearMovementHandle</code>](#LinearMovementHandle)
     * [new LinearMovementHandle(name, length, thickness, color)](#new-LinearMovementHandle)

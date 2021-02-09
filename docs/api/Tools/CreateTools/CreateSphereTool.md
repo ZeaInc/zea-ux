@@ -1,17 +1,14 @@
 <a name="CreateSphereTool"></a>
 
 ### CreateSphereTool 
-Tool for creating Sphere geometries.
-
-**Events**
-* **actionFinished:** Triggered when the creation of the geometry is completed.
+Tool for creating Sphere geometries.**Events*** **actionFinished:** Triggered when the creation of the geometry is completed.
 
 
-**Extends**: <code>[CreateGeomTool](api/Tools/CreateTools/CreateGeomTool.md)</code>  
+**Extends**: <code>[CreateGeomTool](api/Tools\CreateTools\CreateGeomTool.md)</code>  
 
 * [CreateSphereTool ⇐ <code>CreateGeomTool</code>](#CreateSphereTool)
     * [new CreateSphereTool(appData)](#new-CreateSphereTool)
-    * [createStart(xfo, parentItem)](#createStart)
+    * [createStart(xfo)](#createStart)
     * [createMove(pt)](#createMove)
     * [createRelease(pt)](#createRelease)
 
@@ -35,7 +32,6 @@ Starts the creation of the sphere geometry.
 | Param | Type | Description |
 | --- | --- | --- |
 | xfo | <code>Xfo</code> | The xfo param. |
-| parentItem | <code>TreeItem</code> | The parentItem param. |
 
 <a name="CreateSphereTool+createMove"></a>
 

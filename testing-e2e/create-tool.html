@@ -22,6 +22,7 @@
         display: flex;
         align-items: center;
         padding: 0.5em;
+        gap: 1em;
       }
 
       .hidden {
@@ -57,7 +58,7 @@
 
     <script type="module">
       const { GLRenderer, Scene, GeomItem, Material, Vec3, Xfo, Color, Cuboid, Torus } = window.zeaEngine
-      const { CreateFreehandLineTool, UndoRedoManager } = window.zeaUx
+      const { CreateCircleTool, CreateConeTool, CreateCuboidTool, CreateFreehandLineTool, CreateLineTool, CreateRectTool, CreateSphereTool } = window.zeaUx
 
       const $canvas = document.getElementById('renderer')
 
@@ -80,7 +81,7 @@
         geomItem1Xfo.tr = new Vec3(0.5, 0, 0.35)
         geomItem1.getParameter('GlobalXfo').setValue(geomItem1Xfo)
 
-        scene.getRoot().addChild(geomItem1)
+        // scene.getRoot().addChild(geomItem1)
 
         const material2 = new Material('material2', 'SimpleSurfaceShader')
         material2.getParameter('BaseColor').setValue(new Color('#35257D'))
@@ -91,7 +92,8 @@
         geomItem2Xfo.tr = new Vec3(-1, 0, 0.35)
         geomItem2.getParameter('GlobalXfo').setValue(geomItem2Xfo)
 
-        scene.getRoot().addChild(geomItem2)
+        
+        // scene.getRoot().addChild(geomItem2)
       }
 
       /** */
@@ -101,101 +103,64 @@
           renderer,
         }
 
-        const createFreeHandLineTool = new CreateFreehandLineTool(appData)
-        createFreeHandLineTool.getParameter('LineThickness').setValue(0.01)
+        const freeHandLineTool = new CreateFreehandLineTool(appData)
+        freeHandLineTool.getParameter('LineThickness').setValue(0.01)
 
-        const cameraManipulator = renderer.getViewport().getManipulator()
-
-        let createToolOn = false
-        const setFreeHandLineTool = () => {
-          renderer.getViewport().setManipulator(createFreeHandLineTool)
-          createToolOn = true
+        const tools = {
+          circleTool: new CreateCircleTool(appData),
+          coneTool: new CreateConeTool(appData),
+          cuboidTool: new CreateCuboidTool(appData),
+          freeHandLineTool,
+          lineTool: new CreateLineTool(appData),
+          rectTool: new CreateRectTool(appData),
+          sphereTool: new CreateSphereTool(appData),
+          cameraManipulator: renderer.getViewport().getManipulator()
         }
 
-        const setToolToCameraManipulator = () => {
-          renderer.getViewport().setManipulator(cameraManipulator)
-          createToolOn = false
-        }
-
-        document.addEventListener('keydown', (e) => {
-          switch (e.key) {
-            case 'b':
-              if (createToolOn) {
-                setToolToCameraManipulator()
-                return
-              }
-              setFreeHandLineTool()
-              break
-            case 'z':
-              if (e.ctrlKey) {
-                const undoRedoManager = UndoRedoManager.getInstance()
-                undoRedoManager.undo()
-              }
-              break
-            case 'y':
-              if (e.ctrlKey) {
-                const undoRedoManager = UndoRedoManager.getInstance()
-                undoRedoManager.redo()
-              }
-              break
-          }
-        })
-
-        const $selectionCheckbox = document.getElementById('freehandline-cbx')
-
-        $selectionCheckbox.addEventListener('change', (e) => {
-          if (event.target.checked) {
-            setFreeHandLineTool()
-          } else {
-            setToolToCameraManipulator()
-          }
+        const $toolRadios = document.querySelectorAll('input[type=radio][name="tool-radio"]')
+        $toolRadios.forEach(toolRadio => {
+          toolRadio.addEventListener('change', (e) => {
+            renderer.getViewport().setManipulator(tools[e.target.value])
+          })
         })
       }
 
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(0, 4, 3), new Vec3(0, 0, 0))
-
-      const $undoBtn = document.getElementById('undo')
-      const $redoBtn = document.getElementById('redo')
-      const undoRedoManager = UndoRedoManager.getInstance()
-
-      // Event handlers
-      {
-        $undoBtn.addEventListener('click', (e) => {
-          console.log('Undo')
-          undoRedoManager.undo()
-        })
-
-        $redoBtn.addEventListener('click', (e) => {
-          console.log('Redo')
-          undoRedoManager.redo()
-        })
-      }
     </script>
   </head>
   <body>
     <div id="controllers">
       <div>
-        <label for="freehandline-cbx">Free Hand Line Tool</label>
-        <input type="checkbox" name="freehandline-cbx" id="freehandline-cbx" />
-
-        <button id="undo">Undo</button>
-        <button id="redo">Redo</button>
+        <label for="cameramanipulator-cbx">Camera Manipulator</label>
+        <input type="radio" name="tool-radio" id="cameramanipulator-cbx" value="cameraManipulator" />
       </div>
-
-      <div id="xfo-handlers" class="hidden">
-        <span>=></span>
-        <div>
-          <label for="translate">Translate</label>
-          <input type="radio" id="translate" name="xfo-type" value="Translate" checked="true" />
-        </div>
-        <div>
-          <label for="rotate">Rotate</label>
-          <input type="radio" id="rotate" name="xfo-type" value="Rotate" />
-        </div>
-        <div>
-          <label for="scale">Scale</label>
-          <input type="radio" id="scale" name="xfo-type" value="Scale" />
-        </div>
+      <div>
+        <label for="cone-cbx">Cone</label>
+        <input type="radio" name="tool-radio" id="cone-cbx" value="coneTool" />
+      </div>
+      <div>
+        <label for="cuboid-cbx">Cuboid</label>
+        <input type="radio" name="tool-radio" id="cuboid-cbx" value="cuboidTool" />
+      </div>
+      <div>
+        <label for="freehandline-cbx">FHLine</label>
+        <input type="radio" name="tool-radio" id="freehandline-cbx" value="freeHandLineTool" />
+      </div>
+      <div>
+        <label for="circle-cbx">Circle</label>
+        <input type="radio" name="tool-radio" id="circle-cbx" value="circleTool" />
+      </div>
+      <div>
+        <label for="line-cbx">Line</label>
+        <input type="radio" name="tool-radio" id="line-cbx" value="lineTool" />
+      </div>
+      <div>
+        <label for="rect-cbx">Rect</label>
+        <input type="radio" name="tool-radio" id="rect-cbx" value="rectTool" />
+      </div>
+      <div>
+        <label for="sphere-cbx">Sphere</label>
+        <input type="radio" name="tool-radio" id="sphere-cbx" value="sphereTool" />
       </div>
     </div>
     <canvas id="renderer"></canvas>
