@@ -10,8 +10,6 @@ describe('Planar Movement Handle', () => {
   })
 
   it('Screen Space Movement Handle Moves - Mouse', () => {
-    cyFocusCanvas()
-
     cy.window().then((win) => {
       const variant = 'x-axis'
       win.postMessage(variant)
@@ -32,8 +30,6 @@ describe('Planar Movement Handle', () => {
   })
 
   it('Screen Space Movement Handle Moves - Touch', () => {
-    cyFocusCanvas()
-
     cy.window().then((win) => {
       const variant = 'x-axis'
       win.postMessage(variant)
