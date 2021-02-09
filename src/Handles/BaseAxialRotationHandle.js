@@ -73,7 +73,7 @@ class BaseAxialRotationHandle extends Handle {
    */
   onDrag(event) {
     const vec1 = event.holdPos.subtract(this.baseXfo.tr)
-    const dragCircleRadius = vec1.length()
+    // const dragCircleRadius = vec1.length()
     vec1.normalizeInPlace()
 
     // modulate the angle by the radius the mouse moves
