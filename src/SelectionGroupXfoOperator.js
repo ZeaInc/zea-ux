@@ -103,7 +103,9 @@ class SelectionGroupXfoOperator extends Operator {
       for (let i = 1; i < this.getNumInputs(); i++) {
         const itemXfo = this.getInputByIndex(i).getValue()
         this.currGroupXfo.tr.addInPlace(itemXfo.tr)
-        this.currGroupXfo.ori.addInPlace(itemXfo.ori)
+
+        // Note: Averaging rotations causes weird and confusing GizmoRotation.
+        if (numTreeItems == 0) this.currGroupXfo.ori.addInPlace(itemXfo.ori)
         numTreeItems++
       }
       this.currGroupXfo.tr.scaleInPlace(1 / numTreeItems)
