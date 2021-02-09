@@ -183,21 +183,11 @@ class XfoHandle extends TreeItem {
   /**
    * Displays handles depending on the specified mode(Move, Rotate, Scale).
    * If nothing is specified, it hides all of them.
-   *
+   * @deprecated
    * @param {string} handleManipulationMode - The mode of the Xfo parameter
    */
   showHandles(handleManipulationMode) {
-    console.log('handleManipulationMode', handleManipulationMode)
     this.setVisible(true)
-    // this.traverse((item) => {
-    //   // if (item != this) {
-    //   //   item.setVisible(false)
-    //   //   return false
-    //   // }
-    // })
-
-    // const child = this.getChildByName(handleManipulationMode)
-    // if (child) child.setVisible(true)
   }
 
   /**
