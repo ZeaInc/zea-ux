@@ -28,8 +28,6 @@ describe('Xfo Handle', () => {
   })
 
   it('Xfo Handle Performs Actions - Mouse', () => {
-    cyFocusCanvas()
-
     cy.get('canvas').trigger('mousedown', 500, 420).trigger('mousemove', 500, 400).trigger('mouseup', 500, 400)
     cy.wait(100)
     cy.get('canvas').percySnapshot('XfoHandleTranslateMovesMouse')
@@ -46,8 +44,6 @@ describe('Xfo Handle', () => {
   })
 
   it('Xfo Handle Performs Actions - Touch', () => {
-    cyFocusCanvas()
-
     const trTouchStart = createTouchEvents([500, 420])
     const trTouchEnd = createTouchEvents([500, 400])
 
