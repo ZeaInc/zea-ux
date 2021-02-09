@@ -83,6 +83,10 @@
 
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(3, 5, 2), new Vec3(1, 0, 0))
 
+      renderer.getViewport().on('pointerDown', (event) => {
+        console.log(event.clientX, event.clientY)
+      })
+
       const handleMessage = (event) => {
         const { data } = event
 

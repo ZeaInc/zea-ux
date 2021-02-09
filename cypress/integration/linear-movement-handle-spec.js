@@ -26,16 +26,12 @@ describe('Linear Movement Handle', () => {
   })
 
   it('Linear Movement Handle Moves - Mouse', () => {
-    cyFocusCanvas()
-
     cy.get('canvas').trigger('mousedown', 400, 250).trigger('mousemove', 500, 150).trigger('mouseup', 500, 150)
     cy.wait(100)
     cy.get('canvas').percySnapshot('LinearMovementHandleMovesMouse')
   })
 
   it('Linear Movement Handle Moves - Touch', () => {
-    cyFocusCanvas()
-
     const eTouchStart = createTouchEvents([525, 250])
     const eTouch = createTouchEvents([400, 340])
 

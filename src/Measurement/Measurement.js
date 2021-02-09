@@ -58,9 +58,10 @@ class Measurement extends TreeItem {
 
     const billboard = new BillboardItem('DistanceBillboard', this.label)
     billboard.getParameter('LocalXfo').setValue(new Xfo())
-    billboard.getParameter('PixelsPerMeter').setValue(1000)
+    billboard.getParameter('PixelsPerMeter').setValue(1500)
     billboard.getParameter('AlignedToCamera').setValue(true)
     billboard.getParameter('DrawOnTop').setValue(true)
+    billboard.getParameter('FixedSizeOnscreen').setValue(true)
     billboard.getParameter('Alpha').setValue(1)
 
     this.addChild(billboard)

@@ -52,6 +52,17 @@
 
       const planarWidget1 = new PlanarMovementHandle('planar1')
       planarWidget1.addChild(geomItem)
+
+      let prevColor
+      planarWidget1.on('highlight', () => {
+        const material = geomItem.getParameter('Material').getValue()
+        prevColor = material.getParameter('BaseColor').getValue()
+        material.getParameter('BaseColor').setValue(new Color(1, 0, 0))
+      })
+      planarWidget1.on('unhighlight', () => {
+        const material = geomItem.getParameter('Material').getValue()
+        material.getParameter('BaseColor').setValue(prevColor)
+      })
       treeItem1.addChild(planarWidget1)
 
       scene.getRoot().addChild(treeItem1)

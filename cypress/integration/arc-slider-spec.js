@@ -26,16 +26,12 @@ describe('Arc Slider', () => {
   })
 
   it('Arc Slider Moves - Mouse', () => {
-    cyFocusCanvas()
-
     cy.get('canvas').trigger('mousedown', 500, 140).trigger('mousemove', 100, 140).trigger('mouseup', 100, 140)
     cy.wait(100)
     cy.get('canvas').percySnapshot('ArcSliderMovesMouse')
   })
 
   it('Arc Slider Moves - Touch', () => {
-    cyFocusCanvas()
-
     const eTouchStart = createTouchEvents([500, 140])
     const eTouch = createTouchEvents([100, 140])
 

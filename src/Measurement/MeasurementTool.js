@@ -26,8 +26,10 @@ class MeasurementTool extends BaseTool {
    */
   activateTool() {
     super.activateTool()
-    this.prevCursor = this.appData.renderer.getGLCanvas().style.cursor
-    if (this.appData) this.appData.renderer.getGLCanvas().style.cursor = 'crosshair'
+    if (this.appData && this.appData.renderer) {
+      this.prevCursor = this.appData.renderer.getGLCanvas().style.cursor
+      this.appData.renderer.getGLCanvas().style.cursor = 'crosshair'
+    }
   }
 
   /**
@@ -35,7 +37,9 @@ class MeasurementTool extends BaseTool {
    */
   deactivateTool() {
     super.deactivateTool()
-    if (this.appData) this.appData.renderer.getGLCanvas().style.cursor = this.prevCursor
+    if (this.appData && this.appData.renderer) {
+      this.appData.renderer.getGLCanvas().style.cursor = this.prevCursor
+    }
   }
 
   /**
@@ -83,7 +87,7 @@ class MeasurementTool extends BaseTool {
         endPos = ray.start.add(ray.dir.scale(distance))
       }
 
-      this.measurementChange.update(endPos)
+      this.measurementChange.update({ endPos })
 
       event.stopPropagation()
     }
@@ -103,7 +107,5 @@ class MeasurementTool extends BaseTool {
     }
   }
 }
-
-UndoRedoManager.registerChange('MeasurementTool', MeasurementTool)
 
 export { MeasurementTool }

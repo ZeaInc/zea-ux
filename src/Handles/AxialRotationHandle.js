@@ -59,6 +59,7 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
    * Applies a special shinning shader to the handle to illustrate interaction with it.
    */
   highlight() {
+    super.highlight()
     this.handleMat.getParameter('BaseColor').setValue(this.highlightColorParam.getValue())
   }
 
@@ -66,6 +67,7 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
    * Removes the shining shader from the handle.
    */
   unhighlight() {
+    super.unhighlight()
     this.handleMat.getParameter('BaseColor').setValue(this.colorParam.getValue())
   }
 

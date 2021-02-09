@@ -19,15 +19,22 @@ precision highp float;
 
 attribute vec3 positions;
 
-uniform mat4 viewMatrix;
-uniform mat4 projectionMatrix;
-uniform int MaintainScreenSize;
-uniform float Overlay;
 
 <%include file="stack-gl/transpose.glsl"/>
 <%include file="drawItemId.glsl"/>
 <%include file="drawItemTexture.glsl"/>
 <%include file="modelMatrix.glsl"/>
+
+
+uniform mat4 viewMatrix;
+uniform mat4 projectionMatrix;
+
+#ifdef ENABLE_MULTI_DRAW
+<%include file="materialparams.glsl"/>
+#else
+uniform int MaintainScreenSize;
+uniform float Overlay;
+#endif
 
 
 varying float v_drawItemId;
@@ -42,7 +49,22 @@ void main(void) {
   mat4 modelViewMatrix = viewMatrix * modelMatrix;
   v_geomItemData = getInstanceData(drawItemId);
 
-  if(MaintainScreenSize != 0) {
+  //////////////////////////////////////////////
+  // Material
+
+#ifdef ENABLE_MULTI_DRAW
+  vec2 materialCoords = v_geomItemData.zw;
+  vec4 materialValue1 = getMaterialValue(materialCoords, 1);
+  int maintainScreenSize = int(materialValue1.x + 0.5);
+  float overlay = materialValue1.y;
+#else
+  int maintainScreenSize = MaintainScreenSize;
+  float overlay = Overlay;
+#endif
+
+  //////////////////////////////////////////////
+  
+  if(maintainScreenSize != 0) {
     float dist = modelViewMatrix[3][2];
     float sc = abs(dist); // Note: items in front of the camera will have a negative value here.
     mat4 scmat = mat4(
@@ -57,8 +79,8 @@ void main(void) {
   vec4 viewPos = modelViewMatrix * vec4(positions, 1.0);
   gl_Position = projectionMatrix * viewPos;
 
-  if(Overlay > 0.0){
-    gl_Position.z = mix(gl_Position.z, -gl_Position.w, Overlay);
+  if(overlay > 0.0){
+    gl_Position.z = mix(gl_Position.z, -gl_Position.w, overlay);
   }
 
   v_viewPos = -viewPos.xyz;

@@ -34,6 +34,8 @@ class SelectionManager extends EventEmitter {
       this.xfoHandle.setTargetParam(this.selectionGroup.getParameter('GlobalXfo'), false)
       this.xfoHandle.setVisible(false)
       this.xfoHandle.getParameter('HighlightColor').setValue(new Color(1, 1, 0))
+      this.xfoHandleVisible = true
+
       this.selectionGroup.addChild(this.xfoHandle)
     }
 
@@ -72,18 +74,11 @@ class SelectionManager extends EventEmitter {
   /**
    * Displays handles depending on the specified mode(Move, Rotate, Scale).
    * If nothing is specified, it hides all of them.
-   *
-   * @param {number} handleManipulationMode - The mode of the Xfo parameter
+   * @deprecated
+   * @param {boolean} enabled - The mode of the Xfo parameter
    */
-  showHandles(handleManipulationMode) {
-    if (this.xfoHandle && this.currMode != handleManipulationMode) {
-      this.currMode = handleManipulationMode
-      // eslint-disable-next-line guard-for-in
-      for (const key in this.handleGroup) {
-        this.handleGroup[key].emit(handleManipulationMode == key)
-      }
-      this.xfoHandle.showHandles(handleManipulationMode)
-    }
+  showHandles(enabled) {
+    this.xfoHandleVisible = enabled
   }
 
   /**
@@ -93,7 +88,7 @@ class SelectionManager extends EventEmitter {
     if (!this.xfoHandle) return
     const selection = this.selectionGroup.getItems()
     const visible = Array.from(selection).length > 0
-    this.xfoHandle.setVisible(visible)
+    this.xfoHandle.setVisible(visible && this.xfoHandleVisible)
     this.__renderer.requestRedraw()
   }
 
