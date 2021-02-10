@@ -14,10 +14,10 @@ describe('Measurement', () => {
     measurement.setStartMarkerPos(new Vec3(-1, 0, 0))
     measurement.setEndMarkerPos(new Vec3(1, 0, 0))
 
-    expect(measurement.getMeasurementText()).toBe('2m')
+    expect(measurement.getMeasurementText()).toBe('2mm')
 
     measurement.setStartMarkerPos(new Vec3(-2, 1.5, 0))
-    expect(measurement.getMeasurementText()).toBe('3.354m')
+    expect(measurement.getMeasurementText()).toBe('3.3541mm')
   })
 })
 

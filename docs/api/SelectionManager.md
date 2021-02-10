@@ -10,7 +10,7 @@ Class representing a selection manager**Events****leadSelectionChanged:** Tri
     * [new SelectionManager(appData, [options])](#new-SelectionManager)
     * [setRenderer(renderer)](#setRenderer)
     * [setXfoMode(mode)](#setXfoMode)
-    * [showHandles(handleManipulationMode)](#showHandles)
+    * ~~[.showHandles(enabled)](#SelectionManager+showHandles)~~
     * [updateHandleVisibility()](#updateHandleVisibility)
     * [getSelection() ⇒ <code>array</code>](#getSelection)
     * [setSelection(newSelection, [createUndo])](#setSelection)
@@ -61,14 +61,16 @@ Sets initial Xfo mode of the selection group.
 
 <a name="SelectionManager+showHandles"></a>
 
-### showHandles
+### ~~selectionManager.showHandles(enabled)~~
+***Deprecated***
+
 Displays handles depending on the specified mode(Move, Rotate, Scale).If nothing is specified, it hides all of them.
 
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| handleManipulationMode | <code>number</code> | The mode of the Xfo parameter |
+| enabled | <code>boolean</code> | The mode of the Xfo parameter |
 
 <a name="SelectionManager+updateHandleVisibility"></a>
 

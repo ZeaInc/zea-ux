@@ -8,7 +8,7 @@ Represents a Measurement change.
 
 * [MeasurementChange ⇐ <code>Change</code>](#MeasurementChange)
     * [new MeasurementChange(parentItem, startPos)](#new-MeasurementChange)
-    * [update(endPos)](#update)
+    * [update(data)](#update)
     * [end()](#end)
     * [undo()](#undo)
     * [redo()](#redo)
@@ -34,7 +34,7 @@ Creates an instance of MeasurementChange.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| endPos | <code>Xfo</code> | The endPos value |
+| data | <code>object</code> | An object containing potentially the start and end positions. |
 
 <a name="MeasurementChange+end"></a>
 

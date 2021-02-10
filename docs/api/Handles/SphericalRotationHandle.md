@@ -8,8 +8,6 @@ Class representing an axial rotation scene widget.
 
 * [SphericalRotationHandle ⇐ <code>Handle</code>](#SphericalRotationHandle)
     * [new SphericalRotationHandle(name, radius, color)](#new-SphericalRotationHandle)
-    * [highlight()](#highlight)
-    * [unhighlight()](#unhighlight)
     * [setTargetParam(param, track)](#setTargetParam)
     * [getTargetParam() ⇒ <code>Parameter</code>](#getTargetParam)
     * [handlePointerDown(event) ⇒ <code>boolean</code>](#handlePointerDown)
@@ -30,18 +28,6 @@ Create an axial rotation scene widget.
 | name | <code>string</code> | The name value. |
 | radius | <code>number</code> | The radius value. |
 | color | <code>Color</code> | The color value. |
-
-<a name="SphericalRotationHandle+highlight"></a>
-
-### highlight
-Applies a special shinning shader to the handle to illustrate interaction with it.
-
-
-<a name="SphericalRotationHandle+unhighlight"></a>
-
-### unhighlight
-Removes the shining shader from the handle.
-
 
 <a name="SphericalRotationHandle+setTargetParam"></a>
 
