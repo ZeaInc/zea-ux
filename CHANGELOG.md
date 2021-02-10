@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.1.0](https://github.com/ZeaInc/zea-ux/compare/v3.0.1...v3.1.0) (2021-02-10)
+
+
+### Features
+
+* Handles now emit 'highlight' and 'unhighlight events so consumers can manage custom highlighting. ([17fd983](https://github.com/ZeaInc/zea-ux/commit/17fd9835c3ffee415a88022a241ddde86d342e81))
+* SelectionGroup Xfo mode now defaults to 'average' but we no longer average the rotations as this was confusing. ([1ea7484](https://github.com/ZeaInc/zea-ux/commit/1ea748456aac5ddb2dfe86d32eb1bbd25fe40b69))
+
+
+### Bug Fixes
+
+* Interactions on the ScreenSpaceMovementHandle bacame inaccurate as it moved away from the origin. ([3d81a99](https://github.com/ZeaInc/zea-ux/commit/3d81a99138513641c2d022163b102e4211a6ba6a))
+* SelectionManager now has a simpler method of showing the XfoHandles, now that the handles combine TR and ORI manipulation ([af7a52e](https://github.com/ZeaInc/zea-ux/commit/af7a52eb9c3c4731a0da9ad11b132627b9963bd3))
+* The MeasurementTool was throwing an exception of the appData object did not containa the renderer. ([0398f64](https://github.com/ZeaInc/zea-ux/commit/0398f6492fde3bb606d1b1425d9e652513a5dbd7))
+
+### [3.0.1](https://github.com/ZeaInc/zea-ux/compare/v3.0.0...v3.0.1) (2020-12-03)
+
+## [3.0.0](https://github.com/ZeaInc/zea-ux/compare/v2.1.0...v3.0.0) (2020-12-03)
+
+
+### ⚠ BREAKING CHANGES
+
+* renamed 'changeFromJSON' to 'updateFromJSON' to be more consistent.
+
+* refactor: no need to register tools with the UndoRedoManager.
+
+Co-authored-by: Philip Taylor <phil@zea.live>
+Co-authored-by: Vagaro <pajaromen@gmail.com>
+
+* Rename change from json to update from json (#112) ([68fd934](https://github.com/ZeaInc/zea-ux/commit/68fd9349149b38a255af372f7e926b4655130c5d)), closes [#112](https://github.com/ZeaInc/zea-ux/issues/112)
+
 ### [3.0.1] (2020-12-04)
 
 ## [3.0.0] (2020-12-03)
