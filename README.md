@@ -3,6 +3,7 @@
 [![NPM Package][npm]][npm-url]
 [![Build Size][build-size]][build-size-url]
 [![NPM Downloads][npm-downloads]][npmtrends-url]
+![Discourse topics](https://img.shields.io/discourse/topics?color=f9ce03&label=Community&logo=Zea&logoColor=2d2d2d&server=https%3A%2F%2Fcommunity.zea.live%2F)
 
 # Introduction
 There are a features that are user specific, not something everyone needs; therefore we created the Zea Ux plug-in. It adds powerful features to the engine, that enrich the user experience like creation tools, UndoRedo System, etc.
