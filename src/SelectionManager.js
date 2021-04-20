@@ -20,6 +20,9 @@ class SelectionManager extends EventEmitter {
    *
    * @param {object} appData - The options object.
    * @param {object} [options={}] - The appData value.
+   *  enableXfoHandles - enables display Xfo Gizmo handles when items are selected.
+   *  selectionOutlineColor - enables highlight color to use to outline selected items.
+   *  branchSelectionOutlineColor - enables highlight color to use to outline selected items.
    */
   constructor(appData, options = {}) {
     super()
