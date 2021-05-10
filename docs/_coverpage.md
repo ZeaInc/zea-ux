@@ -8,7 +8,7 @@
 [![Build Size][build-size]][build-size-url]
 [![NPM Downloads][npm-downloads]][npmtrends-url]
 
-Zea Plugin for building user experiences against the Zea engine
+Zea Plugin for building user experiences against the [Zea Engine](https://docs.zea.live/zea-engine/#/)
 
 
 <ul style="display:inline-block">
@@ -17,7 +17,7 @@ Zea Plugin for building user experiences against the Zea engine
 
 ![power](_media/icon-power.svg)
 
-Power
+Fast
 
 </li>
 
@@ -25,14 +25,14 @@ Power
 
 ![versatility](_media/icon-versatility.svg)
 
-Versatility
+Easy
 
 </li>
 <li style="display:inline-block; padding:20px;">
 
 ![reach](_media/icon-reach.svg)
 
-Reach
+Open
 
 </li>
 </ul>
