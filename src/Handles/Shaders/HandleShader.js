@@ -1,5 +1,4 @@
 import { Color, Registry, shaderLibrary, GLShader } from '@zeainc/zea-engine'
-import './HandleGeomDataShader'
 
 /**
  * Class representing Handle Shader.
@@ -41,6 +40,7 @@ uniform float Overlay;
 #endif
 
 /* VS Outputs */
+varying float v_drawItemId;
 varying vec4 v_geomItemData;
 varying vec3 v_viewPos;
 #ifdef ENABLE_TEXTURES
@@ -49,6 +49,7 @@ varying vec2 v_textureCoord;
 
 void main(void) {
   int drawItemId = getDrawItemId();
+  v_drawItemId = float(drawItemId);
   v_geomItemData  = getInstanceData(drawItemId);
   mat4 modelMatrix = getModelMatrix(drawItemId);
   mat4 modelViewMatrix = viewMatrix * modelMatrix;
@@ -99,9 +100,13 @@ void main(void) {
       `
 precision highp float;
 
-<%include file="GLSLUtils.glsl"/>
+<%include file="math/constants.glsl"/>
+<%include file="drawItemTexture.glsl"/>
 <%include file="stack-gl/gamma.glsl"/>
 <%include file="materialparams.glsl"/>
+
+
+#if defined(DRAW_COLOR)
 
 uniform color BaseColor;
 
@@ -110,7 +115,33 @@ uniform sampler2D BaseColorTex;
 uniform int BaseColorTexType;
 #endif
 
+#elif defined(DRAW_GEOMDATA)
+
+uniform int floatGeomBuffer;
+uniform int passId;
+
+<%include file="GLSLBits.glsl"/>
+
+#elif defined(DRAW_HIGHLIGHT)
+
+#ifdef ENABLE_FLOAT_TEXTURES
+vec4 getHighlightColor(int id) {
+  return fetchTexel(instancesTexture, instancesTextureSize, (id * pixelsPerItem) + 4);
+}
+#else // ENABLE_FLOAT_TEXTURES
+
+uniform vec4 highlightColor;
+
+vec4 getHighlightColor() {
+    return highlightColor;
+}
+
+#endif // ENABLE_FLOAT_TEXTURES
+
+#endif // DRAW_HIGHLIGHT
+
 /* VS Outputs */
+varying float v_drawItemId;
 varying vec4 v_geomItemData;
 varying vec3 v_viewPos;
 #ifdef ENABLE_TEXTURES
@@ -119,12 +150,19 @@ varying vec2 v_textureCoord;
 
 
 #ifdef ENABLE_ES3
-    out vec4 fragColor;
+  out vec4 fragColor;
 #endif
 void main(void) {
+#ifndef ENABLE_ES3
+  vec4 fragColor;
+#endif
+
+  int drawItemId = int(v_drawItemId + 0.5);
 
   //////////////////////////////////////////////
-  // Material
+  // Color
+#if defined(DRAW_COLOR)
+
 
 #ifdef ENABLE_MULTI_DRAW
 
@@ -140,19 +178,46 @@ void main(void) {
 #endif // ENABLE_TEXTURES
 
 #endif // ENABLE_MULTI_DRAW
-  //////////////////////////////////////////////
 
-#ifndef ENABLE_ES3
-    vec4 fragColor;
-#endif
-    fragColor = baseColor;
+  fragColor = baseColor;
 
 #ifdef ENABLE_INLINE_GAMMACORRECTION
-    fragColor.rgb = toGamma(fragColor.rgb);
+  fragColor.rgb = toGamma(fragColor.rgb);
 #endif
 
+  //////////////////////////////////////////////
+  // GeomData
+#elif defined(DRAW_GEOMDATA)
+
+  float viewDist = length(v_viewPos);
+
+  if(floatGeomBuffer != 0) {
+    fragColor.r = float(passId); 
+    fragColor.g = float(v_drawItemId);
+    fragColor.b = 0.0;// TODO: store poly-id or something.
+    fragColor.a = viewDist;
+  } else {
+    ///////////////////////////////////
+    // UInt8 buffer
+    fragColor.r = mod(v_drawItemId, 256.) / 256.;
+    fragColor.g = (floor(v_drawItemId / 256.) + (float(passId) * 64.)) / 256.;
+
+    // encode the dist as a 16 bit float
+    vec2 float16bits = encode16BitFloatInto2xUInt8(viewDist);
+    fragColor.b = float16bits.x;
+    fragColor.a = float16bits.y;
+  }
+
+  //////////////////////////////////////////////
+  // Highlight
+#elif defined(DRAW_HIGHLIGHT)
+  
+  fragColor = getHighlightColor(drawItemId);
+
+#endif // DRAW_HIGHLIGHT
+
 #ifndef ENABLE_ES3
-    gl_FragColor = fragColor;
+  gl_FragColor = fragColor;
 #endif
 }
 `
@@ -205,23 +270,8 @@ void main(void) {
    * @return {boolean} - The overlay value
    */
   static isOverlay() {
-    // Handles are now rendered in the GLStandardGeomPass, and we now use the overlay parameter to move the geom closer to the screen.
     return true
   }
-
-  /**
-   * Returns shader name
-   *
-   * @static
-   * @return {string} - The Geom Shader value
-   */
-  static getGeomDataShaderName() {
-    return 'HandleGeomDataShader'
-  }
-
-  // static getSelectedShaderName(){
-  //     return 'StandardSurfaceSelectedGeomsShader';
-  // }
 }
 
 Registry.register('HandleShader', HandleShader)
