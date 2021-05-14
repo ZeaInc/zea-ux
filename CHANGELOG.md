@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.1.2](https://github.com/ZeaInc/zea-ux/compare/v3.1.1...v3.1.2) (2021-05-14)
+
+
+### Bug Fixes
+
+* SelectionManager now correctly sets the Selection state of its members. ([5e5bf9c](https://github.com/ZeaInc/zea-ux/commit/5e5bf9c202a403c4a979def18f8e388d98dde9fd))
+
 ### [3.1.1](https://github.com/ZeaInc/zea-ux/compare/v3.1.0...v3.1.1) (2021-05-10)
 
 
