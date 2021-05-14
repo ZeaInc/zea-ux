@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.1.1](https://github.com/ZeaInc/zea-ux/compare/v3.1.0...v3.1.1) (2021-05-10)
+
+
+### Bug Fixes
+
+* Handle picking became broken after the 3.7.0 engine release. Now the HandleShader is an uberhsader that is also used in Picking. ([f2eae31](https://github.com/ZeaInc/zea-ux/commit/f2eae315ac3fed1c7c1125284fd6283c58549232))
+
 ## [3.1.0](https://github.com/ZeaInc/zea-ux/compare/v3.0.1...v3.1.0) (2021-02-10)
 
 
