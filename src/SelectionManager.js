@@ -115,13 +115,13 @@ class SelectionManager extends EventEmitter {
     const prevSelection = new Set(selection)
     for (const treeItem of newSelection) {
       if (!selection.has(treeItem)) {
-        // treeItem.setSelected(true);
+        treeItem.setSelected(true)
         selection.add(treeItem)
       }
     }
     for (const treeItem of selection) {
       if (!newSelection.has(treeItem)) {
-        // treeItem.setSelected(false);
+        treeItem.setSelected(false)
         selection.delete(treeItem)
       }
     }
@@ -183,20 +183,20 @@ class SelectionManager extends EventEmitter {
       }
 
       if (clear) {
-        // Array.from(selection).forEach(item => {
-        //   item.setSelected(false);
-        // });
+        Array.from(selection).forEach((item) => {
+          item.setSelected(false)
+        })
         selection.clear()
       }
     }
 
     let sel
     if (!selection.has(treeItem)) {
-      // treeItem.setSelected(true);
+      treeItem.setSelected(true)
       selection.add(treeItem)
       sel = true
     } else {
-      // treeItem.setSelected(false);
+      treeItem.setSelected(false)
       selection.delete(treeItem)
       sel = false
     }
@@ -251,9 +251,9 @@ class SelectionManager extends EventEmitter {
     if (newChange) {
       prevSelection = new Set(selection)
     }
-    // for (const treeItem of selection) {
-    //   treeItem.setSelected(false);
-    // }
+    for (const treeItem of selection) {
+      treeItem.setSelected(false)
+    }
     selection.clear()
     this.selectionGroup.setItems(selection)
     this.updateHandleVisibility()
@@ -310,7 +310,7 @@ class SelectionManager extends EventEmitter {
 
     for (const treeItem of treeItems) {
       if (treeItem.getSelected()) {
-        // treeItem.setSelected(false);
+        treeItem.setSelected(false)
         selection.delete(selectedParam)
         // treeItem.traverse((subTreeItem)=>{
         //   if(!selection.has(subTreeItem)) {

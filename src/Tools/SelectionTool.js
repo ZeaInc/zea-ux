@@ -133,9 +133,6 @@ class SelectionTool extends BaseTool {
   onPointerMove(event) {
     if (this.pointerDownPos) {
       const delta = this.pointerDownPos.subtract(event.pointerPos)
-      if (this.dragging) {
-        this.__resizeRect(event.viewport, delta)
-      }
       const dist = delta.length()
       // dragging only is activated after 4 pixels.
       // This is to avoid causing as rect selection for nothing.
