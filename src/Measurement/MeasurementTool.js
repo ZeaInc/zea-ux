@@ -18,7 +18,9 @@ class MeasurementTool extends BaseTool {
     this.colorParam = this.addParameter(new ColorParameter('Color', new Color('#FCFC00')))
     if (!appData) console.error('App data not provided to tool')
     this.appData = appData
-    this.measurementChange = undefined
+    this.measurementChange = null
+    this.highlightedItemA = null
+    this.highlightedItemB = null
   }
 
   /**
@@ -51,23 +53,25 @@ class MeasurementTool extends BaseTool {
     // skip if the alt key is held. Allows the camera tool to work
     if (event.altKey || (event.pointerType === 'mouse' && event.button !== 0)) return
 
-    const ray = event.pointerRay
-    let startPos
-    if (event.intersectionData) {
-      startPos = ray.start.add(ray.dir.scale(event.intersectionData.dist))
-    } else {
-      const plane = new Ray(new Vec3(), new Vec3(0, 0, 1))
-      const distance = ray.intersectRayPlane(plane)
-      startPos = ray.start.add(ray.dir.scale(distance))
+    if (this.highlightedItemA) {
+      const ray = event.pointerRay
+      let startPos
+      if (event.intersectionData) {
+        startPos = ray.start.add(ray.dir.scale(event.intersectionData.dist))
+      } else {
+        const plane = new Ray(new Vec3(), new Vec3(0, 0, 1))
+        const distance = ray.intersectRayPlane(plane)
+        startPos = ray.start.add(ray.dir.scale(distance))
+      }
+
+      const color = this.colorParam.getValue()
+
+      this.measurementChange = new MeasurementChange(this.appData.scene.getRoot(), startPos, color)
+      UndoRedoManager.getInstance().addChange(this.measurementChange)
+      this.dragging = true
+
+      event.stopPropagation()
     }
-
-    const color = this.colorParam.getValue()
-
-    this.measurementChange = new MeasurementChange(this.appData.scene.getRoot(), startPos, color)
-    UndoRedoManager.getInstance().addChange(this.measurementChange)
-    this.dragging = true
-
-    event.stopPropagation()
   }
 
   /**
@@ -78,18 +82,39 @@ class MeasurementTool extends BaseTool {
   onPointerMove(event) {
     if (this.dragging) {
       const ray = event.pointerRay
-      let endPos
       if (event.intersectionData) {
-        endPos = ray.start.add(ray.dir.scale(event.intersectionData.dist))
+        const { geomItem } = event.intersectionData
+        if (geomItem != this.highlightedItemB) {
+          if (this.highlightedItemB) this.highlightedItemB.removeHighlight('measureB', true)
+
+          geomItem.addHighlight('measureB', new Color(1, 1, 1, 0.2), true)
+
+          this.highlightedItemB = geomItem
+        }
+        const endPos = ray.start.add(ray.dir.scale(event.intersectionData.dist))
+        this.measurementChange.update({ endPos })
       } else {
-        const plane = new Ray(new Vec3(), new Vec3(0, 0, 1))
-        const distance = ray.intersectRayPlane(plane)
-        endPos = ray.start.add(ray.dir.scale(distance))
+        if (this.highlightedItemB) {
+          this.highlightedItemB.removeHighlight('measureB', true)
+          this.highlightedItemB = null
+        }
       }
 
-      this.measurementChange.update({ endPos })
-
       event.stopPropagation()
+    } else {
+      if (event.intersectionData) {
+        const { geomItem } = event.intersectionData
+        if (!geomItem != this.highlightedItemA) {
+          if (this.highlightedItemA) this.highlightedItemA.removeHighlight('measureA', true)
+          geomItem.addHighlight('measureA', new Color(1, 1, 1, 0.2), true)
+          this.highlightedItemA = geomItem
+        }
+      } else {
+        if (this.highlightedItemA) {
+          this.highlightedItemA.removeHighlight('measureA', true)
+          this.highlightedItemA = null
+        }
+      }
     }
   }
 
@@ -102,7 +127,7 @@ class MeasurementTool extends BaseTool {
     if (this.dragging) {
       this.dragging = false
       this.measurementChange.end()
-      this.measurementChange = undefined
+      this.measurementChange = null
       event.stopPropagation()
     }
   }

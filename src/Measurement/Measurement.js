@@ -52,6 +52,36 @@ class Measurement extends TreeItem {
     this.endMarkerHandle.addChild(this.endMarker)
     this.addChild(this.endMarkerHandle)
 
+    const line = new Lines(0.0)
+    line.setNumVertices(2)
+    line.setNumSegments(1)
+    line.setSegmentVertexIndices(0, 0, 1)
+    line.getVertexAttribute('positions').getValueRef(1).setFromOther(new Vec3(0, 0, 1))
+
+    const lineGeomItem = new GeomItem('Line', line, this.lineMaterial)
+
+    this.addChild(lineGeomItem)
+
+    this.measurementOp = new MeasurementOperator(`${name}MeasurementOperator`)
+    this.measurementOp
+      .getInput(MeasurementOperator.IO_NAMES.StartXfo)
+      .setParam(this.startMarkerHandle.getParameter('GlobalXfo'))
+    this.measurementOp
+      .getInput(MeasurementOperator.IO_NAMES.EndXfo)
+      .setParam(this.endMarkerHandle.getParameter('GlobalXfo'))
+    this.measurementOp.getOutput(MeasurementOperator.IO_NAMES.LineXfo).setParam(lineGeomItem.getParameter('GlobalXfo'))
+
+    this.displayLabel()
+
+    this.colorParam.on('valueChanged', () => {
+      const color = this.colorParam.getValue()
+      this.markerMaterial.getParameter('BaseColor').setValue(color)
+      this.lineMaterial.getParameter('BaseColor').setValue(color)
+      this.label.getParameter('BackgroundColor').setValue(color)
+    })
+  }
+
+  displayLabel() {
     this.label = new Label('Distance')
     this.label.getParameter('FontSize').setValue(20)
     this.label.getParameter('BackgroundColor').setValue(this.colorParam.getValue())
@@ -64,35 +94,10 @@ class Measurement extends TreeItem {
     billboard.getParameter('FixedSizeOnscreen').setValue(true)
     billboard.getParameter('Alpha').setValue(1)
 
+    this.measurementOp.getOutput(MeasurementOperator.IO_NAMES.Distance).setParam(this.label.getParameter('Text'))
+    this.measurementOp.getOutput(MeasurementOperator.IO_NAMES.LabelXfo).setParam(billboard.getParameter('GlobalXfo'))
+
     this.addChild(billboard)
-
-    const line = new Lines(0.0)
-    line.setNumVertices(2)
-    line.setNumSegments(1)
-    line.setSegmentVertexIndices(0, 0, 1)
-    line.getVertexAttribute('positions').getValueRef(1).setFromOther(new Vec3(0, 0, 1))
-
-    const lineGeomItem = new GeomItem('Line', line, this.lineMaterial)
-
-    this.addChild(lineGeomItem)
-
-    const measurementOperator = new MeasurementOperator(`${name}MeasurementOperator`)
-    measurementOperator
-      .getInput(MeasurementOperator.IO_NAMES.StartXfo)
-      .setParam(this.startMarkerHandle.getParameter('GlobalXfo'))
-    measurementOperator
-      .getInput(MeasurementOperator.IO_NAMES.EndXfo)
-      .setParam(this.endMarkerHandle.getParameter('GlobalXfo'))
-    measurementOperator.getOutput(MeasurementOperator.IO_NAMES.Distance).setParam(this.label.getParameter('Text'))
-    measurementOperator.getOutput(MeasurementOperator.IO_NAMES.LabelXfo).setParam(billboard.getParameter('GlobalXfo'))
-    measurementOperator.getOutput(MeasurementOperator.IO_NAMES.LineXfo).setParam(lineGeomItem.getParameter('GlobalXfo'))
-
-    this.colorParam.on('valueChanged', () => {
-      const color = this.colorParam.getValue()
-      this.markerMaterial.getParameter('BaseColor').setValue(color)
-      this.lineMaterial.getParameter('BaseColor').setValue(color)
-      this.label.getParameter('BackgroundColor').setValue(color)
-    })
   }
 
   /**
