@@ -77,10 +77,5 @@
       "pre-commit": "npm test",
       "pre-push": "npm test"
     }
-  },
-  "standard-version": {
-    "skip": {
-      "commit": true
-    }
   }
 }
