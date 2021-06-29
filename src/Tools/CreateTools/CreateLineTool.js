@@ -19,7 +19,7 @@ class CreateLineTool extends CreateGeomTool {
   constructor(appData) {
     super(appData)
 
-    this.lineThickness = this.addParameter(new NumberParameter('LineThickness', 0.06, [0, 0.1])) // 1cm.
+    this.lineThickness = this.addParameter(new NumberParameter('LineThickness', 0.01, [0, 0.1])) // 1cm.
   }
 
   /**
