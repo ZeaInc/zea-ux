@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>web-xr-test-scene - Zea Engine</title>
+
+    <link href="data/zea-logo.png" rel="shortcut icon" />
+
+    <link rel="stylesheet" href="styles/tailwind.min.css" />
+
+    <script src="../node_modules/@zeainc/zea-engine/dist/index.umd.js"></script>
+    <script src="../node_modules/@zeainc/zea-engine/dist/plugins.umd.js"></script>
+    <script src="../dist/index.umd.js"></script>
+
+    <script src="https://websocket-staging.zea.live/socket.io/socket.io.js"></script>
+    <script crossorigin src="https://cdn.jsdelivr.net/npm/@zeainc/zea-collab@v5/dist/index.umd.js"></script>
+
+    <style>
+      .label {
+        position: absolute;
+        left: 10px;
+        top: 10px;
+        margin: 0px;
+        font-family: 'arial';
+        user-select: none;
+      }
+
+      .button {
+        position: absolute;
+        left: 10px;
+        bottom: 10px;
+        margin: 10px;
+
+        font-family: 'arial';
+        background-color: #4caf50; /* Green */
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        user-select: none;
+      }
+      .button:hover {
+        background-color: #78b87a; /* Green */
+      }
+      .button:focus {
+        background-color: #78b87a;
+      }
+    </style>
+
+    <script type="module">
+      const {
+        GLRenderer,
+        Scene,
+        Vec3,
+        Xfo,
+        EulerAngles,
+        Color,
+        Sphere,
+        Material,
+        GeomItem,
+        ObjAsset,
+      } = window.zeaEngine
+      const {
+        SelectionManager,
+        UndoRedoManager,
+        ToolManager,
+        SelectionTool,
+        VRHoldObjectsTool,
+        CreateFreehandLineTool,
+        VRUITool,
+      } = window.zeaUx
+
+      const canvas = document.querySelector('#renderer')
+
+      const scene = new Scene()
+      const renderer = new GLRenderer(canvas)
+      renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(3, 3, 2), new Vec3(0, 0, 0.75))
+      renderer.setScene(scene)
+
+      scene.setupGrid(10.0, 10, new Color())
+
+      const appData = {
+        renderer,
+        scene,
+      }
+
+      let defaultColor
+      const pointerOverColor = new Color(0, 1, 1)
+      const pointerDownColor = new Color(1, 0, 0)
+
+      const objAsset = new ObjAsset('cow')
+      objAsset.getParameter('FilePath').setValue('data/cow.obj')
+      objAsset.getParameter('splitGroupsIntoObjects').setValue(true)
+      scene.getRoot().addChild(objAsset)
+
+      const xfo = new Xfo()
+      xfo.tr.set(0, 0, 3.55 * 0.3048)
+      xfo.ori.setFromEulerAngles(new EulerAngles(90 * (Math.PI / 180), 0, 0))
+      xfo.sc.set(0.3048, 0.3048, 0.3048)
+      objAsset.getParameter('GlobalXfo').setValue(xfo)
+      objAsset.on('loaded', () => {
+        window.postMessage(`done-Loading`)
+      })
+
+      const h = document.querySelector('#buttonHolder')
+      const b = document.querySelector('#button')
+
+      renderer.getXRViewport().then((xrViewport) => {
+        h.textContent = 'XR Device Detected'
+        b.textContent = 'Launch VR'
+
+        xrViewport.on('presentingChanged', (event) => {
+          const { state } = event
+          if (state) {
+            h.textContent = 'Session In Progress'
+            b.textContent = 'Exit VR'
+          } else {
+            h.textContent = 'XR Device Detected'
+            b.textContent = 'Launch VR'
+          }
+        })
+
+        b.addEventListener('click', function (event) {
+          xrViewport.togglePresenting()
+        })
+
+        document.addEventListener('keydown', (event) => {
+          if (event.key == ' ') {
+            xrViewport.togglePresenting()
+          }
+        })
+
+        // The default manipulator is the VRViewManipulator, so grab that.
+        const viewManipulator = xrViewport.getManipulator()
+        const holdObjectsTool = new VRHoldObjectsTool(appData)
+        // const freehandLineTool = new CreateFreehandLineTool(appData)
+        // const vrUITool = new VRUITool(appData)
+
+        const vrToolManager = new ToolManager(appData)
+        // Register both tools.
+        vrToolManager.registerTool('VRHoldObjectsTool', holdObjectsTool)
+        vrToolManager.registerTool('VRViewManipulator', viewManipulator)
+        // vrToolManager.registerTool('FreehandLineTool', freehandLineTool)
+        // vrToolManager.registerTool('VRUITool', vrUITool)
+
+        // We will stack the VRHoldObjectsTool on top of the VRViewManipulator
+        // this means that the VRHoldObjectsTool may operate, else the VRViewManipulator
+        xrViewport.setManipulator(vrToolManager)
+        vrToolManager.pushTool('VRViewManipulator')
+        vrToolManager.pushTool('VRHoldObjectsTool')
+        // vrToolManager.pushTool('FreehandLineTool')
+        // vrToolManager.pushTool('VRUITool')
+      })
+
+      // ///////////////////////////////////////
+      // Setup Collab
+      const { Session, SessionSync } = window.zeaCollab
+
+      const getRandomString = () =>
+        Math.random()
+          .toString(36)
+          .replace(/[^a-z]+/g, '')
+          .substr(0, 5)
+
+      const addUser = (user) => {
+        console.log('Add: ', user)
+      }
+
+      const removeUser = (user) => {
+        console.log('Remove: ', user)
+      }
+
+      const makeUser = (picture, id) => {
+        return {
+          family_name: getRandomString(),
+          given_name: getRandomString(),
+          id,
+          picture,
+        }
+      }
+
+      const userData = makeUser('', getRandomString())
+      console.log('I am:', userData)
+
+      const socketUrl = 'https://websocket-staging.zea.live'
+      const session = new Session(userData, socketUrl)
+      session.joinRoom('any-random-string')
+      session.users[userData.id] = userData
+      const sessionSync = new SessionSync(session, appData, userData, { avatarScale: 5 })
+
+      session.sub('user-joined', (user) => {
+        addUser(user)
+      })
+
+      session.sub('user-left', (user) => {
+        removeUser(user)
+      })
+    </script>
+  </head>
+  <body class="bg-blue-100 h-full">
+    <div class="h-full" id="canvasHolder">
+      <canvas class="absolute" id="renderer"></canvas>
+      <div class="label" id="buttonHolder"></div>
+      <div class="button" id="button">XR Device Not Detected</div>
+    </div>
+  </body>
+</html>
