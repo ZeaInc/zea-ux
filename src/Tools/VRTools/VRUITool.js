@@ -11,22 +11,12 @@ class VRUITool extends BaseTool {
    * Create a VR UI tool.
    * @param {object} appData - The appData value.
    */
-  constructor(appData) {
+  constructor(appData, vrUIDOMElement) {
     super(appData)
     this.appData = appData
-
-    this.__vrUIDOMHolderElement = document.createElement('div')
-    // this.__vrUIDOMHolderElement.style.display = 'block'
-    this.__vrUIDOMElement = document.createElement('div')
-    document.body.appendChild(this.__vrUIDOMHolderElement)
-
-    const btnElement = document.createElement('div')
-    btnElement.className = 'button'
-    btnElement.textContent = 'Button'
-    this.__vrUIDOMHolderElement.appendChild(this.__vrUIDOMElement)
-    this.__vrUIDOMElement.appendChild(btnElement)
-
-    this.controllerUI = new VRControllerUI(appData, this.__vrUIDOMHolderElement, this.__vrUIDOMElement)
+    
+    this.__vrUIDOMElement = vrUIDOMElement
+    this.controllerUI = new VRControllerUI(appData, this.__vrUIDOMElement)
 
     this.__uiLocalXfo = new Xfo()
     this.__uiLocalXfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * -0.6)
@@ -274,8 +264,6 @@ class VRUITool extends BaseTool {
    */
   onPointerMove(event) {
     if (event.pointerType === POINTER_TYPES.xr) {
-      if (!event.controllers || event.controllers.length != 2) return
-
       if (!this.uiOpen) {
         // Controller coordinate system
         // X = Horizontal.
@@ -297,6 +285,7 @@ class VRUITool extends BaseTool {
             event.stopPropagation()
             return true
           }
+          return false
         }
 
         if (checkControllers(event.controllers[0], event.controllers[1])) return

@@ -53,6 +53,8 @@
     </style>
 
     <script type="module">
+      import "./vr-ui.js"
+
       const {
         GLRenderer,
         Scene,
@@ -110,6 +112,7 @@
       const h = document.querySelector('#buttonHolder')
       const b = document.querySelector('#button')
 
+
       renderer.getXRViewport().then((xrViewport) => {
         h.textContent = 'XR Device Detected'
         b.textContent = 'Launch VR'
@@ -139,22 +142,28 @@
         const viewManipulator = xrViewport.getManipulator()
         const holdObjectsTool = new VRHoldObjectsTool(appData)
         // const freehandLineTool = new CreateFreehandLineTool(appData)
-        // const vrUITool = new VRUITool(appData)
 
         const vrToolManager = new ToolManager(appData)
         // Register both tools.
         vrToolManager.registerTool('VRHoldObjectsTool', holdObjectsTool)
         vrToolManager.registerTool('VRViewManipulator', viewManipulator)
         // vrToolManager.registerTool('FreehandLineTool', freehandLineTool)
-        // vrToolManager.registerTool('VRUITool', vrUITool)
+        
+        const vrUIDOMElement = document.createElement('vr-ui')
+        vrUIDOMElement.toolManager = vrToolManager
+        vrUIDOMElement.style.display = 'none'
+        document.body.appendChild(vrUIDOMElement)
+
+        const vrUITool = new VRUITool(appData, vrUIDOMElement)
+        vrToolManager.registerTool('VRUITool', vrUITool)
 
         // We will stack the VRHoldObjectsTool on top of the VRViewManipulator
         // this means that the VRHoldObjectsTool may operate, else the VRViewManipulator
         xrViewport.setManipulator(vrToolManager)
-        vrToolManager.pushTool('VRViewManipulator')
-        vrToolManager.pushTool('VRHoldObjectsTool')
+        // vrToolManager.pushTool('VRViewManipulator')
+        // vrToolManager.pushTool('VRHoldObjectsTool')
         // vrToolManager.pushTool('FreehandLineTool')
-        // vrToolManager.pushTool('VRUITool')
+        vrToolManager.pushTool('VRUITool')
       })
 
       // ///////////////////////////////////////
