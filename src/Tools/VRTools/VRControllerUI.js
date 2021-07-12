@@ -60,23 +60,28 @@ export default class VRControllerUI extends GeomItem {
    * The activate method.
    */
   activate() {
-    this.__vrUIDOMElement.style.display = 'block'
-    this.__active = true
+    // During debugging we activate the UI explicitly, so avoid activating twice.
+    if (!this.__active) {
+      // document.body.appendChild(this.__vrUIDOMElement)
+      // this.__vrUIDOMElement.style.display = 'block'
+      this.__active = true
 
-    this.__mutationObserver.observe(this.__vrUIDOMElement.contentDiv, {
-      attributes: true,
-      characterData: true,
-      childList: true,
-      subtree: true,
-    })
-    this.renderUIToImage()
+      this.__mutationObserver.observe(this.__vrUIDOMElement, {
+        attributes: true,
+        characterData: true,
+        childList: true,
+        subtree: true,
+      })
+      this.renderUIToImage()
+    }
   }
 
   /**
    * The deactivate method.
    */
   deactivate() {
-    this.__vrUIDOMElement.style.display = 'none'
+    // document.body.removeChild(this.__vrUIDOMElement)
+    // this.__vrUIDOMElement.style.display = 'none'
     this.__active = true
     this.__mutationObserver.disconnect()
   }
@@ -96,15 +101,21 @@ export default class VRControllerUI extends GeomItem {
    * The renderUIToImage method.
    */
   renderUIToImage() {
-    domtoimage.toCanvas(this.__vrUIDOMElement.contentDiv).then((canvas) => {
+    domtoimage.toCanvas(this.__vrUIDOMElement).then((canvas) => {
+      // if (this.canvas) {
+      //   document.body.removeChild(this.canvas)
+      // }
+      // document.body.appendChild(canvas)
+      // this.canvas = canvas
+
       this.mainCtx = canvas.getContext('2d')
       this.mainCtx.fillStyle = '#FFFFFF'
 
       // const rect = this.__vrUIDOMElement.getBoundingRect()
       const rect = {
-        width: this.__vrUIDOMElement.contentDiv.clientWidth,
-        height: this.__vrUIDOMElement.contentDiv.clientHeight
-      } 
+        width: this.__vrUIDOMElement.clientWidth,
+        height: this.__vrUIDOMElement.clientHeight,
+      }
       // Sometimes a rendeer request occurs as the UI is being hidden.
       if (rect.width * rect.height == 0) return
 
@@ -136,10 +147,9 @@ export default class VRControllerUI extends GeomItem {
    * @return {any} The return value.
    */
   sendMouseEvent(eventName, args, element) {
-    // console.log(eventName, element)
+    // console.log('sendMouseEvent:', eventName, element)
 
-    // if (eventName == 'mousedown')
-    //   console.log("clientX:" + args.clientX + " clientY:" + args.clientY);
+    if (eventName == 'mousedown') console.log('clientX:' + args.clientX + ' clientY:' + args.clientY)
 
     const event = new MouseEvent(
       eventName,

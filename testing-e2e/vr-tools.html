@@ -53,7 +53,7 @@
     </style>
 
     <script type="module">
-      import "./vr-ui.js"
+      import './vr-ui.js'
 
       const {
         GLRenderer,
@@ -66,6 +66,7 @@
         Material,
         GeomItem,
         ObjAsset,
+        VRViewManipulator,
       } = window.zeaEngine
       const {
         SelectionManager,
@@ -76,6 +77,7 @@
         CreateFreehandLineTool,
         VRUITool,
       } = window.zeaUx
+      const { Session, SessionSync, SessionRecorder } = window.zeaCollab
 
       const canvas = document.querySelector('#renderer')
 
@@ -109,66 +111,8 @@
         window.postMessage(`done-Loading`)
       })
 
-      const h = document.querySelector('#buttonHolder')
-      const b = document.querySelector('#button')
-
-
-      renderer.getXRViewport().then((xrViewport) => {
-        h.textContent = 'XR Device Detected'
-        b.textContent = 'Launch VR'
-
-        xrViewport.on('presentingChanged', (event) => {
-          const { state } = event
-          if (state) {
-            h.textContent = 'Session In Progress'
-            b.textContent = 'Exit VR'
-          } else {
-            h.textContent = 'XR Device Detected'
-            b.textContent = 'Launch VR'
-          }
-        })
-
-        b.addEventListener('click', function (event) {
-          xrViewport.togglePresenting()
-        })
-
-        document.addEventListener('keydown', (event) => {
-          if (event.key == ' ') {
-            xrViewport.togglePresenting()
-          }
-        })
-
-        // The default manipulator is the VRViewManipulator, so grab that.
-        const viewManipulator = xrViewport.getManipulator()
-        const holdObjectsTool = new VRHoldObjectsTool(appData)
-        // const freehandLineTool = new CreateFreehandLineTool(appData)
-
-        const vrToolManager = new ToolManager(appData)
-        // Register both tools.
-        vrToolManager.registerTool('VRHoldObjectsTool', holdObjectsTool)
-        vrToolManager.registerTool('VRViewManipulator', viewManipulator)
-        // vrToolManager.registerTool('FreehandLineTool', freehandLineTool)
-        
-        const vrUIDOMElement = document.createElement('vr-ui')
-        vrUIDOMElement.toolManager = vrToolManager
-        vrUIDOMElement.style.display = 'none'
-        document.body.appendChild(vrUIDOMElement)
-
-        const vrUITool = new VRUITool(appData, vrUIDOMElement)
-        vrToolManager.registerTool('VRUITool', vrUITool)
-
-        // We will stack the VRHoldObjectsTool on top of the VRViewManipulator
-        // this means that the VRHoldObjectsTool may operate, else the VRViewManipulator
-        xrViewport.setManipulator(vrToolManager)
-        // vrToolManager.pushTool('VRViewManipulator')
-        // vrToolManager.pushTool('VRHoldObjectsTool')
-        // vrToolManager.pushTool('FreehandLineTool')
-        vrToolManager.pushTool('VRUITool')
-      })
-
       // ///////////////////////////////////////
       // Setup Collab
-      const { Session, SessionSync } = window.zeaCollab
 
       const getRandomString = () =>
         Math.random()
@@ -201,6 +145,7 @@
       session.joinRoom('any-random-string')
       session.users[userData.id] = userData
       const sessionSync = new SessionSync(session, appData, userData, { avatarScale: 5 })
+      const sessionRecorder = new SessionRecorder(session)
 
       session.sub('user-joined', (user) => {
         addUser(user)
@@ -208,6 +153,65 @@
 
       session.sub('user-left', (user) => {
         removeUser(user)
+      })
+
+      // ///////////////////////////////////////
+      // Setup VR
+
+      const h = document.querySelector('#buttonHolder')
+      const b = document.querySelector('#button')
+
+      const holdObjectsTool = new VRHoldObjectsTool(appData)
+      const freehandLineTool = new CreateFreehandLineTool(appData)
+
+      const vrToolManager = new ToolManager(appData)
+
+      // Register both tools.
+      vrToolManager.registerTool('VRHoldObjectsTool', holdObjectsTool)
+      vrToolManager.registerTool('Freehand Line Tool', freehandLineTool)
+
+      const vrUIDOMElement = document.createElement('vr-ui')
+      vrUIDOMElement.setToolManager(vrToolManager)
+
+      vrUIDOMElement.setSessionRecorder(sessionRecorder)
+      // vrUIDOMElement.style.display = 'none'
+      document.body.appendChild(vrUIDOMElement)
+
+      const vrUITool = new VRUITool(appData, vrUIDOMElement.contentDiv)
+      vrToolManager.registerTool('VRUITool', vrUITool)
+      vrUITool.controllerUI.activate()
+
+      renderer.getXRViewport().then((xrViewport) => {
+        h.textContent = 'XR Device Detected'
+        b.textContent = 'Launch VR'
+
+        xrViewport.on('presentingChanged', (event) => {
+          const { state } = event
+          if (state) {
+            h.textContent = 'Session In Progress'
+            b.textContent = 'Exit VR'
+          } else {
+            h.textContent = 'XR Device Detected'
+            b.textContent = 'Launch VR'
+          }
+        })
+
+        b.addEventListener('click', function (event) {
+          xrViewport.togglePresenting()
+        })
+
+        document.addEventListener('keydown', (event) => {
+          if (event.key == ' ') {
+            xrViewport.togglePresenting()
+          }
+        })
+
+        const viewManipulator = xrViewport.getManipulator()
+
+        vrToolManager.registerTool('VRViewManipulator', viewManipulator)
+        xrViewport.setManipulator(vrToolManager)
+        vrToolManager.pushTool('VRViewManipulator')
+        vrToolManager.pushTool('VRUITool')
       })
     </script>
   </head>

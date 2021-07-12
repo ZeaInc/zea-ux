@@ -14,7 +14,7 @@ class VRUITool extends BaseTool {
   constructor(appData, vrUIDOMElement) {
     super(appData)
     this.appData = appData
-    
+
     this.__vrUIDOMElement = vrUIDOMElement
     this.controllerUI = new VRControllerUI(appData, this.__vrUIDOMElement)
 
@@ -196,7 +196,9 @@ class VRUITool extends BaseTool {
     if (hit) {
       hit.offsetX = hit.pageX = hit.pageX = hit.screenX = hit.clientX
       hit.offsetY = hit.pageY = hit.pageY = hit.screenY = hit.clientY
-      const element = document.elementFromPoint(hit.clientX, hit.clientY)
+
+      let element = document.elementFromPoint(hit.clientX, hit.clientY)
+      if (element.shadowRoot) element = element.shadowRoot.elementFromPoint(hit.clientX, hit.clientY)
       if (element != this._element) {
         if (this._element) this.controllerUI.sendMouseEvent('mouseleave', Object.assign(args, hit), this._element)
         this._element = element
@@ -245,7 +247,7 @@ class VRUITool extends BaseTool {
           button: event.button - 1,
         })
         if (target && this.__triggerDownElem == target) {
-          this.sendEventToUI('click', {
+          this.sendEventToUI('mouseup', {
             button: event.button - 1,
           })
         }
