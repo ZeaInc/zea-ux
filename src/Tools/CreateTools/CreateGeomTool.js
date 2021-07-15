@@ -23,6 +23,24 @@ class CreateGeomTool extends BaseCreateTool {
     this.parentItem = 'parentItem' in appData ? appData.parentItem : appData.scene.getRoot()
 
     this.lineColor = this.addParameter(new ColorParameter('LineColor', new Color(0.7, 0.2, 0.2)))
+
+    this.controllerAddedHandler = this.controllerAddedHandler.bind(this)
+  }
+
+  addIconToVRController(controller) {
+    if (!this.vrControllerToolTip) {
+      this.vrControllerToolTip = new Cross(0.05)
+      this.vrControllerToolTipMat = new Material('VRController Cross', 'LinesShader')
+      this.vrControllerToolTipMat.getParameter('BaseColor').setValue(this.lineColor.getValue())
+      this.vrControllerToolTipMat.setSelectable(false)
+    }
+    const geomItem = new GeomItem('CreateGeomToolTip', this.vrControllerToolTip, this.vrControllerToolTipMat)
+    // controller.getTipItem().removeAllChildren()
+    controller.getTipItem().addChild(geomItem, false)
+  }
+
+  controllerAddedHandler(event) {
+    this.addIconToVRController(event.controller)
   }
 
   /**
@@ -35,21 +53,10 @@ class CreateGeomTool extends BaseCreateTool {
     this.appData.renderer.getGLCanvas().style.cursor = 'crosshair'
 
     this.appData.renderer.getXRViewport().then((xrvp) => {
-      if (!this.vrControllerToolTip) {
-        this.vrControllerToolTip = new Cross(0.05)
-        this.vrControllerToolTipMat = new Material('VRController Cross', 'LinesShader')
-        this.vrControllerToolTipMat.getParameter('BaseColor').setValue(this.lineColor.getValue())
-        this.vrControllerToolTipMat.setSelectable(false)
-      }
-      const addIconToController = (controller) => {
-        const geomItem = new GeomItem('CreateGeomToolTip', this.vrControllerToolTip, this.vrControllerToolTipMat)
-        controller.getTipItem().removeAllChildren()
-        controller.getTipItem().addChild(geomItem, false)
-      }
       for (const controller of xrvp.getControllers()) {
-        addIconToController({ controller })
+        this.addIconToVRController(controller)
       }
-      this.addIconToControllerId = xrvp.on('controllerAdded', (event) => addIconToController(event.controller))
+      xrvp.on('controllerAdded', this.controllerAddedHandler)
     })
   }
 
@@ -65,7 +72,7 @@ class CreateGeomTool extends BaseCreateTool {
       // for(let controller of xrvp.getControllers()) {
       //   controller.getTipItem().removeAllChildren();
       // }
-      xrvp.removeListenerById('controllerAdded', this.addIconToControllerId)
+      xrvp.off('controllerAdded', this.controllerAddedHandler)
     })
   }
 

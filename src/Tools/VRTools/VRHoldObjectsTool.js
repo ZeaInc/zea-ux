@@ -29,7 +29,7 @@ class HoldObjectsChange extends Change {
    */
   undo() {
     for (let i = 0; i < this.__selection.length; i++) {
-      if (this.__selection[i]) {
+      if (this.__selection[i] && this.__prevXfos[i]) {
         this.__selection[i].getParameter('GlobalXfo').setValue(this.__prevXfos[i])
       }
     }
@@ -40,7 +40,7 @@ class HoldObjectsChange extends Change {
    */
   redo() {
     for (let i = 0; i < this.__selection.length; i++) {
-      if (this.__selection[i]) {
+      if (this.__selection[i] && this.__newXfos[i]) {
         this.__selection[i].getParameter('GlobalXfo').setValue(this.__newXfos[i])
       }
     }
@@ -95,14 +95,17 @@ class HoldObjectsChange extends Change {
     super.fromJSON(j, context)
 
     const sceneRoot = context.appData.scene.getRoot()
-    const newSelection = []
+    this.__selection = []
     for (let i = 0; i < j.itemPaths.length; i++) {
       const itemPath = j.itemPaths[i]
-      if (itemPath) {
-        newSelection[i] = sceneRoot.resolvePath(itemPath, 1)
+      if (itemPath && itemPath != '') {
+        const newItem = sceneRoot.resolvePath(itemPath, 1)
+        if (newItem != sceneRoot) {
+          this.__selection[i] = newItem
+          this.__prevXfos[i] = newItem.getParameter('GlobalXfo').getValue()
+        }
       }
     }
-    this.__selection = newSelection
   }
 
   /**
