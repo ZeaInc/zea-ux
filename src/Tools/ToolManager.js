@@ -31,6 +31,16 @@ class ToolManager extends BaseTool {
     this.toolStack.pop()
   }
 
+  activeToolName() {
+    if (this.toolStack.length > 0) {
+      const tool = this.toolStack[this.toolStack.length - 1]
+      for (const key in this.tools) {
+        if (this.tools[key] == tool) return key
+      }
+    }
+    return ''
+  }
+
   // ///////////////////////////////////
   // Pointer events
 

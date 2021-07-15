@@ -18,9 +18,6 @@ class VRUI extends HTMLElement {
     const addButton = (icon, cb) => {
       const buttonDiv = document.createElement('div')
       buttonDiv.classList.add('button')
-      buttonDiv.addEventListener('click', () => {
-        cb(img)
-      })
       this.buttonsContainer.appendChild(buttonDiv)
       buttonDiv.addEventListener('mouseenter', () => {
         buttonDiv.classList.add('button-hover')
@@ -30,6 +27,7 @@ class VRUI extends HTMLElement {
       })
       buttonDiv.addEventListener('mousedown', () => {
         buttonDiv.classList.add('button-active')
+        cb(img)
       })
       buttonDiv.addEventListener('mouseup', () => {
         buttonDiv.classList.remove('button-active')
@@ -45,7 +43,7 @@ class VRUI extends HTMLElement {
     })
     addButton('data/dustin-w-Redo-icon.png', () => {
       const { UndoRedoManager } = window.zeaUx
-      UndoRedoManager.getInstance().undo()
+      UndoRedoManager.getInstance().redo()
     })
 
     let recording = false
@@ -57,7 +55,7 @@ class VRUI extends HTMLElement {
       } else {
         img.src = 'data/record-button-off.png'
         this.sessionRecorder.stopRecording()
-        recording = true
+        recording = false
       }
     })
 
@@ -76,6 +74,7 @@ class VRUI extends HTMLElement {
   border: 2px solid #333333;
   width: 90px;
   height: 90px; 
+  border-radius: 15px;
   background-color: #FFFFFF;
   margin: 5px;
   display: flex;
@@ -107,6 +106,7 @@ class VRUI extends HTMLElement {
   border: 2px solid #333333;
   width: 200px;
   height: 100px; 
+  border-radius: 15px;
   background-color: #FFFFFF;
   margin: 5px;
   display: flex;
@@ -138,15 +138,16 @@ class VRUI extends HTMLElement {
       const toolDiv = document.createElement('div')
       toolDiv.classList.add('tool')
       let toolActive = false
-      toolDiv.addEventListener('click', () => {
+      toolDiv.addEventListener('mousedown', () => {
         if (!toolActive) {
-          while (toolManager.activeToolName() != 'VRViewManipulator') toolManager.popTool()
+          while (toolManager.activeToolName() != 'VRUITool') toolManager.popTool()
           toolManager.pushTool(name)
         } else {
           while (toolManager.activeToolName() != name) toolManager.popTool()
           if (toolManager.activeToolName() == name) toolManager.popTool()
         }
       })
+
       tool.on('activatedChanged', (event) => {
         if (event.activated) {
           toolDiv.classList.add('button-active')
@@ -156,12 +157,15 @@ class VRUI extends HTMLElement {
           toolActive = false
         }
       })
+
       toolDiv.addEventListener('mouseenter', () => {
         toolDiv.classList.add('button-hover')
       })
+
       toolDiv.addEventListener('mouseleave', () => {
         toolDiv.classList.remove('button-hover')
       })
+
       this.toolsContainer.appendChild(toolDiv)
 
       if (icon) {

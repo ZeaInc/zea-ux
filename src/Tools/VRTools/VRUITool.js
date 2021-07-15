@@ -64,6 +64,7 @@ class VRUITool extends BaseTool {
    * The deactivateTool method.
    */
   deactivateTool() {
+    if (this.uiOpen) this.closeUI()
     super.deactivateTool()
   }
 
@@ -75,8 +76,6 @@ class VRUITool extends BaseTool {
    */
   displayUI(uiController, pointerController, headXfo) {
     this.controllerUI.activate()
-
-    // this.openUITool = openUITool
     this.uiController = uiController
     this.pointerController = pointerController
 
@@ -161,7 +160,8 @@ class VRUITool extends BaseTool {
     const ray = new Ray(pointerXfo.tr, pointervec)
 
     const planeXfo = this.controllerUI.getParameter('GlobalXfo').getValue()
-    const planeSize = this.controllerUI.getGeomOffsetXfo().sc
+    const planeSize = this.controllerUI.getGeomOffsetXfo().sc.multiply(planeXfo.sc)
+
     const plane = new Ray(planeXfo.tr, planeXfo.ori.getZaxis().negate())
     const res = ray.intersectRayPlane(plane)
     if (res <= 0) {
@@ -180,7 +180,7 @@ class VRUITool extends BaseTool {
     this.setPointerLength(res)
     const rect = this.__vrUIDOMElement.getBoundingClientRect()
     return {
-      clientX: Math.round(x * rect.width + rect.width / 2),
+      clientX: Math.round(x * -rect.width + rect.width / 2),
       clientY: Math.round(y * -rect.height + rect.height / 2),
     }
   }
@@ -218,7 +218,7 @@ class VRUITool extends BaseTool {
    */
   onPointerDown(event) {
     if (event.pointerType === POINTER_TYPES.xr) {
-      if (event.controller == this.pointerController) {
+      if (event.controller == this.pointerController && this.uiOpen) {
         this.__triggerHeld = true
         const target = this.sendEventToUI('mousedown', {
           button: event.button - 1,
@@ -228,10 +228,9 @@ class VRUITool extends BaseTool {
         } else {
           this.__triggerDownElem = null
         }
+        // While the UI is open, no other tools get events.
+        event.stopPropagation()
       }
-
-      // While the UI is open, no other tools get events.
-      event.stopPropagation()
     }
   }
 
@@ -241,7 +240,7 @@ class VRUITool extends BaseTool {
    */
   onPointerUp(event) {
     if (event.pointerType === POINTER_TYPES.xr) {
-      if (event.controller == this.pointerController) {
+      if (event.controller == this.pointerController && this.uiOpen) {
         this.__triggerHeld = false
         const target = this.sendEventToUI('mouseup', {
           button: event.button - 1,
@@ -252,11 +251,9 @@ class VRUITool extends BaseTool {
           })
         }
         this.__triggerDownElem = null
+        // While the UI is open, no other tools get events.
+        event.stopPropagation()
       }
-
-      // While the UI is open, no other tools get events.
-      event.stopPropagation()
-      return
     }
   }
 
@@ -267,23 +264,27 @@ class VRUITool extends BaseTool {
   onPointerMove(event) {
     if (event.pointerType === POINTER_TYPES.xr) {
       if (!this.uiOpen) {
+        if (
+          !event.controllers[0] ||
+          event.controllers[0].buttonPressed ||
+          !event.controllers[1] ||
+          event.controllers[1].buttonPressed
+        ) {
+          return
+        }
         // Controller coordinate system
         // X = Horizontal.
         // Y = Up.
         // Z = Towards handle base.
         const headXfo = event.viewXfo
         const checkControllers = (ctrlA, ctrlB) => {
-          if (!ctrlA) return false
+          // Note: do not open the UI when the controller buttons are pressed.
           const xfoA = ctrlA.getTreeItem().getParameter('GlobalXfo').getValue()
           const headToCtrlA = xfoA.tr.subtract(headXfo.tr)
           headToCtrlA.normalizeInPlace()
           if (headToCtrlA.angleTo(xfoA.ori.getYaxis()) < Math.PI * 0.25) {
-            // Stay closed as a subsequent tool has just caused the UI to be
-            // closed while interacting with the UI. (see: VRUITool.deactivateTool)
-            // if (!this.__stayClosed)
-            {
-              this.displayUI(ctrlA, ctrlB, headXfo)
-            }
+            this.displayUI(ctrlA, ctrlB, headXfo)
+            event.setCapture(this)
             event.stopPropagation()
             return true
           }
@@ -304,7 +305,10 @@ class VRUITool extends BaseTool {
           headToCtrlA.normalizeInPlace()
           if (headToCtrlA.angleTo(xfoA.ori.getYaxis()) > Math.PI * 0.5) {
             // Remove ourself from the system.
-            this.closeUI(this)
+            this.closeUI()
+            if (event.getCapture() == this) {
+              event.releaseCapture(this)
+            }
             return false
           }
           return true
@@ -312,9 +316,9 @@ class VRUITool extends BaseTool {
 
         if (checkControllers()) {
           this.sendEventToUI('mousemove', {})
-          // While the UI is open, no other tools get events.
-          event.stopPropagation()
         }
+        // While the UI is open, no other tools get events.
+        event.stopPropagation()
       }
     }
   }

@@ -22,6 +22,7 @@ export default class VRControllerUI extends GeomItem {
     this.setSelectable(false)
     this.appData = appData
     this.__vrUIDOMElement = vrUIDOMElement
+    this.__vrUIDOMElement.style.display = 'none'
 
     this.__uiimage = new DataImage()
     // uimat.getParameter('BaseColor').setValue(new Color(0.3, 0.3, 0.3));
@@ -63,7 +64,7 @@ export default class VRControllerUI extends GeomItem {
     // During debugging we activate the UI explicitly, so avoid activating twice.
     if (!this.__active) {
       // document.body.appendChild(this.__vrUIDOMElement)
-      // this.__vrUIDOMElement.style.display = 'block'
+      this.__vrUIDOMElement.style.display = 'block'
       this.__active = true
 
       this.__mutationObserver.observe(this.__vrUIDOMElement, {
@@ -81,8 +82,8 @@ export default class VRControllerUI extends GeomItem {
    */
   deactivate() {
     // document.body.removeChild(this.__vrUIDOMElement)
-    // this.__vrUIDOMElement.style.display = 'none'
-    this.__active = true
+    this.__vrUIDOMElement.style.display = 'none'
+    this.__active = false
     this.__mutationObserver.disconnect()
   }
 

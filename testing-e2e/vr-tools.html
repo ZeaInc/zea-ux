@@ -15,7 +15,7 @@
     <script src="../dist/index.umd.js"></script>
 
     <script src="https://websocket-staging.zea.live/socket.io/socket.io.js"></script>
-    <script crossorigin src="https://cdn.jsdelivr.net/npm/@zeainc/zea-collab@v5/dist/index.umd.js"></script>
+    <script src="../node_modules/@zeainc/zea-collab/dist/index.umd.js"></script>
 
     <style>
       .label {
@@ -66,7 +66,6 @@
         Material,
         GeomItem,
         ObjAsset,
-        VRViewManipulator,
       } = window.zeaEngine
       const {
         SelectionManager,
@@ -174,7 +173,6 @@
       vrUIDOMElement.setToolManager(vrToolManager)
 
       vrUIDOMElement.setSessionRecorder(sessionRecorder)
-      // vrUIDOMElement.style.display = 'none'
       document.body.appendChild(vrUIDOMElement)
 
       const vrUITool = new VRUITool(appData, vrUIDOMElement.contentDiv)
