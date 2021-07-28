@@ -11,7 +11,6 @@ Class representing Handle Shader.
     * [getParamDeclarations() ⇒ <code>array</code>](#getParamDeclarations)
     * [getPackedMaterialData(material) ⇒ <code>any</code>](#getPackedMaterialData)
     * [isOverlay() ⇒ <code>boolean</code>](#isOverlay)
-    * [getGeomDataShaderName() ⇒ <code>string</code>](#getGeomDataShaderName)
 
 <a name="new_HandleShader_new"></a>
 
@@ -49,10 +48,3 @@ Returns whether the shader's overlay is true or not.
 
 
 **Returns**: <code>boolean</code> - - The overlay value  
-<a name="HandleShader.getGeomDataShaderName"></a>
-
-### getGeomDataShaderName
-Returns shader name
-
-
-**Returns**: <code>string</code> - - The Geom Shader value  

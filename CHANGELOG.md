@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.1.3](https://github.com/ZeaInc/zea-ux/compare/v3.1.2...v3.1.3) (2021-06-29)
+
+
+### Bug Fixes
+
+* Cleaned up incompatiblity with zea-engine 3.10.3 ([ee011a3](https://github.com/ZeaInc/zea-ux/commit/ee011a3f77010e1d2195e7d89dfaf719285ce00a))
+
 ### [3.1.2](https://github.com/ZeaInc/zea-ux/compare/v3.1.1...v3.1.2) (2021-05-14)
 
 

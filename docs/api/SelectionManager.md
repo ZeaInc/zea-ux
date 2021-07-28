@@ -34,7 +34,7 @@ Creates an instance of SelectionManager.
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | appData | <code>object</code> |  | The options object. |
-| [options] | <code>object</code> | <code>{}</code> | The appData value. |
+| [options] | <code>object</code> | <code>{}</code> | The appData value.  enableXfoHandles - enables display Xfo Gizmo handles when items are selected.  selectionOutlineColor - enables highlight color to use to outline selected items.  branchSelectionOutlineColor - enables highlight color to use to outline selected items. |
 
 <a name="SelectionManager+setRenderer"></a>
 
