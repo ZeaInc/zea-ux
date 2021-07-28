@@ -62,7 +62,7 @@
         Xfo,
         EulerAngles,
         Color,
-        Sphere,
+        Cuboid,
         Material,
         GeomItem,
         ObjAsset,
@@ -95,6 +95,13 @@
       let defaultColor
       const pointerOverColor = new Color(0, 1, 1)
       const pointerDownColor = new Color(1, 0, 0)
+
+      const material = new Material('surfaces', 'StandardSurfaceShader')
+      material.getParameter('BaseColor').setValue(new Color(0.75, 0.75, 0.75))
+
+      const cuboid = new Cuboid(10, 10, 0.01)
+      const geomItem2 = new GeomItem('Cuboid', cuboid, material, new Xfo(new Vec3(0, 0, -0.01)))
+      scene.getRoot().addChild(geomItem2)
 
       const objAsset = new ObjAsset('cow')
       objAsset.getParameter('FilePath').setValue('data/cow.obj')
@@ -170,9 +177,11 @@
       vrToolManager.registerTool('Freehand Line Tool', freehandLineTool)
 
       const vrUIDOMElement = document.createElement('vr-ui')
-      vrUIDOMElement.setToolManager(vrToolManager)
 
+      vrUIDOMElement.setRenderer(renderer)
+      vrUIDOMElement.setToolManager(vrToolManager)
       vrUIDOMElement.setSessionRecorder(sessionRecorder)
+
       document.body.appendChild(vrUIDOMElement)
 
       const vrUITool = new VRUITool(appData, vrUIDOMElement.contentDiv)

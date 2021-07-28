@@ -58,6 +58,38 @@ class VRUI extends HTMLElement {
         recording = false
       }
     })
+    addButton('data/view_1_1.png', (img) => {
+      this.renderer.getXRViewport().then((xrvp) => {
+        const { Ray, Xfo, Vec3 } = window.zeaEngine
+        const stageXfo = xrvp.getXfo()
+        const headLocalXfo = xrvp.getVRHead().getXfo()
+        const headXfo = xrvp.getVRHead().getTreeItem().getParameter('GlobalXfo').getValue()
+        // const curreHeadHeight = stageXfo.tr.z + stageXfo.sc.z * 1.7
+        // stageXfo.tr.z = curreHeadHeight - 1.7
+        // const curreHeadPos = stageXfo.tr.add(new Vec3(0, 0, 1.7 * stageXfo.sc.z))
+        stageXfo.sc.set(1, 1, 1)
+        // const delta = stageXfo.multiply(headLocalXfo).tr.subtract(headXfo.tr)
+        const delta = headXfo.tr.subtract(stageXfo.multiply(headLocalXfo).tr)
+        stageXfo.tr.addInPlace(delta)
+
+        // Now cast a ray straight down to te
+        const ray = new Ray()
+        ray.start = headXfo.tr
+        ray.dir.set(0, 0, -1)
+        const dist = 10
+        const area = 0.5
+        const rayXfo = new Xfo()
+        rayXfo.setLookAt(ray.start, ray.start.add(ray.dir), new Vec3(0, 0, 1))
+
+        const result = this.renderer.raycast(rayXfo, ray, dist, area)
+        if (result) {
+          const worldPos = ray.pointAtDist(result.dist)
+          stageXfo.tr.z += worldPos.z - stageXfo.tr.z
+        }
+
+        xrvp.setXfo(stageXfo)
+      })
+    })
 
     const styleTag = document.createElement('style')
     styleTag.appendChild(
@@ -89,7 +121,7 @@ class VRUI extends HTMLElement {
 
 #buttonsContainer {
   display: flex;
-  width: 320px;
+  width: 280px;
   flex-wrap: wrap;
   flex-direction: row;
 }
@@ -128,6 +160,10 @@ class VRUI extends HTMLElement {
         `)
     )
     shadowRoot.appendChild(styleTag)
+  }
+
+  setRenderer(renderer) {
+    this.renderer = renderer
   }
 
   setToolManager(toolManager) {
