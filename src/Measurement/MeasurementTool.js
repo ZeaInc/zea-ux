@@ -58,25 +58,51 @@ class MeasurementTool extends BaseTool {
    * @private
    */
   snapToParametricEdge(geomItem, pos) {
-    const curveType = geomItem.getParameter('curveType').getValue()
-    const curveXfo = geomItem.getParameter('GlobalXfo').getValue()
+    if (geomItem.hasParameter('curveType')) {
+      const curveType = geomItem.getParameter('curveType').getValue()
+      const xfo = geomItem.getParameter('GlobalXfo').getValue()
 
-    switch (curveType) {
-      case 'Line': {
-        const pointToCurve = pos.subtract(curveXfo.tr)
-        const xaxis = curveXfo.ori.getXaxis()
-        return curveXfo.tr.add(xaxis.scale(pointToCurve.dot(xaxis)))
+      switch (curveType) {
+        case 'Line': {
+          const crvToPnt = pos.subtract(xfo.tr)
+          const xaxis = xfo.ori.getXaxis()
+          return xfo.tr.add(xaxis.scale(crvToPnt.dot(xaxis)))
+        }
+        case 'Circle': {
+          const crvToPnt = pos.subtract(xfo.tr)
+          const radius = geomItem.getParameter('Radius').getValue() * xfo.sc.x
+          const zaxis = xfo.ori.getZaxis()
+          crvToPnt.subtractInPlace(zaxis.scale(crvToPnt.dot(zaxis)))
+          const length = crvToPnt.length()
+          return xfo.tr.add(crvToPnt.scale(radius / length))
+        }
+        default: {
+          console.log('Unhandled Edge Type: ', curveType)
+        }
       }
-      case 'Circle': {
-        const pointToCurve = pos.subtract(curveXfo.tr)
-        const radius = geomItem.getParameter('Radius').getValue() * curveXfo.sc.x
-        const zaxis = curveXfo.ori.getZaxis()
-        pointToCurve.subtractInPlace(zaxis.scale(pointToCurve.dot(zaxis)))
-        const length = pointToCurve.length()
-        return curveXfo.tr.add(pointToCurve.scale(radius / length))
-      }
-      default: {
-        console.log('Unhandled Edge Type: ', curveType)
+    } else if (geomItem.hasParameter('SurfaceType')) {
+      const surfaceType = geomItem.getParameter('SurfaceType').getValue()
+      const xfo = geomItem.getParameter('GlobalXfo').getValue()
+
+      switch (surfaceType) {
+        case 'Plane': {
+          const srfToPnt = pos.subtract(xfo.tr)
+          const zaxis = xfo.ori.getZaxis()
+          return pos.subtract(zaxis.scale(srfToPnt.dot(zaxis)))
+        }
+        case 'Cylinder': {
+          const srfToPnt = pos.subtract(xfo.tr)
+          const zaxis = xfo.ori.getZaxis()
+          const pointOnAxis = xfo.tr.add(zaxis.scale(srfToPnt.dot(zaxis)))
+
+          const radius = geomItem.getParameter('Radius').getValue() * xfo.sc.x
+          const axisToPnt = pos.subtract(pointOnAxis)
+          const length = axisToPnt.length()
+          return pointOnAxis.add(axisToPnt.scale(radius / length))
+        }
+        default: {
+          console.log('Unhandled Surface Type: ', surfaceType)
+        }
       }
     }
   }
@@ -122,8 +148,8 @@ class MeasurementTool extends BaseTool {
       const ray = event.pointerRay
       if (event.intersectionData) {
         const { geomItem } = event.intersectionData
-        if (geomItem != this.highlightedItemB) {
-          if (geomItem.hasParameter('curveType')) {
+        if (geomItem != this.highlightedItemA && geomItem != this.highlightedItemB) {
+          if (geomItem.hasParameter('curveType') || geomItem.hasParameter('SurfaceType')) {
             if (this.highlightedItemB) {
               this.highlightedItemB.removeHighlight('measureB', true)
               this.highlightedItemB = null
@@ -131,14 +157,14 @@ class MeasurementTool extends BaseTool {
 
             this.highlightedItemB = geomItem
             this.highlightedItemB.addHighlight('measureB', new Color(1, 1, 1, 0.2), true)
-
           }
         }
 
         if (this.highlightedItemB) {
           const hitPos = ray.start.add(ray.dir.scale(event.intersectionData.dist))
+          const startPos = this.snapToParametricEdge(this.highlightedItemA, hitPos)
           const endPos = this.snapToParametricEdge(this.highlightedItemB, hitPos)
-          this.measurementChange.update({ endPos })
+          this.measurementChange.update({ startPos, endPos })
         }
       } else {
         if (this.highlightedItemB) {
@@ -151,7 +177,7 @@ class MeasurementTool extends BaseTool {
     } else {
       if (event.intersectionData) {
         const { geomItem } = event.intersectionData
-        if (geomItem.hasParameter('curveType')) {
+        if (geomItem.hasParameter('curveType') || geomItem.hasParameter('SurfaceType')) {
           if (!geomItem != this.highlightedItemA) {
             if (this.highlightedItemA) {
               this.highlightedItemA.removeHighlight('measureA', true)

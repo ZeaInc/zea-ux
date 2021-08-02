@@ -11,8 +11,9 @@ class MeasurementChange extends Change {
   /**
    * Creates an instance of MeasurementChange.
    *
-   * @param {TreeItem} parentItem - The parentItem value
-   * @param {Xfo} startPos - The startPos Value
+   * @param {TreeItem} parentItem - The parent that the measurement will be added to.
+   * @param {Xfo} startPos - The start position of the point to point measurement
+   * @param {Color} color - The color of the measurement
    */
   constructor(parentItem, startPos, color) {
     super('MeasurementChange')
