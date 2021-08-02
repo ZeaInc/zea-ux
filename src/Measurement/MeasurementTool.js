@@ -45,6 +45,43 @@ class MeasurementTool extends BaseTool {
   }
 
   /**
+   * @param {GeomItem} geomItem
+   * @param {string} key
+   * @private
+   */
+  highlightEdge(geomItem, key) {}
+
+  /**
+   * @param {GeomItem} geomItem
+   * @param {Vec3} pos
+   * @return {Vec3}
+   * @private
+   */
+  snapToParametricEdge(geomItem, pos) {
+    const curveType = geomItem.getParameter('curveType').getValue()
+    const curveXfo = geomItem.getParameter('GlobalXfo').getValue()
+
+    switch (curveType) {
+      case 'Line': {
+        const pointToCurve = pos.subtract(curveXfo.tr)
+        const xaxis = curveXfo.ori.getXaxis()
+        return curveXfo.tr.add(xaxis.scale(pointToCurve.dot(xaxis)))
+      }
+      case 'Circle': {
+        const pointToCurve = pos.subtract(curveXfo.tr)
+        const radius = geomItem.getParameter('Radius').getValue() * curveXfo.sc.x
+        const zaxis = curveXfo.ori.getZaxis()
+        pointToCurve.subtractInPlace(zaxis.scale(pointToCurve.dot(zaxis)))
+        const length = pointToCurve.length()
+        return curveXfo.tr.add(pointToCurve.scale(radius / length))
+      }
+      default: {
+        console.log('Unhandled Edge Type: ', curveType)
+      }
+    }
+  }
+
+  /**
    *
    *
    * @param {MouseEvent|TouchEvent} event - The event value
@@ -55,15 +92,16 @@ class MeasurementTool extends BaseTool {
 
     if (this.highlightedItemA) {
       const ray = event.pointerRay
-      let startPos
+      let hitPos
       if (event.intersectionData) {
-        startPos = ray.start.add(ray.dir.scale(event.intersectionData.dist))
+        hitPos = ray.start.add(ray.dir.scale(event.intersectionData.dist))
       } else {
         const plane = new Ray(new Vec3(), new Vec3(0, 0, 1))
         const distance = ray.intersectRayPlane(plane)
-        startPos = ray.start.add(ray.dir.scale(distance))
+        hitPos = ray.start.add(ray.dir.scale(distance))
       }
 
+      const startPos = this.snapToParametricEdge(this.highlightedItemA, hitPos)
       const color = this.colorParam.getValue()
 
       this.measurementChange = new MeasurementChange(this.appData.scene.getRoot(), startPos, color)
@@ -85,14 +123,23 @@ class MeasurementTool extends BaseTool {
       if (event.intersectionData) {
         const { geomItem } = event.intersectionData
         if (geomItem != this.highlightedItemB) {
-          if (this.highlightedItemB) this.highlightedItemB.removeHighlight('measureB', true)
+          if (geomItem.hasParameter('curveType')) {
+            if (this.highlightedItemB) {
+              this.highlightedItemB.removeHighlight('measureB', true)
+              this.highlightedItemB = null
+            }
 
-          geomItem.addHighlight('measureB', new Color(1, 1, 1, 0.2), true)
+            this.highlightedItemB = geomItem
+            this.highlightedItemB.addHighlight('measureB', new Color(1, 1, 1, 0.2), true)
 
-          this.highlightedItemB = geomItem
+          }
         }
-        const endPos = ray.start.add(ray.dir.scale(event.intersectionData.dist))
-        this.measurementChange.update({ endPos })
+
+        if (this.highlightedItemB) {
+          const hitPos = ray.start.add(ray.dir.scale(event.intersectionData.dist))
+          const endPos = this.snapToParametricEdge(this.highlightedItemB, hitPos)
+          this.measurementChange.update({ endPos })
+        }
       } else {
         if (this.highlightedItemB) {
           this.highlightedItemB.removeHighlight('measureB', true)
@@ -104,10 +151,14 @@ class MeasurementTool extends BaseTool {
     } else {
       if (event.intersectionData) {
         const { geomItem } = event.intersectionData
-        if (!geomItem != this.highlightedItemA) {
-          if (this.highlightedItemA) this.highlightedItemA.removeHighlight('measureA', true)
-          geomItem.addHighlight('measureA', new Color(1, 1, 1, 0.2), true)
-          this.highlightedItemA = geomItem
+        if (geomItem.hasParameter('curveType')) {
+          if (!geomItem != this.highlightedItemA) {
+            if (this.highlightedItemA) {
+              this.highlightedItemA.removeHighlight('measureA', true)
+            }
+            this.highlightedItemA = geomItem
+            this.highlightedItemA.addHighlight('measureA', new Color(1, 1, 1, 0.2), true)
+          }
         }
       } else {
         if (this.highlightedItemA) {
@@ -128,6 +179,10 @@ class MeasurementTool extends BaseTool {
       this.dragging = false
       this.measurementChange.end()
       this.measurementChange = null
+
+      if (this.highlightedItemA) this.highlightedItemA.removeHighlight('measureA', true)
+      if (this.highlightedItemB) this.highlightedItemB.removeHighlight('measureB', true)
+
       event.stopPropagation()
     }
   }
