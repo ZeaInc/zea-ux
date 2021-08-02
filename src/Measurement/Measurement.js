@@ -13,7 +13,6 @@ import {
   Registry,
 } from '@zeainc/zea-engine'
 import { MeasurementOperator } from './MeasurementOperator'
-import { MeasurementHandle } from './MeasurementHandle'
 
 /**
  *
@@ -44,13 +43,8 @@ class Measurement extends TreeItem {
     this.startMarker = new GeomItem(`${name}StartMarker`, sphere, this.markerMaterial)
     this.endMarker = new GeomItem(`${name}EndMarker`, sphere, this.markerMaterial)
 
-    this.startMarkerHandle = new MeasurementHandle('StartMarkerHandle')
-    this.startMarkerHandle.addChild(this.startMarker)
-    this.addChild(this.startMarkerHandle)
-
-    this.endMarkerHandle = new MeasurementHandle('EndMarkerHandle')
-    this.endMarkerHandle.addChild(this.endMarker)
-    this.addChild(this.endMarkerHandle)
+    this.addChild(this.startMarker)
+    this.addChild(this.endMarker)
 
     const line = new Lines(0.0)
     line.setNumVertices(2)
@@ -65,10 +59,8 @@ class Measurement extends TreeItem {
     this.measurementOp = new MeasurementOperator(`${name}MeasurementOperator`)
     this.measurementOp
       .getInput(MeasurementOperator.IO_NAMES.StartXfo)
-      .setParam(this.startMarkerHandle.getParameter('GlobalXfo'))
-    this.measurementOp
-      .getInput(MeasurementOperator.IO_NAMES.EndXfo)
-      .setParam(this.endMarkerHandle.getParameter('GlobalXfo'))
+      .setParam(this.startMarker.getParameter('GlobalXfo'))
+    this.measurementOp.getInput(MeasurementOperator.IO_NAMES.EndXfo).setParam(this.endMarker.getParameter('GlobalXfo'))
     this.measurementOp.getOutput(MeasurementOperator.IO_NAMES.LineXfo).setParam(lineGeomItem.getParameter('GlobalXfo'))
 
     this.displayLabel()
@@ -106,9 +98,9 @@ class Measurement extends TreeItem {
    * @param {Vec3} position
    */
   setStartMarkerPos(position) {
-    const newXfo = this.startMarkerHandle.getParameter('GlobalXfo').getValue()
+    const newXfo = this.startMarker.getParameter('GlobalXfo').getValue()
     newXfo.tr = position
-    this.startMarkerHandle.getParameter('GlobalXfo').setValue(newXfo)
+    this.startMarker.getParameter('GlobalXfo').setValue(newXfo)
   }
 
   /**
@@ -117,9 +109,9 @@ class Measurement extends TreeItem {
    * @param {Vec3} position
    */
   setEndMarkerPos(position) {
-    const newXfo = this.endMarkerHandle.getParameter('GlobalXfo').getValue()
+    const newXfo = this.endMarker.getParameter('GlobalXfo').getValue()
     newXfo.tr = position
-    this.endMarkerHandle.getParameter('GlobalXfo').setValue(newXfo)
+    this.endMarker.getParameter('GlobalXfo').setValue(newXfo)
   }
 
   /**
