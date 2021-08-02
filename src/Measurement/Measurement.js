@@ -128,8 +128,8 @@ class Measurement extends TreeItem {
    * @param {boolean} isVisible -
    */
   setGeomBuffersVisibility(isVisible) {
-    this.markerMaterial.visibleInGeomDataBuffer = isVisible
-    this.lineMaterial.visibleInGeomDataBuffer = isVisible
+    this.startMarker.setSelectable(!isVisible)
+    this.endMarker.setSelectable(!isVisible)
   }
 
   /**
