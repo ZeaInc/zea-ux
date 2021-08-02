@@ -34,7 +34,6 @@
   * [XfoHandle](api/Handles/XfoHandle)
   * [XfoPlanarMovementHandle](api/Handles/XfoPlanarMovementHandle)
   * [Shaders](api/Handles/Shaders/README)
-    * [HandleGeomDataShader](api/Handles/Shaders/HandleGeomDataShader)
     * [HandleShader](api/Handles/Shaders/HandleShader)
 * [Measurement](api/Measurement/README)
   * [Measurement](api/Measurement/Measurement)
