@@ -150,8 +150,6 @@ export default class VRControllerUI extends GeomItem {
   sendMouseEvent(eventName, args, element) {
     // console.log('sendMouseEvent:', eventName, element)
 
-    if (eventName == 'mousedown') console.log('clientX:' + args.clientX + ' clientY:' + args.clientY)
-
     const event = new MouseEvent(
       eventName,
       Object.assign(

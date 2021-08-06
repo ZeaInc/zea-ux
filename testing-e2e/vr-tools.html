@@ -74,6 +74,9 @@
         SelectionTool,
         VRHoldObjectsTool,
         CreateFreehandLineTool,
+        CreateSphereTool,
+        CreateCuboidTool,
+        CreateConeTool,
         VRUITool,
       } = window.zeaUx
       const { Session, SessionSync, SessionRecorder } = window.zeaCollab
@@ -148,7 +151,7 @@
 
       const socketUrl = 'https://websocket-staging.zea.live'
       const session = new Session(userData, socketUrl)
-      session.joinRoom('any-random-string')
+      session.joinRoom('testing-vr-tools')
       session.users[userData.id] = userData
       const sessionSync = new SessionSync(session, appData, userData, { avatarScale: 5 })
       const sessionRecorder = new SessionRecorder(session)
@@ -169,11 +172,16 @@
 
       const holdObjectsTool = new VRHoldObjectsTool(appData)
       const freehandLineTool = new CreateFreehandLineTool(appData)
-
+      const createSphereTool = new CreateSphereTool(appData)
+      const createCuboidTool = new CreateCuboidTool(appData)
+      const createConeTool = new CreateConeTool(appData)
       const vrToolManager = new ToolManager(appData)
 
       // Register both tools.
       vrToolManager.registerTool('VRHoldObjectsTool', holdObjectsTool)
+      vrToolManager.registerTool('Create Cuboid', createCuboidTool)
+      vrToolManager.registerTool('Create Sphere', createSphereTool)
+      vrToolManager.registerTool('Create Cone', createConeTool)
       vrToolManager.registerTool('Freehand Line Tool', freehandLineTool)
 
       const vrUIDOMElement = document.createElement('vr-ui')

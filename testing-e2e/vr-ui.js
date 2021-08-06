@@ -1,3 +1,4 @@
+const { Ray, Xfo, Vec3, Color } = window.zeaEngine
 class VRUI extends HTMLElement {
   constructor() {
     super()
@@ -46,21 +47,20 @@ class VRUI extends HTMLElement {
       UndoRedoManager.getInstance().redo()
     })
 
-    let recording = false
-    addButton('data/record-button-off.png', (img) => {
-      if (!recording) {
-        img.src = 'data/record-button-on.png'
-        this.sessionRecorder.startRecording()
-        recording = true
-      } else {
-        img.src = 'data/record-button-off.png'
-        this.sessionRecorder.stopRecording()
-        recording = false
-      }
-    })
+    // let recording = false
+    // addButton('data/record-button-off.png', (img) => {
+    //   if (!recording) {
+    //     img.src = 'data/record-button-on.png'
+    //     this.sessionRecorder.startRecording()
+    //     recording = true
+    //   } else {
+    //     img.src = 'data/record-button-off.png'
+    //     this.sessionRecorder.stopRecording()
+    //     recording = false
+    //   }
+    // })
     addButton('data/view_1_1.png', (img) => {
       this.renderer.getXRViewport().then((xrvp) => {
-        const { Ray, Xfo, Vec3 } = window.zeaEngine
         const stageXfo = xrvp.getXfo()
         const headLocalXfo = xrvp.getVRHead().getXfo()
         const headXfo = xrvp.getVRHead().getTreeItem().getParameter('GlobalXfo').getValue()
@@ -99,7 +99,7 @@ class VRUI extends HTMLElement {
   position: absolute;
   top: 0px;
   left: 0px;
-  width: 320px;
+  width: 280px;
 }
 
 .button {
@@ -121,7 +121,7 @@ class VRUI extends HTMLElement {
 
 #buttonsContainer {
   display: flex;
-  width: 280px;
+  width: 100%;
   flex-wrap: wrap;
   flex-direction: row;
 }
@@ -136,8 +136,8 @@ class VRUI extends HTMLElement {
 }
 .tool {
   border: 2px solid #333333;
-  width: 200px;
-  height: 100px; 
+  width: 90px;
+  height: 90px; 
   border-radius: 15px;
   background-color: #FFFFFF;
   margin: 5px;
@@ -151,7 +151,7 @@ class VRUI extends HTMLElement {
 }
 
 .button-active {
-  background: #F9CE03;
+  background: #C1C1C1;
 }
 
 .label {
@@ -186,6 +186,8 @@ class VRUI extends HTMLElement {
 
       tool.on('activatedChanged', (event) => {
         if (event.activated) {
+          if (tool.colorParam) tool.colorParam.setValue(color)
+
           toolDiv.classList.add('button-active')
           toolActive = true
         } else {
@@ -202,7 +204,7 @@ class VRUI extends HTMLElement {
         toolDiv.classList.remove('button-hover')
       })
 
-      this.toolsContainer.appendChild(toolDiv)
+      this.buttonsContainer.appendChild(toolDiv)
 
       if (icon) {
         const img = new Image()
@@ -223,8 +225,52 @@ class VRUI extends HTMLElement {
     //   if (key == 'VRHoldObjectsTool') continue
     //   addToolButton(key)
     // }
-    addToolButton('Freehand Line Tool', 'data/pen-tool.png')
     addToolButton('VRHoldObjectsTool', 'data/grab-icon.png')
+    addToolButton('Freehand Line Tool', 'data/pen-tool.png')
+    addToolButton('Create Cuboid', 'data/create-cuboid-icon.png')
+    addToolButton('Create Sphere', 'data/create-sphere-icon.png')
+    addToolButton('Create Cone', 'data/create-cone-icon.png')
+
+    let color = new Color('#FFD800')
+    const addColorButton = (icon, cb) => {
+      const buttonDiv = document.createElement('div')
+      buttonDiv.classList.add('button')
+      this.buttonsContainer.appendChild(buttonDiv)
+      buttonDiv.addEventListener('mouseenter', () => {
+        buttonDiv.classList.add('button-hover')
+      })
+      buttonDiv.addEventListener('mouseleave', () => {
+        buttonDiv.classList.remove('button-hover')
+      })
+      buttonDiv.addEventListener('mousedown', () => {
+        activeButtonDiv.classList.remove('button-active')
+        buttonDiv.classList.add('button-active')
+        activeButtonDiv = buttonDiv
+        cb(buttonDiv)
+
+        const tool = toolManager.activeTool()
+        if (tool && tool.colorParam) tool.colorParam.setValue(color)
+      })
+      buttonDiv.addEventListener('mouseup', () => {})
+      const img = new Image()
+      img.classList.add('button-image')
+      img.src = icon
+      buttonDiv.appendChild(img)
+      return buttonDiv
+    }
+
+    addColorButton('data/color-red.png', (buttonDiv) => {
+      color = new Color(1, 0, 0)
+    })
+    addColorButton('data/color-green.png', (buttonDiv) => {
+      color = new Color(0, 1, 0)
+    })
+    addColorButton('data/color-blue.png', (buttonDiv) => {
+      color = new Color(0, 0, 1)
+    })
+    let activeButtonDiv = addColorButton('data/color-yellow.png', (buttonDiv) => {
+      color = new Color('#FFD800')
+    })
   }
   setSessionRecorder(sessionRecorder) {
     this.sessionRecorder = sessionRecorder
