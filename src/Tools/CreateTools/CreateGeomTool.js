@@ -22,7 +22,7 @@ class CreateGeomTool extends BaseCreateTool {
     this.removeToolOnRightClick = true
     this.parentItem = 'parentItem' in appData ? appData.parentItem : appData.scene.getRoot()
 
-    this.lineColor = this.addParameter(new ColorParameter('LineColor', new Color(0.7, 0.2, 0.2)))
+    this.colorParam = this.addParameter(new ColorParameter('Color', new Color(0.7, 0.2, 0.2)))
 
     this.controllerAddedHandler = this.controllerAddedHandler.bind(this)
   }
@@ -31,7 +31,7 @@ class CreateGeomTool extends BaseCreateTool {
     if (!this.vrControllerToolTip) {
       this.vrControllerToolTip = new Cross(0.05)
       this.vrControllerToolTipMat = new Material('VRController Cross', 'LinesShader')
-      this.vrControllerToolTipMat.getParameter('BaseColor').setValue(this.lineColor.getValue())
+      this.vrControllerToolTipMat.getParameter('BaseColor').setValue(this.colorParam.getValue())
       this.vrControllerToolTipMat.setSelectable(false)
     }
     const geomItem = new GeomItem('CreateGeomToolTip', this.vrControllerToolTip, this.vrControllerToolTipMat)

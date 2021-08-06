@@ -1,4 +1,4 @@
-import { Xfo } from '@zeainc/zea-engine'
+import { Xfo, Color } from '@zeainc/zea-engine'
 import Change from '../../../UndoRedo/Change'
 
 /**
@@ -55,6 +55,9 @@ class CreateGeomChange extends Change {
     j.parentItemPath = this.parentItem.getPath()
     j.geomItemName = this.geomItem.getName()
     j.geomItemXfo = this.geomItem.getParameter('LocalXfo').getValue()
+
+    const material = this.geomItem.getParameter('Material').getValue()
+    j.color = material.getParameter('BaseColor').getValue()
     return j
   }
 
@@ -72,6 +75,13 @@ class CreateGeomChange extends Change {
     xfo.fromJSON(j.geomItemXfo)
     this.geomItem.getParameter('LocalXfo').setValue(xfo)
     this.childIndex = this.parentItem.addChild(this.geomItem, false)
+
+    if (j.color) {
+      const color = new Color(0.7, 0.2, 0.2)
+      color.fromJSON(j.color)
+      const material = this.geomItem.getParameter('Material').getValue()
+      material.getParameter('BaseColor').setValue(color)
+    }
   }
 
   // updateFromJSON(j) {

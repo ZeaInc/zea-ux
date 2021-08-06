@@ -29,7 +29,7 @@ class CreateFreehandLineTool extends CreateLineTool {
    * @param {Xfo} xfo - The xfo param.
    */
   createStart(xfo) {
-    const color = this.lineColor.getValue()
+    const color = this.colorParam.getValue()
     const lineThickness = this.lineThickness.getValue()
 
     this.change = new CreateFreehandLineChange(this.parentItem, xfo, color, lineThickness)
