@@ -1,6 +1,5 @@
-import { Xfo } from '@zeainc/zea-engine'
+import { Xfo, Registry } from '@zeainc/zea-engine'
 import { UndoRedoManager, Change } from '../UndoRedo/index'
-import { Measurement } from './Measurement'
 
 /**
  * Represents a Measurement change.
@@ -11,20 +10,14 @@ class MeasurementChange extends Change {
   /**
    * Creates an instance of MeasurementChange.
    *
-   * @param {TreeItem} parentItem - The parent that the measurement will be added to.
-   * @param {Xfo} startPos - The start position of the point to point measurement
-   * @param {Color} color - The color of the measurement
+   * @param {TreeItem} measurement - The parent that the measurement will be added to.
    */
-  constructor(parentItem, startPos, color) {
+  constructor(measurement) {
     super('MeasurementChange')
 
-    this.parentItem = parentItem
-
-    this.measurement = new Measurement('Measurement', color)
-    this.measurement.setStartMarkerPos(startPos)
-    this.measurement.setEndMarkerPos(startPos)
-    this.measurement.setGeomBuffersVisibility(false)
-    this.childIndex = this.parentItem.getChildIndex(this.parentItem.addChild(this.measurement))
+    if (measurement) {
+      this.measurement = measurement
+    }
   }
 
   /**
@@ -34,8 +27,7 @@ class MeasurementChange extends Change {
    * @memberof MeasurementChange
    */
   update(data) {
-    if (data.startPos) this.measurement.setStartMarkerPos(data.startPos)
-    if (data.endPos) this.measurement.setEndMarkerPos(data.endPos)
+    this.measurement.fromJSON(data.measurementData)
     this.emit('updated', data)
   }
 
@@ -51,6 +43,8 @@ class MeasurementChange extends Change {
    */
   undo() {
     console.log('undo MeasurementChange')
+    this.parentItem = this.measurement.getParent()
+    this.childIndex = this.parentItem.getChildIndex(this.measurement)
     this.parentItem.removeChild(this.childIndex)
   }
 
@@ -59,7 +53,7 @@ class MeasurementChange extends Change {
    */
   redo() {
     console.log('redo MeasurementChange')
-    this.parentItem.addChild(this.measurement, false, false)
+    this.parentItem.insertChild(this.measurement, this.childIndex)
   }
 
   /**
@@ -70,11 +64,9 @@ class MeasurementChange extends Change {
    */
   toJSON(context) {
     const j = super.toJSON(context)
-    j.parentItemPath = this.parentItem.getPath()
-    j.name = this.measurement.getName()
-    j.startMarker = this.measurement.startMarker.toJSON()
-    j.endMarker = this.measurement.startMarker.toJSON()
-
+    j.parentItemPath = this.measurement.getParent().getPath()
+    j.measurementType = Registry.getBlueprintName(this.measurement)
+    j.measurementData = this.measurement.toJSON(context)
     return j
   }
 
@@ -86,13 +78,12 @@ class MeasurementChange extends Change {
    */
   fromJSON(j, context) {
     const sceneRoot = context.appData.scene.getRoot()
-    this.parentItem = sceneRoot.resolvePath(j.parentItemPath, 1)
-    this.measurement.setName(this.parentItem.generateUniqueName(j.name))
-
-    const startXfo = new Xfo()
-    startXfo.fromJSON(j.startMarker)
-    this.measurement.setStartMarkerPos(startXfo)
-    this.childIndex = this.parentItem.getChildIndex(this.parentItem.addChild(this.measurement))
+    const parentItem = sceneRoot.resolvePath(j.parentItemPath, 1)
+    if (parentItem) {
+      this.measurement = Registry.constructBlueprintName(j.measurementType)
+      this.measurement.fromJSON(j.measurementData)
+      parentItem.addChild(this.measurement)
+    }
   }
 
   /**

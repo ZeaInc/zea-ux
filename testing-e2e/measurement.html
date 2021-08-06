@@ -34,27 +34,32 @@
         display: none !important;
       }
 
-      #xfo-handlers {
-        display: flex;
+      .buttons {
+        display: block;
+        position: relative;
       }
 
-      #xfo-handlers > div,
-      #xfo-handlers span {
-        display: flex;
-        margin: 0 0.6em;
-      }
-
-      #controllers > button {
+      .button {
+        /* top: 10px; */
+        font-family: 'arial';
+        background-color: #f9ce03; /* Green */
+        border: none;
+        color: black;
+        padding: 5px 32px;
         text-align: center;
-        margin: 5px;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        user-select: none;
       }
-
-      ul#color-list {
-        list-style: none;
+      .button:hover {
+        background-color: #78b87a; /* Green */
       }
-
-      ul#color-list > li {
-        width: 100px;
+      .button:focus {
+        background-color: #78b87a;
+      }
+      .checked {
+        background-color: #54df59;
       }
     </style>
 
@@ -76,7 +81,7 @@
         Torus,
         GLBoundingBoxPass,
       } = window.zeaEngine
-      const { UndoRedoManager, MeasurementTool, Measurement } = window.zeaUx
+      const { UndoRedoManager, ToolManager, MeasurementTool, MeasureRadiusTool, MeasureAngleTool } = window.zeaUx
       const { CADAsset } = window.zeaCad
 
       const undoRedoManager = UndoRedoManager.getInstance()
@@ -87,12 +92,6 @@
 
       const renderer = new GLRenderer($canvas, { hideSplash: true })
       renderer.setScene(scene)
-
-      // const measurement = new Measurement('M1')
-      // measurement.setStartMarkerPos(new Vec3(-1, -0.5, 0.5))
-      // measurement.setEndMarkerPos(new Vec3(1, -0.5, 0.5))
-      // measurement.getParameter('Color').setValue(new Color('#94C47D'))
-      // scene.getRoot().addChild(measurement)
 
       const cadAsset = new CADAsset()
       cadAsset.load('data/Dead_eye_bearingSTEP.zcad').then(() => {
@@ -145,22 +144,20 @@
       }
 */
       {
-        const measurementTool = new MeasurementTool({ scene, renderer })
+        const appData = { scene, renderer }
+        const toolManager = new ToolManager()
+        const measurementTool = new MeasurementTool(appData)
+        const measureRadiusTool = new MeasureRadiusTool(appData)
+        const measureAngleTool = new MeasureAngleTool(appData)
 
         const cameraManipulator = renderer.getViewport().getManipulator()
+        toolManager.registerTool('cameraManipulator', cameraManipulator)
+        toolManager.registerTool('measurementTool', measurementTool)
+        toolManager.registerTool('measureRadiusTool', measureRadiusTool)
+        toolManager.registerTool('measureAngleTool', measureAngleTool)
+        renderer.getViewport().setManipulator(toolManager)
 
-        let measurementOn = false
-        const setToolToMeasurementTool = () => {
-          console.log('MeasurementTool Activated')
-          renderer.getViewport().setManipulator(measurementTool)
-          measurementOn = true
-        }
-
-        const setToolToCameraManipulator = () => {
-          console.log('CameraManipulator Activated')
-          renderer.getViewport().setManipulator(cameraManipulator)
-          measurementOn = false
-        }
+        toolManager.pushTool('cameraManipulator')
 
         document.addEventListener('keydown', (e) => {
           switch (e.key) {
@@ -189,10 +186,47 @@
           })
         }
 
-        const $measurementCheckbox = document.getElementById('measurement-cbx')
+        let mode = 0
+        const toggleMode = (index) => {
+          if (mode == index) {
+            if (index != 0) toggleMode(0)
+            return
+          }
 
-        $measurementCheckbox.addEventListener('change', (e) => {
-          event.target.checked ? setToolToMeasurementTool() : setToolToCameraManipulator()
+          if (mode == 0) {
+          } else if (mode == 1) {
+            $measurePt2Pt.classList.remove('checked')
+          } else if (mode == 2) {
+            $measureRadius.classList.remove('checked')
+          } else if (mode == 3) {
+            $measureAngle.classList.remove('checked')
+          }
+
+          if (index == 0) {
+            toolManager.popTool()
+          } else if (index == 1) {
+            $measurePt2Pt.classList.add('checked')
+            toolManager.pushTool('measurementTool')
+          } else if (index == 2) {
+            $measureRadius.classList.add('checked')
+            toolManager.pushTool('measureRadiusTool')
+          } else if (index == 3) {
+            $measureAngle.classList.add('checked')
+            toolManager.pushTool('measureAngleTool')
+          }
+          mode = index
+        }
+        const $measurePt2Pt = document.getElementById('measure-pt-2-pt')
+        $measurePt2Pt.addEventListener('click', (e) => {
+          toggleMode(1)
+        })
+        const $measureRadius = document.getElementById('measure-radius')
+        $measureRadius.addEventListener('click', (e) => {
+          toggleMode(2)
+        })
+        const $measureAngle = document.getElementById('measure-angle')
+        $measureAngle.addEventListener('click', (e) => {
+          toggleMode(3)
         })
       }
 
@@ -202,11 +236,12 @@
   <body class="bg-blue-100 h-full">
     <div class="main-wrapper grid h-screen">
       <header class="border border-blue-400 flex justify-left items-left">
-        <button id="undo">Undo</button>
-        <button id="redo">Redo</button>
-        <div>
-          <label for="measurement-cbx">Measurement Tool</label>
-          <input type="checkbox" name="measurement-cbx" id="measurement-cbx" />
+        <div class="buttons">
+          <div class="button" id="undo">Undo</div>
+          <div class="button" id="redo">Redo</div>
+          <div class="button" id="measure-pt-2-pt">Measure: Point to Point</div>
+          <div class="button" id="measure-radius">Measure: Radius</div>
+          <div class="button" id="measure-angle">Measure: Angle</div>
         </div>
       </header>
       <nav class="border border-blue-400 flex justify-left items-left"></nav>

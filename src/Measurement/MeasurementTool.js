@@ -1,5 +1,7 @@
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 import { Ray, Vec3, Color, ColorParameter, BaseTool } from '@zeainc/zea-engine'
+import { Measurement } from './Measurement'
+import { MeasureDistance } from './MeasureDistance'
 import { MeasurementChange } from './MeasurementChange'
 /**
  * UI Tool for measurements
@@ -21,6 +23,7 @@ class MeasurementTool extends BaseTool {
     this.measurementChange = null
     this.highlightedItemA = null
     this.highlightedItemB = null
+    this.stage = 0
   }
 
   /**
@@ -58,9 +61,9 @@ class MeasurementTool extends BaseTool {
    * @private
    */
   snapToParametricEdge(geomItem, pos) {
-    if (geomItem.hasParameter('curveType')) {
-      const curveType = geomItem.getParameter('curveType').getValue()
-      const xfo = geomItem.getParameter('GlobalXfo').getValue()
+    const xfo = geomItem.getParameter('GlobalXfo').getValue()
+    if (geomItem.hasParameter('CurveType')) {
+      const curveType = geomItem.getParameter('CurveType').getValue()
 
       switch (curveType) {
         case 'Line': {
@@ -82,7 +85,6 @@ class MeasurementTool extends BaseTool {
       }
     } else if (geomItem.hasParameter('SurfaceType')) {
       const surfaceType = geomItem.getParameter('SurfaceType').getValue()
-      const xfo = geomItem.getParameter('GlobalXfo').getValue()
 
       switch (surfaceType) {
         case 'Plane': {
@@ -114,27 +116,50 @@ class MeasurementTool extends BaseTool {
    */
   onPointerDown(event) {
     // skip if the alt key is held. Allows the camera tool to work
-    if (event.altKey || (event.pointerType === 'mouse' && event.button !== 0)) return
+    if (event.altKey) return
 
-    if (this.highlightedItemA) {
-      const ray = event.pointerRay
-      let hitPos
-      if (event.intersectionData) {
-        hitPos = ray.start.add(ray.dir.scale(event.intersectionData.dist))
-      } else {
-        const plane = new Ray(new Vec3(), new Vec3(0, 0, 1))
-        const distance = ray.intersectRayPlane(plane)
-        hitPos = ray.start.add(ray.dir.scale(distance))
+    if (this.stage == 0) {
+      if (this.highlightedItemA) {
+        const ray = event.pointerRay
+        let hitPos
+        if (event.intersectionData) {
+          hitPos = ray.start.add(ray.dir.scale(event.intersectionData.dist))
+        } else {
+          const plane = new Ray(new Vec3(), new Vec3(0, 0, 1))
+          const distance = ray.intersectRayPlane(plane)
+          hitPos = ray.start.add(ray.dir.scale(distance))
+        }
+
+        const startPos = this.snapToParametricEdge(this.highlightedItemA, hitPos)
+        const color = this.colorParam.getValue()
+
+        this.measurement = new MeasureDistance('Measure Distance', color)
+        this.measurement.setStartMarkerPos(startPos)
+        this.measurement.setEndMarkerPos(startPos)
+        this.appData.scene.getRoot().addChild(this.measurement)
+
+        this.measurementChange = new MeasurementChange(this.measurement)
+        UndoRedoManager.getInstance().addChange(this.measurementChange)
+        // this.dragging = true
+
+        this.stage++
+        event.stopPropagation()
       }
+    } else if (this.stage == 1) {
+      if (this.highlightedItemB) {
+        const ray = event.pointerRay
+        const hitPos = ray.start.add(ray.dir.scale(event.intersectionData.dist))
+        const startPos = this.snapToParametricEdge(this.highlightedItemA, hitPos)
+        const endPos = this.snapToParametricEdge(this.highlightedItemB, hitPos)
+        this.measurement.setStartMarkerPos(startPos)
+        this.measurement.setEndMarkerPos(endPos)
+        // this.measurementChange.update({ startPos, endPos })
 
-      const startPos = this.snapToParametricEdge(this.highlightedItemA, hitPos)
-      const color = this.colorParam.getValue()
-
-      this.measurementChange = new MeasurementChange(this.appData.scene.getRoot(), startPos, color)
-      UndoRedoManager.getInstance().addChange(this.measurementChange)
-      this.dragging = true
-
-      event.stopPropagation()
+        if (this.highlightedItemA) this.highlightedItemA.removeHighlight('measure', true)
+        if (this.highlightedItemB) this.highlightedItemB.removeHighlight('measure', true)
+        this.stage = 0
+        event.stopPropagation()
+      }
     }
   }
 
@@ -144,54 +169,50 @@ class MeasurementTool extends BaseTool {
    * @param {MouseEvent|TouchEvent} event - The event value
    */
   onPointerMove(event) {
-    if (this.dragging) {
-      const ray = event.pointerRay
+    // skip if the alt key is held. Allows the camera tool to work
+    if (event.altKey || !event.intersectionData) return
+
+    if (this.stage == 0) {
+      if (event.intersectionData) {
+        const { geomItem } = event.intersectionData
+        if (geomItem.hasParameter('CurveType') || geomItem.hasParameter('SurfaceType')) {
+          if (!geomItem != this.highlightedItemA) {
+            if (this.highlightedItemA) {
+              this.highlightedItemA.removeHighlight('measure', true)
+            }
+            this.highlightedItemA = geomItem
+            this.highlightedItemA.addHighlight('measure', new Color(1, 1, 1, 0.2), true)
+          }
+        }
+      } else {
+        if (this.highlightedItemA) {
+          this.highlightedItemA.removeHighlight('measure', true)
+          this.highlightedItemA = null
+        }
+      }
+      event.stopPropagation()
+    } else if (this.stage == 1) {
       if (event.intersectionData) {
         const { geomItem } = event.intersectionData
         if (geomItem != this.highlightedItemA && geomItem != this.highlightedItemB) {
-          if (geomItem.hasParameter('curveType') || geomItem.hasParameter('SurfaceType')) {
+          if (geomItem.hasParameter('CurveType') || geomItem.hasParameter('SurfaceType')) {
             if (this.highlightedItemB) {
-              this.highlightedItemB.removeHighlight('measureB', true)
+              this.highlightedItemB.removeHighlight('measure', true)
               this.highlightedItemB = null
             }
 
             this.highlightedItemB = geomItem
-            this.highlightedItemB.addHighlight('measureB', new Color(1, 1, 1, 0.2), true)
+            this.highlightedItemB.addHighlight('measure', new Color(1, 1, 1, 0.2), true)
           }
-        }
-
-        if (this.highlightedItemB) {
-          const hitPos = ray.start.add(ray.dir.scale(event.intersectionData.dist))
-          const startPos = this.snapToParametricEdge(this.highlightedItemA, hitPos)
-          const endPos = this.snapToParametricEdge(this.highlightedItemB, hitPos)
-          this.measurementChange.update({ startPos, endPos })
         }
       } else {
         if (this.highlightedItemB) {
-          this.highlightedItemB.removeHighlight('measureB', true)
+          this.highlightedItemB.removeHighlight('measure', true)
           this.highlightedItemB = null
         }
       }
 
       event.stopPropagation()
-    } else {
-      if (event.intersectionData) {
-        const { geomItem } = event.intersectionData
-        if (geomItem.hasParameter('curveType') || geomItem.hasParameter('SurfaceType')) {
-          if (!geomItem != this.highlightedItemA) {
-            if (this.highlightedItemA) {
-              this.highlightedItemA.removeHighlight('measureA', true)
-            }
-            this.highlightedItemA = geomItem
-            this.highlightedItemA.addHighlight('measureA', new Color(1, 1, 1, 0.2), true)
-          }
-        }
-      } else {
-        if (this.highlightedItemA) {
-          this.highlightedItemA.removeHighlight('measureA', true)
-          this.highlightedItemA = null
-        }
-      }
     }
   }
 
@@ -206,8 +227,8 @@ class MeasurementTool extends BaseTool {
       this.measurementChange.end()
       this.measurementChange = null
 
-      if (this.highlightedItemA) this.highlightedItemA.removeHighlight('measureA', true)
-      if (this.highlightedItemB) this.highlightedItemB.removeHighlight('measureB', true)
+      if (this.highlightedItemA) this.highlightedItemA.removeHighlight('measure', true)
+      if (this.highlightedItemB) this.highlightedItemB.removeHighlight('measure', true)
 
       event.stopPropagation()
     }

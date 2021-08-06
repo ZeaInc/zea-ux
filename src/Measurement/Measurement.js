@@ -10,6 +10,7 @@ import {
   Xfo,
   Vec3,
   ColorParameter,
+  StringParameter,
   Registry,
 } from '@zeainc/zea-engine'
 import { MeasurementOperator } from './MeasurementOperator'
@@ -29,6 +30,7 @@ class Measurement extends TreeItem {
     super(name)
 
     this.colorParam = this.addParameter(new ColorParameter('Color', color))
+    this.unitsParameter = this.addParameter(new StringParameter('Units', 'mm'))
 
     this.markerMaterial = new Material('Marker', 'HandleShader')
     this.markerMaterial.getParameter('BaseColor').setValue(this.colorParam.getValue())
@@ -40,8 +42,8 @@ class Measurement extends TreeItem {
     this.lineMaterial.getParameter('Overlay').setValue(0.5)
 
     const sphere = new Sphere(0.003)
-    this.startMarker = new GeomItem(`${name}StartMarker`, sphere, this.markerMaterial)
-    this.endMarker = new GeomItem(`${name}EndMarker`, sphere, this.markerMaterial)
+    this.startMarker = new GeomItem(`StartMarker`, sphere, this.markerMaterial)
+    this.endMarker = new GeomItem(`EndMarker`, sphere, this.markerMaterial)
 
     this.addChild(this.startMarker)
     this.addChild(this.endMarker)
@@ -52,16 +54,18 @@ class Measurement extends TreeItem {
     line.setSegmentVertexIndices(0, 0, 1)
     line.getVertexAttribute('positions').getValueRef(1).setFromOther(new Vec3(0, 0, 1))
 
-    const lineGeomItem = new GeomItem('Line', line, this.lineMaterial)
+    this.lineGeomItem = new GeomItem('Line', line, this.lineMaterial)
 
-    this.addChild(lineGeomItem)
+    this.addChild(this.lineGeomItem)
 
-    this.measurementOp = new MeasurementOperator(`${name}MeasurementOperator`)
+    this.measurementOp = new MeasurementOperator(`MeasurementOperator`)
     this.measurementOp
       .getInput(MeasurementOperator.IO_NAMES.StartXfo)
       .setParam(this.startMarker.getParameter('GlobalXfo'))
     this.measurementOp.getInput(MeasurementOperator.IO_NAMES.EndXfo).setParam(this.endMarker.getParameter('GlobalXfo'))
-    this.measurementOp.getOutput(MeasurementOperator.IO_NAMES.LineXfo).setParam(lineGeomItem.getParameter('GlobalXfo'))
+    this.measurementOp
+      .getOutput(MeasurementOperator.IO_NAMES.LineXfo)
+      .setParam(this.lineGeomItem.getParameter('GlobalXfo'))
 
     this.displayLabel()
 
@@ -120,6 +124,7 @@ class Measurement extends TreeItem {
    * @param {boolean} isVisible -
    */
   setGeomBuffersVisibility(isVisible) {
+    this.lineGeomItem.setSelectable(!isVisible)
     this.startMarker.setSelectable(!isVisible)
     this.endMarker.setSelectable(!isVisible)
   }

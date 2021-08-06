@@ -1,4 +1,6 @@
 export * from './MeasurementTool'
+export * from './MeasureRadiusTool'
+export * from './MeasureAngleTool'
 export * from './Measurement'
 export * from './MeasurementOperator'
 export * from './MeasurementChange'
