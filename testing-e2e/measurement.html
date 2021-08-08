@@ -81,7 +81,14 @@
         Torus,
         GLBoundingBoxPass,
       } = window.zeaEngine
-      const { UndoRedoManager, ToolManager, MeasurementTool, MeasureRadiusTool, MeasureAngleTool } = window.zeaUx
+      const {
+        UndoRedoManager,
+        ToolManager,
+        MeasurementTool,
+        MeasureRadiusTool,
+        MeasureAngleTool,
+        MeasureCenterDistancesTool,
+      } = window.zeaUx
       const { CADAsset } = window.zeaCad
 
       const undoRedoManager = UndoRedoManager.getInstance()
@@ -149,12 +156,14 @@
         const measurementTool = new MeasurementTool(appData)
         const measureRadiusTool = new MeasureRadiusTool(appData)
         const measureAngleTool = new MeasureAngleTool(appData)
+        const measureCenterDistancesTool = new MeasureCenterDistancesTool(appData)
 
         const cameraManipulator = renderer.getViewport().getManipulator()
         toolManager.registerTool('cameraManipulator', cameraManipulator)
         toolManager.registerTool('measurementTool', measurementTool)
         toolManager.registerTool('measureRadiusTool', measureRadiusTool)
         toolManager.registerTool('measureAngleTool', measureAngleTool)
+        toolManager.registerTool('measureCenterDistancesTool', measureCenterDistancesTool)
         renderer.getViewport().setManipulator(toolManager)
 
         toolManager.pushTool('cameraManipulator')
@@ -200,6 +209,8 @@
             $measureRadius.classList.remove('checked')
           } else if (mode == 3) {
             $measureAngle.classList.remove('checked')
+          } else if (mode == 4) {
+            $measureCenterDistances.classList.remove('checked')
           }
 
           if (index == 0) {
@@ -213,6 +224,9 @@
           } else if (index == 3) {
             $measureAngle.classList.add('checked')
             toolManager.pushTool('measureAngleTool')
+          } else if (index == 4) {
+            $measureCenterDistances.classList.add('checked')
+            toolManager.pushTool('measureCenterDistancesTool')
           }
           mode = index
         }
@@ -228,6 +242,10 @@
         $measureAngle.addEventListener('click', (e) => {
           toggleMode(3)
         })
+        const $measureCenterDistances = document.getElementById('measure-center-distances')
+        $measureCenterDistances.addEventListener('click', (e) => {
+          toggleMode(4)
+        })
       }
 
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(0, 6, 5), new Vec3(0, 0, 0))
@@ -242,6 +260,7 @@
           <div class="button" id="measure-pt-2-pt">Measure: Point to Point</div>
           <div class="button" id="measure-radius">Measure: Radius</div>
           <div class="button" id="measure-angle">Measure: Angle</div>
+          <div class="button" id="measure-center-distances">Measure: Center Distances</div>
         </div>
       </header>
       <nav class="border border-blue-400 flex justify-left items-left"></nav>

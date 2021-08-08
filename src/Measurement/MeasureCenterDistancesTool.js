@@ -7,9 +7,9 @@ import { MeasurementChange } from './MeasurementChange'
  *
  * @extends {BaseTool}
  */
-class MeasurementTool extends BaseTool {
+class MeasureCenterDistancesTool extends BaseTool {
   /**
-   * Creates an instance of MeasurementTool.
+   * Creates an instance of MeasureCenterDistancesTool.
    *
    * @param {object} appData - The appData value
    */
@@ -63,11 +63,18 @@ class MeasurementTool extends BaseTool {
 
   /**
    * @param {GeomItem} geomItem
+   * @param {string} key
+   * @private
+   */
+  highlightEdge(geomItem, key) {}
+
+  /**
+   * @param {GeomItem} geomItem
    * @param {Vec3} pos
    * @return {Vec3}
    * @private
    */
-  snapToParametricEdge(geomItem, pos) {
+  snapToParametricCenter(geomItem, pos) {
     const xfo = geomItem.getParameter('GlobalXfo').getValue()
     if (geomItem.hasParameter('CurveType')) {
       const curveType = geomItem.getParameter('CurveType').getValue()
@@ -79,12 +86,8 @@ class MeasurementTool extends BaseTool {
           return xfo.tr.add(xaxis.scale(crvToPnt.dot(xaxis)))
         }
         case 'Circle': {
-          const crvToPnt = pos.subtract(xfo.tr)
-          const radius = geomItem.getParameter('Radius').getValue() * xfo.sc.x
           const zaxis = xfo.ori.getZaxis()
-          crvToPnt.subtractInPlace(zaxis.scale(crvToPnt.dot(zaxis)))
-          const length = crvToPnt.length()
-          return xfo.tr.add(crvToPnt.scale(radius / length))
+          return xfo.tr.add(zaxis.scale(srfToPnt.dot(zaxis)))
         }
         default: {
           console.log('Unhandled Edge Type: ', curveType)
@@ -94,20 +97,10 @@ class MeasurementTool extends BaseTool {
       const surfaceType = geomItem.getParameter('SurfaceType').getValue()
 
       switch (surfaceType) {
-        case 'Plane': {
-          const srfToPnt = pos.subtract(xfo.tr)
-          const zaxis = xfo.ori.getZaxis()
-          return pos.subtract(zaxis.scale(srfToPnt.dot(zaxis)))
-        }
         case 'Cylinder': {
           const srfToPnt = pos.subtract(xfo.tr)
           const zaxis = xfo.ori.getZaxis()
-          const pointOnAxis = xfo.tr.add(zaxis.scale(srfToPnt.dot(zaxis)))
-
-          const radius = geomItem.getParameter('Radius').getValue() * xfo.sc.x
-          const axisToPnt = pos.subtract(pointOnAxis)
-          const length = axisToPnt.length()
-          return pointOnAxis.add(axisToPnt.scale(radius / length))
+          return xfo.tr.add(zaxis.scale(srfToPnt.dot(zaxis)))
         }
         default: {
           console.log('Unhandled Surface Type: ', surfaceType)
@@ -137,7 +130,7 @@ class MeasurementTool extends BaseTool {
           hitPos = ray.start.add(ray.dir.scale(distance))
         }
 
-        const startPos = this.snapToParametricEdge(this.highlightedItemA, hitPos)
+        const startPos = this.snapToParametricCenter(this.highlightedItemA, hitPos)
         const color = this.colorParam.getValue()
 
         this.measurement = new MeasureDistance('Measure Distance', color)
@@ -155,8 +148,9 @@ class MeasurementTool extends BaseTool {
       if (this.highlightedItemB) {
         const ray = event.pointerRay
         const hitPos = ray.start.add(ray.dir.scale(event.intersectionData.dist))
-        const startPos = this.snapToParametricEdge(this.highlightedItemA, hitPos)
-        const endPos = this.snapToParametricEdge(this.highlightedItemB, hitPos)
+        let endPos = this.snapToParametricCenter(this.highlightedItemB, hitPos)
+        const startPos = this.snapToParametricCenter(this.highlightedItemA, endPos)
+        endPos = this.snapToParametricCenter(this.highlightedItemB, startPos)
         this.measurement.setStartMarkerPos(startPos)
         this.measurement.setEndMarkerPos(endPos)
 
@@ -236,4 +230,4 @@ class MeasurementTool extends BaseTool {
   onPointerUp(event) {}
 }
 
-export { MeasurementTool }
+export { MeasureCenterDistancesTool }

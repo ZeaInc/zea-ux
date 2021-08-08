@@ -43,7 +43,7 @@ class MeasurementChange extends Change {
    */
   undo() {
     console.log('undo MeasurementChange')
-    this.parentItem = this.measurement.getParent()
+    this.parentItem = this.measurement.getOwner()
     this.childIndex = this.parentItem.getChildIndex(this.measurement)
     this.parentItem.removeChild(this.childIndex)
   }
@@ -64,7 +64,7 @@ class MeasurementChange extends Change {
    */
   toJSON(context) {
     const j = super.toJSON(context)
-    j.parentItemPath = this.measurement.getParent().getPath()
+    j.parentItemPath = this.measurement.getOwner().getPath()
     j.measurementType = Registry.getBlueprintName(this.measurement)
     j.measurementData = this.measurement.toJSON(context)
     return j

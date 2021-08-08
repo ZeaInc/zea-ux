@@ -45,6 +45,20 @@ class MeasureAngleTool extends BaseTool {
     if (this.appData && this.appData.renderer) {
       this.appData.renderer.getGLCanvas().style.cursor = this.prevCursor
     }
+    if (this.stage != 0) {
+      const parentItem = this.measurement.getOwner()
+      parentItem.removeChild(parentItem.getChildIndex(this.measurement))
+
+      if (this.highlightedItemB) {
+        this.highlightedItemB.removeHighlight('measure', true)
+        this.highlightedItemB = null
+      }
+      if (this.highlightedItemA) {
+        this.highlightedItemA.removeHighlight('measure', true)
+        this.highlightedItemA = null
+      }
+      event.stopPropagation()
+    }
   }
 
   /**
@@ -80,9 +94,6 @@ class MeasureAngleTool extends BaseTool {
     if (this.stage == 0) {
       const { geomItem } = event.intersectionData
       if (geomItem.hasParameter('SurfaceType') && geomItem.getParameter('SurfaceType').getValue() == 'Plane') {
-        // this.highlightedItemA = geomItem
-        // this.highlightedItemA.addHighlight('measureA', new Color(1, 1, 1, 0.2), true)
-
         const color = this.colorParam.getValue()
         this.measurement = new MeasureAngle('MeasureAngle', color)
         this.appData.scene.getRoot().addChild(this.measurement)
@@ -98,20 +109,15 @@ class MeasureAngleTool extends BaseTool {
     } else if (this.stage == 1) {
       const { geomItem } = event.intersectionData
       if (geomItem.hasParameter('SurfaceType') && geomItem.getParameter('SurfaceType').getValue() == 'Plane') {
-        // this.highlightedItemB = geomItem
-        // this.highlightedItemB.addHighlight('measureB', new Color(1, 1, 1, 0.2), true)
-
         const ray = event.pointerRay
         const hitPos = ray.start.add(ray.dir.scale(event.intersectionData.dist))
         const xfoA = getSurfaceXfo(geomItem, hitPos)
         this.measurement.setXfoB(xfoA)
 
-        this.measurement.createLinesAndLabel()
-
         const measurementChange = new MeasurementChange(this.measurement)
         UndoRedoManager.getInstance().addChange(measurementChange)
 
-        if (this.highlightedItemA) this.highlightedItemA.removeHighlight('measureA', true)
+        if (this.highlightedItemA) this.highlightedItemA.removeHighlight('measure', true)
         if (this.highlightedItemB) this.highlightedItemB.removeHighlight('measureB', true)
 
         this.stage = 0
@@ -133,16 +139,16 @@ class MeasureAngleTool extends BaseTool {
         if (geomItem.hasParameter('SurfaceType') && geomItem.getParameter('SurfaceType').getValue() == 'Plane') {
           if (geomItem != this.highlightedItemA) {
             if (this.highlightedItemA) {
-              this.highlightedItemA.removeHighlight('measureA', true)
+              this.highlightedItemA.removeHighlight('measure', true)
             }
             this.highlightedItemA = geomItem
-            this.highlightedItemA.addHighlight('measureA', new Color(1, 1, 1, 0.2), true)
+            this.highlightedItemA.addHighlight('measure', new Color(1, 1, 1, 0.2), true)
           }
-        } else {
-          if (this.highlightedItemA) {
-            this.highlightedItemA.removeHighlight('measureA', true)
-            this.highlightedItemA = null
-          }
+        }
+      } else {
+        if (this.highlightedItemA) {
+          this.highlightedItemA.removeHighlight('measure', true)
+          this.highlightedItemA = null
         }
       }
     } else if (this.stage == 1) {
@@ -157,7 +163,7 @@ class MeasureAngleTool extends BaseTool {
         }
       } else {
         if (this.highlightedItemB) {
-          this.highlightedItemB.removeHighlight('measureA', true)
+          this.highlightedItemB.removeHighlight('measure', true)
           this.highlightedItemB = null
         }
       }
@@ -173,7 +179,7 @@ class MeasureAngleTool extends BaseTool {
     if (this.dragging) {
       this.dragging = false
       this.measurementChange = null
-      if (this.highlightedItemA) this.highlightedItemA.removeHighlight('measureA', true)
+      if (this.highlightedItemA) this.highlightedItemA.removeHighlight('measure', true)
       event.stopPropagation()
     }
   }

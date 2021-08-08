@@ -80,28 +80,11 @@ class MeasureDistance extends TreeItem {
   }
 
   /**
-   *
-   *
-   * @param {Vec3} position
+   * Updates the measured value
    */
-  setStartMarkerPos(position) {
-    const newXfo = this.startMarker.getParameter('GlobalXfo').getValue()
-    newXfo.tr = position
-    this.startMarker.getParameter('GlobalXfo').setValue(newXfo)
-  }
-
-  /**
-   *
-   *
-   * @param {Vec3} position
-   */
-  setEndMarkerPos(position) {
-    const endXfo = this.endMarker.getParameter('GlobalXfo').getValue()
-    endXfo.tr = position
-    this.endMarker.getParameter('GlobalXfo').setValue(endXfo)
-
+  updateMeasurement() {
     const startXfo = this.startMarker.getParameter('GlobalXfo').getValue()
-    // const endXfo = this.endMarker.getParameter('GlobalXfo').getValue()
+    const endXfo = this.endMarker.getParameter('GlobalXfo').getValue()
 
     const vector = endXfo.tr.subtract(startXfo.tr)
     const distance = vector.length()
@@ -119,6 +102,30 @@ class MeasureDistance extends TreeItem {
     const labelXfo = new Xfo(midPoint)
     labelXfo.ori.setFromDirectionAndUpvector(vector, new Vec3(vector.z, vector.x, vector.y))
     this.billboard.getParameter('GlobalXfo').setValue(labelXfo)
+  }
+
+  /**
+   *
+   *
+   * @param {Vec3} position
+   */
+  setStartMarkerPos(position) {
+    const newXfo = this.startMarker.getParameter('GlobalXfo').getValue()
+    newXfo.tr = position
+    this.startMarker.getParameter('GlobalXfo').setValue(newXfo)
+    this.updateMeasurement()
+  }
+
+  /**
+   *
+   *
+   * @param {Vec3} position
+   */
+  setEndMarkerPos(position) {
+    const endXfo = this.endMarker.getParameter('GlobalXfo').getValue()
+    endXfo.tr = position
+    this.endMarker.getParameter('GlobalXfo').setValue(endXfo)
+    this.updateMeasurement()
   }
 
   /**

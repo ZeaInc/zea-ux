@@ -51,6 +51,9 @@ class MeasureAngle extends TreeItem {
     this.addChild(this.markerB)
   }
 
+  /**
+   * Given the 2 marker positions, calculate and display the angle.
+   */
   createLinesAndLabel() {
     this.markerA.addChild(new GeomItem('Line', line, this.lineMaterial), false)
     this.markerB.addChild(new GeomItem('Line', line, this.lineMaterial), false)
@@ -67,9 +70,6 @@ class MeasureAngle extends TreeItem {
     this.billboard.getParameter('FixedSizeOnscreen').setValue(true)
     this.billboard.getParameter('Alpha').setValue(1)
 
-    // this.measurementOp.getOutput(MeasureAngleOperator.IO_NAMES.Distance).setParam(this.label.getParameter('Text'))
-    // this.measurementOp.getOutput(MeasureAngleOperator.IO_NAMES.LabelXfo).setParam(billboard.getParameter('GlobalXfo'))
-
     this.addChild(this.billboard)
 
     this.colorParam.on('valueChanged', () => {
@@ -78,17 +78,21 @@ class MeasureAngle extends TreeItem {
       this.lineMaterial.getParameter('BaseColor').setValue(color)
       this.label.getParameter('BackgroundColor').setValue(color)
     })
-  }
 
-  calcAngle() {
+    // ////////////////////////////////////////
+    // Calculate the angle
     const xfoA = this.markerA.getParameter('GlobalXfo').getValue()
     const xfoB = this.markerB.getParameter('GlobalXfo').getValue()
 
     const normA = xfoA.ori.getZaxis()
     const normB = xfoB.ori.getZaxis()
+    const vectorAB = xfoB.tr.subtract(xfoA.tr)
+
     const axis = normA.cross(normB).normalize()
     const tangentA = axis.cross(normA).normalize()
     const tangentB = axis.cross(normB).normalize()
+    xfoA.tr.addInPlace(axis.scale(vectorAB.dot(axis) * 0.5))
+    xfoB.tr.addInPlace(axis.scale(vectorAB.dot(axis) * -0.5))
 
     const rayA = new Ray(xfoA.tr, tangentA)
     const rayB = new Ray(xfoB.tr, tangentB)
@@ -101,9 +105,9 @@ class MeasureAngle extends TreeItem {
     labelXfo.tr.addInPlace(rayB.pointAtDist(params[1]))
     labelXfo.tr.scaleInPlace(0.5)
 
-    xfoA.ori.setFromDirectionAndUpvector(labelXfo.tr.subtract(xfoA.tr), normA)
+    xfoA.ori.setFromDirectionAndUpvector(tangentA, normA)
     this.markerA.getParameter('GlobalXfo').setValue(xfoA)
-    xfoB.ori.setFromDirectionAndUpvector(labelXfo.tr.subtract(xfoB.tr), normA)
+    xfoB.ori.setFromDirectionAndUpvector(tangentB, normA)
     this.markerB.getParameter('GlobalXfo').setValue(xfoB)
 
     const lineAXfo = new Xfo()
@@ -139,7 +143,6 @@ class MeasureAngle extends TreeItem {
   setXfoB(xfo) {
     this.markerB.getParameter('GlobalXfo').setValue(xfo)
     this.createLinesAndLabel()
-    this.calcAngle()
   }
 }
 
