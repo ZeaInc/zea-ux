@@ -68,11 +68,11 @@ export default class VRControllerUI extends TreeItem {
     this.__vrUIDOMElement = vrUIDOMElement
     this.__vrUIDOMElement.style.display = 'none'
 
-    const debugGeomItem = new GeomItem('Debug', new Plane(1, 1), new Material('debug-ui-mat', 'FlatSurfaceShader'))
-    // Flip it over so we see the front.
-    const debugGeomItemXfo = new Xfo()
-    debugGeomItemXfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI)
-    this.addChild(debugGeomItem, false)
+    // const debugGeomItem = new GeomItem('Debug', new Plane(1, 1), new Material('debug-ui-mat', 'FlatSurfaceShader'))
+    // // Flip it over so we see the front.
+    // const debugGeomItemXfo = new Xfo()
+    // debugGeomItemXfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI)
+    // this.addChild(debugGeomItem, false)
 
     const uiOffset = new TreeItem('Offset')
     this.addChild(uiOffset, false)
@@ -91,8 +91,8 @@ export default class VRControllerUI extends TreeItem {
 
       this.size = new Vec3(vrUIDOMElement.clientWidth * dpm, vrUIDOMElement.clientHeight * dpm, 1)
 
-      debugGeomItemXfo.sc = this.size
-      debugGeomItem.getParameter('LocalXfo').setValue(debugGeomItemXfo)
+      // debugGeomItemXfo.sc = this.size
+      // debugGeomItem.getParameter('LocalXfo').setValue(debugGeomItemXfo)
 
       traverse(vrUIDOMElement, 0, (elem, depth) => {
         if (elem.className == 'button') {
