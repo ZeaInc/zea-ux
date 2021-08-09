@@ -1,5 +1,14 @@
 const { Ray, Xfo, Vec3, Color } = window.zeaEngine
+
+/**
+ * This sample UI class shows how to build a custom UI for VR interfaces.
+ *
+ * @extends {HTMLElement}
+ */
 class VRUI extends HTMLElement {
+  /**
+   * Creates an instance of VRUI.
+   */
   constructor() {
     super()
     const shadowRoot = this.attachShadow({ mode: 'open' })
@@ -61,14 +70,13 @@ class VRUI extends HTMLElement {
     // })
     addButton('data/view_1_1.png', (img) => {
       this.renderer.getXRViewport().then((xrvp) => {
+        const { Ray, Xfo, Vec3 } = window.zeaEngine
         const stageXfo = xrvp.getXfo()
+        const stageScale = stageXfo.sc.z
         const headLocalXfo = xrvp.getVRHead().getXfo()
         const headXfo = xrvp.getVRHead().getTreeItem().getParameter('GlobalXfo').getValue()
-        // const curreHeadHeight = stageXfo.tr.z + stageXfo.sc.z * 1.7
-        // stageXfo.tr.z = curreHeadHeight - 1.7
-        // const curreHeadPos = stageXfo.tr.add(new Vec3(0, 0, 1.7 * stageXfo.sc.z))
+
         stageXfo.sc.set(1, 1, 1)
-        // const delta = stageXfo.multiply(headLocalXfo).tr.subtract(headXfo.tr)
         const delta = headXfo.tr.subtract(stageXfo.multiply(headLocalXfo).tr)
         stageXfo.tr.addInPlace(delta)
 
@@ -76,7 +84,7 @@ class VRUI extends HTMLElement {
         const ray = new Ray()
         ray.start = headXfo.tr
         ray.dir.set(0, 0, -1)
-        const dist = 10
+        const dist = 20 * stageScale
         const area = 0.5
         const rayXfo = new Xfo()
         rayXfo.setLookAt(ray.start, ray.start.add(ray.dir), new Vec3(0, 0, 1))
@@ -84,6 +92,7 @@ class VRUI extends HTMLElement {
         const result = this.renderer.raycast(rayXfo, ray, dist, area)
         if (result) {
           const worldPos = ray.pointAtDist(result.dist)
+          console.log('raycast', stageScale, worldPos.z, stageXfo.tr.z)
           stageXfo.tr.z += worldPos.z - stageXfo.tr.z
         }
 
@@ -100,6 +109,7 @@ class VRUI extends HTMLElement {
   top: 0px;
   left: 0px;
   width: 280px;
+  user-select: none;
 }
 
 .button {
@@ -107,7 +117,7 @@ class VRUI extends HTMLElement {
   width: 90px;
   height: 90px; 
   border-radius: 15px;
-  background-color: #FFFFFF;
+  background-color: #b0b0b0;
   margin: 5px;
   display: flex;
   align-items: center;
@@ -126,32 +136,14 @@ class VRUI extends HTMLElement {
   flex-direction: row;
 }
 
-#toolsContainer {
-  display: flex;
-  width: 100%;
-  height: 100%;
-  flex-wrap: wrap;
-  flex-direction: row;
-  display: inline-block;
-}
-.tool {
-  border: 2px solid #333333;
-  width: 90px;
-  height: 90px; 
-  border-radius: 15px;
-  background-color: #FFFFFF;
-  margin: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .button-hover {
-  background: #D8D8D8;
+  background: #FFFFFF;
+  border-color: #FF0000;
 }
 
 .button-active {
-  background: #C1C1C1;
+  border: 3px solid #FF0000;
+  background: #FFFFFF;
 }
 
 .label {
@@ -162,17 +154,25 @@ class VRUI extends HTMLElement {
     shadowRoot.appendChild(styleTag)
   }
 
+  /**
+   * Sets the renderer to the UI so it can support VR actions.
+   * @param {GLRenderer} renderer
+   */
   setRenderer(renderer) {
     this.renderer = renderer
   }
 
+  /**
+   * Sets the ToolManager to the UI so it can configure the tool buttons.
+   * @param {ToolManager} toolManager
+   */
   setToolManager(toolManager) {
     this.toolManager = toolManager
 
     const addToolButton = (name, icon) => {
       const tool = toolManager.tools[name]
       const toolDiv = document.createElement('div')
-      toolDiv.classList.add('tool')
+      toolDiv.classList.add('button')
       let toolActive = false
       toolDiv.addEventListener('mousedown', () => {
         if (!toolActive) {
@@ -272,6 +272,11 @@ class VRUI extends HTMLElement {
       color = new Color('#FFD800')
     })
   }
+
+  /**
+   * Sets the sessionRecorder to the UI so it can make recordings of VR sessions.
+   * @param {SessionRecorder} sessionRecorder
+   */
   setSessionRecorder(sessionRecorder) {
     this.sessionRecorder = sessionRecorder
   }

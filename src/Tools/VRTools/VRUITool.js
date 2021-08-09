@@ -10,6 +10,7 @@ class VRUITool extends BaseTool {
   /**
    * Create a VR UI tool.
    * @param {object} appData - The appData value.
+   * @param {HTMLElement} vrUIDOMElement - The  dom element we will use as the VR UI
    */
   constructor(appData, vrUIDOMElement) {
     super(appData)
@@ -18,8 +19,8 @@ class VRUITool extends BaseTool {
     this.__vrUIDOMElement = vrUIDOMElement
     this.controllerUI = new VRControllerUI(appData, this.__vrUIDOMElement)
 
-    this.__uiLocalXfo = new Xfo()
-    this.__uiLocalXfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * -0.6)
+    // To debug the UI in the renderer without being in VR, enable this line.
+    // appData.renderer.addTreeItem(this.controllerUI)
 
     const pointermat = new Material('pointermat', 'LinesShader')
     pointermat.setSelectable(false)
@@ -79,21 +80,25 @@ class VRUITool extends BaseTool {
     this.uiController = uiController
     this.pointerController = pointerController
 
-    const xfoA = this.uiController.getTreeItem().getParameter('GlobalXfo').getValue()
+    const uiLocalXfo = this.controllerUI.getParameter('LocalXfo').getValue()
+    uiLocalXfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * -0.6)
+    // uiLocalXfo.tr.set(0, -0.05, 0.08)
+
     if (this.pointerController) {
+      const xfoA = this.uiController.getTreeItem().getParameter('GlobalXfo').getValue()
       const xfoB = this.pointerController.getTreeItem().getParameter('GlobalXfo').getValue()
       const headToCtrlA = xfoA.tr.subtract(headXfo.tr)
       const headToCtrlB = xfoB.tr.subtract(headXfo.tr)
       if (headToCtrlA.cross(headToCtrlB).dot(headXfo.ori.getYaxis()) > 0.0) {
-        this.__uiLocalXfo.tr.set(0.05, -0.05, 0.08)
+        uiLocalXfo.tr.set(0.05, -0.05, 0.08)
       } else {
-        this.__uiLocalXfo.tr.set(-0.05, -0.05, 0.08)
+        uiLocalXfo.tr.set(-0.05, -0.05, 0.08)
       }
     } else {
-      this.__uiLocalXfo.tr.set(0, -0.05, 0.08)
+      uiLocalXfo.tr.set(0, -0.05, 0.08)
     }
 
-    this.controllerUI.getParameter('LocalXfo').setValue(this.__uiLocalXfo)
+    this.controllerUI.getParameter('LocalXfo').setValue(uiLocalXfo)
 
     if (this.uiController) {
       this.uiController.getTipItem().addChild(this.controllerUI, false)
@@ -104,8 +109,8 @@ class VRUITool extends BaseTool {
           interfaceType: 'VR',
           showUIPanel: {
             controllerId: this.uiController.getId(),
-            localXfo: this.__uiLocalXfo.toJSON(),
-            size: this.controllerUI.getGeomOffsetXfo().sc.toJSON(),
+            localXfo: uiLocalXfo.toJSON(),
+            size: this.controllerUI.size.toJSON(),
           },
         })
       }
@@ -160,7 +165,7 @@ class VRUITool extends BaseTool {
     const ray = new Ray(pointerXfo.tr, pointervec)
 
     const planeXfo = this.controllerUI.getParameter('GlobalXfo').getValue()
-    const planeSize = this.controllerUI.getGeomOffsetXfo().sc.multiply(planeXfo.sc)
+    const planeSize = this.controllerUI.size.multiply(planeXfo.sc)
 
     const plane = new Ray(planeXfo.tr, planeXfo.ori.getZaxis().negate())
     const res = ray.intersectRayPlane(plane)
@@ -198,13 +203,17 @@ class VRUITool extends BaseTool {
       hit.offsetY = hit.pageY = hit.pageY = hit.screenY = hit.clientY
 
       let element = document.elementFromPoint(hit.clientX, hit.clientY)
-      if (element.shadowRoot) element = element.shadowRoot.elementFromPoint(hit.clientX, hit.clientY)
-      if (element != this._element) {
-        if (this._element) this.controllerUI.sendMouseEvent('mouseleave', Object.assign(args, hit), this._element)
-        this._element = element
-        this.controllerUI.sendMouseEvent('mouseenter', Object.assign(args, hit), this._element)
+      if (element) {
+        if (element.shadowRoot) element = element.shadowRoot.elementFromPoint(hit.clientX, hit.clientY)
+        if (element != this._element) {
+          if (this._element) this.controllerUI.sendMouseEvent('mouseleave', Object.assign(args, hit), this._element)
+          this._element = element
+          this.controllerUI.sendMouseEvent('mouseenter', Object.assign(args, hit), this._element)
+        }
+        this.controllerUI.sendMouseEvent(eventName, Object.assign(args, hit), this._element)
+      } else {
+        this._element = null
       }
-      this.controllerUI.sendMouseEvent(eventName, Object.assign(args, hit), this._element)
       return this._element
     } else if (this._element) {
       this.controllerUI.sendMouseEvent('mouseleave', Object.assign(args, hit), this._element)

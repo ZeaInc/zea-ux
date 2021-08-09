@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="styles/tailwind.min.css" />
 
     <script src="../node_modules/@zeainc/zea-engine/dist/index.umd.js"></script>
-    <script src="../node_modules/@zeainc/zea-engine/dist/plugins.umd.js"></script>
     <script src="../dist/index.umd.js"></script>
 
     <script src="https://websocket-staging.zea.live/socket.io/socket.io.js"></script>
@@ -107,7 +106,6 @@
       scene.getRoot().addChild(geomItem2)
 
       const objAsset = new ObjAsset('cow')
-      objAsset.getParameter('FilePath').setValue('data/cow.obj')
       objAsset.getParameter('splitGroupsIntoObjects').setValue(true)
       scene.getRoot().addChild(objAsset)
 
@@ -116,7 +114,7 @@
       xfo.ori.setFromEulerAngles(new EulerAngles(90 * (Math.PI / 180), 0, 0))
       xfo.sc.set(0.3048, 0.3048, 0.3048)
       objAsset.getParameter('GlobalXfo').setValue(xfo)
-      objAsset.on('loaded', () => {
+      objAsset.load('data/cow.obj').then(() => {
         window.postMessage(`done-Loading`)
       })
 
