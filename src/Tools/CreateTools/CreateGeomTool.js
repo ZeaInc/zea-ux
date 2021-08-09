@@ -35,6 +35,7 @@ class CreateGeomTool extends BaseCreateTool {
       this.vrControllerToolTipMat.setSelectable(false)
     }
     const geomItem = new GeomItem('CreateGeomToolTip', this.vrControllerToolTip, this.vrControllerToolTipMat)
+    geomItem.setSelectable(false)
     // controller.getTipItem().removeAllChildren()
     controller.getTipItem().addChild(geomItem, false)
   }

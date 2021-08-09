@@ -39,6 +39,7 @@ class VRUITool extends BaseTool {
     this.__pointerLocalXfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * -0.2)
 
     this.__uiPointerItem = new GeomItem('VRControllerPointer', line, pointermat)
+    this.__uiPointerItem.setSelectable(false)
 
     this.__triggerHeld = false
     this.uiOpen = false
@@ -105,14 +106,21 @@ class VRUITool extends BaseTool {
       if (this.pointerController) this.pointerController.getTipItem().addChild(this.__uiPointerItem, false)
 
       if (this.appData.session) {
-        this.appData.session.pub('pose-message', {
-          interfaceType: 'VR',
-          showUIPanel: {
-            controllerId: this.uiController.getId(),
-            localXfo: uiLocalXfo.toJSON(),
-            size: this.controllerUI.size.toJSON(),
-          },
-        })
+        const postMessage = () => {
+          this.appData.session.pub('pose-message', {
+            interfaceType: 'VR',
+            showUIPanel: {
+              controllerId: this.uiController.getId(),
+              localXfo: uiLocalXfo.toJSON(),
+              size: this.controllerUI.size.toJSON(),
+            },
+          })
+        }
+        if (!this.controllerUI.ready) {
+          this.controllerUI.on('ready', postMessage)
+        } else {
+          postMessage()
+        }
       }
     }
     this.uiOpen = true

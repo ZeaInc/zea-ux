@@ -61,7 +61,7 @@ export default class VRControllerUI extends TreeItem {
    * @param {any} vrUIDOMElement - The vrUIDOMElement value.
    */
   constructor(appData, vrUIDOMElement) {
-    super('VRControllerUI') //)
+    super('VRControllerUI')
 
     this.setSelectable(false)
     this.appData = appData
@@ -76,6 +76,7 @@ export default class VRControllerUI extends TreeItem {
 
     const uiOffset = new TreeItem('Offset')
     this.addChild(uiOffset, false)
+    this.ready = false
 
     /* */
     const resizeObserver = new ResizeObserver((entries) => {
@@ -154,6 +155,9 @@ export default class VRControllerUI extends TreeItem {
         }
         return true
       })
+
+      this.ready = true
+      this.emit('ready')
     })
     resizeObserver.observe(vrUIDOMElement)
     /* */
@@ -172,8 +176,7 @@ export default class VRControllerUI extends TreeItem {
    * The deactivate method.
    */
   deactivate() {
-    // this.__vrUIDOMElement.style.display = 'none'
-    this.__active = false
+    this.__vrUIDOMElement.style.display = 'none'
   }
 
   /**
