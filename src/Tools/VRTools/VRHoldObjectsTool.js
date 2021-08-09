@@ -139,6 +139,7 @@ class VRHoldObjectsTool extends BaseTool {
     this.__vrControllers = []
     this.__heldObjectCount = 0
     this.__heldGeomItems = []
+    this.__highlightedGeomItemIds = [] // controller id to held goem id.
     this.__heldGeomItemIds = [] // controller id to held goem id.
     this.__heldGeomItemRefs = []
     this.__heldGeomItemOffsets = []
@@ -247,23 +248,24 @@ class VRHoldObjectsTool extends BaseTool {
       const id = event.controller.getId()
       this.__vrControllers[id] = event.controller
 
-      const intersectionData = event.controller.getGeomItemAtTip()
-      if (intersectionData) {
-        // if (intersectionData.geomItem.getOwner() instanceof Handle) return false
+      // const intersectionData = event.controller.getGeomItemAtTip()
+      const geomItem = this.__highlightedGeomItemIds[id]
+      if (geomItem) {
+        // if (geomItem.getOwner() instanceof Handle) return false
 
         // console.log("onMouseDown on Geom"); // + " Material:" + geomItem.getMaterial().name);
-        // console.log(intersectionData.geomItem.getPath()) // + " Material:" + geomItem.getMaterial().name);
+        // console.log(geomItem.getPath()) // + " Material:" + geomItem.getMaterial().name);
 
-        let gidx = this.__heldGeomItems.indexOf(intersectionData.geomItem)
+        let gidx = this.__heldGeomItems.indexOf(geomItem)
         if (gidx == -1) {
           gidx = this.__heldGeomItems.length
           this.__heldObjectCount++
-          this.__heldGeomItems.push(intersectionData.geomItem)
+          this.__heldGeomItems.push(geomItem)
           this.__heldGeomItemRefs[gidx] = [id]
           this.__heldGeomItemIds[id] = gidx
 
           const changeData = {
-            newItem: intersectionData.geomItem,
+            newItem: geomItem,
             newItemId: gidx,
           }
           if (!this.change) {
@@ -316,7 +318,30 @@ class VRHoldObjectsTool extends BaseTool {
    */
   onPointerMove(event) {
     if (event.pointerType === POINTER_TYPES.xr) {
-      if (!this.change) return
+      if (!this.change) {
+        event.controllers.forEach((controller) => {
+          const id = controller.getId()
+          const intersectionData = controller.getGeomItemAtTip()
+          if (intersectionData) {
+            const geomItem = intersectionData.geomItem
+            if (this.__highlightedGeomItemIds[id] != geomItem) {
+              if (this.__highlightedGeomItemIds[id]) {
+                this.__highlightedGeomItemIds[id].removeHighlight('vrHoldObject')
+              }
+              geomItem.addHighlight('vrHoldObject', new Color(1, 0, 0, 0.2))
+              this.__highlightedGeomItemIds[id] = geomItem
+            }
+          } else {
+            if (this.__highlightedGeomItemIds[id]) {
+              const geomItem = this.__highlightedGeomItemIds[id]
+              geomItem.removeHighlight('vrHoldObject')
+              this.__highlightedGeomItemIds[id] = null
+            }
+          }
+        })
+
+        return
+      }
 
       const changeXfos = []
       const changeXfoIds = []
