@@ -1,4 +1,4 @@
-import { Color, Xfo, Ray, ColorParameter, GeomItem, Material, Cross, Vec3 } from '@zeainc/zea-engine'
+import { Color, Xfo, Ray, ColorParameter, GeomItem, Material, Cross, POINTER_TYPES } from '@zeainc/zea-engine'
 import BaseCreateTool from '../BaseCreateTool'
 import { UndoRedoManager } from '../../UndoRedo/index'
 
@@ -22,7 +22,26 @@ class CreateGeomTool extends BaseCreateTool {
     this.removeToolOnRightClick = true
     this.parentItem = 'parentItem' in appData ? appData.parentItem : appData.scene.getRoot()
 
-    this.lineColor = this.addParameter(new ColorParameter('LineColor', new Color(0.7, 0.2, 0.2)))
+    this.colorParam = this.addParameter(new ColorParameter('Color', new Color(0.7, 0.2, 0.2)))
+
+    this.controllerAddedHandler = this.controllerAddedHandler.bind(this)
+  }
+
+  addIconToVRController(controller) {
+    if (!this.vrControllerToolTip) {
+      this.vrControllerToolTip = new Cross(0.05)
+      this.vrControllerToolTipMat = new Material('VRController Cross', 'LinesShader')
+      this.vrControllerToolTipMat.getParameter('BaseColor').setValue(this.colorParam.getValue())
+      this.vrControllerToolTipMat.setSelectable(false)
+    }
+    const geomItem = new GeomItem('CreateGeomToolTip', this.vrControllerToolTip, this.vrControllerToolTipMat)
+    geomItem.setSelectable(false)
+    // controller.getTipItem().removeAllChildren()
+    controller.getTipItem().addChild(geomItem, false)
+  }
+
+  controllerAddedHandler(event) {
+    this.addIconToVRController(event.controller)
   }
 
   /**
@@ -35,21 +54,10 @@ class CreateGeomTool extends BaseCreateTool {
     this.appData.renderer.getGLCanvas().style.cursor = 'crosshair'
 
     this.appData.renderer.getXRViewport().then((xrvp) => {
-      if (!this.vrControllerToolTip) {
-        this.vrControllerToolTip = new Cross(0.05)
-        this.vrControllerToolTipMat = new Material('VRController Cross', 'LinesShader')
-        this.vrControllerToolTipMat.getParameter('Color').setValue(this.lineColor.getValue())
-        this.vrControllerToolTipMat.visibleInGeomDataBuffer = false
-      }
-      const addIconToController = (controller) => {
-        const geomItem = new GeomItem('CreateGeomToolTip', this.vrControllerToolTip, this.vrControllerToolTipMat)
-        controller.getTipItem().removeAllChildren()
-        controller.getTipItem().addChild(geomItem, false)
-      }
       for (const controller of xrvp.getControllers()) {
-        addIconToController(controller)
+        this.addIconToVRController(controller)
       }
-      this.addIconToControllerId = xrvp.on('controllerAdded', addIconToController)
+      xrvp.on('controllerAdded', this.controllerAddedHandler)
     })
   }
 
@@ -65,7 +73,7 @@ class CreateGeomTool extends BaseCreateTool {
       // for(let controller of xrvp.getControllers()) {
       //   controller.getTipItem().removeAllChildren();
       // }
-      xrvp.removeListenerById('controllerAdded', this.addIconToControllerId)
+      xrvp.off('controllerAdded', this.controllerAddedHandler)
     })
   }
 
@@ -134,46 +142,46 @@ class CreateGeomTool extends BaseCreateTool {
    * Event fired when a pointing device button is pressed over the viewport while the tool is activated.
    *
    * @param {MouseEvent|TouchEvent} event - The event param.
-   * @return {boolean} The return value.
    */
   onPointerDown(event) {
     // skip if the alt key is held. Allows the camera tool to work
-    if (event.altKey) return
+    if (event.pointerType === POINTER_TYPES.xr) {
+      this.onVRControllerButtonDown(event)
+    } else {
+      if (event.altKey) return
+      if (this.stage == 0) {
+        if (event.button == 0 || event.pointerType !== 'mouse') {
+          this.constructionPlane = new Xfo()
 
-    //
-    if (this.stage == 0) {
-      if (event.button == 0 || event.pointerType !== 'mouse') {
-        this.constructionPlane = new Xfo()
-
-        const xfo = this.screenPosToXfo(event)
-        this.createStart(xfo)
-        event.stopPropagation()
+          const xfo = this.screenPosToXfo(event)
+          this.createStart(xfo)
+          event.stopPropagation()
+        } else if (event.button == 2) {
+          // Cancel the tool.
+          // if (this.removeToolOnRightClick) this.appData.toolManager.removeTool(this.index)
+        }
       } else if (event.button == 2) {
-        // Cancel the tool.
-        // if (this.removeToolOnRightClick) this.appData.toolManager.removeTool(this.index)
+        // Cancel the draw action.
+        UndoRedoManager.getInstance().cancel()
+        this.stage = 0
       }
-      return true
-    } else if (event.button == 2) {
-      // Cancel the draw action.
-      UndoRedoManager.getInstance().cancel()
-      this.stage = 0
-      return true
     }
 
-    return true
+    event.stopPropagation()
   }
 
   /**
    * Event fired when a pointing device is moved while the cursor's hotspot is inside the viewport, while tool is activated.
    *
    * @param {MouseEvent|TouchEvent} event - The event param.
-   * @return {boolean} The return value.
    */
   onPointerMove(event) {
-    if (this.stage > 0) {
+    if (event.pointerType === POINTER_TYPES.xr) {
+      this.onVRPoseChanged(event)
+    } else if (this.stage > 0) {
       const xfo = this.screenPosToXfo(event)
       this.createMove(xfo.tr)
-      return true
+      event.stopPropagation()
     }
   }
 
@@ -181,13 +189,14 @@ class CreateGeomTool extends BaseCreateTool {
    * Event fired when a pointing device button is released while the pointer is over the viewport, while the tool is activated.
    *
    * @param {MouseEvent|TouchEvent} event - The event param.
-   * @return {boolean} The return value.
    */
   onPointerUp(event) {
-    if (this.stage > 0) {
+    if (event.pointerType === POINTER_TYPES.xr) {
+      this.onVRControllerButtonUp(event)
+    } else if (this.stage > 0) {
       const xfo = this.screenPosToXfo(event)
       this.createRelease(xfo.tr)
-      return true
+      event.stopPropagation()
     }
   }
 
@@ -259,7 +268,7 @@ class CreateGeomTool extends BaseCreateTool {
       xfo.tr = this.__activeController.getTipXfo().tr
       this.createStart(xfo, this.appData.scene.getRoot())
     }
-    return true
+    event.stopPropagation()
   }
 
   /**
@@ -273,7 +282,7 @@ class CreateGeomTool extends BaseCreateTool {
       // TODO: Snap the Xfo to any nearby construction planes.
       const xfo = this.__activeController.getTipXfo()
       this.createMove(xfo.tr)
-      return true
+      event.stopPropagation()
     }
   }
 
@@ -289,7 +298,7 @@ class CreateGeomTool extends BaseCreateTool {
         const xfo = this.__activeController.getTipXfo()
         this.createRelease(xfo.tr)
         if (this.stage == 0) this.__activeController = undefined
-        return true
+        event.stopPropagation()
       }
     }
   }

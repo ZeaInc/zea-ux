@@ -28,7 +28,7 @@ class CreateConeTool extends CreateGeomTool {
   createStart(xfo) {
     this.xfo = xfo
     this.invXfo = xfo.inverse()
-    this.change = new CreateConeChange(this.parentItem, xfo)
+    this.change = new CreateConeChange(this.parentItem, xfo, this.colorParam.getValue())
     UndoRedoManager.getInstance().addChange(this.change)
 
     this.stage = 1

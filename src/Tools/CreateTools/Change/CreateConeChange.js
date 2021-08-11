@@ -17,14 +17,15 @@ class CreateConeChange extends CreateGeomChange {
    * @param {TreeItem} parentItem - The parentItem value.
    * @param {Xfo} xfo - The xfo value.
    */
-  constructor(parentItem, xfo) {
+  constructor(parentItem, xfo, color) {
     super('Create Cone')
 
     const cone = new Cone(0.0, 0.0)
-    const material = new Material('Sphere', 'SimpleSurfaceShader')
-    this.geomItem = new GeomItem('Sphere', cone, material)
+    const material = new Material('Cone', 'SimpleSurfaceShader')
+    this.geomItem = new GeomItem('Cone', cone, material)
 
     if (parentItem && xfo) {
+      material.getParameter('BaseColor').setValue(color)
       this.setParentAndXfo(parentItem, xfo)
     }
   }

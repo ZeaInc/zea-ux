@@ -26,7 +26,7 @@ class CreateSphereTool extends CreateGeomTool {
    * @param {Xfo} xfo - The xfo param.
    */
   createStart(xfo) {
-    this.change = new CreateSphereChange(this.parentItem, xfo)
+    this.change = new CreateSphereChange(this.parentItem, xfo, this.colorParam.getValue())
     UndoRedoManager.getInstance().addChange(this.change)
 
     this.xfo = xfo
