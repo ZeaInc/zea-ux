@@ -103,6 +103,7 @@ class CreateFreehandLineChange extends CreateGeomChange {
     if (j.lineThickness) {
       this.line.lineThickness = j.lineThickness
       // this.line.addVertexAttribute('lineThickness', Float32, 0.0);
+      this.geomItem.getMaterial().getParameter('LineThickness').setValue(j.lineThickness)
     }
 
     if (j.color) {
