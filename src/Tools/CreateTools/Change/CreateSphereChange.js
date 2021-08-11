@@ -19,7 +19,7 @@ class CreateSphereChange extends CreateGeomChange {
   constructor(parentItem, xfo, color) {
     super('CreateSphere', parentItem)
 
-    this.sphere = new Sphere(0, 64, 32)
+    this.sphere = new Sphere(0, 24, 12)
     const material = new Material('Sphere', 'SimpleSurfaceShader')
     this.geomItem = new GeomItem('Sphere', this.sphere, material)
 
