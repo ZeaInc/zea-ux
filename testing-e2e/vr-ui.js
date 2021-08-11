@@ -137,12 +137,12 @@ class VRUI extends HTMLElement {
 }
 
 .button-hover {
-  background: #FFFFFF;
-  border-color: #FF0000;
+  background: #d0d0d0;
+  border: 2px dashed #FF0000;
 }
 
 .button-active {
-  border: 3px solid #FF0000;
+  border: 2px solid #FF0000;
   background: #FFFFFF;
 }
 
