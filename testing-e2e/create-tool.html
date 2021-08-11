@@ -57,16 +57,27 @@
     <script src="../dist/index.umd.js"></script>
 
     <script type="module">
-      const { GLRenderer, Scene, GeomItem, Material, Vec3, Xfo, Color, Cuboid, Torus } = window.zeaEngine
-      const { CreateCircleTool, CreateConeTool, CreateCuboidTool, CreateFreehandLineTool, CreateLineTool, CreateRectTool, CreateSphereTool } = window.zeaUx
+      const { GLRenderer, Scene, GeomItem, Material, Vec3, Xfo, Color, Cuboid, Torus, Sphere } = window.zeaEngine
+      const {
+        CreateCircleTool,
+        CreateConeTool,
+        CreateCuboidTool,
+        CreateFreehandLineTool,
+        CreateLineTool,
+        CreateRectTool,
+        CreateSphereTool,
+      } = window.zeaUx
 
       const $canvas = document.getElementById('renderer')
 
       const scene = new Scene()
       scene.setupGrid(10, 10)
 
-      const renderer = new GLRenderer($canvas, { hideSplash: true })
+      const renderer = new GLRenderer($canvas, {
+        enableFrustumCulling: true,
+      })
       renderer.setScene(scene)
+
 
       const color = new Color('#aaaaaa')
       scene.getSettings().getParameter('BackgroundColor').setValue(color)
@@ -92,7 +103,6 @@
         geomItem2Xfo.tr = new Vec3(-1, 0, 0.35)
         geomItem2.getParameter('GlobalXfo').setValue(geomItem2Xfo)
 
-        
         // scene.getRoot().addChild(geomItem2)
       }
 
@@ -114,11 +124,11 @@
           lineTool: new CreateLineTool(appData),
           rectTool: new CreateRectTool(appData),
           sphereTool: new CreateSphereTool(appData),
-          cameraManipulator: renderer.getViewport().getManipulator()
+          cameraManipulator: renderer.getViewport().getManipulator(),
         }
 
         const $toolRadios = document.querySelectorAll('input[type=radio][name="tool-radio"]')
-        $toolRadios.forEach(toolRadio => {
+        $toolRadios.forEach((toolRadio) => {
           toolRadio.addEventListener('change', (e) => {
             renderer.getViewport().setManipulator(tools[e.target.value])
           })

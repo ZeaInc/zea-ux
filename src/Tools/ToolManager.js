@@ -31,6 +31,31 @@ class ToolManager extends BaseTool {
     this.toolStack.pop()
   }
 
+  /**
+   * Returns the tool currently at the top of the stack.
+   * @return {Tool} - the currently active tool.
+   */
+  activeTool() {
+    if (this.toolStack.length > 0) {
+      return this.toolStack[this.toolStack.length - 1]
+    }
+    return ''
+  }
+
+  /**
+   * Returns the name of the tool currently at the top of the stack.
+   * @return - the name of the tool.
+   */
+  activeToolName() {
+    if (this.toolStack.length > 0) {
+      const tool = this.toolStack[this.toolStack.length - 1]
+      for (const key in this.tools) {
+        if (this.tools[key] == tool) return key
+      }
+    }
+    return ''
+  }
+
   // ///////////////////////////////////
   // Pointer events
 

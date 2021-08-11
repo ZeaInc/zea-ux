@@ -1,87 +1,166 @@
-import { Vec3, Xfo, GeomItem, Material, Plane, DataImage } from '@zeainc/zea-engine'
+import { Vec3, Xfo, EulerAngles, Color, TreeItem, GeomItem, Material, Plane, DataImage } from '@zeainc/zea-engine'
 
 import domtoimage from './dom-to-image.js'
 
-const VR_UI_ELEM_CLASS = 'VRUIElement'
+/**
+ * Traverse a dom tree and call a callback at each node.
+ * @param {HTMLElement} node
+ * @param {number} depth
+ * @param {function} func
+ */
+function traverse(node, depth, func) {
+  if (!func(node, depth)) return
+  node = node.firstChild
+  while (node) {
+    traverse(node, depth + 1, func)
+    node = node.nextSibling
+  }
+}
+
+/**
+ * Computes the size of th element, including margins.
+ * @param {HTMLElement} elem
+ * @return {object}
+ */
+function elemSize(elem) {
+  const computedStyle = elem.computedStyleMap()
+  const elmWidth = computedStyle.get('width').value
+  const elmMarginHorizontal = computedStyle.get('margin-left').value + computedStyle.get('margin-right').value
+  const elmHeight = computedStyle.get('height').value
+  const elmMarginVertical = computedStyle.get('margin-top').value + computedStyle.get('margin-bottom').value
+  return {
+    width: elmWidth + elmMarginHorizontal,
+    height: elmHeight + elmMarginVertical,
+  }
+}
+
+const idx = 'data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg"'.length
+const renderElementUI = (elem, size, key, callback) => {
+  domtoimage.toSvg(elem).then((uri) => {
+    // To work around a bug in domtoimage, we insert a viewBox into the SVG that ensures it renders
+    // all the way to the edges. otherwise, an image is generated that crops the left and bottom borders.
+    const uri2 = uri.substring(0, idx) + ` viewBox="0 0 ${size.width} ${size.height}"` + uri.substring(idx)
+    const image = new Image()
+    image.onload = function () {
+      callback(image, key)
+    }
+    // image.onerror = reject
+    image.src = uri2
+  })
+}
+const plane = new Plane(1, 1)
 
 /**
  * Class representing a VR controller UI.
- * @extends GeomItem
+ * @extends TreeItem
  */
-export default class VRControllerUI extends GeomItem {
+export default class VRControllerUI extends TreeItem {
   /**
    * Create a VR controller UI.
    * @param {any} appData - The appData value.
-   * @param {any} vrUIDOMHolderElement - The vrUIDOMHolderElement value.
    * @param {any} vrUIDOMElement - The vrUIDOMElement value.
    */
-  constructor(appData, vrUIDOMHolderElement, vrUIDOMElement) {
-    const uimat = new Material('uimat', 'FlatSurfaceShader')
-    uimat.visibleInGeomDataBuffer = false
+  constructor(appData, vrUIDOMElement) {
+    super('VRControllerUI')
 
-    super('VRControllerUI', new Plane(1, 1), uimat)
-
+    this.setSelectable(false)
     this.appData = appData
-    this.__vrUIDOMHolderElement = vrUIDOMHolderElement
     this.__vrUIDOMElement = vrUIDOMElement
+    this.__vrUIDOMElement.style.display = 'none'
 
-    this.__uiimage = new DataImage()
-    // uimat.getParameter('BaseColor').setValue(new Color(0.3, 0.3, 0.3));
-    uimat.getParameter('BaseColor').setValue(this.__uiimage)
+    // const debugGeomItem = new GeomItem('Debug', new Plane(1, 1), new Material('debug-ui-mat', 'FlatSurfaceShader'))
+    // // Flip it over so we see the front.
+    // const debugGeomItemXfo = new Xfo()
+    // debugGeomItemXfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI)
+    // this.addChild(debugGeomItem, false)
 
-    this.__uiGeomOffsetXfo = new Xfo()
-    this.__uiGeomOffsetXfo.sc.set(0, 0, 1)
-    this.__rect = { width: 0, height: 0 }
+    const uiOffset = new TreeItem('Offset')
+    this.addChild(uiOffset, false)
+    this.ready = false
 
-    // Flip it over so we see the front.
-    this.__uiGeomOffsetXfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI)
-    this.setGeomOffsetXfo(this.__uiGeomOffsetXfo)
+    /* */
+    const resizeObserver = new ResizeObserver((entries) => {
+      resizeObserver.disconnect()
 
-    let renderRequestedId
-    let mutatedElems = []
-    const processMutatedElems = () => {
-      renderRequestedId = null
-      const promises = mutatedElems.map((elem) => {
-        return this.updateElemInAtlas(elem)
-      })
-      Promise.all(promises).then(() => {
-        this.updateUIImage()
-        // console.log("Update Time:", performance.now() - start, mutatedElems.length);
-        mutatedElems = []
-      })
-    }
-    this.__mutationObserver = new MutationObserver((mutations) => {
-      if (!this.mainCtx) {
-        this.renderUIToImage()
-        return
-      }
-      // console.log("mutations:", mutations.length)
-      mutations.some((mutation) => {
-        let elem = mutation.target
-        while (elem.parentNode) {
-          if (elem == this.__vrUIDOMElement) {
-            this.renderUIToImage()
-            mutatedElems = []
-            return false
-            break
+      const localXfo = new Xfo()
+      const dpm = 0.0005 // dots-per-meter (1 each 1/2mm)
+      localXfo.sc.set(dpm, dpm, dpm)
+      localXfo.ori.setFromEulerAngles(new EulerAngles(Math.PI, Math.PI, 0))
+      // localXfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI)
+      // localXfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI)
+      uiOffset.getParameter('LocalXfo').setValue(localXfo)
+
+      this.size = new Vec3(vrUIDOMElement.clientWidth * dpm, vrUIDOMElement.clientHeight * dpm, 1)
+
+      // debugGeomItemXfo.sc = this.size
+      // debugGeomItem.getParameter('LocalXfo').setValue(debugGeomItemXfo)
+
+      traverse(vrUIDOMElement, 0, (elem, depth) => {
+        if (elem.className == 'button') {
+          const size = elemSize(elem)
+          // console.log(depth, elem.id, elem.className, size.width, size.height, elem.offsetLeft, elem.offsetTop)
+          const localXfo = new Xfo()
+
+          localXfo.sc.set(size.width, -size.height, 1)
+
+          // Note: The plane geom goes from [-0.5, -0.5] to [0.5, 0.5], so we need to offset it here.
+          // To debug the placements of these UI elements, display tbe backing panel by making this class
+          // in
+          localXfo.tr.set(
+            elem.offsetLeft + size.width * 0.5 - vrUIDOMElement.clientWidth * 0.5,
+            elem.offsetTop + size.height * 0.5 - vrUIDOMElement.clientHeight * 0.5,
+            -depth
+          )
+
+          const uimat = new Material('element-vr-ui-mat', 'FlatSurfaceShader')
+          uimat.getParameter('BaseColor').setValue(new Color(0.3, 0.3, 0.3))
+          const image = new DataImage()
+          uimat.getParameter('BaseColor').setValue(image)
+
+          const geomItem = new GeomItem('element-vr-ui', plane, uimat, localXfo)
+          geomItem.setSelectable(false)
+          uiOffset.addChild(geomItem, false)
+
+          const imageDatas = {}
+          if (size.width > 0 && size.height > 0) {
+            renderElementUI(elem, size, elem.id + elem.className, (data, key) => {
+              // console.log('Rendered', elem.id, elem.className, size.width, size.height, elem.offsetLeft, elem.offsetTop)
+              imageDatas[key] = data
+              image.setData(size.width, size.height, data)
+            })
           }
-          // console.log(elem.classList)
-          if (elem.classList.contains(VR_UI_ELEM_CLASS) || elem == this.__vrUIDOMElement) {
-            if (mutatedElems.indexOf(elem) == -1) mutatedElems.push(elem)
-            break
-          }
-          elem = elem.parentNode
+
+          const mutationObserver = new MutationObserver((mutations) => {
+            if (size.width == 0 || size.height == 0) return
+            // Each time the dome changes, we use the classList as a key to cache
+            // the generated images. Update the UI by adding and removing classes
+            const key = elem.id + elem.className
+            if (!imageDatas[key]) {
+              renderElementUI(elem, size, key, (data, key) => {
+                imageDatas[key] = data
+                image.setData(size.width, size.height, data)
+              })
+            } else {
+              image.setData(size.width, size.height, imageDatas[key])
+            }
+          })
+
+          mutationObserver.observe(elem, {
+            attributes: true,
+            characterData: false,
+            childList: false,
+            subtree: false,
+          })
+          return false
         }
         return true
       })
 
-      // Batch the changes.
-      if (renderRequestedId) clearTimeout(renderRequestedId)
-      renderRequestedId = setTimeout(processMutatedElems, 50)
+      this.ready = true
+      this.emit('ready')
     })
-
-    this.__active = false
-    this.__renderRequested = false
+    resizeObserver.observe(vrUIDOMElement)
+    /* */
   }
 
   // ///////////////////////////////////
@@ -90,89 +169,14 @@ export default class VRControllerUI extends GeomItem {
    * The activate method.
    */
   activate() {
-    this.__vrUIDOMHolderElement.style.display = 'block'
-    this.__active = true
-
-    this.__mutationObserver.observe(this.__vrUIDOMElement, {
-      attributes: true,
-      characterData: true,
-      childList: true,
-      subtree: true,
-    })
-    this.renderUIToImage()
+    this.__vrUIDOMElement.style.display = 'block'
   }
 
   /**
    * The deactivate method.
    */
   deactivate() {
-    this.__vrUIDOMHolderElement.style.display = 'none'
-    this.__active = true
-    this.__mutationObserver.disconnect()
-  }
-
-  // ///////////////////////////////////
-  // VRController events
-
-  /**
-   * The updateElemInAtlas method.
-   * @param {any} elem - The elem param.
-   * @return {any} The return value.
-   */
-  updateElemInAtlas(elem) {
-    return new Promise((resolve, reject) => {
-      domtoimage.toCanvas(elem).then((canvas) => {
-        const rect = elem.getBoundingClientRect()
-        // Sometimes a render request occurs as the UI is being hidden.
-        if (rect.width * rect.height == 0) {
-          resolve()
-          return
-        }
-        // console.log(rect.width, rect.height, rect.x, rect.y)
-        // this.mainCtx.clearRect(rect.x, rect.y, rect.width, rect.height);
-        this.mainCtx.fillRect(rect.x, rect.y, rect.width, rect.height)
-        this.mainCtx.drawImage(canvas, rect.x, rect.y)
-        resolve()
-      })
-    })
-  }
-
-  /**
-   * The updateUIImage method.
-   */
-  updateUIImage() {
-    const imageData = this.mainCtx.getImageData(0, 0, this.__rect.width, this.__rect.height)
-    this.__uiimage.setData(this.__rect.width, this.__rect.height, new Uint8Array(imageData.data.buffer))
-  }
-
-  /**
-   * The renderUIToImage method.
-   */
-  renderUIToImage() {
-    domtoimage.toCanvas(this.__vrUIDOMElement).then((canvas) => {
-      this.mainCtx = canvas.getContext('2d')
-      this.mainCtx.fillStyle = '#FFFFFF'
-
-      const rect = this.__vrUIDOMElement.getBoundingClientRect()
-      // Sometimes a rendeer request occurs as the UI is being hidden.
-      if (rect.width * rect.height == 0) return
-
-      // const dpm = 0.0003; //dots-per-meter (1 each 1/2mm)
-      if (rect.width != this.__rect.width || rect.height != this.__rect.height) {
-        this.__rect = rect
-        const dpm = 0.0007 // dots-per-meter (1 each 1/2mm)
-        this.__uiGeomOffsetXfo.sc.set(this.__rect.width * dpm, this.__rect.height * dpm, 1.0)
-        this.setGeomOffsetXfo(this.__uiGeomOffsetXfo)
-
-        this.appData.session.pub('pose-message', {
-          interfaceType: 'VR',
-          updateUIPanel: {
-            size: this.__uiGeomOffsetXfo.sc.toJSON(),
-          },
-        })
-      }
-      this.updateUIImage()
-    })
+    this.__vrUIDOMElement.style.display = 'none'
   }
 
   /**
@@ -183,10 +187,7 @@ export default class VRControllerUI extends GeomItem {
    * @return {any} The return value.
    */
   sendMouseEvent(eventName, args, element) {
-    // console.log(eventName, element)
-
-    // if (eventName == 'mousedown')
-    //   console.log("clientX:" + args.clientX + " clientY:" + args.clientY);
+    // console.log('sendMouseEvent:', eventName, element)
 
     const event = new MouseEvent(
       eventName,

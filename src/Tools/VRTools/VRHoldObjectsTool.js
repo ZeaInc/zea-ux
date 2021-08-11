@@ -1,5 +1,5 @@
-import { Quat, Color, Xfo, GeomItem, Material, Cross, BaseTool } from '@zeainc/zea-engine'
-import Handle from '../../Handles/Handle'
+import { Quat, Color, Xfo, GeomItem, Material, Cross, BaseTool, POINTER_TYPES } from '@zeainc/zea-engine'
+// import Handle from '../../Handles/Handle'
 import UndoRedoManager from '../../UndoRedo/UndoRedoManager'
 import Change from '../../UndoRedo/Change'
 
@@ -29,7 +29,7 @@ class HoldObjectsChange extends Change {
    */
   undo() {
     for (let i = 0; i < this.__selection.length; i++) {
-      if (this.__selection[i]) {
+      if (this.__selection[i] && this.__prevXfos[i]) {
         this.__selection[i].getParameter('GlobalXfo').setValue(this.__prevXfos[i])
       }
     }
@@ -40,7 +40,7 @@ class HoldObjectsChange extends Change {
    */
   redo() {
     for (let i = 0; i < this.__selection.length; i++) {
-      if (this.__selection[i]) {
+      if (this.__selection[i] && this.__newXfos[i]) {
         this.__selection[i].getParameter('GlobalXfo').setValue(this.__newXfos[i])
       }
     }
@@ -95,35 +95,27 @@ class HoldObjectsChange extends Change {
     super.fromJSON(j, context)
 
     const sceneRoot = context.appData.scene.getRoot()
-    const newSelection = []
+    this.__selection = []
     for (let i = 0; i < j.itemPaths.length; i++) {
       const itemPath = j.itemPaths[i]
-      if (itemPath) {
-        newSelection[i] = sceneRoot.resolvePath(itemPath, 1)
+      if (itemPath && itemPath != '') {
+        const newItem = sceneRoot.resolvePath(itemPath, 1)
+        if (newItem != sceneRoot) {
+          this.__selection[i] = newItem
+          this.__prevXfos[i] = newItem.getParameter('GlobalXfo').getValue()
+        }
       }
     }
-    this.__selection = newSelection
   }
 
-  // updateFromJSON(j) {
-
-  //   if(updateData.newItem) {
-  //     this.__selection[updateData.newItemId] = updateData.newItem;
-  //     this.__prevXfos[updateData.newItemId] = updateData.newItem.getParameter('GlobalXfo').getValue();
-  //   }
-  //   else if(updateData.changeXfos) {
-  //     for(let i=0; i<updateData.changeXfoIds.length; i++){
-  //       const gidx = updateData.changeXfoIds[i];
-  //       if(!this.__selection[gidx])
-  //         continue;
-  //       this.__selection[gidx].getParameter('GlobalXfo').setValue(
-  //         updateData.changeXfos[i],
-  //         ValueSetMode.REMOTEUSER_SETVALUE);
-  //       this.__newXfos[gidx] = updateData.changeXfos[i];
-  //     }
-  //   }
-  //   this.emit('updated', updateData);
-  // }
+  /**
+   * Updates the state of an existing identified `Parameter` through replication.
+   *
+   * @param {object} j - The j param.
+   */
+  updateFromJSON(j) {
+    this.update(j)
+  }
 }
 
 UndoRedoManager.registerChange('HoldObjectsChange', HoldObjectsChange)
@@ -140,12 +132,14 @@ class VRHoldObjectsTool extends BaseTool {
   constructor(appData) {
     super(appData)
 
+    this.appData = appData
     this.__pressedButtonCount = 0
 
     this.__freeIndices = []
     this.__vrControllers = []
     this.__heldObjectCount = 0
     this.__heldGeomItems = []
+    this.__highlightedGeomItemIds = [] // controller id to held goem id.
     this.__heldGeomItemIds = [] // controller id to held goem id.
     this.__heldGeomItemRefs = []
     this.__heldGeomItemOffsets = []
@@ -156,25 +150,26 @@ class VRHoldObjectsTool extends BaseTool {
    */
   activateTool() {
     super.activateTool()
-    console.log('activateTool.VRHoldObjectsTool')
 
     this.appData.renderer.getGLCanvas().style.cursor = 'crosshair'
 
     const addIconToController = (controller) => {
       // The tool might already be deactivated.
       if (!this.__activated) return
-      const cross = new Cross(0.03)
-      const mat = new Material('Cross', 'FlatSurfaceShader')
-      mat.getParameter('BaseColor').setValue(new Color('#03E3AC'))
-      mat.visibleInGeomDataBuffer = false
-      const geomItem = new GeomItem('HandleToolTip', cross, mat)
-      controller.getTipItem().removeAllChildren()
-      controller.getTipItem().addChild(geomItem, false)
+      // const cross = new Cross(0.03)
+      // const mat = new Material('Cross', 'FlatSurfaceShader')
+      // mat.getParameter('BaseColor').setValue(new Color('#03E3AC'))
+      // mat.visibleInGeomDataBuffer = false
+      // const geomItem = new GeomItem('HandleToolTip', cross, mat)
+      // controller.getTipItem().removeAllChildren()
+      // controller.getTipItem().addChild(geomItem, false)
     }
 
     this.appData.renderer.getXRViewport().then((xrvp) => {
-      for (const controller of xrvp.getControllers()) addIconToController(controller)
-      this.addIconToControllerId = xrvp.on('controllerAdded', addIconToController)
+      for (const controller of xrvp.getControllers()) {
+        addIconToController(controller)
+      }
+      this.addIconToControllerId = xrvp.on('controllerAdded', (event) => addIconToController(event.controller))
     })
   }
 
@@ -244,97 +239,135 @@ class VRHoldObjectsTool extends BaseTool {
   }
 
   /**
-   * The onVRControllerButtonDown method.
-   * @param {object} event - The event param.
-   * @return {boolean} The return value.
+   * Event fired when a pointing device button is pressed
+   *
+   * @param {MouseEvent} event - The event param.
    */
-  onVRControllerButtonDown(event) {
-    const id = event.controller.getId()
-    this.__vrControllers[id] = event.controller
+  onPointerDown(event) {
+    if (event.pointerType === POINTER_TYPES.xr) {
+      const id = event.controller.getId()
+      this.__vrControllers[id] = event.controller
 
-    const intersectionData = event.controller.getGeomItemAtTip()
-    if (intersectionData) {
-      if (intersectionData.geomItem.getOwner() instanceof Handle) return false
+      // const intersectionData = event.controller.getGeomItemAtTip()
+      const geomItem = this.__highlightedGeomItemIds[id]
+      if (geomItem) {
+        // if (geomItem.getOwner() instanceof Handle) return false
 
-      // console.log("onMouseDown on Geom"); // + " Material:" + geomItem.getMaterial().name);
-      // console.log(intersectionData.geomItem.getPath()); // + " Material:" + geomItem.getMaterial().name);
-      event.intersectionData = intersectionData
-      intersectionData.geomItem.onMouseDown(event, intersectionData)
-      if (!event.propagating) return false
+        // console.log("onMouseDown on Geom"); // + " Material:" + geomItem.getMaterial().name);
+        // console.log(geomItem.getPath()) // + " Material:" + geomItem.getMaterial().name);
 
-      let gidx = this.__heldGeomItems.indexOf(intersectionData.geomItem)
-      if (gidx == -1) {
-        gidx = this.__heldGeomItems.length
-        this.__heldObjectCount++
-        this.__heldGeomItems.push(intersectionData.geomItem)
-        this.__heldGeomItemRefs[gidx] = [id]
-        this.__heldGeomItemIds[id] = gidx
+        let gidx = this.__heldGeomItems.indexOf(geomItem)
+        if (gidx == -1) {
+          gidx = this.__heldGeomItems.length
+          this.__heldObjectCount++
+          this.__heldGeomItems.push(geomItem)
+          this.__heldGeomItemRefs[gidx] = [id]
+          this.__heldGeomItemIds[id] = gidx
 
-        const changeData = {
-          newItem: intersectionData.geomItem,
-          newItemId: gidx,
-        }
-        if (!this.change) {
-          this.change = new HoldObjectsChange(changeData)
-          this.appData.undoRedoManager.addChange(this.change)
+          const changeData = {
+            newItem: geomItem,
+            newItemId: gidx,
+          }
+          if (!this.change) {
+            this.change = new HoldObjectsChange(changeData)
+            UndoRedoManager.getInstance().addChange(this.change)
+          } else {
+            this.change.update(changeData)
+          }
         } else {
-          this.change.update(changeData)
+          this.__heldGeomItemIds[id] = gidx
+          this.__heldGeomItemRefs[gidx].push(id)
         }
-      } else {
-        this.__heldGeomItemIds[id] = gidx
-        this.__heldGeomItemRefs[gidx].push(id)
+        this.initAction()
+        event.stopPropagation()
       }
-      this.initAction()
-      return true
     }
   }
 
   /**
-   * The onVRControllerButtonUp method.
-   * @param {object} event - The event param.
-   * @return {boolean} The return value.
+   * Event fired when a pointing device button is released while the pointer is over the tool.
+   *
+   * @param {MouseEvent} event - The event param.
    */
-  onVRControllerButtonUp(event) {
-    const id = event.controller.getId()
+  onPointerUp(event) {
+    if (event.pointerType === POINTER_TYPES.xr) {
+      const id = event.controller.getId()
 
-    this.__pressedButtonCount--
-    if (this.__heldGeomItemIds[id] !== undefined) {
-      const gidx = this.__heldGeomItemIds[id]
-      const refs = this.__heldGeomItemRefs[gidx]
-      refs.splice(refs.indexOf(id), 1)
-      if (refs.length == 0) {
-        this.__heldObjectCount--
-        this.__heldGeomItems[gidx] = undefined
+      this.__pressedButtonCount--
+      if (this.__heldGeomItemIds[id] !== undefined) {
+        const gidx = this.__heldGeomItemIds[id]
+        const refs = this.__heldGeomItemRefs[gidx]
+        refs.splice(refs.indexOf(id), 1)
+        if (refs.length == 0) {
+          this.__heldObjectCount--
+          this.__heldGeomItems[gidx] = undefined
 
-        this.change = undefined
+          this.change = undefined
+        }
+        this.__heldGeomItemIds[id] = undefined
+        this.initAction()
+        event.stopPropagation()
       }
-      this.__heldGeomItemIds[id] = undefined
-      this.initAction()
-      return true
     }
   }
 
   /**
-   * The onVRPoseChanged method.
-   * @param {object} event - The event param.
-   * @return {boolean} The return value.
+   * Event fired when a pointing device is moved
+   *
+   * @param {MouseEvent} event - The event param.
    */
-  onVRPoseChanged(event) {
-    if (!this.change) return false
+  onPointerMove(event) {
+    if (event.pointerType === POINTER_TYPES.xr) {
+      if (!this.change) {
+        event.controllers.forEach((controller) => {
+          const id = controller.getId()
+          const intersectionData = controller.getGeomItemAtTip()
+          if (intersectionData) {
+            const geomItem = intersectionData.geomItem
+            if (this.__highlightedGeomItemIds[id] != geomItem) {
+              if (this.__highlightedGeomItemIds[id]) {
+                this.__highlightedGeomItemIds[id].removeHighlight('vrHoldObject')
+              }
+              geomItem.addHighlight('vrHoldObject', new Color(1, 0, 0, 0.2))
+              this.__highlightedGeomItemIds[id] = geomItem
+            }
+          } else {
+            if (this.__highlightedGeomItemIds[id]) {
+              const geomItem = this.__highlightedGeomItemIds[id]
+              geomItem.removeHighlight('vrHoldObject')
+              this.__highlightedGeomItemIds[id] = null
+            }
+          }
+        })
 
-    const changeXfos = []
-    const changeXfoIds = []
-    for (let i = 0; i < this.__heldGeomItems.length; i++) {
-      const heldGeom = this.__heldGeomItems[i]
-      if (!heldGeom) continue
-      const grabXfo = this.computeGrabXfo(this.__heldGeomItemRefs[i])
-      changeXfos.push(grabXfo.multiply(this.__heldGeomItemOffsets[i]))
-      changeXfoIds.push(i)
+        return
+      }
+
+      const changeXfos = []
+      const changeXfoIds = []
+      for (let i = 0; i < this.__heldGeomItems.length; i++) {
+        const heldGeom = this.__heldGeomItems[i]
+        if (!heldGeom) continue
+        const grabXfo = this.computeGrabXfo(this.__heldGeomItemRefs[i])
+        changeXfos.push(grabXfo.multiply(this.__heldGeomItemOffsets[i]))
+        changeXfoIds.push(i)
+      }
+
+      this.change.update({ changeXfos, changeXfoIds })
+
+      event.stopPropagation()
     }
+  }
 
-    this.change.update({ changeXfos, changeXfoIds })
-
-    return true
+  /**
+   * Event fired when a pointing device button is double clicked on the tool.
+   *
+   * @param {MouseEvent} event - The event param.
+   */
+  onPointerDoublePress(event) {
+    if (event.pointerType === POINTER_TYPES.xr) {
+      // this.onVRControllerDoubleClicked(event)
+    }
   }
 }
 

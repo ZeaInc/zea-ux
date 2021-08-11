@@ -27,7 +27,7 @@ class CreateCuboidTool extends CreateGeomTool {
    * @param {Xfo} xfo - The xfo param.
    */
   createStart(xfo) {
-    this.change = new CreateCuboidChange(this.parentItem, xfo)
+    this.change = new CreateCuboidChange(this.parentItem, xfo, this.colorParam.getValue())
     UndoRedoManager.getInstance().addChange(this.change)
 
     this.xfo = xfo
@@ -52,7 +52,6 @@ class CreateCuboidTool extends CreateGeomTool {
       })
     } else {
       const vec = this.invXfo.transformVec3(pt)
-      console.log('vecY:', vec.y)
       this.change.update({ height: vec.y })
     }
   }

@@ -87,7 +87,8 @@ class CreateFreehandLineChange extends CreateGeomChange {
   toJSON(context) {
     const j = super.toJSON(context)
     j.lineThickness = this.line.lineThickness
-    j.color = this.geomItem.getMaterial().getParameter('BaseColor').getValue()
+    const material = this.geomItem.getParameter('Material').getValue()
+    j.color = material.getParameter('BaseColor').getValue()
     return j
   }
 
@@ -102,13 +103,14 @@ class CreateFreehandLineChange extends CreateGeomChange {
     if (j.lineThickness) {
       this.line.lineThickness = j.lineThickness
       // this.line.addVertexAttribute('lineThickness', Float32, 0.0);
+      this.geomItem.getMaterial().getParameter('LineThickness').setValue(j.lineThickness)
     }
 
-    const color = new Color(0.7, 0.2, 0.2)
     if (j.color) {
+      const color = new Color(0.7, 0.2, 0.2)
       color.fromJSON(j.color)
+      this.geomItem.getMaterial().getParameter('BaseColor').setValue(color)
     }
-    this.geomItem.getMaterial().getParameter('BaseColor').setValue(color)
 
     super.fromJSON(j, context)
   }

@@ -19,7 +19,7 @@ class CreateLineTool extends CreateGeomTool {
   constructor(appData) {
     super(appData)
 
-    this.lineThickness = this.addParameter(new NumberParameter('LineThickness', 0.06, [0, 0.1])) // 1cm.
+    this.lineThickness = this.addParameter(new NumberParameter('LineThickness', 0.01, [0, 0.1])) // 1cm.
   }
 
   /**
@@ -58,6 +58,19 @@ class CreateLineTool extends CreateGeomTool {
     }
     this.stage = 0
     this.emit('actionFinished')
+  }
+
+  /**
+   * The onVRControllerButtonDown method.
+   *
+   * @param {object} event - The event param.
+   */
+  onVRControllerButtonDown(event) {
+    if (this.stage == 0) {
+      const stageScale = event.viewport.__stageScale
+      this.lineThickness.setValue(stageScale * 0.003)
+    }
+    super.onVRControllerButtonDown(event)
   }
 }
 

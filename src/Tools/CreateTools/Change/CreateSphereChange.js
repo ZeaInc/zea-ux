@@ -16,14 +16,15 @@ class CreateSphereChange extends CreateGeomChange {
    * @param {TreeItem} parentItem - The parentItem value.
    * @param {Xfo} xfo - The xfo value.
    */
-  constructor(parentItem, xfo) {
+  constructor(parentItem, xfo, color) {
     super('CreateSphere', parentItem)
 
-    this.sphere = new Sphere(0, 64, 32)
+    this.sphere = new Sphere(0, 24, 12)
     const material = new Material('Sphere', 'SimpleSurfaceShader')
     this.geomItem = new GeomItem('Sphere', this.sphere, material)
 
-    if (parentItem && xfo) {
+    if (parentItem && xfo && color) {
+      material.getParameter('BaseColor').setValue(color)
       this.setParentAndXfo(parentItem, xfo)
     }
   }
