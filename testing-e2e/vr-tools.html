@@ -192,7 +192,7 @@
 
       const vrUITool = new VRUITool(appData, vrUIDOMElement.contentDiv)
       vrToolManager.registerTool('VRUITool', vrUITool)
-      vrUITool.controllerUI.activate()
+      // vrUITool.controllerUI.activate()
 
       renderer.getXRViewport().then((xrViewport) => {
         h.textContent = 'XR Device Detected'

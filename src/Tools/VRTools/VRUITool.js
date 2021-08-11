@@ -43,6 +43,12 @@ class VRUITool extends BaseTool {
 
     this.__triggerHeld = false
     this.uiOpen = false
+
+    this.appData.renderer.getXRViewport().then((xrvp) => {
+      xrvp.on('presentingChanged', (event) => {
+        if (this.uiOpen && !event.state) this.closeUI()
+      })
+    })
   }
 
   /**
@@ -169,8 +175,8 @@ class VRUITool extends BaseTool {
    */
   calcUIIntersection() {
     const pointerXfo = this.__uiPointerItem.getParameter('GlobalXfo').getValue()
-    const pointervec = pointerXfo.ori.getZaxis().negate()
-    const ray = new Ray(pointerXfo.tr, pointervec)
+    const pointerVec = pointerXfo.ori.getZaxis().negate()
+    const ray = new Ray(pointerXfo.tr, pointerVec)
 
     const planeXfo = this.controllerUI.getParameter('GlobalXfo').getValue()
     const planeSize = this.controllerUI.size.multiply(planeXfo.sc)
@@ -182,7 +188,7 @@ class VRUITool extends BaseTool {
       this.setPointerLength(0.5)
       return
     }
-    const hitOffset = pointerXfo.tr.add(pointervec.scale(res)).subtract(plane.start)
+    const hitOffset = pointerXfo.tr.add(pointerVec.scale(res)).subtract(plane.start)
     const x = hitOffset.dot(planeXfo.ori.getXaxis()) / planeSize.x
     const y = hitOffset.dot(planeXfo.ori.getYaxis()) / planeSize.y
     if (Math.abs(x) > 0.5 || Math.abs(y) > 0.5) {
@@ -190,7 +196,7 @@ class VRUITool extends BaseTool {
       this.setPointerLength(0.5)
       return
     }
-    this.setPointerLength(res)
+    this.setPointerLength(res / planeXfo.sc.z)
     const rect = this.__vrUIDOMElement.getBoundingClientRect()
     return {
       clientX: Math.round(x * -rect.width + rect.width / 2),

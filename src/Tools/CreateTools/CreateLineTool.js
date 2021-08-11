@@ -59,6 +59,19 @@ class CreateLineTool extends CreateGeomTool {
     this.stage = 0
     this.emit('actionFinished')
   }
+
+  /**
+   * The onVRControllerButtonDown method.
+   *
+   * @param {object} event - The event param.
+   */
+  onVRControllerButtonDown(event) {
+    if (this.stage == 0) {
+      const stageScale = event.viewport.__stageScale
+      this.lineThickness.setValue(stageScale * 0.003)
+    }
+    super.onVRControllerButtonDown(event)
+  }
 }
 
 export default CreateLineTool
