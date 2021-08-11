@@ -64,7 +64,6 @@
     </style>
 
     <script src="../node_modules/@zeainc/zea-engine/dist/index.umd.js"></script>
-    <script src="../node_modules/@zeainc/zea-engine/dist/plugins.umd.js"></script>
     <script src="../node_modules/@zeainc/zea-cad/dist/index.umd.js"></script>
     <script src="../dist/index.umd.js"></script>
 
@@ -205,16 +204,19 @@
           if (mode == 0) {
           } else if (mode == 1) {
             $measurePt2Pt.classList.remove('checked')
+            toolManager.popTool()
           } else if (mode == 2) {
             $measureRadius.classList.remove('checked')
+            toolManager.popTool()
           } else if (mode == 3) {
             $measureAngle.classList.remove('checked')
+            toolManager.popTool()
           } else if (mode == 4) {
             $measureCenterDistances.classList.remove('checked')
+            toolManager.popTool()
           }
 
           if (index == 0) {
-            toolManager.popTool()
           } else if (index == 1) {
             $measurePt2Pt.classList.add('checked')
             toolManager.pushTool('measurementTool')

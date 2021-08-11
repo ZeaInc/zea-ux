@@ -48,6 +48,7 @@ class MeasurementTool extends BaseTool {
     if (this.stage != 0) {
       const parentItem = this.measurement.getOwner()
       parentItem.removeChild(parentItem.getChildIndex(this.measurement))
+      this.measurement = null
 
       if (this.highlightedItemB) {
         this.highlightedItemB.removeHighlight('measure', true)
@@ -57,7 +58,7 @@ class MeasurementTool extends BaseTool {
         this.highlightedItemA.removeHighlight('measure', true)
         this.highlightedItemA = null
       }
-      event.stopPropagation()
+      this.stage = 0
     }
   }
 

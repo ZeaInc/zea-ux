@@ -111,7 +111,7 @@ class MeasureRadiusTool extends BaseTool {
       const measurementChange = new MeasurementChange(measurement)
       UndoRedoManager.getInstance().addChange(measurementChange)
 
-      if (this.highlightedItemA) this.highlightedItemA.removeHighlight('measureA', true)
+      if (this.highlightedItemA) this.highlightedItemA.removeHighlight('measure', true)
       event.stopPropagation()
     }
   }
@@ -131,15 +131,15 @@ class MeasureRadiusTool extends BaseTool {
         ) {
           if (geomItem != this.highlightedItemA) {
             if (this.highlightedItemA) {
-              this.highlightedItemA.removeHighlight('measureA', true)
+              this.highlightedItemA.removeHighlight('measure', true)
             }
             this.highlightedItemA = geomItem
-            this.highlightedItemA.addHighlight('measureA', new Color(1, 1, 1, 0.2), true)
+            this.highlightedItemA.addHighlight('measure', new Color(1, 1, 1, 0.2), true)
           }
         }
       } else {
         if (this.highlightedItemA) {
-          this.highlightedItemA.removeHighlight('measureA', true)
+          this.highlightedItemA.removeHighlight('measure', true)
           this.highlightedItemA = null
         }
       }

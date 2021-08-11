@@ -48,6 +48,7 @@ class MeasureAngleTool extends BaseTool {
     if (this.stage != 0) {
       const parentItem = this.measurement.getOwner()
       parentItem.removeChild(parentItem.getChildIndex(this.measurement))
+      this.measurement = null
 
       if (this.highlightedItemB) {
         this.highlightedItemB.removeHighlight('measure', true)
@@ -57,7 +58,7 @@ class MeasureAngleTool extends BaseTool {
         this.highlightedItemA.removeHighlight('measure', true)
         this.highlightedItemA = null
       }
-      event.stopPropagation()
+      this.stage = 0
     }
   }
 
@@ -118,7 +119,7 @@ class MeasureAngleTool extends BaseTool {
         UndoRedoManager.getInstance().addChange(measurementChange)
 
         if (this.highlightedItemA) this.highlightedItemA.removeHighlight('measure', true)
-        if (this.highlightedItemB) this.highlightedItemB.removeHighlight('measureB', true)
+        if (this.highlightedItemB) this.highlightedItemB.removeHighlight('measure', true)
 
         this.stage = 0
         event.stopPropagation()
@@ -154,12 +155,16 @@ class MeasureAngleTool extends BaseTool {
     } else if (this.stage == 1) {
       if (event.intersectionData) {
         const { geomItem } = event.intersectionData
-        if (geomItem.hasParameter('SurfaceType') && geomItem.getParameter('SurfaceType').getValue() == 'Plane') {
+        if (
+          geomItem != this.highlightedItemA &&
+          geomItem.hasParameter('SurfaceType') &&
+          geomItem.getParameter('SurfaceType').getValue() == 'Plane'
+        ) {
           if (this.highlightedItemB) {
-            this.highlightedItemB.removeHighlight('measureB', true)
+            this.highlightedItemB.removeHighlight('measure', true)
           }
           this.highlightedItemB = geomItem
-          this.highlightedItemB.addHighlight('measureB', new Color(1, 1, 1, 0.2), true)
+          this.highlightedItemB.addHighlight('measure', new Color(1, 1, 1, 0.2), true)
         }
       } else {
         if (this.highlightedItemB) {

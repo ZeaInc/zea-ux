@@ -48,6 +48,7 @@ class MeasureCenterDistancesTool extends BaseTool {
     if (this.stage != 0) {
       const parentItem = this.measurement.getOwner()
       parentItem.removeChild(parentItem.getChildIndex(this.measurement))
+      this.measurement = null
 
       if (this.highlightedItemB) {
         this.highlightedItemB.removeHighlight('measure', true)
@@ -57,7 +58,7 @@ class MeasureCenterDistancesTool extends BaseTool {
         this.highlightedItemA.removeHighlight('measure', true)
         this.highlightedItemA = null
       }
-      event.stopPropagation()
+      this.stage = 0
     }
   }
 
@@ -181,14 +182,15 @@ class MeasureCenterDistancesTool extends BaseTool {
     if (this.stage == 0) {
       if (event.intersectionData) {
         const { geomItem } = event.intersectionData
-        if (geomItem.hasParameter('CurveType') || geomItem.hasParameter('SurfaceType')) {
-          if (!geomItem != this.highlightedItemA) {
-            if (this.highlightedItemA) {
-              this.highlightedItemA.removeHighlight('measure', true)
-            }
-            this.highlightedItemA = geomItem
-            this.highlightedItemA.addHighlight('measure', new Color(1, 1, 1, 0.2), true)
+        if (
+          geomItem != this.highlightedItemA &&
+          (geomItem.hasParameter('CurveType') || geomItem.hasParameter('SurfaceType'))
+        ) {
+          if (this.highlightedItemA) {
+            this.highlightedItemA.removeHighlight('measure', true)
           }
+          this.highlightedItemA = geomItem
+          this.highlightedItemA.addHighlight('measure', new Color(1, 1, 1, 0.2), true)
         }
       } else {
         if (this.highlightedItemA) {
@@ -200,16 +202,18 @@ class MeasureCenterDistancesTool extends BaseTool {
     } else if (this.stage == 1) {
       if (event.intersectionData) {
         const { geomItem } = event.intersectionData
-        if (geomItem != this.highlightedItemA && geomItem != this.highlightedItemB) {
-          if (geomItem.hasParameter('CurveType') || geomItem.hasParameter('SurfaceType')) {
-            if (this.highlightedItemB) {
-              this.highlightedItemB.removeHighlight('measure', true)
-              this.highlightedItemB = null
-            }
-
-            this.highlightedItemB = geomItem
-            this.highlightedItemB.addHighlight('measure', new Color(1, 1, 1, 0.2), true)
+        if (
+          geomItem != this.highlightedItemA &&
+          geomItem != this.highlightedItemB &&
+          (geomItem.hasParameter('CurveType') || geomItem.hasParameter('SurfaceType'))
+        ) {
+          if (this.highlightedItemB) {
+            this.highlightedItemB.removeHighlight('measure', true)
+            this.highlightedItemB = null
           }
+
+          this.highlightedItemB = geomItem
+          this.highlightedItemB.addHighlight('measure', new Color(1, 1, 1, 0.2), true)
         }
       } else {
         if (this.highlightedItemB) {
@@ -217,7 +221,6 @@ class MeasureCenterDistancesTool extends BaseTool {
           this.highlightedItemB = null
         }
       }
-
       event.stopPropagation()
     }
   }
