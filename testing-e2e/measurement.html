@@ -83,7 +83,7 @@
       const {
         UndoRedoManager,
         ToolManager,
-        MeasurementTool,
+        MeasureDistanceTool,
         MeasureRadiusTool,
         MeasureAngleTool,
         MeasureCenterDistancesTool,
@@ -152,14 +152,14 @@
       {
         const appData = { scene, renderer }
         const toolManager = new ToolManager()
-        const measurementTool = new MeasurementTool(appData)
+        const measureDistanceTool = new MeasureDistanceTool(appData)
         const measureRadiusTool = new MeasureRadiusTool(appData)
         const measureAngleTool = new MeasureAngleTool(appData)
         const measureCenterDistancesTool = new MeasureCenterDistancesTool(appData)
 
         const cameraManipulator = renderer.getViewport().getManipulator()
         toolManager.registerTool('cameraManipulator', cameraManipulator)
-        toolManager.registerTool('measurementTool', measurementTool)
+        toolManager.registerTool('measureDistanceTool', measureDistanceTool)
         toolManager.registerTool('measureRadiusTool', measureRadiusTool)
         toolManager.registerTool('measureAngleTool', measureAngleTool)
         toolManager.registerTool('measureCenterDistancesTool', measureCenterDistancesTool)
@@ -174,7 +174,7 @@
                 setToolToCameraManipulator()
                 return
               }
-              setToolToMeasurementTool()
+              setToolToMeasureDistanceTool()
               break
           }
         })
@@ -219,7 +219,7 @@
           if (index == 0) {
           } else if (index == 1) {
             $measurePt2Pt.classList.add('checked')
-            toolManager.pushTool('measurementTool')
+            toolManager.pushTool('measureDistanceTool')
           } else if (index == 2) {
             $measureRadius.classList.add('checked')
             toolManager.pushTool('measureRadiusTool')

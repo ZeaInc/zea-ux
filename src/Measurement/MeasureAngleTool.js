@@ -84,7 +84,7 @@ class MeasureAngleTool extends BaseTool {
    */
   onPointerDown(event) {
     // skip if the alt key is held. Allows the camera tool to work
-    if (event.altKey || !event.intersectionData) return
+    if (event.altKey || (event.pointerType === 'mouse' && event.button !== 0) || !event.intersectionData) return
 
     const getSurfaceXfo = (geomItem, hitPos, closestTo) => {
       const xfo = new Xfo()
@@ -208,7 +208,8 @@ class MeasureAngleTool extends BaseTool {
    * @param {MouseEvent|TouchEvent} event - The event value
    */
   onPointerMove(event) {
-    if (event.altKey) return
+    // skip if the alt key is held. Allows the camera tool to work
+    if (event.altKey || (event.pointerType === 'mouse' && event.button !== 0)) return
 
     if (this.stage == 0) {
       if (event.intersectionData) {

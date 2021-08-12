@@ -7,9 +7,9 @@ import { MeasurementChange } from './MeasurementChange'
  *
  * @extends {BaseTool}
  */
-class MeasurementTool extends BaseTool {
+class MeasureDistanceTool extends BaseTool {
   /**
-   * Creates an instance of MeasurementTool.
+   * Creates an instance of MeasureDistanceTool.
    *
    * @param {object} appData - The appData value
    */
@@ -124,7 +124,7 @@ class MeasurementTool extends BaseTool {
    */
   onPointerDown(event) {
     // skip if the alt key is held. Allows the camera tool to work
-    if (event.altKey) return
+    if (event.altKey || (event.pointerType === 'mouse' && event.button !== 0) || !event.intersectionData) return
 
     if (this.stage == 0) {
       if (this.highlightedItemA) {
@@ -183,7 +183,7 @@ class MeasurementTool extends BaseTool {
    */
   onPointerMove(event) {
     // skip if the alt key is held. Allows the camera tool to work
-    if (event.altKey || !event.intersectionData) return
+    if (event.altKey || (event.pointerType === 'mouse' && event.button !== 0)) return
 
     if (this.stage == 0) {
       if (event.intersectionData) {
@@ -237,4 +237,4 @@ class MeasurementTool extends BaseTool {
   onPointerUp(event) {}
 }
 
-export { MeasurementTool }
+export { MeasureDistanceTool }

@@ -50,7 +50,7 @@ class MeasureRadiusTool extends BaseTool {
    */
   onPointerDown(event) {
     // skip if the alt key is held. Allows the camera tool to work
-    if (event.altKey || (event.pointerType === 'mouse' && event.button !== 0)) return
+    if (event.altKey || (event.pointerType === 'mouse' && event.button !== 0) || !event.intersectionData) return
 
     if (this.highlightedItemA) {
       const ray = event.pointerRay
@@ -122,6 +122,9 @@ class MeasureRadiusTool extends BaseTool {
    * @param {MouseEvent|TouchEvent} event - The event value
    */
   onPointerMove(event) {
+    // skip if the alt key is held. Allows the camera tool to work
+    if (event.altKey || (event.pointerType === 'mouse' && event.button !== 0)) return
+
     if (!this.dragging) {
       if (event.intersectionData) {
         const { geomItem } = event.intersectionData
@@ -134,7 +137,9 @@ class MeasureRadiusTool extends BaseTool {
               this.highlightedItemA.removeHighlight('measure', true)
             }
             this.highlightedItemA = geomItem
-            this.highlightedItemA.addHighlight('measure', new Color(1, 1, 1, 0.2), true)
+            const color = this.colorParam.getValue().clone()
+            color.a = 0.2
+            this.highlightedItemA.addHighlight('measure', color, true)
           }
         }
       } else {

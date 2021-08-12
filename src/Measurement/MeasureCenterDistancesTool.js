@@ -117,7 +117,7 @@ class MeasureCenterDistancesTool extends BaseTool {
    */
   onPointerDown(event) {
     // skip if the alt key is held. Allows the camera tool to work
-    if (event.altKey) return
+    if (event.altKey || (event.pointerType === 'mouse' && event.button !== 0) || !event.intersectionData) return
 
     if (this.stage == 0) {
       if (this.highlightedItemA) {
@@ -177,7 +177,7 @@ class MeasureCenterDistancesTool extends BaseTool {
    */
   onPointerMove(event) {
     // skip if the alt key is held. Allows the camera tool to work
-    if (event.altKey || !event.intersectionData) return
+    if (event.altKey || (event.pointerType === 'mouse' && event.button !== 0)) return
 
     if (this.stage == 0) {
       if (event.intersectionData) {
@@ -190,7 +190,10 @@ class MeasureCenterDistancesTool extends BaseTool {
             this.highlightedItemA.removeHighlight('measure', true)
           }
           this.highlightedItemA = geomItem
-          this.highlightedItemA.addHighlight('measure', new Color(1, 1, 1, 0.2), true)
+
+          const color = this.colorParam.getValue().clone()
+          color.a = 0.2
+          this.highlightedItemA.addHighlight('measure', color, true)
         }
       } else {
         if (this.highlightedItemA) {
@@ -213,7 +216,9 @@ class MeasureCenterDistancesTool extends BaseTool {
           }
 
           this.highlightedItemB = geomItem
-          this.highlightedItemB.addHighlight('measure', new Color(1, 1, 1, 0.2), true)
+          const color = this.colorParam.getValue().clone()
+          color.a = 0.2
+          this.highlightedItemB.addHighlight('measure', color, true)
         }
       } else {
         if (this.highlightedItemB) {
