@@ -41,12 +41,17 @@ class MeasureAngle extends TreeItem {
     this.markerMaterial.getParameter('MaintainScreenSize').setValue(1)
     this.markerMaterial.getParameter('Overlay').setValue(0.5)
 
+    this.markerMaterialB = new Material('Marker', 'HandleShader')
+    this.markerMaterialB.getParameter('BaseColor').setValue(new Color(1, 0, 0))
+    this.markerMaterialB.getParameter('MaintainScreenSize').setValue(1)
+    this.markerMaterialB.getParameter('Overlay').setValue(0.5)
+
     this.lineMaterial = new Material('Line', 'LinesShader')
     this.lineMaterial.getParameter('BaseColor').setValue(this.colorParam.getValue())
     this.lineMaterial.getParameter('Overlay').setValue(0.5)
 
     this.markerA = new GeomItem(`markerA`, sphere, this.markerMaterial)
-    this.markerB = new GeomItem(`markerB`, sphere, this.markerMaterial)
+    this.markerB = new GeomItem(`markerB`, sphere, this.markerMaterialB)
     this.addChild(this.markerA)
     this.addChild(this.markerB)
   }
@@ -91,8 +96,8 @@ class MeasureAngle extends TreeItem {
     const axis = normA.cross(normB).normalize()
     const tangentA = axis.cross(normA).normalize()
     const tangentB = axis.cross(normB).normalize()
-    xfoA.tr.addInPlace(axis.scale(vectorAB.dot(axis) * 0.5))
-    xfoB.tr.addInPlace(axis.scale(vectorAB.dot(axis) * -0.5))
+    // xfoA.tr.addInPlace(axis.scale(vectorAB.dot(axis) * 0.5))
+    // xfoB.tr.addInPlace(axis.scale(vectorAB.dot(axis) * -0.5))
 
     const rayA = new Ray(xfoA.tr, tangentA)
     const rayB = new Ray(xfoB.tr, tangentB)
@@ -128,11 +133,17 @@ class MeasureAngle extends TreeItem {
    * @param {Xfo} xfo
    */
   setXfoA(xfo) {
-    if (!this.markerA) {
-    }
-
     this.markerA.getParameter('GlobalXfo').setValue(xfo)
     this.markerB.getParameter('GlobalXfo').setValue(xfo)
+  }
+
+  /**
+   *
+   *
+   * @return {Xfo}
+   */
+  getXfoA() {
+    return this.markerA.getParameter('GlobalXfo').getValue()
   }
 
   /**

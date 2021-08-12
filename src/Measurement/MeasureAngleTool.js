@@ -1,5 +1,5 @@
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
-import { Ray, Vec3, Color, ColorParameter, BaseTool, GeomItem, Xfo } from '@zeainc/zea-engine'
+import { Ray, Vec3, Color, ColorParameter, BaseTool, GeomItem, Xfo, Quat } from '@zeainc/zea-engine'
 import { MeasurementChange } from './MeasurementChange'
 import { MeasureAngle } from './MeasureAngle'
 /**
@@ -63,6 +63,21 @@ class MeasureAngleTool extends BaseTool {
   }
 
   /**
+   * Checks to see if the surface is appropriate for this kind of measurement.
+   * @param {GeomItem} geomItem - The geomItem to check
+   * @return {boolean}
+   */
+  checkSurface(geomItem) {
+    const surfaceTypeParm = geomItem.getParameter('SurfaceType')
+    return (
+      surfaceTypeParm &&
+      (surfaceTypeParm.getValue() == 'Plane' ||
+        surfaceTypeParm.getValue() == 'Cone' ||
+        surfaceTypeParm.getValue() == 'Cylinder')
+    )
+  }
+
+  /**
    *
    *
    * @param {MouseEvent|TouchEvent} event - The event value
@@ -70,11 +85,12 @@ class MeasureAngleTool extends BaseTool {
   onPointerDown(event) {
     // skip if the alt key is held. Allows the camera tool to work
     if (event.altKey || !event.intersectionData) return
-    console.log('onPointerDown')
-    const getSurfaceXfo = (geomItem, hitPos) => {
+
+    const getSurfaceXfo = (geomItem, hitPos, closestTo) => {
       const xfo = new Xfo()
-      if (geomItem.hasParameter('SurfaceType')) {
-        const surfaceType = geomItem.getParameter('SurfaceType').getValue()
+      const surfaceTypeParm = geomItem.getParameter('SurfaceType')
+      if (surfaceTypeParm) {
+        const surfaceType = surfaceTypeParm.getValue()
         switch (surfaceType) {
           case 'Plane': {
             const geomMat = geomItem.getParameter('GeomMat').getValue()
@@ -85,6 +101,56 @@ class MeasureAngleTool extends BaseTool {
             xfo.tr = hitPos.subtract(zaxis.scale(srfToPnt.dot(zaxis)))
             break
           }
+          case 'Cone': {
+            const globalXfo = geomItem.getParameter('GlobalXfo').getValue()
+            const semiAngle = geomItem.getParameter('SemiAngle').getValue()
+            const startRadius = geomItem.getParameter('StartRadius').getValue()
+            const zaxis = globalXfo.ori.getZaxis()
+            const zaxisDist = hitPos.subtract(globalXfo.tr).dot(zaxis)
+            const radiusAtPoint = startRadius + Math.tan(semiAngle) * zaxisDist
+            let hitPos2 = hitPos
+            if (closestTo) {
+              const vec2 = closestTo.tr.subtract(globalXfo.tr)
+              vec2.subtractInPlace(zaxis.scale(vec2.dot(zaxis)))
+              hitPos2 = globalXfo.tr.add(vec2.normalize().scale(radiusAtPoint))
+              hitPos2.addInPlace(zaxis.scale(zaxisDist))
+            }
+            const vec = hitPos2.subtract(globalXfo.tr)
+            xfo.ori.setFromDirectionAndUpvector(zaxis, vec)
+            const rot = new Quat()
+            rot.setFromAxisAndAngle(new Vec3(1, 0, 0), semiAngle)
+            xfo.ori.multiplyInPlace(rot)
+            xfo.tr = hitPos2
+
+            const zaxis2 = globalXfo.ori.getZaxis()
+            const angle = zaxis2.angleTo(xfo.ori.getZaxis())
+            console.log(angle, semiAngle)
+            break
+          }
+          case 'Cylinder': {
+            const globalXfo = geomItem.getParameter('GlobalXfo').getValue()
+            const radius = geomItem.getParameter('Radius').getValue() * globalXfo.sc.x
+            const zaxis = globalXfo.ori.getZaxis()
+            const zaxisDist = hitPos.subtract(globalXfo.tr).dot(zaxis)
+            const pointOnAxis = globalXfo.tr.add(zaxis.scale(zaxisDist))
+
+            const axisToPnt = hitPos.subtract(pointOnAxis)
+            const length = axisToPnt.length()
+            let hitPos2 = pointOnAxis.add(axisToPnt.scale(radius / length))
+            if (closestTo) {
+              const vec2 = closestTo.tr.subtract(globalXfo.tr)
+              vec2.subtractInPlace(zaxis.scale(vec2.dot(zaxis)))
+              hitPos2 = globalXfo.tr.add(vec2.normalize().scale(radius))
+              hitPos2.addInPlace(zaxis.scale(zaxisDist))
+            }
+            const vec = hitPos2.subtract(globalXfo.tr)
+            xfo.ori.setFromDirectionAndUpvector(zaxis, vec)
+            const rot = new Quat()
+            rot.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * 0.5)
+            xfo.ori.multiplyInPlace(rot)
+            xfo.tr = hitPos2
+            break
+          }
           default: {
             console.log('Unhandled Surface Type: ', surfaceType)
           }
@@ -92,9 +158,10 @@ class MeasureAngleTool extends BaseTool {
       }
       return xfo
     }
+
     if (this.stage == 0) {
       const { geomItem } = event.intersectionData
-      if (geomItem.hasParameter('SurfaceType') && geomItem.getParameter('SurfaceType').getValue() == 'Plane') {
+      if (this.checkSurface(geomItem)) {
         const color = this.colorParam.getValue()
         this.measurement = new MeasureAngle('MeasureAngle', color)
         this.appData.scene.getRoot().addChild(this.measurement)
@@ -104,16 +171,24 @@ class MeasureAngleTool extends BaseTool {
         const xfoA = getSurfaceXfo(geomItem, hitPos)
         this.measurement.setXfoA(xfoA)
 
+        this.geomItemA = geomItem
+        this.hitPosA = hitPos
+
         this.stage++
         event.stopPropagation()
       }
     } else if (this.stage == 1) {
       const { geomItem } = event.intersectionData
-      if (geomItem.hasParameter('SurfaceType') && geomItem.getParameter('SurfaceType').getValue() == 'Plane') {
+      if (this.checkSurface(geomItem)) {
         const ray = event.pointerRay
         const hitPos = ray.start.add(ray.dir.scale(event.intersectionData.dist))
-        const xfoA = getSurfaceXfo(geomItem, hitPos)
-        this.measurement.setXfoB(xfoA)
+        const xfoB = getSurfaceXfo(geomItem, hitPos)
+        // this.measurement.setXfoB(xfoB)
+        const xfoA = getSurfaceXfo(this.geomItemA, this.hitPosA, xfoB)
+        this.measurement.setXfoA(xfoA)
+
+        // const xfoB2 = getSurfaceXfo(geomItem, hitPos, xfoA)
+        this.measurement.setXfoB(xfoB)
 
         const measurementChange = new MeasurementChange(this.measurement)
         UndoRedoManager.getInstance().addChange(measurementChange)
@@ -134,16 +209,19 @@ class MeasureAngleTool extends BaseTool {
    */
   onPointerMove(event) {
     if (event.altKey) return
+
     if (this.stage == 0) {
       if (event.intersectionData) {
         const { geomItem } = event.intersectionData
-        if (geomItem.hasParameter('SurfaceType') && geomItem.getParameter('SurfaceType').getValue() == 'Plane') {
+        if (this.checkSurface(geomItem)) {
           if (geomItem != this.highlightedItemA) {
             if (this.highlightedItemA) {
               this.highlightedItemA.removeHighlight('measure', true)
             }
             this.highlightedItemA = geomItem
-            this.highlightedItemA.addHighlight('measure', new Color(1, 1, 1, 0.2), true)
+            const color = this.colorParam.getValue().clone()
+            color.a = 0.2
+            this.highlightedItemA.addHighlight('measure', color, true)
           }
         }
       } else {
@@ -155,16 +233,15 @@ class MeasureAngleTool extends BaseTool {
     } else if (this.stage == 1) {
       if (event.intersectionData) {
         const { geomItem } = event.intersectionData
-        if (
-          geomItem != this.highlightedItemA &&
-          geomItem.hasParameter('SurfaceType') &&
-          geomItem.getParameter('SurfaceType').getValue() == 'Plane'
-        ) {
+        if (geomItem != this.highlightedItemA && geomItem != this.highlightedItemB && this.checkSurface(geomItem)) {
           if (this.highlightedItemB) {
             this.highlightedItemB.removeHighlight('measure', true)
           }
           this.highlightedItemB = geomItem
-          this.highlightedItemB.addHighlight('measure', new Color(1, 1, 1, 0.2), true)
+
+          const color = this.colorParam.getValue().clone()
+          color.a = 0.2
+          this.highlightedItemB.addHighlight('measure', color, true)
         }
       } else {
         if (this.highlightedItemB) {
