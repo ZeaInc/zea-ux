@@ -2023,6 +2023,14 @@
     debug "^4.1.1"
     semver "^7.3.2"
 
+"@zeainc/zea-engine@^3.10.x":
+  version "3.10.6"
+  resolved "https://registry.yarnpkg.com/@zeainc/zea-engine/-/zea-engine-3.10.6.tgz#2b812360dee1ba4774e319e635f93a9d8e187d12"
+  integrity sha512-tGOsddpzbTvtYXq5z66h/j9Gv01AUdkDwmJa8q5ZnuBKltq7VSdA+YIG5QPmWxuIxyqm5FcsLGq1AniTfZaRTw==
+  dependencies:
+    debug "^4.1.1"
+    semver "^7.3.2"
+
 "@zeainc/zea-ux@3.0.1":
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/@zeainc/zea-ux/-/zea-ux-3.0.1.tgz#1f3ce37ded59a845c6ee368a5bf82f32f53716c9"
