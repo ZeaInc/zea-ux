@@ -81,14 +81,10 @@ class MeasureCenterDistancesTool extends BaseTool {
       const curveType = geomItem.getParameter('CurveType').getValue()
 
       switch (curveType) {
-        case 'Line': {
-          const crvToPnt = pos.subtract(xfo.tr)
-          const xaxis = xfo.ori.getXaxis()
-          return xfo.tr.add(xaxis.scale(crvToPnt.dot(xaxis)))
-        }
         case 'Circle': {
+          const crvToPnt = pos.subtract(xfo.tr)
           const zaxis = xfo.ori.getZaxis()
-          return xfo.tr.add(zaxis.scale(srfToPnt.dot(zaxis)))
+          return xfo.tr.add(zaxis.scale(crvToPnt.dot(zaxis)))
         }
         default: {
           console.log('Unhandled Edge Type: ', curveType)
@@ -98,7 +94,8 @@ class MeasureCenterDistancesTool extends BaseTool {
       const surfaceType = geomItem.getParameter('SurfaceType').getValue()
 
       switch (surfaceType) {
-        case 'Cylinder': {
+        case 'Cylinder':
+        case 'Cone': {
           const srfToPnt = pos.subtract(xfo.tr)
           const zaxis = xfo.ori.getZaxis()
           return xfo.tr.add(zaxis.scale(srfToPnt.dot(zaxis)))
@@ -171,6 +168,22 @@ class MeasureCenterDistancesTool extends BaseTool {
   }
 
   /**
+   * Checks to see if the surface is appropriate for this kind of measurement.
+   * @param {GeomItem} geomItem - The geomItem to check
+   * @return {boolean}
+   */
+  checkGeom(geomItem) {
+    if (geomItem.hasParameter('CurveType')) {
+      const curveTypeParm = geomItem.getParameter('CurveType')
+      return curveTypeParm.getValue() == 'Circle'
+    }
+    if (geomItem.hasParameter('SurfaceType')) {
+      const surfaceTypeParm = geomItem.getParameter('SurfaceType')
+      return surfaceTypeParm.getValue() == 'Cone' || surfaceTypeParm.getValue() == 'Cylinder'
+    }
+  }
+
+  /**
    *
    *
    * @param {MouseEvent|TouchEvent} event - The event value
@@ -182,10 +195,7 @@ class MeasureCenterDistancesTool extends BaseTool {
     if (this.stage == 0) {
       if (event.intersectionData) {
         const { geomItem } = event.intersectionData
-        if (
-          geomItem != this.highlightedItemA &&
-          (geomItem.hasParameter('CurveType') || geomItem.hasParameter('SurfaceType'))
-        ) {
+        if (geomItem != this.highlightedItemA && this.checkGeom(geomItem)) {
           if (this.highlightedItemA) {
             this.highlightedItemA.removeHighlight('measure', true)
           }
@@ -205,11 +215,7 @@ class MeasureCenterDistancesTool extends BaseTool {
     } else if (this.stage == 1) {
       if (event.intersectionData) {
         const { geomItem } = event.intersectionData
-        if (
-          geomItem != this.highlightedItemA &&
-          geomItem != this.highlightedItemB &&
-          (geomItem.hasParameter('CurveType') || geomItem.hasParameter('SurfaceType'))
-        ) {
+        if (geomItem != this.highlightedItemA && geomItem != this.highlightedItemB && this.checkGeom(geomItem)) {
           if (this.highlightedItemB) {
             this.highlightedItemB.removeHighlight('measure', true)
             this.highlightedItemB = null
