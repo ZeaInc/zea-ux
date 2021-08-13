@@ -2004,10 +2004,10 @@
     meow "^7.0.1"
     rimraf "^3.0.2"
 
-"@zeainc/zea-cad@^3.2.0":
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/@zeainc/zea-cad/-/zea-cad-3.2.0.tgz#981b84ba3127784aacc7b8e77028fdd06b5347be"
-  integrity sha512-vd4DmKAdOxN9mPjo9NRxI50fsgDaOOIVhyBvy6e9LHUBeEOICLC08nDaP25T8bVlc2Avk25srURNIPjaozLeCA==
+"@zeainc/zea-cad@^3.3.0":
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/@zeainc/zea-cad/-/zea-cad-3.3.0.tgz#4066eb242c3e873f87b4f69f75e5ac6d13c67e1f"
+  integrity sha512-7HVmtfG3wxtDt0FaAoF4ng8KRy1Tr4jqdjVeSFptDYoQaNTanobAFBz6PBJq4mnQ3DHsi9FUa2+XX20g4N2gyg==
   dependencies:
     "@zeainc/zea-engine" "^3.2.0"
 
