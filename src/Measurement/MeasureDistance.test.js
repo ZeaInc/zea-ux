@@ -8,9 +8,9 @@ describe('MeasureDistance', () => {
     measurement.setStartMarkerPos(new Vec3(-1, 0, 0))
     measurement.setEndMarkerPos(new Vec3(1, 0, 0))
 
-    expect(measurement.getMeasurementText()).toBe('2mm')
+    expect(measurement.getMeasurementText()).toBe('2000mm')
 
     measurement.setStartMarkerPos(new Vec3(-2, 1.5, 0))
-    expect(measurement.getMeasurementText()).toBe('3.3541mm')
+    expect(measurement.getMeasurementText()).toBe('3354.102mm')
   })
 })

@@ -95,7 +95,10 @@ class MeasureDistance extends TreeItem {
 
     this.lineGeomItem.getParameter('GlobalXfo').setValue(lineXfo)
 
-    this.label.getParameter('Text').setValue(`${parseFloat(distance.toFixed(4))}${this.unitsParameter.getValue()}`)
+    // Convert meters to mm.
+    const distanceInMM = distance * 1000
+
+    this.label.getParameter('Text').setValue(`${parseFloat(distanceInMM.toFixed(4))}${this.unitsParameter.getValue()}`)
 
     vector.normalizeInPlace()
     const midPoint = startXfo.tr.add(vector.scale(distance * 0.5))
