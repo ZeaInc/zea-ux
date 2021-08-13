@@ -16,7 +16,7 @@ class MeasureCenterDistancesTool extends BaseTool {
   constructor(appData) {
     super()
 
-    this.colorParam = this.addParameter(new ColorParameter('Color', new Color('#FCFC00')))
+    this.colorParam = this.addParameter(new ColorParameter('Color', new Color('#F9CE03')))
     if (!appData) console.error('App data not provided to tool')
     this.appData = appData
     this.measurementChange = null

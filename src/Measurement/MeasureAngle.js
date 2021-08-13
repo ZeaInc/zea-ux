@@ -31,7 +31,7 @@ class MeasureAngle extends TreeItem {
    * @param {string} name
    * @param {Color} color
    */
-  constructor(name = 'MeasureAngle', color = new Color('#FCFC00')) {
+  constructor(name = 'MeasureAngle', color = new Color('#F9CE03')) {
     super(name)
 
     this.colorParam = this.addParameter(new ColorParameter('Color', color))

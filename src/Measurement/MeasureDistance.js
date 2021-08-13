@@ -32,7 +32,7 @@ class MeasureDistance extends TreeItem {
    * @param {string} name
    * @param {Color} color
    */
-  constructor(name = 'MeasureDistance', color = new Color('#FCFC00')) {
+  constructor(name = 'MeasureDistance', color = new Color('#F9CE03')) {
     super(name)
 
     this.colorParam = this.addParameter(new ColorParameter('Color', color))
