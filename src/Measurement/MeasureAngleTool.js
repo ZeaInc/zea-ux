@@ -97,8 +97,18 @@ class MeasureAngleTool extends BaseTool {
             const srfToPnt = hitPos.subtract(geomMat.translation)
             let zaxis = geomMat.zAxis.clone()
             if (zaxis.dot(event.pointerRay.dir) > 0) zaxis = zaxis.negate()
+
+            const hitPos2 = hitPos
+            if (closestTo) {
+              const normA = zaxis
+              const normB = closestTo.ori.getZaxis()
+              const vectorAB = closestTo.tr.subtract(hitPos)
+              const axis = normA.cross(normB).normalize()
+              hitPos2.addInPlace(axis.scale(vectorAB.dot(axis)))
+            }
+
             xfo.ori.setFromDirectionAndUpvector(zaxis, new Vec3(zaxis.z, zaxis.x, zaxis.y))
-            xfo.tr = hitPos.subtract(zaxis.scale(srfToPnt.dot(zaxis)))
+            xfo.tr = hitPos2.subtract(zaxis.scale(srfToPnt.dot(zaxis)))
             break
           }
           case 'Cone': {

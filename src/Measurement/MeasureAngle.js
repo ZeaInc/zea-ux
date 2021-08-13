@@ -31,7 +31,7 @@ class MeasureAngle extends TreeItem {
    * @param {string} name
    * @param {Color} color
    */
-  constructor(name = 'MeasureAngle', color = new Color('#F9CE03')) {
+  constructor(name = 'MeasureAngle', color = new Color('#00AA00')) {
     super(name)
 
     this.colorParam = this.addParameter(new ColorParameter('Color', color))
@@ -91,13 +91,10 @@ class MeasureAngle extends TreeItem {
 
     const normA = xfoA.ori.getZaxis()
     const normB = xfoB.ori.getZaxis()
-    const vectorAB = xfoB.tr.subtract(xfoA.tr)
 
     const axis = normA.cross(normB).normalize()
     const tangentA = axis.cross(normA).normalize()
     const tangentB = axis.cross(normB).normalize()
-    // xfoA.tr.addInPlace(axis.scale(vectorAB.dot(axis) * 0.5))
-    // xfoB.tr.addInPlace(axis.scale(vectorAB.dot(axis) * -0.5))
 
     const rayA = new Ray(xfoA.tr, tangentA)
     const rayB = new Ray(xfoB.tr, tangentB)
