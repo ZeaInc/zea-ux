@@ -28,10 +28,10 @@
 
     <script src="../node_modules/@zeainc/zea-engine/dist/index.umd.js"></script>
     <script src="../dist/index.umd.js"></script>
-    
+
     <script type="module">
       const { GLRenderer, Scene, GeomItem, Material, Color, Vec3, Cuboid } = window.zeaEngine
-      const { ToolManager, SelectionManager, SelectionTool, MeasurementTool, CreateFreehandLineTool } = window.zeaUx
+      const { ToolManager, SelectionManager, SelectionTool, MeasureDistanceTool, CreateFreehandLineTool } = window.zeaUx
 
       const $canvas = document.getElementById('renderer')
 
@@ -41,14 +41,15 @@
       const renderer = new GLRenderer($canvas, { hideSplash: true })
       renderer.setScene(scene)
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(0, 4, 3), new Vec3(0, 0, 0))
-      renderer.getViewport().getCamera().on('movementFinished', () => window.postMessage('done-moving-camera'))
+      renderer
+        .getViewport()
+        .getCamera()
+        .on('movementFinished', () => window.postMessage('done-moving-camera'))
 
       const material = new Material('material', 'SimpleSurfaceShader')
       material.getParameter('BaseColor').setValue(new Color('#94C47D'))
       const geomItem1 = new GeomItem('CuboidGeometryItem', new Cuboid(0.7, 0.7, 0.7), material)
       scene.getRoot().addChild(geomItem1)
-
-
 
       const appData = { scene, renderer }
       const selectionManager = new SelectionManager(appData, {
@@ -57,18 +58,18 @@
 
       appData.selectionManager = selectionManager
 
-      // ToolManager 
+      // ToolManager
       {
         const cameraManipulator = renderer.getViewport().getManipulator()
         const selectionTool = new SelectionTool(appData)
-        const measurementTool = new MeasurementTool(appData)
+        const measureDistanceTool = new MeasureDistanceTool(appData)
         const freeHandLineTool = new CreateFreehandLineTool(appData)
         freeHandLineTool.getParameter('LineThickness').setValue(0.01)
 
         const toolManager = new ToolManager()
         toolManager.registerTool('CameraManipulator', cameraManipulator)
         toolManager.registerTool('SelectionTool', selectionTool)
-        toolManager.registerTool('MeasurementTool', measurementTool)
+        toolManager.registerTool('MeasureDistanceTool', measureDistanceTool)
         toolManager.registerTool('CreateFreehandLineTool', freeHandLineTool)
 
         renderer.getViewport().setManipulator(toolManager)
@@ -78,7 +79,7 @@
         const tools = document.querySelectorAll('.tool')
 
         const disableSelectedTools = () => {
-          tools.forEach(toolCbx => toolCbx.disabled = false)
+          tools.forEach((toolCbx) => (toolCbx.disabled = false))
 
           for (let i = 0; i < toolStack.length; i++) {
             const chkBox = document.querySelector(`input[type='checkbox'][value='${toolStack[i]}']`)
@@ -87,7 +88,7 @@
           }
         }
 
-        tools.forEach(tool => {
+        tools.forEach((tool) => {
           tool.addEventListener('change', (e) => {
             if (e.target.checked) {
               const value = e.target.value
@@ -110,19 +111,19 @@
     <div id="controllers">
       <div>
         <label for="camera">Camera Manipulator</label>
-        <input type="checkbox" id="camera" value="CameraManipulator" class="tool"/>
+        <input type="checkbox" id="camera" value="CameraManipulator" class="tool" />
       </div>
       <div>
         <label for="selection">Selection Tool</label>
-        <input type="checkbox" id="selection" value="SelectionTool" class="tool"/>
+        <input type="checkbox" id="selection" value="SelectionTool" class="tool" />
       </div>
       <div>
         <label for="measurement">Measurement Tool</label>
-        <input type="checkbox" id="measurement" value="MeasurementTool" class="tool"/>
+        <input type="checkbox" id="measurement" value="MeasureDistanceTool" class="tool" />
       </div>
       <div>
         <label for="free-hand-line">Free Hand-Line Tool</label>
-        <input type="checkbox" id="free-hand-line" value="CreateFreehandLineTool" class="tool"/>
+        <input type="checkbox" id="free-hand-line" value="CreateFreehandLineTool" class="tool" />
       </div>
     </div>
     <canvas id="renderer"></canvas>

@@ -34,10 +34,11 @@ class MeasurementHandle extends ScreenSpaceMovementHandle {
    */
   onDragStart(event) {
     super.onDragStart(event)
-
+    this.getOwner().setSelectable(false)
     this.getOwner().traverse((item) => {
       if (item instanceof GeomItem) {
-        item.getParameter('Material').getValue().visibleInGeomDataBuffer = false
+        // item.getParameter('Material').getValue().visibleInGeomDataBuffer = false
+        item.setSelectable(false)
       }
     })
     event.viewport.renderGeomDataFbo()
@@ -69,7 +70,10 @@ class MeasurementHandle extends ScreenSpaceMovementHandle {
     super.onDragEnd(event)
 
     this.getOwner().traverse((item) => {
-      if (item instanceof GeomItem) item.getParameter('Material').getValue().visibleInGeomDataBuffer = true
+      // if (item instanceof GeomItem) item.getParameter('Material').getValue().visibleInGeomDataBuffer = true
+      if (item instanceof GeomItem) {
+        item.setSelectable(true)
+      }
     })
     event.viewport.renderGeomDataFbo()
   }

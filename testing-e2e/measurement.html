@@ -7,57 +7,88 @@
 
     <title>Zea Inc. UX - Measurement</title>
 
+    <link href="data/zea-logo.png" rel="shortcut icon" />
+    <link rel="stylesheet" href="styles/tailwind.min.css" />
     <style>
-      body {
-        height: 100vh;
-        margin: 0;
+      .main-wrapper {
+        grid-template-areas:
+          'header header header'
+          'nav main right'
+          'footer footer footer';
+        grid-template-columns: 1% 1fr 1%;
+        grid-template-rows: 50px 1fr 10px;
       }
 
-      #renderer {
-        width: 100%;
-        height: calc(100% - 35px);
-      }
-
-      #controllers {
+      header {
+        grid-area: header;
         display: flex;
         align-items: center;
         padding: 0.5em;
+      }
+
+      footer {
+        grid-area: footer;
       }
 
       .hidden {
         display: none !important;
       }
 
-      #xfo-handlers {
-        display: flex;
+      .buttons {
+        display: block;
+        position: relative;
       }
 
-      #xfo-handlers > div,
-      #xfo-handlers span {
-        display: flex;
-        margin: 0 0.6em;
-      }
-
-      #controllers > button {
+      .button {
+        /* top: 10px; */
+        font-family: 'arial';
+        background-color: #f9ce03; /* Green */
+        border: none;
+        color: black;
+        padding: 5px 32px;
         text-align: center;
-        margin: 5px;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        user-select: none;
       }
-
-      ul#color-list {
-        list-style: none;
+      .button:hover {
+        background-color: #78b87a; /* Green */
       }
-
-      ul#color-list > li {
-        width: 100px;
+      .button:focus {
+        background-color: #78b87a;
+      }
+      .checked {
+        background-color: #54df59;
       }
     </style>
 
     <script src="../node_modules/@zeainc/zea-engine/dist/index.umd.js"></script>
+    <script src="../node_modules/@zeainc/zea-cad/dist/index.umd.js"></script>
     <script src="../dist/index.umd.js"></script>
 
     <script type="module">
-      const { GLRenderer, Scene, GeomItem, Material, Vec3, Xfo, Color, Cuboid, Torus } = window.zeaEngine
-      const { UndoRedoManager, MeasurementTool, Measurement } = window.zeaUx
+      const {
+        GLRenderer,
+        Scene,
+        GeomItem,
+        Material,
+        Vec3,
+        Xfo,
+        Color,
+        Cuboid,
+        Torus,
+        GLBoundingBoxPass,
+      } = window.zeaEngine
+      const {
+        UndoRedoManager,
+        ToolManager,
+        MeasureDistanceTool,
+        MeasureRadiusTool,
+        MeasureAngleTool,
+        MeasureCenterDistancesTool,
+      } = window.zeaUx
+      const { CADAsset } = window.zeaCad
 
       const undoRedoManager = UndoRedoManager.getInstance()
       const $canvas = document.getElementById('renderer')
@@ -68,12 +99,21 @@
       const renderer = new GLRenderer($canvas, { hideSplash: true })
       renderer.setScene(scene)
 
-      const measurement = new Measurement('M1')
-      measurement.setStartMarkerPos(new Vec3(-1, -0.5, 0.5))
-      measurement.setEndMarkerPos(new Vec3(1, -0.5, 0.5))
-      measurement.getParameter('Color').setValue(new Color('#94C47D'))
+      const cadAsset = new CADAsset()
+      cadAsset.load('data/Dead_eye_bearingSTEP.zcad').then(() => {
+        renderer.frameAll()
+      })
+      scene.getRoot().addChild(cadAsset)
+      // renderer.getViewport().debugGeomShader = true
 
-      scene.getRoot().addChild(measurement)
+      const boundingBoxPass = new GLBoundingBoxPass()
+      renderer.addPass(boundingBoxPass)
+      boundingBoxPass.addTreeItem(cadAsset, true)
+
+      renderer.getViewport().on('keyDown', (event) => {
+        if (event.key == 'f') renderer.frameAll()
+      })
+      /*
       {
         const material1 = new Material('material1', 'SimpleSurfaceShader')
         material1.getParameter('BaseColor').setValue(new Color('#94C47D'))
@@ -108,24 +148,24 @@
 
         scene.getRoot().addChild(geomItem3)
       }
-
+*/
       {
-        const measurementTool = new MeasurementTool({ scene, renderer })
+        const appData = { scene, renderer }
+        const toolManager = new ToolManager()
+        const measureDistanceTool = new MeasureDistanceTool(appData)
+        const measureRadiusTool = new MeasureRadiusTool(appData)
+        const measureAngleTool = new MeasureAngleTool(appData)
+        const measureCenterDistancesTool = new MeasureCenterDistancesTool(appData)
 
         const cameraManipulator = renderer.getViewport().getManipulator()
+        toolManager.registerTool('cameraManipulator', cameraManipulator)
+        toolManager.registerTool('measureDistanceTool', measureDistanceTool)
+        toolManager.registerTool('measureRadiusTool', measureRadiusTool)
+        toolManager.registerTool('measureAngleTool', measureAngleTool)
+        toolManager.registerTool('measureCenterDistancesTool', measureCenterDistancesTool)
+        renderer.getViewport().setManipulator(toolManager)
 
-        let measurementOn = false
-        const setToolToMeasurementTool = () => {
-          console.log('MeasurementTool Activated')
-          renderer.getViewport().setManipulator(measurementTool)
-          measurementOn = true
-        }
-
-        const setToolToCameraManipulator = () => {
-          console.log('CameraManipulator Activated')
-          renderer.getViewport().setManipulator(cameraManipulator)
-          measurementOn = false
-        }
+        toolManager.pushTool('cameraManipulator')
 
         document.addEventListener('keydown', (e) => {
           switch (e.key) {
@@ -134,7 +174,7 @@
                 setToolToCameraManipulator()
                 return
               }
-              setToolToMeasurementTool()
+              setToolToMeasureDistanceTool()
               break
           }
         })
@@ -154,25 +194,83 @@
           })
         }
 
-        const $measurementCheckbox = document.getElementById('measurement-cbx')
+        let mode = 0
+        const toggleMode = (index) => {
+          if (mode == index) {
+            if (index != 0) toggleMode(0)
+            return
+          }
 
-        $measurementCheckbox.addEventListener('change', (e) => {
-          event.target.checked ? setToolToMeasurementTool() : setToolToCameraManipulator()
+          if (mode == 0) {
+          } else if (mode == 1) {
+            $measurePt2Pt.classList.remove('checked')
+            toolManager.popTool()
+          } else if (mode == 2) {
+            $measureRadius.classList.remove('checked')
+            toolManager.popTool()
+          } else if (mode == 3) {
+            $measureAngle.classList.remove('checked')
+            toolManager.popTool()
+          } else if (mode == 4) {
+            $measureCenterDistances.classList.remove('checked')
+            toolManager.popTool()
+          }
+
+          if (index == 0) {
+          } else if (index == 1) {
+            $measurePt2Pt.classList.add('checked')
+            toolManager.pushTool('measureDistanceTool')
+          } else if (index == 2) {
+            $measureRadius.classList.add('checked')
+            toolManager.pushTool('measureRadiusTool')
+          } else if (index == 3) {
+            $measureAngle.classList.add('checked')
+            toolManager.pushTool('measureAngleTool')
+          } else if (index == 4) {
+            $measureCenterDistances.classList.add('checked')
+            toolManager.pushTool('measureCenterDistancesTool')
+          }
+          mode = index
+        }
+        const $measurePt2Pt = document.getElementById('measure-pt-2-pt')
+        $measurePt2Pt.addEventListener('click', (e) => {
+          toggleMode(1)
+        })
+        const $measureRadius = document.getElementById('measure-radius')
+        $measureRadius.addEventListener('click', (e) => {
+          toggleMode(2)
+        })
+        const $measureAngle = document.getElementById('measure-angle')
+        $measureAngle.addEventListener('click', (e) => {
+          toggleMode(3)
+        })
+        const $measureCenterDistances = document.getElementById('measure-center-distances')
+        $measureCenterDistances.addEventListener('click', (e) => {
+          toggleMode(4)
         })
       }
 
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(0, 6, 5), new Vec3(0, 0, 0))
     </script>
   </head>
-  <body>
-    <div id="controllers">
-      <button id="undo">Undo</button>
-      <button id="redo">Redo</button>
-      <div>
-        <label for="measurement-cbx">Measurement Tool</label>
-        <input type="checkbox" name="measurement-cbx" id="measurement-cbx" />
-      </div>
+  <body class="bg-blue-100 h-full">
+    <div class="main-wrapper grid h-screen">
+      <header class="border border-blue-400 flex justify-left items-left">
+        <div class="buttons">
+          <div class="button" id="undo">Undo</div>
+          <div class="button" id="redo">Redo</div>
+          <div class="button" id="measure-pt-2-pt">Measure: Point to Point</div>
+          <div class="button" id="measure-radius">Measure: Radius</div>
+          <div class="button" id="measure-angle">Measure: Angle</div>
+          <div class="button" id="measure-center-distances">Measure: Center Distances</div>
+        </div>
+      </header>
+      <nav class="border border-blue-400 flex justify-left items-left"></nav>
+      <main>
+        <canvas class="absolute" id="renderer"></canvas>
+      </main>
+      <aside class="border border-blue-400 flex justify-left items-left"></aside>
+      <footer class="border border-blue-400 flex justify-left items-left"></footer>
     </div>
-    <canvas id="renderer" />
   </body>
 </html>

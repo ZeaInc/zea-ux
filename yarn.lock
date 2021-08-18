@@ -2004,6 +2004,13 @@
     meow "^7.0.1"
     rimraf "^3.0.2"
 
+"@zeainc/zea-cad@^3.3.0":
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/@zeainc/zea-cad/-/zea-cad-3.3.0.tgz#4066eb242c3e873f87b4f69f75e5ac6d13c67e1f"
+  integrity sha512-7HVmtfG3wxtDt0FaAoF4ng8KRy1Tr4jqdjVeSFptDYoQaNTanobAFBz6PBJq4mnQ3DHsi9FUa2+XX20g4N2gyg==
+  dependencies:
+    "@zeainc/zea-engine" "^3.2.0"
+
 "@zeainc/zea-collab@^5.2.0":
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/@zeainc/zea-collab/-/zea-collab-5.2.0.tgz#4f08ca33e89816ff1cd24aa04912f595d4277ef5"
@@ -2027,6 +2034,14 @@
   version "3.10.6"
   resolved "https://registry.yarnpkg.com/@zeainc/zea-engine/-/zea-engine-3.10.6.tgz#2b812360dee1ba4774e319e635f93a9d8e187d12"
   integrity sha512-tGOsddpzbTvtYXq5z66h/j9Gv01AUdkDwmJa8q5ZnuBKltq7VSdA+YIG5QPmWxuIxyqm5FcsLGq1AniTfZaRTw==
+  dependencies:
+    debug "^4.1.1"
+    semver "^7.3.2"
+
+"@zeainc/zea-engine@^3.2.0":
+  version "3.9.1"
+  resolved "https://registry.yarnpkg.com/@zeainc/zea-engine/-/zea-engine-3.9.1.tgz#e0496f8d9cbe4d981d60677777f4816cbc4afd78"
+  integrity sha512-MgqvhAGEAJYK0f9ge56zC0HN7MvK4G296W3a9Ipb8Y+wkmgD9rQTX/Y6RbzYCDYP+ZsmPjWxyvnGSesIyAJrvQ==
   dependencies:
     debug "^4.1.1"
     semver "^7.3.2"
