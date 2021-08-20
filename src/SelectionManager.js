@@ -280,7 +280,8 @@ class SelectionManager extends EventEmitter {
     }
 
     for (const treeItem of treeItems) {
-      if (!treeItem.getSelected()) {
+      if (!selection.has(treeItem)) {
+        treeItem.setSelected(true)
         selection.add(treeItem)
       }
     }
@@ -305,19 +306,13 @@ class SelectionManager extends EventEmitter {
    * @param {array} treeItems - The treeItems param.
    */
   deselectItems(treeItems) {
-    const selection = this.selectionGroup.getItems()
+    const selection = new Set(this.selectionGroup.getItems())
     const prevSelection = new Set(selection)
 
     for (const treeItem of treeItems) {
-      if (treeItem.getSelected()) {
+      if (selection.has(treeItem)) {
         treeItem.setSelected(false)
-        selection.delete(selectedParam)
-        // treeItem.traverse((subTreeItem)=>{
-        //   if(!selection.has(subTreeItem)) {
-        //     subTreeItem.setSelected(false);
-        //     selection.delete(treeItem);
-        //   }
-        // })
+        selection.delete(treeItem)
       }
     }
 
