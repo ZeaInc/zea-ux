@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.2.0](https://github.com/ZeaInc/zea-ux/compare/v3.1.3-vr-tools.0...v3.2.0) (2021-10-10)
+
+
+### Features
+
+* added reset to 1:1 scale feat to the vr-ui ([8b634dd](https://github.com/ZeaInc/zea-ux/commit/8b634dd228d2dfeabfd1bd42028f8a2eb2f01c09))
+* create geom tools all take colors now. ([0c82f1e](https://github.com/ZeaInc/zea-ux/commit/0c82f1e0c4bb0b219229228e472c71fcc9c32d83))
+* In VR, the CreateLineTool line thickness is now adapted to the stage scale. ([bab217b](https://github.com/ZeaInc/zea-ux/commit/bab217ba87a0e63e7cd90d0caf8e1518b9284e53))
+* VRHoldObjectsTool now hilights items we are about to pick up. ([ee4414c](https://github.com/ZeaInc/zea-ux/commit/ee4414cb21af24b7577903fd1b8a67d3e5f040c3))
+
+
+### Bug Fixes
+
+* CreateGeomTools now call 'preventDefault' to prevent actions like drag and drop from being triggered during creation interactions. ([f587034](https://github.com/ZeaInc/zea-ux/commit/f587034f67ce5958f330d018cbc49dbb7128c1ba))
+* MeasureAngleTool correctly handles planar surfaces. ([f159440](https://github.com/ZeaInc/zea-ux/commit/f1594407c73a3973c4e710817bcb6f2ffb08ba59))
+* MeasureCenterDistancesTool correctly handles Cones and Circles ([c3ca45c](https://github.com/ZeaInc/zea-ux/commit/c3ca45ceb7fa11f34c58f97bb470cb7f6c832507))
+* Measurements now assume user units are in mm and scene units are in meters. ([244368c](https://github.com/ZeaInc/zea-ux/commit/244368cf6dd08142eebf87dc0c72caa194010491))
+* on Safari without rendering to float textures, we now support up to 7 registered passes. ([1348fa4](https://github.com/ZeaInc/zea-ux/commit/1348fa4cc638c6e1a35394df82da8c1aa2ec6250))
+* selection manager now correctly handles unhilighting items on deselection ([#131](https://github.com/ZeaInc/zea-ux/issues/131)) ([40a2ef0](https://github.com/ZeaInc/zea-ux/commit/40a2ef0da83bd89244fdc92f4089f8cc2b17869d))
+* When collaborating on line drawing, line thickness is now correctly synchronized. ([2f8ec8b](https://github.com/ZeaInc/zea-ux/commit/2f8ec8b2a8be5dd304449d8e2b4b4cb144d44fbf))
+
+### [3.1.3](https://github.com/ZeaInc/zea-ux/compare/v3.1.2...v3.1.3) (2021-06-29)
+
+
+### Bug Fixes
+
+* Cleaned up incompatiblity with zea-engine 3.10.3 ([ee011a3](https://github.com/ZeaInc/zea-ux/commit/ee011a3f77010e1d2195e7d89dfaf719285ce00a))
+
 ### [3.1.3](https://github.com/ZeaInc/zea-ux/compare/v3.1.2...v3.1.3) (2021-06-29)
 
 
