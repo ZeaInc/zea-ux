@@ -24,6 +24,7 @@ Class representing a hold objects change.
     * [update(updateData)](#update)
     * [toJSON(context) ⇒ <code>object</code>](#toJSON)
     * [fromJSON(j, context)](#fromJSON)
+    * [updateFromJSON(j)](#updateFromJSON)
 
 <a name="new_HoldObjectsChange_new"></a>
 
@@ -82,6 +83,17 @@ The fromJSON method.
 | j | <code>object</code> | The j param. |
 | context | <code>object</code> | The context param. |
 
+<a name="HoldObjectsChange+updateFromJSON"></a>
+
+### updateFromJSON
+Updates the state of an existing identified `Parameter` through replication.
+
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| j | <code>object</code> | The j param. |
+
 <a name="VRHoldObjectsTool"></a>
 
 ### VRHoldObjectsTool 
@@ -96,9 +108,10 @@ Class representing a VR hold objects tool.
     * [deactivateTool()](#deactivateTool)
     * [computeGrabXfo(refs) ⇒ <code>Xfo</code>](#computeGrabXfo)
     * [initAction()](#initAction)
-    * [onVRControllerButtonDown(event) ⇒ <code>boolean</code>](#onVRControllerButtonDown)
-    * [onVRControllerButtonUp(event) ⇒ <code>boolean</code>](#onVRControllerButtonUp)
-    * [onVRPoseChanged(event) ⇒ <code>boolean</code>](#onVRPoseChanged)
+    * [onPointerDown(event)](#onPointerDown)
+    * [onPointerUp(event)](#onPointerUp)
+    * [onPointerMove(event)](#onPointerMove)
+    * [onPointerDoublePress(event)](#onPointerDoublePress)
 
 <a name="new_VRHoldObjectsTool_new"></a>
 
@@ -140,39 +153,47 @@ The computeGrabXfo method.
 The initAction method.
 
 
-<a name="VRHoldObjectsTool+onVRControllerButtonDown"></a>
+<a name="VRHoldObjectsTool+onPointerDown"></a>
 
-### onVRControllerButtonDown
-The onVRControllerButtonDown method.
-
-
-**Returns**: <code>boolean</code> - The return value.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| event | <code>object</code> | The event param. |
-
-<a name="VRHoldObjectsTool+onVRControllerButtonUp"></a>
-
-### onVRControllerButtonUp
-The onVRControllerButtonUp method.
+### onPointerDown
+Event fired when a pointing device button is pressed
 
 
-**Returns**: <code>boolean</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>object</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
 
-<a name="VRHoldObjectsTool+onVRPoseChanged"></a>
+<a name="VRHoldObjectsTool+onPointerUp"></a>
 
-### onVRPoseChanged
-The onVRPoseChanged method.
+### onPointerUp
+Event fired when a pointing device button is released while the pointer is over the tool.
 
 
-**Returns**: <code>boolean</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>object</code> | The event param. |
+| event | <code>MouseEvent</code> | The event param. |
+
+<a name="VRHoldObjectsTool+onPointerMove"></a>
+
+### onPointerMove
+Event fired when a pointing device is moved
+
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| event | <code>MouseEvent</code> | The event param. |
+
+<a name="VRHoldObjectsTool+onPointerDoublePress"></a>
+
+### onPointerDoublePress
+Event fired when a pointing device button is double clicked on the tool.
+
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| event | <code>MouseEvent</code> | The event param. |
 

@@ -7,17 +7,18 @@ Class representing a VR UI tool.
 **Extends**: <code>BaseTool</code>  
 
 * [VRUITool ⇐ <code>BaseTool</code>](#VRUITool)
-    * [new VRUITool(appData)](#new-VRUITool)
+    * [new VRUITool(appData, vrUIDOMElement)](#new-VRUITool)
     * [getName() ⇒ <code>string</code>](#getName)
-    * [setUIControllers(openUITool, uiController, pointerController, headXfo)](#setUIControllers)
     * [activateTool()](#activateTool)
     * [deactivateTool()](#deactivateTool)
+    * [displayUI(uiController, pointerController, headXfo)](#displayUI)
+    * [closeUI()](#closeUI)
     * [setPointerLength(length)](#setPointerLength)
     * [calcUIIntersection() ⇒ <code>object</code> \| <code>undefined</code>](#calcUIIntersection)
     * [sendEventToUI(eventName, args) ⇒ <code>any</code>](#sendEventToUI)
-    * [onVRControllerButtonDown(event) ⇒ <code>boolean</code>](#onVRControllerButtonDown)
-    * [onVRControllerButtonUp(event) ⇒ <code>boolean</code>](#onVRControllerButtonUp)
-    * [onVRPoseChanged(event) ⇒ <code>boolean</code>](#onVRPoseChanged)
+    * [onPointerDown(event)](#onPointerDown)
+    * [onPointerUp(event)](#onPointerUp)
+    * [onPointerMove(event)](#onPointerMove)
 
 <a name="new_VRUITool_new"></a>
 
@@ -28,6 +29,7 @@ Create a VR UI tool.
 | Param | Type | Description |
 | --- | --- | --- |
 | appData | <code>object</code> | The appData value. |
+| vrUIDOMElement | <code>HTMLElement</code> | The  dom element we will use as the VR UI |
 
 <a name="VRUITool+getName"></a>
 
@@ -36,20 +38,6 @@ The getName method.
 
 
 **Returns**: <code>string</code> - The return value.  
-<a name="VRUITool+setUIControllers"></a>
-
-### setUIControllers
-The setUIControllers method.
-
-
-
-| Param | Type | Description |
-| --- | --- | --- |
-| openUITool | <code>\*</code> | The openUITool param. |
-| uiController | <code>\*</code> | The uiController param. |
-| pointerController | <code>\*</code> | The pointerController param. |
-| headXfo | <code>Xfo</code> | The headXfo param. |
-
 <a name="VRUITool+activateTool"></a>
 
 ### activateTool
@@ -60,6 +48,25 @@ The activateTool method.
 
 ### deactivateTool
 The deactivateTool method.
+
+
+<a name="VRUITool+displayUI"></a>
+
+### displayUI
+The displayUI method.
+
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| uiController | <code>VRController</code> | The uiController param. |
+| pointerController | <code>VRController</code> | The pointerController param. |
+| headXfo | <code>Xfo</code> | The headXfo param. |
+
+<a name="VRUITool+closeUI"></a>
+
+### closeUI
+The closeUI method.
 
 
 <a name="VRUITool+setPointerLength"></a>
@@ -93,37 +100,34 @@ The sendEventToUI method.
 | eventName | <code>string</code> | The eventName param. |
 | args | <code>any</code> | The args param. |
 
-<a name="VRUITool+onVRControllerButtonDown"></a>
+<a name="VRUITool+onPointerDown"></a>
 
-### onVRControllerButtonDown
+### onPointerDown
 The onVRControllerButtonDown method.
 
 
-**Returns**: <code>boolean</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | event | <code>object</code> | The event param. |
 
-<a name="VRUITool+onVRControllerButtonUp"></a>
+<a name="VRUITool+onPointerUp"></a>
 
-### onVRControllerButtonUp
+### onPointerUp
 The onVRControllerButtonUp method.
 
 
-**Returns**: <code>boolean</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | event | <code>object</code> | The event param. |
 
-<a name="VRUITool+onVRPoseChanged"></a>
+<a name="VRUITool+onPointerMove"></a>
 
-### onVRPoseChanged
+### onPointerMove
 The onVRPoseChanged method.
 
 
-**Returns**: <code>boolean</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |

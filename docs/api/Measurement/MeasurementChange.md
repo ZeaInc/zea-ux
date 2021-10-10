@@ -7,7 +7,7 @@ Represents a Measurement change.
 **Extends**: <code>[Change](api/UndoRedo\Change.md)</code>  
 
 * [MeasurementChange ⇐ <code>Change</code>](#MeasurementChange)
-    * [new MeasurementChange(parentItem, startPos)](#new-MeasurementChange)
+    * [new MeasurementChange(measurement)](#new-MeasurementChange)
     * [update(data)](#update)
     * [end()](#end)
     * [undo()](#undo)
@@ -24,8 +24,7 @@ Creates an instance of MeasurementChange.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| parentItem | <code>TreeItem</code> | The parentItem value |
-| startPos | <code>Xfo</code> | The startPos Value |
+| measurement | <code>TreeItem</code> | The parent that the measurement will be added to. |
 
 <a name="MeasurementChange+update"></a>
 

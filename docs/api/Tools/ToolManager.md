@@ -5,6 +5,8 @@
 **Extends**: <code>BaseTool</code>  
 
 * [ToolManager ⇐ <code>BaseTool</code>](#ToolManager)
+    * [activeTool() ⇒ <code>Tool</code>](#activeTool)
+    * [activeToolName() ⇒](#activeToolName)
     * [onPointerDown(event)](#onPointerDown)
     * [onPointerMove(event)](#onPointerMove)
     * [onPointerUp(event)](#onPointerUp)
@@ -14,6 +16,20 @@
     * [onKeyDown(event)](#onKeyDown)
     * [onKeyUp(event)](#onKeyUp)
 
+<a name="ToolManager+activeTool"></a>
+
+### activeTool
+Returns the tool currently at the top of the stack.
+
+
+**Returns**: <code>Tool</code> - - the currently active tool.  
+<a name="ToolManager+activeToolName"></a>
+
+### activeToolName
+Returns the name of the tool currently at the top of the stack.
+
+
+**Returns**: - the name of the tool.  
 <a name="ToolManager+onPointerDown"></a>
 
 ### onPointerDown

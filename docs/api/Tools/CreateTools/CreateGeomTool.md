@@ -8,6 +8,7 @@ Base class for creating geometry tools.
 
 * [CreateGeomTool ⇐ <code>BaseCreateTool</code>](#CreateGeomTool)
     * [new CreateGeomTool(appData)](#new-CreateGeomTool)
+    * [addIconToVRController(controller)](#addIconToVRController)
     * [activateTool()](#activateTool)
     * [deactivateTool()](#deactivateTool)
     * [screenPosToXfo(event) ⇒ <code>Xfo</code>](#screenPosToXfo)
@@ -15,17 +16,17 @@ Base class for creating geometry tools.
     * [createPoint(pt)](#createPoint)
     * [createMove(pt)](#createMove)
     * [createRelease(pt)](#createRelease)
-    * [onPointerDown(event) ⇒ <code>boolean</code>](#onPointerDown)
-    * [onPointerMove(event) ⇒ <code>boolean</code>](#onPointerMove)
-    * [onPointerUp(event) ⇒ <code>boolean</code>](#onPointerUp)
+    * [onPointerDown(event)](#onPointerDown)
+    * [onPointerMove(event)](#onPointerMove)
+    * [onPointerUp(event)](#onPointerUp)
     * [onWheel(event)](#onWheel)
     * [onKeyPressed(event)](#onKeyPressed)
     * [onKeyDown(event)](#onKeyDown)
     * [onKeyUp(event)](#onKeyUp)
     * [onTouchCancel(event)](#onTouchCancel)
-    * [onVRControllerButtonDown(event) ⇒ <code>boolean</code>](#onVRControllerButtonDown)
-    * [onVRPoseChanged(event) ⇒ <code>boolean</code>](#onVRPoseChanged)
-    * [onVRControllerButtonUp(event) ⇒ <code>boolean</code>](#onVRControllerButtonUp)
+    * [onVRControllerButtonDown(event)](#onVRControllerButtonDown)
+    * [onVRPoseChanged(event)](#onVRPoseChanged)
+    * [onVRControllerButtonUp(event)](#onVRControllerButtonUp)
 
 <a name="new_CreateGeomTool_new"></a>
 
@@ -36,6 +37,17 @@ Create a create geom tool.
 | Param | Type | Description |
 | --- | --- | --- |
 | appData | <code>object</code> | The appData value. |
+
+<a name="CreateGeomTool+addIconToVRController"></a>
+
+### addIconToVRController
+Adds a geometry icon to the VR Controller
+
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| controller | <code>VRController</code> | The controller object. |
 
 <a name="CreateGeomTool+activateTool"></a>
 
@@ -111,7 +123,6 @@ The createRelease method.
 Event fired when a pointing device button is pressed over the viewport while the tool is activated.
 
 
-**Returns**: <code>boolean</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -123,7 +134,6 @@ Event fired when a pointing device button is pressed over the viewport while the
 Event fired when a pointing device is moved while the cursor's hotspot is inside the viewport, while tool is activated.
 
 
-**Returns**: <code>boolean</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -135,7 +145,6 @@ Event fired when a pointing device is moved while the cursor's hotspot is inside
 Event fired when a pointing device button is released while the pointer is over the viewport, while the tool is activated.
 
 
-**Returns**: <code>boolean</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -202,7 +211,6 @@ Event fired when one or more touch points have been disrupted in an implementati
 Event fired when a VR controller button is pressed inside the viewport, when the tool is activated.
 
 
-**Returns**: <code>boolean</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -214,7 +222,6 @@ Event fired when a VR controller button is pressed inside the viewport, when the
 The onVRPoseChanged method.
 
 
-**Returns**: <code>boolean</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -226,7 +233,6 @@ The onVRPoseChanged method.
 Event fired when a VR controller button is released inside the viewport, when the tool is activated.
 
 
-**Returns**: <code>boolean</code> - The return value.  
 
 | Param | Type | Description |
 | --- | --- | --- |

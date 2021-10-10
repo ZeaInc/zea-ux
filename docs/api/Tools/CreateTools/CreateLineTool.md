@@ -11,6 +11,7 @@ Tool for creating a line tool.**Events*** **actionFinished:** Triggered when 
     * [createStart(xfo)](#createStart)
     * [createMove(pt)](#createMove)
     * [createRelease(pt)](#createRelease)
+    * [onVRControllerButtonDown(event)](#onVRControllerButtonDown)
 
 <a name="new_CreateLineTool_new"></a>
 
@@ -54,4 +55,15 @@ Finishes Line geometry creation.
 | Param | Type | Description |
 | --- | --- | --- |
 | pt | <code>Vec3</code> | The pt param. |
+
+<a name="CreateLineTool+onVRControllerButtonDown"></a>
+
+### onVRControllerButtonDown
+The onVRControllerButtonDown method.
+
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| event | <code>object</code> | The event param. |
 

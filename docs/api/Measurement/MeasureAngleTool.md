@@ -1,42 +1,54 @@
-<a name="MeasurementTool"></a>
+<a name="MeasureAngleTool"></a>
 
-### MeasurementTool 
+### MeasureAngleTool 
 UI Tool for measurements
 
 
 **Extends**: <code>BaseTool</code>  
 
-* [MeasurementTool ⇐ <code>BaseTool</code>](#MeasurementTool)
-    * [new MeasurementTool(appData)](#new-MeasurementTool)
+* [MeasureAngleTool ⇐ <code>BaseTool</code>](#MeasureAngleTool)
+    * [new MeasureAngleTool(appData)](#new-MeasureAngleTool)
     * [activateTool()](#activateTool)
     * [deactivateTool()](#deactivateTool)
+    * [checkSurface(geomItem) ⇒ <code>boolean</code>](#checkSurface)
     * [onPointerDown(event)](#onPointerDown)
     * [onPointerMove(event)](#onPointerMove)
     * [onPointerUp(event)](#onPointerUp)
 
-<a name="new_MeasurementTool_new"></a>
+<a name="new_MeasureAngleTool_new"></a>
 
-### new MeasurementTool
-Creates an instance of MeasurementTool.
+### new MeasureAngleTool
+Creates an instance of MeasureAngleTool.
 
 
 | Param | Type | Description |
 | --- | --- | --- |
 | appData | <code>object</code> | The appData value |
 
-<a name="MeasurementTool+activateTool"></a>
+<a name="MeasureAngleTool+activateTool"></a>
 
 ### activateTool
 The activateTool method.
 
 
-<a name="MeasurementTool+deactivateTool"></a>
+<a name="MeasureAngleTool+deactivateTool"></a>
 
 ### deactivateTool
 The deactivateTool method.
 
 
-<a name="MeasurementTool+onPointerDown"></a>
+<a name="MeasureAngleTool+checkSurface"></a>
+
+### checkSurface
+Checks to see if the surface is appropriate for this kind of measurement.
+
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| geomItem | <code>GeomItem</code> | The geomItem to check |
+
+<a name="MeasureAngleTool+onPointerDown"></a>
 
 ### onPointerDown
 
@@ -45,7 +57,7 @@ The deactivateTool method.
 | --- | --- | --- |
 | event | <code>MouseEvent</code> \| <code>TouchEvent</code> | The event value |
 
-<a name="MeasurementTool+onPointerMove"></a>
+<a name="MeasureAngleTool+onPointerMove"></a>
 
 ### onPointerMove
 
@@ -54,7 +66,7 @@ The deactivateTool method.
 | --- | --- | --- |
 | event | <code>MouseEvent</code> \| <code>TouchEvent</code> | The event value |
 
-<a name="MeasurementTool+onPointerUp"></a>
+<a name="MeasureAngleTool+onPointerUp"></a>
 
 ### onPointerUp
 
