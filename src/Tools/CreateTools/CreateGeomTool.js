@@ -27,6 +27,10 @@ class CreateGeomTool extends BaseCreateTool {
     this.controllerAddedHandler = this.controllerAddedHandler.bind(this)
   }
 
+  /**
+   * Adds a geometry icon to the VR Controller
+   * @param {VRController} controller - The controller object.
+   */
   addIconToVRController(controller) {
     if (!this.vrControllerToolTip) {
       this.vrControllerToolTip = new Cross(0.05)
@@ -84,6 +88,13 @@ class CreateGeomTool extends BaseCreateTool {
    * @return {Xfo} The return value.
    */
   screenPosToXfo(event) {
+    if (event.intersectionData) {
+      const ray = event.pointerRay
+      const xfo = this.constructionPlane.clone()
+      xfo.tr = ray.pointAtDist(event.intersectionData.dist)
+      return xfo
+    }
+
     const ray = event.pointerRay
     const planeRay = new Ray(this.constructionPlane.tr, this.constructionPlane.ori.getZaxis())
     const dist = ray.intersectRayPlane(planeRay)
@@ -165,9 +176,9 @@ class CreateGeomTool extends BaseCreateTool {
         UndoRedoManager.getInstance().cancel()
         this.stage = 0
       }
+      event.stopPropagation()
+      event.preventDefault() // prevent browser features like scroll and drag n drop
     }
-
-    event.stopPropagation()
   }
 
   /**
@@ -182,6 +193,7 @@ class CreateGeomTool extends BaseCreateTool {
       const xfo = this.screenPosToXfo(event)
       this.createMove(xfo.tr)
       event.stopPropagation()
+      event.preventDefault() // prevent browser features like scroll and drag n drop
     }
   }
 
@@ -257,7 +269,6 @@ class CreateGeomTool extends BaseCreateTool {
    * Event fired when a VR controller button is pressed inside the viewport, when the tool is activated.
    *
    * @param {object} event - The event param.
-   * @return {boolean} The return value.
    */
   onVRControllerButtonDown(event) {
     if (!this.__activeController) {
@@ -275,7 +286,6 @@ class CreateGeomTool extends BaseCreateTool {
    * The onVRPoseChanged method.
    *
    * @param {object} event - The event param.
-   * @return {boolean} The return value.
    */
   onVRPoseChanged(event) {
     if (this.__activeController && this.stage > 0) {
@@ -290,7 +300,6 @@ class CreateGeomTool extends BaseCreateTool {
    * Event fired when a VR controller button is released inside the viewport, when the tool is activated.
    *
    * @param {object} event - The event param.
-   * @return {boolean} The return value.
    */
   onVRControllerButtonUp(event) {
     if (this.stage > 0) {

@@ -14,13 +14,4 @@ export default class BaseCreateTool extends BaseTool {
   constructor(appData) {
     super(appData)
   }
-
-  /**
-   * Checks if the tool is a primary tool or not.
-   *
-   * @return {boolean} - Returns `true`.
-   */
-  isPrimaryTool() {
-    return true
-  }
 }
