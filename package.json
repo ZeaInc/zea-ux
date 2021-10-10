@@ -71,7 +71,7 @@
   "dependencies": {
     "@zeainc/zea-cad": "^3.3.0",
     "@zeainc/zea-collab": "^5.2.0",
-    "@zeainc/zea-engine": "^3.10.x",
+    "@zeainc/zea-engine": "^3.11",
     "dom-to-image": "^2.6.0"
   },
   "husky": {
