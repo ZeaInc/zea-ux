@@ -1,5 +1,16 @@
-import { Vec3, Color, Xfo, Ray, GeomItem, Material, Lines, BaseTool, POINTER_TYPES } from '@zeainc/zea-engine'
-import VRControllerUI from './VRControllerUI'
+import {
+  Vec3,
+  Color,
+  Xfo,
+  EulerAngles,
+  Ray,
+  GeomItem,
+  Material,
+  Lines,
+  BaseTool,
+  POINTER_TYPES,
+} from '@zeainc/zea-engine'
+import { DomTree } from '../../DomTree'
 
 /**
  * Class representing a VR UI tool.
@@ -17,10 +28,13 @@ class VRUITool extends BaseTool {
     this.appData = appData
 
     this.__vrUIDOMElement = vrUIDOMElement
-    this.controllerUI = new VRControllerUI(appData, this.__vrUIDOMElement)
+    this.uiTree = new DomTree(this.__vrUIDOMElement)
+
+    this.uiTree.setSelectable(false)
+    this.uiTree.getParameter('Visible').setValue(false)
 
     // To debug the UI in the renderer without being in VR, enable this line.
-    // appData.renderer.addTreeItem(this.controllerUI)
+    // appData.renderer.addTreeItem(this.uiTree)
 
     const pointermat = new Material('pointermat', 'LinesShader')
     pointermat.setSelectable(false)
@@ -83,12 +97,13 @@ class VRUITool extends BaseTool {
    * @param {Xfo} headXfo - The headXfo param.
    */
   displayUI(uiController, pointerController, headXfo) {
-    this.controllerUI.activate()
+    this.uiTree.getParameter('Visible').setValue(true)
     this.uiController = uiController
     this.pointerController = pointerController
 
-    const uiLocalXfo = this.controllerUI.getParameter('LocalXfo').getValue()
-    uiLocalXfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * -0.6)
+    const uiLocalXfo = this.uiTree.getParameter('LocalXfo').getValue()
+
+    uiLocalXfo.ori.setFromEulerAngles(new EulerAngles(Math.PI, Math.PI, 0))
     // uiLocalXfo.tr.set(0, -0.05, 0.08)
 
     if (this.pointerController) {
@@ -105,10 +120,10 @@ class VRUITool extends BaseTool {
       uiLocalXfo.tr.set(0, -0.05, 0.08)
     }
 
-    this.controllerUI.getParameter('LocalXfo').setValue(uiLocalXfo)
+    this.uiTree.getParameter('LocalXfo').setValue(uiLocalXfo)
 
     if (this.uiController) {
-      this.uiController.getTipItem().addChild(this.controllerUI, false)
+      this.uiController.getTipItem().addChild(this.uiTree, false)
       if (this.pointerController) this.pointerController.getTipItem().addChild(this.__uiPointerItem, false)
 
       if (this.appData.session) {
@@ -118,12 +133,12 @@ class VRUITool extends BaseTool {
             showUIPanel: {
               controllerId: this.uiController.getId(),
               localXfo: uiLocalXfo.toJSON(),
-              size: this.controllerUI.size.toJSON(),
+              size: this.uiTree.size.toJSON(),
             },
           })
         }
-        if (!this.controllerUI.ready) {
-          this.controllerUI.on('ready', postMessage)
+        if (!this.uiTree.ready) {
+          this.uiTree.on('ready', postMessage)
         } else {
           postMessage()
         }
@@ -136,10 +151,10 @@ class VRUITool extends BaseTool {
    * The closeUI method.
    */
   closeUI() {
-    this.controllerUI.deactivate()
+    this.uiTree.getParameter('Visible').setValue(false)
 
     if (this.uiController) {
-      this.uiController.getTipItem().removeChildByHandle(this.controllerUI)
+      this.uiController.getTipItem().removeChildByHandle(this.uiTree)
       if (this.pointerController) {
         this.pointerController.getTipItem().removeChildByHandle(this.__uiPointerItem)
       }
@@ -169,69 +184,20 @@ class VRUITool extends BaseTool {
   }
 
   /**
-   * The calcUIIntersection method.
-   *
-   * @return {object|undefined} The return value.
-   */
-  calcUIIntersection() {
-    const pointerXfo = this.__uiPointerItem.getParameter('GlobalXfo').getValue()
-    const pointerVec = pointerXfo.ori.getZaxis().negate()
-    const ray = new Ray(pointerXfo.tr, pointerVec)
-
-    const planeXfo = this.controllerUI.getParameter('GlobalXfo').getValue()
-    const planeSize = this.controllerUI.size.multiply(planeXfo.sc)
-
-    const plane = new Ray(planeXfo.tr, planeXfo.ori.getZaxis().negate())
-    const res = ray.intersectRayPlane(plane)
-    if (res <= 0) {
-      // Let the pointer shine right past the UI.
-      this.setPointerLength(0.5)
-      return
-    }
-    const hitOffset = pointerXfo.tr.add(pointerVec.scale(res)).subtract(plane.start)
-    const x = hitOffset.dot(planeXfo.ori.getXaxis()) / planeSize.x
-    const y = hitOffset.dot(planeXfo.ori.getYaxis()) / planeSize.y
-    if (Math.abs(x) > 0.5 || Math.abs(y) > 0.5) {
-      // Let the pointer shine right past the UI.
-      this.setPointerLength(0.5)
-      return
-    }
-    this.setPointerLength(res / planeXfo.sc.z)
-    const rect = this.__vrUIDOMElement.getBoundingClientRect()
-    return {
-      clientX: Math.round(x * -rect.width + rect.width / 2),
-      clientY: Math.round(y * -rect.height + rect.height / 2),
-    }
-  }
-
-  /**
    * The sendEventToUI method.
    * @param {string} eventName - The eventName param.
    * @param {any} args - The args param.
-   * @return {any} The return value.
    */
   sendEventToUI(eventName, args) {
-    const hit = this.calcUIIntersection()
-    if (hit) {
-      hit.offsetX = hit.pageX = hit.pageX = hit.screenX = hit.clientX
-      hit.offsetY = hit.pageY = hit.pageY = hit.screenY = hit.clientY
-
-      let element = document.elementFromPoint(hit.clientX, hit.clientY)
-      if (element) {
-        if (element.shadowRoot) element = element.shadowRoot.elementFromPoint(hit.clientX, hit.clientY)
-        if (element != this._element) {
-          if (this._element) this.controllerUI.sendMouseEvent('mouseleave', Object.assign(args, hit), this._element)
-          this._element = element
-          this.controllerUI.sendMouseEvent('mouseenter', Object.assign(args, hit), this._element)
-        }
-        this.controllerUI.sendMouseEvent(eventName, Object.assign(args, hit), this._element)
-      } else {
-        this._element = null
-      }
-      return this._element
+    const pointerXfo = this.__uiPointerItem.getParameter('GlobalXfo').getValue()
+    const pointerVec = pointerXfo.ori.getZaxis().negate()
+    const ray = new Ray(pointerXfo.tr, pointerVec)
+    const res = this.uiTree.rayIntersect(ray, eventName, args)
+    if (res > 0) {
+      this.setPointerLength(res)
     } else if (this._element) {
-      this.controllerUI.sendMouseEvent('mouseleave', Object.assign(args, hit), this._element)
-      this._element = null
+      // Let the pointer shine right past the UI.
+      this.setPointerLength(0.5)
     }
   }
 
