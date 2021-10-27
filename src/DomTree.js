@@ -293,9 +293,10 @@ class DomTree extends TreeItem {
    * @param {object} event - The event param.
    */
   onPointerMove(event) {
-    this.rayIntersect(event.pointerRay, 'mousemove', {})
+    const ray = event.intersectionData.ray ? event.intersectionData.ray : event.intersectionData.pointerRay
+    this.rayIntersect(ray, 'mousemove', {})
     event.stopPropagation()
-    event.preventDefault()
+    if (event.preventDefault) event.preventDefault()
   }
 
   /**
@@ -303,9 +304,10 @@ class DomTree extends TreeItem {
    * @param {object} event - The event param.
    */
   onPointerDown(event) {
-    this.rayIntersect(event.pointerRay, 'mousedown', {})
+    const ray = event.intersectionData.ray ? event.intersectionData.ray : event.intersectionData.pointerRay
+    this.rayIntersect(ray, 'mousedown', {})
     event.stopPropagation()
-    event.preventDefault()
+    if (event.preventDefault) event.preventDefault()
   }
 
   /**
@@ -313,9 +315,10 @@ class DomTree extends TreeItem {
    * @param {object} event - The event param.
    */
   onPointerUp(event) {
-    this.rayIntersect(event.pointerRay, 'mouseup', {})
+    const ray = event.intersectionData.ray ? event.intersectionData.ray : event.intersectionData.pointerRay
+    this.rayIntersect(ray, 'mouseup', {})
     event.stopPropagation()
-    event.preventDefault()
+    if (event.preventDefault) event.preventDefault()
   }
 }
 
