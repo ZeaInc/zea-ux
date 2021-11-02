@@ -1,6 +1,6 @@
 {
   "name": "@zeainc/zea-ux",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "description": "Zea UX",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -49,8 +49,8 @@
   "devDependencies": {
     "@babel/preset-env": "^7.12.7",
     "@percy/cypress": "^2.3.1",
-    "@zeainc/jsdocs2md": "^0.0.7",
     "@rollup/plugin-json": "^4.1.0",
+    "@zeainc/jsdocs2md": "^0.0.7",
     "canvas": "^2.6.1",
     "cypress": "^5.6.0",
     "docsify-cli": "^4.4.2",
