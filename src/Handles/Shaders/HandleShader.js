@@ -60,8 +60,6 @@ void main(void) {
   int drawItemId = getDrawItemId();
   v_drawItemId = float(drawItemId);
   v_geomItemData  = getInstanceData(drawItemId);
-  mat4 modelMatrix = getModelMatrix(drawItemId);
-  mat4 modelViewMatrix = viewMatrix * modelMatrix;
 
   //////////////////////////////////////////////
   // Material
@@ -77,7 +75,22 @@ void main(void) {
 #endif
 
   //////////////////////////////////////////////
+  // Matrix
   
+  mat4 modelMatrix = getModelMatrix(drawItemId);
+  if (maintainScreenSize != 0) {
+    // Remove the scale from the model matrix.
+    vec3 row0 = normalize(vec3(modelMatrix[0][0], modelMatrix[0][1], modelMatrix[0][2]));
+    vec3 row1 = normalize(vec3(modelMatrix[1][0], modelMatrix[1][1], modelMatrix[1][2]));
+    vec3 row2 = normalize(vec3(modelMatrix[2][0], modelMatrix[2][1], modelMatrix[2][2]));
+    modelMatrix = mat4(
+      row0.x, row0.y, row0.z, 0.0,
+      row1.x, row1.y, row1.z, 0.0,
+      row2.x, row2.y, row2.z, 0.0,
+      modelMatrix[3][0], modelMatrix[3][1], modelMatrix[3][2], 1.0
+    );
+  }
+  mat4 modelViewMatrix = viewMatrix * modelMatrix;
   if (maintainScreenSize != 0) {
     float dist = modelViewMatrix[3][2];
     float sc = abs(dist); // Note: items in front of the camera will have a negative value here.
