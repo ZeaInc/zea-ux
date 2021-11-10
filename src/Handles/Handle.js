@@ -71,7 +71,7 @@ class Handle extends TreeItem {
   /**
    * Event fired when a pointing device button is pressed while the pointer is over the handle element.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param {PointerEvent} event - The event param.
    */
   onPointerDown(event) {
     event.setCapture(this)
@@ -82,20 +82,26 @@ class Handle extends TreeItem {
       this.highlight()
     }
 
-    if (event.viewport) this.handlePointerDown(event)
-    else if (event.vrviewport) this.onVRControllerButtonDown(event)
+    if (event.pointerType == 'mouse' || event.pointerType == 'touch') {
+      this.handlePointerDown(event)
+    } else if (event.pointerType == 'xr') {
+      this.onVRControllerButtonDown(event)
+    }
   }
 
   /**
    * Event fired when a pointing device is moved while the cursor's hotspot is over the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param {PointerEvent} event - The event param.
    */
   onPointerMove(event) {
     if (this.captured) {
       event.stopPropagation()
-      if (event.viewport) this.handlePointerMove(event)
-      else if (event.vrviewport) this.onVRPoseChanged(event)
+      if (event.pointerType == 'mouse' || event.pointerType == 'touch') {
+        this.handlePointerMove(event)
+      } else if (event.pointerType == 'xr') {
+        this.onVRPoseChanged(event)
+      }
     }
 
     event.preventDefault()
@@ -104,7 +110,7 @@ class Handle extends TreeItem {
   /**
    * Event fired when a pointing device button is released while the pointer is over the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param {PointerEvent} event - The event param.
    */
   onPointerUp(event) {
     if (this.captured) {
@@ -114,15 +120,18 @@ class Handle extends TreeItem {
       if (event.changedTouches) {
         this.unhighlight()
       }
-      if (event.viewport) this.handlePointerUp(event)
-      else if (event.vrviewport) this.onVRControllerButtonUp(event)
+      if (event.pointerType == 'mouse' || event.pointerType == 'touch') {
+        this.handlePointerUp(event)
+      } else if (event.pointerType == 'xr') {
+        this.onVRControllerButtonUp(event)
+      }
     }
   }
 
   /**
    * Event fired when the user rotates the pointing device wheel over the handle.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param {WheelEvent} event - The event param.
    */
   onWheel(event) {}
 

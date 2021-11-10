@@ -48,9 +48,9 @@
       const scene = new Scene()
       scene.setupGrid(10, 10)
       const color = new Color('#E5E5E5')
-      scene.getSettings().getParameter('BackgroundColor').setValue(color)
 
       const renderer = new GLRenderer(domElement, { hideSplash: true })
+      renderer.getViewport().backgroundColorParam.value = color
       renderer.setScene(scene)
 
       const sliderHandle1 = new SliderHandle('SliderHandleFoo')

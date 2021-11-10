@@ -47,11 +47,16 @@ class SelectionGroup extends SelectionSet {
     this.getParameter('HighlightColor').setValue(selectionColor)
     this.addParameter(new ColorParameter('SubtreeHighlightColor', subtreeColor))
 
-    this.__itemsParam.setFilterFn((item) => item instanceof BaseItem)
+    this.itemsParam.setFilterFn((item) => item instanceof BaseItem)
 
-    this.__initialXfoModeParam = this.addParameter(
-      new MultiChoiceParameter('InitialXfoMode', GROUP_XFO_MODES.average, ['manual', 'first', 'average', 'global'])
-    )
+    this.initialXfoModeParam = new MultiChoiceParameter('InitialXfoMode', GROUP_XFO_MODES.average, [
+      'manual',
+      'first',
+      'average',
+      'global',
+    ])
+
+    this.addParameter(this.initialXfoModeParam)
 
     this.selectionGroupXfoOp = new SelectionGroupXfoOperator(
       this.getParameter('InitialXfoMode'),
@@ -90,7 +95,7 @@ class SelectionGroup extends SelectionSet {
    * @param {number} index -
    * @private
    */
-  __bindItem(item, index) {
+  bindItem(item, index) {
     if (item instanceof TreeItem) {
       const highlightColor = this.getParameter('HighlightColor').getValue()
       highlightColor.a = this.getParameter('HighlightFill').getValue()
@@ -113,7 +118,7 @@ class SelectionGroup extends SelectionSet {
    * @param {number} index -
    * @private
    */
-  __unbindItem(item, index) {
+  unbindItem(item, index) {
     if (item instanceof TreeItem) {
       item.removeHighlight('selected' + this.getId())
       item.getChildren().forEach((childItem) => {

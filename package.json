@@ -70,14 +70,14 @@
     "standard-version": "^9.0.0"
   },
   "dependencies": {
-    "@zeainc/zea-cad": "^3.3.0",
-    "@zeainc/zea-engine": "^3.11",
+    "@zeainc/zea-cad": "^4",
+    "@zeainc/zea-engine": "^4",
     "dom-to-image": "^2.6.0"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm test",
-      "pre-push": "npm test"
+      "disabled=pre-commit": "npm test",
+      "disabled=pre-push": "npm test"
     }
   }
 }

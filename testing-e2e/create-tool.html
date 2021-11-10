@@ -78,9 +78,8 @@
       })
       renderer.setScene(scene)
 
-
       const color = new Color('#aaaaaa')
-      scene.getSettings().getParameter('BackgroundColor').setValue(color)
+      renderer.getViewport().backgroundColorParam.value = color
 
       {
         const material1 = new Material('material1', 'SimpleSurfaceShader')

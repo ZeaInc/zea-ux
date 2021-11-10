@@ -1,4 +1,12 @@
-import { Color, Registry, shaderLibrary, GLShader } from '@zeainc/zea-engine'
+import {
+  Color,
+  Registry,
+  shaderLibrary,
+  GLShader,
+  Material,
+  MaterialColorParam,
+  NumberParameter,
+} from '@zeainc/zea-engine'
 
 /**
  * Class representing Handle Shader.
@@ -205,8 +213,6 @@ void main(void) {
 }
 `
     )
-
-    this.finalize()
   }
 
   /**
@@ -256,6 +262,12 @@ void main(void) {
     return true
   }
 }
+
+const material = new Material('HandleShader_template')
+material.addParameter(new MaterialColorParam('BaseColor', new Color(1.0, 1, 0.5)))
+material.addParameter(new NumberParameter('MaintainScreenSize', 0))
+material.addParameter(new NumberParameter('Overlay', 0, [0, 1]))
+shaderLibrary.registerMaterialTemplate('HandleShader', material)
 
 Registry.register('HandleShader', HandleShader)
 
