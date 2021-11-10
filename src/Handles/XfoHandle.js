@@ -25,8 +25,7 @@ class XfoHandle extends TreeItem {
   constructor(size = 0.1, thickness = 0.003) {
     super('XfoHandle')
 
-    this.highlightColorParam = this.addParameter(new ColorParameter('HighlightColor', new Color(1, 1, 1)))
-
+    this.highlightColorParam = new ColorParameter('HighlightColor', new Color(1, 1, 1))
     this.highlightColorParam.on('valueChanged', () => {
       const color = this.highlightColorParam.getValue()
 
@@ -34,6 +33,7 @@ class XfoHandle extends TreeItem {
         if (item instanceof Handle) item.getParameter('HighlightColor').setValue(color)
       })
     })
+    this.addParameter(this.highlightColorParam)
     // ////////////////////////////////
     // LinearMovementHandle
 
@@ -52,14 +52,14 @@ class XfoHandle extends TreeItem {
       const linearXWidget = new LinearMovementHandle('linearX', size, thickness, red)
       const xfo = new Xfo()
       xfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI * 0.5)
-      linearXWidget.getParameter('LocalXfo').setValue(xfo)
+      linearXWidget.localXfoParam.value = xfo
       translationHandles.addChild(linearXWidget)
     }
     {
       const linearYWidget = new LinearMovementHandle('linearY', size, thickness, green)
       const xfo = new Xfo()
       xfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * -0.5)
-      linearYWidget.getParameter('LocalXfo').setValue(xfo)
+      linearYWidget.localXfoParam.value = xfo
       translationHandles.addChild(linearYWidget)
     }
     {
@@ -78,7 +78,7 @@ class XfoHandle extends TreeItem {
         blue
       )
       const xfo = new Xfo()
-      planarXYWidget.getParameter('LocalXfo').setValue(xfo)
+      planarXYWidget.localXfoParam.value = xfo
       translationHandles.addChild(planarXYWidget)
     }
     {
@@ -90,7 +90,7 @@ class XfoHandle extends TreeItem {
       )
       const xfo = new Xfo()
       xfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI * 0.5)
-      planarYZWidget.getParameter('LocalXfo').setValue(xfo)
+      planarYZWidget.localXfoParam.value = xfo
       translationHandles.addChild(planarYZWidget)
     }
     {
@@ -102,7 +102,7 @@ class XfoHandle extends TreeItem {
       )
       const xfo = new Xfo()
       xfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * 0.5)
-      planarXZWidget.getParameter('LocalXfo').setValue(xfo)
+      planarXZWidget.localXfoParam.value = xfo
       translationHandles.addChild(planarXZWidget)
     }
 
@@ -119,21 +119,21 @@ class XfoHandle extends TreeItem {
       const rotationXWidget = new AxialRotationHandle('rotationX', size * 0.75, thickness, red)
       const xfo = new Xfo()
       xfo.ori.setFromEulerAngles(new EulerAngles(Math.PI * -0.5, Math.PI * -0.5, 0))
-      rotationXWidget.getParameter('LocalXfo').setValue(xfo)
+      rotationXWidget.localXfoParam.value = xfo
       rotationHandles.addChild(rotationXWidget)
     }
     {
       const rotationYWidget = new AxialRotationHandle('rotationY', size * 0.75, thickness, green)
       const xfo = new Xfo()
       xfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * -0.5)
-      rotationYWidget.getParameter('LocalXfo').setValue(xfo)
+      rotationYWidget.localXfoParam.value = xfo
       rotationHandles.addChild(rotationYWidget)
     }
     {
       const rotationZWidget = new AxialRotationHandle('rotationZ', size * 0.75, thickness, blue)
       const xfo = new Xfo()
       xfo.ori.setFromAxisAndAngle(new Vec3(0, 0, 1), Math.PI * 0.5)
-      rotationZWidget.getParameter('LocalXfo').setValue(xfo)
+      rotationZWidget.localXfoParam.value = xfo
       rotationHandles.addChild(rotationZWidget)
     }
     /*
@@ -148,14 +148,14 @@ class XfoHandle extends TreeItem {
       const scaleXWidget = new LinearScaleHandle('scaleX', scaleHandleLength, thickness, red)
       const xfo = new Xfo()
       xfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI * 0.5)
-      scaleXWidget.getParameter('LocalXfo').setValue(xfo)
+      scaleXWidget.localXfoParam.value = xfo
       scaleHandles.addChild(scaleXWidget)
     }
     {
       const scaleYWidget = new LinearScaleHandle('scaleY', scaleHandleLength, thickness, green)
       const xfo = new Xfo()
       xfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * -0.5)
-      scaleYWidget.getParameter('LocalXfo').setValue(xfo)
+      scaleYWidget.localXfoParam.value = xfo
       scaleHandles.addChild(scaleYWidget)
     }
     {
@@ -166,28 +166,14 @@ class XfoHandle extends TreeItem {
   }
 
   /**
-   * Calculate the global Xfo for the handles.
-   *
-   * @return {Xfo} - The Xfo value
-   * @private
-   */
-  _cleanGlobalXfo() {
-    const parentItem = this.getParentItem()
-    if (parentItem !== undefined) {
-      const parentXfo = parentItem.getParameter('GlobalXfo').getValue().clone()
-      parentXfo.sc.set(1, 1, 1)
-      return parentXfo.multiply(this.__localXfoParam.getValue())
-    } else return this.__localXfoParam.getValue()
-  }
-
-  /**
    * Displays handles depending on the specified mode(Move, Rotate, Scale).
    * If nothing is specified, it hides all of them.
    * @deprecated
-   * @param {string} handleManipulationMode - The mode of the Xfo parameter
+   * @param {boolean} visible - The mode of the Xfo parameter
    */
-  showHandles(handleManipulationMode) {
-    this.setVisible(true)
+  showHandles(visible) {
+    if (visible) this.setVisible(true)
+    else this.setVisible(false)
   }
 
   /**

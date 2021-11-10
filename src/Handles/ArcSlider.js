@@ -44,9 +44,12 @@ class ArcSlider extends BaseAxialRotationHandle {
    */
   constructor(name, arcRadius = 1, arcAngle = 1, handleRadius = 0.02, color = new Color(1, 1, 0)) {
     super(name)
-    this.arcRadiusParam = this.addParameter(new NumberParameter('ArcRadius', arcRadius))
-    this.arcAngleParam = this.addParameter(new NumberParameter('ArcAngle', arcAngle))
-    this.handleRadiusParam = this.addParameter(new NumberParameter('HandleRadius', handleRadius))
+    this.arcRadiusParam = new NumberParameter('ArcRadius', arcRadius)
+    this.arcAngleParam = new NumberParameter('ArcAngle', arcAngle)
+    this.handleRadiusParam = new NumberParameter('HandleRadius', handleRadius)
+    this.addParameter(this.arcRadiusParam)
+    this.addParameter(this.arcAngleParam)
+    this.addParameter(this.handleRadiusParam)
     // this.barRadiusParam = this.addParameter(
     //   new NumberParameter('Bar Radius', radius * 0.25)
     // );

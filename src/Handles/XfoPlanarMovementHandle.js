@@ -22,7 +22,8 @@ class XfoPlanarMovementHandle extends PlanarMovementHandle {
   constructor(name, size, offset, color = new Color()) {
     super(name)
 
-    this.sizeParam = this.addParameter(new NumberParameter('Size', size))
+    this.sizeParam = new NumberParameter('Size', size)
+    this.addParameter(this.sizeParam)
     this.colorParam.setValue(color)
 
     this.handleMat = new Material('handle', 'HandleShader')

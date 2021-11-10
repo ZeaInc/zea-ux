@@ -29,8 +29,9 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
   constructor(name, radius, thickness, color = new Color(1, 1, 0)) {
     super(name)
 
-    this.radiusParam = this.addParameter(new NumberParameter('Radius', radius))
+    this.radiusParam = new NumberParameter('Radius', radius)
     this.colorParam.setValue(color)
+    this.addParameter(this.radiusParam)
 
     this.handleMat = new Material('handle', 'HandleShader')
     this.handleMat.getParameter('BaseColor').setValue(color)

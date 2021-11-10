@@ -37,9 +37,12 @@ class SliderHandle extends BaseLinearMovementHandle {
   constructor(name, length = 0.5, radius = 0.02, color = new Color('#F9CE03')) {
     super(name)
 
-    this.lengthParam = this.addParameter(new NumberParameter('Length', length))
-    this.handleRadiusParam = this.addParameter(new NumberParameter('HandleRadius', radius))
-    this.barRadiusParam = this.addParameter(new NumberParameter('BarRadius', radius * 0.25))
+    this.lengthParam = new NumberParameter('Length', length)
+    this.handleRadiusParam = new NumberParameter('HandleRadius', radius)
+    this.barRadiusParam = new NumberParameter('BarRadius', radius * 0.25)
+    this.addParameter(this.lengthParam)
+    this.addParameter(this.handleRadiusParam)
+    this.addParameter(this.barRadiusParam)
     this.colorParam.setValue(color)
 
     this.handleMat = new Material('handle', 'FlatSurfaceShader')

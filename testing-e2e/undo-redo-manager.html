@@ -50,13 +50,13 @@
           this.$colorList = $colorList
           this.itemColor = itemColor
 
-          this.__addColor()
+          this.addColor()
         }
 
         /**
          * @private
          */
-        __addColor() {
+        addColor() {
           const li = document.createElement('li')
           li.style.backgroundColor = `#${this.itemColor}`
           li.innerHTML = `#${this.itemColor}`
@@ -68,7 +68,7 @@
         }
 
         redo() {
-          this.__addColor()
+          this.addColor()
         }
       }
       /** ColorListChange End */
