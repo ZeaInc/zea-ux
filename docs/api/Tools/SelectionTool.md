@@ -68,7 +68,7 @@ Event fired when a pointing device button is pressed while the pointer is over t
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
+| event | <code>ZeaMouseEvent</code> \| <code>ZeaTouchEvent</code> \| <code>object</code> | The event param. |
 
 <a name="SelectionTool+onPointerMove"></a>
 
@@ -80,7 +80,7 @@ Event fired when a pointing device is moved while the cursor's hotspot is inside
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
+| event | <code>ZeaMouseEvent</code> \| <code>ZeaTouchEvent</code> \| <code>object</code> | The event param. |
 
 <a name="SelectionTool+onPointerUp"></a>
 
@@ -92,7 +92,7 @@ Event fired when a pointing device button is released while the pointer is over 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
+| event | <code>ZeaMouseEvent</code> \| <code>ZeaTouchEvent</code> \| <code>object</code> | The event param. |
 
 <a name="SelectionTool+onVRControllerButtonDown"></a>
 

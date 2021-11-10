@@ -56,7 +56,7 @@ Handles the initially drag interaction of the handle.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
+| event | <code>ZeaMouseEvent</code> \| <code>ZeaTouchEvent</code> \| <code>object</code> | The event param. |
 
 <a name="AxialRotationHandle+onDrag"></a>
 
@@ -67,7 +67,7 @@ Handles drag interaction of the handle.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
+| event | <code>ZeaMouseEvent</code> \| <code>ZeaTouchEvent</code> \| <code>object</code> | The event param. |
 
 <a name="AxialRotationHandle+onDragEnd"></a>
 
@@ -78,5 +78,5 @@ Handles the end of dragging interaction with the handle.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
+| event | <code>ZeaMouseEvent</code> \| <code>ZeaTouchEvent</code> \| <code>object</code> | The event param. |
 

@@ -39,7 +39,7 @@ Event fired when a pointing device button is pressed while the pointer is over t
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> | The event param. |
+| event | <code>ZeaMouseEvent</code> | The event param. |
 
 <a name="ToolManager+onPointerMove"></a>
 
@@ -50,7 +50,7 @@ Event fired when a pointing device is moved while the cursor's hotspot is inside
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> | The event param. |
+| event | <code>ZeaMouseEvent</code> | The event param. |
 
 <a name="ToolManager+onPointerUp"></a>
 
@@ -61,7 +61,7 @@ Event fired when a pointing device button is released while the pointer is over 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> | The event param. |
+| event | <code>ZeaMouseEvent</code> | The event param. |
 
 <a name="ToolManager+onPointerDoublePress"></a>
 
@@ -72,7 +72,7 @@ Event fired when a pointing device button is double clicked on the tool.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> | The event param. |
+| event | <code>ZeaMouseEvent</code> | The event param. |
 
 <a name="ToolManager+onWheel"></a>
 
@@ -83,7 +83,7 @@ Event fired when the user rotates the pointing device wheel.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> | The event param. |
+| event | <code>ZeaMouseEvent</code> | The event param. |
 
 <a name="ToolManager+onKeyPressed"></a>
 

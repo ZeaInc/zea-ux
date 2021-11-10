@@ -8,7 +8,7 @@ Class representing a xfo handle. Base transformations for objects in the scene
 
 * [XfoHandle ⇐ <code>TreeItem</code>](#XfoHandle)
     * [new XfoHandle(size, thickness)](#new-XfoHandle)
-    * ~~[.showHandles(handleManipulationMode)](#XfoHandle+showHandles)~~
+    * ~~[.showHandles(visible)](#XfoHandle+showHandles)~~
     * [setTargetParam(param)](#setTargetParam)
 
 <a name="new_XfoHandle_new"></a>
@@ -24,7 +24,7 @@ Create an axial rotation scene widget.
 
 <a name="XfoHandle+showHandles"></a>
 
-### ~~xfoHandle.showHandles(handleManipulationMode)~~
+### ~~xfoHandle.showHandles(visible)~~
 ***Deprecated***
 
 Displays handles depending on the specified mode(Move, Rotate, Scale).If nothing is specified, it hides all of them.
@@ -33,7 +33,7 @@ Displays handles depending on the specified mode(Move, Rotate, Scale).If nothin
 
 | Param | Type | Description |
 | --- | --- | --- |
-| handleManipulationMode | <code>string</code> | The mode of the Xfo parameter |
+| visible | <code>boolean</code> | The mode of the Xfo parameter |
 
 <a name="XfoHandle+setTargetParam"></a>
 

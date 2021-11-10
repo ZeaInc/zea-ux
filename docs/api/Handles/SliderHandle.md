@@ -63,7 +63,7 @@ Handles the initially drag of the handle.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
+| event | <code>ZeaMouseEvent</code> \| <code>ZeaTouchEvent</code> \| <code>object</code> | The event param. |
 
 <a name="SliderHandle+onDrag"></a>
 
@@ -74,7 +74,7 @@ Handles drag action of the handle.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
+| event | <code>ZeaMouseEvent</code> \| <code>ZeaTouchEvent</code> \| <code>object</code> | The event param. |
 
 <a name="SliderHandle+onDragEnd"></a>
 
@@ -85,7 +85,7 @@ Handles the end of dragging the handle.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
+| event | <code>ZeaMouseEvent</code> \| <code>ZeaTouchEvent</code> \| <code>object</code> | The event param. |
 
 <a name="SliderHandle+toJSON"></a>
 

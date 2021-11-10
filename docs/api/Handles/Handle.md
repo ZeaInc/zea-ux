@@ -65,7 +65,7 @@ Event fired when a pointing device is initially moved within the space of the ha
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
+| event | <code>ZeaPointerEvent</code> | The event param. |
 
 <a name="Handle+onPointerLeave"></a>
 
@@ -76,7 +76,7 @@ Event fired when a pointing device moves outside of the space of the handle.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
+| event | <code>ZeaPointerEvent</code> | The event param. |
 
 <a name="Handle+onPointerDown"></a>
 
@@ -87,7 +87,7 @@ Event fired when a pointing device button is pressed while the pointer is over t
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
+| event | <code>ZeaPointerEvent</code> | The event param. |
 
 <a name="Handle+onPointerMove"></a>
 
@@ -98,7 +98,7 @@ Event fired when a pointing device is moved while the cursor's hotspot is over t
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
+| event | <code>ZeaPointerEvent</code> | The event param. |
 
 <a name="Handle+onPointerUp"></a>
 
@@ -109,7 +109,7 @@ Event fired when a pointing device button is released while the pointer is over 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
+| event | <code>ZeaPointerEvent</code> | The event param. |
 
 <a name="Handle+onWheel"></a>
 
@@ -120,7 +120,7 @@ Event fired when the user rotates the pointing device wheel over the handle.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> | The event param. |
+| event | <code>ZeaWheelEvent</code> | The event param. |
 
 <a name="Handle+handlePointerDown"></a>
 
@@ -132,7 +132,7 @@ Handles mouse down interaction with the handle.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> | The event param. |
+| event | <code>ZeaMouseEvent</code> | The event param. |
 
 <a name="Handle+handlePointerMove"></a>
 
@@ -144,7 +144,7 @@ Handles mouse move interaction with the handle.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> | The event param |
+| event | <code>ZeaMouseEvent</code> | The event param |
 
 <a name="Handle+handlePointerUp"></a>
 
@@ -156,7 +156,7 @@ Handles mouse up interaction with the handle.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> | The event param. |
+| event | <code>ZeaMouseEvent</code> | The event param. |
 
 <a name="Handle+onVRControllerButtonDown"></a>
 
@@ -203,7 +203,7 @@ Handles the initially drag of the handle.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
+| event | <code>ZeaPointerEvent</code> | The event param. |
 
 <a name="Handle+onDrag"></a>
 
@@ -214,7 +214,7 @@ Handles drag action of the handle.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
+| event | <code>ZeaPointerEvent</code> | The event param. |
 
 <a name="Handle+onDragEnd"></a>
 
@@ -225,5 +225,5 @@ Handles the end of dragging the handle.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
+| event | <code>ZeaPointerEvent</code> | The event param. |
 

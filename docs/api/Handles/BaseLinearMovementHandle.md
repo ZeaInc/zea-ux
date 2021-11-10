@@ -35,7 +35,7 @@ Handles mouse down interaction with the handle.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
+| event | <code>ZeaMouseEvent</code> \| <code>ZeaTouchEvent</code> \| <code>object</code> | The event param. |
 
 <a name="BaseLinearMovementHandle+handlePointerMove"></a>
 
@@ -46,7 +46,7 @@ Handles mouse move interaction with the handle.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param |
+| event | <code>ZeaMouseEvent</code> \| <code>ZeaTouchEvent</code> \| <code>object</code> | The event param |
 
 <a name="BaseLinearMovementHandle+handlePointerUp"></a>
 
@@ -58,7 +58,7 @@ Handles mouse up interaction with the handle.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
+| event | <code>ZeaMouseEvent</code> \| <code>ZeaTouchEvent</code> \| <code>object</code> | The event param. |
 
 <a name="BaseLinearMovementHandle+onVRControllerButtonDown"></a>
 

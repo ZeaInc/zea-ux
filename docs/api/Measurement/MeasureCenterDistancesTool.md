@@ -44,7 +44,7 @@ The deactivateTool method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> \| <code>TouchEvent</code> | The event value |
+| event | <code>ZeaMouseEvent</code> \| <code>ZeaTouchEvent</code> | The event value |
 
 <a name="MeasureCenterDistancesTool+checkGeom"></a>
 
@@ -64,7 +64,7 @@ Checks to see if the surface is appropriate for this kind of measurement.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> \| <code>TouchEvent</code> | The event value |
+| event | <code>ZeaMouseEvent</code> \| <code>ZeaTouchEvent</code> | The event value |
 
 <a name="MeasureCenterDistancesTool+onPointerUp"></a>
 
@@ -73,5 +73,5 @@ Checks to see if the surface is appropriate for this kind of measurement.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> \| <code>TouchEvent</code> | The event value |
+| event | <code>ZeaMouseEvent</code> \| <code>ZeaTouchEvent</code> | The event value |
 

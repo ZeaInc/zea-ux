@@ -56,7 +56,7 @@ Handles mouse down interaction with the handle.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> | The event param. |
+| event | <code>ZeaMouseEvent</code> | The event param. |
 
 <a name="ScreenSpaceMovementHandle+handlePointerMove"></a>
 
@@ -68,7 +68,7 @@ Handles mouse move interaction with the handle.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> \| <code>TouchEvent</code> | The event param |
+| event | <code>ZeaMouseEvent</code> \| <code>ZeaTouchEvent</code> | The event param |
 
 <a name="ScreenSpaceMovementHandle+handlePointerUp"></a>
 
@@ -80,7 +80,7 @@ Handles mouse up interaction with the handle.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> \| <code>TouchEvent</code> | The event param. |
+| event | <code>ZeaMouseEvent</code> \| <code>ZeaTouchEvent</code> | The event param. |
 
 <a name="ScreenSpaceMovementHandle+onDragStart"></a>
 
@@ -91,7 +91,7 @@ Handles the initially drag of the handle.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
+| event | <code>ZeaMouseEvent</code> \| <code>ZeaTouchEvent</code> \| <code>object</code> | The event param. |
 
 <a name="ScreenSpaceMovementHandle+onDrag"></a>
 
@@ -102,7 +102,7 @@ Handles drag action of the handle.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
+| event | <code>ZeaMouseEvent</code> \| <code>ZeaTouchEvent</code> \| <code>object</code> | The event param. |
 
 <a name="ScreenSpaceMovementHandle+onDragEnd"></a>
 
@@ -113,5 +113,5 @@ Handles the end of dragging the handle.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
+| event | <code>ZeaMouseEvent</code> \| <code>ZeaTouchEvent</code> \| <code>object</code> | The event param. |
 

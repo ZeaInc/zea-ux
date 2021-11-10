@@ -43,7 +43,7 @@ The deactivateTool method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> \| <code>TouchEvent</code> | The event value |
+| event | <code>ZeaMouseEvent</code> \| <code>ZeaTouchEvent</code> | The event value |
 
 <a name="MeasureDistanceTool+onPointerMove"></a>
 
@@ -52,7 +52,7 @@ The deactivateTool method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> \| <code>TouchEvent</code> | The event value |
+| event | <code>ZeaMouseEvent</code> \| <code>ZeaTouchEvent</code> | The event value |
 
 <a name="MeasureDistanceTool+onPointerUp"></a>
 
@@ -61,5 +61,5 @@ The deactivateTool method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> \| <code>TouchEvent</code> | The event value |
+| event | <code>ZeaMouseEvent</code> \| <code>ZeaTouchEvent</code> | The event value |
 

@@ -162,7 +162,7 @@ Event fired when a pointing device button is pressed
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> | The event param. |
+| event | <code>ZeaMouseEvent</code> | The event param. |
 
 <a name="VRHoldObjectsTool+onPointerUp"></a>
 
@@ -173,7 +173,7 @@ Event fired when a pointing device button is released while the pointer is over 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> | The event param. |
+| event | <code>ZeaMouseEvent</code> | The event param. |
 
 <a name="VRHoldObjectsTool+onPointerMove"></a>
 
@@ -184,7 +184,7 @@ Event fired when a pointing device is moved
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> | The event param. |
+| event | <code>ZeaMouseEvent</code> | The event param. |
 
 <a name="VRHoldObjectsTool+onPointerDoublePress"></a>
 
@@ -195,5 +195,5 @@ Event fired when a pointing device button is double clicked on the tool.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> | The event param. |
+| event | <code>ZeaMouseEvent</code> | The event param. |
 

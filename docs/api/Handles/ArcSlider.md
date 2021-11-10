@@ -44,7 +44,7 @@ Event fired when a pointing device is initially moved within the space of the ha
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> | The event param. |
+| event | <code>ZeaMouseEvent</code> | The event param. |
 
 <a name="ArcSlider+onPointerLeave"></a>
 
@@ -55,7 +55,7 @@ Event fired when a pointing device moves outside of the space of the handle.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> | The event param. |
+| event | <code>ZeaMouseEvent</code> | The event param. |
 
 <a name="ArcSlider+onPointerDown"></a>
 
@@ -66,7 +66,7 @@ Event fired when a pointing device button is pressed while the pointer is over t
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> | The event param. |
+| event | <code>ZeaMouseEvent</code> | The event param. |
 
 <a name="ArcSlider+highlight"></a>
 
@@ -108,7 +108,7 @@ Handles the initially drag interaction of the handle.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
+| event | <code>ZeaMouseEvent</code> \| <code>ZeaTouchEvent</code> \| <code>object</code> | The event param. |
 
 <a name="ArcSlider+onDrag"></a>
 
@@ -119,7 +119,7 @@ Handles drag interaction of the handle.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
+| event | <code>ZeaMouseEvent</code> \| <code>ZeaTouchEvent</code> \| <code>object</code> | The event param. |
 
 <a name="ArcSlider+onDragEnd"></a>
 
@@ -130,7 +130,7 @@ Handles the end of dragging interaction with the handle.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> \| <code>TouchEvent</code> \| <code>object</code> | The event param. |
+| event | <code>ZeaMouseEvent</code> \| <code>ZeaTouchEvent</code> \| <code>object</code> | The event param. |
 
 <a name="ArcSlider+toJSON"></a>
 

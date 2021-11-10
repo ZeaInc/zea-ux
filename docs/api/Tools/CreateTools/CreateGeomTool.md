@@ -71,7 +71,7 @@ Transforms the screen position in the viewport to an Xfo object.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> \| <code>TouchEvent</code> | The event param |
+| event | <code>ZeaMouseEvent</code> \| <code>ZeaTouchEvent</code> | The event param |
 
 <a name="CreateGeomTool+createStart"></a>
 
@@ -126,7 +126,7 @@ Event fired when a pointing device button is pressed over the viewport while the
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> \| <code>TouchEvent</code> | The event param. |
+| event | <code>ZeaMouseEvent</code> \| <code>ZeaTouchEvent</code> | The event param. |
 
 <a name="CreateGeomTool+onPointerMove"></a>
 
@@ -137,7 +137,7 @@ Event fired when a pointing device is moved while the cursor's hotspot is inside
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> \| <code>TouchEvent</code> | The event param. |
+| event | <code>ZeaMouseEvent</code> \| <code>ZeaTouchEvent</code> | The event param. |
 
 <a name="CreateGeomTool+onPointerUp"></a>
 
@@ -148,7 +148,7 @@ Event fired when a pointing device button is released while the pointer is over 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> \| <code>TouchEvent</code> | The event param. |
+| event | <code>ZeaMouseEvent</code> \| <code>ZeaTouchEvent</code> | The event param. |
 
 <a name="CreateGeomTool+onWheel"></a>
 
@@ -159,7 +159,7 @@ Event fired when the user rotates the pointing device wheel, while the tool is a
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>MouseEvent</code> | The event param. |
+| event | <code>ZeaMouseEvent</code> | The event param. |
 
 <a name="CreateGeomTool+onKeyPressed"></a>
 
@@ -203,7 +203,7 @@ Event fired when one or more touch points have been disrupted in an implementati
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>TouchEvent</code> | The event param. |
+| event | <code>ZeaTouchEvent</code> | The event param. |
 
 <a name="CreateGeomTool+onVRControllerButtonDown"></a>
 
