@@ -46,7 +46,7 @@ class MeasureRadiusTool extends BaseTool {
   /**
    *
    *
-   * @param {MouseEvent|TouchEvent} event - The event value
+   * @param {ZeaMouseEvent|ZeaTouchEvent} event - The event value
    */
   onPointerDown(event) {
     // skip if the alt key is held. Allows the camera tool to work
@@ -119,7 +119,7 @@ class MeasureRadiusTool extends BaseTool {
   /**
    *
    *
-   * @param {MouseEvent|TouchEvent} event - The event value
+   * @param {ZeaMouseEvent|ZeaTouchEvent} event - The event value
    */
   onPointerMove(event) {
     // skip if the alt key is held. Allows the camera tool to work
@@ -154,7 +154,7 @@ class MeasureRadiusTool extends BaseTool {
   /**
    *
    *
-   * @param {MouseEvent|TouchEvent} event - The event value
+   * @param {ZeaMouseEvent|ZeaTouchEvent} event - The event value
    */
   onPointerUp(event) {}
 }

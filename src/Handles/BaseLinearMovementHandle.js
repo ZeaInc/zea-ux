@@ -20,7 +20,7 @@ class BaseLinearMovementHandle extends Handle {
   /**
    * Handles mouse down interaction with the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param {ZeaMouseEvent|ZeaTouchEvent|object} event - The event param.
    * @return {boolean} - The return value.
    */
   handlePointerDown(event) {
@@ -37,7 +37,7 @@ class BaseLinearMovementHandle extends Handle {
   /**
    * Handles mouse move interaction with the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param
+   * @param {ZeaMouseEvent|ZeaTouchEvent|object} event - The event param
    */
   handlePointerMove(event) {
     const ray = event.pointerRay
@@ -53,7 +53,7 @@ class BaseLinearMovementHandle extends Handle {
   /**
    * Handles mouse up interaction with the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param {ZeaMouseEvent|ZeaTouchEvent|object} event - The event param.
    * @return {boolean} - The return value.
    */
   handlePointerUp(event) {

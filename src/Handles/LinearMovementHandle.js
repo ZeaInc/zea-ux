@@ -92,7 +92,7 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
   /**
    * Handles the initially drag of the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param {ZeaMouseEvent|ZeaTouchEvent|object} event - The event param.
    */
   onDragStart(event) {
     this.grabPos = event.grabPos
@@ -106,7 +106,7 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
   /**
    * Handles drag action of the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param {ZeaMouseEvent|ZeaTouchEvent|object} event - The event param.
    */
   onDrag(event) {
     const dragVec = event.holdPos.subtract(this.grabPos)
@@ -122,7 +122,7 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
   /**
    * Handles the end of dragging the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param {ZeaMouseEvent|ZeaTouchEvent|object} event - The event param.
    */
   onDragEnd(event) {
     this.change = null

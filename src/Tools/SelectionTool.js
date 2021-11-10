@@ -104,7 +104,7 @@ class SelectionTool extends BaseTool {
   /**
    *
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param {ZeaMouseEvent|ZeaTouchEvent|object} event - The event param.
    * @private
    */
   onPointerDoublePress(event) {}
@@ -112,7 +112,7 @@ class SelectionTool extends BaseTool {
   /**
    * Event fired when a pointing device button is pressed while the pointer is over the tool.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param {ZeaMouseEvent|ZeaTouchEvent|object} event - The event param.
    * @return {boolean} The return value.
    */
   onPointerDown(event) {
@@ -127,7 +127,7 @@ class SelectionTool extends BaseTool {
   /**
    * Event fired when a pointing device is moved while the cursor's hotspot is inside it.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param {ZeaMouseEvent|ZeaTouchEvent|object} event - The event param.
    * @return {boolean} The return value.
    */
   onPointerMove(event) {
@@ -149,7 +149,7 @@ class SelectionTool extends BaseTool {
   /**
    * Event fired when a pointing device button is released while the pointer is over the tool.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param {ZeaMouseEvent|ZeaTouchEvent|object} event - The event param.
    * @return {boolean} The return value.
    */
   onPointerUp(event) {

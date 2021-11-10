@@ -241,7 +241,7 @@ class VRHoldObjectsTool extends BaseTool {
   /**
    * Event fired when a pointing device button is pressed
    *
-   * @param {MouseEvent} event - The event param.
+   * @param {ZeaMouseEvent} event - The event param.
    */
   onPointerDown(event) {
     if (event.pointerType === POINTER_TYPES.xr) {
@@ -287,7 +287,7 @@ class VRHoldObjectsTool extends BaseTool {
   /**
    * Event fired when a pointing device button is released while the pointer is over the tool.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param {ZeaMouseEvent} event - The event param.
    */
   onPointerUp(event) {
     if (event.pointerType === POINTER_TYPES.xr) {
@@ -314,7 +314,7 @@ class VRHoldObjectsTool extends BaseTool {
   /**
    * Event fired when a pointing device is moved
    *
-   * @param {MouseEvent} event - The event param.
+   * @param {ZeaMouseEvent} event - The event param.
    */
   onPointerMove(event) {
     if (event.pointerType === POINTER_TYPES.xr) {
@@ -362,7 +362,7 @@ class VRHoldObjectsTool extends BaseTool {
   /**
    * Event fired when a pointing device button is double clicked on the tool.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param {ZeaMouseEvent} event - The event param.
    */
   onPointerDoublePress(event) {
     if (event.pointerType === POINTER_TYPES.xr) {

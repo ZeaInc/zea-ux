@@ -105,7 +105,7 @@ class ArcSlider extends BaseAxialRotationHandle {
   /**
    * Event fired when a pointing device is initially moved within the space of the handle.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param {ZeaMouseEvent} event - The event param.
    */
   onPointerEnter(event) {
     if (event.intersectionData && event.intersectionData.geomItem == this.handle) this.highlight()
@@ -114,7 +114,7 @@ class ArcSlider extends BaseAxialRotationHandle {
   /**
    * Event fired when a pointing device moves outside of the space of the handle.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param {ZeaMouseEvent} event - The event param.
    */
   onPointerLeave(event) {
     this.unhighlight()
@@ -123,7 +123,7 @@ class ArcSlider extends BaseAxialRotationHandle {
   /**
    * Event fired when a pointing device button is pressed while the pointer is over the handle element.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param {ZeaMouseEvent} event - The event param.
    */
   onPointerDown(event) {
     // We do not want to handle events
@@ -213,7 +213,7 @@ class ArcSlider extends BaseAxialRotationHandle {
   /**
    * Handles the initially drag interaction of the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param {ZeaMouseEvent|ZeaTouchEvent|object} event - The event param.
    */
   onDragStart(event) {
     this.baseXfo = this.getParameter('GlobalXfo').getValue().clone()
@@ -238,7 +238,7 @@ class ArcSlider extends BaseAxialRotationHandle {
   /**
    * Handles drag interaction of the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param {ZeaMouseEvent|ZeaTouchEvent|object} event - The event param.
    */
   onDrag(event) {
     const vec1 = event.holdPos.subtract(this.baseXfo.tr)
@@ -284,7 +284,7 @@ class ArcSlider extends BaseAxialRotationHandle {
   /**
    * Handles the end of dragging interaction with the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param {ZeaMouseEvent|ZeaTouchEvent|object} event - The event param.
    */
   onDragEnd(event) {
     this.change = null

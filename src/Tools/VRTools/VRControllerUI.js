@@ -189,7 +189,7 @@ export default class VRControllerUI extends TreeItem {
   sendMouseEvent(eventName, args, element) {
     // console.log('sendMouseEvent:', eventName, element)
 
-    const event = new MouseEvent(
+    const event = new ZeaMouseEvent(
       eventName,
       Object.assign(
         {

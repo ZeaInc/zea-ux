@@ -62,7 +62,7 @@ class ToolManager extends BaseTool {
   /**
    * Event fired when a pointing device button is pressed while the pointer is over the tool.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param {ZeaMouseEvent} event - The event param.
    */
   onPointerDown(event) {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
@@ -77,7 +77,7 @@ class ToolManager extends BaseTool {
   /**
    * Event fired when a pointing device is moved while the cursor's hotspot is inside it.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param {ZeaMouseEvent} event - The event param.
    */
   onPointerMove(event) {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
@@ -92,7 +92,7 @@ class ToolManager extends BaseTool {
   /**
    * Event fired when a pointing device button is released while the pointer is over the tool.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param {ZeaMouseEvent} event - The event param.
    */
   onPointerUp(event) {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
@@ -107,7 +107,7 @@ class ToolManager extends BaseTool {
   /**
    * Event fired when a pointing device button is double clicked on the tool.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param {ZeaMouseEvent} event - The event param.
    */
   onPointerDoublePress(event) {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
@@ -122,7 +122,7 @@ class ToolManager extends BaseTool {
   /**
    * Event fired when the user rotates the pointing device wheel.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param {ZeaMouseEvent} event - The event param.
    */
   onWheel(event) {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {

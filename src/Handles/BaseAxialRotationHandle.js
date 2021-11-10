@@ -47,7 +47,7 @@ class BaseAxialRotationHandle extends Handle {
   /**
    * Handles the initially drag of the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param {ZeaMouseEvent|ZeaTouchEvent|object} event - The event param.
    */
   onDragStart(event) {
     this.baseXfo = this.getParameter('GlobalXfo').getValue().clone()
@@ -69,7 +69,7 @@ class BaseAxialRotationHandle extends Handle {
   /**
    * Handles drag action of the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param {ZeaMouseEvent|ZeaTouchEvent|object} event - The event param.
    */
   onDrag(event) {
     const vec1 = event.holdPos.subtract(this.baseXfo.tr)
@@ -110,7 +110,7 @@ class BaseAxialRotationHandle extends Handle {
   /**
    * Handles the end of dragging the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param {ZeaMouseEvent|ZeaTouchEvent|object} event - The event param.
    */
   onDragEnd(event) {
     this.change = null

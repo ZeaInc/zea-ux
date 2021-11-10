@@ -50,7 +50,7 @@ class ScreenSpaceMovementHandle extends Handle {
   /**
    * Handles mouse down interaction with the handle.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param {ZeaMouseEvent} event - The event param.
    * @return {boolean} - The return value.
    */
   handlePointerDown(event) {
@@ -70,7 +70,7 @@ class ScreenSpaceMovementHandle extends Handle {
   /**
    * Handles mouse move interaction with the handle.
    *
-   * @param {MouseEvent|TouchEvent} event - The event param
+   * @param {ZeaMouseEvent|ZeaTouchEvent} event - The event param
    * @return {boolean} - The return value
    */
   handlePointerMove(event) {
@@ -84,7 +84,7 @@ class ScreenSpaceMovementHandle extends Handle {
   /**
    * Handles mouse up interaction with the handle.
    *
-   * @param {MouseEvent|TouchEvent} event - The event param.
+   * @param {ZeaMouseEvent|ZeaTouchEvent} event - The event param.
    * @return {boolean} - The return value.
    */
   handlePointerUp(event) {
@@ -104,7 +104,7 @@ class ScreenSpaceMovementHandle extends Handle {
   /**
    * Handles the initially drag of the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param {ZeaMouseEvent|ZeaTouchEvent|object} event - The event param.
    */
   onDragStart(event) {
     this.grabPos = event.grabPos
@@ -118,7 +118,7 @@ class ScreenSpaceMovementHandle extends Handle {
   /**
    * Handles drag action of the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param {ZeaMouseEvent|ZeaTouchEvent|object} event - The event param.
    */
   onDrag(event) {
     const dragVec = event.holdPos.subtract(this.grabPos)
@@ -134,7 +134,7 @@ class ScreenSpaceMovementHandle extends Handle {
   /**
    * Handles the end of dragging the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param {ZeaMouseEvent|ZeaTouchEvent|object} event - The event param.
    */
   onDragEnd(event) {
     this.change = null

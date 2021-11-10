@@ -84,7 +84,7 @@ class CreateGeomTool extends BaseCreateTool {
   /**
    * Transforms the screen position in the viewport to an Xfo object.
    *
-   * @param {MouseEvent|TouchEvent} event - The event param
+   * @param {ZeaMouseEvent|ZeaTouchEvent} event - The event param
    * @return {Xfo} The return value.
    */
   screenPosToXfo(event) {
@@ -152,7 +152,7 @@ class CreateGeomTool extends BaseCreateTool {
   /**
    * Event fired when a pointing device button is pressed over the viewport while the tool is activated.
    *
-   * @param {MouseEvent|TouchEvent} event - The event param.
+   * @param {ZeaMouseEvent|ZeaTouchEvent} event - The event param.
    */
   onPointerDown(event) {
     // skip if the alt key is held. Allows the camera tool to work
@@ -184,7 +184,7 @@ class CreateGeomTool extends BaseCreateTool {
   /**
    * Event fired when a pointing device is moved while the cursor's hotspot is inside the viewport, while tool is activated.
    *
-   * @param {MouseEvent|TouchEvent} event - The event param.
+   * @param {ZeaMouseEvent|ZeaTouchEvent} event - The event param.
    */
   onPointerMove(event) {
     if (event.pointerType === POINTER_TYPES.xr) {
@@ -200,7 +200,7 @@ class CreateGeomTool extends BaseCreateTool {
   /**
    * Event fired when a pointing device button is released while the pointer is over the viewport, while the tool is activated.
    *
-   * @param {MouseEvent|TouchEvent} event - The event param.
+   * @param {ZeaMouseEvent|ZeaTouchEvent} event - The event param.
    */
   onPointerUp(event) {
     if (event.pointerType === POINTER_TYPES.xr) {
@@ -215,7 +215,7 @@ class CreateGeomTool extends BaseCreateTool {
   /**
    * Event fired when the user rotates the pointing device wheel, while the tool is activated.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param {ZeaMouseEvent} event - The event param.
    */
   onWheel(event) {
     // console.warn('Implement me')
@@ -256,7 +256,7 @@ class CreateGeomTool extends BaseCreateTool {
   /**
    * Event fired when one or more touch points have been disrupted in an implementation-specific manner inside the viewport, when the tool is activated.
    *
-   * @param {TouchEvent} event - The event param.
+   * @param {ZeaTouchEvent} event - The event param.
    */
   onTouchCancel(event) {
     // console.warn('Implement me')
