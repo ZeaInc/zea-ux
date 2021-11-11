@@ -64,7 +64,7 @@ class SelectionManager extends EventEmitter {
   /**
    * Sets initial Xfo mode of the selection group.
    *
-   * @see `Group` class documentation
+   * @see `KinematicGroup` class documentation
    *
    * @param {number} mode - The Xfo mode
    */

@@ -1,4 +1,4 @@
-import { Vec3, Color, GeomItem, Material, Lines } from '@zeainc/zea-engine'
+import { Vec3, Color, GeomItem, FatLinesMaterial, Lines } from '@zeainc/zea-engine'
 import { UndoRedoManager } from '../../../UndoRedo/index'
 import CreateGeomChange from './CreateGeomChange'
 
@@ -31,10 +31,10 @@ class CreateFreehandLineChange extends CreateGeomChange {
     this.line.getVertexAttribute('positions').setValue(0, new Vec3())
     this.line.lineThickness = thickness
 
-    const material = new Material('freeHandLine', 'FatLinesShader')
-    material.getParameter('LineThickness').setValue(thickness)
+    const material = new FatLinesMaterial('freeHandLine')
+    material.lineThicknessParam.value = thickness
     if (color) {
-      material.getParameter('BaseColor').setValue(color)
+      material.baseColorParam.value = color
     }
 
     this.geomItem = new GeomItem('freeHandLine', this.line, material)

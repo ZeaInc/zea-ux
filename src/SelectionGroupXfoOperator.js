@@ -1,4 +1,4 @@
-import { Xfo, Group, Operator, OperatorInput, OperatorOutput } from '@zeainc/zea-engine'
+import { Xfo, KinematicGroup, Operator, OperatorInput, OperatorOutput } from '@zeainc/zea-engine'
 
 /**
  * An operator for aiming items at targets.
@@ -9,8 +9,8 @@ class SelectionGroupXfoOperator extends Operator {
   /**
    * Creates an instance of SelectionGroupXfoOperator.
    *
-   * @param {number} initialXfoModeParam - Initial XFO Mode, check `INITIAL_XFO_MODES` in `Group` documentation
-   * @param {XfoParameter} globalXfoParam - The GlobalXfo param found on the Group.
+   * @param {number} initialXfoModeParam - Initial XFO Mode, check `INITIAL_XFO_MODES` in `KinematicGroup` documentation
+   * @param {XfoParameter} globalXfoParam - The GlobalXfo param found on the KinematicKinematicGroup.
    */
   constructor(initialXfoModeParam, globalXfoParam) {
     super()
@@ -33,7 +33,7 @@ class SelectionGroupXfoOperator extends Operator {
   /**
    * Finds and removes the `OperatorInput` of the specified `TreeItem` from current`Operator`.
    *
-   * @param {TreeItem} item - The Bind Xfo calculated from the initial Transforms of the Group Members.
+   * @param {TreeItem} item - The Bind Xfo calculated from the initial Transforms of the KinematicGroup Members.
    */
   removeItem(item) {
     // The first input it the 'InitialXfoMode', so remove the input for the specified item.
@@ -89,15 +89,15 @@ class SelectionGroupXfoOperator extends Operator {
     }
 
     const initialXfoMode = this.getInput('InitialXfoMode').getValue()
-    if (initialXfoMode == Group.INITIAL_XFO_MODES.manual) {
+    if (initialXfoMode == KinematicGroup.INITIAL_XFO_MODES.manual) {
       // The xfo is manually set by the current global xfo.
       this.currGroupXfo = groupTransformOutput.getValue().clone()
       return
-    } else if (initialXfoMode == Group.INITIAL_XFO_MODES.first) {
+    } else if (initialXfoMode == KinematicGroup.INITIAL_XFO_MODES.first) {
       const itemXfo = this.getInputByIndex(1).getValue()
       this.currGroupXfo.tr = itemXfo.tr.clone()
       this.currGroupXfo.ori = itemXfo.ori.clone()
-    } else if (initialXfoMode == Group.INITIAL_XFO_MODES.average) {
+    } else if (initialXfoMode == KinematicGroup.INITIAL_XFO_MODES.average) {
       this.currGroupXfo.ori.set(0, 0, 0, 0)
       let numTreeItems = 0
       for (let i = 1; i < this.getNumInputs(); i++) {
@@ -110,7 +110,7 @@ class SelectionGroupXfoOperator extends Operator {
       }
       this.currGroupXfo.tr.scaleInPlace(1 / numTreeItems)
       // this.currGroupXfo.sc.scaleInPlace(1 / numTreeItems);
-    } else if (initialXfoMode == Group.INITIAL_XFO_MODES.globalOri) {
+    } else if (initialXfoMode == KinematicGroup.INITIAL_XFO_MODES.globalOri) {
       let numTreeItems = 0
       for (let i = 1; i < this.getNumInputs(); i++) {
         const itemXfo = this.getInputByIndex(i).getValue()
@@ -119,7 +119,7 @@ class SelectionGroupXfoOperator extends Operator {
       }
       this.currGroupXfo.tr.scaleInPlace(1 / numTreeItems)
     } else {
-      throw new Error('Invalid Group.INITIAL_XFO_MODES.')
+      throw new Error('Invalid KinematicGroup.INITIAL_XFO_MODES.')
     }
     this.currGroupXfo.ori.normalizeInPlace()
     groupTransformOutput.setClean(this.currGroupXfo)

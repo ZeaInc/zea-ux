@@ -27,8 +27,11 @@ class CreateSphereTool extends CreateGeomTool {
    */
   createStart(xfo) {
     this.change = new CreateSphereChange(this.parentItem, xfo, this.colorParam.getValue())
-    UndoRedoManager.getInstance().addChange(this.change)
 
+    // During construction, make it note selectable.
+    this.change.geomItem.setSelectable(false)
+
+    UndoRedoManager.getInstance().addChange(this.change)
     this.xfo = xfo
     this.stage = 1
     this.radius = 0.0
@@ -53,6 +56,8 @@ class CreateSphereTool extends CreateGeomTool {
     if (this.radius == 0) {
       UndoRedoManager.getInstance().cancel()
     }
+    // After completion, make it selectable.
+    this.change.geomItem.setSelectable(true)
     this.stage = 0
     this.emit('actionFinished')
   }

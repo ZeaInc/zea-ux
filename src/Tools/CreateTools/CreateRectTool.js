@@ -26,6 +26,10 @@ class CreateRectTool extends CreateGeomTool {
    */
   createStart(xfo) {
     this.change = new CreateRectChange(this.parentItem, xfo)
+
+    // During construction, make it note selectable.
+    this.change.geomItem.setSelectable(false)
+
     UndoRedoManager.getInstance().addChange(this.change)
 
     this.xfo = xfo
@@ -65,6 +69,9 @@ class CreateRectTool extends CreateGeomTool {
     if (this._size == 0) {
       UndoRedoManager.getInstance().cancel()
     }
+
+    // After completion, make it selectable.
+    this.change.geomItem.setSelectable(true)
     this.stage = 0
     this.emit('actionFinished')
   }

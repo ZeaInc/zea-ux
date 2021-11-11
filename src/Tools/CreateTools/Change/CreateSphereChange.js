@@ -15,6 +15,7 @@ class CreateSphereChange extends CreateGeomChange {
    * Create a create sphere change.
    * @param {TreeItem} parentItem - The parentItem value.
    * @param {Xfo} xfo - The xfo value.
+   * @param {Color} color - The color of the sphere to create.
    */
   constructor(parentItem, xfo, color) {
     super('CreateSphere', parentItem)
@@ -22,6 +23,7 @@ class CreateSphereChange extends CreateGeomChange {
     this.sphere = new Sphere(0, 24, 12)
     const material = new Material('Sphere', 'SimpleSurfaceShader')
     this.geomItem = new GeomItem('Sphere', this.sphere, material)
+    this.geomItem.setSelectable(false)
 
     if (parentItem && xfo && color) {
       material.getParameter('BaseColor').setValue(color)
@@ -35,7 +37,7 @@ class CreateSphereChange extends CreateGeomChange {
    * @param {object} updateData - The updateData param.
    */
   update(updateData) {
-    this.sphere.getParameter('Radius').setValue(updateData.radius)
+    this.sphere.radiusParam.value = updateData.radius
 
     this.emit('updated', updateData)
   }
@@ -47,7 +49,7 @@ class CreateSphereChange extends CreateGeomChange {
    */
   toJSON() {
     const j = super.toJSON()
-    j.radius = this.sphere.getParameter('Radius').getValue()
+    j.radius = this.sphere.radiusParam.getValue()
     return j
   }
 
@@ -57,7 +59,7 @@ class CreateSphereChange extends CreateGeomChange {
    * @param {object} j - The j param.
    */
   updateFromJSON(j) {
-    if (j.radius) this.sphere.getParameter('Radius').setValue(j.radius)
+    if (j.radius) this.sphere.radiusParam.value = j.radius
   }
 }
 

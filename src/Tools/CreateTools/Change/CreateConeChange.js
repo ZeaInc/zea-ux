@@ -21,6 +21,7 @@ class CreateConeChange extends CreateGeomChange {
     super('Create Cone')
 
     const cone = new Cone(0.0, 0.0)
+    cone.heightParam.value = 0
     const material = new Material('Cone', 'SimpleSurfaceShader')
     this.geomItem = new GeomItem('Cone', cone, material)
 

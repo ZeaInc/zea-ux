@@ -156,7 +156,7 @@ class CreateGeomTool extends BaseCreateTool {
    */
   onPointerDown(event) {
     // skip if the alt key is held. Allows the camera tool to work
-    if (event.pointerType === POINTER_TYPES.xr) {
+    if (event.pointerType === 'xr') {
       this.onVRControllerButtonDown(event)
     } else {
       if (event.altKey) return
@@ -187,7 +187,7 @@ class CreateGeomTool extends BaseCreateTool {
    * @param {MouseEvent|TouchEvent} event - The event param.
    */
   onPointerMove(event) {
-    if (event.pointerType === POINTER_TYPES.xr) {
+    if (event.pointerType === 'xr') {
       this.onVRPoseChanged(event)
     } else if (this.stage > 0) {
       const xfo = this.screenPosToXfo(event)
@@ -203,7 +203,7 @@ class CreateGeomTool extends BaseCreateTool {
    * @param {MouseEvent|TouchEvent} event - The event param.
    */
   onPointerUp(event) {
-    if (event.pointerType === POINTER_TYPES.xr) {
+    if (event.pointerType === 'xr') {
       this.onVRControllerButtonUp(event)
     } else if (this.stage > 0) {
       const xfo = this.screenPosToXfo(event)

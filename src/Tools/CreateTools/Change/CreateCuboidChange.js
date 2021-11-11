@@ -37,7 +37,8 @@ class CreateCuboidChange extends CreateGeomChange {
    */
   update(updateData) {
     if (updateData.baseSize) {
-      this.cuboid.setBaseSize(updateData.baseSize[0], updateData.baseSize[1])
+      this.cuboid.sizeXParam.value = updateData.baseSize[0]
+      this.cuboid.sizeYParam.value = updateData.baseSize[1]
     }
     if (updateData.tr) {
       const xfo = this.geomItem.getParameter('LocalXfo').getValue()
@@ -45,7 +46,7 @@ class CreateCuboidChange extends CreateGeomChange {
       this.geomItem.getParameter('LocalXfo').setValue(xfo)
     }
     if (updateData.height) {
-      this.cuboid.getParameter('Z').setValue(updateData.height)
+      this.cuboid.sizeZParam.value = updateData.height
     }
     this.emit('updated', updateData)
   }

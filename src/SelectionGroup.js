@@ -10,7 +10,7 @@ const GROUP_XFO_MODES = {
 }
 
 /**
- * A specific type of `Group` class that contains/handles selection of one or more items from the scene.
+ * A specific type of `SelectionSet` class that contains/handles selection of one or more items from the scene.
  *
  * **Option parameter values**
  *
@@ -19,7 +19,7 @@ const GROUP_XFO_MODES = {
  * | selectionOutlineColor | `Color` | `new Color('#03e3ac'))`  and opacity of `0.1` | See `Color` documentation |
  * | branchSelectionOutlineColor | `Color` | `new Color('#81f1d5')` and opacity of `0.55` | See `Color` documentation |
  *
- * @extends {Group}
+ * @extends {SelectionSet}
  */
 class SelectionGroup extends SelectionSet {
   /**

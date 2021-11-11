@@ -13,9 +13,13 @@
         margin: 0;
       }
 
-      #renderer {
+      #rendererHolder {
         width: 100%;
         height: calc(100% - 35px);
+      }
+      #renderer {
+        width: 100%;
+        height: 100%;
       }
 
       #controllers {
@@ -57,6 +61,7 @@
       const renderer = new GLRenderer($canvas, { hideSplash: true })
       renderer.setScene(scene)
 
+      window.renderer = renderer
       {
         const material1 = new Material('material1', 'SimpleSurfaceShader')
         material1.getParameter('BaseColor').setValue(new Color('#94C47D'))
@@ -150,6 +155,8 @@
         <input type="checkbox" name="selection-cbx" id="selection-cbx" />
       </div>
     </div>
-    <canvas id="renderer" />
+    <div id="rendererHolder">
+      <canvas id="renderer" />
+    </div>
   </body>
 </html>

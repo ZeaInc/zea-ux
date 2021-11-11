@@ -29,6 +29,10 @@ class CreateConeTool extends CreateGeomTool {
     this.xfo = xfo
     this.invXfo = xfo.inverse()
     this.change = new CreateConeChange(this.parentItem, xfo, this.colorParam.getValue())
+
+    // During construction, make it note selectable.
+    this.change.geomItem.setSelectable(false)
+
     UndoRedoManager.getInstance().addChange(this.change)
 
     this.stage = 1
@@ -74,6 +78,10 @@ class CreateConeTool extends CreateGeomTool {
       this.invXfo = this.constructionPlane.inverse()
     } else if (this.stage == 2) {
       this.stage = 0
+
+      // After completion, make it selectable.
+      this.change.geomItem.setSelectable(true)
+
       this.emit('actionFinished')
     }
   }

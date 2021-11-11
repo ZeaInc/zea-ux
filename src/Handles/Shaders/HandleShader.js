@@ -211,7 +211,6 @@ void main(void) {
 #elif defined(DRAW_GEOMDATA)
 
   fragColor = setFragColor_geomData(v_viewPos, floatGeomBuffer, passId, v_drawItemId, isOrthographic);
-
   //////////////////////////////////////////////
   // Highlight
 #elif defined(DRAW_HIGHLIGHT)
@@ -219,6 +218,7 @@ void main(void) {
   fragColor = getHighlightColor(drawItemId);
 
 #endif // DRAW_HIGHLIGHT
+
 
 #ifndef ENABLE_ES3
   gl_FragColor = fragColor;
@@ -274,13 +274,22 @@ void main(void) {
   static isOverlay() {
     return true
   }
+
+  /**
+   * Each shader provides a template material that each material instance is
+   * based on. The shader specifies the parameters needed by the shader, and
+   * the material provides values to the shader during rendering.
+   * @return {Material} - The template material value.
+   */
+  static getMaterialTemplate() {
+    return material
+  }
 }
 
 const material = new Material('HandleShader_template')
 material.addParameter(new MaterialColorParam('BaseColor', new Color(1.0, 1, 0.5)))
 material.addParameter(new NumberParameter('MaintainScreenSize', 0))
 material.addParameter(new NumberParameter('Overlay', 0, [0, 1]))
-shaderLibrary.registerMaterialTemplate('HandleShader', material)
 
 Registry.register('HandleShader', HandleShader)
 
