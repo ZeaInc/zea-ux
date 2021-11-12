@@ -11,9 +11,10 @@
       body {
         height: 100vh;
         margin: 0;
+        overflow: hidden;
       }
 
-      #renderer {
+      #rendererHolder {
         width: 100%;
         height: calc(100% - 35px);
       }
@@ -126,6 +127,8 @@
         <input type="checkbox" id="free-hand-line" value="CreateFreehandLineTool" class="tool" />
       </div>
     </div>
-    <canvas id="renderer"></canvas>
+    <div id="rendererHolder">
+      <canvas id="renderer"></canvas>
+    </div>
   </body>
 </html>

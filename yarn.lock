@@ -2011,28 +2011,30 @@
     meow "^7.0.1"
     rimraf "^3.0.2"
 
-"@zeainc/zea-cad@^3.3.0":
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/@zeainc/zea-cad/-/zea-cad-3.3.0.tgz#4066eb242c3e873f87b4f69f75e5ac6d13c67e1f"
-  integrity sha512-7HVmtfG3wxtDt0FaAoF4ng8KRy1Tr4jqdjVeSFptDYoQaNTanobAFBz6PBJq4mnQ3DHsi9FUa2+XX20g4N2gyg==
+"@zeainc/zea-cad@^4":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@zeainc/zea-cad/-/zea-cad-4.0.0.tgz#b89253aa7ec129496fa2fb1c159306013a39e7d6"
+  integrity sha512-RouznSN8KOSvOYe+EHSlt9piv0atEJa9d32rewFrCdGYHGBsn5AWVPB8LxH/AciSFrUg2tJWf+0XD0Ir5vs09w==
   dependencies:
-    "@zeainc/zea-engine" "^3.2.0"
+    "@rollup/plugin-json" "^4.1.0"
+    "@zeainc/zea-engine" "^3.12.4"
 
-"@zeainc/zea-engine@^3.11":
-  version "3.12.4"
-  resolved "https://registry.yarnpkg.com/@zeainc/zea-engine/-/zea-engine-3.12.4.tgz#56caa862cce238b300a1c80217dfe07af6a71272"
-  integrity sha512-o/E8e/5P10tnWtTH/6kFCBGxroDiwZVDH5oBAShO/WpQiaNLEqERg+8FtcBTGYn/Ococwk9mxDlS8QU7b2yNDg==
+"@zeainc/zea-engine@^3.12.4":
+  version "3.13.0"
+  resolved "https://registry.yarnpkg.com/@zeainc/zea-engine/-/zea-engine-3.13.0.tgz#8788b410f5a8e37b2a9541828eeba779d68fcbfd"
+  integrity sha512-kO933WX0mej3rXx79MrHb7rMprr+qM2AqTvWxSs2ee5e2epKMq8jMawQGmZSK/DPpk0SEllAlCLxbLnFraWlrA==
   dependencies:
-    debug "^4.1.1"
+    lodash "^4.17.21"
     rollup-plugin-base64 "^1.0.1"
 
-"@zeainc/zea-engine@^3.2.0":
-  version "3.9.1"
-  resolved "https://registry.yarnpkg.com/@zeainc/zea-engine/-/zea-engine-3.9.1.tgz#e0496f8d9cbe4d981d60677777f4816cbc4afd78"
-  integrity sha512-MgqvhAGEAJYK0f9ge56zC0HN7MvK4G296W3a9Ipb8Y+wkmgD9rQTX/Y6RbzYCDYP+ZsmPjWxyvnGSesIyAJrvQ==
+"@zeainc/zea-engine@^4":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@zeainc/zea-engine/-/zea-engine-4.0.0.tgz#dc7186d6c34f56ad34b04ab6a34f09e5bf49d204"
+  integrity sha512-LLgfH+/HgmtxQEE64I42lplNgrFRpvpQda0yD1AP6cY2qmn+Cjq5+Y2hWZMRXOO+p1C9eYAai6qXISVRWeS3OQ==
   dependencies:
-    debug "^4.1.1"
-    semver "^7.3.2"
+    husky-run "^0.0.0"
+    lodash "^4.17.21"
+    rollup-plugin-base64 "^1.0.1"
 
 JSONStream@^1.0.3, JSONStream@^1.0.4:
   version "1.3.5"
@@ -5952,6 +5954,11 @@ human-signals@^1.1.1:
   resolved "https://registry.yarnpkg.com/human-signals/-/human-signals-1.1.1.tgz#c5b1cd14f50aeae09ab6c59fe63ba3395fe4dfa3"
   integrity sha512-SEQu7vl8KjNL2eoGBLF3+wAjpsNfA9XMlXAYj/3EdaNfAlxKthD1xjEQfGOUhllCGGJVNY34bRr6lPINhNjyZw==
 
+husky-run@^0.0.0:
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/husky-run/-/husky-run-0.0.0.tgz#b1ec3808d781ca0811d1f69b88ea345455476900"
+  integrity sha512-gYI6/jEHQ1fjqVTAAxnH+TAJ0haLYA42z1tFnn51g/pIFR9HS3WNWtgb/g230bYxGYKzsLfdSg+rQO1pBtp4fg==
+
 husky@^4.3.0:
   version "4.3.8"
   resolved "https://registry.yarnpkg.com/husky/-/husky-4.3.8.tgz#31144060be963fd6850e5cc8f019a1dfe194296d"
@@ -7589,7 +7596,7 @@ lodash.uniq@^4.5.0:
   resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
   integrity sha1-0CJTc662Uq3BvILklFM5qEJ1R3M=
 
-lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20:
+lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20, lodash@^4.17.21:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
