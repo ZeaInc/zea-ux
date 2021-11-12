@@ -41,17 +41,17 @@ class MeasureAngle extends TreeItem {
     this.colorParam = this.addParameter(new ColorParameter('Color', color))
 
     this.markerMaterial = new HandleMaterial('Marker')
-    this.markerMaterial.getParameter('BaseColor').setValue(this.colorParam.getValue())
+    this.markerMaterial.getParameter('BaseColor').setValue(new Color(0, 0, 0))
     this.markerMaterial.getParameter('MaintainScreenSize').setValue(1)
     this.markerMaterial.getParameter('Overlay').setValue(0.5)
 
     this.markerMaterialB = new HandleMaterial('Marker')
-    this.markerMaterialB.getParameter('BaseColor').setValue(new Color(1, 0, 0))
+    this.markerMaterialB.getParameter('BaseColor').setValue(new Color(0, 0, 0))
     this.markerMaterialB.getParameter('MaintainScreenSize').setValue(1)
     this.markerMaterialB.getParameter('Overlay').setValue(0.5)
 
     this.lineMaterial = new LinesMaterial('Line')
-    this.lineMaterial.getParameter('BaseColor').setValue(this.colorParam.getValue())
+    this.lineMaterial.getParameter('BaseColor').setValue(new Color(0, 0, 0))
     this.lineMaterial.getParameter('Overlay').setValue(0.5)
 
     this.markerA = new GeomItem(`markerA`, sphere, this.markerMaterial)

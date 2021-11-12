@@ -186,7 +186,7 @@ class MeasureDistanceTool extends BaseTool {
     // skip if the alt key is held. Allows the camera tool to work
     if (event.altKey || (event.pointerType === 'mouse' && event.button !== 0)) return
 
-    const color = this.colorParam.getValue().toGamma() // Note: the Engine shader should not convert this to linear, but it does.
+    const color = this.colorParam.getValue()
     color.a = 0.2
     if (this.stage == 0) {
       if (event.intersectionData) {

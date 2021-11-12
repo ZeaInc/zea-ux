@@ -202,7 +202,7 @@ class MeasureCenterDistancesTool extends BaseTool {
           }
           this.highlightedItemA = geomItem
 
-          const color = this.colorParam.getValue().toGamma() // Note: the Engine shader should not convert this to linear, but it does.
+          const color = this.colorParam.getValue()
           color.a = 0.2
           this.highlightedItemA.addHighlight('measure', color, true)
         }

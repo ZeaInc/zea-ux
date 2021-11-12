@@ -43,7 +43,7 @@ class MeasureDistance extends TreeItem {
     this.unitsParameter = this.addParameter(new StringParameter('Units', 'mm'))
 
     this.markerMaterial = new HandleMaterial('Marker')
-    this.markerMaterial.getParameter('BaseColor').setValue(this.colorParam.getValue())
+    this.markerMaterial.getParameter('BaseColor').setValue(new Color(0, 0, 0))
     this.markerMaterial.getParameter('MaintainScreenSize').setValue(1)
     this.markerMaterial.getParameter('Overlay').setValue(0.5)
 
@@ -97,7 +97,7 @@ class MeasureDistance extends TreeItem {
       this.addChild(this.billboard)
 
       this.lineMaterial = new LinesMaterial('Line')
-      this.lineMaterial.getParameter('BaseColor').setValue(color)
+      this.lineMaterial.getParameter('BaseColor').setValue(new Color(0, 0, 0))
       this.lineMaterial.getParameter('Overlay').setValue(0.5)
       this.lineGeomItem = new GeomItem('Line', line, this.lineMaterial)
       this.lineGeomItem.setSelectable(false)
