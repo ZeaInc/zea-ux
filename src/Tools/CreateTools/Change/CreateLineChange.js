@@ -1,4 +1,4 @@
-import { Color, GeomItem, Material, Lines } from '@zeainc/zea-engine'
+import { Color, GeomItem, LinesMaterial, FatLinesMaterial, Lines, Vec3 } from '@zeainc/zea-engine'
 import UndoRedoManager from '../../../UndoRedo/UndoRedoManager'
 import CreateGeomChange from './CreateGeomChange'
 
@@ -19,21 +19,23 @@ class CreateLineChange extends CreateGeomChange {
    * @param {Color} color - The color value.
    * @param {number} thickness - The thickness value.
    */
-  constructor(parentItem, xfo, color, thickness) {
+  constructor(parentItem, xfo, color, thickness = 0.001) {
     super('Create Line')
 
     this.line = new Lines(0.0)
     this.line.setNumVertices(2)
     this.line.setNumSegments(1)
+    this.line.getVertexAttribute('positions').setValue(0, new Vec3())
     this.line.setSegmentVertexIndices(0, 0, 1)
 
-    const material = new Material('Line', 'FatLinesShader')
-    material.getParameter('BaseColor').setValue(new Color(0.7, 0.2, 0.2))
-    this.geomItem = new GeomItem('Line', this.line, material)
-
+    const material = new FatLinesMaterial('Line')
     if (color) {
-      material.getParameter('BaseColor').setValue(color)
+      material.baseColorParam.value = color
     }
+    if (material.lineThicknessParam) {
+      material.lineThicknessParam.value = thickness
+    }
+    this.geomItem = new GeomItem('Line', this.line, material)
 
     if (thickness) {
       this.line.lineThickness = thickness
@@ -51,7 +53,9 @@ class CreateLineChange extends CreateGeomChange {
    */
   update(updateData) {
     if (updateData.p1) {
+      console.log(updateData.p1.toString())
       this.line.getVertexAttribute('positions').getValueRef(1).setFromOther(updateData.p1)
+      this.line.setBoundingBoxDirty()
       this.line.emit('geomDataChanged')
     }
 

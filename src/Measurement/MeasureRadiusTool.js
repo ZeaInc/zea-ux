@@ -16,7 +16,8 @@ class MeasureRadiusTool extends BaseTool {
   constructor(appData) {
     super()
 
-    this.colorParam = this.addParameter(new ColorParameter('Color', new Color('#F9CE03')))
+    this.colorParam = new ColorParameter('Color', new Color('#F9CE03'))
+    this.addParameter(this.colorParam)
     if (!appData) console.error('App data not provided to tool')
     this.appData = appData
     this.highlightedItemA = null
@@ -137,7 +138,7 @@ class MeasureRadiusTool extends BaseTool {
               this.highlightedItemA.removeHighlight('measure', true)
             }
             this.highlightedItemA = geomItem
-            const color = this.colorParam.getValue().clone()
+            const color = this.colorParam.getValue().toGamma() // Note: the Engine shader should not convert this to linear, but it does.
             color.a = 0.2
             this.highlightedItemA.addHighlight('measure', color, true)
           }

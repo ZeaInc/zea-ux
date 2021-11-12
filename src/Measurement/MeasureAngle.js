@@ -1,6 +1,6 @@
 import {
   TreeItem,
-  Material,
+  LinesMaterial,
   Color,
   Sphere,
   Lines,
@@ -14,12 +14,16 @@ import {
   Ray,
 } from '@zeainc/zea-engine'
 
+import { HandleMaterial } from '../Handles/Shaders/HandleMaterial'
+
 const sphere = new Sphere(0.003, 24, 12, false)
 const line = new Lines(0.0)
 line.setNumVertices(2)
 line.setNumSegments(1)
 line.setSegmentVertexIndices(0, 0, 1)
-line.getVertexAttribute('positions').getValueRef(1).setFromOther(new Vec3(0, 0, 1))
+line.getVertexAttribute('positions').setValue(0, new Vec3())
+line.getVertexAttribute('positions').setValue(1, new Vec3(0, 0, 1))
+line.setBoundingBoxDirty()
 /**
  *
  *
@@ -31,22 +35,22 @@ class MeasureAngle extends TreeItem {
    * @param {string} name
    * @param {Color} color
    */
-  constructor(name = 'MeasureAngle', color = new Color('#00AA00')) {
+  constructor(name = 'MeasureAngle', color = new Color('#F9CE03')) {
     super(name)
 
     this.colorParam = this.addParameter(new ColorParameter('Color', color))
 
-    this.markerMaterial = new Material('Marker', 'HandleShader')
+    this.markerMaterial = new HandleMaterial('Marker')
     this.markerMaterial.getParameter('BaseColor').setValue(this.colorParam.getValue())
     this.markerMaterial.getParameter('MaintainScreenSize').setValue(1)
     this.markerMaterial.getParameter('Overlay').setValue(0.5)
 
-    this.markerMaterialB = new Material('Marker', 'HandleShader')
+    this.markerMaterialB = new HandleMaterial('Marker')
     this.markerMaterialB.getParameter('BaseColor').setValue(new Color(1, 0, 0))
     this.markerMaterialB.getParameter('MaintainScreenSize').setValue(1)
     this.markerMaterialB.getParameter('Overlay').setValue(0.5)
 
-    this.lineMaterial = new Material('Line', 'LinesShader')
+    this.lineMaterial = new LinesMaterial('Line')
     this.lineMaterial.getParameter('BaseColor').setValue(this.colorParam.getValue())
     this.lineMaterial.getParameter('Overlay').setValue(0.5)
 
@@ -60,30 +64,6 @@ class MeasureAngle extends TreeItem {
    * Given the 2 marker positions, calculate and display the angle.
    */
   createLinesAndLabel() {
-    this.markerA.addChild(new GeomItem('Line', line, this.lineMaterial), false)
-    this.markerB.addChild(new GeomItem('Line', line, this.lineMaterial), false)
-
-    this.label = new Label('Distance')
-    this.label.getParameter('FontSize').setValue(20)
-    this.label.getParameter('BackgroundColor').setValue(this.colorParam.getValue())
-
-    this.billboard = new BillboardItem('DistanceBillboard', this.label)
-    this.billboard.getParameter('LocalXfo').setValue(new Xfo())
-    this.billboard.getParameter('PixelsPerMeter').setValue(1500)
-    this.billboard.getParameter('AlignedToCamera').setValue(true)
-    this.billboard.getParameter('DrawOnTop').setValue(true)
-    this.billboard.getParameter('FixedSizeOnscreen').setValue(true)
-    this.billboard.getParameter('Alpha').setValue(1)
-
-    this.addChild(this.billboard)
-
-    this.colorParam.on('valueChanged', () => {
-      const color = this.colorParam.getValue()
-      this.markerMaterial.getParameter('BaseColor').setValue(color)
-      this.lineMaterial.getParameter('BaseColor').setValue(color)
-      this.label.getParameter('BackgroundColor').setValue(color)
-    })
-
     // ////////////////////////////////////////
     // Calculate the angle
     const xfoA = this.markerA.getParameter('GlobalXfo').getValue()
@@ -102,6 +82,33 @@ class MeasureAngle extends TreeItem {
 
     const angle = tangentA.angleTo(tangentB)
 
+    // ////////////////////////////////////////
+    // Build the visualization parts.
+    this.markerA.addChild(new GeomItem('Line', line, this.lineMaterial), false)
+    this.markerB.addChild(new GeomItem('Line', line, this.lineMaterial), false)
+
+    this.label = new Label('Distance')
+    this.label.getParameter('FontSize').setValue(20)
+    this.label.getParameter('BackgroundColor').setValue(this.colorParam.getValue())
+    this.label.getParameter('Text').setValue(`${(angle / (Math.PI / 180)).toFixed(3)} °`)
+
+    this.billboard = new BillboardItem('DistanceBillboard', this.label)
+    this.billboard.getParameter('LocalXfo').setValue(new Xfo())
+    this.billboard.getParameter('PixelsPerMeter').setValue(1500)
+    this.billboard.getParameter('AlignedToCamera').setValue(true)
+    this.billboard.getParameter('DrawOnTop').setValue(true)
+    this.billboard.getParameter('FixedSizeOnscreen').setValue(true)
+    this.billboard.getParameter('Alpha').setValue(1)
+
+    this.addChild(this.billboard)
+
+    this.colorParam.on('valueChanged', () => {
+      const color = this.colorParam.getValue()
+      this.markerMaterial.getParameter('BaseColor').setValue(color)
+      this.lineMaterial.getParameter('BaseColor').setValue(color)
+      this.label.getParameter('BackgroundColor').setValue(color)
+    })
+
     const labelXfo = new Xfo()
     labelXfo.tr.addInPlace(rayA.pointAtDist(params[0]))
     labelXfo.tr.addInPlace(rayB.pointAtDist(params[1]))
@@ -118,8 +125,6 @@ class MeasureAngle extends TreeItem {
     const lineBXfo = new Xfo()
     lineBXfo.sc.z = params[1]
     this.markerB.getChild(0).getParameter('LocalXfo').setValue(lineBXfo)
-
-    this.label.getParameter('Text').setValue(`${(angle / (Math.PI / 180)).toFixed(3)} °`)
 
     this.billboard.getParameter('GlobalXfo').setValue(labelXfo)
   }

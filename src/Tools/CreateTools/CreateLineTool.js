@@ -28,7 +28,9 @@ class CreateLineTool extends CreateGeomTool {
    * @param {Xfo} xfo - The xfo param.
    */
   createStart(xfo) {
-    this.change = new CreateLineChange(this.parentItem, xfo)
+    const color = this.colorParam.getValue()
+    const lineThickness = this.lineThickness.getValue()
+    this.change = new CreateLineChange(this.parentItem, xfo, color, lineThickness)
     UndoRedoManager.getInstance().addChange(this.change)
 
     this.xfo = xfo.inverse()

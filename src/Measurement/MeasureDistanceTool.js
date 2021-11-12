@@ -16,7 +16,8 @@ class MeasureDistanceTool extends BaseTool {
   constructor(appData) {
     super()
 
-    this.colorParam = this.addParameter(new ColorParameter('Color', new Color('#F9CE03')))
+    this.colorParam = new ColorParameter('Color', new Color('#F9CE03'))
+    this.addParameter(this.colorParam)
     if (!appData) console.error('App data not provided to tool')
     this.appData = appData
     this.measurementChange = null
@@ -185,16 +186,18 @@ class MeasureDistanceTool extends BaseTool {
     // skip if the alt key is held. Allows the camera tool to work
     if (event.altKey || (event.pointerType === 'mouse' && event.button !== 0)) return
 
+    const color = this.colorParam.getValue().toGamma() // Note: the Engine shader should not convert this to linear, but it does.
+    color.a = 0.2
     if (this.stage == 0) {
       if (event.intersectionData) {
         const { geomItem } = event.intersectionData
         if (geomItem.hasParameter('CurveType') || geomItem.hasParameter('SurfaceType')) {
-          if (!geomItem != this.highlightedItemA) {
+          if (geomItem != this.highlightedItemA) {
             if (this.highlightedItemA) {
               this.highlightedItemA.removeHighlight('measure', true)
             }
             this.highlightedItemA = geomItem
-            this.highlightedItemA.addHighlight('measure', new Color(1, 1, 1, 0.2), true)
+            this.highlightedItemA.addHighlight('measure', color, true)
           }
         }
       } else {
@@ -215,7 +218,7 @@ class MeasureDistanceTool extends BaseTool {
             }
 
             this.highlightedItemB = geomItem
-            this.highlightedItemB.addHighlight('measure', new Color(1, 1, 1, 0.2), true)
+            this.highlightedItemB.addHighlight('measure', color, true)
           }
         }
       } else {

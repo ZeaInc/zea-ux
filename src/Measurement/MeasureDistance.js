@@ -1,6 +1,6 @@
 import {
   TreeItem,
-  Material,
+  LinesMaterial,
   Color,
   Sphere,
   Lines,
@@ -14,12 +14,16 @@ import {
   Registry,
 } from '@zeainc/zea-engine'
 
+import { HandleMaterial } from '../Handles/Shaders/HandleMaterial'
+
 const sphere = new Sphere(0.003)
-const line = new Lines(0.0)
+const line = new Lines()
 line.setNumVertices(2)
 line.setNumSegments(1)
 line.setSegmentVertexIndices(0, 0, 1)
-line.getVertexAttribute('positions').getValueRef(1).setFromOther(new Vec3(0, 0, 1))
+line.getVertexAttribute('positions').setValue(0, new Vec3())
+line.getVertexAttribute('positions').setValue(1, new Vec3(0, 0, 1))
+line.setBoundingBoxDirty()
 
 /**
  *
@@ -38,38 +42,16 @@ class MeasureDistance extends TreeItem {
     this.colorParam = this.addParameter(new ColorParameter('Color', color))
     this.unitsParameter = this.addParameter(new StringParameter('Units', 'mm'))
 
-    this.markerMaterial = new Material('Marker', 'HandleShader')
+    this.markerMaterial = new HandleMaterial('Marker')
     this.markerMaterial.getParameter('BaseColor').setValue(this.colorParam.getValue())
     this.markerMaterial.getParameter('MaintainScreenSize').setValue(1)
     this.markerMaterial.getParameter('Overlay').setValue(0.5)
-
-    this.lineMaterial = new Material('Line', 'LinesShader')
-    this.lineMaterial.getParameter('BaseColor').setValue(this.colorParam.getValue())
-    this.lineMaterial.getParameter('Overlay').setValue(0.5)
 
     this.startMarker = new GeomItem(`${name}StartMarker`, sphere, this.markerMaterial)
     this.endMarker = new GeomItem(`${name}EndMarker`, sphere, this.markerMaterial)
 
     this.addChild(this.startMarker)
     this.addChild(this.endMarker)
-
-    this.lineGeomItem = new GeomItem('Line', line, this.lineMaterial)
-    this.lineGeomItem.setSelectable(false)
-    this.addChild(this.lineGeomItem)
-
-    this.label = new Label('Distance')
-    this.label.getParameter('FontSize').setValue(20)
-    this.label.getParameter('BackgroundColor').setValue(this.colorParam.getValue())
-
-    this.billboard = new BillboardItem('DistanceBillboard', this.label)
-    this.billboard.getParameter('LocalXfo').setValue(new Xfo())
-    this.billboard.getParameter('PixelsPerMeter').setValue(1500)
-    this.billboard.getParameter('AlignedToCamera').setValue(true)
-    this.billboard.getParameter('DrawOnTop').setValue(true)
-    this.billboard.getParameter('FixedSizeOnscreen').setValue(true)
-    this.billboard.getParameter('Alpha').setValue(1)
-
-    this.addChild(this.billboard)
 
     this.colorParam.on('valueChanged', () => {
       const color = this.colorParam.getValue()
@@ -83,22 +65,52 @@ class MeasureDistance extends TreeItem {
    * Updates the measured value
    */
   updateMeasurement() {
+    console.log('updateMeasurement')
     const startXfo = this.startMarker.getParameter('GlobalXfo').getValue()
     const endXfo = this.endMarker.getParameter('GlobalXfo').getValue()
 
     const vector = endXfo.tr.subtract(startXfo.tr)
     const distance = vector.length()
 
+    if (distance == 0) return
+    const color = this.colorParam.getValue()
+
+    // Convert meters to mm.
+    const distanceInMM = distance * 1000
+    const units = this.unitsParameter.getValue()
+    const labelTest = `${parseFloat(distanceInMM.toFixed(4))}${units}`
+    console.log(units, distanceInMM)
+    if (!this.label) {
+      this.label = new Label('Distance')
+      this.label.getParameter('FontSize').setValue(20)
+      this.label.getParameter('BackgroundColor').setValue(color)
+      this.label.getParameter('Text').setValue(labelTest)
+
+      this.billboard = new BillboardItem('DistanceBillboard', this.label)
+      this.billboard.getParameter('LocalXfo').setValue(new Xfo())
+      this.billboard.getParameter('PixelsPerMeter').setValue(1500)
+      this.billboard.getParameter('AlignedToCamera').setValue(true)
+      this.billboard.getParameter('DrawOnTop').setValue(true)
+      this.billboard.getParameter('FixedSizeOnscreen').setValue(true)
+      this.billboard.getParameter('Alpha').setValue(1)
+
+      this.addChild(this.billboard)
+
+      this.lineMaterial = new LinesMaterial('Line')
+      this.lineMaterial.getParameter('BaseColor').setValue(color)
+      this.lineMaterial.getParameter('Overlay').setValue(0.5)
+      this.lineGeomItem = new GeomItem('Line', line, this.lineMaterial)
+      this.lineGeomItem.setSelectable(false)
+      this.addChild(this.lineGeomItem)
+    } else {
+      this.label.getParameter('Text').setValue(labelTest)
+    }
+
     const lineXfo = startXfo.clone()
     lineXfo.ori.setFromDirectionAndUpvector(vector, new Vec3(vector.z, vector.x, vector.y))
     lineXfo.sc.z = distance
 
     this.lineGeomItem.getParameter('GlobalXfo').setValue(lineXfo)
-
-    // Convert meters to mm.
-    const distanceInMM = distance * 1000
-
-    this.label.getParameter('Text').setValue(`${parseFloat(distanceInMM.toFixed(4))}${this.unitsParameter.getValue()}`)
 
     vector.normalizeInPlace()
     const midPoint = startXfo.tr.add(vector.scale(distance * 0.5))
@@ -116,7 +128,7 @@ class MeasureDistance extends TreeItem {
     const newXfo = this.startMarker.getParameter('GlobalXfo').getValue()
     newXfo.tr = position
     this.startMarker.getParameter('GlobalXfo').setValue(newXfo)
-    this.updateMeasurement()
+    if (this.label) this.updateMeasurement()
   }
 
   /**
