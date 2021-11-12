@@ -8,6 +8,8 @@ import {
   NumberParameter,
 } from '@zeainc/zea-engine'
 
+import { HandleMaterial } from './HandleMaterial'
+
 /**
  * Class representing Handle Shader.
  *
@@ -286,10 +288,7 @@ void main(void) {
   }
 }
 
-const material = new Material('HandleShader_template')
-material.addParameter(new MaterialColorParam('BaseColor', new Color(1.0, 1, 0.5)))
-material.addParameter(new NumberParameter('MaintainScreenSize', 0))
-material.addParameter(new NumberParameter('Overlay', 0, [0, 1]))
+const material = new HandleMaterial('HandleShader_template')
 
 Registry.register('HandleShader', HandleShader)
 
