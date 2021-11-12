@@ -53,7 +53,7 @@ Adds specified the renderer to the `SelectionManager` and attaches the `Selectio
 Sets initial Xfo mode of the selection group.
 
 
-**See**: `Group` class documentation  
+**See**: `KinematicGroup` class documentation  
 
 | Param | Type | Description |
 | --- | --- | --- |

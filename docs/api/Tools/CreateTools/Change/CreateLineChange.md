@@ -17,12 +17,12 @@ Class representing a create line change.**Events*** **updated:** Triggered wh
 Create a create line change.
 
 
-| Param | Type | Description |
-| --- | --- | --- |
-| parentItem | <code>TreeItem</code> | The parentItem value. |
-| xfo | <code>Xfo</code> | The xfo value. |
-| color | <code>Color</code> | The color value. |
-| thickness | <code>number</code> | The thickness value. |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| parentItem | <code>TreeItem</code> |  | The parentItem value. |
+| xfo | <code>Xfo</code> |  | The xfo value. |
+| color | <code>Color</code> |  | The color value. |
+| thickness | <code>number</code> | <code>0.001</code> | The thickness value. |
 
 <a name="CreateLineChange+update"></a>
 

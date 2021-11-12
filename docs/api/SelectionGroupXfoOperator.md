@@ -21,8 +21,8 @@ Creates an instance of SelectionGroupXfoOperator.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| initialXfoModeParam | <code>number</code> | Initial XFO Mode, check `INITIAL_XFO_MODES` in `Group` documentation |
-| globalXfoParam | <code>XfoParameter</code> | The GlobalXfo param found on the Group. |
+| initialXfoModeParam | <code>number</code> | Initial XFO Mode, check `INITIAL_XFO_MODES` in `KinematicGroup` documentation |
+| globalXfoParam | <code>XfoParameter</code> | The GlobalXfo param found on the KinematicKinematicGroup. |
 
 <a name="SelectionGroupXfoOperator+addItem"></a>
 
@@ -44,7 +44,7 @@ Finds and removes the `OperatorInput` of the specified `TreeItem` from current`O
 
 | Param | Type | Description |
 | --- | --- | --- |
-| item | <code>TreeItem</code> | The Bind Xfo calculated from the initial Transforms of the Group Members. |
+| item | <code>TreeItem</code> | The Bind Xfo calculated from the initial Transforms of the KinematicGroup Members. |
 
 <a name="SelectionGroupXfoOperator+backPropagateValue"></a>
 

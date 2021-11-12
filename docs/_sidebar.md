@@ -34,6 +34,7 @@
   * [XfoHandle](api/Handles/XfoHandle)
   * [XfoPlanarMovementHandle](api/Handles/XfoPlanarMovementHandle)
   * [Shaders](api/Handles/Shaders/README)
+    * [HandleMaterial](api/Handles/Shaders/HandleMaterial)
     * [HandleShader](api/Handles/Shaders/HandleShader)
 * [Measurement](api/Measurement/README)
   * [MeasureAngle](api/Measurement/MeasureAngle)

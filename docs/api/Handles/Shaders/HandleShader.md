@@ -11,6 +11,7 @@ Class representing Handle Shader.
     * [getParamDeclarations() ⇒ <code>array</code>](#getParamDeclarations)
     * [getPackedMaterialData(material) ⇒ <code>any</code>](#getPackedMaterialData)
     * [isOverlay() ⇒ <code>boolean</code>](#isOverlay)
+    * [getMaterialTemplate() ⇒ <code>Material</code>](#getMaterialTemplate)
 
 <a name="new_HandleShader_new"></a>
 
@@ -48,3 +49,10 @@ Returns whether the shader's overlay is true or not.
 
 
 **Returns**: <code>boolean</code> - - The overlay value  
+<a name="HandleShader.getMaterialTemplate"></a>
+
+### getMaterialTemplate
+Each shader provides a template material that each material instance isbased on. The shader specifies the parameters needed by the shader, andthe material provides values to the shader during rendering.
+
+
+**Returns**: <code>Material</code> - - The template material value.  

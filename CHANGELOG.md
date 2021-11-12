@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.0](https://github.com/ZeaInc/zea-ux/compare/v3.2.1...v4.0.0) (2021-11-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* this version of UX requires
+
+### Features
+
+* Implemented a new HandleMaterial that has statically defined paramters. ([f991269](https://github.com/ZeaInc/zea-ux/commit/f991269f82f1f4dc89e94a326c42a42fe04ca8df))
+* zea-ux is now upgraded to version 4.0.0 of the engine. ([f10126c](https://github.com/ZeaInc/zea-ux/commit/f10126c6bbbd16be28561b2ab2e44c655b228b7e))
+
+
+### Bug Fixes
+
+* Cleaned up regressions due to migration to engine 4.0.0 ([ad9fac8](https://github.com/ZeaInc/zea-ux/commit/ad9fac8a5722996fc64a56277496f95231feea03))
+* HandleShader 'MaintainScreenSize' now eliminates scale from the modelMatrix in the shader. ([1084191](https://github.com/ZeaInc/zea-ux/commit/1084191a01587ef857854ccd8c63b04027735904))
+
 ## [3.2.0](https://github.com/ZeaInc/zea-ux/compare/v3.1.3-vr-tools.0...v3.2.0) (2021-10-10)
 
 
