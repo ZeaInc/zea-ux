@@ -5,9 +5,9 @@ const { Ray, Xfo, Vec3, Color } = window.zeaEngine
  *
  * @extends {HTMLElement}
  */
-class VRUI extends HTMLElement {
+class DomI extends HTMLElement {
   /**
-   * Creates an instance of VRUI.
+   * Creates an instance of DomI.
    */
   constructor() {
     super()
@@ -28,6 +28,7 @@ class VRUI extends HTMLElement {
     const addButton = (icon, cb) => {
       const buttonDiv = document.createElement('div')
       buttonDiv.classList.add('button')
+      buttonDiv.classList.add('widget')
       this.buttonsContainer.appendChild(buttonDiv)
       buttonDiv.addEventListener('mouseenter', () => {
         buttonDiv.classList.add('button-hover')
@@ -105,9 +106,9 @@ class VRUI extends HTMLElement {
       document.createTextNode(`
 
 #contentDiv {
-  position: absolute;
-  top: 0px;
-  left: 0px;
+  // position: absolute;
+  // top: 0px;
+  // left: 0px;
   width: 280px;
   user-select: none;
 }
@@ -172,11 +173,12 @@ class VRUI extends HTMLElement {
     const addToolButton = (name, icon) => {
       const tool = toolManager.tools[name]
       const toolDiv = document.createElement('div')
+      toolDiv.classList.add('widget')
       toolDiv.classList.add('button')
       let toolActive = false
       toolDiv.addEventListener('mousedown', () => {
         if (!toolActive) {
-          while (toolManager.activeToolName() != 'VRUITool') toolManager.popTool()
+          while (toolManager.activeToolName() != 'DomITool') toolManager.popTool()
           toolManager.pushTool(name)
         } else {
           while (toolManager.activeToolName() != name) toolManager.popTool()
@@ -234,6 +236,7 @@ class VRUI extends HTMLElement {
     let color = new Color('#FFD800')
     const addColorButton = (icon, cb) => {
       const buttonDiv = document.createElement('div')
+      buttonDiv.classList.add('widget')
       buttonDiv.classList.add('button')
       this.buttonsContainer.appendChild(buttonDiv)
       buttonDiv.addEventListener('mouseenter', () => {
@@ -281,4 +284,4 @@ class VRUI extends HTMLElement {
     this.sessionRecorder = sessionRecorder
   }
 }
-window.customElements.define('vr-ui', VRUI)
+window.customElements.define('dom-ui', DomI)

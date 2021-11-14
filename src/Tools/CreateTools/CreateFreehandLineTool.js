@@ -33,6 +33,7 @@ class CreateFreehandLineTool extends CreateLineTool {
     const lineThickness = this.lineThickness.getValue()
 
     this.change = new CreateFreehandLineChange(this.parentItem, xfo, color, lineThickness)
+    this.change.geomItem.setSelectable(false)
     UndoRedoManager.getInstance().addChange(this.change)
 
     this.xfo = xfo
@@ -68,6 +69,7 @@ class CreateFreehandLineTool extends CreateLineTool {
       UndoRedoManager.getInstance().cancel()
     }
 
+    this.change.geomItem.setSelectable(true)
     this.stage = 0
     this.emit('actionFinished')
   }
