@@ -1,4 +1,4 @@
-import { TreeItem, Ray, ColorParameter, Color, PointerEvent } from '@zeainc/zea-engine'
+import { TreeItem, Ray, ColorParameter, Color, Parameter } from '@zeainc/zea-engine' // , PointerEvent
 
 /**
  * A Handle is an UI widget that lives in the scene, it translates a series of pointer events into a higher level interaction.
@@ -10,6 +10,11 @@ import { TreeItem, Ray, ColorParameter, Color, PointerEvent } from '@zeainc/zea-
  * @extends TreeItem
  */
 class Handle extends TreeItem {
+  gizmoRay
+  activeController
+  captured = false
+  colorParam = new ColorParameter('Color', new Color())
+  highlightColorParam = new ColorParameter('HighlightColor', new Color(1, 1, 1))
   /**
    * Creates an instance of Handle.
    *
@@ -17,9 +22,7 @@ class Handle extends TreeItem {
    */
   constructor(name) {
     super(name)
-    this.captured = false
-    this.colorParam = new ColorParameter('Color', new Color())
-    this.highlightColorParam = new ColorParameter('HighlightColor', new Color(1, 1, 1))
+
     this.addParameter(this.colorParam)
     this.addParameter(this.highlightColorParam)
   }
@@ -230,7 +233,8 @@ class Handle extends TreeItem {
   onVRControllerButtonUp(event) {
     if (this.activeController == event.controller) {
       const xfo = this.activeController.getTipXfo()
-      this.onDragEnd(event, xfo.tr)
+      // TODO: check this.onDragEnd(event, xfo.tr)
+      this.onDragEnd(event)
       this.activeController = undefined
       return true
     }
@@ -264,6 +268,11 @@ class Handle extends TreeItem {
    */
   onDragEnd(event) {
     console.warn('@Handle#onDragEnd - Implement me!', event)
+  }
+
+  // TODO:(check) added this method since we check for type Handle and call this method in XfoHandle.ts
+  setTargetParam(param: Parameter<unknown>, track: boolean) {
+    console.warn('setTargetParam not implemented')
   }
 }
 

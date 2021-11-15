@@ -1,9 +1,7 @@
-import { Color, Vec3, Xfo, EulerAngles, TreeItem, ColorParameter } from '@zeainc/zea-engine'
+import { Color, Vec3, Xfo, EulerAngles, TreeItem, ColorParameter, XfoParameter } from '@zeainc/zea-engine'
 import Handle from './Handle'
 import LinearMovementHandle from './LinearMovementHandle'
 import AxialRotationHandle from './AxialRotationHandle'
-import LinearScaleHandle from './LinearScaleHandle'
-import SphericalRotationHandle from './SphericalRotationHandle'
 import './Shaders/HandleShader'
 import XfoPlanarMovementHandle from './XfoPlanarMovementHandle'
 
@@ -16,6 +14,9 @@ import XfoPlanarMovementHandle from './XfoPlanarMovementHandle'
  * @extends TreeItem
  */
 class XfoHandle extends TreeItem {
+  highlightColorParam = new ColorParameter('HighlightColor', new Color(1, 1, 1))
+  param
+
   /**
    * Create an axial rotation scene widget.
    *
@@ -25,7 +26,6 @@ class XfoHandle extends TreeItem {
   constructor(size = 0.1, thickness = 0.003) {
     super('XfoHandle')
 
-    this.highlightColorParam = new ColorParameter('HighlightColor', new Color(1, 1, 1))
     this.highlightColorParam.on('valueChanged', () => {
       const color = this.highlightColorParam.getValue()
 
