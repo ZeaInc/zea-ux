@@ -15,6 +15,7 @@
   ],
   "scripts": {
     "build:tsc": "npx tsc",
+    "build:tsc:watch": "npx tsc --watch",
     "copyJSFilesToDist": "copyfiles -u 1 src/**/*.{js,wasm,glsl,vert,frag} dist",
     "copyPackageJson": "copyfiles -f \"./package.json\" dist",
     "clean:build": "rm -Rf dist/ buildcache",
@@ -78,6 +79,7 @@
   "dependencies": {
     "@zeainc/zea-cad": "^4",
     "@zeainc/zea-engine": "^4",
+    "copyfiles": "^2.4.1",
     "dom-to-image": "^2.6.0",
     "husky-run": "^0.0.0",
     "typescript": "^4.4.4"
