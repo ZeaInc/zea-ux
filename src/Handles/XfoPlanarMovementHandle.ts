@@ -1,4 +1,4 @@
-import { Color, Xfo, NumberParameter, GeomItem, Material, Cuboid } from '@zeainc/zea-engine'
+import { Color, Xfo, NumberParameter, GeomItem, Material, Cuboid, XfoParameter } from '@zeainc/zea-engine'
 import PlanarMovementHandle from './PlanarMovementHandle'
 import './Shaders/HandleShader'
 import transformVertices from './transformVertices'
@@ -12,6 +12,12 @@ import transformVertices from './transformVertices'
  * @extends Handle
  */
 class XfoPlanarMovementHandle extends PlanarMovementHandle {
+  localXfoParam: XfoParameter
+  sizeParam
+  colorParam
+  handleMat
+  handle
+  highlightColorParam
   /**
    * Create a planar movement scene widget.
    * @param {string} name - The name value.
