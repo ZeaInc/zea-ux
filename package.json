@@ -17,6 +17,7 @@
     "build:tsc": "npx tsc",
     "copyJSFilesToDist": "copyfiles -u 1 src/**/*.{js,wasm,glsl,vert,frag} dist",
     "copyPackageJson": "copyfiles -f \"./package.json\" dist",
+    "clean:build": "rm -Rf dist/ buildcache",
     "build:rollup": "rollup -c",
     "build:rollup:watch": "rollup -w -c",
     "build": "npm-run-all clean:build build:tsc copyJSFilesToDist copyPackageJson build:rollup",
