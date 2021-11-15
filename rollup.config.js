@@ -18,7 +18,7 @@ const sourcemap = true
 export default [
   // Browser-friendly UMD build.
   {
-    input: 'src/index.js',
+    input: 'dist/index.js',
     external,
     output: {
       name: 'zeaUx',
