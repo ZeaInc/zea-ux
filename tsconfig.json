@@ -11,13 +11,14 @@
     "module": "es6",
     "lib": ["dom", "es6"],
     "importHelpers": true,
+    "allowJs": true,
     // output .d.ts declaration files for consumers
     "declaration": true,
     // output .js.map sourcemap files for consumers
     "sourceMap": true,
     "resolveJsonModule": true,
     // match output dir to input dir. e.g. dist/index instead of dist/src/index
-    "rootDir": "./src",
+    //"rootDir": "./src",
     "strictNullChecks": false,
     "strictPropertyInitialization": false,
     "suppressImplicitAnyIndexErrors": true,
