@@ -12,6 +12,15 @@ import { UndoRedoManager } from '../../UndoRedo/index'
  * @extends CreateGeomTool
  */
 class CreateConeTool extends CreateGeomTool {
+  parentItem
+  xfo
+  invXfo
+  change
+  colorParam
+  stage 
+  _radius
+  _height 
+  constructionPlane
   /**
    * Create a create cone tool.
    * @param {object} appData - The appData value.

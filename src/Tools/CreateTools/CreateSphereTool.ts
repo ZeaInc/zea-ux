@@ -11,6 +11,9 @@ import { UndoRedoManager } from '../../UndoRedo/index'
  * @extends CreateGeomTool
  */
 class CreateSphereTool extends CreateGeomTool {
+  change
+  xfo
+  radius
   /**
    * Create a create sphere tool.
    *
