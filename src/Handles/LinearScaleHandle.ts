@@ -11,6 +11,12 @@ import UndoRedoManager from '../UndoRedo/UndoRedoManager'
  * @extends BaseLinearMovementHandle
  */
 class LinearScaleHandle extends BaseLinearMovementHandle {
+  param
+  handleMat
+  oriXfo
+  tmplocalXfo
+  change
+  baseXfo
   /**
    * Create a linear scale scene widget.
    *

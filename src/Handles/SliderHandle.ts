@@ -26,6 +26,19 @@ import UndoRedoManager from '../UndoRedo/UndoRedoManager'
  * @extends BaseLinearMovementHandle
  */
 class SliderHandle extends BaseLinearMovementHandle {
+  value
+  lengthParam
+  barRadiusParam
+  handleRadiusParam
+  handleMat
+  handle
+  baseBar
+  topBar 
+  handleXfo = new Xfo()
+  baseBarXfo = new Xfo()
+  topBarXfo = new Xfo()
+  param
+  change
   /**
    * Create a slider scene widget.
    *
@@ -34,7 +47,7 @@ class SliderHandle extends BaseLinearMovementHandle {
    * @param {number} radius - The radius value.
    * @param {Color} color - The color value.
    */
-  constructor(name, length = 0.5, radius = 0.02, color = new Color('#F9CE03')) {
+  constructor(name?: string, length = 0.5, radius = 0.02, color = new Color('#F9CE03')) {
     super(name)
 
     this.lengthParam = new NumberParameter('Length', length)
@@ -57,9 +70,7 @@ class SliderHandle extends BaseLinearMovementHandle {
     this.handle = new GeomItem('handle', handleGeom, this.handleMat)
     this.baseBar = new GeomItem('baseBar', barGeom, this.handleMat)
     this.topBar = new GeomItem('topBar', barGeom, topBarMat)
-    this.handleXfo = new Xfo()
-    this.baseBarXfo = new Xfo()
-    this.topBarXfo = new Xfo()
+
 
     this.barRadiusParam.on('valueChanged', () => {
       barGeom.getParameter('Radius').setValue(this.barRadiusParam.getValue())
