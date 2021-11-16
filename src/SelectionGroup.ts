@@ -22,6 +22,8 @@ const GROUP_XFO_MODES = {
  * @extends {SelectionSet}
  */
 class SelectionGroup extends SelectionSet {
+  initialXfoModeParam
+  selectionGroupXfoOp
   /**
    * Creates an instance of SelectionGroup.
    *
@@ -29,7 +31,7 @@ class SelectionGroup extends SelectionSet {
    * **Parameters**
    * @param {object} options - Custom options for selection
    */
-  constructor(options) {
+  constructor(options?) {
     super()
 
     let selectionColor
