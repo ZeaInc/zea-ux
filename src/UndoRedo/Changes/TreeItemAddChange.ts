@@ -8,6 +8,11 @@ import Change from '../Change.js'
  * @extends Change
  */
 class TreeItemAddChange extends Change {
+  treeItem
+  owner
+  prevSelection
+  selectionManager
+  treeItemIndex
   /**
    * Creates an instance of TreeItemAddChange.
    *
@@ -58,6 +63,8 @@ class TreeItemAddChange extends Change {
     if (this.treeItem instanceof Operator) {
       const op = this.treeItem
       op.reattach()
+
+      // @ts-ignore -- subtreeItem is not defined
     } else if (subTreeItem instanceof TreeItem) {
       this.treeItem.traverse((subTreeItem) => {
         if (subTreeItem instanceof Operator) {
