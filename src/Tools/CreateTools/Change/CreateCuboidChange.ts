@@ -11,6 +11,7 @@ import CreateGeomChange from './CreateGeomChange'
  * @extends CreateGeomChange
  */
 class CreateCuboidChange extends CreateGeomChange {
+  cuboid = new Cuboid(0, 0, 0, true)
   /**
    * Create a create cuboid change.
    *
@@ -20,7 +21,6 @@ class CreateCuboidChange extends CreateGeomChange {
   constructor(parentItem, xfo, color) {
     super('CreateCuboid')
 
-    this.cuboid = new Cuboid(0, 0, 0, true)
     const material = new Material('Cuboid', 'SimpleSurfaceShader')
     this.geomItem = new GeomItem('Cuboid', this.cuboid, material)
 

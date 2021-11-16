@@ -1,4 +1,4 @@
-import { Color, GeomItem, LinesMaterial, FatLinesMaterial, Lines, Vec3 } from '@zeainc/zea-engine'
+import { Color, GeomItem, LinesMaterial, FatLinesMaterial, Lines, Vec3, Vec3Attribute } from '@zeainc/zea-engine'
 import UndoRedoManager from '../../../UndoRedo/UndoRedoManager'
 import CreateGeomChange from './CreateGeomChange'
 
@@ -11,6 +11,8 @@ import CreateGeomChange from './CreateGeomChange'
  * @extends CreateGeomChange
  */
 class CreateLineChange extends CreateGeomChange {
+  // TODO: lineThickness to Lines class
+  line: any = new Lines()
   /**
    * Create a create line change.
    *
@@ -22,10 +24,9 @@ class CreateLineChange extends CreateGeomChange {
   constructor(parentItem, xfo, color, thickness = 0.001) {
     super('Create Line')
 
-    this.line = new Lines(0.0)
     this.line.setNumVertices(2)
     this.line.setNumSegments(1)
-    this.line.getVertexAttribute('positions').setValue(0, new Vec3())
+    ;(<Vec3Attribute>this.line.getVertexAttribute('positions')).setValue(0, new Vec3())
     this.line.setSegmentVertexIndices(0, 0, 1)
 
     const material = new FatLinesMaterial('Line')
@@ -54,7 +55,7 @@ class CreateLineChange extends CreateGeomChange {
   update(updateData) {
     if (updateData.p1) {
       console.log(updateData.p1.toString())
-      this.line.getVertexAttribute('positions').getValueRef(1).setFromOther(updateData.p1)
+      ;(<Vec3Attribute>this.line.getVertexAttribute('positions')).getValueRef(1).setFromOther(updateData.p1)
       this.line.setBoundingBoxDirty()
       this.line.emit('geomDataChanged')
     }
@@ -65,15 +66,15 @@ class CreateLineChange extends CreateGeomChange {
   /**
    * Restores line geometry using a JSON object.
    *
-   * @param {object} j - The j param.
-   * @param {object} context - The context param.
+   * @param {Record<any,any>} j - The j param.
+   * @param {Record<any,any>} context - The context param.
    */
-  fromJSON(j, context) {
+  fromJSON(j: Record<any, any>, context: Record<any, any>) {
     super.fromJSON(j, context)
     if (j.color) {
       const color = new Color()
       color.fromJSON(j.color)
-      material.getParameter('BaseColor').setValue(color)
+      // material.getParameter('BaseColor').setValue(color) // TODO: material is not defined
     }
 
     if (j.thickness) {
