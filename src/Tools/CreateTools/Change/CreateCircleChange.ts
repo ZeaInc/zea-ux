@@ -11,6 +11,9 @@ import CreateGeomChange from './CreateGeomChange'
  * @extends CreateGeomChange
  */
 class CreateCircleChange extends CreateGeomChange {
+  // TODO: add lineThickness to circle or parent class
+  circle: any= new Circle(0, 64)
+  geomItem
   /**
    * Creates an instance of CreateCircleChange.
    *
@@ -20,7 +23,6 @@ class CreateCircleChange extends CreateGeomChange {
   constructor(parentItem, xfo) {
     super('CreateCircle')
 
-    this.circle = new Circle(0, 64)
     this.circle.lineThickness = 0.05
 
     const material = new Material('circle', 'FatLinesShader')
@@ -46,10 +48,10 @@ class CreateCircleChange extends CreateGeomChange {
   /**
    * Serializes change as a JSON object.
    *
-   * @return {object} - The return value.
+   * @return {Record<any, any>} - The return value.
    */
   toJSON() {
-    const j = super.toJSON()
+    const j: Record<any, any> = super.toJSON()
     j.radius = this.circle.radiusParam.value
     return j
   }

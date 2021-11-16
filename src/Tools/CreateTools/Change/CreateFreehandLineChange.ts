@@ -1,4 +1,4 @@
-import { Vec3, Color, GeomItem, LinesMaterial, FatLinesMaterial, Lines } from '@zeainc/zea-engine'
+import { Vec3, Color, GeomItem, LinesMaterial, FatLinesMaterial, Lines, Vec3Attribute } from '@zeainc/zea-engine'
 import { UndoRedoManager } from '../../../UndoRedo/index'
 import CreateGeomChange from './CreateGeomChange'
 
@@ -11,6 +11,10 @@ import CreateGeomChange from './CreateGeomChange'
  * @extends CreateGeomChange
  */
 class CreateFreehandLineChange extends CreateGeomChange {
+  vertexCount = 100
+  used = 0
+  // TODO: add lineThickness
+  line: any = new Lines()
   /**
    * Create a create freehand line change.
    *
@@ -22,16 +26,13 @@ class CreateFreehandLineChange extends CreateGeomChange {
   constructor(parentItem, xfo, color, thickness = 0.001) {
     super('CreateFreehandLine')
 
-    this.used = 0
-    this.vertexCount = 100
-
-    this.line = new Lines()
     this.line.setNumVertices(this.vertexCount)
     this.line.setNumSegments(this.vertexCount - 1)
-    this.line.getVertexAttribute('positions').setValue(0, new Vec3())
-    this.line.lineThickness = thickness
+    ;(<Vec3Attribute>this.line.getVertexAttribute('positions')).setValue(0, new Vec3())
 
-    const material = new LinesMaterial('freeHandLine')
+    this.line.lineThickness = thickness
+    // TODO: added lineThicknessParam to LinesMaterial
+    const material: any = new LinesMaterial('freeHandLine')
     if (color) {
       material.baseColorParam.value = color
     }
@@ -64,7 +65,7 @@ class CreateFreehandLineChange extends CreateGeomChange {
       realloc = true
     }
 
-    this.line.getVertexAttribute('positions').setValue(this.used, updateData.point)
+    ;(<Vec3Attribute>this.line.getVertexAttribute('positions')).setValue(this.used, updateData.point)
     // this.line.getVertexAttributes().lineThickness.setValue(this.used, updateData.lineThickness);
     this.line.setSegmentVertexIndices(this.used - 1, this.used - 1, this.used)
     this.line.setBoundingBoxDirty()

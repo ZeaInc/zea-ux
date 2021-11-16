@@ -7,12 +7,16 @@ import Change from '../../../UndoRedo/Change'
  * @extends Change
  */
 class CreateGeomChange extends Change {
+  parentItem
+  geomItem
+  childIndex
   /**
    * Create a create circle change.
    * @param {string} name - The name value.
    */
-  constructor(name) {
+  constructor(name, parentItem?) {
     super(name)
+    this.parentItem = parentItem ? parentItem : null
   }
 
   /**
@@ -47,11 +51,11 @@ class CreateGeomChange extends Change {
   /**
    * Serializes the change as a JSON object.
    *
-   * @param {object} context - The context value
-   * @return {object} - The serialized change
+   * @param {Record<any, any>} context - The context value
+   * @return {Record<any, any>} - The serialized change
    */
-  toJSON(context) {
-    const j = super.toJSON(context)
+  toJSON(context?: Record<any, any>) {
+    const j: Record<any, any> = super.toJSON(context)
     j.parentItemPath = this.parentItem.getPath()
     j.geomItemName = this.geomItem.getName()
     j.geomItemXfo = this.geomItem.getParameter('LocalXfo').getValue()
