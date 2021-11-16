@@ -7,6 +7,9 @@ import Change from '../Change'
  * @extends Change
  */
 class SelectionChange extends Change {
+  __selectionManager
+  __prevSelection
+  __newSelection
   /**
    * Creates an instance of SelectionChange.
    *
@@ -42,7 +45,7 @@ class SelectionChange extends Change {
    * @return {object} The return value.
    */
   toJSON(context) {
-    const j = super.toJSON(context)
+    const j: Record<any, any> = super.toJSON(context)
 
     const itemPaths = []
     for (const treeItem of this.__newSelection) {
