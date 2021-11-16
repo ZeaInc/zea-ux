@@ -9,6 +9,15 @@ import Handle from '../Handles/Handle'
  * @extends BaseTool
  */
 class SelectionTool extends BaseTool {
+  appData
+  dragging
+  selectionRect
+  selectionManager
+  selectionRectMat
+  selectionRectXfo
+  rectItem
+  __selectionFilterFn
+  pointerDownPos
   /**
    * Creates an instance of SelectionTool.
    *
@@ -36,38 +45,26 @@ class SelectionTool extends BaseTool {
     this.appData.renderer.addTreeItem(this.rectItem)
   }
 
-  /**
-   * activate this tool
-   */
-  activateTool() {
-    super.activateTool()
-    this.prevCursor = this.appData.renderer.getGLCanvas().style.cursor
-    this.appData.renderer.getGLCanvas().style.cursor = 'auto'
-  }
+  // /**
+  //  * activate this tool
+  //  */
+  // activateTool() {
+  //   super.activateTool()
+  //   this.prevCursor = this.appData.renderer.getGLCanvas().style.cursor
+  //   this.appData.renderer.getGLCanvas().style.cursor = 'auto'
+  // }
 
-  /**
-   * Disables tool usage.
-   */
-  deactivateTool() {
-    super.deactivateTool()
-    this.appData.renderer.getGLCanvas().style.cursor = this.prevCursor
-  }
-
-  /**
-   * Activates selection tool.
-   */
-  setSelectionManager(selectionManager) {
-    this.selectionManager = selectionManager
-  }
-
-  setSelectionFilter(fn) {
-    this.__selectionFilterFn = fn
-  }
-
+  // /**
+  //  * Disables tool usage.
+  //  */
+  // deactivateTool() {
+  //   super.deactivateTool()
+  //   this.appData.renderer.getGLCanvas().style.cursor = this.prevCursor
+  // }
   /**
    * Activates selection tool.
    */
-  activateTool() {
+   activateTool() {
     super.activateTool()
   }
 
@@ -80,6 +77,18 @@ class SelectionTool extends BaseTool {
     this.rectItem.getParameter('GlobalXfo').setValue(this.selectionRectXfo)
     this.rectItem.getParameter('Visible').setValue(false)
   }
+  /**
+   * Activates selection tool.
+   */
+  setSelectionManager(selectionManager) {
+    this.selectionManager = selectionManager
+  }
+
+  setSelectionFilter(fn) {
+    this.__selectionFilterFn = fn
+  }
+
+
 
   /**
    *
