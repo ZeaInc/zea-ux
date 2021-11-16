@@ -21,7 +21,6 @@ class MeasureRadiusTool extends BaseTool {
   constructor(appData) {
     super()
 
-    
     this.addParameter(this.colorParam)
     if (!appData) console.error('App data not provided to tool')
     this.appData = appData
@@ -82,6 +81,7 @@ class MeasureRadiusTool extends BaseTool {
             const length = crvToPnt.length()
             axisPos = xfo.tr
             edgePos = axisPos.add(crvToPnt.scale(radius / length))
+            break
           }
           default: {
             console.log('Unhandled Edge Type: ', curveType)
@@ -99,6 +99,7 @@ class MeasureRadiusTool extends BaseTool {
             const axisToPnt = hitPos.subtract(axisPos)
             const length = axisToPnt.length()
             edgePos = axisPos.add(axisToPnt.scale(radius / length))
+            break
           }
           default: {
             console.log('Unhandled Surface Type: ', surfaceType)
