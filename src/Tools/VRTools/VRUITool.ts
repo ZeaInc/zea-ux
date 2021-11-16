@@ -1,4 +1,17 @@
-import { Vec3, Color, Xfo, Ray, GeomItem, Material, Lines, BaseTool, POINTER_TYPES } from '@zeainc/zea-engine'
+// TODO: need to export POINTER_TYPES
+import {
+  // @ts-ignore
+  POINTER_TYPES,
+  Vec3,
+  Color,
+  Xfo,
+  Ray,
+  GeomItem,
+  Material,
+  Lines,
+  BaseTool,
+  Vec3Attribute,
+} from '@zeainc/zea-engine'
 import VRControllerUI from './VRControllerUI'
 
 /**
@@ -7,6 +20,18 @@ import VRControllerUI from './VRControllerUI'
  * @extends BaseTool
  */
 class VRUITool extends BaseTool {
+  appData
+  __vrUIDOMElement
+  controllerUI
+  __pointerLocalXfo
+  __uiPointerItem
+  __triggerHeld
+  uiOpen
+  uiController
+  pointerController
+  _element
+  __triggerDownElem
+
   /**
    * Create a VR UI tool.
    * @param {object} appData - The appData value.
@@ -30,7 +55,7 @@ class VRUITool extends BaseTool {
     line.setNumVertices(2)
     line.setNumSegments(1)
     line.setSegmentVertexIndices(0, 0, 1)
-    const positions = line.getVertexAttribute('positions')
+    const positions = <Vec3Attribute>line.getVertexAttribute('positions')
     positions.getValueRef(0).set(0.0, 0.0, 0.0)
     positions.getValueRef(1).set(0.0, 0.0, -1.0)
     line.setBoundingBoxDirty()
@@ -211,13 +236,15 @@ class VRUITool extends BaseTool {
    * @return {any} The return value.
    */
   sendEventToUI(eventName, args) {
-    const hit = this.calcUIIntersection()
+    // TODO: remove any
+    const hit: any = this.calcUIIntersection()
     if (hit) {
       hit.offsetX = hit.pageX = hit.pageX = hit.screenX = hit.clientX
       hit.offsetY = hit.pageY = hit.pageY = hit.screenY = hit.clientY
 
       let element = document.elementFromPoint(hit.clientX, hit.clientY)
       if (element) {
+        // @ts-ignore
         if (element.shadowRoot) element = element.shadowRoot.elementFromPoint(hit.clientX, hit.clientY)
         if (element != this._element) {
           if (this._element) this.controllerUI.sendMouseEvent('mouseleave', Object.assign(args, hit), this._element)
