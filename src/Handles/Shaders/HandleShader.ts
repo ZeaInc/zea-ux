@@ -21,7 +21,7 @@ class HandleShader extends GLShader {
    *
    * @param {*} gl - The gl value
    */
-  constructor(gl) {
+  constructor(gl?) {
     super(gl)
 
     this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader(
@@ -237,6 +237,7 @@ void main(void) {
    * @return {array} - Params declarations
    */
   static getParamDeclarations() {
+    //@ts-ignore
     const paramDescs = super.getParamDeclarations()
     paramDescs.push({
       name: 'BaseColor',
