@@ -8,6 +8,18 @@ import { MeasureAngle } from './MeasureAngle'
  * @extends {BaseTool}
  */
 class MeasureAngleTool extends BaseTool {
+  colorParam = new ColorParameter('Color', new Color('#F9CE03'))
+  appData
+  measurementChange = null
+  highlightedItemA = null
+  highlightedItemAHitPos = null
+  highlightedItemB = null
+  stage = 0
+  prevCursor
+  measurement
+  geomItemA
+  hitPosA
+  dragging
   /**
    * Creates an instance of MeasureAngleTool.
    *
@@ -16,15 +28,9 @@ class MeasureAngleTool extends BaseTool {
   constructor(appData) {
     super()
 
-    this.colorParam = new ColorParameter('Color', new Color('#F9CE03'))
     this.addParameter(this.colorParam)
     if (!appData) console.error('App data not provided to tool')
     this.appData = appData
-    this.measurementChange = null
-    this.highlightedItemA = null
-    this.highlightedItemAHitPos = null
-    this.highlightedItemB = null
-    this.stage = 0
   }
 
   /**
@@ -87,7 +93,7 @@ class MeasureAngleTool extends BaseTool {
     // skip if the alt key is held. Allows the camera tool to work
     if (event.altKey || (event.pointerType === 'mouse' && event.button !== 0) || !event.intersectionData) return
 
-    const getSurfaceXfo = (geomItem, hitPos, closestTo) => {
+    const getSurfaceXfo = (geomItem, hitPos, closestTo?) => {
       const xfo = new Xfo()
       const surfaceTypeParm = geomItem.getParameter('SurfaceType')
       if (surfaceTypeParm) {

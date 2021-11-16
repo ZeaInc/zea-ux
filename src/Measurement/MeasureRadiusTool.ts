@@ -8,6 +8,11 @@ import { MeasureDistance } from './MeasureDistance'
  * @extends {BaseTool}
  */
 class MeasureRadiusTool extends BaseTool {
+  colorParam = new ColorParameter('Color', new Color('#F9CE03'))
+  appData
+  highlightedItemA = null
+  prevCursor
+  dragging
   /**
    * Creates an instance of MeasureRadiusTool.
    *
@@ -16,11 +21,10 @@ class MeasureRadiusTool extends BaseTool {
   constructor(appData) {
     super()
 
-    this.colorParam = new ColorParameter('Color', new Color('#F9CE03'))
+    
     this.addParameter(this.colorParam)
     if (!appData) console.error('App data not provided to tool')
     this.appData = appData
-    this.highlightedItemA = null
   }
 
   /**
