@@ -9,6 +9,14 @@ import Change from '../Change.js'
  * @extends Change
  */
 class TreeItemsRemoveChange extends Change {
+  items = []
+  itemOwners = []
+  itemPaths = []
+  itemIndices = []
+
+  selectionManager
+  prevSelection
+  newSelection
   /**
    * Creates an instance of TreeItemsRemoveChange.
    *
@@ -17,10 +25,7 @@ class TreeItemsRemoveChange extends Change {
    */
   constructor(items, appData) {
     super()
-    this.items = []
-    this.itemOwners = []
-    this.itemPaths = []
-    this.itemIndices = []
+
     if (items) {
       this.selectionManager = appData.selectionManager
       this.prevSelection = new Set(this.selectionManager.getSelection())
@@ -70,6 +75,7 @@ class TreeItemsRemoveChange extends Change {
       if (item instanceof Operator) {
         const op = item
         op.reattach()
+        //@ts-ignore
       } else if (subTreeItem instanceof TreeItem) {
         item.traverse((subTreeItem) => {
           if (subTreeItem instanceof Operator) {
@@ -95,6 +101,7 @@ class TreeItemsRemoveChange extends Change {
       if (item instanceof Operator) {
         const op = item
         op.detach()
+        //@ts-ignore
       } else if (subTreeItem instanceof TreeItem) {
         item.traverse((subTreeItem) => {
           if (subTreeItem instanceof Operator) {
