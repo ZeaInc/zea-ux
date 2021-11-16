@@ -6,6 +6,7 @@ import { Xfo, KinematicGroup, Operator, OperatorInput, OperatorOutput } from '@z
  * @extends {Operator}
  */
 class SelectionGroupXfoOperator extends Operator {
+  currGroupXfo
   /**
    * Creates an instance of SelectionGroupXfoOperator.
    *
@@ -14,7 +15,9 @@ class SelectionGroupXfoOperator extends Operator {
    */
   constructor(initialXfoModeParam, globalXfoParam) {
     super()
+    //@ts-ignore
     this.addInput(new OperatorInput('InitialXfoMode')).setParam(initialXfoModeParam)
+    //@ts-ignore
     this.addOutput(new OperatorOutput('GroupGlobalXfo')).setParam(globalXfoParam)
 
     this.currGroupXfo = new Xfo()
@@ -26,6 +29,7 @@ class SelectionGroupXfoOperator extends Operator {
    * @param {TreeItem} item - The tree item being added
    */
   addItem(item) {
+    //@ts-ignore
     this.addInput(new OperatorInput('MemberGlobalXfo' + this.getNumInputs())).setParam(item.getParameter('GlobalXfo'))
     this.setDirty()
   }
@@ -39,7 +43,8 @@ class SelectionGroupXfoOperator extends Operator {
     // The first input it the 'InitialXfoMode', so remove the input for the specified item.
     const xfoParam = item.getParameter('GlobalXfo')
     for (let i = 1; i < this.getNumInputs(); i++) {
-      const input = this.getInputByIndex(i)
+      //@ts-ignore
+      const input: OperatorInput<any> = this.getInputByIndex(i)
       if (input.getParam() == xfoParam) {
         this.removeInput(input)
         this.setDirty()
