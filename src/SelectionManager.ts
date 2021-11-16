@@ -1,4 +1,4 @@
-import { EventEmitter, Color } from '@zeainc/zea-engine'
+import { EventEmitter, Color, TreeItem } from '@zeainc/zea-engine'
 import XfoHandle from './Handles/XfoHandle'
 import SelectionGroup from './SelectionGroup'
 import SelectionChange from './UndoRedo/Changes/SelectionChange'
@@ -15,6 +15,17 @@ import UndoRedoManager from './UndoRedo/UndoRedoManager'
  * @extends {EventEmitter}
  */
 class SelectionManager extends EventEmitter {
+  appData
+  leadSelection = undefined
+  selectionGroup
+  xfoHandle
+  xfoHandleVisible
+  __renderer
+  __pickFilter
+  __pickCB
+  __pickCount
+  __picked
+
   /**
    * Creates an instance of SelectionManager.
    *
@@ -24,10 +35,10 @@ class SelectionManager extends EventEmitter {
    *  selectionOutlineColor - enables highlight color to use to outline selected items.
    *  branchSelectionOutlineColor - enables highlight color to use to outline selected items.
    */
-  constructor(appData, options = {}) {
+  constructor(appData, options: any = {}) {
     super()
     this.appData = appData
-    this.leadSelection = undefined
+
     this.selectionGroup = new SelectionGroup(options)
 
     if (options.enableXfoHandles === true) {
@@ -111,7 +122,7 @@ class SelectionManager extends EventEmitter {
    * @param {boolean} [createUndo=true] - The createUndo param
    */
   setSelection(newSelection, createUndo = true) {
-    const selection = new Set(this.selectionGroup.getItems())
+    const selection: Set<TreeItem> = new Set(this.selectionGroup.getItems())
     const prevSelection = new Set(selection)
     for (const treeItem of newSelection) {
       if (!selection.has(treeItem)) {
@@ -146,7 +157,7 @@ class SelectionManager extends EventEmitter {
    * @param {TreeItem} treeItem - The treeItem value
    * @private
    */
-  __setLeadSelection(treeItem) {
+  __setLeadSelection(treeItem?: TreeItem) {
     if (this.leadSelection != treeItem) {
       this.leadSelection = treeItem
       this.emit('leadSelectionChanged', { treeItem })
@@ -183,7 +194,7 @@ class SelectionManager extends EventEmitter {
       }
 
       if (clear) {
-        Array.from(selection).forEach((item) => {
+        Array.from(selection).forEach((item: TreeItem) => {
           item.setSelected(false)
         })
         selection.clear()
@@ -245,7 +256,7 @@ class SelectionManager extends EventEmitter {
    * @return {boolean} - The return value.
    */
   clearSelection(newChange = true) {
-    const selection = new Set(this.selectionGroup.getItems())
+    const selection: Set<TreeItem> = new Set(this.selectionGroup.getItems())
     if (selection.size == 0) return false
     let prevSelection
     if (newChange) {
