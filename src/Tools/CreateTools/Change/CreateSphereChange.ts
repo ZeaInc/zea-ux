@@ -11,6 +11,7 @@ import CreateGeomChange from './CreateGeomChange'
  * @extends CreateGeomChange
  */
 class CreateSphereChange extends CreateGeomChange {
+  sphere = new Sphere(0, 24, 12)
   /**
    * Create a create sphere change.
    * @param {TreeItem} parentItem - The parentItem value.
@@ -20,7 +21,7 @@ class CreateSphereChange extends CreateGeomChange {
   constructor(parentItem, xfo, color) {
     super('CreateSphere', parentItem)
 
-    this.sphere = new Sphere(0, 24, 12)
+    
     const material = new Material('Sphere', 'SimpleSurfaceShader')
     this.geomItem = new GeomItem('Sphere', this.sphere, material)
     this.geomItem.setSelectable(false)
