@@ -7,6 +7,8 @@ import Change from '../Change'
  * @extends Change
  */
 class SelectionVisibilityChange extends Change {
+  selection
+  state
   /**
    * Create a toggle selection visibility.
    *
