@@ -12,6 +12,10 @@ import { UndoRedoManager } from '../../UndoRedo/index'
  * @extends CreateGeomTool
  */
 class CreateLineTool extends CreateGeomTool {
+  lineThickness
+  change
+  length
+  xfo
   /**
    * Create a create line tool.
    * @param {object} appData - The appData value.

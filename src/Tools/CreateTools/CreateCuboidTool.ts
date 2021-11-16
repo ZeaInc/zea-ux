@@ -12,6 +12,15 @@ import { UndoRedoManager } from '../../UndoRedo/index'
  * @extends CreateGeomTool
  */
 class CreateCuboidTool extends CreateGeomTool {
+  change
+  parentItem
+  colorParam
+  xfo 
+  invXfo 
+  stage
+  _height
+  pt1
+  constructionPlane
   /**
    * Create a create cuboid tool.
    *
