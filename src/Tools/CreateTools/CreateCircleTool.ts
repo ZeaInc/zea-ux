@@ -11,6 +11,12 @@ import { UndoRedoManager } from '../../UndoRedo/index'
  * @extends CreateGeomTool
  */
 class CreateCircleTool extends CreateGeomTool {
+  change
+  parentItem
+  xfo
+  stage
+  radius
+  appData
   /**
    * Create a create circle tool.
    * @param {object} appData - The appData value.

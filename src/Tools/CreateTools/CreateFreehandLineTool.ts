@@ -12,6 +12,17 @@ import { UndoRedoManager } from '../../UndoRedo/index'
  * @extends CreateLineTool
  */
 class CreateFreehandLineTool extends CreateLineTool {
+  mp
+  change
+  colorParam
+  lineThickness
+  parentItem
+
+  xfo
+  invXfo
+  stage
+  prevP
+  length
   /**
    * Create a create freehand line tool.
    *

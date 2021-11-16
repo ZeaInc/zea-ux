@@ -11,6 +11,10 @@ import { UndoRedoManager } from '../../UndoRedo/index'
  * @extends CreateGeomTool
  */
 class CreateRectTool extends CreateGeomTool {
+  change
+  xfo
+  _size
+  invXfo
   /**
    * Create a create rect tool.
    * @param {object} appData - The appData value.

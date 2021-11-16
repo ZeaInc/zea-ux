@@ -1,4 +1,4 @@
-import { Color, Xfo, Ray, ColorParameter, GeomItem, Material, Cross, POINTER_TYPES } from '@zeainc/zea-engine'
+import { Color, Xfo, Ray, ColorParameter, GeomItem, Material, Cross, TreeItem } from '@zeainc/zea-engine'
 import BaseCreateTool from '../BaseCreateTool'
 import { UndoRedoManager } from '../../UndoRedo/index'
 
@@ -8,6 +8,16 @@ import { UndoRedoManager } from '../../UndoRedo/index'
  * @extends BaseCreateTool
  */
 class CreateGeomTool extends BaseCreateTool {
+  appData
+  stage
+  removeToolOnRightClick
+  parentItem
+  colorParam
+  vrControllerToolTipMat
+  vrControllerToolTip
+  prevCursor
+  constructionPlane
+  __activeController
   /**
    * Create a create geom tool.
    *
@@ -115,7 +125,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param {Xfo} xfo - The xfo param.
    */
-  createStart(xfo) {
+  createStart(xfo?, treeItem?: TreeItem) {
     this.stage = 1
   }
 
