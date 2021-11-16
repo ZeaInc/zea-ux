@@ -8,12 +8,15 @@ import { Color, Registry, MaterialColorParam, NumberParameter, Material } from '
  * @extends {GLShader}
  */
 class HandleMaterial extends Material {
+  baseColorParam
+  maintainScreenSizeParam
+  overlayParam
   /**
    * Creates an instance of HandleMaterial.
    *
    * @param {string} name - The name of the material. Note: this value is entirely optional.
    */
-  constructor(name) {
+  constructor(name?) {
     super(name)
     this.__shaderName = 'HandleShader'
     this.baseColorParam = new MaterialColorParam('BaseColor', new Color(1.0, 1, 0.5))
