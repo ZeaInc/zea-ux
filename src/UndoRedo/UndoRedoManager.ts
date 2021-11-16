@@ -11,16 +11,15 @@ import { EventEmitter, Registry } from '@zeainc/zea-engine'
  * * **changeRedone:** Triggered when the `redo` method is called, after restoring the last change removed from the undo stack.
  * */
 class UndoRedoManager extends EventEmitter {
+  __undoStack = []
+  __redoStack = []
+  __currChange = null
   /**
    * It doesn't have any parameters, but under the hood it uses [EventsEmitter]() to notify subscribers when something happens.
    * The implementation is really simple, just initialize it like any other class.
    */
   constructor() {
     super()
-    this.__undoStack = []
-    this.__redoStack = []
-    this.__currChange = null
-
     this.__currChangeUpdated = this.__currChangeUpdated.bind(this)
   }
 
@@ -153,6 +152,7 @@ class UndoRedoManager extends EventEmitter {
    */
   static isChangeClassRegistered(inst) {
     try {
+      //@ts-ignore
       const name = Registry.getBlueprintName(inst)
       return true
     } catch (e) {
@@ -168,6 +168,7 @@ class UndoRedoManager extends EventEmitter {
    * @return {string} - The return value.
    */
   static getChangeClassName(inst) {
+    //@ts-ignore
     return Registry.getBlueprintName(inst)
   }
 
