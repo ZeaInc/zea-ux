@@ -12,7 +12,30 @@ const defaultOptions = {
   cacheBust: false,
 }
 
-const domtoimage = {
+interface Options {
+  cacheBust: any
+  imagePlaceholder: any
+}
+
+interface Impl {
+  fontFaces: any
+  images: any
+  util: any
+  inliner: any
+  options: Options
+}
+
+interface DomToImage {
+  toSvg: any
+  toPng: any
+  toJpeg: any
+  toBlob: any
+  toPixelData: any
+  toCanvas: any
+  impl: Impl
+}
+
+const domtoimage: DomToImage = {
   toSvg: toSvg,
   toPng: toPng,
   toJpeg: toJpeg,
@@ -24,7 +47,7 @@ const domtoimage = {
     images: images,
     util: util,
     inliner: inliner,
-    options: {},
+    options: { cacheBust: undefined, imagePlaceholder: undefined },
   },
 }
 
@@ -135,9 +158,9 @@ function toBlob(node, options) {
 /**
  *
  *
- * @param {object} options -
+ * @param {Option} options -
  */
-function copyOptions(options) {
+function copyOptions(options: Options) {
   // Copy options to impl options for use in impl
   if (typeof options.imagePlaceholder === 'undefined') {
     domtoimage.impl.options.imagePlaceholder = defaultOptions.imagePlaceholder
@@ -162,7 +185,7 @@ function draw(domNode, options) {
   return toSvg(domNode, options)
     .then(util.makeImage)
     .then(util.delay(100))
-    .then(function (image) {
+    .then(function (image: CanvasImageSource) {
       const canvas = newCanvas(domNode)
       canvas.getContext('2d').drawImage(image, 0, 0)
       return canvas
@@ -189,7 +212,7 @@ function draw(domNode, options) {
   }
 }
 
-function cloneNode(node, filter, root) {
+function cloneNode(node, filter, root?) {
   if (!root && filter && !filter(node)) return Promise.resolve()
 
   return Promise.resolve(node)
@@ -512,8 +535,12 @@ function newUtil() {
 
         const encoder = new FileReader()
         encoder.onloadend = function () {
-          const content = encoder.result.split(/,/)[1]
-          resolve(content)
+          if (typeof encoder.result === 'string') {
+            const content = encoder.result.split(/,/)[1]
+            resolve(content)
+          } else {
+            console.warn('encoder.result is not of string type')
+          }
         }
         encoder.readAsDataURL(request.response)
       }
@@ -625,7 +652,7 @@ function newInliner() {
     }
   }
 
-  function inlineAll(string, baseUrl, get) {
+  function inlineAll(string?, baseUrl?, get?) {
     if (nothingToInline()) return Promise.resolve(string)
 
     return Promise.resolve(string)
@@ -668,7 +695,7 @@ function newFontFaces() {
       })
   }
 
-  function readAll() {
+  function readAll(document: any) {
     return Promise.resolve(util.asArray(document.styleSheets))
       .then(getCssRules)
       .then(selectWebFontRules)
@@ -725,7 +752,7 @@ function newImages() {
       inline: inline,
     }
 
-    function inline(get) {
+    function inline(get?) {
       if (util.isDataUrl(element.src)) return Promise.resolve()
 
       return Promise.resolve(element.src)

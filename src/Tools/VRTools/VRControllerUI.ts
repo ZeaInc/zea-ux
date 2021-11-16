@@ -55,6 +55,10 @@ const plane = new Plane(1, 1)
  * @extends TreeItem
  */
 export default class VRControllerUI extends TreeItem {
+  appData
+  __vrUIDOMElement
+  ready
+  size
   /**
    * Create a VR controller UI.
    * @param {any} appData - The appData value.
