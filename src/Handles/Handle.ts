@@ -266,7 +266,7 @@ class Handle extends TreeItem {
    *
    * @param {PointerEvent} event - The event param.
    */
-  onDragEnd(event) {
+  onDragEnd(event?) {
     console.warn('@Handle#onDragEnd - Implement me!', event)
   }
 

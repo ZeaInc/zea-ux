@@ -8,6 +8,12 @@ import UndoRedoManager from '../UndoRedo/UndoRedoManager'
  * @extends Handle
  */
 class PlanarMovementHandle extends Handle {
+  fullXfoManipulationInVR
+  param
+  grabPos
+  baseXfo
+  change
+  grabOffset
   /**
    * Create a planar movement scene widget.
    *
@@ -124,6 +130,7 @@ class PlanarMovementHandle extends Handle {
     } else {
       super.onVRPoseChanged(event)
     }
+    return true // TODO: check if this make sense, here for inheritence
   }
 
   /**
@@ -137,6 +144,7 @@ class PlanarMovementHandle extends Handle {
     } else {
       super.onVRControllerButtonUp(event)
     }
+    return true // TODO: check if this make sense, here for inheritence
   }
 }
 

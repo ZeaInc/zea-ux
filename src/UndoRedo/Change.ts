@@ -8,13 +8,14 @@ import { UndoRedoManager } from './UndoRedoManager.js'
  * @extends {EventEmitter}
  */
 class Change extends EventEmitter {
+  name
   /**
    * Every class that extends from `Change` must contain a global `name` attribute.
    * It is used by the `UndoRedoManager` factory to re-construct the class of the specific implementation of the `Change` class.
    *
    * @param {string} name - The name value.
    */
-  constructor(name) {
+  constructor(name?) {
     super()
     this.name = name ? name : UndoRedoManager.getChangeClassName(this)
   }

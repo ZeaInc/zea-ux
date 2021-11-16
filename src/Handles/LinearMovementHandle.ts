@@ -11,6 +11,11 @@ import UndoRedoManager from '../UndoRedo/UndoRedoManager'
  * @extends BaseLinearMovementHandle
  */
 class LinearMovementHandle extends BaseLinearMovementHandle {
+  handleMat
+  param
+  grabPos
+  baseXfo
+  change
   /**
    * Create a linear movement scene widget.
    *

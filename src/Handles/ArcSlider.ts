@@ -33,6 +33,21 @@ import UndoRedoManager from '../UndoRedo/UndoRedoManager'
  * @extends BaseAxialRotationHandle
  */
 class ArcSlider extends BaseAxialRotationHandle {
+  param
+  arcRadiusParam
+  arcAngleParam
+  handleRadiusParam
+  handleMat
+  handle
+  arc
+  handleXfo = new Xfo()
+  handleGeomOffsetXfo = new Xfo()
+  range
+
+  baseXfo
+  deltaXfo // = new Xfo()
+  vec0
+  change
   /**
    * Creates an instance of ArcSlider.
    *
@@ -42,7 +57,7 @@ class ArcSlider extends BaseAxialRotationHandle {
    * @param {number} [handleRadius=0.02] - The handleRadius value
    * @param {Color} [color=new Color(1, 1, 0)] - the color value
    */
-  constructor(name, arcRadius = 1, arcAngle = 1, handleRadius = 0.02, color = new Color(1, 1, 0)) {
+  constructor(name?, arcRadius = 1, arcAngle = 1, handleRadius = 0.02, color = new Color(1, 1, 0)) {
     super(name)
     this.arcRadiusParam = new NumberParameter('ArcRadius', arcRadius)
     this.arcAngleParam = new NumberParameter('ArcAngle', arcAngle)
@@ -63,8 +78,6 @@ class ArcSlider extends BaseAxialRotationHandle {
 
     this.handle = new GeomItem('handle', handleGeom, this.handleMat)
     this.arc = new GeomItem('arc', arcGeom, this.handleMat)
-    this.handleXfo = new Xfo()
-    this.handleGeomOffsetXfo = new Xfo()
     this.handleGeomOffsetXfo.tr.x = arcRadius
     this.handle.getParameter('GeomOffsetXfo').setValue(this.handleGeomOffsetXfo)
 
@@ -253,7 +266,9 @@ class ArcSlider extends BaseAxialRotationHandle {
 
     if (event.shiftKey) {
       // modulate the angle to X degree increments.
-      const increment = Math.degToRad(22.5)
+      const degree: number = 22.5
+      const rad: number = degree * (Math.PI / 180)
+      const increment = rad //Math.degToRad(22.5)
       angle = Math.floor(angle / increment) * increment
     }
 
