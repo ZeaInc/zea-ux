@@ -18,7 +18,7 @@ class ScreenSpaceMovementHandle extends Handle {
    *
    * @param {string} name - The name value
    */
-  constructor(name) {
+  constructor(name?) {
     super(name)
   }
 

@@ -7,6 +7,11 @@ import { UndoRedoManager, Change } from '../UndoRedo/index'
  * @extends Change
  */
 class MeasurementChange extends Change {
+  measurement
+  parentItem
+  childIndex
+  parentItemPath
+  measurementType
   /**
    * Creates an instance of MeasurementChange.
    *
@@ -59,11 +64,11 @@ class MeasurementChange extends Change {
   /**
    * Serializes the change as a JSON object.
    *
-   * @param {object} context - The context value
-   * @return {object} - The serialized change
+   * @param {Record<any,any>} context - The context value
+   * @return {Record<any,any>} - The serialized change
    */
-  toJSON(context) {
-    const j = super.toJSON(context)
+  toJSON(context: Record<any, any>) {
+    const j: Record<any, any> = super.toJSON(context)
     j.parentItemPath = this.measurement.getOwner().getPath()
     j.measurementType = Registry.getBlueprintName(this.measurement)
     j.measurementData = this.measurement.toJSON(context)
@@ -80,7 +85,7 @@ class MeasurementChange extends Change {
     const sceneRoot = context.appData.scene.getRoot()
     const parentItem = sceneRoot.resolvePath(j.parentItemPath, 1)
     if (parentItem) {
-      this.measurement = Registry.constructBlueprintName(j.measurementType)
+      this.measurement = Registry.constructBlueprintName(j.measurementType) // TODO: fix registry error
       this.measurement.fromJSON(j.measurementData)
       parentItem.addChild(this.measurement)
     }
