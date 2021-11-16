@@ -1,4 +1,6 @@
-import { Quat, Color, Xfo, GeomItem, Material, Cross, BaseTool, POINTER_TYPES } from '@zeainc/zea-engine'
+// TODO: need to export POINTER_TYPES
+// @ts-ignore
+import { Quat, Color, Xfo, BaseTool, POINTER_TYPES } from '@zeainc/zea-engine'
 // import Handle from '../../Handles/Handle'
 import UndoRedoManager from '../../UndoRedo/UndoRedoManager'
 import Change from '../../UndoRedo/Change'
@@ -9,6 +11,9 @@ import Change from '../../UndoRedo/Change'
  * @extends Change
  */
 class HoldObjectsChange extends Change {
+  __selection = []
+  __prevXfos = []
+  __newXfos = []
   /**
    * Create a hold objects change.
    *
@@ -16,10 +21,6 @@ class HoldObjectsChange extends Change {
    */
   constructor(data) {
     super('HoldObjectsChange')
-
-    this.__selection = []
-    this.__prevXfos = []
-    this.__newXfos = []
 
     if (data) this.update(data)
   }
@@ -70,8 +71,8 @@ class HoldObjectsChange extends Change {
    * @param {object} context - The context param.
    * @return {object} The return value.
    */
-  toJSON(context) {
-    const j = super.toJSON(context)
+  toJSON(context?) {
+    const j: Record<any, any> = super.toJSON(context)
 
     const itemPaths = []
     for (let i = 0; i < this.__selection.length; i++) {
@@ -125,24 +126,27 @@ UndoRedoManager.registerChange('HoldObjectsChange', HoldObjectsChange)
  * @extends BaseTool
  */
 class VRHoldObjectsTool extends BaseTool {
+  appData
+  __pressedButtonCount = 0
+
+  __freeIndices = []
+  __vrControllers = []
+  __heldObjectCount = 0
+  __heldGeomItems = []
+  __highlightedGeomItemIds = [] // controller id to held goem id.
+  __heldGeomItemIds = [] // controller id to held goem id.
+  __heldGeomItemRefs = []
+  __heldGeomItemOffsets = []
+
+  addIconToControllerId
+  change
   /**
    * Create a VR hold objects tool.
    * @param {object} appData - The appData value.
    */
   constructor(appData) {
     super(appData)
-
-    this.appData = appData
-    this.__pressedButtonCount = 0
-
-    this.__freeIndices = []
-    this.__vrControllers = []
-    this.__heldObjectCount = 0
-    this.__heldGeomItems = []
-    this.__highlightedGeomItemIds = [] // controller id to held goem id.
-    this.__heldGeomItemIds = [] // controller id to held goem id.
-    this.__heldGeomItemRefs = []
-    this.__heldGeomItemOffsets = []
+    this.appData = appData // TODO: move to parent class?
   }
 
   /**
