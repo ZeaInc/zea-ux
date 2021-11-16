@@ -34,7 +34,9 @@ class MeasurementHandle extends ScreenSpaceMovementHandle {
    */
   onDragStart(event) {
     super.onDragStart(event)
+    //@ts-ignore
     this.getOwner().setSelectable(false)
+    //@ts-ignore
     this.getOwner().traverse((item) => {
       if (item instanceof GeomItem) {
         item.setSelectable(false)
@@ -67,7 +69,7 @@ class MeasurementHandle extends ScreenSpaceMovementHandle {
    */
   onDragEnd(event) {
     super.onDragEnd(event)
-
+    //@ts-ignore
     this.getOwner().traverse((item) => {
       if (item instanceof GeomItem) {
         item.setSelectable(true)

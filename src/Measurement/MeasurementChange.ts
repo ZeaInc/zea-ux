@@ -70,6 +70,7 @@ class MeasurementChange extends Change {
   toJSON(context: Record<any, any>) {
     const j: Record<any, any> = super.toJSON(context)
     j.parentItemPath = this.measurement.getOwner().getPath()
+    //@ts-ignore
     j.measurementType = Registry.getBlueprintName(this.measurement)
     j.measurementData = this.measurement.toJSON(context)
     return j
@@ -85,6 +86,7 @@ class MeasurementChange extends Change {
     const sceneRoot = context.appData.scene.getRoot()
     const parentItem = sceneRoot.resolvePath(j.parentItemPath, 1)
     if (parentItem) {
+      //@ts-ignore
       this.measurement = Registry.constructBlueprintName(j.measurementType) // TODO: fix registry error
       this.measurement.fromJSON(j.measurementData)
       parentItem.addChild(this.measurement)
