@@ -5,6 +5,8 @@ import { BaseTool } from '@zeainc/zea-engine'
  * @extends BaseTool
  */
 class ToolManager extends BaseTool {
+  toolStack
+  tools
   constructor() {
     super()
     this.tools = {}
@@ -17,7 +19,7 @@ class ToolManager extends BaseTool {
 
   pushTool(toolName) {
     const tool = this.tools[toolName]
-    if (!tool) throw Error('Tool not found', toolName)
+    if (!tool) throw Error('Tool not found' + toolName)
     if (tool.activateTool) tool.activateTool()
     this.toolStack.push(this.tools[toolName])
   }
