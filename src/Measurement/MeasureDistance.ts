@@ -12,6 +12,7 @@ import {
   ColorParameter,
   StringParameter,
   Registry,
+  Vec3Attribute,
 } from '@zeainc/zea-engine'
 
 import { HandleMaterial } from '../Handles/Shaders/HandleMaterial'
@@ -21,8 +22,8 @@ const line = new Lines()
 line.setNumVertices(2)
 line.setNumSegments(1)
 line.setSegmentVertexIndices(0, 0, 1)
-line.getVertexAttribute('positions').setValue(0, new Vec3())
-line.getVertexAttribute('positions').setValue(1, new Vec3(0, 0, 1))
+;(<Vec3Attribute>line.getVertexAttribute('positions')).setValue(0, new Vec3())
+;(<Vec3Attribute>line.getVertexAttribute('positions')).setValue(1, new Vec3(0, 0, 1))
 line.setBoundingBoxDirty()
 
 /**
@@ -31,6 +32,15 @@ line.setBoundingBoxDirty()
  * @extends {TreeItem}
  */
 class MeasureDistance extends TreeItem {
+  colorParam
+  unitsParameter
+  markerMaterial
+  startMarker
+  endMarker
+  lineMaterial
+  label
+  billboard
+  lineGeomItem
   /**
    * Creates an instance of MeasureDistance.
    * @param {string} name

@@ -12,17 +12,18 @@ import {
   ColorParameter,
   Registry,
   Ray,
+  Vec3Attribute,
 } from '@zeainc/zea-engine'
 
 import { HandleMaterial } from '../Handles/Shaders/HandleMaterial'
 
 const sphere = new Sphere(0.003, 24, 12, false)
-const line = new Lines(0.0)
+const line = new Lines() //new Lines(0.0)
 line.setNumVertices(2)
 line.setNumSegments(1)
 line.setSegmentVertexIndices(0, 0, 1)
-line.getVertexAttribute('positions').setValue(0, new Vec3())
-line.getVertexAttribute('positions').setValue(1, new Vec3(0, 0, 1))
+;(<Vec3Attribute>line.getVertexAttribute('positions')).setValue(0, new Vec3())
+;(<Vec3Attribute>line.getVertexAttribute('positions')).setValue(1, new Vec3(0, 0, 1)) // TODO: review if both lines are necessary
 line.setBoundingBoxDirty()
 /**
  *
@@ -30,6 +31,14 @@ line.setBoundingBoxDirty()
  * @extends {TreeItem}
  */
 class MeasureAngle extends TreeItem {
+  colorParam
+  markerMaterial
+  markerMaterialB
+  lineMaterial
+  markerA
+  markerB
+  label
+  billboard
   /**
    * Creates an instance of MeasureAngle.
    * @param {string} name

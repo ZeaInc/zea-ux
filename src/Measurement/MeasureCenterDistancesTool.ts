@@ -8,6 +8,14 @@ import { MeasurementChange } from './MeasurementChange'
  * @extends {BaseTool}
  */
 class MeasureCenterDistancesTool extends BaseTool {
+  colorParam
+  appData
+  measurementChange
+  highlightedItemA
+  highlightedItemB
+  stage
+  prevCursor
+  measurement
   /**
    * Creates an instance of MeasureCenterDistancesTool.
    *
