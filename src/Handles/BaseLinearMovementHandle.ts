@@ -6,6 +6,7 @@ import Handle from './Handle'
  * @extends Handle
  */
 class BaseLinearMovementHandle extends Handle {
+  grabDist
   /**
    * Create base linear movement scene widget.
    * @param {string} name - The name value.
@@ -48,6 +49,7 @@ class BaseLinearMovementHandle extends Handle {
     event.value = dist
     event.delta = dist - this.grabDist
     this.onDrag(event)
+    return true // TODO: check, here to support inheritence
   }
 
   /**

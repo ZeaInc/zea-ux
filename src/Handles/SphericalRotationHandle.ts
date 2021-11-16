@@ -10,6 +10,14 @@ import { ParameterValueChange } from '../UndoRedo/Changes/ParameterValueChange'
  * @extends Handle
  */
 class SphericalRotationHandle extends Handle {
+  param
+  radius
+  maskMat
+  baseXfo
+  deltaXfo
+  change
+  vec0
+  offsetXfo
   /**
    * Create an axial rotation scene widget.
    *
@@ -142,7 +150,7 @@ class SphericalRotationHandle extends Handle {
     const vec1 = event.holdPos.subtract(this.baseXfo.tr)
     vec1.normalizeInPlace()
 
-    const angle = this.vec0.angleTo(vec1) * modulator
+    const angle = this.vec0.angleTo(vec1) // TODO: modulator not defined! this.vec0.angleTo(vec1) * modulator
     const axis = this.vec0.cross(vec1).normalize()
 
     this.deltaXfo.ori.setFromAxisAndAngle(axis, angle)

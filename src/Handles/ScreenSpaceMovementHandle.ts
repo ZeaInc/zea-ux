@@ -9,6 +9,10 @@ import UndoRedoManager from '../UndoRedo/UndoRedoManager.js'
  * @extends Handle
  */
 class ScreenSpaceMovementHandle extends Handle {
+  param
+  change
+  grabPos
+  baseXfo
   /**
    * Create a planar movement scene widget.
    *

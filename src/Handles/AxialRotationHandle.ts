@@ -18,6 +18,10 @@ import './Shaders/HandleShader'
  * @extends BaseAxialRotationHandle
  */
 class AxialRotationHandle extends BaseAxialRotationHandle {
+  radiusParam
+  handleMat
+  handleXfo
+  handle
   /**
    * Create an axial rotation scene widget.
    *

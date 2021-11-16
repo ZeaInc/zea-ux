@@ -11,13 +11,18 @@ import Change from '../Change'
  * @extends Change
  */
 class ParameterValueChange extends Change {
+  __param
+  __nextValue
+  __prevValue
+  suppressPrimaryChange
+  secondaryChanges
   /**
    * Creates an instance of ParameterValueChange.
    *
    * @param {Parameter} param - The param value.
    * @param {object|string|number|any} newValue - The newValue value.
    */
-  constructor(param, newValue) {
+  constructor(param?, newValue?) {
     if (param) {
       super(param ? param.getName() + ' Changed' : 'ParameterValueChange')
       this.__prevValue = param.getValue()
@@ -74,8 +79,8 @@ class ParameterValueChange extends Change {
    * @param {object} context - The context param.
    * @return {object} The return value.
    */
-  toJSON(context) {
-    const j = {
+  toJSON(context: Record<any, any>) {
+    const j: Record<any, any> = {
       name: this.name,
       paramPath: this.__param.getPath(),
     }
@@ -93,10 +98,10 @@ class ParameterValueChange extends Change {
   /**
    * Restores `Parameter` instance's state with the specified JSON object.
    *
-   * @param {object} j - The j param.
-   * @param {object} context - The context param.
+   * @param {Record<any, any>} j - The j param.
+   * @param {Record<any, any>} context - The context param.
    */
-  fromJSON(j, context) {
+  fromJSON(j, context: Record<any, any>) {
     const param = context.appData.scene.getRoot().resolvePath(j.paramPath, 1)
     if (!param || !(param instanceof Parameter)) {
       console.warn('resolvePath is unable to resolve', j.paramPath)
@@ -114,9 +119,9 @@ class ParameterValueChange extends Change {
   /**
    * Updates the state of an existing identified `Parameter` through replication.
    *
-   * @param {object} j - The j param.
+   * @param {Record<any, any>} j - The j param.
    */
-  updateFromJSON(j) {
+  updateFromJSON(j: Record<any, any>) {
     if (!this.__param) return
     if (this.__nextValue.fromJSON) this.__nextValue.fromJSON(j.value)
     else this.__nextValue = j.value

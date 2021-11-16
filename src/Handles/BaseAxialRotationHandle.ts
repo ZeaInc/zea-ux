@@ -9,6 +9,14 @@ import UndoRedoManager from '../UndoRedo/UndoRedoManager'
  * @extends Handle
  */
 class BaseAxialRotationHandle extends Handle {
+  param
+  baseXfo
+  deltaXfo
+  offsetXfo
+  grabCircleRadius
+  vec0
+  change
+  range
   /**
    * Create an axial rotation scene widget.
    *
@@ -93,7 +101,9 @@ class BaseAxialRotationHandle extends Handle {
 
     if (event.shiftKey) {
       // modulat the angle to X degree increments.
-      const increment = Math.degToRad(22.5)
+      const degree: number = 22.5
+      const rad: number = degree * (Math.PI / 180)
+      const increment = rad //Math.degToRad(22.5)
       angle = Math.floor(angle / increment) * increment
     }
 
