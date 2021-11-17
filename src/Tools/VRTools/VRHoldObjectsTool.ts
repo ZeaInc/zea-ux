@@ -1,6 +1,6 @@
 // TODO: need to export POINTER_TYPES
 // @ts-ignore
-import { Quat, Color, Xfo, BaseTool, POINTER_TYPES } from '@zeainc/zea-engine'
+import { Quat, Color, Xfo, BaseTool, POINTER_TYPES, TreeItem } from '@zeainc/zea-engine'
 // import Handle from '../../Handles/Handle'
 import UndoRedoManager from '../../UndoRedo/UndoRedoManager'
 import Change from '../../UndoRedo/Change'
@@ -11,9 +11,9 @@ import Change from '../../UndoRedo/Change'
  * @extends Change
  */
 class HoldObjectsChange extends Change {
-  __selection = []
-  __prevXfos = []
-  __newXfos = []
+  __selection: Array<TreeItem> = []
+  __prevXfos: Array<Xfo> = []
+  __newXfos: Array<Xfo> = []
   /**
    * Create a hold objects change.
    *

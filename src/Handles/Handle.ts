@@ -165,7 +165,6 @@ class Handle extends TreeItem {
     const dist = ray.intersectRayPlane(this.gizmoRay)
     event.holdPos = ray.pointAtDist(dist)
     this.onDrag(event)
-    return true
   }
 
   /**

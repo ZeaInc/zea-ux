@@ -68,14 +68,14 @@ class TreeItemMoveChange extends Change {
    * @param {object} context - The context value
    */
   fromJSON(j, context) {
-    //@ts-ignore -- no appData here
-    const treeItem = appData.scene.getRoot().resolvePath(j.treeItemPath, 1)
+    if (!context || !context.scene) return
+
+    const treeItem = context.scene.getRoot().resolvePath(j.treeItemPath, 1)
     if (!treeItem) {
       console.warn('resolvePath is unable to resolve', j.treeItemPath)
       return
     }
-    //@ts-ignore -- no appData here
-    const newOwner = appData.scene.getRoot().resolvePath(j.newOwnerPath, 1)
+    const newOwner = context.scene.getRoot().resolvePath(j.newOwnerPath, 1)
     if (!newOwner) {
       console.warn('resolvePath is unable to resolve', j.newOwnerPath)
       return

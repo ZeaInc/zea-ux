@@ -130,7 +130,6 @@ class PlanarMovementHandle extends Handle {
     } else {
       super.onVRPoseChanged(event)
     }
-    return true // TODO: check if this make sense, here for inheritence
   }
 
   /**
@@ -144,7 +143,6 @@ class PlanarMovementHandle extends Handle {
     } else {
       super.onVRControllerButtonUp(event)
     }
-    return true // TODO: check if this make sense, here for inheritence
   }
 }
 

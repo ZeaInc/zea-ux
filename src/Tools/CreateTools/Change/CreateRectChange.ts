@@ -12,7 +12,7 @@ import CreateGeomChange from './CreateGeomChange'
  */
 class CreateRectChange extends CreateGeomChange {
   // TODO: add lineThickness to rect
-  rect: any = new Rect(0, 0)
+  rect: Rect = new Rect(0, 0)
   /**
    * Create a create rect change.
    *
@@ -21,8 +21,6 @@ class CreateRectChange extends CreateGeomChange {
    */
   constructor(parentItem, xfo) {
     super('CreateRect')
-
-    this.rect.lineThickness = 0.05
 
     const material = new Material('circle', 'FatLinesShader')
     material.getParameter('BaseColor').setValue(new Color(0.7, 0.2, 0.2))

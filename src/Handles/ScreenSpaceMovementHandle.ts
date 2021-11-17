@@ -68,7 +68,6 @@ class ScreenSpaceMovementHandle extends Handle {
     const dist = ray.intersectRayPlane(this.gizmoRay)
     event.grabPos = ray.pointAtDist(dist)
     this.onDragStart(event)
-    return true
   }
 
   /**
@@ -82,7 +81,6 @@ class ScreenSpaceMovementHandle extends Handle {
     const dist = ray.intersectRayPlane(this.gizmoRay)
     event.holdPos = ray.pointAtDist(dist)
     this.onDrag(event)
-    return true
   }
 
   /**
@@ -99,7 +97,6 @@ class ScreenSpaceMovementHandle extends Handle {
     }
 
     this.onDragEnd(event)
-    return true
   }
 
   // ///////////////////////////////////

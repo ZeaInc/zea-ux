@@ -64,8 +64,7 @@ class TreeItemAddChange extends Change {
       const op = this.treeItem
       op.reattach()
 
-      // @ts-ignore -- subtreeItem is not defined
-    } else if (subTreeItem instanceof TreeItem) {
+    } else if (this.treeItem instanceof TreeItem) {
       this.treeItem.traverse((subTreeItem) => {
         if (subTreeItem instanceof Operator) {
           const op = subTreeItem

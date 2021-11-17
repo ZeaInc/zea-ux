@@ -49,7 +49,6 @@ class BaseLinearMovementHandle extends Handle {
     event.value = dist
     event.delta = dist - this.grabDist
     this.onDrag(event)
-    return true // TODO: check, here to support inheritence
   }
 
   /**
