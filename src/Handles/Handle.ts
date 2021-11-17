@@ -151,7 +151,6 @@ class Handle extends TreeItem {
     const dist = ray.intersectRayPlane(this.gizmoRay)
     event.grabPos = ray.pointAtDist(dist)
     this.onDragStart(event)
-    return true
   }
 
   /**
@@ -181,7 +180,6 @@ class Handle extends TreeItem {
     }
 
     this.onDragEnd(event)
-    return true
   }
 
   // ///////////////////////////////////
@@ -202,7 +200,6 @@ class Handle extends TreeItem {
     const grabPos = xfo.tr.subtract(gizmoRay.dir.scale(offset.dot(gizmoRay.dir)))
     event.grabPos = grabPos
     this.onDragStart(event)
-    return true
   }
 
   /**
@@ -219,7 +216,6 @@ class Handle extends TreeItem {
       const holdPos = xfo.tr.subtract(gizmoRay.dir.scale(offset.dot(gizmoRay.dir)))
       event.holdPos = holdPos
       this.onDrag(event)
-      return true
     }
   }
 
@@ -235,7 +231,6 @@ class Handle extends TreeItem {
       // TODO: check this.onDragEnd(event, xfo.tr)
       this.onDragEnd(event)
       this.activeController = undefined
-      return true
     }
   }
 
