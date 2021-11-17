@@ -152,8 +152,7 @@ class UndoRedoManager extends EventEmitter {
    */
   static isChangeClassRegistered(inst) {
     try {
-      //@ts-ignore
-      const name = Registry.getBlueprintName(inst)
+      const name = Registry.getClassName(inst)
       return true
     } catch (e) {
       return false
@@ -168,8 +167,7 @@ class UndoRedoManager extends EventEmitter {
    * @return {string} - The return value.
    */
   static getChangeClassName(inst) {
-    //@ts-ignore
-    return Registry.getBlueprintName(inst)
+    return Registry.getClassName(inst)
   }
 
   /**

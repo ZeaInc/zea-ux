@@ -198,7 +198,7 @@ class VRUITool extends BaseTool {
    *
    * @return {object|undefined} The return value.
    */
-  calcUIIntersection() {
+  calcUIIntersection(): Record<any,any> | null {
     const pointerXfo = this.__uiPointerItem.getParameter('GlobalXfo').getValue()
     const pointerVec = pointerXfo.ori.getZaxis().negate()
     const ray = new Ray(pointerXfo.tr, pointerVec)
@@ -236,8 +236,7 @@ class VRUITool extends BaseTool {
    * @return {any} The return value.
    */
   sendEventToUI(eventName, args) {
-    // TODO: remove any
-    const hit: any = this.calcUIIntersection()
+    const hit = this.calcUIIntersection()
     if (hit) {
       hit.offsetX = hit.pageX = hit.pageX = hit.screenX = hit.clientX
       hit.offsetY = hit.pageY = hit.pageY = hit.screenY = hit.clientY

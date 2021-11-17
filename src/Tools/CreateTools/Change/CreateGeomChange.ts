@@ -1,4 +1,4 @@
-import { Xfo, Color } from '@zeainc/zea-engine'
+import { Xfo, Color, GeomItem, TreeItem } from '@zeainc/zea-engine'
 import Change from '../../../UndoRedo/Change'
 
 /**
@@ -7,9 +7,9 @@ import Change from '../../../UndoRedo/Change'
  * @extends Change
  */
 class CreateGeomChange extends Change {
-  parentItem
-  geomItem
-  childIndex
+  parentItem: TreeItem
+  geomItem: GeomItem
+  childIndex: number
   /**
    * Create a create circle change.
    * @param {string} name - The name value.

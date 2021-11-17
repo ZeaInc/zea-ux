@@ -1,4 +1,4 @@
-import { GeomItem, Registry } from '@zeainc/zea-engine'
+import { GeomItem, Registry, TreeItem } from '@zeainc/zea-engine'
 import { ScreenSpaceMovementHandle } from '../Handles/ScreenSpaceMovementHandle'
 
 /**
@@ -34,10 +34,9 @@ class MeasurementHandle extends ScreenSpaceMovementHandle {
    */
   onDragStart(event) {
     super.onDragStart(event)
-    //@ts-ignore
-    this.getOwner().setSelectable(false)
-    //@ts-ignore
-    this.getOwner().traverse((item) => {
+    const owner = <TreeItem>this.getOwner()
+    owner.setSelectable(false)
+    owner.traverse((item) => {
       if (item instanceof GeomItem) {
         item.setSelectable(false)
       }
@@ -69,8 +68,8 @@ class MeasurementHandle extends ScreenSpaceMovementHandle {
    */
   onDragEnd(event) {
     super.onDragEnd(event)
-    //@ts-ignore
-    this.getOwner().traverse((item) => {
+    const owner = <TreeItem>this.getOwner()
+    owner.traverse((item) => {
       if (item instanceof GeomItem) {
         item.setSelectable(true)
       }
