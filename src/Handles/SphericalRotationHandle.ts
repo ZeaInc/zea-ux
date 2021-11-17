@@ -103,7 +103,6 @@ class SphericalRotationHandle extends Handle {
     // const dist = event.mouseRay.intersectRaySphere(this.sphere);
     // event.holdPos = event.mouseRay.pointAtDist(dist);
     // this.onDrag(event);
-    return true
   }
 
   /**
@@ -116,7 +115,6 @@ class SphericalRotationHandle extends Handle {
     // const dist = event.mouseRay.intersectRaySphere(this.sphere);
     // event.releasePos = event.mouseRay.pointAtDist(dist);
     // this.onDragEnd(event);
-    return true
   }
 
   /**
