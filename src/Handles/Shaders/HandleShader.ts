@@ -230,26 +230,6 @@ void main(void) {
     )
   }
 
-  /**
-   * Returns parameter declarations
-   *
-   * @static
-   * @return {array} - Params declarations
-   */
-  static getParamDeclarations() {
-    //@ts-ignore
-    const paramDescs = super.getParamDeclarations()
-    paramDescs.push({
-      name: 'BaseColor',
-      defaultValue: new Color(1.0, 1.0, 0.5),
-    })
-    paramDescs.push({
-      name: 'MaintainScreenSize',
-      defaultValue: 0,
-    })
-    paramDescs.push({ name: 'Overlay', defaultValue: 0.0 })
-    return paramDescs
-  }
 
   /**
    * The getPackedMaterialData method.

@@ -12,7 +12,7 @@ import CreateGeomChange from './CreateGeomChange'
  */
 class CreateCircleChange extends CreateGeomChange {
   // TODO: add lineThickness to circle or parent class
-  circle: any= new Circle(0, 64)
+  circle: Circle = new Circle(0, 64)
   geomItem
   /**
    * Creates an instance of CreateCircleChange.
@@ -22,8 +22,6 @@ class CreateCircleChange extends CreateGeomChange {
    */
   constructor(parentItem, xfo) {
     super('CreateCircle')
-
-    this.circle.lineThickness = 0.05
 
     const material = new Material('circle', 'FatLinesShader')
     material.getParameter('BaseColor').setValue(new Color(0.7, 0.2, 0.2))

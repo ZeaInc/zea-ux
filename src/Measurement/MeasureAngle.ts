@@ -22,8 +22,9 @@ const line = new Lines() //new Lines(0.0)
 line.setNumVertices(2)
 line.setNumSegments(1)
 line.setSegmentVertexIndices(0, 0, 1)
-;(<Vec3Attribute>line.getVertexAttribute('positions')).setValue(0, new Vec3())
-;(<Vec3Attribute>line.getVertexAttribute('positions')).setValue(1, new Vec3(0, 0, 1)) // TODO: review if both lines are necessary
+const positions = <Vec3Attribute>line.getVertexAttribute('positions')
+positions.setValue(0, new Vec3())
+positions.setValue(1, new Vec3(0, 0, 1))
 line.setBoundingBoxDirty()
 /**
  *

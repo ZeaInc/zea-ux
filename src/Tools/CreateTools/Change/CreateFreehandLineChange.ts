@@ -13,8 +13,7 @@ import CreateGeomChange from './CreateGeomChange'
 class CreateFreehandLineChange extends CreateGeomChange {
   vertexCount = 100
   used = 0
-  // TODO: add lineThickness
-  line: any = new Lines()
+  line: Lines = new Lines()
   /**
    * Create a create freehand line change.
    *
@@ -30,9 +29,8 @@ class CreateFreehandLineChange extends CreateGeomChange {
     this.line.setNumSegments(this.vertexCount - 1)
     ;(<Vec3Attribute>this.line.getVertexAttribute('positions')).setValue(0, new Vec3())
 
-    this.line.lineThickness = thickness
     // TODO: added lineThicknessParam to LinesMaterial
-    const material: any = new LinesMaterial('freeHandLine')
+    const material = new FatLinesMaterial('freeHandLine')
     if (color) {
       material.baseColorParam.value = color
     }
@@ -90,9 +88,9 @@ class CreateFreehandLineChange extends CreateGeomChange {
    */
   toJSON(context) {
     const j = super.toJSON(context)
-    j.lineThickness = this.line.lineThickness
-    const material = this.geomItem.getParameter('Material').getValue()
-    j.color = material.getParameter('BaseColor').getValue()
+    const material = <FatLinesMaterial>this.geomItem.materialParam.value
+    j.lineThickness = material.lineThicknessParam.value
+    j.color = material.baseColorParam.value
     return j
   }
 
@@ -105,15 +103,16 @@ class CreateFreehandLineChange extends CreateGeomChange {
   fromJSON(j, context) {
     // Need to set line thickness before the geom is added to the tree.
     if (j.lineThickness) {
-      this.line.lineThickness = j.lineThickness
-      // this.line.addVertexAttribute('lineThickness', Float32, 0.0);
-      this.geomItem.getMaterial().getParameter('LineThickness').setValue(j.lineThickness)
+      const material = <FatLinesMaterial>this.geomItem.materialParam.value
+      material.lineThicknessParam.value = j.lineThickness
+   
     }
 
     if (j.color) {
       const color = new Color(0.7, 0.2, 0.2)
       color.fromJSON(j.color)
-      this.geomItem.getMaterial().getParameter('BaseColor').setValue(color)
+      const material = <FatLinesMaterial>this.geomItem.materialParam.value
+      material.baseColorParam.value = color
     }
 
     super.fromJSON(j, context)

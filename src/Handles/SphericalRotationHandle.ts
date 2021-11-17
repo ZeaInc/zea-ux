@@ -149,8 +149,8 @@ class SphericalRotationHandle extends Handle {
   onDrag(event) {
     const vec1 = event.holdPos.subtract(this.baseXfo.tr)
     vec1.normalizeInPlace()
-
-    const angle = this.vec0.angleTo(vec1) // TODO: modulator not defined! this.vec0.angleTo(vec1) * modulator
+    const modulator = 1
+    const angle = this.vec0.angleTo(vec1) * modulator
     const axis = this.vec0.cross(vec1).normalize()
 
     this.deltaXfo.ori.setFromAxisAndAngle(axis, angle)

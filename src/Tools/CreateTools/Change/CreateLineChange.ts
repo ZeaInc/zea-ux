@@ -12,7 +12,7 @@ import CreateGeomChange from './CreateGeomChange'
  */
 class CreateLineChange extends CreateGeomChange {
   // TODO: lineThickness to Lines class
-  line: any = new Lines()
+  line: Lines = new Lines()
   /**
    * Create a create line change.
    *
@@ -37,10 +37,6 @@ class CreateLineChange extends CreateGeomChange {
       material.lineThicknessParam.value = thickness
     }
     this.geomItem = new GeomItem('Line', this.line, material)
-
-    if (thickness) {
-      this.line.lineThickness = thickness
-    }
 
     if (parentItem && xfo) {
       this.setParentAndXfo(parentItem, xfo)
@@ -74,11 +70,8 @@ class CreateLineChange extends CreateGeomChange {
     if (j.color) {
       const color = new Color()
       color.fromJSON(j.color)
-      // material.getParameter('BaseColor').setValue(color) // TODO: material is not defined
-    }
-
-    if (j.thickness) {
-      this.line.lineThickness = j.thickness
+      const material = this.geomItem.materialParam.value
+      material.getParameter('BaseColor').setValue(color) 
     }
   }
 }
