@@ -102,7 +102,7 @@ class PlanarMovementHandle extends Handle {
     if (this.fullXfoManipulationInVR) {
       this.activeController = event.controller
       const xfo = this.activeController.getTipXfo()
-      const handleXfo = this.getParameter('GlobalXfo').getValue()
+      const handleXfo = this.globalXfoParam.value
       this.grabOffset = xfo.inverse().multiply(handleXfo)
     } else {
       super.onVRControllerButtonDown(event)

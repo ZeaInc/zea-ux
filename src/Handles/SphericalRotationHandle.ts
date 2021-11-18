@@ -82,7 +82,7 @@ class SphericalRotationHandle extends Handle {
    * @return {boolean} - The return value.
    */
   handlePointerDown(event) {
-    // const xfo = this.getParameter('GlobalXfo').getValue();
+    // const xfo = this.globalXfoParam.value;
     // this.sphere = {
     //   tr: xfo,
     //   radius: this.radius,
@@ -123,7 +123,7 @@ class SphericalRotationHandle extends Handle {
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onDragStart(event) {
-    this.baseXfo = this.getParameter('GlobalXfo').getValue()
+    this.baseXfo = this.globalXfoParam.value
     this.baseXfo.sc.set(1, 1, 1)
     this.deltaXfo = new Xfo()
     const param = this.getTargetParam()

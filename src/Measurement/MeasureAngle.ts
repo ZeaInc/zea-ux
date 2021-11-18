@@ -76,8 +76,8 @@ class MeasureAngle extends TreeItem {
   createLinesAndLabel() {
     // ////////////////////////////////////////
     // Calculate the angle
-    const xfoA = this.markerA.getParameter('GlobalXfo').getValue()
-    const xfoB = this.markerB.getParameter('GlobalXfo').getValue()
+    const xfoA = this.markerA.globalXfoParam.value
+    const xfoB = this.markerB.globalXfoParam.value
 
     const normA = xfoA.ori.getZaxis()
     const normB = xfoB.ori.getZaxis()
@@ -155,7 +155,7 @@ class MeasureAngle extends TreeItem {
    * @return {Xfo}
    */
   getXfoA() {
-    return this.markerA.getParameter('GlobalXfo').getValue()
+    return this.markerA.globalXfoParam.value
   }
 
   /**

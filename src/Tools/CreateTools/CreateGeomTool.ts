@@ -115,7 +115,7 @@ class CreateGeomTool extends BaseCreateTool {
     }
 
     const camera = event.viewport.getCamera()
-    const xfo = camera.getParameter('GlobalXfo').getValue().clone()
+    const xfo = camera.globalXfoParam.value.clone()
     xfo.tr = ray.pointAtDist(camera.getFocalDistance())
     return xfo
   }

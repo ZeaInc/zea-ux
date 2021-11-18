@@ -67,7 +67,7 @@ class MeasureRadiusTool extends BaseTool {
         hitPos = ray.start.add(ray.dir.scale(distance))
       }
       const geomItem = this.highlightedItemA
-      const xfo = geomItem.getParameter('GlobalXfo').getValue()
+      const xfo = geomItem.globalXfoParam.value
       let axisPos
       let edgePos
       if (geomItem.hasParameter('CurveType')) {

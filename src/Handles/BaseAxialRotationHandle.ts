@@ -58,7 +58,7 @@ class BaseAxialRotationHandle extends Handle {
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onDragStart(event) {
-    this.baseXfo = this.getParameter('GlobalXfo').getValue().clone()
+    this.baseXfo = this.globalXfoParam.value.clone()
     this.baseXfo.sc.set(1, 1, 1)
     this.deltaXfo = new Xfo()
 

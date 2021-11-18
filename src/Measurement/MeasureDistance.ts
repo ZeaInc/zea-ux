@@ -76,8 +76,8 @@ class MeasureDistance extends TreeItem {
    */
   updateMeasurement() {
     console.log('updateMeasurement')
-    const startXfo = this.startMarker.getParameter('GlobalXfo').getValue()
-    const endXfo = this.endMarker.getParameter('GlobalXfo').getValue()
+    const startXfo = this.startMarker.globalXfoParam.value
+    const endXfo = this.endMarker.globalXfoParam.value
 
     const vector = endXfo.tr.subtract(startXfo.tr)
     const distance = vector.length()
@@ -135,7 +135,7 @@ class MeasureDistance extends TreeItem {
    * @param {Vec3} position
    */
   setStartMarkerPos(position) {
-    const newXfo = this.startMarker.getParameter('GlobalXfo').getValue()
+    const newXfo = this.startMarker.globalXfoParam.value
     newXfo.tr = position
     this.startMarker.getParameter('GlobalXfo').setValue(newXfo)
     if (this.label) this.updateMeasurement()
@@ -147,7 +147,7 @@ class MeasureDistance extends TreeItem {
    * @param {Vec3} position
    */
   setEndMarkerPos(position) {
-    const endXfo = this.endMarker.getParameter('GlobalXfo').getValue()
+    const endXfo = this.endMarker.globalXfoParam.value
     endXfo.tr = position
     this.endMarker.getParameter('GlobalXfo').setValue(endXfo)
     this.updateMeasurement()
