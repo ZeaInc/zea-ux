@@ -1,4 +1,4 @@
-import { Xfo, KinematicGroup, Operator, OperatorInput, OperatorOutput, XfoOperatorInput, XfoOperatorOutput } from '@zeainc/zea-engine'
+import { Xfo, KinematicGroup, Operator, XfoOperatorInput, XfoOperatorOutput, TreeItem } from '@zeainc/zea-engine'
 
 /**
  * An operator for aiming items at targets.
@@ -6,8 +6,9 @@ import { Xfo, KinematicGroup, Operator, OperatorInput, OperatorOutput, XfoOperat
  * @extends {Operator}
  */
 class SelectionGroupXfoOperator extends Operator {
-  currGroupXfo
-  // TODO: add XfoOperatprParms
+  currGroupXfo: Xfo
+  xfoOperatorInputParam: XfoOperatorInput = new XfoOperatorInput('InitialXfoMode')
+  xfoOperatorOutputParam: XfoOperatorOutput = new XfoOperatorOutput('GroupGlobalXfo')
   /**
    * Creates an instance of SelectionGroupXfoOperator.
    *
@@ -16,9 +17,10 @@ class SelectionGroupXfoOperator extends Operator {
    */
   constructor(initialXfoModeParam, globalXfoParam) {
     super()
-
-    this.addInput(new XfoOperatorInput('InitialXfoMode')).setParam(initialXfoModeParam)
-    this.addOutput(new XfoOperatorOutput('GroupGlobalXfo')).setParam(globalXfoParam)
+    // this.xfoOperatorInputParam = initialXfoModeParam // TODO: is this necessary?
+    // this.xfoOperatorOutputParam = globalXfoParam
+    this.addInput(this.xfoOperatorInputParam).setParam(initialXfoModeParam)
+    this.addOutput(this.xfoOperatorOutputParam).setParam(globalXfoParam)
 
     this.currGroupXfo = new Xfo()
   }
@@ -28,8 +30,10 @@ class SelectionGroupXfoOperator extends Operator {
    *
    * @param {TreeItem} item - The tree item being added
    */
-  addItem(item) {
-    this.addInput(new XfoOperatorInput('MemberGlobalXfo' + this.getNumInputs())).setParam(item.getParameter('GlobalXfo'))
+  addItem(item: TreeItem): void {
+    this.addInput(new XfoOperatorInput('MemberGlobalXfo' + this.getNumInputs())).setParam(
+      item.getParameter('GlobalXfo')
+    )
     this.setDirty()
   }
 
@@ -38,7 +42,7 @@ class SelectionGroupXfoOperator extends Operator {
    *
    * @param {TreeItem} item - The Bind Xfo calculated from the initial Transforms of the KinematicGroup Members.
    */
-  removeItem(item) {
+  removeItem(item: TreeItem): void {
     // The first input it the 'InitialXfoMode', so remove the input for the specified item.
     const xfoParam = item.getParameter('GlobalXfo')
     for (let i = 1; i < this.getNumInputs(); i++) {
@@ -58,7 +62,7 @@ class SelectionGroupXfoOperator extends Operator {
    *
    * @param {Xfo} xfo - The new value being set to the Groups GlobalXfo param.
    */
-  backPropagateValue(xfo) {
+  backPropagateValue(xfo: Xfo): void {
     const invXfo = this.currGroupXfo.inverse()
     const delta = xfo.multiply(invXfo)
     delta.ori.normalizeInPlace()
@@ -82,7 +86,7 @@ class SelectionGroupXfoOperator extends Operator {
   /**
    * Calculates a new Xfo for the group based on the members.
    */
-  evaluate() {
+  evaluate(): void {
     const groupTransformOutput = this.getOutput('GroupGlobalXfo')
     this.currGroupXfo = new Xfo()
 
