@@ -10,7 +10,7 @@ import { TreeItem, Ray, ColorParameter, Color, Parameter } from '@zeainc/zea-eng
  * @extends TreeItem
  */
 class Handle extends TreeItem {
-  gizmoRay
+  gizmoRay: Ray
   activeController
   captured = false
   colorParam = new ColorParameter('Color', new Color())
