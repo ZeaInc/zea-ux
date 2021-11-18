@@ -1,7 +1,9 @@
-import { MathFunctions, Vec3, Xfo } from '@zeainc/zea-engine'
+import { MathFunctions, Vec3, Xfo, XfoParameter } from '@zeainc/zea-engine'
 import Handle from './Handle'
 import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
+import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
+import { ZeaTouchEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaTouchEvent'
 
 /**
  * Class representing an axial rotation scene widget.
@@ -9,20 +11,20 @@ import UndoRedoManager from '../UndoRedo/UndoRedoManager'
  * @extends Handle
  */
 class BaseAxialRotationHandle extends Handle {
-  param
-  baseXfo
-  deltaXfo
-  offsetXfo
-  grabCircleRadius
-  vec0
-  change
-  range
+  param: XfoParameter
+  baseXfo: Xfo
+  deltaXfo: Xfo
+  offsetXfo: Xfo
+  grabCircleRadius: number
+  vec0: Vec3
+  change: ParameterValueChange
+  range: Array<number>
   /**
    * Create an axial rotation scene widget.
    *
    * @param {string} name - The name value.
    */
-  constructor(name) {
+  constructor(name: string) {
     super(name)
   }
 
@@ -32,7 +34,7 @@ class BaseAxialRotationHandle extends Handle {
    * @param {Parameter} param - The param param.
    * @param {boolean} track - The track param.
    */
-  setTargetParam(param, track = true) {
+  setTargetParam(param: XfoParameter, track = true) {
     this.param = param
     if (track) {
       const __updateGizmo = () => {
@@ -48,8 +50,8 @@ class BaseAxialRotationHandle extends Handle {
    *
    * @return {Parameter} - returns handle's target global Xfo.
    */
-  getTargetParam() {
-    return this.param ? this.param : this.getParameter('GlobalXfo')
+  getTargetParam(): XfoParameter {
+    return this.param ? this.param : this.globalXfoParam
   }
 
   /**
@@ -57,7 +59,8 @@ class BaseAxialRotationHandle extends Handle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragStart(event) {
+  // TODO: type  ZeaMouseEvent | ZeaTouchEvent |
+  onDragStart(event: Record<any, any>): void {
     this.baseXfo = this.globalXfoParam.value.clone()
     this.baseXfo.sc.set(1, 1, 1)
     this.deltaXfo = new Xfo()
@@ -79,7 +82,7 @@ class BaseAxialRotationHandle extends Handle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDrag(event) {
+  onDrag(event): void {
     const vec1 = event.holdPos.subtract(this.baseXfo.tr)
     // const dragCircleRadius = vec1.length()
     vec1.normalizeInPlace()
@@ -122,7 +125,7 @@ class BaseAxialRotationHandle extends Handle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragEnd(event) {
+  onDragEnd(event): void {
     this.change = null
   }
 }
