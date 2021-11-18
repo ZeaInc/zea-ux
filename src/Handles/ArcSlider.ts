@@ -10,11 +10,15 @@ import {
   Circle,
   Sphere,
   Registry,
+  Parameter,
 } from '@zeainc/zea-engine'
 import { BaseAxialRotationHandle } from './BaseAxialRotationHandle'
 import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
 import './Shaders/HandleShader'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
+import { ZeaPointerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaPointerEvent'
+import { ZeaTouchEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaTouchEvent'
+import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
 
 /**
  * Class representing a slider scene widget with an arc shape. There are two parts in this widget, the slider and the handle.<br>
@@ -33,21 +37,21 @@ import UndoRedoManager from '../UndoRedo/UndoRedoManager'
  * @extends BaseAxialRotationHandle
  */
 class ArcSlider extends BaseAxialRotationHandle {
-  param
-  arcRadiusParam
-  arcAngleParam
-  handleRadiusParam
-  handleMat
-  handle
-  arc
+  param: Parameter<unknown>
+  arcRadiusParam: NumberParameter
+  arcAngleParam: NumberParameter
+  handleRadiusParam: NumberParameter
+  handleMat: Material
+  handle: GeomItem
+  arc: GeomItem
   handleXfo = new Xfo()
   handleGeomOffsetXfo = new Xfo()
-  range
+  range: Array<number>
 
-  baseXfo
-  deltaXfo // = new Xfo()
-  vec0
-  change
+  baseXfo: Xfo
+  deltaXfo: Xfo
+  vec0: Vec3
+  change: ParameterValueChange
   /**
    * Creates an instance of ArcSlider.
    *
@@ -109,7 +113,7 @@ class ArcSlider extends BaseAxialRotationHandle {
     this.addChild(this.arc)
 
     // this.__updateSlider(0);
-    this.setTargetParam(this.handle.getParameter('GlobalXfo'), false)
+    this.setTargetParam(this.handle.globalXfoParam, false)
   }
 
   // ///////////////////////////////////
@@ -120,7 +124,7 @@ class ArcSlider extends BaseAxialRotationHandle {
    *
    * @param {MouseEvent} event - The event param.
    */
-  onPointerEnter(event) {
+  onPointerEnter(event: ZeaMouseEvent): void {
     if (event.intersectionData && event.intersectionData.geomItem == this.handle) this.highlight()
   }
 
@@ -129,7 +133,7 @@ class ArcSlider extends BaseAxialRotationHandle {
    *
    * @param {MouseEvent} event - The event param.
    */
-  onPointerLeave(event) {
+  onPointerLeave(event: ZeaMouseEvent): void {
     this.unhighlight()
   }
 
@@ -138,7 +142,7 @@ class ArcSlider extends BaseAxialRotationHandle {
    *
    * @param {MouseEvent} event - The event param.
    */
-  onPointerDown(event) {
+  onPointerDown(event: ZeaMouseEvent): void {
     // We do not want to handle events
     // that have propagated from children of
     // the slider.
@@ -148,7 +152,7 @@ class ArcSlider extends BaseAxialRotationHandle {
   /**
    * Applies a special shinning shader to the handle to illustrate interaction with it.
    */
-  highlight() {
+  highlight(): void {
     super.highlight()
     this.handleMat.getParameter('BaseColor').setValue(this.highlightColorParam.getValue())
   }
@@ -156,7 +160,7 @@ class ArcSlider extends BaseAxialRotationHandle {
   /**
    * Removes the shining shader from the handle.
    */
-  unhighlight() {
+  unhighlight(): void {
     super.unhighlight()
     this.handleMat.getParameter('BaseColor').setValue(this.colorParam.getValue())
   }
@@ -180,7 +184,7 @@ class ArcSlider extends BaseAxialRotationHandle {
    * @param {Parameter} param - The param param.
    * @param {boolean} track - The track param.
    */
-  setTargetParam(param, track = true) {
+  setTargetParam(param: XfoParameter | NumberParameter, track = true): void {
     this.param = param
     if (track) {
       if (this.param instanceof XfoParameter) {
@@ -191,7 +195,7 @@ class ArcSlider extends BaseAxialRotationHandle {
         param.on('valueChanged', __updateGizmo)
       } else if (this.param instanceof NumberParameter) {
         const __updateGizmo = () => {
-          this.handleXfo.ori.setFromAxisAndAngle(new Vec3(0, 0, 1), param.getValue())
+          this.handleXfo.ori.setFromAxisAndAngle(new Vec3(0, 0, 1), <number>param.getValue())
           this.handle.getParameter('GlobalXfo').setValue(this.handleXfo)
         }
         __updateGizmo()
@@ -219,7 +223,7 @@ class ArcSlider extends BaseAxialRotationHandle {
    *
    * @return {Xfo} - The Xfo value
    */
-  getBaseXfo() {
+  getBaseXfo(): Xfo {
     return this.handle.getParameter('GlobalXfo').getValue()
   }
 
@@ -228,8 +232,9 @@ class ArcSlider extends BaseAxialRotationHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragStart(event) {
-    this.baseXfo = this.getParameter('GlobalXfo').getValue().clone()
+  onDragStart(event: PointerEvent): void {
+    // TODO: check type
+    this.baseXfo = this.globalXfoParam.value.clone()
     this.baseXfo.sc.set(1, 1, 1)
     this.deltaXfo = new Xfo()
     // this.offsetXfo = this.baseXfo.inverse().multiply(this.param.getValue());
@@ -253,7 +258,8 @@ class ArcSlider extends BaseAxialRotationHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDrag(event) {
+  onDrag(event: any): void {
+    // ZeaTouchEvent | ZeaMouseEvent
     const vec1 = event.holdPos.subtract(this.baseXfo.tr)
     vec1.normalizeInPlace()
 
@@ -301,7 +307,7 @@ class ArcSlider extends BaseAxialRotationHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragEnd(event) {
+  onDragEnd(event: ZeaMouseEvent | ZeaTouchEvent): void {
     this.change = null
     this.handleGeomOffsetXfo.sc.x = this.handleGeomOffsetXfo.sc.y = this.handleGeomOffsetXfo.sc.z = 1.0
     this.handle.getParameter('GeomOffsetXfo').setValue(this.handleGeomOffsetXfo)
@@ -315,7 +321,7 @@ class ArcSlider extends BaseAxialRotationHandle {
    * @param {object} context - The context param.
    * @return {object} The return value.
    */
-  toJSON(context) {
+  toJSON(context: Record<string, any>): Record<string, any> {
     const json = super.toJSON(context)
     if (this.param) json.targetParam = this.param.getPath()
     return json
@@ -327,7 +333,7 @@ class ArcSlider extends BaseAxialRotationHandle {
    * @param {object} json - The json param.
    * @param {object} context - The context param.
    */
-  fromJSON(json, context) {
+  fromJSON(json: Record<string, any>, context: Record<string, any>): void {
     super.fromJSON(json, context)
 
     if (json.targetParam) {

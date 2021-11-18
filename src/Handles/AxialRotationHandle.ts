@@ -1,4 +1,4 @@
-import { Color, Xfo, NumberParameter, GeomItem, Material, Torus } from '@zeainc/zea-engine'
+import { Color, Xfo, NumberParameter, GeomItem, Material, Torus, Mat4 } from '@zeainc/zea-engine'
 import BaseAxialRotationHandle from './BaseAxialRotationHandle'
 import './Shaders/HandleShader'
 
@@ -18,10 +18,10 @@ import './Shaders/HandleShader'
  * @extends BaseAxialRotationHandle
  */
 class AxialRotationHandle extends BaseAxialRotationHandle {
-  radiusParam
-  handleMat
-  handleXfo
-  handle
+  radiusParam: NumberParameter
+  handleMat: Material
+  handleXfo: Xfo
+  handle: GeomItem
   /**
    * Create an axial rotation scene widget.
    *
@@ -30,7 +30,7 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
    * @param {number} thickness - The thickness value.
    * @param {Color} color - The color value.
    */
-  constructor(name, radius, thickness, color = new Color(1, 1, 0)) {
+  constructor(name: string, radius: number, thickness: number, color = new Color(1, 1, 0)) {
     super(name)
 
     this.radiusParam = new NumberParameter('Radius', radius)
@@ -63,7 +63,7 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
   /**
    * Applies a special shinning shader to the handle to illustrate interaction with it.
    */
-  highlight() {
+  highlight(): void {
     super.highlight()
     this.handleMat.getParameter('BaseColor').setValue(this.highlightColorParam.getValue())
   }
@@ -71,7 +71,7 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
   /**
    * Removes the shining shader from the handle.
    */
-  unhighlight() {
+  unhighlight(): void {
     super.unhighlight()
     this.handleMat.getParameter('BaseColor').setValue(this.colorParam.getValue())
   }
@@ -81,8 +81,8 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
    *
    * @return {Xfo} - The Xfo value
    */
-  getBaseXfo() {
-    return this.getParameter('GlobalXfo').getValue()
+  getBaseXfo(): Xfo{
+    return this.globalXfoParam.value
   }
 
   /**
