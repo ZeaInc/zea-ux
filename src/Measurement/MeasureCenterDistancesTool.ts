@@ -85,7 +85,7 @@ class MeasureCenterDistancesTool extends BaseTool {
    * @private
    */
   snapToParametricCenter(geomItem, pos) {
-    const xfo = geomItem.getParameter('GlobalXfo').getValue()
+    const xfo = geomItem.globalXfoParam.value
     if (geomItem.hasParameter('CurveType')) {
       const curveType = geomItem.getParameter('CurveType').getValue()
 

@@ -224,7 +224,7 @@ class ArcSlider extends BaseAxialRotationHandle {
    * @return {Xfo} - The Xfo value
    */
   getBaseXfo(): Xfo {
-    return this.handle.getParameter('GlobalXfo').getValue()
+    return this.handle.globalXfoParam.value
   }
 
   /**
@@ -239,7 +239,7 @@ class ArcSlider extends BaseAxialRotationHandle {
     this.deltaXfo = new Xfo()
     // this.offsetXfo = this.baseXfo.inverse().multiply(this.param.getValue());
 
-    this.vec0 = this.getParameter('GlobalXfo').getValue().ori.getXaxis()
+    this.vec0 = this.globalXfoParam.value.ori.getXaxis()
     // this.grabCircleRadius = this.arcRadiusParam.getValue();
     this.vec0.normalizeInPlace()
 

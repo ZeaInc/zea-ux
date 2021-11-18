@@ -119,7 +119,7 @@ class MeasureAngleTool extends BaseTool {
             break
           }
           case 'Cone': {
-            const globalXfo = geomItem.getParameter('GlobalXfo').getValue()
+            const globalXfo = geomItem.globalXfoParam.value
             const semiAngle = geomItem.getParameter('SemiAngle').getValue()
             const startRadius = geomItem.getParameter('StartRadius').getValue()
             const zaxis = globalXfo.ori.getZaxis()
@@ -145,7 +145,7 @@ class MeasureAngleTool extends BaseTool {
             break
           }
           case 'Cylinder': {
-            const globalXfo = geomItem.getParameter('GlobalXfo').getValue()
+            const globalXfo = geomItem.globalXfoParam.value
             const radius = geomItem.getParameter('Radius').getValue() * globalXfo.sc.x
             const zaxis = globalXfo.ori.getZaxis()
             const zaxisDist = hitPos.subtract(globalXfo.tr).dot(zaxis)
