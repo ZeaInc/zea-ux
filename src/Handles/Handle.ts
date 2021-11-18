@@ -47,7 +47,7 @@ class Handle extends TreeItem {
    * @return {Ray} The return value.
    */
   getManipulationPlane() {
-    const xfo = this.getParameter('GlobalXfo').getValue()
+    const xfo = this.globalXfoParam.value
     return new Ray(xfo.tr, xfo.ori.getZaxis())
   }
 

@@ -54,7 +54,7 @@ class HoldObjectsChange extends Change {
   update(updateData) {
     if (updateData.newItem) {
       this.__selection[updateData.newItemId] = updateData.newItem
-      this.__prevXfos[updateData.newItemId] = updateData.newItem.getParameter('GlobalXfo').getValue()
+      this.__prevXfos[updateData.newItemId] = updateData.newItem.globalXfoParam.value
     } else if (updateData.changeXfos) {
       for (let i = 0; i < updateData.changeXfoIds.length; i++) {
         const gidx = updateData.changeXfoIds[i]
@@ -103,7 +103,7 @@ class HoldObjectsChange extends Change {
         const newItem = sceneRoot.resolvePath(itemPath, 1)
         if (newItem != sceneRoot) {
           this.__selection[i] = newItem
-          this.__prevXfos[i] = newItem.getParameter('GlobalXfo').getValue()
+          this.__prevXfos[i] = newItem.globalXfoParam.value
         }
       }
     }
@@ -238,7 +238,7 @@ class VRHoldObjectsTool extends BaseTool {
       const heldGeom = this.__heldGeomItems[i]
       if (!heldGeom) continue
       const grabXfo = this.computeGrabXfo(this.__heldGeomItemRefs[i])
-      this.__heldGeomItemOffsets[i] = grabXfo.inverse().multiply(heldGeom.getParameter('GlobalXfo').getValue())
+      this.__heldGeomItemOffsets[i] = grabXfo.inverse().multiply(heldGeom.globalXfoParam.value)
     }
   }
 

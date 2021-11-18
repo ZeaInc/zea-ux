@@ -117,8 +117,8 @@ class VRUITool extends BaseTool {
     // uiLocalXfo.tr.set(0, -0.05, 0.08)
 
     if (this.pointerController) {
-      const xfoA = this.uiController.getTreeItem().getParameter('GlobalXfo').getValue()
-      const xfoB = this.pointerController.getTreeItem().getParameter('GlobalXfo').getValue()
+      const xfoA = this.uiController.getTreeItem().globalXfoParam.value
+      const xfoB = this.pointerController.getTreeItem().globalXfoParam.value
       const headToCtrlA = xfoA.tr.subtract(headXfo.tr)
       const headToCtrlB = xfoB.tr.subtract(headXfo.tr)
       if (headToCtrlA.cross(headToCtrlB).dot(headXfo.ori.getYaxis()) > 0.0) {
@@ -198,12 +198,12 @@ class VRUITool extends BaseTool {
    *
    * @return {object|undefined} The return value.
    */
-  calcUIIntersection(): Record<any,any> | null {
-    const pointerXfo = this.__uiPointerItem.getParameter('GlobalXfo').getValue()
+  calcUIIntersection(): Record<any, any> | null {
+    const pointerXfo = this.__uiPointerItem.globalXfoParam.value
     const pointerVec = pointerXfo.ori.getZaxis().negate()
     const ray = new Ray(pointerXfo.tr, pointerVec)
 
-    const planeXfo = this.controllerUI.getParameter('GlobalXfo').getValue()
+    const planeXfo = this.controllerUI.globalXfoParam.value
     const planeSize = this.controllerUI.size.multiply(planeXfo.sc)
 
     const plane = new Ray(planeXfo.tr, planeXfo.ori.getZaxis().negate())
@@ -328,7 +328,7 @@ class VRUITool extends BaseTool {
         const headXfo = event.viewXfo
         const checkControllers = (ctrlA, ctrlB) => {
           // Note: do not open the UI when the controller buttons are pressed.
-          const xfoA = ctrlA.getTreeItem().getParameter('GlobalXfo').getValue()
+          const xfoA = ctrlA.getTreeItem().globalXfoParam.value
           const headToCtrlA = xfoA.tr.subtract(headXfo.tr)
           headToCtrlA.normalizeInPlace()
           if (headToCtrlA.angleTo(xfoA.ori.getYaxis()) < Math.PI * 0.25) {
@@ -349,7 +349,7 @@ class VRUITool extends BaseTool {
         // Z = Towards handle base.
         const headXfo = event.viewXfo
         const checkControllers = () => {
-          const xfoA = this.uiController.getTreeItem().getParameter('GlobalXfo').getValue()
+          const xfoA = this.uiController.getTreeItem().globalXfoParam.value
           const headToCtrlA = xfoA.tr.subtract(headXfo.tr)
           headToCtrlA.normalizeInPlace()
           if (headToCtrlA.angleTo(xfoA.ori.getYaxis()) > Math.PI * 0.5) {
