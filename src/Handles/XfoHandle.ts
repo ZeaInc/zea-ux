@@ -181,10 +181,10 @@ class XfoHandle extends TreeItem {
    *
    * @param {Parameter} param - The video param.
    */
-  setTargetParam(param) {
+  setTargetParam(param, track = true) {
     this.param = param
     this.traverse((item) => {
-      if (item instanceof Handle) item.setTargetParam(param, false)
+      if (item instanceof Handle) item.setTargetParam(param, false) // TODO: should this take track?
     })
   }
 }

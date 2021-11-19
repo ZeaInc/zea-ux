@@ -1,4 +1,4 @@
-import { EventEmitter, Color, TreeItem } from '@zeainc/zea-engine'
+import { EventEmitter, Color, TreeItem, Xfo, GLRenderer } from '@zeainc/zea-engine'
 import { AppData } from '../types/temp'
 import XfoHandle from './Handles/XfoHandle'
 import SelectionGroup from './SelectionGroup'
@@ -18,14 +18,14 @@ import UndoRedoManager from './UndoRedo/UndoRedoManager'
 class SelectionManager extends EventEmitter {
   appData: AppData
   leadSelection = undefined
-  selectionGroup
-  xfoHandle
-  xfoHandleVisible
-  __renderer
-  __pickFilter
-  __pickCB
-  __pickCount
-  __picked
+  selectionGroup: SelectionGroup
+  xfoHandle: XfoHandle
+  xfoHandleVisible: boolean
+  __renderer: GLRenderer
+  __pickFilter: any
+  __pickCB: any
+  __pickCount: number
+  __picked: Array<TreeItem>
 
   /**
    * Creates an instance of SelectionManager.
@@ -36,7 +36,7 @@ class SelectionManager extends EventEmitter {
    *  selectionOutlineColor - enables highlight color to use to outline selected items.
    *  branchSelectionOutlineColor - enables highlight color to use to outline selected items.
    */
-  constructor(appData, options: any = {}) {
+  constructor(appData: AppData, options: any = {}) {
     super()
     this.appData = appData
 
@@ -64,7 +64,7 @@ class SelectionManager extends EventEmitter {
    *
    * @param {GLBaseRenderer} renderer - The renderer param.
    */
-  setRenderer(renderer) {
+  setRenderer(renderer: GLRenderer) {
     if (this.__renderer == renderer) {
       console.warn(`Renderer already set on SelectionManager`)
       return
@@ -80,7 +80,7 @@ class SelectionManager extends EventEmitter {
    *
    * @param {number} mode - The Xfo mode
    */
-  setXfoMode(mode) {
+  setXfoMode(mode: number): void {
     if (this.xfoHandle) {
       this.selectionGroup.getParameter('InitialXfoMode').setValue(mode)
     }
@@ -92,14 +92,14 @@ class SelectionManager extends EventEmitter {
    * @deprecated
    * @param {boolean} enabled - The mode of the Xfo parameter
    */
-  showHandles(enabled) {
+  showHandles(enabled: boolean): void {
     this.xfoHandleVisible = enabled
   }
 
   /**
    * Determines if the Xfo Manipulation handle should be displayed or not.
    */
-  updateHandleVisibility() {
+  updateHandleVisibility(): void {
     if (!this.xfoHandle) return
     const selection = this.selectionGroup.getItems()
     const visible = Array.from(selection).length > 0
@@ -112,7 +112,7 @@ class SelectionManager extends EventEmitter {
    *
    * @return {array} - The return value.
    */
-  getSelection() {
+  getSelection(): Set<TreeItem> {
     return this.selectionGroup.getItems()
   }
 
@@ -122,7 +122,7 @@ class SelectionManager extends EventEmitter {
    * @param {Set} newSelection - The newSelection param
    * @param {boolean} [createUndo=true] - The createUndo param
    */
-  setSelection(newSelection, createUndo = true) {
+  setSelection(newSelection: Set<TreeItem>, createUndo = true): void {
     const selection: Set<TreeItem> = new Set(this.selectionGroup.getItems())
     const prevSelection = new Set(selection)
     for (const treeItem of newSelection) {
@@ -171,7 +171,7 @@ class SelectionManager extends EventEmitter {
    * @param {TreeItem} treeItem - The treeItem param.
    * @param {boolean} replaceSelection - The replaceSelection param.
    */
-  toggleItemSelection(treeItem, replaceSelection = true) {
+  toggleItemSelection(treeItem: TreeItem, replaceSelection = true) {
     const selection = new Set(this.selectionGroup.getItems())
     const prevSelection = new Set(selection)
 
@@ -283,7 +283,7 @@ class SelectionManager extends EventEmitter {
    * @param {array} treeItems - The treeItems param.
    * @param {boolean} replaceSelection - The replaceSelection param.
    */
-  selectItems(treeItems, replaceSelection = true) {
+  selectItems(treeItems: Set<TreeItem>, replaceSelection = true) {
     const selection = new Set(this.selectionGroup.getItems())
     const prevSelection = new Set(selection)
 
@@ -317,7 +317,7 @@ class SelectionManager extends EventEmitter {
    *
    * @param {array} treeItems - The treeItems param.
    */
-  deselectItems(treeItems) {
+  deselectItems(treeItems: Set<TreeItem>) {
     const selection = new Set(this.selectionGroup.getItems())
     const prevSelection = new Set(selection)
 
@@ -345,7 +345,7 @@ class SelectionManager extends EventEmitter {
   /**
    * Toggles selection visibility, if the visibility is `true`then sets it to `false` and vice versa.
    */
-  toggleSelectionVisibility() {
+  toggleSelectionVisibility(): void {
     if (this.leadSelection) {
       const selection = this.selectionGroup.getItems()
       const state = !this.leadSelection.getVisible()
@@ -363,7 +363,7 @@ class SelectionManager extends EventEmitter {
    * @param {function} filterFn - The filterFn param.
    * @param {number} count - The count param.
    */
-  startPickingMode(label, fn, filterFn, count) {
+  startPickingMode(label: string, fn: any, filterFn: any, count: number) {
     // Display this in a status bar.
     console.log(label)
     this.__pickCB = fn
@@ -378,7 +378,7 @@ class SelectionManager extends EventEmitter {
    * @param {TreeItem} item - The item param.
    * @return {any} The return value.
    */
-  pickingFilter(item) {
+  pickingFilter(item: TreeItem): any {
     return this.__pickFilter(item)
   }
 
@@ -387,14 +387,14 @@ class SelectionManager extends EventEmitter {
    *
    * @return {boolean} The return value.
    */
-  pickingModeActive() {
+  pickingModeActive(): boolean {
     return this.__pickCB != undefined
   }
 
   /**
    * The cancelPickingMode method.
    */
-  cancelPickingMode() {
+  cancelPickingMode(): void {
     this.__pickCB = undefined
   }
 
@@ -402,7 +402,7 @@ class SelectionManager extends EventEmitter {
    * The pick method.
    * @param {TreeItem} item - The item param.
    */
-  pick(item) {
+  pick(item: TreeItem): void {
     if (this.__pickCB) {
       if (Array.isArray(item)) {
         if (this.__pickFilter) this.__picked = this.__picked.concat(item.filter(this.__pickFilter))

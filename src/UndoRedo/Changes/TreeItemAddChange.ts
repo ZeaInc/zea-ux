@@ -1,6 +1,7 @@
 import { TreeItem, Operator, Registry } from '@zeainc/zea-engine'
 import UndoRedoManager from '../UndoRedoManager.js'
 import Change from '../Change.js'
+import { SelectionManager } from '../../index.js'
 
 /**
  * Class representing an `Add TreeItem` Change. Meaning that this should be called when you add a new `TreeItem` to the scene.
@@ -8,11 +9,11 @@ import Change from '../Change.js'
  * @extends Change
  */
 class TreeItemAddChange extends Change {
-  treeItem
-  owner
-  prevSelection
-  selectionManager
-  treeItemIndex
+  treeItem: TreeItem
+  owner: TreeItem
+  prevSelection: Set<TreeItem>
+  selectionManager: SelectionManager
+  treeItemIndex: number
   /**
    * Creates an instance of TreeItemAddChange.
    *
@@ -20,7 +21,7 @@ class TreeItemAddChange extends Change {
    * @param {TreeItem} owner -
    * @param {SelectionManager} selectionManager -
    */
-  constructor(treeItem, owner, selectionManager) {
+  constructor(treeItem: TreeItem, owner: TreeItem, selectionManager: SelectionManager) {
     if (treeItem) {
       super(treeItem.getName() + ' Added')
       this.treeItem = treeItem
@@ -39,7 +40,7 @@ class TreeItemAddChange extends Change {
   /**
    * Removes the newly added TreeItem from its owner.
    */
-  undo() {
+  undo(): void {
     if (this.treeItem instanceof Operator) {
       const op = this.treeItem
       op.detach()
@@ -97,8 +98,8 @@ class TreeItemAddChange extends Change {
    * @param {object} j -The j treeItem
    * @param {object} context - The context treeItem
    */
-  fromJSON(j, context) {
-    const treeItem = Registry.constructClass(j.treeItem.type)
+  fromJSON(j: Record<any, any>, context: Record<any, any>) {
+    const treeItem = <TreeItem>Registry.constructClass(j.treeItem.type)
     if (!treeItem) {
       console.warn('resolvePath is unable to construct', j.treeItem)
       return
