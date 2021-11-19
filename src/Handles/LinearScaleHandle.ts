@@ -1,4 +1,4 @@
-import { Color, Xfo, GeomItem, Material, Cylinder, Cuboid } from '@zeainc/zea-engine'
+import { Color, Xfo, GeomItem, Material, Cylinder, Cuboid, Parameter } from '@zeainc/zea-engine'
 import BaseLinearMovementHandle from './BaseLinearMovementHandle'
 import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
 import './Shaders/HandleShader'
@@ -11,12 +11,12 @@ import UndoRedoManager from '../UndoRedo/UndoRedoManager'
  * @extends BaseLinearMovementHandle
  */
 class LinearScaleHandle extends BaseLinearMovementHandle {
-  param
-  handleMat
-  oriXfo
-  tmplocalXfo
-  change
-  baseXfo
+  param: Parameter<unknown>
+  handleMat: Material
+  oriXfo: Xfo
+  tmplocalXfo: Xfo
+  change: ParameterValueChange
+  baseXfo: Xfo
   /**
    * Create a linear scale scene widget.
    *
@@ -82,7 +82,7 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
     this.param = param
     if (track) {
       const __updateGizmo = () => {
-        this.getParameter('GlobalXfo').setValue(param.getValue())
+        this.globalXfoParam.setValue(param.getValue())
       }
       __updateGizmo()
       param.on('valueChanged', __updateGizmo)
@@ -95,7 +95,7 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
    * @return {Parameter} - returns handle's target global Xfo.
    */
   getTargetParam() {
-    return this.param ? this.param : this.getParameter('GlobalXfo')
+    return this.param ? this.param : this.globalXfoParam
   }
 
   /**
@@ -108,7 +108,7 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
     this.oriXfo = this.globalXfoParam.value
     this.tmplocalXfo = this.getParameter('LocalXfo').getValue()
     const param = this.getTargetParam()
-    this.baseXfo = param.getValue()
+    this.baseXfo = <Xfo>param.getValue()
 
     this.change = new ParameterValueChange(param)
     UndoRedoManager.getInstance().addChange(this.change)

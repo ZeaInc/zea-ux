@@ -56,7 +56,7 @@ class SphericalRotationHandle extends Handle {
     this.param = param
     if (track) {
       const __updateGizmo = () => {
-        this.getParameter('GlobalXfo').setValue(param.getValue())
+        this.globalXfoParam.setValue(param.getValue())
       }
       __updateGizmo()
       param.on('valueChanged', __updateGizmo)
@@ -69,7 +69,7 @@ class SphericalRotationHandle extends Handle {
    * @return {Parameter} - returns handle's target global Xfo.
    */
   getTargetParam() {
-    return this.param ? this.param : this.getParameter('GlobalXfo')
+    return this.param ? this.param : this.globalXfoParam
   }
 
   // ///////////////////////////////////
