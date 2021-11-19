@@ -35,7 +35,7 @@ class CreateConeTool extends CreateGeomTool {
    *
    * @param {Xfo} xfo - The xfo param.
    */
-  createStart(xfo: Xfo) {
+  createStart(xfo: Xfo): void {
     this.xfo = xfo
     this.invXfo = xfo.inverse()
     this.change = new CreateConeChange(this.parentItem, xfo, this.colorParam.getValue())
@@ -55,7 +55,7 @@ class CreateConeTool extends CreateGeomTool {
    *
    * @param {Vec3} pt - The pt param.
    */
-  createMove(pt: Vec3) {
+  createMove(pt: Vec3): void {
     if (this.stage == 1) {
       const vec = pt.subtract(this.xfo.tr)
       // TODO: Rotate the cone so the base is aligned with the vector towards the controller
@@ -72,7 +72,7 @@ class CreateConeTool extends CreateGeomTool {
    *
    * @param {Vec3} pt - The pt param.
    */
-  createRelease(pt: Vec3) {
+  createRelease(pt: Vec3): void {
     if (this._radius == 0) {
       UndoRedoManager.getInstance().cancel()
       this.stage = 0

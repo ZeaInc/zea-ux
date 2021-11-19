@@ -11,7 +11,7 @@ import Change from '../Change'
  * @extends Change
  */
 class ParameterValueChange extends Change {
-  __param
+  __param: Parameter<unknown>
   __nextValue
   __prevValue
   suppressPrimaryChange
@@ -66,7 +66,7 @@ class ParameterValueChange extends Change {
    *
    * @param {Parameter} updateData - The updateData param.
    */
-  update(updateData) {
+  update(updateData: Parameter<unknown>) {
     if (!this.__param) return
     this.__nextValue = updateData.value
     this.__param.setValue(this.__nextValue)
@@ -79,7 +79,7 @@ class ParameterValueChange extends Change {
    * @param {object} context - The context param.
    * @return {object} The return value.
    */
-  toJSON(context: Record<any, any>) {
+  toJSON(context: Record<any, any>): Record<any, any> {
     const j: Record<any, any> = {
       name: this.name,
       paramPath: this.__param.getPath(),
@@ -101,7 +101,7 @@ class ParameterValueChange extends Change {
    * @param {Record<any, any>} j - The j param.
    * @param {Record<any, any>} context - The context param.
    */
-  fromJSON(j, context: Record<any, any>) {
+  fromJSON(j, context: Record<any, any>): Record<any, any> {
     const param = context.appData.scene.getRoot().resolvePath(j.paramPath, 1)
     if (!param || !(param instanceof Parameter)) {
       console.warn('resolvePath is unable to resolve', j.paramPath)
@@ -121,7 +121,7 @@ class ParameterValueChange extends Change {
    *
    * @param {Record<any, any>} j - The j param.
    */
-  updateFromJSON(j: Record<any, any>) {
+  updateFromJSON(j: Record<any, any>): void {
     if (!this.__param) return
     if (this.__nextValue.fromJSON) this.__nextValue.fromJSON(j.value)
     else this.__nextValue = j.value
