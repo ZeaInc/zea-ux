@@ -1,6 +1,7 @@
 import UndoRedoManager from '../UndoRedoManager'
 import Change from '../Change'
 import { SelectionManager } from '../..'
+import { TreeItem } from '@zeainc/zea-engine'
 
 /**
  * Represents a `Change` class for storing `Selection` values.
@@ -9,8 +10,8 @@ import { SelectionManager } from '../..'
  */
 class SelectionChange extends Change {
   __selectionManager: SelectionManager
-  __prevSelection
-  __newSelection
+  __prevSelection: Set<TreeItem>
+  __newSelection: Set<TreeItem>
   /**
    * Creates an instance of SelectionChange.
    *
@@ -18,7 +19,7 @@ class SelectionChange extends Change {
    * @param {Set} prevSelection - The prevSelection value.
    * @param {Set} newSelection - The newSelection value.
    */
-  constructor(selectionManager, prevSelection, newSelection) {
+  constructor(selectionManager: SelectionManager, prevSelection: Set<TreeItem>, newSelection: Set<TreeItem>) {
     super('SelectionChange')
     this.__selectionManager = selectionManager
     this.__prevSelection = prevSelection
@@ -28,14 +29,14 @@ class SelectionChange extends Change {
   /**
    * Sets the state of selections to the previous list of items selected.
    */
-  undo() {
+  undo(): void {
     this.__selectionManager.setSelection(this.__prevSelection, false)
   }
 
   /**
    * Restores the state of the selections to the latest the list of items selected.
    */
-  redo() {
+  redo(): void {
     this.__selectionManager.setSelection(this.__newSelection, false)
   }
 
@@ -62,16 +63,16 @@ class SelectionChange extends Change {
    * @param {object} j - The j param.
    * @param {object} context - The context param.
    */
-  fromJSON(j: Record<any, any>, context: Record<any, any>) {
+  fromJSON(j: Record<any, any>, context: Record<any, any>): void {
     super.fromJSON(j, context)
 
     this.__selectionManager = context.appData.selectionManager
     this.__prevSelection = new Set(this.__selectionManager.getSelection())
 
-    const sceneRoot = context.appData.scene.getRoot()
-    const newSelection = new Set()
+    const sceneRoot: TreeItem = context.appData.scene.getRoot()
+    const newSelection: Set<TreeItem> = new Set()
     for (const itemPath of j.itemPaths) {
-      newSelection.add(sceneRoot.resolvePath(itemPath, 1))
+      newSelection.add(<TreeItem>sceneRoot.resolvePath(itemPath, 1))
     }
     this.__newSelection = newSelection
 
