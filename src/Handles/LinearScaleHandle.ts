@@ -43,7 +43,7 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
     const tipXfo = new Xfo()
     tipXfo.tr.set(0, 0, length - thickness * 10)
     // tipXfo.tr.set(0, 0, length);
-    // tip.getParameter('LocalXfo').setValue(tipXfo);
+    // tip.localXfoParam.value = (tipXfo);
     // Note: the constant screen size shader
     // only works if all the handle geometries
     // are centered on the middle of the XfoHandle.
@@ -139,7 +139,7 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
     // This means we have to apply it here to see the scale
     // widget change size.
     this.tmplocalXfo.sc.set(1, 1, sc)
-    this.getParameter('LocalXfo').setValue(this.tmplocalXfo)
+    this.localXfoParam.value = this.tmplocalXfo
 
     this.change.update({
       value: newXfo,
@@ -155,12 +155,12 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
     this.change = null
 
     this.tmplocalXfo.sc.set(1, 1, 1)
-    this.getParameter('LocalXfo').setValue(this.tmplocalXfo)
+    this.localXfoParam.value = this.tmplocalXfo
 
     const tip = this.getChildByName('tip')
     const tipXfo = tip.getParameter('LocalXfo').getValue()
     tipXfo.sc.set(1, 1, 1)
-    tip.getParameter('LocalXfo').setValue(tipXfo)
+    tip.localXfoParam.value = tipXfo
   }
 }
 

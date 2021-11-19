@@ -24,7 +24,7 @@ class CreateGeomChange extends Change {
    * @param {TreeItem} parentItem - The parentItem param.
    * @param {Xfo} xfo - The xfo param.
    */
-  setParentAndXfo(parentItem: TreeItem, xfo: Xfo): void{
+  setParentAndXfo(parentItem: TreeItem, xfo: Xfo): void {
     this.parentItem = parentItem
     const name = this.parentItem.generateUniqueName(this.geomItem.getName())
     this.geomItem.setName(name)
@@ -71,13 +71,13 @@ class CreateGeomChange extends Change {
    * @param {object} j - The j param.
    * @param {object} context - The appData param.
    */
-  fromJSON(j: Record<any,any>, context: Record<any,any>): void {
+  fromJSON(j: Record<any, any>, context: Record<any, any>): void {
     const sceneRoot = context.appData.scene.getRoot()
     this.parentItem = sceneRoot.resolvePath(j.parentItemPath, 1)
     this.geomItem.setName(this.parentItem.generateUniqueName(j.geomItemName))
     const xfo = new Xfo()
     xfo.fromJSON(j.geomItemXfo)
-    this.geomItem.getParameter('LocalXfo').setValue(xfo)
+    this.geomItem.localXfoParam.value = xfo
     this.childIndex = this.parentItem.addChild(this.geomItem, false)
 
     if (j.color) {

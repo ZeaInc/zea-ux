@@ -83,7 +83,7 @@ class ArcSlider extends BaseAxialRotationHandle {
     this.handle = new GeomItem('handle', handleGeom, this.handleMat)
     this.arc = new GeomItem('arc', arcGeom, this.handleMat)
     this.handleGeomOffsetXfo.tr.x = arcRadius
-    this.handle.getParameter('GeomOffsetXfo').setValue(this.handleGeomOffsetXfo)
+    this.handle.geomOffsetXfoParam.value = this.handleGeomOffsetXfo
 
     // this.barRadiusParam.on('valueChanged', () => {
     //   arcGeom.getParameter('Radius').setValue(this.barRadiusParam.getValue());
@@ -92,17 +92,17 @@ class ArcSlider extends BaseAxialRotationHandle {
     this.range = [0, arcAngle]
     this.arcAngleParam.on('valueChanged', () => {
       const arcAngle = this.arcAngleParam.getValue()
-      arcGeom.getParameter('Angle').setValue(arcAngle)
+      arcGeom.angleParam.value = arcAngle
       this.range = [0, arcAngle]
     })
     this.arcRadiusParam.on('valueChanged', () => {
       const arcRadius = this.arcRadiusParam.getValue()
-      arcGeom.getParameter('Radius').setValue(arcRadius)
+      arcGeom.radiusParam.value = arcRadius
       this.handleGeomOffsetXfo.tr.x = arcRadius
-      this.handle.getParameter('GeomOffsetXfo').setValue(this.handleGeomOffsetXfo)
+      this.handle.geomOffsetXfoParam.value = this.handleGeomOffsetXfo
     })
     this.handleRadiusParam.on('valueChanged', () => {
-      handleGeom.getParameter('Radius').setValue(this.handleRadiusParam.getValue())
+      handleGeom.radiusParam.value = this.handleRadiusParam.getValue()
     })
 
     this.colorParam.on('valueChanged', () => {
@@ -212,7 +212,7 @@ class ArcSlider extends BaseAxialRotationHandle {
   //   const v = Math.remap(value, range[0], range[1], 0, 1);
   //   const length = this.arcAngleParam.getValue();
   //   this.handleXfo.ori.setFromAxisAndAngle(this.axis, ) = v * length;
-  //   this.handle.getParameter('LocalXfo').setValue(this.handleXfo;
+  //   this.handle.localXfoParam.value = (this.handleXfo;
   // }
 
   // ///////////////////////////////////
@@ -248,7 +248,7 @@ class ArcSlider extends BaseAxialRotationHandle {
 
     // Hilight the material.
     this.handleGeomOffsetXfo.sc.x = this.handleGeomOffsetXfo.sc.y = this.handleGeomOffsetXfo.sc.z = 1.2
-    this.handle.getParameter('GeomOffsetXfo').setValue(this.handleGeomOffsetXfo)
+    this.handle.geomOffsetXfoParam.value = this.handleGeomOffsetXfo
 
     this.emit('dragStart')
   }
@@ -310,7 +310,7 @@ class ArcSlider extends BaseAxialRotationHandle {
   onDragEnd(event: ZeaMouseEvent | ZeaTouchEvent): void {
     this.change = null
     this.handleGeomOffsetXfo.sc.x = this.handleGeomOffsetXfo.sc.y = this.handleGeomOffsetXfo.sc.z = 1.0
-    this.handle.getParameter('GeomOffsetXfo').setValue(this.handleGeomOffsetXfo)
+    this.handle.geomOffsetXfoParam.value = this.handleGeomOffsetXfo
 
     this.emit('dragEnd')
   }

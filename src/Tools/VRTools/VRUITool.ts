@@ -131,7 +131,7 @@ class VRUITool extends BaseTool {
       uiLocalXfo.tr.set(0, -0.05, 0.08)
     }
 
-    this.controllerUI.getParameter('LocalXfo').setValue(uiLocalXfo)
+    this.controllerUI.localXfoParam.value = uiLocalXfo
 
     if (this.uiController) {
       this.uiController.getTipItem().addChild(this.controllerUI, false)
@@ -191,7 +191,7 @@ class VRUITool extends BaseTool {
    */
   setPointerLength(length) {
     this.__pointerLocalXfo.sc.set(1, 1, length)
-    this.__uiPointerItem.getParameter('LocalXfo').setValue(this.__pointerLocalXfo)
+    this.__uiPointerItem.localXfoParam.value = this.__pointerLocalXfo
   }
 
   /**
