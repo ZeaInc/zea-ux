@@ -1,7 +1,8 @@
-import { Color, Xfo, Ray, ColorParameter, GeomItem, Material, Cross, TreeItem } from '@zeainc/zea-engine'
+import { Color, Xfo, Ray, ColorParameter, GeomItem, Material, Cross, TreeItem, Vec3 } from '@zeainc/zea-engine'
 import BaseCreateTool from '../BaseCreateTool'
 import { UndoRedoManager } from '../../UndoRedo/index'
 import { AppData } from '../../../types/temp'
+import { VRController } from '@zeainc/zea-engine/dist/Renderer/VR/VRController'
 
 /**
  * Base class for creating geometry tools.
@@ -10,21 +11,21 @@ import { AppData } from '../../../types/temp'
  */
 class CreateGeomTool extends BaseCreateTool {
   appData: AppData
-  stage
-  removeToolOnRightClick
-  parentItem
-  colorParam
+  stage: number
+  removeToolOnRightClick: boolean
+  parentItem: TreeItem
+  colorParam = new ColorParameter('Color', new Color(0.7, 0.2, 0.2))
   vrControllerToolTipMat
   vrControllerToolTip
-  prevCursor
-  constructionPlane
+  prevCursor: string
+  constructionPlane: Xfo
   __activeController
   /**
    * Create a create geom tool.
    *
    * @param {object} appData - The appData value.
    */
-  constructor(appData) {
+  constructor(appData: AppData) {
     super(appData)
 
     if (!appData) console.error('App data not provided to tool')
@@ -33,7 +34,7 @@ class CreateGeomTool extends BaseCreateTool {
     this.removeToolOnRightClick = true
     this.parentItem = 'parentItem' in appData ? appData.parentItem : appData.scene.getRoot()
 
-    this.colorParam = this.addParameter(new ColorParameter('Color', new Color(0.7, 0.2, 0.2)))
+    this.addParameter(this.colorParam)
 
     this.controllerAddedHandler = this.controllerAddedHandler.bind(this)
   }
@@ -42,7 +43,7 @@ class CreateGeomTool extends BaseCreateTool {
    * Adds a geometry icon to the VR Controller
    * @param {VRController} controller - The controller object.
    */
-  addIconToVRController(controller) {
+  addIconToVRController(controller: VRController): void {
     if (!this.vrControllerToolTip) {
       this.vrControllerToolTip = new Cross(0.05)
       this.vrControllerToolTipMat = new Material('VRController Cross', 'LinesShader')
@@ -55,14 +56,14 @@ class CreateGeomTool extends BaseCreateTool {
     controller.getTipItem().addChild(geomItem, false)
   }
 
-  controllerAddedHandler(event) {
+  controllerAddedHandler(event): void {
     this.addIconToVRController(event.controller)
   }
 
   /**
    * The activateTool method.
    */
-  activateTool() {
+  activateTool(): void {
     super.activateTool()
 
     this.prevCursor = this.appData.renderer.getGLCanvas().style.cursor
@@ -79,7 +80,7 @@ class CreateGeomTool extends BaseCreateTool {
   /**
    * The deactivateTool method.
    */
-  deactivateTool() {
+  deactivateTool(): void {
     super.deactivateTool()
 
     this.appData.renderer.getGLCanvas().style.cursor = this.prevCursor
@@ -98,7 +99,7 @@ class CreateGeomTool extends BaseCreateTool {
    * @param {MouseEvent|TouchEvent} event - The event param
    * @return {Xfo} The return value.
    */
-  screenPosToXfo(event) {
+  screenPosToXfo(event): Xfo {
     if (event.intersectionData) {
       const ray = event.pointerRay
       const xfo = this.constructionPlane.clone()
@@ -126,7 +127,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param {Xfo} xfo - The xfo param.
    */
-  createStart(xfo?, treeItem?: TreeItem) {
+  createStart(xfo?: Xfo, treeItem?: TreeItem): void {
     this.stage = 1
   }
 
@@ -135,7 +136,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param {Vec3} pt - The pt param.
    */
-  createPoint(pt) {
+  createPoint(pt: Vec3): void {
     // console.warn('Implement me')
   }
 
@@ -144,7 +145,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param {Vec3} pt - The pt param.
    */
-  createMove(pt) {
+  createMove(pt: Vec3): void {
     // console.warn('Implement me')
   }
 
@@ -153,7 +154,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param {Vec3} pt - The pt param.
    */
-  createRelease(pt) {
+  createRelease(pt: Vec3): void {
     // console.warn('Implement me')
   }
 
@@ -165,7 +166,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param {MouseEvent|TouchEvent} event - The event param.
    */
-  onPointerDown(event) {
+  onPointerDown(event): void {
     // skip if the alt key is held. Allows the camera tool to work
     if (event.pointerType === 'xr') {
       this.onVRControllerButtonDown(event)
@@ -197,7 +198,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param {MouseEvent|TouchEvent} event - The event param.
    */
-  onPointerMove(event) {
+  onPointerMove(event): void{
     if (event.pointerType === 'xr') {
       this.onVRPoseChanged(event)
     } else if (this.stage > 0) {
@@ -213,7 +214,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param {MouseEvent|TouchEvent} event - The event param.
    */
-  onPointerUp(event) {
+  onPointerUp(event): void {
     if (event.pointerType === 'xr') {
       this.onVRControllerButtonUp(event)
     } else if (this.stage > 0) {
@@ -228,7 +229,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param {MouseEvent} event - The event param.
    */
-  onWheel(event) {
+  onWheel(event): void {
     // console.warn('Implement me')
   }
 
@@ -240,7 +241,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param {KeyboardEvent} event - The event param.
    */
-  onKeyPressed(event) {
+  onKeyPressed(event): void {
     // console.warn('Implement me')
   }
 
@@ -249,7 +250,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param {KeyboardEvent} event - The event param.
    */
-  onKeyDown(event) {
+  onKeyDown(event): void {
     // console.warn('Implement me')
   }
 
@@ -258,7 +259,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param {KeyboardEvent} event - The event param.
    */
-  onKeyUp(event) {
+  onKeyUp(event): void {
     // console.warn('Implement me')
   }
 
@@ -269,7 +270,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param {TouchEvent} event - The event param.
    */
-  onTouchCancel(event) {
+  onTouchCancel(event): void {
     // console.warn('Implement me')
   }
 
@@ -281,7 +282,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param {object} event - The event param.
    */
-  onVRControllerButtonDown(event) {
+  onVRControllerButtonDown(event): void {
     if (!this.__activeController) {
       // TODO: Snap the Xfo to any nearby construction planes.
       this.__activeController = event.controller
@@ -298,7 +299,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param {object} event - The event param.
    */
-  onVRPoseChanged(event) {
+  onVRPoseChanged(event): void {
     if (this.__activeController && this.stage > 0) {
       // TODO: Snap the Xfo to any nearby construction planes.
       const xfo = this.__activeController.getTipXfo()
@@ -312,7 +313,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param {object} event - The event param.
    */
-  onVRControllerButtonUp(event) {
+  onVRControllerButtonUp(event): void {
     if (this.stage > 0) {
       if (this.__activeController == event.controller) {
         const xfo = this.__activeController.getTipXfo()

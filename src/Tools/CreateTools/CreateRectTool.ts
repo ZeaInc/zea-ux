@@ -2,6 +2,7 @@ import CreateGeomTool from './CreateGeomTool'
 import CreateRectChange from './Change/CreateRectChange'
 import { UndoRedoManager } from '../../UndoRedo/index'
 import { AppData } from '../../../types/temp'
+import { Vec3, Xfo } from '@zeainc/zea-engine'
 
 /**
  * Tool for creating a rectangle geometry.
@@ -12,10 +13,10 @@ import { AppData } from '../../../types/temp'
  * @extends CreateGeomTool
  */
 class CreateRectTool extends CreateGeomTool {
-  change
-  xfo
-  _size
-  invXfo
+  change: CreateRectChange
+  xfo: Xfo
+  invXfo: Xfo
+  _size: number
   /**
    * Create a create rect tool.
    * @param {object} appData - The appData value.
@@ -29,7 +30,7 @@ class CreateRectTool extends CreateGeomTool {
    *
    * @param {Xfo} xfo - The xfo param.
    */
-  createStart(xfo) {
+  createStart(xfo: Xfo): void {
     this.change = new CreateRectChange(this.parentItem, xfo)
 
     // During construction, make it note selectable.
@@ -48,7 +49,7 @@ class CreateRectTool extends CreateGeomTool {
    *
    * @param {Vec3} pt - The pt param.
    */
-  createMove(pt) {
+  createMove(pt: Vec3): void {
     if (this.stage == 1) {
       const delta = this.invXfo.transformVec3(pt)
 
@@ -70,7 +71,7 @@ class CreateRectTool extends CreateGeomTool {
    *
    * @param {Vec3} pt - The pt param.
    */
-  createRelease(pt) {
+  createRelease(pt: Vec3): void {
     if (this._size == 0) {
       UndoRedoManager.getInstance().cancel()
     }

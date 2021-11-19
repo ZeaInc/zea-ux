@@ -1,4 +1,4 @@
-import { NumberParameter } from '@zeainc/zea-engine'
+import { NumberParameter, Vec3, Xfo } from '@zeainc/zea-engine'
 import CreateGeomTool from './CreateGeomTool'
 import CreateLineChange from './Change/CreateLineChange'
 import { UndoRedoManager } from '../../UndoRedo/index'
@@ -13,18 +13,17 @@ import { AppData } from '../../../types/temp'
  * @extends CreateGeomTool
  */
 class CreateLineTool extends CreateGeomTool {
-  lineThickness
-  change
-  length
-  xfo
+  lineThickness = new NumberParameter('LineThickness', 0.01, [0, 0.1])
+  change: CreateLineChange
+  length: number
+  xfo: Xfo
   /**
    * Create a create line tool.
    * @param {object} appData - The appData value.
    */
   constructor(appData: AppData) {
     super(appData)
-
-    this.lineThickness = this.addParameter(new NumberParameter('LineThickness', 0.01, [0, 0.1])) // 1cm.
+    this.addParameter(this.lineThickness) // 1cm.
   }
 
   /**
@@ -32,7 +31,7 @@ class CreateLineTool extends CreateGeomTool {
    *
    * @param {Xfo} xfo - The xfo param.
    */
-  createStart(xfo) {
+  createStart(xfo: Xfo): void {
     const color = this.colorParam.getValue()
     const lineThickness = this.lineThickness.getValue()
     this.change = new CreateLineChange(this.parentItem, xfo, color, lineThickness)
@@ -48,7 +47,7 @@ class CreateLineTool extends CreateGeomTool {
    *
    * @param {Vec3} pt - The pt param.
    */
-  createMove(pt) {
+  createMove(pt: Vec3): void {
     const offset = this.xfo.transformVec3(pt)
     this.length = offset.length()
     this.change.update({ p1: offset })
@@ -59,7 +58,7 @@ class CreateLineTool extends CreateGeomTool {
    *
    * @param {Vec3} pt - The pt param.
    */
-  createRelease(pt) {
+  createRelease(pt: Vec3): void {
     if (this.length == 0) {
       UndoRedoManager.getInstance().cancel()
     }
@@ -72,7 +71,7 @@ class CreateLineTool extends CreateGeomTool {
    *
    * @param {object} event - The event param.
    */
-  onVRControllerButtonDown(event) {
+  onVRControllerButtonDown(event): void {
     if (this.stage == 0) {
       const stageScale = event.viewport.__stageScale
       this.lineThickness.setValue(stageScale * 0.003)
