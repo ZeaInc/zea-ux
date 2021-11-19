@@ -92,7 +92,7 @@ class MeasureDistanceTool extends BaseTool {
         }
         case 'Circle': {
           const crvToPnt = pos.subtract(xfo.tr)
-          const radius = geomItem.getParameter('Radius').getValue() * xfo.sc.x
+          const radius = geomItem.radiusParam.getValue() * xfo.sc.x
           const zaxis = xfo.ori.getZaxis()
           crvToPnt.subtractInPlace(zaxis.scale(crvToPnt.dot(zaxis)))
           const length = crvToPnt.length()
@@ -116,7 +116,7 @@ class MeasureDistanceTool extends BaseTool {
           const zaxis = xfo.ori.getZaxis()
           const pointOnAxis = xfo.tr.add(zaxis.scale(srfToPnt.dot(zaxis)))
 
-          const radius = geomItem.getParameter('Radius').getValue() * xfo.sc.x
+          const radius = geomItem.radiusParam.getValue() * xfo.sc.x
           const axisToPnt = pos.subtract(pointOnAxis)
           const length = axisToPnt.length()
           return pointOnAxis.add(axisToPnt.scale(radius / length))

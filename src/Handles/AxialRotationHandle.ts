@@ -49,8 +49,8 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
 
     this.radiusParam.on('valueChanged', () => {
       radius = this.radiusParam.getValue()
-      handleGeom.getParameter('OuterRadius').setValue(radius)
-      handleGeom.getParameter('InnerRadius').setValue(radius * 0.02)
+      handleGeom.outerRadiusParam.value = (radius)
+      handleGeom.innerRadiusParam.value = (radius * 0.02)
     })
 
     this.colorParam.on('valueChanged', () => {

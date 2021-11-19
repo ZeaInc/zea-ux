@@ -73,10 +73,10 @@ class SliderHandle extends BaseLinearMovementHandle {
     this.topBar = new GeomItem('topBar', barGeom, topBarMat)
 
     this.barRadiusParam.on('valueChanged', () => {
-      barGeom.getParameter('Radius').setValue(this.barRadiusParam.getValue())
+      barGeom.radiusParam.setValue(this.barRadiusParam.getValue())
     })
     this.handleRadiusParam.on('valueChanged', () => {
-      handleGeom.getParameter('Radius').setValue(this.handleRadiusParam.getValue())
+      handleGeom.radiusParam.setValue(this.handleRadiusParam.getValue())
     })
     this.lengthParam.on('valueChanged', () => {
       this.__updateSlider(this.value)

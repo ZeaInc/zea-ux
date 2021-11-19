@@ -86,7 +86,7 @@ class ArcSlider extends BaseAxialRotationHandle {
     this.handle.geomOffsetXfoParam.value = this.handleGeomOffsetXfo
 
     // this.barRadiusParam.on('valueChanged', () => {
-    //   arcGeom.getParameter('Radius').setValue(this.barRadiusParam.getValue());
+    //   arcGeom.radiusParam.setValue(this.barRadiusParam.getValue());
     // });
 
     this.range = [0, arcAngle]

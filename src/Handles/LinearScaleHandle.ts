@@ -106,7 +106,7 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
   onDragStart(event) {
     this.grabDist = event.grabDist
     this.oriXfo = this.globalXfoParam.value
-    this.tmplocalXfo = this.getParameter('LocalXfo').getValue()
+    this.tmplocalXfo = this.localXfoParam.getValue()
     const param = this.getTargetParam()
     this.baseXfo = <Xfo>param.getValue()
 
@@ -158,7 +158,7 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
     this.localXfoParam.value = this.tmplocalXfo
 
     const tip = this.getChildByName('tip')
-    const tipXfo = tip.getParameter('LocalXfo').getValue()
+    const tipXfo = tip.localXfoParam.getValue()
     tipXfo.sc.set(1, 1, 1)
     tip.localXfoParam.value = tipXfo
   }
