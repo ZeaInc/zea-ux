@@ -94,14 +94,14 @@ class MeasureAngleTool extends BaseTool {
     // skip if the alt key is held. Allows the camera tool to work
     if (event.altKey || (event.pointerType === 'mouse' && event.button !== 0) || !event.intersectionData) return
 
-    const getSurfaceXfo = (geomItem, hitPos, closestTo?) => {
+    const getSurfaceXfo = (geomItem: GeomItem, hitPos, closestTo?) => {
       const xfo = new Xfo()
       const surfaceTypeParm = geomItem.getParameter('SurfaceType')
       if (surfaceTypeParm) {
         const surfaceType = surfaceTypeParm.getValue()
         switch (surfaceType) {
           case 'Plane': {
-            const geomMat = geomItem.getParameter('GeomMat').getValue()
+            const geomMat = geomItem.geomMatParam.value
             const srfToPnt = hitPos.subtract(geomMat.translation)
             let zaxis = geomMat.zAxis.clone()
             if (zaxis.dot(event.pointerRay.dir) > 0) zaxis = zaxis.negate()
@@ -147,7 +147,7 @@ class MeasureAngleTool extends BaseTool {
           }
           case 'Cylinder': {
             const globalXfo = geomItem.globalXfoParam.value
-            const radius = geomItem.radiusParam.getValue() * globalXfo.sc.x
+            const radius = geomItem.getParameter('Radius').getValue() * globalXfo.sc.x
             const zaxis = globalXfo.ori.getZaxis()
             const zaxisDist = hitPos.subtract(globalXfo.tr).dot(zaxis)
             const pointOnAxis = globalXfo.tr.add(zaxis.scale(zaxisDist))
