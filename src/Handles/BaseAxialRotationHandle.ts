@@ -50,7 +50,7 @@ class BaseAxialRotationHandle extends Handle {
    *
    * @return {Parameter} - returns handle's target global Xfo.
    */
-  getTargetParam(): XfoParameter {
+  getTargetParam(): Parameter<unknown> {
     return this.param ? this.param : this.globalXfoParam
   }
 
@@ -66,7 +66,7 @@ class BaseAxialRotationHandle extends Handle {
     this.deltaXfo = new Xfo()
 
     const param = this.getTargetParam()
-    const paramXfo = param.getValue()
+    const paramXfo = <Xfo>param.value
     this.offsetXfo = this.baseXfo.inverse().multiply(paramXfo)
 
     this.vec0 = event.grabPos.subtract(this.baseXfo.tr)
