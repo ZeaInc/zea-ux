@@ -120,13 +120,13 @@ class MeasureDistance extends TreeItem {
     lineXfo.ori.setFromDirectionAndUpvector(vector, new Vec3(vector.z, vector.x, vector.y))
     lineXfo.sc.z = distance
 
-    this.lineGeomItem.getParameter('GlobalXfo').setValue(lineXfo)
+    this.lineGeomItem.globalXfoParam.setValue(lineXfo)
 
     vector.normalizeInPlace()
     const midPoint = startXfo.tr.add(vector.scale(distance * 0.5))
     const labelXfo = new Xfo(midPoint)
     labelXfo.ori.setFromDirectionAndUpvector(vector, new Vec3(vector.z, vector.x, vector.y))
-    this.billboard.getParameter('GlobalXfo').setValue(labelXfo)
+    this.billboard.globalXfoParam.setValue(labelXfo)
   }
 
   /**
@@ -137,7 +137,7 @@ class MeasureDistance extends TreeItem {
   setStartMarkerPos(position) {
     const newXfo = this.startMarker.globalXfoParam.value
     newXfo.tr = position
-    this.startMarker.getParameter('GlobalXfo').setValue(newXfo)
+    this.startMarker.globalXfoParam.setValue(newXfo)
     if (this.label) this.updateMeasurement()
   }
 
@@ -149,7 +149,7 @@ class MeasureDistance extends TreeItem {
   setEndMarkerPos(position) {
     const endXfo = this.endMarker.globalXfoParam.value
     endXfo.tr = position
-    this.endMarker.getParameter('GlobalXfo').setValue(endXfo)
+    this.endMarker.globalXfoParam.setValue(endXfo)
     this.updateMeasurement()
   }
 

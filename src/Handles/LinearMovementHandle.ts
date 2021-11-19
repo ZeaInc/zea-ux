@@ -1,4 +1,4 @@
-import { Color, Xfo, GeomItem, Material, Cylinder, Cone } from '@zeainc/zea-engine'
+import { Color, Xfo, GeomItem, Material, Cylinder, Cone, Parameter, Vec3, XfoParameter } from '@zeainc/zea-engine'
 import BaseLinearMovementHandle from './BaseLinearMovementHandle'
 import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
 import './Shaders/HandleShader'
@@ -11,11 +11,11 @@ import UndoRedoManager from '../UndoRedo/UndoRedoManager'
  * @extends BaseLinearMovementHandle
  */
 class LinearMovementHandle extends BaseLinearMovementHandle {
-  handleMat
-  param
-  grabPos
-  baseXfo
-  change
+  param: Parameter<unknown>
+  handleMat: Material
+  grabPos: Vec3
+  baseXfo: Xfo
+  change: ParameterValueChange
   /**
    * Create a linear movement scene widget.
    *
@@ -78,7 +78,7 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
     this.param = param
     if (track) {
       const __updateGizmo = () => {
-        this.getParameter('GlobalXfo').setValue(param.getValue())
+        this.globalXfoParam.setValue(param.getValue())
       }
       __updateGizmo()
       param.on('valueChanged', __updateGizmo)
@@ -91,7 +91,7 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
    * @return {Parameter} - returns handle's target global Xfo.
    */
   getTargetParam() {
-    return this.param ? this.param : this.getParameter('GlobalXfo')
+    return this.param ? this.param : this.globalXfoParam
   }
 
   /**
@@ -102,7 +102,7 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
   onDragStart(event) {
     this.grabPos = event.grabPos
     const param = this.getTargetParam()
-    this.baseXfo = param.getValue()
+    this.baseXfo = <Xfo>param.getValue()
 
     this.change = new ParameterValueChange(param)
     UndoRedoManager.getInstance().addChange(this.change)

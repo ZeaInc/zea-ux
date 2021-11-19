@@ -1,4 +1,4 @@
-import { MathFunctions, Vec3, Xfo, XfoParameter } from '@zeainc/zea-engine'
+import { MathFunctions, Parameter, Vec3, Xfo, XfoParameter } from '@zeainc/zea-engine'
 import Handle from './Handle'
 import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
@@ -11,7 +11,7 @@ import { ZeaTouchEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaTouch
  * @extends Handle
  */
 class BaseAxialRotationHandle extends Handle {
-  param: XfoParameter
+  param: Parameter<unknown>
   baseXfo: Xfo
   deltaXfo: Xfo
   offsetXfo: Xfo
@@ -38,7 +38,7 @@ class BaseAxialRotationHandle extends Handle {
     this.param = param
     if (track) {
       const __updateGizmo = () => {
-        this.getParameter('GlobalXfo').setValue(param.getValue())
+        this.globalXfoParam.setValue(param.getValue())
       }
       __updateGizmo()
       param.on('valueChanged', __updateGizmo)

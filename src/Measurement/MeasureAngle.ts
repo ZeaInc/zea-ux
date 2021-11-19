@@ -125,9 +125,9 @@ class MeasureAngle extends TreeItem {
     labelXfo.tr.scaleInPlace(0.5)
 
     xfoA.ori.setFromDirectionAndUpvector(tangentA, normA)
-    this.markerA.getParameter('GlobalXfo').setValue(xfoA)
+    this.markerA.globalXfoParam.setValue(xfoA)
     xfoB.ori.setFromDirectionAndUpvector(tangentB, normA)
-    this.markerB.getParameter('GlobalXfo').setValue(xfoB)
+    this.markerB.globalXfoParam.setValue(xfoB)
 
     const lineAXfo = new Xfo()
     lineAXfo.sc.z = params[0]
@@ -136,7 +136,7 @@ class MeasureAngle extends TreeItem {
     lineBXfo.sc.z = params[1]
     this.markerB.getChild(0).getParameter('LocalXfo').setValue(lineBXfo)
 
-    this.billboard.getParameter('GlobalXfo').setValue(labelXfo)
+    this.billboard.globalXfoParam.setValue(labelXfo)
   }
 
   /**
@@ -145,8 +145,8 @@ class MeasureAngle extends TreeItem {
    * @param {Xfo} xfo
    */
   setXfoA(xfo) {
-    this.markerA.getParameter('GlobalXfo').setValue(xfo)
-    this.markerB.getParameter('GlobalXfo').setValue(xfo)
+    this.markerA.globalXfoParam.setValue(xfo)
+    this.markerB.globalXfoParam.setValue(xfo)
   }
 
   /**
@@ -164,7 +164,7 @@ class MeasureAngle extends TreeItem {
    * @param {Xfo} xfo
    */
   setXfoB(xfo) {
-    this.markerB.getParameter('GlobalXfo').setValue(xfo)
+    this.markerB.globalXfoParam.setValue(xfo)
     this.createLinesAndLabel()
   }
 }
