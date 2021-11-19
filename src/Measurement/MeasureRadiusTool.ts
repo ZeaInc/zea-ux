@@ -1,5 +1,5 @@
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
-import { Ray, Vec3, Color, ColorParameter, BaseTool } from '@zeainc/zea-engine'
+import { Ray, Vec3, Color, ColorParameter, BaseTool, TreeItem } from '@zeainc/zea-engine'
 import { MeasurementChange } from './MeasurementChange'
 import { MeasureDistance } from './MeasureDistance'
 import { AppData } from '../../types/temp'
@@ -11,15 +11,15 @@ import { AppData } from '../../types/temp'
 class MeasureRadiusTool extends BaseTool {
   colorParam = new ColorParameter('Color', new Color('#F9CE03'))
   appData: AppData
-  highlightedItemA = null
-  prevCursor
-  dragging
+  highlightedItemA: TreeItem = null
+  prevCursor: string
+  dragging: boolean
   /**
    * Creates an instance of MeasureRadiusTool.
    *
    * @param {object} appData - The appData value
    */
-  constructor(appData) {
+  constructor(appData: AppData) {
     super()
 
     this.addParameter(this.colorParam)
@@ -30,7 +30,7 @@ class MeasureRadiusTool extends BaseTool {
   /**
    * The activateTool method.
    */
-  activateTool() {
+  activateTool(): void {
     super.activateTool()
     if (this.appData && this.appData.renderer) {
       this.prevCursor = this.appData.renderer.getGLCanvas().style.cursor
@@ -41,7 +41,7 @@ class MeasureRadiusTool extends BaseTool {
   /**
    * The deactivateTool method.
    */
-  deactivateTool() {
+  deactivateTool(): void {
     super.deactivateTool()
     if (this.appData && this.appData.renderer) {
       this.appData.renderer.getGLCanvas().style.cursor = this.prevCursor
@@ -53,7 +53,7 @@ class MeasureRadiusTool extends BaseTool {
    *
    * @param {MouseEvent|TouchEvent} event - The event value
    */
-  onPointerDown(event) {
+  onPointerDown(event): void {
     // skip if the alt key is held. Allows the camera tool to work
     if (event.altKey || (event.pointerType === 'mouse' && event.button !== 0) || !event.intersectionData) return
 
@@ -128,7 +128,7 @@ class MeasureRadiusTool extends BaseTool {
    *
    * @param {MouseEvent|TouchEvent} event - The event value
    */
-  onPointerMove(event) {
+  onPointerMove(event): void {
     // skip if the alt key is held. Allows the camera tool to work
     if (event.altKey || (event.pointerType === 'mouse' && event.button !== 0)) return
 
@@ -163,7 +163,7 @@ class MeasureRadiusTool extends BaseTool {
    *
    * @param {MouseEvent|TouchEvent} event - The event value
    */
-  onPointerUp(event) {}
+  onPointerUp(event): void {}
 }
 
 export { MeasureRadiusTool }

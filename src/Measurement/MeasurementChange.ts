@@ -1,4 +1,5 @@
-import { Xfo, Registry } from '@zeainc/zea-engine'
+import { Xfo, Registry, TreeItem } from '@zeainc/zea-engine'
+import { MeasureDistance } from '.'
 import { UndoRedoManager, Change } from '../UndoRedo/index'
 
 /**
@@ -7,11 +8,11 @@ import { UndoRedoManager, Change } from '../UndoRedo/index'
  * @extends Change
  */
 class MeasurementChange extends Change {
-  measurement
-  parentItem
-  childIndex
-  parentItemPath
-  measurementType
+  measurement: MeasureDistance
+  measurementType: string
+  parentItem: TreeItem
+  parentItemPath: Array<string>
+  childIndex: number
   /**
    * Creates an instance of MeasurementChange.
    *
@@ -48,7 +49,7 @@ class MeasurementChange extends Change {
    */
   undo() {
     console.log('undo MeasurementChange')
-    this.parentItem = this.measurement.getOwner()
+    this.parentItem = <TreeItem>this.measurement.getOwner()
     this.childIndex = this.parentItem.getChildIndex(this.measurement)
     this.parentItem.removeChild(this.childIndex)
   }
@@ -70,7 +71,7 @@ class MeasurementChange extends Change {
   toJSON(context: Record<any, any>) {
     const j: Record<any, any> = super.toJSON(context)
     j.parentItemPath = this.measurement.getOwner().getPath()
-    j.measurementType = Registry.getClassName(this.measurement)
+    j.measurementType = Registry.getClassName(this.measurement)// TODO: check
     j.measurementData = this.measurement.toJSON(context)
     return j
   }
@@ -85,7 +86,7 @@ class MeasurementChange extends Change {
     const sceneRoot = context.appData.scene.getRoot()
     const parentItem = sceneRoot.resolvePath(j.parentItemPath, 1)
     if (parentItem) {
-      this.measurement = Registry.constructClass(j.measurementType)
+      this.measurement = <MeasureDistance>Registry.constructClass(j.measurementType)
       this.measurement.fromJSON(j.measurementData)
       parentItem.addChild(this.measurement)
     }

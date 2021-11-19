@@ -1,4 +1,4 @@
-import { GeomItem, Material, Cone } from '@zeainc/zea-engine'
+import { GeomItem, Material, Cone, TreeItem, Xfo, Color } from '@zeainc/zea-engine'
 import { UndoRedoManager } from '../../../UndoRedo/index'
 import CreateGeomChange from './CreateGeomChange'
 
@@ -17,7 +17,7 @@ class CreateConeChange extends CreateGeomChange {
    * @param {TreeItem} parentItem - The parentItem value.
    * @param {Xfo} xfo - The xfo value.
    */
-  constructor(parentItem, xfo, color) {
+  constructor(parentItem: TreeItem, xfo: Xfo, color: Color) {
     super('Create Cone')
 
     const cone = new Cone(0.0, 0.0)
@@ -36,7 +36,7 @@ class CreateConeChange extends CreateGeomChange {
    *
    * @param {object} updateData - The updateData param.
    */
-  update(updateData) {
+  update(updateData: Record<any, any>) {
     if (updateData.radius)
       this.geomItem.getParameter('Geometry').getValue().getParameter('Radius').setValue(updateData.radius)
     if (updateData.height)
