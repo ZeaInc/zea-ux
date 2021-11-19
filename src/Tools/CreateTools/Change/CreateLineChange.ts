@@ -11,7 +11,6 @@ import CreateGeomChange from './CreateGeomChange'
  * @extends CreateGeomChange
  */
 class CreateLineChange extends CreateGeomChange {
-  // TODO: lineThickness to Lines class
   line: Lines = new Lines()
   /**
    * Create a create line change.
@@ -26,7 +25,8 @@ class CreateLineChange extends CreateGeomChange {
 
     this.line.setNumVertices(2)
     this.line.setNumSegments(1)
-    ;(<Vec3Attribute>this.line.getVertexAttribute('positions')).setValue(0, new Vec3())
+    const positions = <Vec3Attribute>this.line.getVertexAttribute('positions')
+    positions.setValue(0, new Vec3())
     this.line.setSegmentVertexIndices(0, 0, 1)
 
     const material = new FatLinesMaterial('Line')
@@ -71,7 +71,7 @@ class CreateLineChange extends CreateGeomChange {
       const color = new Color()
       color.fromJSON(j.color)
       const material = this.geomItem.materialParam.value
-      material.getParameter('BaseColor').setValue(color) 
+      material.getParameter('BaseColor').setValue(color)
     }
   }
 }

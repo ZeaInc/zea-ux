@@ -1,4 +1,14 @@
-import { Color, Xfo, NumberParameter, GeomItem, Material, Cuboid, XfoParameter } from '@zeainc/zea-engine'
+import {
+  Color,
+  Xfo,
+  NumberParameter,
+  GeomItem,
+  Material,
+  Cuboid,
+  XfoParameter,
+  ColorParameter,
+  Vec3,
+} from '@zeainc/zea-engine'
 import PlanarMovementHandle from './PlanarMovementHandle'
 import './Shaders/HandleShader'
 import transformVertices from './transformVertices'
@@ -13,11 +23,11 @@ import transformVertices from './transformVertices'
  */
 class XfoPlanarMovementHandle extends PlanarMovementHandle {
   localXfoParam: XfoParameter
-  sizeParam
-  colorParam
-  handleMat
-  handle
-  highlightColorParam
+  sizeParam: NumberParameter
+  colorParam: ColorParameter
+  highlightColorParam: ColorParameter
+  handle: GeomItem
+  handleMat: Material
   /**
    * Create a planar movement scene widget.
    * @param {string} name - The name value.
@@ -25,7 +35,7 @@ class XfoPlanarMovementHandle extends PlanarMovementHandle {
    * @param {Vec3} offset - The offset value.
    * @param {Color} color - The color value.
    */
-  constructor(name, size, offset, color = new Color()) {
+  constructor(name: string, size: number, offset: Vec3, color = new Color()) {
     super(name)
 
     this.sizeParam = new NumberParameter('Size', size)

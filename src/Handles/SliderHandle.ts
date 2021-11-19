@@ -8,6 +8,7 @@ import {
   Sphere,
   Registry,
   MathFunctions,
+  Parameter,
 } from '@zeainc/zea-engine'
 import BaseLinearMovementHandle from './BaseLinearMovementHandle'
 import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
@@ -26,19 +27,19 @@ import UndoRedoManager from '../UndoRedo/UndoRedoManager'
  * @extends BaseLinearMovementHandle
  */
 class SliderHandle extends BaseLinearMovementHandle {
-  value
-  lengthParam
-  barRadiusParam
-  handleRadiusParam
-  handleMat
-  handle
-  baseBar
-  topBar 
+  param: Parameter<unknown>
+  value: number
+  lengthParam: NumberParameter
+  barRadiusParam: NumberParameter
+  handleRadiusParam: NumberParameter
+  handleMat: Material
+  handle: GeomItem
+  baseBar: GeomItem
+  topBar: GeomItem
   handleXfo = new Xfo()
   baseBarXfo = new Xfo()
   topBarXfo = new Xfo()
-  param
-  change
+  change: ParameterValueChange
   /**
    * Create a slider scene widget.
    *
@@ -70,7 +71,6 @@ class SliderHandle extends BaseLinearMovementHandle {
     this.handle = new GeomItem('handle', handleGeom, this.handleMat)
     this.baseBar = new GeomItem('baseBar', barGeom, this.handleMat)
     this.topBar = new GeomItem('topBar', barGeom, topBarMat)
-
 
     this.barRadiusParam.on('valueChanged', () => {
       barGeom.getParameter('Radius').setValue(this.barRadiusParam.getValue())
@@ -131,7 +131,8 @@ class SliderHandle extends BaseLinearMovementHandle {
    */
   __updateSlider(value) {
     this.value = value
-    const range = this.param && this.param.getRange() ? this.param.getRange() : [0, 1]
+    const param = <NumberParameter>this.param
+    const range = param && param.getRange() ? param.getRange() : [0, 1]
     const v = MathFunctions.remap(value, range[0], range[1], 0, 1)
     const length = this.lengthParam.getValue()
     this.baseBarXfo.sc.z = v * length
@@ -170,7 +171,8 @@ class SliderHandle extends BaseLinearMovementHandle {
    */
   onDrag(event) {
     const length = this.lengthParam.getValue()
-    const range = this.param && this.param.getRange() ? this.param.getRange() : [0, 1]
+    const param = <NumberParameter>this.param
+    const range = param && param.getRange() ? param.getRange() : [0, 1]
     const value = MathFunctions.clamp(
       MathFunctions.remap(event.value, 0, length, range[0], range[1]),
       range[0],
