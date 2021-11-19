@@ -1,4 +1,14 @@
-import { Vec3, Color, GeomItem, LinesMaterial, FatLinesMaterial, Lines, Vec3Attribute } from '@zeainc/zea-engine'
+import {
+  Vec3,
+  Color,
+  GeomItem,
+  LinesMaterial,
+  FatLinesMaterial,
+  Lines,
+  Vec3Attribute,
+  TreeItem,
+  Xfo,
+} from '@zeainc/zea-engine'
 import { UndoRedoManager } from '../../../UndoRedo/index'
 import CreateGeomChange from './CreateGeomChange'
 
@@ -22,12 +32,13 @@ class CreateFreehandLineChange extends CreateGeomChange {
    * @param {Color} color - The color value.
    * @param {number} thickness - The thickness value.
    */
-  constructor(parentItem, xfo, color, thickness = 0.001) {
+  constructor(parentItem: TreeItem, xfo: Xfo, color: Color, thickness = 0.001) {
     super('CreateFreehandLine')
 
     this.line.setNumVertices(this.vertexCount)
     this.line.setNumSegments(this.vertexCount - 1)
-    ;(<Vec3Attribute>this.line.getVertexAttribute('positions')).setValue(0, new Vec3())
+    const positions = <Vec3Attribute>this.line.getVertexAttribute('positions')
+    positions.setValue(0, new Vec3())
 
     // TODO: added lineThicknessParam to LinesMaterial
     const material = new FatLinesMaterial('freeHandLine')
@@ -50,7 +61,7 @@ class CreateFreehandLineChange extends CreateGeomChange {
    *
    * @param {object} updateData - The updateData param.
    */
-  update(updateData) {
+  update(updateData: Record<any, any>) {
     // console.log("update:", this.used)
 
     this.used++
@@ -62,8 +73,8 @@ class CreateFreehandLineChange extends CreateGeomChange {
       this.line.setNumSegments(this.vertexCount - 1)
       realloc = true
     }
-
-    ;(<Vec3Attribute>this.line.getVertexAttribute('positions')).setValue(this.used, updateData.point)
+    const positions = <Vec3Attribute>this.line.getVertexAttribute('positions')
+    positions.setValue(this.used, updateData.point)
     // this.line.getVertexAttributes().lineThickness.setValue(this.used, updateData.lineThickness);
     this.line.setSegmentVertexIndices(this.used - 1, this.used - 1, this.used)
     this.line.setBoundingBoxDirty()
@@ -86,7 +97,7 @@ class CreateFreehandLineChange extends CreateGeomChange {
    * @param {object} context - The appData param.
    * @return {object} The return value.
    */
-  toJSON(context) {
+  toJSON(context: Record<any, any>) {
     const j = super.toJSON(context)
     const material = <FatLinesMaterial>this.geomItem.materialParam.value
     j.lineThickness = material.lineThicknessParam.value
@@ -100,12 +111,11 @@ class CreateFreehandLineChange extends CreateGeomChange {
    * @param {object} j - The j param.
    * @param {object} context - The appData param.
    */
-  fromJSON(j, context) {
+  fromJSON(j: Record<any, any>, context: Record<any, any>) {
     // Need to set line thickness before the geom is added to the tree.
     if (j.lineThickness) {
       const material = <FatLinesMaterial>this.geomItem.materialParam.value
       material.lineThicknessParam.value = j.lineThickness
-   
     }
 
     if (j.color) {
