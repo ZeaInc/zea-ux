@@ -1,4 +1,14 @@
-import { Color, GeomItem, LinesMaterial, FatLinesMaterial, Lines, Vec3, Vec3Attribute } from '@zeainc/zea-engine'
+import {
+  Color,
+  GeomItem,
+  LinesMaterial,
+  FatLinesMaterial,
+  Lines,
+  Vec3,
+  Vec3Attribute,
+  TreeItem,
+  Xfo,
+} from '@zeainc/zea-engine'
 import UndoRedoManager from '../../../UndoRedo/UndoRedoManager'
 import CreateGeomChange from './CreateGeomChange'
 
@@ -20,7 +30,7 @@ class CreateLineChange extends CreateGeomChange {
    * @param {Color} color - The color value.
    * @param {number} thickness - The thickness value.
    */
-  constructor(parentItem, xfo, color, thickness = 0.001) {
+  constructor(parentItem: TreeItem, xfo: Xfo, color: Color, thickness = 0.001) {
     super('Create Line')
 
     this.line.setNumVertices(2)
@@ -48,7 +58,7 @@ class CreateLineChange extends CreateGeomChange {
    *
    * @param {object} updateData - The updateData param.
    */
-  update(updateData) {
+  update(updateData: Record<any, any>) {
     if (updateData.p1) {
       console.log(updateData.p1.toString())
       ;(<Vec3Attribute>this.line.getVertexAttribute('positions')).getValueRef(1).setFromOther(updateData.p1)

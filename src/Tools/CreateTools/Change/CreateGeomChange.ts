@@ -14,7 +14,7 @@ class CreateGeomChange extends Change {
    * Create a create circle change.
    * @param {string} name - The name value.
    */
-  constructor(name, parentItem?) {
+  constructor(name: string, parentItem?: TreeItem) {
     super(name)
     this.parentItem = parentItem ? parentItem : null
   }
@@ -24,7 +24,7 @@ class CreateGeomChange extends Change {
    * @param {TreeItem} parentItem - The parentItem param.
    * @param {Xfo} xfo - The xfo param.
    */
-  setParentAndXfo(parentItem, xfo) {
+  setParentAndXfo(parentItem: TreeItem, xfo: Xfo): void{
     this.parentItem = parentItem
     const name = this.parentItem.generateUniqueName(this.geomItem.getName())
     this.geomItem.setName(name)
@@ -37,14 +37,14 @@ class CreateGeomChange extends Change {
   /**
    * Removes recently created geometry from its parent.
    */
-  undo() {
+  undo(): void {
     this.parentItem.removeChild(this.parentItem.getChildIndex(this.geomItem))
   }
 
   /**
    * Restores recently created geometry and adds it to the specified parent tree item.
    */
-  redo() {
+  redo(): void {
     this.parentItem.addChild(this.geomItem, false, false)
   }
 
@@ -54,7 +54,7 @@ class CreateGeomChange extends Change {
    * @param {Record<any, any>} context - The context value
    * @return {Record<any, any>} - The serialized change
    */
-  toJSON(context?: Record<any, any>) {
+  toJSON(context?: Record<any, any>): Record<any, any> {
     const j: Record<any, any> = super.toJSON(context)
     j.parentItemPath = this.parentItem.getPath()
     j.geomItemName = this.geomItem.getName()
@@ -71,7 +71,7 @@ class CreateGeomChange extends Change {
    * @param {object} j - The j param.
    * @param {object} context - The appData param.
    */
-  fromJSON(j, context) {
+  fromJSON(j: Record<any,any>, context: Record<any,any>): void {
     const sceneRoot = context.appData.scene.getRoot()
     this.parentItem = sceneRoot.resolvePath(j.parentItemPath, 1)
     this.geomItem.setName(this.parentItem.generateUniqueName(j.geomItemName))
