@@ -13,6 +13,7 @@ import {
   Registry,
   Ray,
   Vec3Attribute,
+  Material,
 } from '@zeainc/zea-engine'
 
 import { HandleMaterial } from '../Handles/Shaders/HandleMaterial'
@@ -32,14 +33,14 @@ line.setBoundingBoxDirty()
  * @extends {TreeItem}
  */
 class MeasureAngle extends TreeItem {
-  colorParam
-  markerMaterial
-  markerMaterialB
-  lineMaterial
-  markerA
-  markerB
-  label
-  billboard
+  colorParam: ColorParameter
+  markerMaterial: Material
+  markerMaterialB: Material
+  lineMaterial: LinesMaterial
+  markerA: GeomItem
+  markerB: GeomItem
+  label: Label
+  billboard: BillboardItem
   /**
    * Creates an instance of MeasureAngle.
    * @param {string} name
@@ -48,7 +49,7 @@ class MeasureAngle extends TreeItem {
   constructor(name = 'MeasureAngle', color = new Color('#F9CE03')) {
     super(name)
 
-    this.colorParam = this.addParameter(new ColorParameter('Color', color))
+    this.colorParam = <ColorParameter>this.addParameter(new ColorParameter('Color', color))
 
     this.markerMaterial = new HandleMaterial('Marker')
     this.markerMaterial.getParameter('BaseColor').setValue(new Color(0, 0, 0))
@@ -61,8 +62,8 @@ class MeasureAngle extends TreeItem {
     this.markerMaterialB.getParameter('Overlay').setValue(0.5)
 
     this.lineMaterial = new LinesMaterial('Line')
-    this.lineMaterial.getParameter('BaseColor').setValue(new Color(0, 0, 0))
-    this.lineMaterial.getParameter('Overlay').setValue(0.5)
+    this.lineMaterial.baseColorParam.setValue(new Color(0, 0, 0))
+    this.lineMaterial.overlayParam.setValue(0.5)
 
     this.markerA = new GeomItem(`markerA`, sphere, this.markerMaterial)
     this.markerB = new GeomItem(`markerB`, sphere, this.markerMaterialB)
@@ -144,7 +145,7 @@ class MeasureAngle extends TreeItem {
    *
    * @param {Xfo} xfo
    */
-  setXfoA(xfo) {
+  setXfoA(xfo: Xfo) {
     this.markerA.globalXfoParam.setValue(xfo)
     this.markerB.globalXfoParam.setValue(xfo)
   }
@@ -154,7 +155,7 @@ class MeasureAngle extends TreeItem {
    *
    * @return {Xfo}
    */
-  getXfoA() {
+  getXfoA(): Xfo {
     return this.markerA.globalXfoParam.value
   }
 
@@ -163,7 +164,7 @@ class MeasureAngle extends TreeItem {
    *
    * @param {Xfo} xfo
    */
-  setXfoB(xfo) {
+  setXfoB(xfo: Xfo) {
     this.markerB.globalXfoParam.setValue(xfo)
     this.createLinesAndLabel()
   }
