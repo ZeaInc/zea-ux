@@ -60,10 +60,7 @@ class SelectionGroup extends SelectionSet {
 
     this.addParameter(this.initialXfoModeParam)
 
-    this.selectionGroupXfoOp = new SelectionGroupXfoOperator(
-      this.getParameter('InitialXfoMode'),
-      this.getParameter('GlobalXfo')
-    )
+    this.selectionGroupXfoOp = new SelectionGroupXfoOperator(this.getParameter('InitialXfoMode'), this.globalXfoParam)
   }
 
   /**

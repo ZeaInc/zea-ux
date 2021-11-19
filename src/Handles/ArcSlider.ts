@@ -189,14 +189,14 @@ class ArcSlider extends BaseAxialRotationHandle {
     if (track) {
       if (this.param instanceof XfoParameter) {
         const __updateGizmo = () => {
-          this.getParameter('GlobalXfo').setValue(param.getValue())
+          this.globalXfoParam.setValue(param.getValue())
         }
         __updateGizmo()
         param.on('valueChanged', __updateGizmo)
       } else if (this.param instanceof NumberParameter) {
         const __updateGizmo = () => {
           this.handleXfo.ori.setFromAxisAndAngle(new Vec3(0, 0, 1), <number>param.getValue())
-          this.handle.getParameter('GlobalXfo').setValue(this.handleXfo)
+          this.handle.globalXfoParam.setValue(this.handleXfo)
         }
         __updateGizmo()
         param.on('valueChanged', __updateGizmo)

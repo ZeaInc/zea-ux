@@ -31,9 +31,7 @@ class SelectionGroupXfoOperator extends Operator {
    * @param {TreeItem} item - The tree item being added
    */
   addItem(item: TreeItem): void {
-    this.addInput(new XfoOperatorInput('MemberGlobalXfo' + this.getNumInputs())).setParam(
-      item.getParameter('GlobalXfo')
-    )
+    this.addInput(new XfoOperatorInput('MemberGlobalXfo' + this.getNumInputs())).setParam(item.globalXfoParam)
     this.setDirty()
   }
 
@@ -44,7 +42,7 @@ class SelectionGroupXfoOperator extends Operator {
    */
   removeItem(item: TreeItem): void {
     // The first input it the 'InitialXfoMode', so remove the input for the specified item.
-    const xfoParam = item.getParameter('GlobalXfo')
+    const xfoParam = item.globalXfoParam
     for (let i = 1; i < this.getNumInputs(); i++) {
       const input: XfoOperatorInput = <XfoOperatorInput>this.getInputByIndex(i)
       if (input.getParam() == xfoParam) {

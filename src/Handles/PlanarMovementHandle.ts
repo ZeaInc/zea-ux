@@ -1,6 +1,7 @@
 import Handle from './Handle'
 import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
+import { Parameter, Vec3, Xfo } from '@zeainc/zea-engine'
 
 /**
  * Class representing a planar movement scene widget.
@@ -8,12 +9,13 @@ import UndoRedoManager from '../UndoRedo/UndoRedoManager'
  * @extends Handle
  */
 class PlanarMovementHandle extends Handle {
-  fullXfoManipulationInVR
-  param
-  grabPos
-  baseXfo
-  change
-  grabOffset
+  param: Parameter<unknown>
+  fullXfoManipulationInVR: boolean
+  grabPos: Vec3
+  grabOffset: Vec3
+  baseXfo: Xfo
+  change: ParameterValueChange
+
   /**
    * Create a planar movement scene widget.
    *
@@ -34,7 +36,7 @@ class PlanarMovementHandle extends Handle {
     this.param = param
     if (track) {
       const __updateGizmo = () => {
-        this.getParameter('GlobalXfo').setValue(param.getValue())
+        this.globalXfoParam.setValue(param.getValue())
       }
       __updateGizmo()
       param.on('valueChanged', __updateGizmo)
@@ -46,8 +48,8 @@ class PlanarMovementHandle extends Handle {
    *
    * @return {Parameter} - returns handle's target global Xfo.
    */
-  getTargetParam() {
-    return this.param ? this.param : this.getParameter('GlobalXfo')
+  getTargetParam(): Parameter<unknown> {
+    return this.param ? this.param : this.globalXfoParam
   }
 
   /**
@@ -58,7 +60,7 @@ class PlanarMovementHandle extends Handle {
   onDragStart(event) {
     this.grabPos = event.grabPos
     const param = this.getTargetParam()
-    this.baseXfo = param.getValue()
+    this.baseXfo = <Xfo>param.value
 
     this.change = new ParameterValueChange(param)
     UndoRedoManager.getInstance().addChange(this.change)

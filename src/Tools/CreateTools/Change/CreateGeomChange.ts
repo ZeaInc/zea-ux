@@ -28,7 +28,7 @@ class CreateGeomChange extends Change {
     this.parentItem = parentItem
     const name = this.parentItem.generateUniqueName(this.geomItem.getName())
     this.geomItem.setName(name)
-    this.geomItem.getParameter('GlobalXfo').setValue(xfo)
+    this.geomItem.globalXfoParam.setValue(xfo)
     this.parentItem.addChild(this.geomItem)
 
     // this.geomItem.addRef(this) // keep a ref to stop it being destroyed

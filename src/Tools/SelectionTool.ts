@@ -64,7 +64,7 @@ class SelectionTool extends BaseTool {
   /**
    * Activates selection tool.
    */
-   activateTool() {
+  activateTool() {
     super.activateTool()
   }
 
@@ -74,7 +74,7 @@ class SelectionTool extends BaseTool {
   deactivateTool() {
     super.deactivateTool()
     this.selectionRectXfo.sc.set(0, 0, 0)
-    this.rectItem.getParameter('GlobalXfo').setValue(this.selectionRectXfo)
+    this.rectItem.globalXfoParam.setValue(this.selectionRectXfo)
     this.rectItem.getParameter('Visible').setValue(false)
   }
   /**
@@ -87,8 +87,6 @@ class SelectionTool extends BaseTool {
   setSelectionFilter(fn) {
     this.__selectionFilterFn = fn
   }
-
-
 
   /**
    *
@@ -107,7 +105,7 @@ class SelectionTool extends BaseTool {
 
     this.selectionRectXfo.tr.x = tr.x
     this.selectionRectXfo.tr.y = -tr.y
-    this.rectItem.getParameter('GlobalXfo').setValue(this.selectionRectXfo)
+    this.rectItem.globalXfoParam.setValue(this.selectionRectXfo)
   }
 
   /**
@@ -203,7 +201,7 @@ class SelectionTool extends BaseTool {
           }
 
           this.selectionRectXfo.sc.set(0, 0, 0)
-          this.rectItem.getParameter('GlobalXfo').setValue(this.selectionRectXfo)
+          this.rectItem.globalXfoParam.setValue(this.selectionRectXfo)
         }
       } else {
         const intersectionData = event.viewport.getGeomDataAtPos(event.pointerPos)

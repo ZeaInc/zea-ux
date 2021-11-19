@@ -31,7 +31,7 @@ class HoldObjectsChange extends Change {
   undo() {
     for (let i = 0; i < this.__selection.length; i++) {
       if (this.__selection[i] && this.__prevXfos[i]) {
-        this.__selection[i].getParameter('GlobalXfo').setValue(this.__prevXfos[i])
+        this.__selection[i].globalXfoParam.setValue(this.__prevXfos[i])
       }
     }
   }
@@ -42,7 +42,7 @@ class HoldObjectsChange extends Change {
   redo() {
     for (let i = 0; i < this.__selection.length; i++) {
       if (this.__selection[i] && this.__newXfos[i]) {
-        this.__selection[i].getParameter('GlobalXfo').setValue(this.__newXfos[i])
+        this.__selection[i].globalXfoParam.setValue(this.__newXfos[i])
       }
     }
   }
@@ -59,7 +59,7 @@ class HoldObjectsChange extends Change {
       for (let i = 0; i < updateData.changeXfoIds.length; i++) {
         const gidx = updateData.changeXfoIds[i]
         if (!this.__selection[gidx]) continue
-        this.__selection[gidx].getParameter('GlobalXfo').setValue(updateData.changeXfos[i])
+        this.__selection[gidx].globalXfoParam.setValue(updateData.changeXfos[i])
         this.__newXfos[gidx] = updateData.changeXfos[i]
       }
     }

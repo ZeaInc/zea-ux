@@ -45,7 +45,7 @@ class SelectionManager extends EventEmitter {
       const size = 0.1
       const thickness = size * 0.02
       this.xfoHandle = new XfoHandle(size, thickness)
-      this.xfoHandle.setTargetParam(this.selectionGroup.getParameter('GlobalXfo'), false)
+      this.xfoHandle.setTargetParam(this.selectionGroup.globalXfoParam, false)
       this.xfoHandle.setVisible(false)
       this.xfoHandle.getParameter('HighlightColor').setValue(new Color(1, 1, 0))
       this.xfoHandleVisible = true
