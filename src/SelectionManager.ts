@@ -1,4 +1,5 @@
 import { EventEmitter, Color, TreeItem } from '@zeainc/zea-engine'
+import { AppData } from '../types/temp'
 import XfoHandle from './Handles/XfoHandle'
 import SelectionGroup from './SelectionGroup'
 import SelectionChange from './UndoRedo/Changes/SelectionChange'
@@ -15,7 +16,7 @@ import UndoRedoManager from './UndoRedo/UndoRedoManager'
  * @extends {EventEmitter}
  */
 class SelectionManager extends EventEmitter {
-  appData
+  appData: AppData
   leadSelection = undefined
   selectionGroup
   xfoHandle

@@ -1,4 +1,5 @@
 import { Vec3, Xfo, EulerAngles, Color, TreeItem, GeomItem, Material, Plane, DataImage } from '@zeainc/zea-engine'
+import { AppData } from '../../../types/temp.js'
 
 import domtoimage from './dom-to-image.js'
 
@@ -55,7 +56,7 @@ const plane = new Plane(1, 1)
  * @extends TreeItem
  */
 export default class VRControllerUI extends TreeItem {
-  appData
+  appData: AppData
   __vrUIDOMElement
   ready
   size

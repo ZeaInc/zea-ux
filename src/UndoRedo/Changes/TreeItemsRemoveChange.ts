@@ -1,6 +1,8 @@
 import { TreeItem, Operator } from '@zeainc/zea-engine'
 import UndoRedoManager from '../UndoRedoManager.js'
 import Change from '../Change.js'
+import SelectionManager from '../../SelectionManager.js'
+import { AppData } from '../../../types/temp.js'
 
 /**
  * Class representing a TreeItems removal Change,
@@ -14,16 +16,16 @@ class TreeItemsRemoveChange extends Change {
   itemPaths = []
   itemIndices = []
 
-  selectionManager
-  prevSelection
-  newSelection
+  selectionManager: SelectionManager
+  prevSelection: Set<TreeItem>
+  newSelection: Set<TreeItem>
   /**
    * Creates an instance of TreeItemsRemoveChange.
    *
    * @param {array} items - List of TreeItems
    * @param {object} appData - The appData value
    */
-  constructor(items, appData) {
+  constructor(items, appData: AppData) {
     super()
 
     if (items) {

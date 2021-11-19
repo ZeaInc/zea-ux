@@ -1,6 +1,7 @@
 import CreateGeomTool from './CreateGeomTool'
 import CreateRectChange from './Change/CreateRectChange'
 import { UndoRedoManager } from '../../UndoRedo/index'
+import { AppData } from '../../../types/temp'
 
 /**
  * Tool for creating a rectangle geometry.
@@ -19,7 +20,7 @@ class CreateRectTool extends CreateGeomTool {
    * Create a create rect tool.
    * @param {object} appData - The appData value.
    */
-  constructor(appData) {
+  constructor(appData: AppData) {
     super(appData)
   }
 

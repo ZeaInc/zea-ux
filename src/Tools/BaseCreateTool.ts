@@ -1,4 +1,5 @@
 import { BaseTool } from '@zeainc/zea-engine'
+import { AppData } from '../../types/temp'
 
 /**
  * Class representing a primary create tool.
@@ -11,7 +12,7 @@ export default class BaseCreateTool extends BaseTool {
    *
    * @param {object} appData - The appData value.
    */
-  constructor(appData) {
+  constructor(appData: AppData) {
     super(appData)
   }
 }

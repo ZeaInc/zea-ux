@@ -2,6 +2,7 @@ import { Vec2, Color, Xfo, GeomItem, Material, Rect, BaseTool } from '@zeainc/ze
 
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 import Handle from '../Handles/Handle'
+import { AppData } from '../../types/temp'
 
 /**
  * Class representing a selection tool.
@@ -9,7 +10,7 @@ import Handle from '../Handles/Handle'
  * @extends BaseTool
  */
 class SelectionTool extends BaseTool {
-  appData
+  appData: AppData
   dragging
   selectionRect
   selectionManager
