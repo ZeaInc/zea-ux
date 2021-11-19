@@ -139,9 +139,9 @@ class SliderHandle extends BaseLinearMovementHandle {
     this.handleXfo.tr.z = v * length
     this.topBarXfo.tr.z = v * length
     this.topBarXfo.sc.z = (1 - v) * length
-    this.handle.getParameter('LocalXfo').setValue(this.handleXfo)
-    this.baseBar.getParameter('LocalXfo').setValue(this.baseBarXfo)
-    this.topBar.getParameter('LocalXfo').setValue(this.topBarXfo)
+    this.handle.localXfoParam.value = this.handleXfo
+    this.baseBar.localXfoParam.value = this.baseBarXfo
+    this.topBar.localXfoParam.value = this.topBarXfo
   }
 
   // ///////////////////////////////////
@@ -155,7 +155,7 @@ class SliderHandle extends BaseLinearMovementHandle {
   onDragStart(event) {
     // Hilight the material.
     this.handleXfo.sc.x = this.handleXfo.sc.y = this.handleXfo.sc.z = 1.2
-    this.handle.getParameter('LocalXfo').setValue(this.handleXfo)
+    this.handle.localXfoParam.value = this.handleXfo
     if (!this.param) {
       return
     }
@@ -198,7 +198,7 @@ class SliderHandle extends BaseLinearMovementHandle {
     this.change = null
     // unhilight the material.
     this.handleXfo.sc.x = this.handleXfo.sc.y = this.handleXfo.sc.z = 1.0
-    this.handle.getParameter('LocalXfo').setValue(this.handleXfo)
+    this.handle.localXfoParam.value = this.handleXfo
   }
 
   /**

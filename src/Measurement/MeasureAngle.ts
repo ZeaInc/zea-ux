@@ -104,7 +104,7 @@ class MeasureAngle extends TreeItem {
     this.label.getParameter('Text').setValue(`${(angle / (Math.PI / 180)).toFixed(3)} °`)
 
     this.billboard = new BillboardItem('DistanceBillboard', this.label)
-    this.billboard.getParameter('LocalXfo').setValue(new Xfo())
+    this.billboard.localXfoParam.value = new Xfo()
     this.billboard.getParameter('PixelsPerMeter').setValue(1500)
     this.billboard.getParameter('AlignedToCamera').setValue(true)
     this.billboard.getParameter('DrawOnTop').setValue(true)
@@ -132,10 +132,10 @@ class MeasureAngle extends TreeItem {
 
     const lineAXfo = new Xfo()
     lineAXfo.sc.z = params[0]
-    this.markerA.getChild(0).getParameter('LocalXfo').setValue(lineAXfo)
+    this.markerA.getChild(0).localXfoParam.value = lineAXfo
     const lineBXfo = new Xfo()
     lineBXfo.sc.z = params[1]
-    this.markerB.getChild(0).getParameter('LocalXfo').setValue(lineBXfo)
+    this.markerB.getChild(0).localXfoParam.value = lineBXfo
 
     this.billboard.globalXfoParam.setValue(labelXfo)
   }

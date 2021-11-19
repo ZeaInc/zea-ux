@@ -35,7 +35,7 @@ class CreateRectChange extends CreateGeomChange {
    *
    * @param {object} updateData - The updateData param.
    */
-  update(updateData: Record<any,any>) {
+  update(updateData: Record<any, any>) {
     if (updateData.baseSize) {
       this.rect.getParameter('X').setValue(updateData.baseSize[0])
       this.rect.getParameter('Y').setValue(updateData.baseSize[1])
@@ -43,7 +43,7 @@ class CreateRectChange extends CreateGeomChange {
     if (updateData.tr) {
       const xfo = this.geomItem.getParameter('LocalXfo').getValue()
       xfo.tr.fromJSON(updateData.tr)
-      this.geomItem.getParameter('LocalXfo').setValue(xfo)
+      this.geomItem.localXfoParam.value = xfo
     }
 
     this.emit('updated', updateData)
