@@ -1,4 +1,4 @@
-import { Vec2, Color, Xfo, GeomItem, Material, Rect, BaseTool } from '@zeainc/zea-engine'
+import { Vec2, Color, Xfo, GeomItem, Material, Rect, BaseTool, TreeItem } from '@zeainc/zea-engine'
 
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 import Handle from '../Handles/Handle'
@@ -217,7 +217,7 @@ class SelectionTool extends BaseTool {
             if (!event.shiftKey) {
               this.selectionManager.toggleItemSelection(treeItem, !event.ctrlKey)
             } else {
-              const items = new Set()
+              const items: Set<TreeItem> = new Set()
               items.add(treeItem)
               this.selectionManager.deselectItems(items)
             }
