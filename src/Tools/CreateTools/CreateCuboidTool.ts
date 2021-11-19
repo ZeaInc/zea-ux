@@ -1,4 +1,4 @@
-import { Quat, Vec3 } from '@zeainc/zea-engine'
+import { ColorParameter, Quat, TreeItem, Vec3, Xfo } from '@zeainc/zea-engine'
 import CreateGeomTool from './CreateGeomTool'
 import CreateCuboidChange from './Change/CreateCuboidChange'
 import { UndoRedoManager } from '../../UndoRedo/index'
@@ -13,15 +13,15 @@ import { AppData } from '../../../types/temp'
  * @extends CreateGeomTool
  */
 class CreateCuboidTool extends CreateGeomTool {
-  change
-  parentItem
-  colorParam
-  xfo 
-  invXfo 
-  stage
-  _height
-  pt1
-  constructionPlane
+  change: CreateCuboidChange
+  parentItem: TreeItem
+  colorParam: ColorParameter
+  xfo: Xfo
+  invXfo: Xfo
+  stage: number
+  _height: number
+  pt1: Vec3
+  constructionPlane: Xfo
   /**
    * Create a create cuboid tool.
    *
@@ -36,7 +36,7 @@ class CreateCuboidTool extends CreateGeomTool {
    *
    * @param {Xfo} xfo - The xfo param.
    */
-  createStart(xfo) {
+  createStart(xfo: Xfo) {
     this.change = new CreateCuboidChange(this.parentItem, xfo, this.colorParam.getValue())
 
     // During construction, make it note selectable.
@@ -55,7 +55,7 @@ class CreateCuboidTool extends CreateGeomTool {
    *
    * @param {Vec3} pt - The pt param.
    */
-  createMove(pt) {
+  createMove(pt: Vec3) {
     if (this.stage == 1) {
       const delta = this.invXfo.transformVec3(pt)
 
@@ -75,7 +75,7 @@ class CreateCuboidTool extends CreateGeomTool {
    *
    * @param {Vec3} pt - The pt param.
    */
-  createRelease(pt) {
+  createRelease(pt: Vec3) {
     if (this.stage == 1) {
       this.stage = 2
       this.pt1 = pt
