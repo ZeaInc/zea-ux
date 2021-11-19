@@ -12,6 +12,7 @@ import {
   BaseTool,
   Vec3Attribute,
 } from '@zeainc/zea-engine'
+import { AppData } from '../../../types/temp'
 import VRControllerUI from './VRControllerUI'
 
 /**
@@ -20,7 +21,7 @@ import VRControllerUI from './VRControllerUI'
  * @extends BaseTool
  */
 class VRUITool extends BaseTool {
-  appData
+  appData: AppData
   __vrUIDOMElement
   controllerUI
   __pointerLocalXfo

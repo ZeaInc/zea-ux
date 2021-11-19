@@ -2,6 +2,7 @@ import { Quat, Vec3 } from '@zeainc/zea-engine'
 import CreateConeChange from './Change/CreateConeChange'
 import { CreateGeomTool } from './CreateGeomTool'
 import { UndoRedoManager } from '../../UndoRedo/index'
+import { AppData } from '../../../types/temp'
 
 /**
  * Tool for creating a Cone geometry.
@@ -25,7 +26,7 @@ class CreateConeTool extends CreateGeomTool {
    * Create a create cone tool.
    * @param {object} appData - The appData value.
    */
-  constructor(appData) {
+  constructor(appData: AppData) {
     super(appData)
   }
 

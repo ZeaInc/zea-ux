@@ -2,24 +2,25 @@ import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 import { Ray, Vec3, Color, ColorParameter, BaseTool, GeomItem, Xfo, Quat } from '@zeainc/zea-engine'
 import { MeasurementChange } from './MeasurementChange'
 import { MeasureAngle } from './MeasureAngle'
+import { AppData } from '../../types/temp'
 /**
  * UI Tool for measurements
  *
  * @extends {BaseTool}
  */
 class MeasureAngleTool extends BaseTool {
+  appData: AppData
   colorParam = new ColorParameter('Color', new Color('#F9CE03'))
-  appData
-  measurementChange = null
+  measurementChange: MeasurementChange = null
   highlightedItemA = null
-  highlightedItemAHitPos = null
   highlightedItemB = null
-  stage = 0
+  highlightedItemAHitPos = null
+  stage: number = 0
   prevCursor
-  measurement
-  geomItemA
   hitPosA
-  dragging
+  measurement
+  geomItemA: GeomItem
+  dragging: boolean
   /**
    * Creates an instance of MeasureAngleTool.
    *

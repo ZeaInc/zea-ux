@@ -4,6 +4,7 @@ import { Quat, Color, Xfo, BaseTool, POINTER_TYPES, TreeItem } from '@zeainc/zea
 // import Handle from '../../Handles/Handle'
 import UndoRedoManager from '../../UndoRedo/UndoRedoManager'
 import Change from '../../UndoRedo/Change'
+import { AppData } from '../../../types/temp'
 
 /**
  * Class representing a hold objects change.
@@ -126,7 +127,7 @@ UndoRedoManager.registerChange('HoldObjectsChange', HoldObjectsChange)
  * @extends BaseTool
  */
 class VRHoldObjectsTool extends BaseTool {
-  appData
+  appData: AppData
   __pressedButtonCount = 0
 
   __freeIndices = []

@@ -1,6 +1,7 @@
 import { Color, Xfo, Ray, ColorParameter, GeomItem, Material, Cross, TreeItem } from '@zeainc/zea-engine'
 import BaseCreateTool from '../BaseCreateTool'
 import { UndoRedoManager } from '../../UndoRedo/index'
+import { AppData } from '../../../types/temp'
 
 /**
  * Base class for creating geometry tools.
@@ -8,7 +9,7 @@ import { UndoRedoManager } from '../../UndoRedo/index'
  * @extends BaseCreateTool
  */
 class CreateGeomTool extends BaseCreateTool {
-  appData
+  appData: AppData
   stage
   removeToolOnRightClick
   parentItem
