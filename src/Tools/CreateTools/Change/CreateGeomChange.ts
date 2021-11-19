@@ -58,7 +58,7 @@ class CreateGeomChange extends Change {
     const j: Record<any, any> = super.toJSON(context)
     j.parentItemPath = this.parentItem.getPath()
     j.geomItemName = this.geomItem.getName()
-    j.geomItemXfo = this.geomItem.getParameter('LocalXfo').getValue()
+    j.geomItemXfo = this.geomItem.localXfoParam.getValue()
 
     const material = this.geomItem.getParameter('Material').getValue()
     j.color = material.getParameter('BaseColor').getValue()

@@ -46,7 +46,7 @@ class SelectionGroup extends SelectionSet {
       subtreeColor.a = 0.1
     }
 
-    this.getParameter('HighlightColor').setValue(selectionColor)
+    this.highlightColorParam.value = (selectionColor)
     this.addParameter(new ColorParameter('SubtreeHighlightColor', subtreeColor))
 
     this.itemsParam.setFilterFn((item) => item instanceof BaseItem)
@@ -96,8 +96,8 @@ class SelectionGroup extends SelectionSet {
    */
   bindItem(item, index) {
     if (item instanceof TreeItem) {
-      const highlightColor = this.getParameter('HighlightColor').getValue()
-      highlightColor.a = this.getParameter('HighlightFill').getValue()
+      const highlightColor = this.highlightColorParam.value
+      highlightColor.a = this.highlightFillParam.value
       item.addHighlight('selected' + this.getId(), highlightColor, false)
 
       const subTreeColor = this.getParameter('SubtreeHighlightColor').getValue()

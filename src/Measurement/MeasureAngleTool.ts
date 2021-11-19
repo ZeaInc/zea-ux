@@ -147,7 +147,7 @@ class MeasureAngleTool extends BaseTool {
           }
           case 'Cylinder': {
             const globalXfo = geomItem.globalXfoParam.value
-            const radius = geomItem.getParameter('Radius').getValue() * globalXfo.sc.x
+            const radius = geomItem.radiusParam.getValue() * globalXfo.sc.x
             const zaxis = globalXfo.ori.getZaxis()
             const zaxisDist = hitPos.subtract(globalXfo.tr).dot(zaxis)
             const pointOnAxis = globalXfo.tr.add(zaxis.scale(zaxisDist))
