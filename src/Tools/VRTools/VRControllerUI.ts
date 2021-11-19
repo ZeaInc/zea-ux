@@ -58,14 +58,14 @@ const plane = new Plane(1, 1)
 export default class VRControllerUI extends TreeItem {
   appData: AppData
   __vrUIDOMElement
-  ready
-  size
+  ready: boolean
+  size: Vec3
   /**
    * Create a VR controller UI.
    * @param {any} appData - The appData value.
    * @param {any} vrUIDOMElement - The vrUIDOMElement value.
    */
-  constructor(appData, vrUIDOMElement) {
+  constructor(appData: AppData, vrUIDOMElement) {
     super('VRControllerUI')
 
     this.setSelectable(false)

@@ -5,6 +5,7 @@ import { Quat, Color, Xfo, BaseTool, POINTER_TYPES, TreeItem } from '@zeainc/zea
 import UndoRedoManager from '../../UndoRedo/UndoRedoManager'
 import Change from '../../UndoRedo/Change'
 import { AppData } from '../../../types/temp'
+import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
 
 /**
  * Class representing a hold objects change.
@@ -145,9 +146,9 @@ class VRHoldObjectsTool extends BaseTool {
    * Create a VR hold objects tool.
    * @param {object} appData - The appData value.
    */
-  constructor(appData) {
+  constructor(appData: AppData) {
     super(appData)
-    this.appData = appData // TODO: move to parent class?
+    this.appData = appData
   }
 
   /**

@@ -3,6 +3,7 @@ import { Vec2, Color, Xfo, GeomItem, Material, Rect, BaseTool } from '@zeainc/ze
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 import Handle from '../Handles/Handle'
 import { AppData } from '../../types/temp'
+import { SelectionManager } from '..'
 
 /**
  * Class representing a selection tool.
@@ -11,14 +12,14 @@ import { AppData } from '../../types/temp'
  */
 class SelectionTool extends BaseTool {
   appData: AppData
-  dragging
-  selectionRect
-  selectionManager
-  selectionRectMat
-  selectionRectXfo
-  rectItem
-  __selectionFilterFn
-  pointerDownPos
+  dragging: boolean
+  selectionRect: Rect
+  selectionManager: SelectionManager
+  selectionRectMat: Material
+  selectionRectXfo: Xfo
+  rectItem: GeomItem
+  __selectionFilterFn: any
+  pointerDownPos: Vec2
   /**
    * Creates an instance of SelectionTool.
    *

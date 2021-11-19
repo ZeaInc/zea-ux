@@ -32,7 +32,7 @@ class CreateCircleTool extends CreateGeomTool {
    *
    * @param {Xfo} xfo - The xfo param.
    */
-  createStart(xfo: Xfo) {
+  createStart(xfo: Xfo): void{
     this.change = new CreateCircleChange(this.parentItem, xfo)
     UndoRedoManager.getInstance().addChange(this.change)
 
@@ -46,7 +46,7 @@ class CreateCircleTool extends CreateGeomTool {
    *
    * @param {Vec3} pt - The pt param.
    */
-  createMove(pt: Vec3) {
+  createMove(pt: Vec3): void {
     this.radius = pt.distanceTo(this.xfo.tr)
     this.change.update({ radius: this.radius })
     this.appData.renderer.forceRender()
@@ -57,7 +57,7 @@ class CreateCircleTool extends CreateGeomTool {
    *
    * @param {Vec3} pt - The pt param.
    */
-  createRelease(pt: Vec3) {
+  createRelease(pt: Vec3): void {
     if (this.radius == 0) {
       UndoRedoManager.getInstance().cancel()
     }
