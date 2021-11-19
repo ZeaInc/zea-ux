@@ -1,4 +1,4 @@
-import { GeomItem, Material, Sphere } from '@zeainc/zea-engine'
+import { Color, GeomItem, Material, Sphere, TreeItem, Xfo } from '@zeainc/zea-engine'
 import UndoRedoManager from '../../../UndoRedo/UndoRedoManager'
 import CreateGeomChange from './CreateGeomChange'
 
@@ -18,7 +18,7 @@ class CreateSphereChange extends CreateGeomChange {
    * @param {Xfo} xfo - The xfo value.
    * @param {Color} color - The color of the sphere to create.
    */
-  constructor(parentItem, xfo, color) {
+  constructor(parentItem: TreeItem, xfo:Xfo, color: Color) {
     super('CreateSphere', parentItem)
 
     
@@ -37,7 +37,7 @@ class CreateSphereChange extends CreateGeomChange {
    *
    * @param {object} updateData - The updateData param.
    */
-  update(updateData) {
+  update(updateData: Record<any,any>) {
     this.sphere.radiusParam.value = updateData.radius
 
     this.emit('updated', updateData)
@@ -48,7 +48,7 @@ class CreateSphereChange extends CreateGeomChange {
    *
    * @return {object} The return value.
    */
-  toJSON() {
+  toJSON(): Record<any,any> {
     const j = super.toJSON()
     j.radius = this.sphere.radiusParam.getValue()
     return j
@@ -59,7 +59,7 @@ class CreateSphereChange extends CreateGeomChange {
    *
    * @param {object} j - The j param.
    */
-  updateFromJSON(j) {
+  updateFromJSON(j: Record<any,any>) {
     if (j.radius) this.sphere.radiusParam.value = j.radius
   }
 }
