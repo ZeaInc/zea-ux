@@ -93,12 +93,12 @@ export default class VRControllerUI extends TreeItem {
       localXfo.ori.setFromEulerAngles(new EulerAngles(Math.PI, Math.PI, 0))
       // localXfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI)
       // localXfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI)
-      uiOffset.getParameter('LocalXfo').setValue(localXfo)
+      uiOffset.localXfoParam.value = localXfo
 
       this.size = new Vec3(vrUIDOMElement.clientWidth * dpm, vrUIDOMElement.clientHeight * dpm, 1)
 
       // debugGeomItemXfo.sc = this.size
-      // debugGeomItem.getParameter('LocalXfo').setValue(debugGeomItemXfo)
+      // debugGeomItem.localXfoParam.value = (debugGeomItemXfo)
 
       traverse(vrUIDOMElement, 0, (elem, depth) => {
         if (elem.className == 'button') {

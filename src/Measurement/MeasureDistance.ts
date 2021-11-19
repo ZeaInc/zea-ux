@@ -98,7 +98,7 @@ class MeasureDistance extends TreeItem {
       this.label.getParameter('Text').setValue(labelTest)
 
       this.billboard = new BillboardItem('DistanceBillboard', this.label)
-      this.billboard.getParameter('LocalXfo').setValue(new Xfo())
+      this.billboard.localXfoParam.value = new Xfo()
       this.billboard.getParameter('PixelsPerMeter').setValue(1500)
       this.billboard.getParameter('AlignedToCamera').setValue(true)
       this.billboard.getParameter('DrawOnTop').setValue(true)

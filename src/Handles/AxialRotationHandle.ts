@@ -10,7 +10,7 @@ import './Shaders/HandleShader'
  * const xfo1 = new Xfo()
  * // This is rotation over `Y` axis
  * xfo1.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI * 0.5)
- * axialRotationHandle.getParameter('LocalXfo').setValue(xfo1)
+ * axialRotationHandle.localXfoParam.value = (xfo1)
  * ```
  * **Parameters**
  * * **Radius(`NumberParameter`):** Specifies the radius of the handler.
@@ -81,7 +81,7 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
    *
    * @return {Xfo} - The Xfo value
    */
-  getBaseXfo(): Xfo{
+  getBaseXfo(): Xfo {
     return this.globalXfoParam.value
   }
 
