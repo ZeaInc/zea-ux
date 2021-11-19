@@ -1,4 +1,4 @@
-import { Color, GeomItem, Material, Circle } from '@zeainc/zea-engine'
+import { Color, GeomItem, Material, Circle, Xfo, TreeItem } from '@zeainc/zea-engine'
 import { UndoRedoManager } from '../../../UndoRedo/index'
 import CreateGeomChange from './CreateGeomChange'
 
@@ -11,7 +11,6 @@ import CreateGeomChange from './CreateGeomChange'
  * @extends CreateGeomChange
  */
 class CreateCircleChange extends CreateGeomChange {
-  // TODO: add lineThickness to circle or parent class
   circle: Circle = new Circle(0, 64)
   geomItem
   /**
@@ -20,7 +19,7 @@ class CreateCircleChange extends CreateGeomChange {
    * @param {TreeItem} parentItem - The parentItem value.
    * @param {Xfo} xfo - The xfo value.
    */
-  constructor(parentItem, xfo) {
+  constructor(parentItem: TreeItem, xfo: Xfo) {
     super('CreateCircle')
 
     const material = new Material('circle', 'FatLinesShader')
@@ -38,7 +37,7 @@ class CreateCircleChange extends CreateGeomChange {
    *
    * @param {object} updateData - The updateData param.
    */
-  update(updateData) {
+  update(updateData: Record<any,any>) {
     this.circle.radiusParam.value = updateData.radius
     this.emit('updated', updateData)
   }
@@ -48,7 +47,7 @@ class CreateCircleChange extends CreateGeomChange {
    *
    * @return {Record<any, any>} - The return value.
    */
-  toJSON() {
+  toJSON(): Record<any, any> {
     const j: Record<any, any> = super.toJSON()
     j.radius = this.circle.radiusParam.value
     return j
@@ -59,7 +58,7 @@ class CreateCircleChange extends CreateGeomChange {
    *
    * @param {object} j - The j param.
    */
-  updateFromJSON(j) {
+  updateFromJSON(j: Record<any, any>) {
     console.log('CreateCircleChange:', j)
     if (j.radius) this.circle.getParameter('Radius').setValue(j.radius)
   }

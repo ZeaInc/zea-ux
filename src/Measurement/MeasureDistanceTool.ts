@@ -1,5 +1,5 @@
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
-import { Ray, Vec3, Color, ColorParameter, BaseTool } from '@zeainc/zea-engine'
+import { Ray, Vec3, Color, ColorParameter, BaseTool, TreeItem } from '@zeainc/zea-engine'
 import { MeasureDistance } from './MeasureDistance'
 import { MeasurementChange } from './MeasurementChange'
 import { AppData } from '../../types/temp'
@@ -9,14 +9,15 @@ import { AppData } from '../../types/temp'
  * @extends {BaseTool}
  */
 class MeasureDistanceTool extends BaseTool {
-  colorParam
   appData: AppData
-  measurementChange
-  highlightedItemA
-  highlightedItemB
-  stage
-  measurement
-  prevCursor
+  colorParam: ColorParameter
+
+  measurement: MeasureDistance
+  measurementChange: MeasurementChange
+  highlightedItemA: TreeItem
+  highlightedItemB: TreeItem
+  stage: number
+  prevCursor: string
   /**
    * Creates an instance of MeasureDistanceTool.
    *
@@ -56,7 +57,7 @@ class MeasureDistanceTool extends BaseTool {
     }
 
     if (this.stage != 0) {
-      const parentItem = this.measurement.getOwner()
+      const parentItem = <TreeItem>this.measurement.getOwner()
       parentItem.removeChild(parentItem.getChildIndex(this.measurement))
       this.measurement = null
 
