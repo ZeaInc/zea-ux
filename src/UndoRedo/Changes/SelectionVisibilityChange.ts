@@ -1,5 +1,6 @@
 import UndoRedoManager from '../UndoRedoManager'
 import Change from '../Change'
+import { TreeItem } from '@zeainc/zea-engine'
 
 /**
  * Class representing a change of visibility state for selected items.
@@ -7,8 +8,8 @@ import Change from '../Change'
  * @extends Change
  */
 class SelectionVisibilityChange extends Change {
-  selection
-  state
+  selection: Set<TreeItem>
+  state: boolean
   /**
    * Create a toggle selection visibility.
    *
@@ -25,14 +26,14 @@ class SelectionVisibilityChange extends Change {
   /**
    * Restores previous visibility status of the selected items
    */
-  undo() {
+  undo(): void {
     this._changeItemsVisibility(!this.state)
   }
 
   /**
    * Recreates previous visibility status of the selected items
    */
-  redo() {
+  redo(): void {
     this._changeItemsVisibility(this.state)
   }
 
@@ -42,7 +43,7 @@ class SelectionVisibilityChange extends Change {
    * @param {boolean} state - The state param.
    * @private
    */
-  _changeItemsVisibility(state) {
+  _changeItemsVisibility(state: boolean) {
     for (const treeItem of this.selection) {
       treeItem.getParameter('Visible').setValue(state)
     }
