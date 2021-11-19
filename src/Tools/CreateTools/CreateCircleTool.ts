@@ -1,6 +1,7 @@
 import CreateCircleChange from './Change/CreateCircleChange'
 import CreateGeomTool from './CreateGeomTool'
 import { UndoRedoManager } from '../../UndoRedo/index'
+import { AppData } from '../../../types/temp'
 
 /**
  * Tool for creating a circle geometry.
@@ -11,12 +12,12 @@ import { UndoRedoManager } from '../../UndoRedo/index'
  * @extends CreateGeomTool
  */
 class CreateCircleTool extends CreateGeomTool {
+  appData: AppData
   change
   parentItem
   xfo
   stage
   radius
-  appData
   /**
    * Create a create circle tool.
    * @param {object} appData - The appData value.

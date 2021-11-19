@@ -2,6 +2,7 @@ import { Quat, Vec3 } from '@zeainc/zea-engine'
 import CreateGeomTool from './CreateGeomTool'
 import CreateCuboidChange from './Change/CreateCuboidChange'
 import { UndoRedoManager } from '../../UndoRedo/index'
+import { AppData } from '../../../types/temp'
 
 /**
  * Tool for creating Cuboid geometry.
@@ -26,7 +27,7 @@ class CreateCuboidTool extends CreateGeomTool {
    *
    * @param {object} appData - The appData value.
    */
-  constructor(appData) {
+  constructor(appData: AppData) {
     super(appData)
   }
 

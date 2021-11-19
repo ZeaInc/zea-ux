@@ -2,6 +2,7 @@ import { BooleanParameter } from '@zeainc/zea-engine'
 import CreateLineTool from './CreateLineTool'
 import CreateFreehandLineChange from './Change/CreateFreehandLineChange'
 import { UndoRedoManager } from '../../UndoRedo/index'
+import { AppData } from '../../../types/temp'
 
 /**
  * Tool for creating a free hand line.
@@ -28,7 +29,7 @@ class CreateFreehandLineTool extends CreateLineTool {
    *
    * @param {object} appData - The appData value.
    */
-  constructor(appData) {
+  constructor(appData: AppData) {
     super(appData)
 
     this.mp = this.addParameter(new BooleanParameter('Modulate Thickness By Stroke Speed', false))

@@ -2,6 +2,7 @@ import { NumberParameter } from '@zeainc/zea-engine'
 import CreateGeomTool from './CreateGeomTool'
 import CreateLineChange from './Change/CreateLineChange'
 import { UndoRedoManager } from '../../UndoRedo/index'
+import { AppData } from '../../../types/temp'
 
 /**
  * Tool for creating a line tool.
@@ -20,7 +21,7 @@ class CreateLineTool extends CreateGeomTool {
    * Create a create line tool.
    * @param {object} appData - The appData value.
    */
-  constructor(appData) {
+  constructor(appData: AppData) {
     super(appData)
 
     this.lineThickness = this.addParameter(new NumberParameter('LineThickness', 0.01, [0, 0.1])) // 1cm.

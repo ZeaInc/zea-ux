@@ -2,6 +2,7 @@ import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 import { Ray, Vec3, Color, ColorParameter, BaseTool } from '@zeainc/zea-engine'
 import { MeasurementChange } from './MeasurementChange'
 import { MeasureDistance } from './MeasureDistance'
+import { AppData } from '../../types/temp'
 /**
  * UI Tool for measurements
  *
@@ -9,7 +10,7 @@ import { MeasureDistance } from './MeasureDistance'
  */
 class MeasureRadiusTool extends BaseTool {
   colorParam = new ColorParameter('Color', new Color('#F9CE03'))
-  appData
+  appData: AppData
   highlightedItemA = null
   prevCursor
   dragging
