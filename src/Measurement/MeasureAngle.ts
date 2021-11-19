@@ -99,25 +99,25 @@ class MeasureAngle extends TreeItem {
     this.markerB.addChild(new GeomItem('Line', line, this.lineMaterial), false)
 
     this.label = new Label('Distance')
-    this.label.getParameter('FontSize').setValue(20)
-    this.label.getParameter('BackgroundColor').setValue(this.colorParam.getValue())
-    this.label.getParameter('Text').setValue(`${(angle / (Math.PI / 180)).toFixed(3)} °`)
+    this.label.fontSizeParam.value = 20
+    this.label.backgroundColorParam.value = this.colorParam.getValue()
+    this.label.textParam.value = `${(angle / (Math.PI / 180)).toFixed(3)} °`
 
     this.billboard = new BillboardItem('DistanceBillboard', this.label)
     this.billboard.localXfoParam.value = new Xfo()
-    this.billboard.getParameter('PixelsPerMeter').setValue(1500)
-    this.billboard.getParameter('AlignedToCamera').setValue(true)
-    this.billboard.getParameter('DrawOnTop').setValue(true)
-    this.billboard.getParameter('FixedSizeOnscreen').setValue(true)
-    this.billboard.getParameter('Alpha').setValue(1)
+    this.billboard.pixelsPerMeterParam.value = 1500
+    this.billboard.alignedToCameraParam.value = true
+    this.billboard.drawOnTopParam.value = true
+    this.billboard.fixedSizeOnscreenParam.value = true
+    this.billboard.alphaParam.value = 1
 
     this.addChild(this.billboard)
 
     this.colorParam.on('valueChanged', () => {
       const color = this.colorParam.getValue()
       this.markerMaterial.getParameter('BaseColor').setValue(color)
-      this.lineMaterial.getParameter('BaseColor').setValue(color)
-      this.label.getParameter('BackgroundColor').setValue(color)
+      this.lineMaterial.baseColorParam.value = color
+      this.label.backgroundColorParam.value = color
     })
 
     const labelXfo = new Xfo()
