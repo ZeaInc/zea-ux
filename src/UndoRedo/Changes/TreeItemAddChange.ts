@@ -58,12 +58,11 @@ class TreeItemAddChange extends Change {
   /**
    * Restores undone `TreeItem`.
    */
-  redo() {
+  redo(): void {
     // Now re-attach all the detached operators.
     if (this.treeItem instanceof Operator) {
       const op = this.treeItem
       op.reattach()
-
     } else if (this.treeItem instanceof TreeItem) {
       this.treeItem.traverse((subTreeItem) => {
         if (subTreeItem instanceof Operator) {
@@ -82,7 +81,7 @@ class TreeItemAddChange extends Change {
    * @param {object} context - The context treeItem
    * @return {object} - JSON object
    */
-  toJSON(context) {
+  toJSON(context: Record<any, any>) {
     const j = {
       name: this.name,
       treeItem: this.treeItem.toJSON(context),
