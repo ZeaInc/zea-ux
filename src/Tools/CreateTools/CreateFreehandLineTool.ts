@@ -1,4 +1,4 @@
-import { BooleanParameter } from '@zeainc/zea-engine'
+import { BooleanParameter, ColorParameter, NumberParameter, TreeItem, Vec3, Xfo } from '@zeainc/zea-engine'
 import CreateLineTool from './CreateLineTool'
 import CreateFreehandLineChange from './Change/CreateFreehandLineChange'
 import { UndoRedoManager } from '../../UndoRedo/index'
@@ -13,17 +13,17 @@ import { AppData } from '../../../types/temp'
  * @extends CreateLineTool
  */
 class CreateFreehandLineTool extends CreateLineTool {
-  mp
-  change
-  colorParam
-  lineThickness
-  parentItem
+  mp = new BooleanParameter('Modulate Thickness By Stroke Speed', false)
+  change: CreateFreehandLineChange
+  colorParam: ColorParameter
+  lineThickness: NumberParameter
+  parentItem: TreeItem
 
-  xfo
-  invXfo
-  stage
-  prevP
-  length
+  xfo: Xfo
+  invXfo: Xfo
+  stage: number
+  prevP: Vec3
+  length: number
   /**
    * Create a create freehand line tool.
    *
@@ -31,8 +31,7 @@ class CreateFreehandLineTool extends CreateLineTool {
    */
   constructor(appData: AppData) {
     super(appData)
-
-    this.mp = this.addParameter(new BooleanParameter('Modulate Thickness By Stroke Speed', false))
+    this.addParameter(this.mp)
   }
 
   /**

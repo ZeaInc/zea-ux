@@ -2,6 +2,7 @@ import CreateGeomTool from './CreateGeomTool'
 import CreateSphereChange from './Change/CreateSphereChange'
 import { UndoRedoManager } from '../../UndoRedo/index'
 import { AppData } from '../../../types/temp'
+import { Vec3, Xfo } from '@zeainc/zea-engine'
 
 /**
  * Tool for creating Sphere geometries.
@@ -12,9 +13,9 @@ import { AppData } from '../../../types/temp'
  * @extends CreateGeomTool
  */
 class CreateSphereTool extends CreateGeomTool {
-  change
-  xfo
-  radius
+  change: CreateSphereChange
+  xfo: Xfo
+  radius: number
   /**
    * Create a create sphere tool.
    *
@@ -29,7 +30,7 @@ class CreateSphereTool extends CreateGeomTool {
    *
    * @param {Xfo} xfo - The xfo param.
    */
-  createStart(xfo) {
+  createStart(xfo: Xfo): void {
     this.change = new CreateSphereChange(this.parentItem, xfo, this.colorParam.getValue())
 
     // During construction, make it note selectable.
@@ -46,7 +47,7 @@ class CreateSphereTool extends CreateGeomTool {
    *
    * @param {vec3} pt - The pt param.
    */
-  createMove(pt) {
+  createMove(pt: Vec3): void {
     this.radius = pt.distanceTo(this.xfo.tr)
     this.change.update({ radius: this.radius })
   }
@@ -56,7 +57,7 @@ class CreateSphereTool extends CreateGeomTool {
    *
    * @param {Vec3} pt - The pt param.
    */
-  createRelease(pt) {
+  createRelease(pt: Vec3): void {
     if (this.radius == 0) {
       UndoRedoManager.getInstance().cancel()
     }
