@@ -56,9 +56,9 @@ class XfoPlanarMovementHandle extends PlanarMovementHandle {
 
     this.sizeParam.on('valueChanged', () => {
       size = this.sizeParam.getValue()
-      handleGeom.getParameter('X').setValue(size)
-      handleGeom.getParameter('Y').setValue(size)
-      handleGeom.getParameter('Z').setValue(size * 0.02)
+      handleGeom.sizeXParam.value = size
+      handleGeom.sizeYParam.value = size
+      handleGeom.sizeZParam.value = size * 0.02
     })
 
     this.colorParam.on('valueChanged', () => {

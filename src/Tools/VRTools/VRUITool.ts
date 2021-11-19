@@ -113,7 +113,7 @@ class VRUITool extends BaseTool {
     this.uiController = uiController
     this.pointerController = pointerController
 
-    const uiLocalXfo = this.controllerUI.getParameter('LocalXfo').getValue()
+    const uiLocalXfo = this.controllerUI.localXfoParam.getValue()
     uiLocalXfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * -0.6)
     // uiLocalXfo.tr.set(0, -0.05, 0.08)
 

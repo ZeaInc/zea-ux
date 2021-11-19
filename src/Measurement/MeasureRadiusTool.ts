@@ -76,7 +76,7 @@ class MeasureRadiusTool extends BaseTool {
         switch (curveType) {
           case 'Circle': {
             const crvToPnt = hitPos.subtract(xfo.tr)
-            const radius = geomItem.getParameter('Radius').getValue() * xfo.sc.x
+            const radius = geomItem.radiusParam.getValue() * xfo.sc.x
             const zaxis = xfo.ori.getZaxis()
             crvToPnt.subtractInPlace(zaxis.scale(crvToPnt.dot(zaxis)))
             const length = crvToPnt.length()
@@ -96,7 +96,7 @@ class MeasureRadiusTool extends BaseTool {
             const zaxis = xfo.ori.getZaxis()
             axisPos = xfo.tr.add(zaxis.scale(srfToPnt.dot(zaxis)))
 
-            const radius = geomItem.getParameter('Radius').getValue() * xfo.sc.x
+            const radius = geomItem.radiusParam.getValue() * xfo.sc.x
             const axisToPnt = hitPos.subtract(axisPos)
             const length = axisToPnt.length()
             edgePos = axisPos.add(axisToPnt.scale(radius / length))

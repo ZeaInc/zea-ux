@@ -48,7 +48,7 @@ class SelectionManager extends EventEmitter {
       this.xfoHandle = new XfoHandle(size, thickness)
       this.xfoHandle.setTargetParam(this.selectionGroup.globalXfoParam, false)
       this.xfoHandle.setVisible(false)
-      this.xfoHandle.getParameter('HighlightColor').setValue(new Color(1, 1, 0))
+      this.xfoHandle.highlightColorParam.value = new Color(1, 1, 0)
       this.xfoHandleVisible = true
 
       this.selectionGroup.addChild(this.xfoHandle)
@@ -82,7 +82,7 @@ class SelectionManager extends EventEmitter {
    */
   setXfoMode(mode: number): void {
     if (this.xfoHandle) {
-      this.selectionGroup.getParameter('InitialXfoMode').setValue(mode)
+      this.selectionGroup.initialXfoModeParam.value =(mode)
     }
   }
 
