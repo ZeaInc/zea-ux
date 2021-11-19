@@ -1,4 +1,4 @@
-import { Color, Rect, Material, GeomItem } from '@zeainc/zea-engine'
+import { Color, Rect, Material, GeomItem, TreeItem, Xfo } from '@zeainc/zea-engine'
 import UndoRedoManager from '../../../UndoRedo/UndoRedoManager'
 import CreateGeomChange from './CreateGeomChange'
 
@@ -11,7 +11,6 @@ import CreateGeomChange from './CreateGeomChange'
  * @extends CreateGeomChange
  */
 class CreateRectChange extends CreateGeomChange {
-  // TODO: add lineThickness to rect
   rect: Rect = new Rect(0, 0)
   /**
    * Create a create rect change.
@@ -19,7 +18,7 @@ class CreateRectChange extends CreateGeomChange {
    * @param {TreeItem} parentItem - The parentItem value.
    * @param {Xfo} xfo - The xfo value.
    */
-  constructor(parentItem, xfo) {
+  constructor(parentItem: TreeItem, xfo: Xfo) {
     super('CreateRect')
 
     const material = new Material('circle', 'FatLinesShader')
@@ -36,7 +35,7 @@ class CreateRectChange extends CreateGeomChange {
    *
    * @param {object} updateData - The updateData param.
    */
-  update(updateData) {
+  update(updateData: Record<any,any>) {
     if (updateData.baseSize) {
       this.rect.getParameter('X').setValue(updateData.baseSize[0])
       this.rect.getParameter('Y').setValue(updateData.baseSize[1])

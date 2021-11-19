@@ -2,6 +2,7 @@ import CreateCircleChange from './Change/CreateCircleChange'
 import CreateGeomTool from './CreateGeomTool'
 import { UndoRedoManager } from '../../UndoRedo/index'
 import { AppData } from '../../../types/temp'
+import { TreeItem, Xfo } from '@zeainc/zea-engine'
 
 /**
  * Tool for creating a circle geometry.
@@ -13,11 +14,11 @@ import { AppData } from '../../../types/temp'
  */
 class CreateCircleTool extends CreateGeomTool {
   appData: AppData
-  change
-  parentItem
-  xfo
-  stage
-  radius
+  change: CreateCircleChange
+  parentItem: TreeItem
+  xfo: Xfo
+  stage: number
+  radius: number
   /**
    * Create a create circle tool.
    * @param {object} appData - The appData value.

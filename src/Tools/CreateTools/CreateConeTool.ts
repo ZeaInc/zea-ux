@@ -1,4 +1,4 @@
-import { Quat, Vec3 } from '@zeainc/zea-engine'
+import { ColorParameter, GeomItem, Quat, TreeItem, Vec3, Xfo } from '@zeainc/zea-engine'
 import CreateConeChange from './Change/CreateConeChange'
 import { CreateGeomTool } from './CreateGeomTool'
 import { UndoRedoManager } from '../../UndoRedo/index'
@@ -13,15 +13,15 @@ import { AppData } from '../../../types/temp'
  * @extends CreateGeomTool
  */
 class CreateConeTool extends CreateGeomTool {
-  parentItem
-  xfo
-  invXfo
-  change
-  colorParam
-  stage 
-  _radius
-  _height 
-  constructionPlane
+  parentItem: TreeItem
+  xfo: Xfo
+  invXfo: Xfo
+  change: ParameterValueChange
+  colorParam: ColorParameter
+  stage: number
+  _radius: number
+  _height: number
+  constructionPlane: GeomItem
   /**
    * Create a create cone tool.
    * @param {object} appData - The appData value.
