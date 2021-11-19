@@ -1,4 +1,6 @@
-const transformVertices = (geometry, xfo) => {
+import { Xfo } from "@zeainc/zea-engine"
+
+const transformVertices = (geometry, xfo: Xfo) => {
   geometry.update()
 
   const positions = geometry.getVertexAttribute('positions')

@@ -1,4 +1,4 @@
-import { Color, Xfo, GeomItem, Material, Sphere } from '@zeainc/zea-engine'
+import { Color, Xfo, GeomItem, Material, Sphere, Vec3, Parameter, XfoParameter } from '@zeainc/zea-engine'
 import Handle from './Handle'
 import './Shaders/HandleShader'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
@@ -10,14 +10,15 @@ import { ParameterValueChange } from '../UndoRedo/Changes/ParameterValueChange'
  * @extends Handle
  */
 class SphericalRotationHandle extends Handle {
-  param
-  radius
-  maskMat
-  baseXfo
-  deltaXfo
-  change
-  vec0
-  offsetXfo
+  param: Parameter<unknown>
+  radius: number
+  vec0: Vec3
+  baseXfo: Xfo
+  deltaXfo: Xfo
+  offsetXfo: Xfo
+  change: ParameterValueChange
+  maskMat: Material
+  
   /**
    * Create an axial rotation scene widget.
    *
@@ -25,7 +26,7 @@ class SphericalRotationHandle extends Handle {
    * @param {number} radius - The radius value.
    * @param {Color} color - The color value.
    */
-  constructor(name, radius, color = new Color()) {
+  constructor(name: string, radius: number, color = new Color()) {
     super(name)
 
     this.radius = radius
@@ -68,7 +69,7 @@ class SphericalRotationHandle extends Handle {
    *
    * @return {Parameter} - returns handle's target global Xfo.
    */
-  getTargetParam() {
+  getTargetParam(): XfoParameter | Parameter<unknown> {
     return this.param ? this.param : this.globalXfoParam
   }
 
@@ -127,7 +128,7 @@ class SphericalRotationHandle extends Handle {
     this.baseXfo.sc.set(1, 1, 1)
     this.deltaXfo = new Xfo()
     const param = this.getTargetParam()
-    this.offsetXfo = this.baseXfo.inverse().multiply(param.getValue())
+    this.offsetXfo = this.baseXfo.inverse().multiply(<Xfo>param.value)
 
     this.vec0 = event.grabPos.subtract(this.baseXfo.tr)
     this.vec0.normalizeInPlace()
