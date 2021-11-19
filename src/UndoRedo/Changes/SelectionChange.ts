@@ -1,5 +1,6 @@
 import UndoRedoManager from '../UndoRedoManager'
 import Change from '../Change'
+import { SelectionManager } from '../..'
 
 /**
  * Represents a `Change` class for storing `Selection` values.
@@ -7,7 +8,7 @@ import Change from '../Change'
  * @extends Change
  */
 class SelectionChange extends Change {
-  __selectionManager
+  __selectionManager: SelectionManager
   __prevSelection
   __newSelection
   /**
@@ -44,7 +45,7 @@ class SelectionChange extends Change {
    * @param {object} context - The appData param.
    * @return {object} The return value.
    */
-  toJSON(context) {
+  toJSON(context: Record<any, any>): Record<any, any> {
     const j: Record<any, any> = super.toJSON(context)
 
     const itemPaths = []
@@ -61,7 +62,7 @@ class SelectionChange extends Change {
    * @param {object} j - The j param.
    * @param {object} context - The context param.
    */
-  fromJSON(j, context) {
+  fromJSON(j: Record<any, any>, context: Record<any, any>) {
     super.fromJSON(j, context)
 
     this.__selectionManager = context.appData.selectionManager
