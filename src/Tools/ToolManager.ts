@@ -1,5 +1,6 @@
 /* eslint-disable require-jsdoc */
 import { BaseTool } from '@zeainc/zea-engine'
+import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
 
 /**
  * @extends BaseTool
@@ -66,7 +67,7 @@ class ToolManager extends BaseTool {
    *
    * @param {MouseEvent} event - The event param.
    */
-  onPointerDown(event) {
+  onPointerDown(event: ZeaMouseEvent) {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
       const tool = this.toolStack[i]
       if (tool.onPointerDown) {
@@ -81,7 +82,7 @@ class ToolManager extends BaseTool {
    *
    * @param {MouseEvent} event - The event param.
    */
-  onPointerMove(event) {
+  onPointerMove(event: ZeaMouseEvent) {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
       const tool = this.toolStack[i]
       if (tool.onPointerMove) {
@@ -96,7 +97,7 @@ class ToolManager extends BaseTool {
    *
    * @param {MouseEvent} event - The event param.
    */
-  onPointerUp(event) {
+  onPointerUp(event: ZeaMouseEvent) {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
       const tool = this.toolStack[i]
       if (tool.onPointerUp) {
@@ -111,7 +112,7 @@ class ToolManager extends BaseTool {
    *
    * @param {MouseEvent} event - The event param.
    */
-  onPointerDoublePress(event) {
+  onPointerDoublePress(event: ZeaMouseEvent) {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
       const tool = this.toolStack[i]
       if (tool.onPointerDoublePress) {
@@ -126,7 +127,7 @@ class ToolManager extends BaseTool {
    *
    * @param {MouseEvent} event - The event param.
    */
-  onWheel(event) {
+  onWheel(event: ZeaMouseEvent) {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
       const tool = this.toolStack[i]
       if (tool.onWheel) {
@@ -144,6 +145,7 @@ class ToolManager extends BaseTool {
    *
    * @param {KeyboardEvent} event - The event param.
    */
+  //TODO: keyboard event?
   onKeyPressed(event) {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
       const tool = this.toolStack[i]

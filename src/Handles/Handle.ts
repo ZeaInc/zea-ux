@@ -1,6 +1,8 @@
-import { TreeItem, Ray, ColorParameter, Color, Parameter } from '@zeainc/zea-engine' // , PointerEvent
+import { TreeItem, Ray, ColorParameter, Color, Parameter, Vec3 } from '@zeainc/zea-engine' // , PointerEvent
+import { XRControllerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/XRControllerEvent'
 import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
 import { ZeaPointerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaPointerEvent'
+import { ZeaWheelEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaWheelEvent'
 
 /**
  * A Handle is an UI widget that lives in the scene, it translates a series of pointer events into a higher level interaction.
@@ -17,6 +19,15 @@ class Handle extends TreeItem {
   captured = false
   colorParam = new ColorParameter('Color', new Color())
   highlightColorParam = new ColorParameter('HighlightColor', new Color(1, 1, 1))
+
+  grabPos: Vec3
+  holdPos: Vec3
+  holdDist: number
+  value: number | Vec3 | number[]
+  delta: number | Vec3 | number[]
+  releasePos: Vec3
+  changedTouches: boolean
+  preventDefault: any
   /**
    * Creates an instance of Handle.
    *
@@ -61,7 +72,7 @@ class Handle extends TreeItem {
    *
    * @param {PointerEvent} event - The event param.
    */
-  onPointerEnter(event) {
+  onPointerEnter(event: ZeaPointerEvent) {
     this.highlight()
   }
 
@@ -70,7 +81,7 @@ class Handle extends TreeItem {
    *
    * @param {PointerEvent} event - The event param.
    */
-  onPointerLeave(event) {
+  onPointerLeave(event: ZeaPointerEvent) {
     this.unhighlight()
   }
 
@@ -79,19 +90,19 @@ class Handle extends TreeItem {
    *
    * @param {PointerEvent} event - The event param.
    */
-  onPointerDown(event) {
+  onPointerDown(event: ZeaPointerEvent) {
     event.setCapture(this)
     event.stopPropagation()
     this.captured = true
 
-    if (event.changedTouches) {
+    if (this.changedTouches) {
       this.highlight()
     }
 
     if (event.pointerType == 'mouse' || event.pointerType == 'touch') {
-      this.handlePointerDown(event)
+      this.handlePointerDown(<ZeaMouseEvent>event)
     } else if (event.pointerType == 'xr') {
-      this.onVRControllerButtonDown(event)
+      this.onVRControllerButtonDown(<XRControllerEvent>event)
     }
   }
 
@@ -100,17 +111,18 @@ class Handle extends TreeItem {
    *
    * @param {PointerEvent} event - The event param.
    */
-  onPointerMove(event) {
+  onPointerMove(event: ZeaPointerEvent) {
     if (this.captured) {
       event.stopPropagation()
       if (event.pointerType == 'mouse' || event.pointerType == 'touch') {
-        this.handlePointerMove(event)
+        this.handlePointerMove(<ZeaMouseEvent>event)
       } else if (event.pointerType == 'xr') {
-        this.onVRPoseChanged(event)
+        this.onVRPoseChanged(<XRControllerEvent>event)
       }
     }
 
-    event.preventDefault()
+    // TODO: (check) used to be event.preventDefault()
+    this.preventDefault()
   }
 
   /**
@@ -118,18 +130,18 @@ class Handle extends TreeItem {
    *
    * @param {PointerEvent} event - The event param.
    */
-  onPointerUp(event) {
+  onPointerUp(event: ZeaPointerEvent) {
     if (this.captured) {
       event.releaseCapture()
       event.stopPropagation()
       this.captured = false
-      if (event.changedTouches) {
+      if (this.changedTouches) {
         this.unhighlight()
       }
       if (event.pointerType == 'mouse' || event.pointerType == 'touch') {
-        this.handlePointerUp(event)
+        this.handlePointerUp(<ZeaMouseEvent>event)
       } else if (event.pointerType == 'xr') {
-        this.onVRControllerButtonUp(event)
+        this.onVRControllerButtonUp(<XRControllerEvent>event)
       }
     }
   }
@@ -139,7 +151,7 @@ class Handle extends TreeItem {
    *
    * @param {WheelEvent} event - The event param.
    */
-  onWheel(event) {}
+  onWheel(event: ZeaWheelEvent) {}
 
   /**
    * Handles mouse down interaction with the handle.
@@ -147,11 +159,11 @@ class Handle extends TreeItem {
    * @param {MouseEvent} event - The event param.
    * @return {boolean} - The return value.
    */
-  handlePointerDown(event) {
+  handlePointerDown(event: ZeaMouseEvent) {
     this.gizmoRay = this.getManipulationPlane()
     const ray = event.pointerRay
     const dist = ray.intersectRayPlane(this.gizmoRay)
-    event.grabPos = ray.pointAtDist(dist)
+    this.grabPos = ray.pointAtDist(dist)
     this.onDragStart(event)
   }
 
@@ -161,10 +173,10 @@ class Handle extends TreeItem {
    * @param {MouseEvent} event - The event param
    * @return { boolean } - The return value
    */
-  handlePointerMove(event) {
+  handlePointerMove(event: ZeaMouseEvent) {
     const ray = event.pointerRay
     const dist = ray.intersectRayPlane(this.gizmoRay)
-    event.holdPos = ray.pointAtDist(dist)
+    this.holdPos = ray.pointAtDist(dist)
     this.onDrag(event)
   }
 
@@ -174,11 +186,11 @@ class Handle extends TreeItem {
    * @param {MouseEvent} event - The event param.
    * @return {boolean} - The return value.
    */
-  handlePointerUp(event) {
+  handlePointerUp(event: ZeaMouseEvent) {
     const ray = event.pointerRay
     if (ray) {
       const dist = ray.intersectRayPlane(this.gizmoRay)
-      event.releasePos = ray.pointAtDist(dist)
+      this.releasePos = ray.pointAtDist(dist)
     }
 
     this.onDragEnd(event)
@@ -193,14 +205,14 @@ class Handle extends TreeItem {
    * @param {object} event - The event param.
    * @return {boolean} The return value.
    */
-  onVRControllerButtonDown(event) {
+  onVRControllerButtonDown(event: XRControllerEvent) {
     this.activeController = event.controller
     const xfo = this.activeController.getTipXfo().clone()
 
     const gizmoRay = this.getManipulationPlane()
     const offset = xfo.tr.subtract(gizmoRay.start)
     const grabPos = xfo.tr.subtract(gizmoRay.dir.scale(offset.dot(gizmoRay.dir)))
-    event.grabPos = grabPos
+    this.grabPos = grabPos
     this.onDragStart(event)
   }
 
@@ -210,13 +222,13 @@ class Handle extends TreeItem {
    * @param {object} event - The event param.
    * @return {boolean} - The return value.
    */
-  onVRPoseChanged(event) {
+  onVRPoseChanged(event: XRControllerEvent) {
     if (this.activeController) {
       const xfo = this.activeController.getTipXfo()
       const gizmoRay = this.getManipulationPlane()
       const offset = xfo.tr.subtract(gizmoRay.start)
       const holdPos = xfo.tr.subtract(gizmoRay.dir.scale(offset.dot(gizmoRay.dir)))
-      event.holdPos = holdPos
+      this.holdPos = holdPos
       this.onDrag(event)
     }
   }
@@ -227,7 +239,7 @@ class Handle extends TreeItem {
    * @param {object} event - The event param.
    * @return {boolean} - The return value.
    */
-  onVRControllerButtonUp(event) {
+  onVRControllerButtonUp(event: XRControllerEvent) {
     if (this.activeController == event.controller) {
       const xfo = this.activeController.getTipXfo()
       // TODO: check this.onDragEnd(event, xfo.tr)

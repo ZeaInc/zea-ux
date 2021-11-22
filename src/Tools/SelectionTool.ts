@@ -4,6 +4,9 @@ import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 import Handle from '../Handles/Handle'
 import { AppData } from '../../types/temp'
 import { SelectionManager } from '..'
+import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
+import { ZeaTouchEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaTouchEvent'
+import { XRControllerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/XRControllerEvent'
 
 /**
  * Class representing a selection tool.
@@ -116,7 +119,7 @@ class SelectionTool extends BaseTool {
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    * @private
    */
-  onPointerDoublePress(event) {}
+  onPointerDoublePress(event: ZeaMouseEvent | ZeaTouchEvent) {}
 
   /**
    * Event fired when a pointing device button is pressed while the pointer is over the tool.
@@ -124,7 +127,7 @@ class SelectionTool extends BaseTool {
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    * @return {boolean} The return value.
    */
-  onPointerDown(event) {
+  onPointerDown(event: ZeaMouseEvent | ZeaTouchEvent) {
     if (event.pointerType === 'touch' || (event.button == 0 && !event.altKey)) {
       this.pointerDownPos = event.pointerPos
       this.dragging = false
@@ -139,7 +142,7 @@ class SelectionTool extends BaseTool {
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    * @return {boolean} The return value.
    */
-  onPointerMove(event) {
+  onPointerMove(event: ZeaMouseEvent | ZeaTouchEvent) {
     if (this.pointerDownPos) {
       const delta = this.pointerDownPos.subtract(event.pointerPos)
       const dist = delta.length()
@@ -161,7 +164,7 @@ class SelectionTool extends BaseTool {
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    * @return {boolean} The return value.
    */
-  onPointerUp(event) {
+  onPointerUp(event: ZeaMouseEvent | ZeaTouchEvent) {
     if (this.pointerDownPos) {
       // event.viewport.renderGeomDataFbo();
       if (this.dragging) {
@@ -240,7 +243,7 @@ class SelectionTool extends BaseTool {
    * @param {object} event - The event param.
    * @return {boolean} The return value.
    */
-  onVRControllerButtonDown(event) {
+  onVRControllerButtonDown(event: XRControllerEvent) {
     if (event.button == 1) {
       if (!this.selectionManager) throw 'Please set the Selection Manager on the Selection Tool before using it.'
       const intersectionData = event.controller.getGeomItemAtTip()

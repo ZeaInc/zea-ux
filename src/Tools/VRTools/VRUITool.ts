@@ -12,6 +12,8 @@ import {
   BaseTool,
   Vec3Attribute,
 } from '@zeainc/zea-engine'
+import { XRControllerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/XRControllerEvent'
+import { XRPoseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/XRPoseEvent'
 import { AppData } from '../../../types/temp'
 import VRControllerUI from './VRControllerUI'
 
@@ -266,7 +268,7 @@ class VRUITool extends BaseTool {
    * The onVRControllerButtonDown method.
    * @param {object} event - The event param.
    */
-  onPointerDown(event) {
+  onPointerDown(event: XRControllerEvent) {
     if (event.pointerType === POINTER_TYPES.xr) {
       if (event.controller == this.pointerController && this.uiOpen) {
         this.__triggerHeld = true
@@ -288,7 +290,7 @@ class VRUITool extends BaseTool {
    * The onVRControllerButtonUp method.
    * @param {object} event - The event param.
    */
-  onPointerUp(event) {
+  onPointerUp(event: XRControllerEvent) {
     if (event.pointerType === POINTER_TYPES.xr) {
       if (event.controller == this.pointerController && this.uiOpen) {
         this.__triggerHeld = false
@@ -311,7 +313,7 @@ class VRUITool extends BaseTool {
    * The onVRPoseChanged method.
    * @param {object} event - The event param.
    */
-  onPointerMove(event) {
+  onPointerMove(event: XRPoseEvent) {
     if (event.pointerType === POINTER_TYPES.xr) {
       if (!this.uiOpen) {
         if (
@@ -357,7 +359,7 @@ class VRUITool extends BaseTool {
             // Remove ourself from the system.
             this.closeUI()
             if (event.getCapture() == this) {
-              event.releaseCapture(this)
+              event.releaseCapture()
             }
             return false
           }

@@ -2,6 +2,9 @@ import Handle from './Handle'
 import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 import { Parameter, Vec3, Xfo } from '@zeainc/zea-engine'
+import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
+import { ZeaTouchEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaTouchEvent'
+import { XRControllerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/XRControllerEvent'
 
 /**
  * Class representing a planar movement scene widget.
@@ -57,8 +60,8 @@ class PlanarMovementHandle extends Handle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragStart(event) {
-    this.grabPos = event.grabPos
+  onDragStart(event: ZeaMouseEvent | ZeaTouchEvent) {
+    this.grabPos = this.grabPos
     const param = this.getTargetParam()
     this.baseXfo = <Xfo>param.value
 
@@ -71,8 +74,8 @@ class PlanarMovementHandle extends Handle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDrag(event) {
-    const dragVec = event.holdPos.subtract(this.grabPos)
+  onDrag(event: ZeaMouseEvent | ZeaTouchEvent) {
+    const dragVec = this.holdPos.subtract(this.grabPos)
 
     const newXfo = this.baseXfo.clone()
     newXfo.tr.addInPlace(dragVec)
@@ -87,7 +90,7 @@ class PlanarMovementHandle extends Handle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragEnd(event) {
+  onDragEnd(event: ZeaMouseEvent | ZeaTouchEvent) {
     this.change = null
   }
 
@@ -100,7 +103,7 @@ class PlanarMovementHandle extends Handle {
    * @param {object} event - The event param.
    * @return {boolean} The return value.
    */
-  onVRControllerButtonDown(event) {
+  onVRControllerButtonDown(event: XRControllerEvent) {
     if (this.fullXfoManipulationInVR) {
       this.activeController = event.controller
       const xfo = this.activeController.getTipXfo()
@@ -116,7 +119,7 @@ class PlanarMovementHandle extends Handle {
    *
    * @param {object} event - The event param.
    */
-  onVRPoseChanged(event) {
+  onVRPoseChanged(event: XRControllerEvent) {
     if (this.fullXfoManipulationInVR) {
       const xfo = this.activeController.getTipXfo()
       const newXfo = xfo.multiply(this.grabOffset)
@@ -138,7 +141,7 @@ class PlanarMovementHandle extends Handle {
    *
    * @param {object} event - The event param.
    */
-  onVRControllerButtonUp(event) {
+  onVRControllerButtonUp(event: XRControllerEvent) {
     if (this.fullXfoManipulationInVR) {
       this.change = null
     } else {

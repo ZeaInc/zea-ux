@@ -1,4 +1,6 @@
 import { GeomItem, Registry, TreeItem } from '@zeainc/zea-engine'
+import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
+import { ZeaTouchEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaTouchEvent'
 import { ScreenSpaceMovementHandle } from '../Handles/ScreenSpaceMovementHandle'
 
 /**
@@ -13,14 +15,14 @@ class MeasurementHandle extends ScreenSpaceMovementHandle {
    * @param {MouseEvent|TouchEvent} event - The event param
    * @return {boolean} - The return value
    */
-  handlePointerMove(event) {
+  handlePointerMove(event: ZeaMouseEvent | ZeaTouchEvent) {
     const ray = event.pointerRay
     event.intersectionData = event.viewport.getGeomDataAtPos(event.pointerPos, event.pointerRay)
     if (event.intersectionData) {
-      event.holdPos = ray.start.add(ray.dir.scale(event.intersectionData.dist))
+      this.holdPos = ray.start.add(ray.dir.scale(event.intersectionData.dist))
     } else {
       const dist = ray.intersectRayPlane(this.gizmoRay)
-      event.holdPos = ray.pointAtDist(dist)
+      this.holdPos = ray.pointAtDist(dist)
     }
 
     this.onDrag(event)
@@ -32,7 +34,7 @@ class MeasurementHandle extends ScreenSpaceMovementHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragStart(event) {
+  onDragStart(event: ZeaMouseEvent | ZeaTouchEvent) {
     super.onDragStart(event)
     const owner = <TreeItem>this.getOwner()
     owner.setSelectable(false)
@@ -49,12 +51,12 @@ class MeasurementHandle extends ScreenSpaceMovementHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDrag(event) {
-    // const dragVec = event.holdPos.subtract(this.grabPos)
+  onDrag(event: ZeaMouseEvent | ZeaTouchEvent) {
+    // const dragVec = this.holdPos.subtract(this.grabPos)
 
     const newXfo = this.baseXfo.clone()
     // newXfo.tr.addInPlace(dragVec)
-    newXfo.tr = event.holdPos
+    newXfo.tr = this.holdPos
 
     this.change.update({
       value: newXfo,
@@ -66,7 +68,7 @@ class MeasurementHandle extends ScreenSpaceMovementHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragEnd(event) {
+  onDragEnd(event: ZeaMouseEvent | ZeaTouchEvent) {
     super.onDragEnd(event)
     const owner = <TreeItem>this.getOwner()
     owner.traverse((item) => {

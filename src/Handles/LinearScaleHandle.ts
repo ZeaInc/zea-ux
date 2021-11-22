@@ -4,6 +4,8 @@ import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
 import './Shaders/HandleShader'
 import transformVertices from './transformVertices'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
+import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
+import { ZeaTouchEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaTouchEvent'
 
 /**
  * Class representing a linear scale scene widget.
@@ -103,8 +105,7 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragStart(event) {
-    this.grabDist = event.grabDist
+  onDragStart(event: ZeaMouseEvent | ZeaTouchEvent) {
     this.oriXfo = this.globalXfoParam.value
     this.tmplocalXfo = this.localXfoParam.getValue()
     const param = this.getTargetParam()
@@ -119,11 +120,11 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDrag(event) {
-    // const dragVec = event.holdPos.subtract(this.grabPos);
+  onDrag(event: ZeaMouseEvent | ZeaTouchEvent) {
+    // const dragVec = this.holdPos.subtract(this.grabPos);
 
     const newXfo = this.baseXfo.clone()
-    const sc = event.holdDist / this.grabDist
+    const sc = this.holdDist / this.grabDist
     if (sc < 0.0001) return
 
     // const scAxis = this.oriXfo.ori.getZaxis();
@@ -151,7 +152,7 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragEnd(event) {
+  onDragEnd(event: ZeaMouseEvent | ZeaTouchEvent) {
     this.change = null
 
     this.tmplocalXfo.sc.set(1, 1, 1)
