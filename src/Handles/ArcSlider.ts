@@ -258,6 +258,13 @@ class ArcSlider extends BaseAxialRotationHandle {
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onDrag(event: ZeaPointerEvent): void {
+    if (event instanceof ZeaMouseEvent && (event.altKey || event.button !== 0 || !event.intersectionData)) {
+      return
+    }
+    if (event instanceof ZeaTouchEvent && (event.altKey || !event.intersectionData || event.touches.length > 1)) {
+      return
+    }
+ 
     const vec1 = this.holdPos.subtract(this.baseXfo.tr)
     vec1.normalizeInPlace()
 

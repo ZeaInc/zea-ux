@@ -5,6 +5,7 @@ import UndoRedoManager from '../UndoRedo/UndoRedoManager.js'
 import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
 import { ZeaTouchEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaTouchEvent'
 import { ZeaPointerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaPointerEvent'
+import { getPointerRay } from '../utility.js'
 
 /**
  * Class representing a planar movement scene widget.
@@ -21,7 +22,7 @@ class ScreenSpaceMovementHandle extends Handle {
    *
    * @param {string} name - The name value
    */
-  constructor(name?) {
+  constructor(name?: string) {
     super(name)
   }
 
@@ -31,7 +32,7 @@ class ScreenSpaceMovementHandle extends Handle {
    * @param {Parameter} param - The video param.
    * @param {boolean} track - The track param.
    */
-  setTargetParam(param, track = true) {
+  setTargetParam(param, track = true): void {
     this.param = param
     if (track) {
       const __updateGizmo = () => {
@@ -47,7 +48,7 @@ class ScreenSpaceMovementHandle extends Handle {
    *
    * @return {Parameter} - returns handle's target global Xfo.
    */
-  getTargetParam() {
+  getTargetParam(): Parameter<unknown> {
     return this.param ? this.param : this.globalXfoParam
   }
 
@@ -110,7 +111,7 @@ class ScreenSpaceMovementHandle extends Handle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragStart(event: ZeaMouseEvent | ZeaTouchEvent) {
+  onDragStart(event: ZeaPointerEvent) {
     this.grabPos = this.grabPos
     const param = this.getTargetParam()
     this.baseXfo = <Xfo>param.value
@@ -124,7 +125,7 @@ class ScreenSpaceMovementHandle extends Handle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDrag(event: ZeaMouseEvent | ZeaTouchEvent) {
+  onDrag(event: ZeaPointerEvent) {
     const dragVec = this.holdPos.subtract(this.grabPos)
 
     const newXfo = this.baseXfo.clone()
@@ -140,7 +141,7 @@ class ScreenSpaceMovementHandle extends Handle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragEnd(event: ZeaMouseEvent | ZeaTouchEvent) {
+  onDragEnd(event: ZeaPointerEvent) {
     this.change = null
   }
 }

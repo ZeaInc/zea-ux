@@ -1,7 +1,9 @@
 import { GeomItem, Registry, TreeItem } from '@zeainc/zea-engine'
 import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
+import { ZeaPointerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaPointerEvent'
 import { ZeaTouchEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaTouchEvent'
 import { ScreenSpaceMovementHandle } from '../Handles/ScreenSpaceMovementHandle'
+import { getPointerRay } from '../utility'
 
 /**
  *
@@ -15,9 +17,9 @@ class MeasurementHandle extends ScreenSpaceMovementHandle {
    * @param {MouseEvent|TouchEvent} event - The event param
    * @return {boolean} - The return value
    */
-  handlePointerMove(event: ZeaMouseEvent | ZeaTouchEvent) {
+  handlePointerMove(event: ZeaPointerEvent) {
     const ray = getPointerRay(event)
-    event.intersectionData = event.viewport.getGeomDataAtPos(event.pointerPos, event.pointerRay)
+    event.intersectionData = event.viewport.getGeomDataAtPos(event.pointerPos, ray)
     if (event.intersectionData) {
       this.holdPos = ray.start.add(ray.dir.scale(event.intersectionData.dist))
     } else {
@@ -51,7 +53,7 @@ class MeasurementHandle extends ScreenSpaceMovementHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDrag(event: ZeaMouseEvent | ZeaTouchEvent) {
+  onDrag(event: ZeaPointerEvent) {
     // const dragVec = this.holdPos.subtract(this.grabPos)
 
     const newXfo = this.baseXfo.clone()
@@ -68,7 +70,7 @@ class MeasurementHandle extends ScreenSpaceMovementHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragEnd(event: ZeaMouseEvent | ZeaTouchEvent) {
+  onDragEnd(event: ZeaPointerEvent) {
     super.onDragEnd(event)
     const owner = <TreeItem>this.getOwner()
     owner.traverse((item) => {

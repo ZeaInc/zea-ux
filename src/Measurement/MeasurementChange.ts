@@ -32,7 +32,7 @@ class MeasurementChange extends Change {
    * @param {object} data - An object containing potentially the start and end positions.
    * @memberof MeasurementChange
    */
-  update(data) {
+  update(data: Record<string,any>) {
     this.measurement.fromJSON(data.measurementData)
     this.emit('updated', data)
   }
@@ -82,7 +82,7 @@ class MeasurementChange extends Change {
    * @param {object} j - The j param.
    * @param {object} context - The appData param.
    */
-  fromJSON(j, context) {
+  fromJSON(j: Record<string,any>, context: Record<string,any>) {
     const sceneRoot = context.appData.scene.getRoot()
     const parentItem = sceneRoot.resolvePath(j.parentItemPath, 1)
     if (parentItem) {
