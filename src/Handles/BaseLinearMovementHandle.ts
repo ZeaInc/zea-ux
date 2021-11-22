@@ -32,7 +32,6 @@ class BaseLinearMovementHandle extends Handle {
     event.grabDist = this.grabDist
     event.grabPos = grabPos
     this.onDragStart(event)
-    return true
   }
 
   /**
@@ -66,7 +65,6 @@ class BaseLinearMovementHandle extends Handle {
     }
 
     this.onDragEnd(event)
-    return true
   }
 
   // ///////////////////////////////////
@@ -87,7 +85,6 @@ class BaseLinearMovementHandle extends Handle {
     const grabPos = this.gizmoRay.start.add(this.gizmoRay.dir.scale(this.grabDist))
     event.grabPos = grabPos
     this.onDragStart(event)
-    return true
   }
 
   /**
@@ -104,7 +101,6 @@ class BaseLinearMovementHandle extends Handle {
     event.holdPos = holdPos
     event.delta = dist - this.grabDist
     this.onDrag(event)
-    return true
   }
 
   /**
@@ -118,7 +114,6 @@ class BaseLinearMovementHandle extends Handle {
       // const xfo = this.activeController.getTipXfo()
       this.onDragEnd()
       this.activeController = undefined
-      return true
     }
   }
 }
