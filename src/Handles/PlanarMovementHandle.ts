@@ -109,7 +109,6 @@ class PlanarMovementHandle extends Handle {
     } else {
       super.onVRControllerButtonDown(event)
     }
-    return true
   }
 
   /**

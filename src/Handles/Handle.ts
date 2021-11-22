@@ -1,4 +1,6 @@
 import { TreeItem, Ray, ColorParameter, Color, Parameter } from '@zeainc/zea-engine' // , PointerEvent
+import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
+import { ZeaPointerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaPointerEvent'
 
 /**
  * A Handle is an UI widget that lives in the scene, it translates a series of pointer events into a higher level interaction.
@@ -242,7 +244,7 @@ class Handle extends TreeItem {
    *
    * @param {PointerEvent} event - The event param.
    */
-  onDragStart(event) {
+  onDragStart(event: ZeaPointerEvent) {
     console.warn('@Handle#onDragStart - Implement me!', event)
   }
 
@@ -251,7 +253,7 @@ class Handle extends TreeItem {
    *
    * @param {PointerEvent} event - The event param.
    */
-  onDrag(event) {
+  onDrag(event: ZeaPointerEvent) {
     console.warn('@Handle#onDrag - Implement me!', event)
   }
 
@@ -260,7 +262,7 @@ class Handle extends TreeItem {
    *
    * @param {PointerEvent} event - The event param.
    */
-  onDragEnd(event?) {
+  onDragEnd(event?: ZeaPointerEvent) {
     console.warn('@Handle#onDragEnd - Implement me!', event)
   }
 
