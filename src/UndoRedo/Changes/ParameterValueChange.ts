@@ -66,7 +66,7 @@ class ParameterValueChange extends Change {
    *
    * @param {Parameter} updateData - The updateData param.
    */
-  update(updateData: Parameter<unknown>) {
+  update(updateData: Record<string, any>) {
     if (!this.__param) return
     this.__nextValue = updateData.value
     this.__param.setValue(this.__nextValue)
