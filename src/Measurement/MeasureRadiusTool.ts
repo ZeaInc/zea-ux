@@ -1,8 +1,13 @@
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
-import { Ray, Vec3, Color, ColorParameter, BaseTool, TreeItem } from '@zeainc/zea-engine'
+import { Ray, Vec3, Color, ColorParameter, BaseTool, TreeItem, GeomItem } from '@zeainc/zea-engine'
 import { MeasurementChange } from './MeasurementChange'
 import { MeasureDistance } from './MeasureDistance'
 import { AppData } from '../../types/temp'
+import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
+import { ZeaTouchEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaTouchEvent'
+import { ZeaPointerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaPointerEvent'
+import { XRControllerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/XRControllerEvent'
+import { getPointerRay } from '../utility'
 /**
  * UI Tool for measurements
  *
@@ -53,12 +58,17 @@ class MeasureRadiusTool extends BaseTool {
    *
    * @param {MouseEvent|TouchEvent} event - The event value
    */
-  onPointerDown(event): void {
+  onPointerDown(event: ZeaPointerEvent): void {
     // skip if the alt key is held. Allows the camera tool to work
-    if (event.altKey || (event.pointerType === 'mouse' && event.button !== 0) || !event.intersectionData) return
+    if (event instanceof ZeaMouseEvent && (event.altKey || event.button !== 0 || !event.intersectionData)) {
+      return
+    }
+    if (event instanceof ZeaTouchEvent && (event.altKey || !event.intersectionData || event.touches.length > 1)) {
+      return
+    }
 
     if (this.highlightedItemA) {
-      const ray = event.pointerRay
+      const ray = getPointerRay(event)
       let hitPos
       if (event.intersectionData) {
         hitPos = ray.start.add(ray.dir.scale(event.intersectionData.dist))
@@ -76,7 +86,7 @@ class MeasureRadiusTool extends BaseTool {
         switch (curveType) {
           case 'Circle': {
             const crvToPnt = hitPos.subtract(xfo.tr)
-            const radius = geomItem.radiusParam.getValue() * xfo.sc.x
+            const radius = geomItem.getParameter('Radius').getValue() * xfo.sc.x
             const zaxis = xfo.ori.getZaxis()
             crvToPnt.subtractInPlace(zaxis.scale(crvToPnt.dot(zaxis)))
             const length = crvToPnt.length()
@@ -96,7 +106,7 @@ class MeasureRadiusTool extends BaseTool {
             const zaxis = xfo.ori.getZaxis()
             axisPos = xfo.tr.add(zaxis.scale(srfToPnt.dot(zaxis)))
 
-            const radius = geomItem.radiusParam.getValue() * xfo.sc.x
+            const radius = geomItem.getParameter('Radius').getValue() * xfo.sc.x
             const axisToPnt = hitPos.subtract(axisPos)
             const length = axisToPnt.length()
             edgePos = axisPos.add(axisToPnt.scale(radius / length))
@@ -128,13 +138,17 @@ class MeasureRadiusTool extends BaseTool {
    *
    * @param {MouseEvent|TouchEvent} event - The event value
    */
-  onPointerMove(event): void {
+  onPointerMove(event: ZeaPointerEvent): void {
     // skip if the alt key is held. Allows the camera tool to work
-    if (event.altKey || (event.pointerType === 'mouse' && event.button !== 0)) return
+    if (
+      ((event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) && event.altKey) ||
+      (event instanceof ZeaMouseEvent && event.button !== 0)
+    )
+      return
 
     if (!this.dragging) {
       if (event.intersectionData) {
-        const { geomItem } = event.intersectionData
+        const geomItem = <GeomItem>event.intersectionData.geomItem
         if (
           (geomItem.hasParameter('CurveType') && geomItem.getParameter('CurveType').getValue() == 'Circle') ||
           (geomItem.hasParameter('SurfaceType') && geomItem.getParameter('SurfaceType').getValue() == 'Cylinder')

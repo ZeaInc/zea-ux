@@ -124,7 +124,7 @@ class ArcSlider extends BaseAxialRotationHandle {
    *
    * @param {MouseEvent} event - The event param.
    */
-  onPointerEnter(event: ZeaMouseEvent): void {
+  onPointerEnter(event: ZeaPointerEvent): void {
     if (event.intersectionData && event.intersectionData.geomItem == this.handle) this.highlight()
   }
 
@@ -133,7 +133,7 @@ class ArcSlider extends BaseAxialRotationHandle {
    *
    * @param {MouseEvent} event - The event param.
    */
-  onPointerLeave(event: ZeaMouseEvent): void {
+  onPointerLeave(event: ZeaPointerEvent): void {
     this.unhighlight()
   }
 
@@ -142,7 +142,7 @@ class ArcSlider extends BaseAxialRotationHandle {
    *
    * @param {MouseEvent} event - The event param.
    */
-  onPointerDown(event: ZeaMouseEvent): void {
+  onPointerDown(event: ZeaPointerEvent): void {
     // We do not want to handle events
     // that have propagated from children of
     // the slider.
@@ -232,7 +232,7 @@ class ArcSlider extends BaseAxialRotationHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragStart(event: ZeaMouseEvent | ZeaTouchEvent): void {
+  onDragStart(event: ZeaPointerEvent): void {
     this.baseXfo = this.globalXfoParam.value.clone()
     this.baseXfo.sc.set(1, 1, 1)
     this.deltaXfo = new Xfo()
@@ -257,7 +257,7 @@ class ArcSlider extends BaseAxialRotationHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDrag(event: ZeaTouchEvent | ZeaMouseEvent): void {
+  onDrag(event: ZeaPointerEvent): void {
     const vec1 = this.holdPos.subtract(this.baseXfo.tr)
     vec1.normalizeInPlace()
 
@@ -305,7 +305,7 @@ class ArcSlider extends BaseAxialRotationHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragEnd(event: ZeaMouseEvent | ZeaTouchEvent): void {
+  onDragEnd(event: ZeaPointerEvent): void {
     this.change = null
     this.handleGeomOffsetXfo.sc.x = this.handleGeomOffsetXfo.sc.y = this.handleGeomOffsetXfo.sc.z = 1.0
     this.handle.geomOffsetXfoParam.value = this.handleGeomOffsetXfo

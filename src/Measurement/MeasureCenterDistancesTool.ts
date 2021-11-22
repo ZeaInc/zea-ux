@@ -5,6 +5,8 @@ import { MeasurementChange } from './MeasurementChange'
 import { AppData } from '../../types/temp'
 import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
 import { ZeaTouchEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaTouchEvent'
+import { ZeaPointerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaPointerEvent'
+import { getPointerRay } from '../utility'
 /**
  * UI Tool for measurements
  *
@@ -79,7 +81,7 @@ class MeasureCenterDistancesTool extends BaseTool {
    * @param {string} key
    * @private
    */
-  highlightEdge(geomItem, key) {}
+  highlightEdge(geomItem: GeomItem, key: string): void {}
 
   /**
    * @param {GeomItem} geomItem
@@ -87,7 +89,7 @@ class MeasureCenterDistancesTool extends BaseTool {
    * @return {Vec3}
    * @private
    */
-  snapToParametricCenter(geomItem, pos) {
+  snapToParametricCenter(geomItem: GeomItem, pos: Vec3) {
     const xfo = geomItem.globalXfoParam.value
     if (geomItem.hasParameter('CurveType')) {
       const curveType = geomItem.getParameter('CurveType').getValue()
@@ -124,13 +126,13 @@ class MeasureCenterDistancesTool extends BaseTool {
    *
    * @param {MouseEvent|TouchEvent} event - The event value
    */
-  onPointerDown(event: ZeaMouseEvent | ZeaTouchEvent) {
+  onPointerDown(event: ZeaPointerEvent) {
     // skip if the alt key is held. Allows the camera tool to work
     if (event.altKey || (event.pointerType === 'mouse' && event.button !== 0) || !event.intersectionData) return
 
     if (this.stage == 0) {
       if (this.highlightedItemA) {
-        const ray = event.pointerRay
+        const ray = getPointerRay(event)
         let hitPos
         if (event.intersectionData) {
           hitPos = ray.start.add(ray.dir.scale(event.intersectionData.dist))
@@ -156,7 +158,7 @@ class MeasureCenterDistancesTool extends BaseTool {
       }
     } else if (this.stage == 1) {
       if (this.highlightedItemB) {
-        const ray = event.pointerRay
+        const ray = getPointerRay(event)
         const hitPos = ray.start.add(ray.dir.scale(event.intersectionData.dist))
         let endPos = this.snapToParametricCenter(this.highlightedItemB, hitPos)
         const startPos = this.snapToParametricCenter(this.highlightedItemA, endPos)
@@ -200,13 +202,13 @@ class MeasureCenterDistancesTool extends BaseTool {
    *
    * @param {MouseEvent|TouchEvent} event - The event value
    */
-  onPointerMove(event: ZeaMouseEvent | ZeaTouchEvent) {
+  onPointerMove(event: ZeaPointerEvent) {
     // skip if the alt key is held. Allows the camera tool to work
     if (event.altKey || (event.pointerType === 'mouse' && event.button !== 0)) return
 
     if (this.stage == 0) {
       if (event.intersectionData) {
-        const { geomItem } = event.intersectionData
+        const geomItem = <GeomItem>event.intersectionData.geomItem
         if (geomItem != this.highlightedItemA && this.checkGeom(geomItem)) {
           if (this.highlightedItemA) {
             this.highlightedItemA.removeHighlight('measure', true)
@@ -226,7 +228,7 @@ class MeasureCenterDistancesTool extends BaseTool {
       event.stopPropagation()
     } else if (this.stage == 1) {
       if (event.intersectionData) {
-        const { geomItem } = event.intersectionData
+        const geomItem = <GeomItem>event.intersectionData.geomItem
         if (geomItem != this.highlightedItemA && geomItem != this.highlightedItemB && this.checkGeom(geomItem)) {
           if (this.highlightedItemB) {
             this.highlightedItemB.removeHighlight('measure', true)
@@ -253,7 +255,7 @@ class MeasureCenterDistancesTool extends BaseTool {
    *
    * @param {MouseEvent|TouchEvent} event - The event value
    */
-  onPointerUp(event: ZeaMouseEvent | ZeaTouchEvent) {}
+  onPointerUp(event: ZeaPointerEvent) {}
 }
 
 export { MeasureCenterDistancesTool }

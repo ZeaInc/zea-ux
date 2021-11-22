@@ -3,6 +3,8 @@ import BaseCreateTool from '../BaseCreateTool'
 import { UndoRedoManager } from '../../UndoRedo/index'
 import { AppData } from '../../../types/temp'
 import { VRController } from '@zeainc/zea-engine/dist/Renderer/VR/VRController'
+import { ZeaPointerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaPointerEvent'
+import { getPointerRay } from '../../utility'
 
 /**
  * Base class for creating geometry tools.
@@ -99,15 +101,15 @@ class CreateGeomTool extends BaseCreateTool {
    * @param {MouseEvent|TouchEvent} event - The event param
    * @return {Xfo} The return value.
    */
-  screenPosToXfo(event): Xfo {
+  screenPosToXfo(event: ZeaPointerEvent): Xfo {
     if (event.intersectionData) {
-      const ray = event.pointerRay
+      const ray = getPointerRay(event)
       const xfo = this.constructionPlane.clone()
       xfo.tr = ray.pointAtDist(event.intersectionData.dist)
       return xfo
     }
 
-    const ray = event.pointerRay
+    const ray = getPointerRay(event)
     const planeRay = new Ray(this.constructionPlane.tr, this.constructionPlane.ori.getZaxis())
     const dist = ray.intersectRayPlane(planeRay)
     if (dist > 0.0) {
@@ -198,7 +200,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param {MouseEvent|TouchEvent} event - The event param.
    */
-  onPointerMove(event): void{
+  onPointerMove(event): void {
     if (event.pointerType === 'xr') {
       this.onVRPoseChanged(event)
     } else if (this.stage > 0) {

@@ -67,7 +67,6 @@ class BaseAxialRotationHandle extends Handle {
     const param = this.getTargetParam()
     const paramXfo = <Xfo>param.value
     this.offsetXfo = this.baseXfo.inverse().multiply(paramXfo)
-    //@ts-ignore
     this.vec0 = this.grabPos.subtract(this.baseXfo.tr)
     this.grabCircleRadius = this.vec0.length()
     this.vec0.normalizeInPlace()

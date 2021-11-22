@@ -1,10 +1,12 @@
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
-import { Ray, Vec3, Color, ColorParameter, BaseTool, GeomItem, Xfo, Quat } from '@zeainc/zea-engine'
+import { Ray, Vec3, Color, ColorParameter, BaseTool, GeomItem, Xfo, Quat, TreeItem } from '@zeainc/zea-engine'
 import { MeasurementChange } from './MeasurementChange'
 import { MeasureAngle } from './MeasureAngle'
 import { AppData } from '../../types/temp'
 import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
 import { ZeaTouchEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaTouchEvent'
+import { getPointerRay } from '../utility'
+import { ZeaPointerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaPointerEvent'
 /**
  * UI Tool for measurements
  *
@@ -19,8 +21,8 @@ class MeasureAngleTool extends BaseTool {
   highlightedItemAHitPos = null
   stage: number = 0
   prevCursor
-  hitPosA
-  measurement
+  hitPosA: Vec3
+  measurement: MeasureAngle
   geomItemA: GeomItem
   dragging: boolean
   /**
@@ -56,7 +58,7 @@ class MeasureAngleTool extends BaseTool {
       this.appData.renderer.getGLCanvas().style.cursor = this.prevCursor
     }
     if (this.stage != 0) {
-      const parentItem = this.measurement.getOwner()
+      const parentItem = <TreeItem>this.measurement.getOwner()
       parentItem.removeChild(parentItem.getChildIndex(this.measurement))
       this.measurement = null
 
@@ -92,9 +94,9 @@ class MeasureAngleTool extends BaseTool {
    *
    * @param {MouseEvent|TouchEvent} event - The event value
    */
-  onPointerDown(event: ZeaMouseEvent | ZeaTouchEvent) {
+  onPointerDown(event: ZeaPointerEvent) {
     // skip if the alt key is held. Allows the camera tool to work
-    if (event.altKey || (event.pointerType === 'mouse' && event.button !== 0) || !event.intersectionData) return
+    if (event.altKey || (event instanceof ZeaMouseEvent && event.button !== 0) || !event.intersectionData) return
 
     const getSurfaceXfo = (geomItem: GeomItem, hitPos, closestTo?) => {
       const xfo = new Xfo()
@@ -106,7 +108,7 @@ class MeasureAngleTool extends BaseTool {
             const geomMat = geomItem.geomMatParam.value
             const srfToPnt = hitPos.subtract(geomMat.translation)
             let zaxis = geomMat.zAxis.clone()
-            if (zaxis.dot(event.pointerRay.dir) > 0) zaxis = zaxis.negate()
+            if (zaxis.dot(getPointerRay(event).dir) > 0) zaxis = zaxis.negate()
 
             const hitPos2 = hitPos
             if (closestTo) {
@@ -180,13 +182,13 @@ class MeasureAngleTool extends BaseTool {
     }
 
     if (this.stage == 0) {
-      const { geomItem } = event.intersectionData
+      const geomItem = <GeomItem>event.intersectionData.geomItem
       if (this.checkSurface(geomItem)) {
         const color = this.colorParam.getValue()
         this.measurement = new MeasureAngle('MeasureAngle', color)
         this.appData.scene.getRoot().addChild(this.measurement)
 
-        const ray = event.pointerRay
+        const ray = getPointerRay(event)
         const hitPos = ray.start.add(ray.dir.scale(event.intersectionData.dist))
         const xfoA = getSurfaceXfo(geomItem, hitPos)
         this.measurement.setXfoA(xfoA)
@@ -198,9 +200,9 @@ class MeasureAngleTool extends BaseTool {
         event.stopPropagation()
       }
     } else if (this.stage == 1) {
-      const { geomItem } = event.intersectionData
+      const geomItem = <GeomItem>event.intersectionData.geomItem
       if (this.checkSurface(geomItem)) {
-        const ray = event.pointerRay
+        const ray = getPointerRay(event)
         const hitPos = ray.start.add(ray.dir.scale(event.intersectionData.dist))
         const xfoB = getSurfaceXfo(geomItem, hitPos)
         // this.measurement.setXfoB(xfoB)
@@ -229,11 +231,11 @@ class MeasureAngleTool extends BaseTool {
    */
   onPointerMove(event: ZeaMouseEvent | ZeaTouchEvent) {
     // skip if the alt key is held. Allows the camera tool to work
-    if (event.altKey || (event.pointerType === 'mouse' && event.button !== 0)) return
+    if (event.altKey || (event instanceof ZeaMouseEvent && event.button !== 0)) return
 
     if (this.stage == 0) {
       if (event.intersectionData) {
-        const { geomItem } = event.intersectionData
+        const geomItem = <GeomItem>event.intersectionData.geomItem
         if (this.checkSurface(geomItem)) {
           if (geomItem != this.highlightedItemA) {
             if (this.highlightedItemA) {
@@ -253,7 +255,7 @@ class MeasureAngleTool extends BaseTool {
       }
     } else if (this.stage == 1) {
       if (event.intersectionData) {
-        const { geomItem } = event.intersectionData
+        const geomItem = <GeomItem>event.intersectionData.geomItem
         if (geomItem != this.highlightedItemA && geomItem != this.highlightedItemB && this.checkSurface(geomItem)) {
           if (this.highlightedItemB) {
             this.highlightedItemB.removeHighlight('measure', true)

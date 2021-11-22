@@ -7,6 +7,7 @@ import { SelectionManager } from '..'
 import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
 import { ZeaTouchEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaTouchEvent'
 import { XRControllerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/XRControllerEvent'
+import { ZeaPointerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaPointerEvent'
 
 /**
  * Class representing a selection tool.
@@ -119,7 +120,7 @@ class SelectionTool extends BaseTool {
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    * @private
    */
-  onPointerDoublePress(event: ZeaMouseEvent | ZeaTouchEvent) {}
+  onPointerDoublePress(event: ZeaPointerEvent) {}
 
   /**
    * Event fired when a pointing device button is pressed while the pointer is over the tool.
@@ -127,7 +128,7 @@ class SelectionTool extends BaseTool {
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    * @return {boolean} The return value.
    */
-  onPointerDown(event: ZeaMouseEvent | ZeaTouchEvent) {
+  onPointerDown(event: ZeaPointerEvent) {
     if (event.pointerType === 'touch' || (event.button == 0 && !event.altKey)) {
       this.pointerDownPos = event.pointerPos
       this.dragging = false
@@ -142,7 +143,7 @@ class SelectionTool extends BaseTool {
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    * @return {boolean} The return value.
    */
-  onPointerMove(event: ZeaMouseEvent | ZeaTouchEvent) {
+  onPointerMove(event: ZeaPointerEvent) {
     if (this.pointerDownPos) {
       const delta = this.pointerDownPos.subtract(event.pointerPos)
       const dist = delta.length()
@@ -164,7 +165,7 @@ class SelectionTool extends BaseTool {
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    * @return {boolean} The return value.
    */
-  onPointerUp(event: ZeaMouseEvent | ZeaTouchEvent) {
+  onPointerUp(event: ZeaPointerEvent) {
     if (this.pointerDownPos) {
       // event.viewport.renderGeomDataFbo();
       if (this.dragging) {
