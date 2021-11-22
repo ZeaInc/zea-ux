@@ -3,6 +3,7 @@ import { XRControllerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/XRCo
 import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
 import { ZeaPointerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaPointerEvent'
 import { ZeaWheelEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaWheelEvent'
+import { getPointerRay } from '../utility'
 
 /**
  * A Handle is an UI widget that lives in the scene, it translates a series of pointer events into a higher level interaction.
@@ -161,7 +162,7 @@ class Handle extends TreeItem {
    */
   handlePointerDown(event: ZeaMouseEvent) {
     this.gizmoRay = this.getManipulationPlane()
-    const ray = event.pointerRay
+    const ray = getPointerRay(event)
     const dist = ray.intersectRayPlane(this.gizmoRay)
     this.grabPos = ray.pointAtDist(dist)
     this.onDragStart(event)
@@ -173,8 +174,8 @@ class Handle extends TreeItem {
    * @param {MouseEvent} event - The event param
    * @return { boolean } - The return value
    */
-  handlePointerMove(event: ZeaMouseEvent) {
-    const ray = event.pointerRay
+  handlePointerMove(event: ZeaPointerEvent) {
+    const ray = getPointerRay(event)
     const dist = ray.intersectRayPlane(this.gizmoRay)
     this.holdPos = ray.pointAtDist(dist)
     this.onDrag(event)
@@ -187,7 +188,7 @@ class Handle extends TreeItem {
    * @return {boolean} - The return value.
    */
   handlePointerUp(event: ZeaMouseEvent) {
-    const ray = event.pointerRay
+    const ray = getPointerRay(event)
     if (ray) {
       const dist = ray.intersectRayPlane(this.gizmoRay)
       this.releasePos = ray.pointAtDist(dist)

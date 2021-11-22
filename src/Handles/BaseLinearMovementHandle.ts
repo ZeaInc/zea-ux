@@ -1,7 +1,9 @@
 import { Vec3 } from '@zeainc/zea-engine'
 import { XRControllerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/XRControllerEvent'
 import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
+import { ZeaPointerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaPointerEvent'
 import { ZeaTouchEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaTouchEvent'
+import { getPointerRay } from '../utility'
 import Handle from './Handle'
 
 /**
@@ -29,9 +31,9 @@ class BaseLinearMovementHandle extends Handle {
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    * @return {boolean} - The return value.
    */
-  handlePointerDown(event: ZeaMouseEvent | ZeaTouchEvent) {
+  handlePointerDown(event: ZeaPointerEvent) {
     this.gizmoRay = this.getManipulationPlane()
-    const ray = event.pointerRay
+    const ray = getPointerRay(event)
     this.grabDist = ray.intersectRayVector(this.gizmoRay)[1]
     const grabPos = this.gizmoRay.pointAtDist(this.grabDist)
     this.grabPos = grabPos
@@ -43,8 +45,8 @@ class BaseLinearMovementHandle extends Handle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param
    */
-  handlePointerMove(event: ZeaMouseEvent | ZeaTouchEvent) {
-    const ray = event.pointerRay
+  handlePointerMove(event: ZeaPointerEvent) {
+    const ray = getPointerRay(event)
     const dist = ray.intersectRayVector(this.gizmoRay)[1]
     this.holdPos = this.gizmoRay.pointAtDist(dist)
     this.holdDist = dist
@@ -59,8 +61,8 @@ class BaseLinearMovementHandle extends Handle {
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    * @return {boolean} - The return value.
    */
-  handlePointerUp(event: ZeaMouseEvent | ZeaTouchEvent) {
-    const ray = event.pointerRay
+  handlePointerUp(event: ZeaPointerEvent) {
+    const ray = getPointerRay(event)
     if (ray) {
       const dist = ray.intersectRayVector(this.gizmoRay)[1]
       const releasePos = this.gizmoRay.pointAtDist(dist)
