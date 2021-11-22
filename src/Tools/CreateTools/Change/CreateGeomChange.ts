@@ -78,7 +78,7 @@ class CreateGeomChange extends Change {
     const xfo = new Xfo()
     xfo.fromJSON(j.geomItemXfo)
     this.geomItem.localXfoParam.value = xfo
-    this.childIndex = this.parentItem.addChild(this.geomItem, false)
+    this.childIndex = this.parentItem.getChildIndex(this.parentItem.addChild(this.geomItem, false))
 
     if (j.color) {
       const color = new Color(0.7, 0.2, 0.2)
