@@ -31,7 +31,6 @@ class CreateGeomChange extends Change {
     this.geomItem.globalXfoParam.setValue(xfo)
     this.parentItem.addChild(this.geomItem)
 
-    // this.geomItem.addRef(this) // keep a ref to stop it being destroyed
   }
 
   /**
