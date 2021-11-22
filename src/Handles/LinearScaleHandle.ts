@@ -105,7 +105,7 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragStart(event: ZeaMouseEvent | ZeaTouchEvent) {
+  onDragStart(event: ZeaPointerEvent) {
     this.oriXfo = this.globalXfoParam.value
     this.tmplocalXfo = this.localXfoParam.getValue()
     const param = this.getTargetParam()
@@ -120,7 +120,7 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDrag(event: ZeaMouseEvent | ZeaTouchEvent) {
+  onDrag(event: ZeaPointerEvent) {
     // const dragVec = this.holdPos.subtract(this.grabPos);
 
     const newXfo = this.baseXfo.clone()
@@ -152,7 +152,7 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragEnd(event: ZeaMouseEvent | ZeaTouchEvent) {
+  onDragEnd(event: ZeaPointerEvent) {
     this.change = null
 
     this.tmplocalXfo.sc.set(1, 1, 1)

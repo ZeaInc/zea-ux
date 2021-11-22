@@ -101,7 +101,7 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragStart(event: ZeaMouseEvent | ZeaTouchEvent) {
+  onDragStart(event: ZeaPointerEvent) {
     this.grabPos = this.grabPos
     const param = this.getTargetParam()
     this.baseXfo = <Xfo>param.getValue()
@@ -115,7 +115,7 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDrag(event: ZeaMouseEvent | ZeaTouchEvent) {
+  onDrag(event: ZeaPointerEvent) {
     const dragVec = this.holdPos.subtract(this.grabPos)
 
     const newXfo = this.baseXfo.clone()
@@ -131,7 +131,7 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragEnd(event: ZeaMouseEvent | ZeaTouchEvent) {
+  onDragEnd(event: ZeaPointerEvent) {
     this.change = null
   }
 }

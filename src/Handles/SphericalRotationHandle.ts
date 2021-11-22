@@ -125,7 +125,7 @@ class SphericalRotationHandle extends Handle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragStart(event: ZeaMouseEvent | ZeaTouchEvent) {
+  onDragStart(event: ZeaPointerEvent) {
     this.baseXfo = this.globalXfoParam.value
     this.baseXfo.sc.set(1, 1, 1)
     this.deltaXfo = new Xfo()
@@ -147,7 +147,7 @@ class SphericalRotationHandle extends Handle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDrag(event: ZeaMouseEvent | ZeaTouchEvent) {
+  onDrag(event: ZeaPointerEvent) {
     const vec1 = this.holdPos.subtract(this.baseXfo.tr)
     vec1.normalizeInPlace()
     const modulator = 1
@@ -169,7 +169,7 @@ class SphericalRotationHandle extends Handle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragEnd(event: ZeaMouseEvent | ZeaTouchEvent) {
+  onDragEnd(event: ZeaPointerEvent) {
     this.change = null
   }
 }

@@ -120,7 +120,7 @@ class MeasureDistanceTool extends BaseTool {
           const zaxis = xfo.ori.getZaxis()
           const pointOnAxis = xfo.tr.add(zaxis.scale(srfToPnt.dot(zaxis)))
 
-          const radius = geomItem.radiusParam.getValue() * xfo.sc.x
+          const radius = geomItem.getParameter('Radius').getValue() * xfo.sc.x
           const axisToPnt = pos.subtract(pointOnAxis)
           const length = axisToPnt.length()
           return pointOnAxis.add(axisToPnt.scale(radius / length))
@@ -139,7 +139,7 @@ class MeasureDistanceTool extends BaseTool {
    */
   onPointerDown(event: ZeaPointerEvent) {
     // skip if the alt key is held. Allows the camera tool to work
-    if (event.altKey || (event.pointerType === 'mouse' && event.button !== 0) || !event.intersectionData) return
+    if ((event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) && event.altKey || (event instanceof ZeaMouseEvent  && event.button !== 0) || !event.intersectionData) return
 
     if (this.stage == 0) {
       if (this.highlightedItemA) {
@@ -153,7 +153,7 @@ class MeasureDistanceTool extends BaseTool {
           hitPos = ray.start.add(ray.dir.scale(distance))
         }
 
-        const startPos = this.snapToParametricEdge(this.highlightedItemA, hitPos)
+        const startPos = this.snapToParametricEdge(<GeomItem>this.highlightedItemA, hitPos)
         const color = this.colorParam.getValue()
 
         this.measurement = new MeasureDistance('Measure Distance', color)
@@ -171,8 +171,8 @@ class MeasureDistanceTool extends BaseTool {
       if (this.highlightedItemB) {
         const ray = getPointerRay(event)
         const hitPos = ray.start.add(ray.dir.scale(event.intersectionData.dist))
-        const startPos = this.snapToParametricEdge(this.highlightedItemA, hitPos)
-        const endPos = this.snapToParametricEdge(this.highlightedItemB, hitPos)
+        const startPos = this.snapToParametricEdge(<GeomItem>this.highlightedItemA, hitPos)
+        const endPos = this.snapToParametricEdge(<GeomItem>this.highlightedItemB, hitPos)
         this.measurement.setStartMarkerPos(startPos)
         this.measurement.setEndMarkerPos(endPos)
 
@@ -198,7 +198,7 @@ class MeasureDistanceTool extends BaseTool {
    */
   onPointerMove(event: ZeaPointerEvent) {
     // skip if the alt key is held. Allows the camera tool to work
-    if (event.altKey || (event.pointerType === 'mouse' && event.button !== 0)) return
+    if ((event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) && event.altKey || (event instanceof ZeaMouseEvent && event.button !== 0)) return
 
     const color = this.colorParam.getValue()
     color.a = 0.2
@@ -251,7 +251,7 @@ class MeasureDistanceTool extends BaseTool {
    *
    * @param {MouseEvent|TouchEvent} event - The event value
    */
-  onPointerUp(event: ZeaMouseEvent | ZeaTouchEvent) {}
+  onPointerUp(event: ZeaPointerEvent) {}
 }
 
 export { MeasureDistanceTool }
