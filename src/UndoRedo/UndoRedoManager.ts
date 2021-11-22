@@ -1,4 +1,6 @@
 import { EventEmitter, Registry } from '@zeainc/zea-engine'
+import { BaseClass } from '@zeainc/zea-engine/dist/Utilities/BaseClass'
+import { Change } from '.'
 
 /**
  * `UndoRedoManager` is a mixture of the [Factory Design Pattern](https://en.wikipedia.org/wiki/Factory_method_pattern) and the actual changes stacks manager.
@@ -11,9 +13,9 @@ import { EventEmitter, Registry } from '@zeainc/zea-engine'
  * * **changeRedone:** Triggered when the `redo` method is called, after restoring the last change removed from the undo stack.
  * */
 class UndoRedoManager extends EventEmitter {
-  __undoStack = []
-  __redoStack = []
-  __currChange = null
+  __undoStack: Change[] = []
+  __redoStack: Change[] = []
+  __currChange: Change | null = null
   /**
    * It doesn't have any parameters, but under the hood it uses [EventsEmitter]() to notify subscribers when something happens.
    * The implementation is really simple, just initialize it like any other class.
@@ -46,7 +48,7 @@ class UndoRedoManager extends EventEmitter {
    *
    * @param {Change} change - The change param.
    */
-  addChange(change) {
+  addChange(change: Change) {
     // console.log("AddChange:", change.name)
     if (this.__currChange && this.__currChange.off) {
       this.__currChange.off('updated', this.__currChangeUpdated)
@@ -67,7 +69,7 @@ class UndoRedoManager extends EventEmitter {
    *
    * @return {Change|null} The return value.
    */
-  getCurrentChange() {
+  getCurrentChange(): Change | null {
     return this.__currChange
   }
 
@@ -75,7 +77,7 @@ class UndoRedoManager extends EventEmitter {
    * @private
    * @param {object|any} updateData
    */
-  __currChangeUpdated(updateData) {
+  __currChangeUpdated(updateData: Record<any, any>) {
     this.emit('changeUpdated', updateData)
   }
 
@@ -84,7 +86,7 @@ class UndoRedoManager extends EventEmitter {
    *
    * @param {boolean} pushOnRedoStack - The pushOnRedoStack param.
    */
-  undo(pushOnRedoStack = true) {
+  undo(pushOnRedoStack = true): void {
     if (this.__undoStack.length > 0) {
       if (this.__currChange) {
         this.__currChange.off('updated', this.__currChangeUpdated)
@@ -105,7 +107,7 @@ class UndoRedoManager extends EventEmitter {
    * Method to cancel the current change added to the UndoRedoManager.
    * Reverts the change and discards it.
    */
-  cancel() {
+  cancel(): void {
     if (this.__undoStack.length > 0) {
       if (this.__currChange) {
         this.__currChange.off('updated', this.__currChangeUpdated)
@@ -121,7 +123,7 @@ class UndoRedoManager extends EventEmitter {
    * Rollbacks the `undo` action by moving the change from the `redo` stack to the `undo` stack.
    * Emits the `changeRedone` event, if you want to subscribe to it.
    */
-  redo() {
+  redo(): void {
     if (this.__redoStack.length > 0) {
       const change = this.__redoStack.pop()
       // console.log("redo:", change.name)
@@ -140,7 +142,7 @@ class UndoRedoManager extends EventEmitter {
    * @param {string} className - The className param.
    * @return {Change} - The return value.
    */
-  constructChange(className) {
+  constructChange(className: string): BaseClass {
     return Registry.constructClass(className)
   }
 
@@ -150,7 +152,8 @@ class UndoRedoManager extends EventEmitter {
    * @param {Change} inst - The instance of the Change class.
    * @return {boolean} - Returns 'true' if the class has been registered.
    */
-  static isChangeClassRegistered(inst) {
+  // TODO: register not working
+  static isChangeClassRegistered(inst): boolean {
     try {
       const name = Registry.getClassName(inst)
       return true
@@ -166,7 +169,8 @@ class UndoRedoManager extends EventEmitter {
    * @param {Change} inst - The instance of the Change class.
    * @return {string} - The return value.
    */
-  static getChangeClassName(inst) {
+  // TODO: register not working
+  static getChangeClassName(inst): string {
     return Registry.getClassName(inst)
   }
 
@@ -178,11 +182,12 @@ class UndoRedoManager extends EventEmitter {
    * @param {string} name - The name param.
    * @param {Change} cls - The cls param.
    */
-  static registerChange(name, cls) {
+  // TODO: register not working
+  static registerChange(name: string, cls) {
     Registry.register(name, cls)
   }
 
-  static getInstance() {
+  static getInstance(): UndoRedoManager {
     if (!inst) {
       inst = new UndoRedoManager()
     }
