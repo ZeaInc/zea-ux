@@ -1,5 +1,6 @@
 import { Color, Xfo, NumberParameter, GeomItem, Material, Torus, Mat4 } from '@zeainc/zea-engine'
 import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
+import { ZeaPointerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaPointerEvent'
 import { ZeaTouchEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaTouchEvent'
 import BaseAxialRotationHandle from './BaseAxialRotationHandle'
 import './Shaders/HandleShader'
@@ -92,7 +93,7 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragStart(event: ZeaMouseEvent | ZeaTouchEvent) {
+  onDragStart(event: ZeaPointerEvent) {
     super.onDragStart(event)
   }
 
@@ -101,7 +102,7 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDrag(event: ZeaMouseEvent | ZeaTouchEvent) {
+  onDrag(event: ZeaPointerEvent) {
     super.onDrag(event)
   }
 
@@ -110,7 +111,7 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragEnd(event: ZeaMouseEvent | ZeaTouchEvent) {
+  onDragEnd(event: ZeaPointerEvent) {
     super.onDragEnd(event)
   }
 }

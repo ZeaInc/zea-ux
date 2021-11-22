@@ -16,7 +16,7 @@ class MeasurementHandle extends ScreenSpaceMovementHandle {
    * @return {boolean} - The return value
    */
   handlePointerMove(event: ZeaMouseEvent | ZeaTouchEvent) {
-    const ray = event.pointerRay
+    const ray = getPointerRay(event)
     event.intersectionData = event.viewport.getGeomDataAtPos(event.pointerPos, event.pointerRay)
     if (event.intersectionData) {
       this.holdPos = ray.start.add(ray.dir.scale(event.intersectionData.dist))

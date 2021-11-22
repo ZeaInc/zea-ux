@@ -1,10 +1,12 @@
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
-import { Ray, Vec3, Color, ColorParameter, BaseTool, TreeItem } from '@zeainc/zea-engine'
+import { Ray, Vec3, Color, ColorParameter, BaseTool, TreeItem, GeomItem } from '@zeainc/zea-engine'
 import { MeasureDistance } from './MeasureDistance'
 import { MeasurementChange } from './MeasurementChange'
 import { AppData } from '../../types/temp'
 import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
 import { ZeaTouchEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaTouchEvent'
+import { getPointerRay } from '../utility'
+import { ZeaPointerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaPointerEvent'
 /**
  * UI Tool for measurements
  *
@@ -135,13 +137,13 @@ class MeasureDistanceTool extends BaseTool {
    *
    * @param {MouseEvent|TouchEvent} event - The event value
    */
-  onPointerDown(event: ZeaMouseEvent | ZeaTouchEvent) {
+  onPointerDown(event: ZeaPointerEvent) {
     // skip if the alt key is held. Allows the camera tool to work
     if (event.altKey || (event.pointerType === 'mouse' && event.button !== 0) || !event.intersectionData) return
 
     if (this.stage == 0) {
       if (this.highlightedItemA) {
-        const ray = event.pointerRay
+        const ray = getPointerRay(event)
         let hitPos
         if (event.intersectionData) {
           hitPos = ray.start.add(ray.dir.scale(event.intersectionData.dist))
@@ -167,7 +169,7 @@ class MeasureDistanceTool extends BaseTool {
       }
     } else if (this.stage == 1) {
       if (this.highlightedItemB) {
-        const ray = event.pointerRay
+        const ray = getPointerRay(event)
         const hitPos = ray.start.add(ray.dir.scale(event.intersectionData.dist))
         const startPos = this.snapToParametricEdge(this.highlightedItemA, hitPos)
         const endPos = this.snapToParametricEdge(this.highlightedItemB, hitPos)
@@ -194,7 +196,7 @@ class MeasureDistanceTool extends BaseTool {
    *
    * @param {MouseEvent|TouchEvent} event - The event value
    */
-  onPointerMove(event: ZeaMouseEvent | ZeaTouchEvent) {
+  onPointerMove(event: ZeaPointerEvent) {
     // skip if the alt key is held. Allows the camera tool to work
     if (event.altKey || (event.pointerType === 'mouse' && event.button !== 0)) return
 
@@ -202,7 +204,7 @@ class MeasureDistanceTool extends BaseTool {
     color.a = 0.2
     if (this.stage == 0) {
       if (event.intersectionData) {
-        const { geomItem } = event.intersectionData
+        const geomItem = <GeomItem>event.intersectionData.geomItem
         if (geomItem.hasParameter('CurveType') || geomItem.hasParameter('SurfaceType')) {
           if (geomItem != this.highlightedItemA) {
             if (this.highlightedItemA) {
@@ -221,7 +223,7 @@ class MeasureDistanceTool extends BaseTool {
       event.stopPropagation()
     } else if (this.stage == 1) {
       if (event.intersectionData) {
-        const { geomItem } = event.intersectionData
+        const geomItem = <GeomItem>event.intersectionData.geomItem
         if (geomItem != this.highlightedItemA && geomItem != this.highlightedItemB) {
           if (geomItem.hasParameter('CurveType') || geomItem.hasParameter('SurfaceType')) {
             if (this.highlightedItemB) {
