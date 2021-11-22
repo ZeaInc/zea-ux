@@ -28,7 +28,7 @@ class TreeItemAddChange extends Change {
       this.owner = owner
       this.selectionManager = selectionManager
       this.prevSelection = new Set(this.selectionManager.getSelection())
-      this.treeItemIndex = this.owner.addChild(this.treeItem)
+      this.treeItemIndex = this.owner.getChildIndex(this.owner.addChild(this.treeItem))
       this.selectionManager.setSelection(new Set([this.treeItem]), false)
 
       this.treeItem.addRef(this)
@@ -109,7 +109,7 @@ class TreeItemAddChange extends Change {
     this.treeItem.addRef(this)
 
     this.treeItem.fromJSON(j.treeItem, context)
-    this.treeItemIndex = this.owner.addChild(this.treeItem, false, false)
+    this.treeItemIndex = this.owner.getChildIndex(this.owner.addChild(this.treeItem))
   }
 
   /**
