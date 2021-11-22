@@ -25,7 +25,7 @@ class TreeItemsRemoveChange extends Change {
    * @param {array} items - List of TreeItems
    * @param {object} appData - The appData value
    */
-  constructor(items, appData: AppData) {
+  constructor(items: Array<TreeItem>, appData: AppData) {
     super()
 
     if (items) {
@@ -69,7 +69,7 @@ class TreeItemsRemoveChange extends Change {
   /**
    * Restores all items removed in the change, reattaching them to their old owners.
    */
-  undo() {
+  undo(): void {
     this.items.forEach((item, index) => {
       this.itemOwners[index].insertChild(item, this.itemIndices[index], false, false)
 
@@ -92,7 +92,7 @@ class TreeItemsRemoveChange extends Change {
   /**
    * Executes initial change to remove items from their owners.
    */
-  redo() {
+  redo(): void {
     if (this.selectionManager) this.selectionManager.setSelection(this.newSelection, false)
 
     // Now re-detach all the operators.
@@ -120,7 +120,7 @@ class TreeItemsRemoveChange extends Change {
    * @return {object} - JSON Object representation of current change
    * @memberof TreeItemsRemoveChange
    */
-  toJSON(appData) {
+  toJSON(appData: AppData): Record<string, any> {
     const j = {
       name: this.name,
       items: [],
@@ -140,15 +140,15 @@ class TreeItemsRemoveChange extends Change {
    * @param {object} appData - The appData value
    * @memberof TreeItemsRemoveChange
    */
-  fromJSON(j, appData) {
+  fromJSON(j: Record<string, any>, appData: AppData) {
     this.name = j.name
     j.itemPaths.forEach((itemPath) => {
-      const item = appData.scene.getRoot().resolvePath(itemPath, 1)
+      const item =  <TreeItem>appData.scene.getRoot().resolvePath(itemPath, 1)
       if (!item) {
         console.warn('resolvePath is unable to resolve', itemPath)
         return
       }
-      const owner = item.getOwner()
+      const owner = <TreeItem>item.getOwner()
       this.itemOwners.push(owner)
       this.itemPaths.push(item.getPath())
       this.itemIndices.push(owner.getChildIndex(item))

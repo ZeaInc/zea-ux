@@ -8,14 +8,14 @@ import { UndoRedoManager } from './UndoRedoManager.js'
  * @extends {EventEmitter}
  */
 class Change extends EventEmitter {
-  name
+  name: string
   /**
    * Every class that extends from `Change` must contain a global `name` attribute.
    * It is used by the `UndoRedoManager` factory to re-construct the class of the specific implementation of the `Change` class.
    *
    * @param {string} name - The name value.
    */
-  constructor(name?) {
+  constructor(name?: string) {
     super()
     this.name = name ? name : UndoRedoManager.getChangeClassName(this)
   }
@@ -26,7 +26,7 @@ class Change extends EventEmitter {
    *
    * @note This method needs to be implemented, otherwise it will throw an Error.
    */
-  undo() {
+  undo(): void {
     throw new Error('Implement me')
   }
 
@@ -35,7 +35,7 @@ class Change extends EventEmitter {
    *
    * @note This method needs to be implemented, otherwise it will throw an Error.
    */
-  redo() {
+  redo(): void {
     throw new Error('Implement me')
   }
 
@@ -46,7 +46,7 @@ class Change extends EventEmitter {
    *
    * @param {object|string|any} updateData - The updateData param.
    */
-  update(updateData) {
+  update(updateData: Record<any,any>) {
     throw new Error('Implement me')
   }
 
@@ -58,7 +58,7 @@ class Change extends EventEmitter {
    * @param {object} context - The appData param.
    * @return {object} The return value.
    */
-  toJSON(context) {
+  toJSON(context: Record<any,any>) {
     return {}
   }
 
@@ -72,7 +72,7 @@ class Change extends EventEmitter {
    * @param {object} j - The j param.
    * @param {object} context - The context param.
    */
-  fromJSON(j, context) {}
+  fromJSON(j: Record<any,any>, context: Record<any,any>): void {}
 
   /**
    * Useful method to update the state of an existing identified `Change` through replication.
@@ -81,7 +81,7 @@ class Change extends EventEmitter {
    *
    * @param {object} j - The j param.
    */
-  updateFromJSON(j) {
+  updateFromJSON(j: Record<any,any>) {
     // Many change objects can load json directly
     // in the update method.
     this.update(j)
@@ -93,7 +93,7 @@ class Change extends EventEmitter {
    * so it is require in any class that represents a change.
    *
    */
-  destroy() {}
+  destroy(): void {}
 }
 
 export default Change
