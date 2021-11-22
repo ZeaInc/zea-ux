@@ -1,8 +1,10 @@
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
-import { Ray, Vec3, Color, ColorParameter, BaseTool } from '@zeainc/zea-engine'
+import { Ray, Vec3, Color, ColorParameter, BaseTool, GeomItem } from '@zeainc/zea-engine'
 import { MeasureDistance } from './MeasureDistance'
 import { MeasurementChange } from './MeasurementChange'
 import { AppData } from '../../types/temp'
+import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
+import { ZeaTouchEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaTouchEvent'
 /**
  * UI Tool for measurements
  *
@@ -122,7 +124,7 @@ class MeasureCenterDistancesTool extends BaseTool {
    *
    * @param {MouseEvent|TouchEvent} event - The event value
    */
-  onPointerDown(event) {
+  onPointerDown(event: ZeaMouseEvent | ZeaTouchEvent) {
     // skip if the alt key is held. Allows the camera tool to work
     if (event.altKey || (event.pointerType === 'mouse' && event.button !== 0) || !event.intersectionData) return
 
@@ -182,7 +184,7 @@ class MeasureCenterDistancesTool extends BaseTool {
    * @param {GeomItem} geomItem - The geomItem to check
    * @return {boolean}
    */
-  checkGeom(geomItem) {
+  checkGeom(geomItem: GeomItem) {
     if (geomItem.hasParameter('CurveType')) {
       const curveTypeParm = geomItem.getParameter('CurveType')
       return curveTypeParm.getValue() == 'Circle'
@@ -198,7 +200,7 @@ class MeasureCenterDistancesTool extends BaseTool {
    *
    * @param {MouseEvent|TouchEvent} event - The event value
    */
-  onPointerMove(event) {
+  onPointerMove(event: ZeaMouseEvent | ZeaTouchEvent) {
     // skip if the alt key is held. Allows the camera tool to work
     if (event.altKey || (event.pointerType === 'mouse' && event.button !== 0)) return
 
@@ -251,7 +253,7 @@ class MeasureCenterDistancesTool extends BaseTool {
    *
    * @param {MouseEvent|TouchEvent} event - The event value
    */
-  onPointerUp(event) {}
+  onPointerUp(event: ZeaMouseEvent | ZeaTouchEvent) {}
 }
 
 export { MeasureCenterDistancesTool }

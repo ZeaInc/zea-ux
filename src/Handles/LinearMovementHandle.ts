@@ -4,6 +4,8 @@ import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
 import './Shaders/HandleShader'
 import transformVertices from './transformVertices'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
+import { ZeaTouchEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaTouchEvent'
+import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
 
 /**
  * Class representing a linear movement scene widget.
@@ -99,8 +101,8 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragStart(event) {
-    this.grabPos = event.grabPos
+  onDragStart(event: ZeaMouseEvent | ZeaTouchEvent) {
+    this.grabPos = this.grabPos
     const param = this.getTargetParam()
     this.baseXfo = <Xfo>param.getValue()
 
@@ -113,8 +115,8 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDrag(event) {
-    const dragVec = event.holdPos.subtract(this.grabPos)
+  onDrag(event: ZeaMouseEvent | ZeaTouchEvent) {
+    const dragVec = this.holdPos.subtract(this.grabPos)
 
     const newXfo = this.baseXfo.clone()
     newXfo.tr.addInPlace(dragVec)
@@ -129,7 +131,7 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragEnd(event) {
+  onDragEnd(event: ZeaMouseEvent | ZeaTouchEvent) {
     this.change = null
   }
 }

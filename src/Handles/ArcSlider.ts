@@ -61,7 +61,7 @@ class ArcSlider extends BaseAxialRotationHandle {
    * @param {number} [handleRadius=0.02] - The handleRadius value
    * @param {Color} [color=new Color(1, 1, 0)] - the color value
    */
-  constructor(name?, arcRadius = 1, arcAngle = 1, handleRadius = 0.02, color = new Color(1, 1, 0)) {
+  constructor(name?: string, arcRadius = 1, arcAngle = 1, handleRadius = 0.02, color = new Color(1, 1, 0)) {
     super(name)
     this.arcRadiusParam = new NumberParameter('ArcRadius', arcRadius)
     this.arcAngleParam = new NumberParameter('ArcAngle', arcAngle)
@@ -232,8 +232,7 @@ class ArcSlider extends BaseAxialRotationHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragStart(event: PointerEvent): void {
-    // TODO: check type
+  onDragStart(event: ZeaMouseEvent | ZeaTouchEvent): void {
     this.baseXfo = this.globalXfoParam.value.clone()
     this.baseXfo.sc.set(1, 1, 1)
     this.deltaXfo = new Xfo()
@@ -258,9 +257,8 @@ class ArcSlider extends BaseAxialRotationHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDrag(event: any): void {
-    // ZeaTouchEvent | ZeaMouseEvent
-    const vec1 = event.holdPos.subtract(this.baseXfo.tr)
+  onDrag(event: ZeaTouchEvent | ZeaMouseEvent): void {
+    const vec1 = this.holdPos.subtract(this.baseXfo.tr)
     vec1.normalizeInPlace()
 
     let angle = this.vec0.angleTo(vec1)

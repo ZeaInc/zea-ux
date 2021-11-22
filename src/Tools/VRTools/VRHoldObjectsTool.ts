@@ -6,6 +6,8 @@ import UndoRedoManager from '../../UndoRedo/UndoRedoManager'
 import Change from '../../UndoRedo/Change'
 import { AppData } from '../../../types/temp'
 import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
+import { XRControllerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/XRControllerEvent'
+import { XRPoseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/XRPoseEvent'
 
 /**
  * Class representing a hold objects change.
@@ -249,7 +251,7 @@ class VRHoldObjectsTool extends BaseTool {
    *
    * @param {MouseEvent} event - The event param.
    */
-  onPointerDown(event) {
+  onPointerDown(event: XRControllerEvent) {
     if (event.pointerType === POINTER_TYPES.xr) {
       const id = event.controller.getId()
       this.__vrControllers[id] = event.controller
@@ -295,7 +297,7 @@ class VRHoldObjectsTool extends BaseTool {
    *
    * @param {MouseEvent} event - The event param.
    */
-  onPointerUp(event) {
+  onPointerUp(event: XRControllerEvent) {
     if (event.pointerType === POINTER_TYPES.xr) {
       const id = event.controller.getId()
 
@@ -322,7 +324,7 @@ class VRHoldObjectsTool extends BaseTool {
    *
    * @param {MouseEvent} event - The event param.
    */
-  onPointerMove(event) {
+  onPointerMove(event: XRPoseEvent) {
     if (event.pointerType === POINTER_TYPES.xr) {
       if (!this.change) {
         event.controllers.forEach((controller) => {
@@ -370,7 +372,7 @@ class VRHoldObjectsTool extends BaseTool {
    *
    * @param {MouseEvent} event - The event param.
    */
-  onPointerDoublePress(event) {
+  onPointerDoublePress(event: ZeaMouseEvent) {
     if (event.pointerType === POINTER_TYPES.xr) {
       // this.onVRControllerDoubleClicked(event)
     }

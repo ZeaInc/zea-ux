@@ -1,3 +1,7 @@
+import { Vec3 } from '@zeainc/zea-engine'
+import { XRControllerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/XRControllerEvent'
+import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
+import { ZeaTouchEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaTouchEvent'
 import Handle from './Handle'
 
 /**
@@ -7,6 +11,7 @@ import Handle from './Handle'
  */
 class BaseLinearMovementHandle extends Handle {
   grabDist: number
+  grabPos: Vec3
   /**
    * Create base linear movement scene widget.
    * @param {string} name - The name value.
@@ -24,13 +29,12 @@ class BaseLinearMovementHandle extends Handle {
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    * @return {boolean} - The return value.
    */
-  handlePointerDown(event) {
+  handlePointerDown(event: ZeaMouseEvent | ZeaTouchEvent) {
     this.gizmoRay = this.getManipulationPlane()
     const ray = event.pointerRay
     this.grabDist = ray.intersectRayVector(this.gizmoRay)[1]
     const grabPos = this.gizmoRay.pointAtDist(this.grabDist)
-    event.grabDist = this.grabDist
-    event.grabPos = grabPos
+    this.grabPos = grabPos
     this.onDragStart(event)
   }
 
@@ -39,14 +43,13 @@ class BaseLinearMovementHandle extends Handle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param
    */
-  handlePointerMove(event) {
+  handlePointerMove(event: ZeaMouseEvent | ZeaTouchEvent) {
     const ray = event.pointerRay
     const dist = ray.intersectRayVector(this.gizmoRay)[1]
-    const holdPos = this.gizmoRay.pointAtDist(dist)
-    event.holdDist = dist
-    event.holdPos = holdPos
-    event.value = dist
-    event.delta = dist - this.grabDist
+    this.holdPos = this.gizmoRay.pointAtDist(dist)
+    this.holdDist = dist
+    this.value = dist
+    this.delta = dist - this.grabDist
     this.onDrag(event)
   }
 
@@ -56,12 +59,12 @@ class BaseLinearMovementHandle extends Handle {
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    * @return {boolean} - The return value.
    */
-  handlePointerUp(event) {
+  handlePointerUp(event: ZeaMouseEvent | ZeaTouchEvent) {
     const ray = event.pointerRay
     if (ray) {
       const dist = ray.intersectRayVector(this.gizmoRay)[1]
       const releasePos = this.gizmoRay.pointAtDist(dist)
-      event.releasePos = releasePos
+      this.releasePos = releasePos
     }
 
     this.onDragEnd(event)
@@ -76,14 +79,15 @@ class BaseLinearMovementHandle extends Handle {
    * @param {object} event - The event param.
    * @return {boolean} The return value.
    */
-  onVRControllerButtonDown(event) {
+  onVRControllerButtonDown(event: XRControllerEvent) {
     this.gizmoRay = this.getManipulationPlane()
 
     this.activeController = event.controller
     const xfo = this.activeController.getTipXfo()
     this.grabDist = xfo.tr.subtract(this.gizmoRay.start).dot(this.gizmoRay.dir)
-    const grabPos = this.gizmoRay.start.add(this.gizmoRay.dir.scale(this.grabDist))
-    event.grabPos = grabPos
+    this.grabPos = this.gizmoRay.start.add(this.gizmoRay.dir.scale(this.grabDist))
+
+    //this.grabPos = grabPos
     this.onDragStart(event)
   }
 
@@ -93,13 +97,12 @@ class BaseLinearMovementHandle extends Handle {
    * @param {object} event - The event param.
    * @return {boolean} The return value.
    */
-  onVRPoseChanged(event) {
+  onVRPoseChanged(event: XRControllerEvent) {
     const xfo = this.activeController.getTipXfo()
     const dist = xfo.tr.subtract(this.gizmoRay.start).dot(this.gizmoRay.dir)
-    const holdPos = this.gizmoRay.start.add(this.gizmoRay.dir.scale(dist))
-    event.value = dist
-    event.holdPos = holdPos
-    event.delta = dist - this.grabDist
+    this.holdPos = this.gizmoRay.start.add(this.gizmoRay.dir.scale(dist))
+    this.value = dist
+    this.delta = dist - this.grabDist
     this.onDrag(event)
   }
 
@@ -109,7 +112,7 @@ class BaseLinearMovementHandle extends Handle {
    * @param {object} event - The event param.
    * @return {boolean} - The return value.
    */
-  onVRControllerButtonUp(event) {
+  onVRControllerButtonUp(event: XRControllerEvent) {
     if (this.activeController == event.controller) {
       // const xfo = this.activeController.getTipXfo()
       this.onDragEnd()

@@ -3,6 +3,8 @@ import { Ray, Vec3, Color, ColorParameter, BaseTool, GeomItem, Xfo, Quat } from 
 import { MeasurementChange } from './MeasurementChange'
 import { MeasureAngle } from './MeasureAngle'
 import { AppData } from '../../types/temp'
+import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
+import { ZeaTouchEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaTouchEvent'
 /**
  * UI Tool for measurements
  *
@@ -90,7 +92,7 @@ class MeasureAngleTool extends BaseTool {
    *
    * @param {MouseEvent|TouchEvent} event - The event value
    */
-  onPointerDown(event) {
+  onPointerDown(event: ZeaMouseEvent | ZeaTouchEvent) {
     // skip if the alt key is held. Allows the camera tool to work
     if (event.altKey || (event.pointerType === 'mouse' && event.button !== 0) || !event.intersectionData) return
 
@@ -225,7 +227,7 @@ class MeasureAngleTool extends BaseTool {
    *
    * @param {MouseEvent|TouchEvent} event - The event value
    */
-  onPointerMove(event) {
+  onPointerMove(event: ZeaMouseEvent | ZeaTouchEvent) {
     // skip if the alt key is held. Allows the camera tool to work
     if (event.altKey || (event.pointerType === 'mouse' && event.button !== 0)) return
 
@@ -276,7 +278,7 @@ class MeasureAngleTool extends BaseTool {
    *
    * @param {MouseEvent|TouchEvent} event - The event value
    */
-  onPointerUp(event) {
+  onPointerUp(event: ZeaMouseEvent | ZeaTouchEvent) {
     if (this.dragging) {
       this.dragging = false
       this.measurementChange = null
