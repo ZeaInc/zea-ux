@@ -27,7 +27,7 @@ class MeasureDistanceTool extends BaseTool {
    *
    * @param {object} appData - The appData value
    */
-  constructor(appData) {
+  constructor(appData: AppData) {
     super()
 
     this.colorParam = new ColorParameter('Color', new Color('#F9CE03'))
@@ -83,7 +83,7 @@ class MeasureDistanceTool extends BaseTool {
    * @return {Vec3}
    * @private
    */
-  snapToParametricEdge(geomItem, pos) {
+  snapToParametricEdge(geomItem: GeomItem, pos: Vec3): Vec3 {
     const xfo = geomItem.globalXfoParam.value
     if (geomItem.hasParameter('CurveType')) {
       const curveType = geomItem.getParameter('CurveType').getValue()
@@ -96,7 +96,7 @@ class MeasureDistanceTool extends BaseTool {
         }
         case 'Circle': {
           const crvToPnt = pos.subtract(xfo.tr)
-          const radius = geomItem.radiusParam.getValue() * xfo.sc.x
+          const radius = geomItem.getParameter('Radius').getValue() * xfo.sc.x
           const zaxis = xfo.ori.getZaxis()
           crvToPnt.subtractInPlace(zaxis.scale(crvToPnt.dot(zaxis)))
           const length = crvToPnt.length()
