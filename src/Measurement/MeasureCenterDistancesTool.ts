@@ -128,7 +128,12 @@ class MeasureCenterDistancesTool extends BaseTool {
    */
   onPointerDown(event: ZeaPointerEvent) {
     // skip if the alt key is held. Allows the camera tool to work
-    if (event.altKey || (event.pointerType === 'mouse' && event.button !== 0) || !event.intersectionData) return
+    if (
+      ((event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) && event.altKey) ||
+      (event instanceof ZeaMouseEvent && event.button !== 0) ||
+      !event.intersectionData
+    )
+      return
 
     if (this.stage == 0) {
       if (this.highlightedItemA) {
@@ -204,7 +209,7 @@ class MeasureCenterDistancesTool extends BaseTool {
    */
   onPointerMove(event: ZeaPointerEvent) {
     // skip if the alt key is held. Allows the camera tool to work
-    if (event.altKey || (event.pointerType === 'mouse' && event.button !== 0)) return
+    if ((event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) && event.altKey || (event instanceof ZeaMouseEvent && event.button !== 0)) return
 
     if (this.stage == 0) {
       if (event.intersectionData) {

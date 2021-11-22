@@ -19,6 +19,7 @@ import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 import { ZeaPointerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaPointerEvent'
 import { ZeaTouchEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaTouchEvent'
 import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
+import { checkMouseOrTouch } from '../utility'
 
 /**
  * Class representing a slider scene widget with an arc shape. There are two parts in this widget, the slider and the handle.<br>
@@ -258,13 +259,7 @@ class ArcSlider extends BaseAxialRotationHandle {
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onDrag(event: ZeaPointerEvent): void {
-    if (event instanceof ZeaMouseEvent && (event.altKey || event.button !== 0 || !event.intersectionData)) {
-      return
-    }
-    if (event instanceof ZeaTouchEvent && (event.altKey || !event.intersectionData || event.touches.length > 1)) {
-      return
-    }
- 
+
     const vec1 = this.holdPos.subtract(this.baseXfo.tr)
     vec1.normalizeInPlace()
 
@@ -275,7 +270,7 @@ class ArcSlider extends BaseAxialRotationHandle {
       angle = MathFunctions.clamp(angle, this.range[0], this.range[1])
     }
 
-    if (event.shiftKey) {
+    if ((event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) && event.shiftKey) {
       // modulate the angle to X degree increments.
       const degree: number = 22.5
       const rad: number = degree * (Math.PI / 180)

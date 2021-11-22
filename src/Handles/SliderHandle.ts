@@ -154,7 +154,7 @@ class SliderHandle extends BaseLinearMovementHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragStart(event: ZeaMouseEvent | ZeaTouchEvent) {
+  onDragStart(event: ZeaPointerEvent) {
     // Hilight the material.
     this.handleXfo.sc.x = this.handleXfo.sc.y = this.handleXfo.sc.z = 1.2
     this.handle.localXfoParam.value = this.handleXfo
@@ -171,7 +171,7 @@ class SliderHandle extends BaseLinearMovementHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDrag(event: ZeaMouseEvent | ZeaTouchEvent) {
+  onDrag(event: ZeaPointerEvent) {
     const length = this.lengthParam.getValue()
     const param = <NumberParameter>this.param
     const range = param && param.getRange() ? param.getRange() : [0, 1]
@@ -196,7 +196,7 @@ class SliderHandle extends BaseLinearMovementHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragEnd(event: ZeaMouseEvent | ZeaTouchEvent) {
+  onDragEnd(event: ZeaPointerEvent) {
     this.change = null
     // unhilight the material.
     this.handleXfo.sc.x = this.handleXfo.sc.y = this.handleXfo.sc.z = 1.0
@@ -209,7 +209,7 @@ class SliderHandle extends BaseLinearMovementHandle {
    * @param {object} context - The context param.
    * @return {object} The return value.
    */
-  toJSON(context: Record<string,any>) {
+  toJSON(context: Record<string, any>) {
     const json = super.toJSON(context)
     if (this.param) json.targetParam = this.param.getPath()
     return json
@@ -221,7 +221,7 @@ class SliderHandle extends BaseLinearMovementHandle {
    * @param {object} json - The json param.
    * @param {object} context - The context param.
    */
-  fromJSON(json: Record<string,any>, context: Record<string,any>) {
+  fromJSON(json: Record<string, any>, context: Record<string, any>) {
     super.fromJSON(json, context)
 
     if (json.targetParam) {

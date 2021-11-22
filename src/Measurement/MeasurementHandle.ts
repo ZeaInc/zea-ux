@@ -18,6 +18,7 @@ class MeasurementHandle extends ScreenSpaceMovementHandle {
    * @return {boolean} - The return value
    */
   handlePointerMove(event: ZeaPointerEvent) {
+    
     const ray = getPointerRay(event)
     event.intersectionData = event.viewport.getGeomDataAtPos(event.pointerPos, ray)
     if (event.intersectionData) {
@@ -36,7 +37,7 @@ class MeasurementHandle extends ScreenSpaceMovementHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragStart(event: ZeaMouseEvent | ZeaTouchEvent) {
+  onDragStart(event: ZeaPointerEvent) {
     super.onDragStart(event)
     const owner = <TreeItem>this.getOwner()
     owner.setSelectable(false)
@@ -78,6 +79,7 @@ class MeasurementHandle extends ScreenSpaceMovementHandle {
         item.setSelectable(true)
       }
     })
+    
     event.viewport.renderGeomDataFbo()
   }
 }

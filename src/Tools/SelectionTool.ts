@@ -129,7 +129,7 @@ class SelectionTool extends BaseTool {
    * @return {boolean} The return value.
    */
   onPointerDown(event: ZeaPointerEvent) {
-    if (event.pointerType === 'touch' || (event.button == 0 && !event.altKey)) {
+    if (event instanceof ZeaTouchEvent || (event instanceof ZeaMouseEvent && (event.button == 0 && !event.altKey))) {
       this.pointerDownPos = event.pointerPos
       this.dragging = false
 
@@ -166,7 +166,7 @@ class SelectionTool extends BaseTool {
    * @return {boolean} The return value.
    */
   onPointerUp(event: ZeaPointerEvent) {
-    if (this.pointerDownPos) {
+    if ((event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) && this.pointerDownPos) {
       // event.viewport.renderGeomDataFbo();
       if (this.dragging) {
         this.rectItem.getParameter('Visible').setValue(false)
