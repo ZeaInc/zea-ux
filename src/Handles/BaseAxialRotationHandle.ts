@@ -101,7 +101,7 @@ class BaseAxialRotationHandle extends Handle {
       angle = MathFunctions.clamp(angle, this.range[0], this.range[1])
     }
 
-    if (event.shiftKey) {
+    if ((event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) && event.shiftKey) {
       // modulat the angle to X degree increments.
       const degree: number = 22.5
       const rad: number = degree * (Math.PI / 180)
@@ -124,7 +124,7 @@ class BaseAxialRotationHandle extends Handle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragEnd(event: ZeaMouseEvent | ZeaTouchEvent): void {
+  onDragEnd(event: ZeaPointerEvent): void {
     this.change = null
   }
 }
