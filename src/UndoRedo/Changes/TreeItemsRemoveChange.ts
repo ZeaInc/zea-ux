@@ -35,11 +35,10 @@ class TreeItemsRemoveChange extends Change {
       this.newSelection = new Set(this.prevSelection)
 
       const itemNames = []
-      this.items.forEach((item) => {
-        const owner = item.getOwner()
+      this.items.forEach((item: TreeItem) => {
+        const owner = <TreeItem>item.getOwner()
         const itemIndex = owner.getChildIndex(item)
         itemNames.push(item.getName())
-        item.addRef(this)
         this.itemOwners.push(owner)
         this.itemPaths.push(item.getPath())
         this.itemIndices.push(itemIndex)

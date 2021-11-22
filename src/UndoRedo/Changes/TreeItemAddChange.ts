@@ -31,7 +31,6 @@ class TreeItemAddChange extends Change {
       this.treeItemIndex = this.owner.getChildIndex(this.owner.addChild(this.treeItem))
       this.selectionManager.setSelection(new Set([this.treeItem]), false)
 
-      this.treeItem.addRef(this)
     } else {
       super()
     }
@@ -106,7 +105,6 @@ class TreeItemAddChange extends Change {
     }
     this.name = j.name
     this.treeItem = treeItem
-    this.treeItem.addRef(this)
 
     this.treeItem.fromJSON(j.treeItem, context)
     this.treeItemIndex = this.owner.getChildIndex(this.owner.addChild(this.treeItem))
@@ -116,7 +114,6 @@ class TreeItemAddChange extends Change {
    * Removes reference of the `TreeItem` from current change.
    */
   destroy() {
-    this.treeItem.removeRef(this)
   }
 }
 
