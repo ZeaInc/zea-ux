@@ -3,6 +3,8 @@ import Handle from './Handle'
 import './Shaders/HandleShader'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 import { ParameterValueChange } from '../UndoRedo/Changes/ParameterValueChange'
+import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
+import { ZeaTouchEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaTouchEvent'
 
 /**
  * Class representing an axial rotation scene widget.
@@ -18,7 +20,7 @@ class SphericalRotationHandle extends Handle {
   offsetXfo: Xfo
   change: ParameterValueChange
   maskMat: Material
-  
+
   /**
    * Create an axial rotation scene widget.
    *
@@ -82,14 +84,14 @@ class SphericalRotationHandle extends Handle {
    * @param {MouseEvent} event - The event param.
    * @return {boolean} - The return value.
    */
-  handlePointerDown(event) {
+  handlePointerDown(event: ZeaMouseEvent) {
     // const xfo = this.globalXfoParam.value;
     // this.sphere = {
     //   tr: xfo,
     //   radius: this.radius,
     // };
     // const dist = event.mouseRay.intersectRaySphere(this.sphere);
-    // event.grabPos = event.mouseRay.pointAtDist(dist);
+    // this.grabPos = event.mouseRay.pointAtDist(dist);
     // this.onDragStart(event);
     return true
   }
@@ -100,9 +102,9 @@ class SphericalRotationHandle extends Handle {
    * @param {MouseEvent} event - The event param
    * @return {boolean} - The return value
    */
-  handlePointerMove(event) {
+  handlePointerMove(event: ZeaMouseEvent) {
     // const dist = event.mouseRay.intersectRaySphere(this.sphere);
-    // event.holdPos = event.mouseRay.pointAtDist(dist);
+    // this.holdPos = event.mouseRay.pointAtDist(dist);
     // this.onDrag(event);
   }
 
@@ -112,9 +114,9 @@ class SphericalRotationHandle extends Handle {
    * @param {MouseEvent} event - The event param.
    * @return {boolean} - The return value.
    */
-  handlePointerUp(event) {
+  handlePointerUp(event: ZeaMouseEvent) {
     // const dist = event.mouseRay.intersectRaySphere(this.sphere);
-    // event.releasePos = event.mouseRay.pointAtDist(dist);
+    // this.releasePos = event.mouseRay.pointAtDist(dist);
     // this.onDragEnd(event);
   }
 
@@ -123,14 +125,14 @@ class SphericalRotationHandle extends Handle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragStart(event) {
+  onDragStart(event: ZeaMouseEvent | ZeaTouchEvent) {
     this.baseXfo = this.globalXfoParam.value
     this.baseXfo.sc.set(1, 1, 1)
     this.deltaXfo = new Xfo()
     const param = this.getTargetParam()
     this.offsetXfo = this.baseXfo.inverse().multiply(<Xfo>param.value)
 
-    this.vec0 = event.grabPos.subtract(this.baseXfo.tr)
+    this.vec0 = this.grabPos.subtract(this.baseXfo.tr)
     this.vec0.normalizeInPlace()
 
     // Hilight the material.
@@ -145,8 +147,8 @@ class SphericalRotationHandle extends Handle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDrag(event) {
-    const vec1 = event.holdPos.subtract(this.baseXfo.tr)
+  onDrag(event: ZeaMouseEvent | ZeaTouchEvent) {
+    const vec1 = this.holdPos.subtract(this.baseXfo.tr)
     vec1.normalizeInPlace()
     const modulator = 1
     const angle = this.vec0.angleTo(vec1) * modulator
@@ -167,7 +169,7 @@ class SphericalRotationHandle extends Handle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragEnd(event) {
+  onDragEnd(event: ZeaMouseEvent | ZeaTouchEvent) {
     this.change = null
   }
 }

@@ -2,6 +2,8 @@ import { Parameter, Ray, Vec3, Xfo } from '@zeainc/zea-engine'
 import Handle from './Handle.js'
 import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange.js'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager.js'
+import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
+import { ZeaTouchEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaTouchEvent'
 
 /**
  * Class representing a planar movement scene widget.
@@ -57,7 +59,7 @@ class ScreenSpaceMovementHandle extends Handle {
    * @param {MouseEvent} event - The event param.
    * @return {boolean} - The return value.
    */
-  handlePointerDown(event) {
+  handlePointerDown(event: ZeaMouseEvent) {
     this.gizmoRay = new Ray()
     const ray = event.pointerRay
     const cameraXfo = event.viewport.getCamera().globalXfoParam.value
@@ -66,7 +68,7 @@ class ScreenSpaceMovementHandle extends Handle {
     const baseXfo = <Xfo>param.value
     this.gizmoRay.start = baseXfo.tr
     const dist = ray.intersectRayPlane(this.gizmoRay)
-    event.grabPos = ray.pointAtDist(dist)
+    this.grabPos = ray.pointAtDist(dist)
     this.onDragStart(event)
   }
 
@@ -76,10 +78,10 @@ class ScreenSpaceMovementHandle extends Handle {
    * @param {MouseEvent|TouchEvent} event - The event param
    * @return {boolean} - The return value
    */
-  handlePointerMove(event) {
+  handlePointerMove(event: ZeaMouseEvent | ZeaTouchEvent) {
     const ray = event.pointerRay
     const dist = ray.intersectRayPlane(this.gizmoRay)
-    event.holdPos = ray.pointAtDist(dist)
+    this.holdPos = ray.pointAtDist(dist)
     this.onDrag(event)
   }
 
@@ -89,11 +91,11 @@ class ScreenSpaceMovementHandle extends Handle {
    * @param {MouseEvent|TouchEvent} event - The event param.
    * @return {boolean} - The return value.
    */
-  handlePointerUp(event) {
+  handlePointerUp(event: ZeaMouseEvent | ZeaTouchEvent) {
     const ray = event.pointerRay
     if (ray) {
       const dist = ray.intersectRayPlane(this.gizmoRay)
-      event.releasePos = ray.pointAtDist(dist)
+      this.releasePos = ray.pointAtDist(dist)
     }
 
     this.onDragEnd(event)
@@ -107,8 +109,8 @@ class ScreenSpaceMovementHandle extends Handle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragStart(event) {
-    this.grabPos = event.grabPos
+  onDragStart(event: ZeaMouseEvent | ZeaTouchEvent) {
+    this.grabPos = this.grabPos
     const param = this.getTargetParam()
     this.baseXfo = <Xfo>param.value
 
@@ -121,8 +123,8 @@ class ScreenSpaceMovementHandle extends Handle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDrag(event) {
-    const dragVec = event.holdPos.subtract(this.grabPos)
+  onDrag(event: ZeaMouseEvent | ZeaTouchEvent) {
+    const dragVec = this.holdPos.subtract(this.grabPos)
 
     const newXfo = this.baseXfo.clone()
     newXfo.tr.addInPlace(dragVec)
@@ -137,7 +139,7 @@ class ScreenSpaceMovementHandle extends Handle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragEnd(event) {
+  onDragEnd(event: ZeaMouseEvent | ZeaTouchEvent) {
     this.change = null
   }
 }

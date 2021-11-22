@@ -59,8 +59,7 @@ class BaseAxialRotationHandle extends Handle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  // TODO: type  ZeaMouseEvent | ZeaTouchEvent |
-  onDragStart(event: Record<any, any>): void {
+  onDragStart(event: ZeaMouseEvent | ZeaTouchEvent): void {
     this.baseXfo = this.globalXfoParam.value.clone()
     this.baseXfo.sc.set(1, 1, 1)
     this.deltaXfo = new Xfo()
@@ -68,8 +67,8 @@ class BaseAxialRotationHandle extends Handle {
     const param = this.getTargetParam()
     const paramXfo = <Xfo>param.value
     this.offsetXfo = this.baseXfo.inverse().multiply(paramXfo)
-
-    this.vec0 = event.grabPos.subtract(this.baseXfo.tr)
+    //@ts-ignore
+    this.vec0 = this.grabPos.subtract(this.baseXfo.tr)
     this.grabCircleRadius = this.vec0.length()
     this.vec0.normalizeInPlace()
 
@@ -82,8 +81,8 @@ class BaseAxialRotationHandle extends Handle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDrag(event): void {
-    const vec1 = event.holdPos.subtract(this.baseXfo.tr)
+  onDrag(event: ZeaMouseEvent | ZeaTouchEvent): void {
+    const vec1 = this.holdPos.subtract(this.baseXfo.tr)
     // const dragCircleRadius = vec1.length()
     vec1.normalizeInPlace()
 
@@ -125,7 +124,7 @@ class BaseAxialRotationHandle extends Handle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragEnd(event): void {
+  onDragEnd(event: ZeaMouseEvent | ZeaTouchEvent): void {
     this.change = null
   }
 }

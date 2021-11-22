@@ -13,6 +13,8 @@ import {
 import BaseLinearMovementHandle from './BaseLinearMovementHandle'
 import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
+import { ZeaTouchEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaTouchEvent'
+import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
 
 /**
  * Class representing a slider scene widget. There are two parts in this widget, the slider and the handle.<br>
@@ -152,7 +154,7 @@ class SliderHandle extends BaseLinearMovementHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragStart(event) {
+  onDragStart(event: ZeaMouseEvent | ZeaTouchEvent) {
     // Hilight the material.
     this.handleXfo.sc.x = this.handleXfo.sc.y = this.handleXfo.sc.z = 1.2
     this.handle.localXfoParam.value = this.handleXfo
@@ -169,12 +171,12 @@ class SliderHandle extends BaseLinearMovementHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDrag(event) {
+  onDrag(event: ZeaMouseEvent | ZeaTouchEvent) {
     const length = this.lengthParam.getValue()
     const param = <NumberParameter>this.param
     const range = param && param.getRange() ? param.getRange() : [0, 1]
     const value = MathFunctions.clamp(
-      MathFunctions.remap(event.value, 0, length, range[0], range[1]),
+      MathFunctions.remap(this.value, 0, length, range[0], range[1]),
       range[0],
       range[1]
     )
@@ -194,7 +196,7 @@ class SliderHandle extends BaseLinearMovementHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragEnd(event) {
+  onDragEnd(event: ZeaMouseEvent | ZeaTouchEvent) {
     this.change = null
     // unhilight the material.
     this.handleXfo.sc.x = this.handleXfo.sc.y = this.handleXfo.sc.z = 1.0
@@ -207,7 +209,7 @@ class SliderHandle extends BaseLinearMovementHandle {
    * @param {object} context - The context param.
    * @return {object} The return value.
    */
-  toJSON(context) {
+  toJSON(context: Record<string,any>) {
     const json = super.toJSON(context)
     if (this.param) json.targetParam = this.param.getPath()
     return json
@@ -219,7 +221,7 @@ class SliderHandle extends BaseLinearMovementHandle {
    * @param {object} json - The json param.
    * @param {object} context - The context param.
    */
-  fromJSON(json, context) {
+  fromJSON(json: Record<string,any>, context: Record<string,any>) {
     super.fromJSON(json, context)
 
     if (json.targetParam) {
