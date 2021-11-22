@@ -236,7 +236,7 @@ void main(void) {
    * @param {any} material - The material param.
    * @return {any} - The return value.
    */
-  static getPackedMaterialData(material) {
+  static getPackedMaterialData(material: Material) {
     const matData = new Float32Array(8)
     const baseColor = material.getParameter('BaseColor').getValue()
     matData[0] = baseColor.r
@@ -254,7 +254,7 @@ void main(void) {
    * @static
    * @return {boolean} - The overlay value
    */
-  static isOverlay() {
+  static isOverlay(): boolean {
     return true
   }
 
@@ -264,7 +264,7 @@ void main(void) {
    * the material provides values to the shader during rendering.
    * @return {Material} - The template material value.
    */
-  static getMaterialTemplate() {
+  static getMaterialTemplate(): Material {
     return material
   }
 }

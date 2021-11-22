@@ -8,9 +8,9 @@ import { Color, Registry, MaterialColorParam, NumberParameter, Material } from '
  * @extends {GLShader}
  */
 class HandleMaterial extends Material {
-  baseColorParam
-  maintainScreenSizeParam
-  overlayParam
+  baseColorParam = new MaterialColorParam('BaseColor', new Color(1.0, 1, 0.5))
+  maintainScreenSizeParam = new NumberParameter('MaintainScreenSize', 0)
+  overlayParam = new NumberParameter('Overlay', 0, [0, 1])
   /**
    * Creates an instance of HandleMaterial.
    *
@@ -19,9 +19,6 @@ class HandleMaterial extends Material {
   constructor(name?) {
     super(name)
     this.__shaderName = 'HandleShader'
-    this.baseColorParam = new MaterialColorParam('BaseColor', new Color(1.0, 1, 0.5))
-    this.maintainScreenSizeParam = new NumberParameter('MaintainScreenSize', 0)
-    this.overlayParam = new NumberParameter('Overlay', 0, [0, 1])
     this.addParameter(this.baseColorParam)
     this.addParameter(this.maintainScreenSizeParam)
     this.addParameter(this.overlayParam)
