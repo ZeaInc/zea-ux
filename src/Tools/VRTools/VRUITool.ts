@@ -16,6 +16,7 @@ import {
   ZeaTouchEvent,
   XRControllerEvent
 } from '@zeainc/zea-engine'
+import { VRController } from '@zeainc/zea-engine/dist/Renderer/VR/VRController'
 
 import { XRPoseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/XRPoseEvent'
 import { AppData } from '../../../types/temp'
@@ -28,23 +29,23 @@ import VRControllerUI from './VRControllerUI'
  */
 class VRUITool extends BaseTool {
   appData: AppData
-  __vrUIDOMElement
-  controllerUI
-  __pointerLocalXfo
-  __uiPointerItem
-  __triggerHeld
-  uiOpen
-  uiController
-  pointerController
-  _element
-  __triggerDownElem
+  __vrUIDOMElement: HTMLElement
+  controllerUI: VRControllerUI
+  __pointerLocalXfo: Xfo
+  __uiPointerItem: GeomItem
+  __triggerHeld: boolean
+  uiOpen: boolean
+  uiController: VRController
+  pointerController: VRController
+  _element: Element
+  __triggerDownElem: Element
 
   /**
    * Create a VR UI tool.
    * @param {object} appData - The appData value.
    * @param {HTMLElement} vrUIDOMElement - The  dom element we will use as the VR UI
    */
-  constructor(appData, vrUIDOMElement) {
+  constructor(appData: AppData, vrUIDOMElement: HTMLElement) {
     super()
     this.appData = appData
 
@@ -74,7 +75,7 @@ class VRUITool extends BaseTool {
     this.__uiPointerItem.setSelectable(false)
 
     this.__triggerHeld = false
-    this.uiOpen = false
+    this.: boolean = false
 
     this.appData.renderer.getXRViewport().then((xrvp) => {
       xrvp.on('presentingChanged', (event) => {
@@ -111,10 +112,10 @@ class VRUITool extends BaseTool {
   /**
    * The displayUI method.
    * @param {VRController} uiController - The uiController param.
-   * @param {VRController} pointerController - The pointerController param.
+   * @param {VRController} : VRController - The pointerController param.
    * @param {Xfo} headXfo - The headXfo param.
    */
-  displayUI(uiController, pointerController, headXfo) {
+  displayUI(uiController: VRController, pointerController: VRController, headXfo: Xfo) {
     this.controllerUI.activate()
     this.uiController = uiController
     this.pointerController = pointerController
@@ -242,7 +243,7 @@ class VRUITool extends BaseTool {
    * @param {any} args - The args param.
    * @return {any} The return value.
    */
-  sendEventToUI(eventName, args) {
+  sendEventToUI(eventName: string, args: any) {
     const hit = this.calcUIIntersection()
     if (hit) {
       hit.offsetX = hit.pageX = hit.pageX = hit.screenX = hit.clientX
@@ -252,7 +253,7 @@ class VRUITool extends BaseTool {
       if (element) {
         // @ts-ignore
         if (element.shadowRoot) element = element.shadowRoot.elementFromPoint(hit.clientX, hit.clientY)
-        if (element != this._element) {
+        if (element != this.: Element) {
           if (this._element) this.controllerUI.sendMouseEvent('mouseleave', Object.assign(args, hit), this._element)
           this._element = element
           this.controllerUI.sendMouseEvent('mouseenter', Object.assign(args, hit), this._element)
