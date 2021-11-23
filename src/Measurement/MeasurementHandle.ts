@@ -18,7 +18,10 @@ class MeasurementHandle extends ScreenSpaceMovementHandle {
    * @return {boolean} - The return value
    */
   handlePointerMove(event: ZeaPointerEvent) {
-    
+    if (!(event instanceof ZeaMouseEvent) && !(event instanceof ZeaTouchEvent)) {
+      console.warn("not handling VR")
+      return
+    }
     const ray = getPointerRay(event)
     event.intersectionData = event.viewport.getGeomDataAtPos(event.pointerPos, ray)
     if (event.intersectionData) {
@@ -38,6 +41,10 @@ class MeasurementHandle extends ScreenSpaceMovementHandle {
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onDragStart(event: ZeaPointerEvent) {
+    if (!(event instanceof ZeaMouseEvent) && !(event instanceof ZeaTouchEvent)) {
+      console.warn("not handling VR")
+      return
+    }
     super.onDragStart(event)
     const owner = <TreeItem>this.getOwner()
     owner.setSelectable(false)
@@ -72,6 +79,10 @@ class MeasurementHandle extends ScreenSpaceMovementHandle {
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onDragEnd(event: ZeaPointerEvent) {
+    if (!(event instanceof ZeaMouseEvent) && !(event instanceof ZeaTouchEvent)) {
+      console.warn("not handling VR")
+      return
+    }
     super.onDragEnd(event)
     const owner = <TreeItem>this.getOwner()
     owner.traverse((item) => {

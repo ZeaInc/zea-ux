@@ -5,6 +5,8 @@ import { AppData } from '../../../types/temp'
 import { VRController } from '@zeainc/zea-engine/dist/Renderer/VR/VRController'
 import { ZeaPointerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaPointerEvent'
 import { getPointerRay } from '../../utility'
+import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
+import { ZeaTouchEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaTouchEvent'
 
 /**
  * Base class for creating geometry tools.
@@ -102,6 +104,10 @@ class CreateGeomTool extends BaseCreateTool {
    * @return {Xfo} The return value.
    */
   screenPosToXfo(event: ZeaPointerEvent): Xfo {
+    if (!(event instanceof ZeaMouseEvent) && !(event instanceof ZeaTouchEvent)) {
+      console.warn("not handling VR")
+      return
+    }
     if (event.intersectionData) {
       const ray = getPointerRay(event)
       const xfo = this.constructionPlane.clone()
