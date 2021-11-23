@@ -123,7 +123,8 @@ class Handle extends TreeItem {
     }
 
     // TODO: (check) used to be event.preventDefault()
-    this.preventDefault()
+    //@ts-ignore
+    event.preventDefault()
   }
 
   /**
