@@ -15,6 +15,7 @@ import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 import { ZeaTouchEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaTouchEvent'
 import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
+import { ZeaPointerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaPointerEvent'
 
 /**
  * Class representing a slider scene widget. There are two parts in this widget, the slider and the handle.<br>
@@ -116,7 +117,7 @@ class SliderHandle extends BaseLinearMovementHandle {
    * @param {Parameter} param - The video param.
    * @param {boolean} track - The track param.
    */
-  setTargetParam(param) {
+  setTargetParam(param: Parameter<unknown>) {
     this.param = param
     const __updateSlider = () => {
       this.__updateSlider(param.getValue())

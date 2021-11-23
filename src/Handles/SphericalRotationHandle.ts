@@ -5,6 +5,7 @@ import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 import { ParameterValueChange } from '../UndoRedo/Changes/ParameterValueChange'
 import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
 import { ZeaTouchEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaTouchEvent'
+import { ZeaPointerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaPointerEvent'
 
 /**
  * Class representing an axial rotation scene widget.
