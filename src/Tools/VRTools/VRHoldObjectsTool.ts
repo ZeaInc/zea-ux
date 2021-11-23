@@ -149,7 +149,7 @@ class VRHoldObjectsTool extends BaseTool {
    * @param {object} appData - The appData value.
    */
   constructor(appData: AppData) {
-    super(appData)
+    super()
     this.appData = appData
   }
 

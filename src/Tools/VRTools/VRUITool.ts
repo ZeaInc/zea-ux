@@ -41,7 +41,7 @@ class VRUITool extends BaseTool {
    * @param {HTMLElement} vrUIDOMElement - The  dom element we will use as the VR UI
    */
   constructor(appData, vrUIDOMElement) {
-    super(appData)
+    super()
     this.appData = appData
 
     this.__vrUIDOMElement = vrUIDOMElement
