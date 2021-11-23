@@ -18,7 +18,7 @@ class BaseLinearMovementHandle extends Handle {
    * Create base linear movement scene widget.
    * @param {string} name - The name value.
    */
-  constructor(name) {
+  constructor(name: string) {
     super(name)
   }
 

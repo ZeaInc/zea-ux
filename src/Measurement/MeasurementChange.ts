@@ -71,7 +71,7 @@ class MeasurementChange extends Change {
   toJSON(context: Record<any, any>) {
     const j: Record<any, any> = super.toJSON(context)
     j.parentItemPath = this.measurement.getOwner().getPath()
-    j.measurementType = Registry.getClassName(this.measurement) // TODO: check
+    j.measurementType = Registry.getClassName(Object.getPrototypeOf(this.measurement).constructor)
     j.measurementData = this.measurement.toJSON(context)
     return j
   }
