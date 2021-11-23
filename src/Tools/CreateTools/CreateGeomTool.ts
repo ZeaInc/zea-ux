@@ -249,7 +249,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param {MouseEvent} event - The event param.
    */
-  onWheel(event): void {
+  onWheel(event: ZeaPointerEvent): void {
     // console.warn('Implement me')
   }
 
@@ -290,7 +290,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param {TouchEvent} event - The event param.
    */
-  onTouchCancel(event): void {
+  onTouchCancel(event: ZeaPointerEvent): void {
     // console.warn('Implement me')
   }
 
@@ -302,7 +302,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param {object} event - The event param.
    */
-  onVRControllerButtonDown(event): void {
+  onVRControllerButtonDown(event: ZeaPointerEvent): void {
     if (!this.__activeController) {
       // TODO: Snap the Xfo to any nearby construction planes.
       this.__activeController = event.controller
@@ -319,7 +319,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param {object} event - The event param.
    */
-  onVRPoseChanged(event): void {
+  onVRPoseChanged(event: ZeaPointerEvent): void {
     if (this.__activeController && this.stage > 0) {
       // TODO: Snap the Xfo to any nearby construction planes.
       const xfo = this.__activeController.getTipXfo()
@@ -333,7 +333,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param {object} event - The event param.
    */
-  onVRControllerButtonUp(event): void {
+  onVRControllerButtonUp(event: ZeaPointerEvent): void {
     if (this.stage > 0) {
       if (this.__activeController == event.controller) {
         const xfo = this.__activeController.getTipXfo()
