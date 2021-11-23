@@ -1,13 +1,20 @@
 // TODO: need to export POINTER_TYPES
 // @ts-ignore
-import { Quat, Color, Xfo, BaseTool, POINTER_TYPES, TreeItem } from '@zeainc/zea-engine'
+import {
+  Quat,
+  Color,
+  Xfo,
+  BaseTool,
+  POINTER_TYPES,
+  TreeItem,
+  ZeaMouseEvent,
+  XRControllerEvent,
+  XRPoseEvent,
+} from '@zeainc/zea-engine'
 // import Handle from '../../Handles/Handle'
 import UndoRedoManager from '../../UndoRedo/UndoRedoManager'
 import Change from '../../UndoRedo/Change'
 import { AppData } from '../../../types/temp'
-import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
-import { XRControllerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/XRControllerEvent'
-import { XRPoseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/XRPoseEvent'
 
 /**
  * Class representing a hold objects change.

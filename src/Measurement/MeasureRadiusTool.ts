@@ -1,12 +1,21 @@
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
-import { Ray, Vec3, Color, ColorParameter, BaseTool, TreeItem, GeomItem } from '@zeainc/zea-engine'
+import {
+  Ray,
+  Vec3,
+  Color,
+  ColorParameter,
+  BaseTool,
+  TreeItem,
+  GeomItem,
+  ZeaPointerEvent,
+  ZeaMouseEvent,
+  ZeaTouchEvent,
+  XRControllerEvent,
+} from '@zeainc/zea-engine'
 import { MeasurementChange } from './MeasurementChange'
 import { MeasureDistance } from './MeasureDistance'
 import { AppData } from '../../types/temp'
-import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
-import { ZeaTouchEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaTouchEvent'
-import { ZeaPointerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaPointerEvent'
-import { XRControllerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/XRControllerEvent'
+
 import { getPointerRay } from '../utility'
 /**
  * UI Tool for measurements

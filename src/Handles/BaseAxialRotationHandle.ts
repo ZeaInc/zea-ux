@@ -1,10 +1,16 @@
-import { MathFunctions, Parameter, Vec3, Xfo, XfoParameter } from '@zeainc/zea-engine'
+import {
+  MathFunctions,
+  Parameter,
+  Vec3,
+  Xfo,
+  XfoParameter,
+  ZeaPointerEvent,
+  ZeaMouseEvent,
+  ZeaTouchEvent,
+} from '@zeainc/zea-engine'
 import Handle from './Handle'
 import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
-import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
-import { ZeaTouchEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaTouchEvent'
-import { ZeaPointerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaPointerEvent'
 
 /**
  * Class representing an axial rotation scene widget.

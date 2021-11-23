@@ -2,7 +2,7 @@ import CreateCircleChange from './Change/CreateCircleChange'
 import CreateGeomTool from './CreateGeomTool'
 import { UndoRedoManager } from '../../UndoRedo/index'
 import { AppData } from '../../../types/temp'
-import { TreeItem, Vec3, Xfo } from '@zeainc/zea-engine'
+import { TreeItem, Vec3, Xfo,} from '@zeainc/zea-engine'
 
 /**
  * Tool for creating a circle geometry.

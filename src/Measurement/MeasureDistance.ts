@@ -14,6 +14,10 @@ import {
   Registry,
   Vec3Attribute,
   NumberParameter,
+  ZeaPointerEvent,
+  ZeaMouseEvent,
+  ZeaTouchEvent,
+  XRControllerEvent,
 } from '@zeainc/zea-engine'
 
 import { HandleMaterial } from '../Handles/Shaders/HandleMaterial'

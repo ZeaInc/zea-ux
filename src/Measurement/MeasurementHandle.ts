@@ -1,7 +1,13 @@
-import { GeomItem, Registry, TreeItem } from '@zeainc/zea-engine'
-import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
-import { ZeaPointerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaPointerEvent'
-import { ZeaTouchEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaTouchEvent'
+import {
+  GeomItem,
+  Registry,
+  TreeItem,
+  ZeaPointerEvent,
+  ZeaMouseEvent,
+  ZeaTouchEvent,
+  XRControllerEvent,
+} from '@zeainc/zea-engine'
+
 import { ScreenSpaceMovementHandle } from '../Handles/ScreenSpaceMovementHandle'
 import { getPointerRay } from '../utility'
 
@@ -19,7 +25,7 @@ class MeasurementHandle extends ScreenSpaceMovementHandle {
    */
   handlePointerMove(event: ZeaPointerEvent) {
     if (!(event instanceof ZeaMouseEvent) && !(event instanceof ZeaTouchEvent)) {
-      console.warn("not handling VR")
+      console.warn('not handling VR')
       return
     }
     const ray = getPointerRay(event)
@@ -42,7 +48,7 @@ class MeasurementHandle extends ScreenSpaceMovementHandle {
    */
   onDragStart(event: ZeaPointerEvent) {
     if (!(event instanceof ZeaMouseEvent) && !(event instanceof ZeaTouchEvent)) {
-      console.warn("not handling VR")
+      console.warn('not handling VR')
       return
     }
     super.onDragStart(event)
@@ -80,7 +86,7 @@ class MeasurementHandle extends ScreenSpaceMovementHandle {
    */
   onDragEnd(event: ZeaPointerEvent) {
     if (!(event instanceof ZeaMouseEvent) && !(event instanceof ZeaTouchEvent)) {
-      console.warn("not handling VR")
+      console.warn('not handling VR')
       return
     }
     super.onDragEnd(event)
@@ -90,7 +96,7 @@ class MeasurementHandle extends ScreenSpaceMovementHandle {
         item.setSelectable(true)
       }
     })
-    
+
     event.viewport.renderGeomDataFbo()
   }
 }

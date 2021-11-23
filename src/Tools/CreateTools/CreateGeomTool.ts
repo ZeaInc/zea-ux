@@ -1,12 +1,24 @@
-import { Color, Xfo, Ray, ColorParameter, GeomItem, Material, Cross, TreeItem, Vec3 } from '@zeainc/zea-engine'
+import {
+  Color,
+  Xfo,
+  Ray,
+  ColorParameter,
+  GeomItem,
+  Material,
+  Cross,
+  TreeItem,
+  Vec3,
+  ZeaPointerEvent,
+  ZeaMouseEvent,
+  ZeaTouchEvent,
+  XRControllerEvent,
+} from '@zeainc/zea-engine'
 import BaseCreateTool from '../BaseCreateTool'
 import { UndoRedoManager } from '../../UndoRedo/index'
 import { AppData } from '../../../types/temp'
 import { VRController } from '@zeainc/zea-engine/dist/Renderer/VR/VRController'
-import { ZeaPointerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaPointerEvent'
+
 import { getPointerRay } from '../../utility'
-import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
-import { ZeaTouchEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaTouchEvent'
 
 /**
  * Base class for creating geometry tools.
@@ -105,7 +117,7 @@ class CreateGeomTool extends BaseCreateTool {
    */
   screenPosToXfo(event: ZeaPointerEvent): Xfo {
     if (!(event instanceof ZeaMouseEvent) && !(event instanceof ZeaTouchEvent)) {
-      console.warn("not handling VR")
+      console.warn('not handling VR')
       return
     }
     if (event.intersectionData) {

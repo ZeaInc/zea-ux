@@ -1,12 +1,25 @@
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
-import { Ray, Vec3, Color, ColorParameter, BaseTool, GeomItem, Xfo, Quat, TreeItem } from '@zeainc/zea-engine'
+import {
+  Ray,
+  Vec3,
+  Color,
+  ColorParameter,
+  BaseTool,
+  GeomItem,
+  Xfo,
+  Quat,
+  TreeItem,
+  ZeaPointerEvent,
+  ZeaMouseEvent,
+  ZeaTouchEvent,
+  XRControllerEvent,
+} from '@zeainc/zea-engine'
 import { MeasurementChange } from './MeasurementChange'
 import { MeasureAngle } from './MeasureAngle'
 import { AppData } from '../../types/temp'
-import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
-import { ZeaTouchEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaTouchEvent'
+
 import { getPointerRay } from '../utility'
-import { ZeaPointerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaPointerEvent'
+
 /**
  * UI Tool for measurements
  *
@@ -96,7 +109,12 @@ class MeasureAngleTool extends BaseTool {
    */
   onPointerDown(event: ZeaPointerEvent) {
     // skip if the alt key is held. Allows the camera tool to work
-    if ((event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) && event.altKey || (event instanceof ZeaMouseEvent && event.button !== 0) || !event.intersectionData) return
+    if (
+      ((event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) && event.altKey) ||
+      (event instanceof ZeaMouseEvent && event.button !== 0) ||
+      !event.intersectionData
+    )
+      return
 
     const getSurfaceXfo = (geomItem: GeomItem, hitPos, closestTo?) => {
       const xfo = new Xfo()
@@ -231,7 +249,11 @@ class MeasureAngleTool extends BaseTool {
    */
   onPointerMove(event: ZeaPointerEvent) {
     // skip if the alt key is held. Allows the camera tool to work
-    if ((event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) && event.altKey || (event instanceof ZeaMouseEvent && event.button !== 0)) return
+    if (
+      ((event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) && event.altKey) ||
+      (event instanceof ZeaMouseEvent && event.button !== 0)
+    )
+      return
 
     if (this.stage == 0) {
       if (event.intersectionData) {
