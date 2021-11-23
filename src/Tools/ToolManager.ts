@@ -5,26 +5,26 @@ import { BaseTool, ZeaPointerEvent, ZeaMouseEvent, ZeaTouchEvent, XRControllerEv
  * @extends BaseTool
  */
 class ToolManager extends BaseTool {
-  toolStack
-  tools
+  toolStack: BaseTool[]
+  tools: BaseTool
   constructor() {
     super()
     this.tools = {}
     this.toolStack = []
   }
 
-  registerTool(toolName, tool) {
+  registerTool(toolName: string, tool: BaseTool): void {
     this.tools[toolName] = tool
   }
 
-  pushTool(toolName) {
+  pushTool(toolName: string): void{
     const tool = this.tools[toolName]
     if (!tool) throw Error('Tool not found' + toolName)
     if (tool.activateTool) tool.activateTool()
     this.toolStack.push(this.tools[toolName])
   }
 
-  popTool() {
+  popTool(): void {
     if (this.toolStack.length == 0) {
       throw Error('Tool stack is empty')
     }
@@ -37,7 +37,7 @@ class ToolManager extends BaseTool {
    * Returns the tool currently at the top of the stack.
    * @return {Tool} - the currently active tool.
    */
-  activeTool() {
+  activeTool(): BaseTool {
     if (this.toolStack.length > 0) {
       return this.toolStack[this.toolStack.length - 1]
     }
@@ -48,7 +48,7 @@ class ToolManager extends BaseTool {
    * Returns the name of the tool currently at the top of the stack.
    * @return - the name of the tool.
    */
-  activeToolName() {
+  activeToolName(): string {
     if (this.toolStack.length > 0) {
       const tool = this.toolStack[this.toolStack.length - 1]
       for (const key in this.tools) {
@@ -66,7 +66,7 @@ class ToolManager extends BaseTool {
    *
    * @param {MouseEvent} event - The event param.
    */
-  onPointerDown(event: ZeaMouseEvent) {
+  onPointerDown(event: ZeaMouseEvent): void {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
       const tool = this.toolStack[i]
       if (tool.onPointerDown) {
@@ -81,7 +81,7 @@ class ToolManager extends BaseTool {
    *
    * @param {MouseEvent} event - The event param.
    */
-  onPointerMove(event: ZeaMouseEvent) {
+  onPointerMove(event: ZeaMouseEvent): void {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
       const tool = this.toolStack[i]
       if (tool.onPointerMove) {
@@ -96,7 +96,7 @@ class ToolManager extends BaseTool {
    *
    * @param {MouseEvent} event - The event param.
    */
-  onPointerUp(event: ZeaMouseEvent) {
+  onPointerUp(event: ZeaMouseEvent): void {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
       const tool = this.toolStack[i]
       if (tool.onPointerUp) {
@@ -111,7 +111,7 @@ class ToolManager extends BaseTool {
    *
    * @param {MouseEvent} event - The event param.
    */
-  onPointerDoublePress(event: ZeaMouseEvent) {
+  onPointerDoublePress(event: ZeaMouseEvent): void {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
       const tool = this.toolStack[i]
       if (tool.onPointerDoublePress) {
@@ -126,7 +126,7 @@ class ToolManager extends BaseTool {
    *
    * @param {MouseEvent} event - The event param.
    */
-  onWheel(event: ZeaMouseEvent) {
+  onWheel(event: ZeaMouseEvent): void {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
       const tool = this.toolStack[i]
       if (tool.onWheel) {
@@ -145,7 +145,7 @@ class ToolManager extends BaseTool {
    * @param {KeyboardEvent} event - The event param.
    */
   //TODO: keyboard event?
-  onKeyPressed(event) {
+  onKeyPressed(event): void {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
       const tool = this.toolStack[i]
       if (tool.onKeyPressed) {
@@ -160,7 +160,7 @@ class ToolManager extends BaseTool {
    *
    * @param {KeyboardEvent} event - The event param.
    */
-  onKeyDown(event) {
+  onKeyDown(event): void {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
       const tool = this.toolStack[i]
       if (tool.onKeyDown) {
@@ -175,7 +175,7 @@ class ToolManager extends BaseTool {
    *
    * @param {KeyboardEvent} event - The event param.
    */
-  onKeyUp(event) {
+  onKeyUp(event): void {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
       const tool = this.toolStack[i]
       if (tool.onKeyUp) {
