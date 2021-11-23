@@ -5,8 +5,8 @@ import { BaseTool, ZeaPointerEvent, ZeaMouseEvent, ZeaTouchEvent, XRControllerEv
  * @extends BaseTool
  */
 class ToolManager extends BaseTool {
-  toolStack: BaseTool[]
-  tools: BaseTool
+  toolStack: any[]
+  tools: Record<string, BaseTool>
   constructor() {
     super()
     this.tools = {}
@@ -17,7 +17,7 @@ class ToolManager extends BaseTool {
     this.tools[toolName] = tool
   }
 
-  pushTool(toolName: string): void{
+  pushTool(toolName: string): void {
     const tool = this.tools[toolName]
     if (!tool) throw Error('Tool not found' + toolName)
     if (tool.activateTool) tool.activateTool()
@@ -37,11 +37,10 @@ class ToolManager extends BaseTool {
    * Returns the tool currently at the top of the stack.
    * @return {Tool} - the currently active tool.
    */
-  activeTool(): BaseTool {
+  activeTool(): BaseTool | undefined {
     if (this.toolStack.length > 0) {
       return this.toolStack[this.toolStack.length - 1]
     }
-    return ''
   }
 
   /**
