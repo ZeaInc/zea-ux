@@ -16,7 +16,7 @@ class SelectionVisibilityChange extends Change {
    * @param {Set} selection - The selection value.
    * @param {boolean} state - The state value.
    */
-  constructor(selection, state) {
+  constructor(selection: Set<TreeItem>, state: boolean) {
     super('Selection Visibility Change')
     this.selection = selection
     this.state = state

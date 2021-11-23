@@ -1,5 +1,6 @@
 import UndoRedoManager from '../UndoRedoManager.js'
 import Change from '../Change.js'
+import { TreeItem } from '@zeainc/zea-engine'
 
 /**
  * Class representing a `Move TreeItem` Change(Moving a TreeItem from one parent to another).
@@ -7,10 +8,10 @@ import Change from '../Change.js'
  * @extends Change
  */
 class TreeItemMoveChange extends Change {
-  treeItem
-  oldOwner
-  oldOwnerIndex
-  newOwner
+  treeItem: TreeItem
+  oldOwner: TreeItem
+  oldOwnerIndex: number
+  newOwner: TreeItem
   /**
    * Creates an instance of TreeItemMoveChange.
    *
@@ -18,11 +19,11 @@ class TreeItemMoveChange extends Change {
    * @param {TreeItem} newOwner - The new owner item.
    * @memberof TreeItemMoveChange
    */
-  constructor(treeItem, newOwner) {
+  constructor(treeItem: TreeItem, newOwner: TreeItem) {
     if (treeItem) {
       super(treeItem.getName() + ' Moved')
       this.treeItem = treeItem
-      this.oldOwner = this.treeItem.getOwner()
+      this.oldOwner = <TreeItem>this.treeItem.getOwner()
       this.oldOwnerIndex = this.oldOwner.getChildIndex(this.treeItem)
       this.newOwner = newOwner
       this.newOwner.addChild(this.treeItem, true)
@@ -34,14 +35,14 @@ class TreeItemMoveChange extends Change {
   /**
    * Inserts back the moved TreeItem in the old owner item(Rollbacks the move action).
    */
-  undo() {
+  undo(): void {
     this.oldOwner.insertChild(this.treeItem, this.oldOwnerIndex, true)
   }
 
   /**
    * Executes the move action inserting the TreeItem back to the new owner item.
    */
-  redo() {
+  redo(): void {
     this.newOwner.addChild(this.treeItem, true)
   }
 
@@ -51,7 +52,7 @@ class TreeItemMoveChange extends Change {
    * @param {object} context - The context value
    * @return {object} - JSON object of the change
    */
-  toJSON(context) {
+  toJSON(context: Record<string, any>): Record<string, any> {
     const j = {
       name: this.name,
       treeItemPath: this.treeItem.getPath(),
@@ -67,7 +68,7 @@ class TreeItemMoveChange extends Change {
    * @param {object} j - The serialized object with the change data.
    * @param {object} context - The context value
    */
-  fromJSON(j, context) {
+  fromJSON(j: Record<string, any>, context: Record<string, any>) {
     if (!context || !context.scene) return
 
     const treeItem = context.scene.getRoot().resolvePath(j.treeItemPath, 1)
@@ -84,7 +85,7 @@ class TreeItemMoveChange extends Change {
     this.treeItem = treeItem
     this.newOwner = newOwner
 
-    this.oldOwner = this.treeItem.getOwner()
+    this.oldOwner = <TreeItem>this.treeItem.getOwner()
     this.oldOwnerIndex = this.oldOwner.getChildIndex(this.treeItem)
     this.newOwner.addChild(this.treeItem, true)
   }
