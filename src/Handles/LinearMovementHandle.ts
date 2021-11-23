@@ -6,6 +6,7 @@ import transformVertices from './transformVertices'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 import { ZeaTouchEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaTouchEvent'
 import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
+import { ZeaPointerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaPointerEvent'
 
 /**
  * Class representing a linear movement scene widget.

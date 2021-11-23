@@ -19,7 +19,6 @@ import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 import { ZeaPointerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaPointerEvent'
 import { ZeaTouchEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaTouchEvent'
 import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
-import { checkMouseOrTouch } from '../utility'
 
 /**
  * Class representing a slider scene widget with an arc shape. There are two parts in this widget, the slider and the handle.<br>
