@@ -212,7 +212,7 @@ function draw(domNode, options) {
   }
 }
 
-function cloneNode(node, filter, root?) {
+function cloneNode(node: any, filter: any, root?: any) {
   if (!root && filter && !filter(node)) return Promise.resolve()
 
   return Promise.resolve(node)
@@ -564,11 +564,11 @@ function newUtil() {
     return 'data:' + type + ';base64,' + content
   }
 
-  function escape(string) {
+  function escape(string: string) {
     return string.replace(/([.*+?^${}()|\[\]\/\\])/g, '\\$1')
   }
 
-  function delay(ms) {
+  function delay(ms: number) {
     return function (arg) {
       return new Promise(function (resolve) {
         setTimeout(function () {
@@ -619,7 +619,7 @@ function newInliner() {
     },
   }
 
-  function shouldProcess(string) {
+  function shouldProcess(string: string) {
     return string.search(URL_REGEX) !== -1
   }
 
@@ -634,7 +634,7 @@ function newInliner() {
     })
   }
 
-  function inline(string, url, baseUrl, get) {
+  function inline(string: string, url: string, baseUrl: string, get: any) {
     return Promise.resolve(url)
       .then(function (url) {
         return baseUrl ? util.resolveUrl(url, baseUrl) : url
@@ -652,7 +652,7 @@ function newInliner() {
     }
   }
 
-  function inlineAll(string?, baseUrl?, get?) {
+  function inlineAll(string?: string, baseUrl?: string, get?: any) {
     if (nothingToInline()) return Promise.resolve(string)
 
     return Promise.resolve(string)
@@ -770,7 +770,7 @@ function newImages() {
     }
   }
 
-  function inlineAll(node) {
+  function inlineAll(node: any) {
     if (!(node instanceof Element)) return Promise.resolve(node)
 
     return inlineBackground(node).then(function () {

@@ -23,7 +23,7 @@ function traverse(node, depth, func) {
  * @param {HTMLElement} elem
  * @return {object}
  */
-function elemSize(elem) {
+function elemSize(elem: any) {
   const computedStyle = elem.computedStyleMap()
   const elmWidth = computedStyle.get('width').value
   const elmMarginHorizontal = computedStyle.get('margin-left').value + computedStyle.get('margin-right').value
@@ -36,8 +36,8 @@ function elemSize(elem) {
 }
 
 const idx = 'data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg"'.length
-const renderElementUI = (elem, size, key, callback) => {
-  domtoimage.toSvg(elem).then((uri) => {
+const renderElementUI = (elem: any, size, key: string, callback: any) => {
+  domtoimage.toSvg(elem).then((uri: string) => {
     // To work around a bug in domtoimage, we insert a viewBox into the SVG that ensures it renders
     // all the way to the edges. otherwise, an image is generated that crops the left and bottom borders.
     const uri2 = uri.substring(0, idx) + ` viewBox="0 0 ${size.width} ${size.height}"` + uri.substring(idx)
@@ -65,7 +65,7 @@ export default class VRControllerUI extends TreeItem {
    * @param {any} appData - The appData value.
    * @param {any} vrUIDOMElement - The vrUIDOMElement value.
    */
-  constructor(appData: AppData, vrUIDOMElement) {
+  constructor(appData: AppData, vrUIDOMElement: HTMLElement) {
     super('VRControllerUI')
 
     this.setSelectable(false)
@@ -100,7 +100,7 @@ export default class VRControllerUI extends TreeItem {
       // debugGeomItemXfo.sc = this.size
       // debugGeomItem.localXfoParam.value = (debugGeomItemXfo)
 
-      traverse(vrUIDOMElement, 0, (elem, depth) => {
+      traverse(vrUIDOMElement, 0, (elem: HTMLElement, depth: number) => {
         if (elem.className == 'button') {
           const size = elemSize(elem)
           // console.log(depth, elem.id, elem.className, size.width, size.height, elem.offsetLeft, elem.offsetTop)
@@ -128,7 +128,7 @@ export default class VRControllerUI extends TreeItem {
 
           const imageDatas = {}
           if (size.width > 0 && size.height > 0) {
-            renderElementUI(elem, size, elem.id + elem.className, (data, key) => {
+            renderElementUI(elem, size, elem.id + elem.className, (data: any, key: string) => {
               // console.log('Rendered', elem.id, elem.className, size.width, size.height, elem.offsetLeft, elem.offsetTop)
               imageDatas[key] = data
               image.setData(size.width, size.height, data)
@@ -141,7 +141,7 @@ export default class VRControllerUI extends TreeItem {
             // the generated images. Update the UI by adding and removing classes
             const key = elem.id + elem.className
             if (!imageDatas[key]) {
-              renderElementUI(elem, size, key, (data, key) => {
+              renderElementUI(elem, size, key, (data: any, key: string) => {
                 imageDatas[key] = data
                 image.setData(size.width, size.height, data)
               })
@@ -191,7 +191,7 @@ export default class VRControllerUI extends TreeItem {
    * @param {any} element - The element param.
    * @return {any} The return value.
    */
-  sendMouseEvent(eventName, args, element) {
+  sendMouseEvent(eventName: string, args: any, element: Element) {
     // console.log('sendMouseEvent:', eventName, element)
 
     const event = new MouseEvent(
