@@ -3,6 +3,7 @@ import CreateGeomTool from './CreateGeomTool'
 import CreateLineChange from './Change/CreateLineChange'
 import { UndoRedoManager } from '../../UndoRedo/index'
 import { AppData } from '../../../types/temp'
+import { ZeaPointerEvent } from '@zeainc/zea-engine'
 
 /**
  * Tool for creating a line tool.
@@ -71,7 +72,7 @@ class CreateLineTool extends CreateGeomTool {
    *
    * @param {object} event - The event param.
    */
-  onVRControllerButtonDown(event): void {
+  onVRControllerButtonDown(event: ZeaPointerEvent): void {
     if (this.stage == 0) {
       const stageScale = event.viewport.__stageScale
       this.lineThickness.setValue(stageScale * 0.003)

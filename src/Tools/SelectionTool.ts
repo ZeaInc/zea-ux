@@ -17,6 +17,7 @@ import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 import Handle from '../Handles/Handle'
 import { AppData } from '../../types/temp'
 import { SelectionManager } from '..'
+import { GLViewport } from '@zeainc/zea-engine'
 
 /**
  * Class representing a selection tool.
@@ -38,7 +39,7 @@ class SelectionTool extends BaseTool {
    *
    * @param {object} appData - The appData value
    */
-  constructor(appData) {
+  constructor(appData: AppData) {
     super()
 
     if (!appData) console.error('App data not provided to tool')
@@ -95,11 +96,11 @@ class SelectionTool extends BaseTool {
   /**
    * Activates selection tool.
    */
-  setSelectionManager(selectionManager) {
+  setSelectionManager(selectionManager: SelectionManager) {
     this.selectionManager = selectionManager
   }
 
-  setSelectionFilter(fn) {
+  setSelectionFilter(fn: any) {
     this.__selectionFilterFn = fn
   }
 
@@ -110,7 +111,7 @@ class SelectionTool extends BaseTool {
    * @param {*} delta - The delta value
    * @private
    */
-  __resizeRect(viewport, delta) {
+  __resizeRect(viewport: GLViewport, delta: any) {
     const sc = new Vec2((1 / viewport.getWidth()) * 2, (1 / viewport.getHeight()) * 2)
     const size = delta.multiply(sc)
     this.selectionRectXfo.sc.set(Math.abs(size.x), Math.abs(size.y), 1)
@@ -196,7 +197,7 @@ class SelectionTool extends BaseTool {
         let geomItems = Array.from(event.viewport.getGeomItemsInRect(tl, br)) // TODO: check, using Array.from() since we have a Set<>
 
         if (this.__selectionFilterFn) {
-          const newSet = []
+          const newSet: Array<TreeItem> = [] // TODO: using Array for 'newSet', not a Set<>
           for (let i = 0; i < geomItems.length; i++) {
             const treeItem = this.__selectionFilterFn(geomItems[i])
             if (!newSet.includes(treeItem)) {
