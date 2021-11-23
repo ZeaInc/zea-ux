@@ -402,7 +402,7 @@ class SelectionManager extends EventEmitter {
    * The pick method.
    * @param {TreeItem} item - The item param.
    */
-  pick(item: TreeItem): void {
+  pick(item: TreeItem | Array<TreeItem>): void {
     if (this.__pickCB) {
       if (Array.isArray(item)) {
         if (this.__pickFilter) this.__picked = this.__picked.concat(item.filter(this.__pickFilter))
