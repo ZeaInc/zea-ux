@@ -144,6 +144,10 @@ class SelectionTool extends BaseTool {
    * @return {boolean} The return value.
    */
   onPointerMove(event: ZeaPointerEvent) {
+    if (!(event instanceof ZeaMouseEvent) && !(event instanceof ZeaTouchEvent)) {
+      console.warn("not handling VR")
+      return
+    }
     if (this.pointerDownPos) {
       const delta = this.pointerDownPos.subtract(event.pointerPos)
       const dist = delta.length()
