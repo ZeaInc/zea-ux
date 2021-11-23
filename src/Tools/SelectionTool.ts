@@ -194,7 +194,7 @@ class SelectionTool extends BaseTool {
           Math.max(this.pointerDownPos.y, pointerUpPos.y)
         )
 
-        let geomItems = Array.from(event.viewport.getGeomItemsInRect(tl, br)) // TODO: check, using Array.from() since we have a Set<>
+        let geomItems: Array<TreeItem> = Array.from(event.viewport.getGeomItemsInRect(tl, br)) // TODO: check, using Array.from() since we have a Set<>
 
         if (this.__selectionFilterFn) {
           const newSet: Array<TreeItem> = [] // TODO: using Array for 'newSet', not a Set<>
@@ -212,7 +212,7 @@ class SelectionTool extends BaseTool {
           this.selectionManager.pick(geomItems)
         } else {
           // Remove all the scene widgets. (UI elements should not be selectable.)
-          const regularGeomItems = new Set([...geomItems].filter((x) => !(x.getOwner() instanceof Handle)))
+          const regularGeomItems: Set<TreeItem> = new Set([...geomItems].filter((x) => !(x.getOwner() instanceof Handle)))
 
           if (!event.shiftKey) {
             this.selectionManager.selectItems(regularGeomItems, !event.ctrlKey)
