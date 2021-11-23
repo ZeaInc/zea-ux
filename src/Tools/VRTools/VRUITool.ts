@@ -75,7 +75,7 @@ class VRUITool extends BaseTool {
     this.__uiPointerItem.setSelectable(false)
 
     this.__triggerHeld = false
-    this.: boolean = false
+    this.uiOpen = false
 
     this.appData.renderer.getXRViewport().then((xrvp) => {
       xrvp.on('presentingChanged', (event) => {
@@ -253,7 +253,7 @@ class VRUITool extends BaseTool {
       if (element) {
         // @ts-ignore
         if (element.shadowRoot) element = element.shadowRoot.elementFromPoint(hit.clientX, hit.clientY)
-        if (element != this.: Element) {
+        if (element != this._element) {
           if (this._element) this.controllerUI.sendMouseEvent('mouseleave', Object.assign(args, hit), this._element)
           this._element = element
           this.controllerUI.sendMouseEvent('mouseenter', Object.assign(args, hit), this._element)
