@@ -1,5 +1,4 @@
-import { EventEmitter, Registry } from '@zeainc/zea-engine'
-import { BaseClass } from '@zeainc/zea-engine/dist/Utilities/BaseClass'
+import { TreeItem, EventEmitter, Registry } from '@zeainc/zea-engine'
 import { Change } from '.'
 
 /**
@@ -142,8 +141,8 @@ class UndoRedoManager extends EventEmitter {
    * @param {string} className - The className param.
    * @return {Change} - The return value.
    */
-  constructChange(className: string): BaseClass {
-    return Registry.constructClass(className)
+  constructChange(className: string): Change {
+    return <Change>Registry.constructClass(className)
   }
 
   /**

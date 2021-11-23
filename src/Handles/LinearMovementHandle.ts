@@ -1,12 +1,23 @@
-import { Color, Xfo, GeomItem, Material, Cylinder, Cone, Parameter, Vec3, XfoParameter } from '@zeainc/zea-engine'
+import {
+  Color,
+  Xfo,
+  GeomItem,
+  Material,
+  Cylinder,
+  Cone,
+  Parameter,
+  Vec3,
+  XfoParameter,
+  ZeaPointerEvent,
+  ZeaMouseEvent,
+  ZeaTouchEvent,
+  XRControllerEvent,
+} from '@zeainc/zea-engine'
 import BaseLinearMovementHandle from './BaseLinearMovementHandle'
 import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
 import './Shaders/HandleShader'
 import transformVertices from './transformVertices'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
-import { ZeaTouchEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaTouchEvent'
-import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
-import { ZeaPointerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaPointerEvent'
 
 /**
  * Class representing a linear movement scene widget.

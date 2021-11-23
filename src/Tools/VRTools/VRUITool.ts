@@ -11,8 +11,12 @@ import {
   Lines,
   BaseTool,
   Vec3Attribute,
+  ZeaPointerEvent,
+  ZeaMouseEvent,
+  ZeaTouchEvent,
+  XRControllerEvent
 } from '@zeainc/zea-engine'
-import { XRControllerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/XRControllerEvent'
+
 import { XRPoseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/XRPoseEvent'
 import { AppData } from '../../../types/temp'
 import VRControllerUI from './VRControllerUI'

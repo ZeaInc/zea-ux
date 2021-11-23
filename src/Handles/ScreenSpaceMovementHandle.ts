@@ -1,10 +1,17 @@
-import { Parameter, Ray, Vec3, Xfo } from '@zeainc/zea-engine'
+import {
+  Parameter,
+  Ray,
+  Vec3,
+  Xfo,
+  ZeaPointerEvent,
+  ZeaMouseEvent,
+  ZeaTouchEvent,
+  XRControllerEvent,
+} from '@zeainc/zea-engine'
 import Handle from './Handle.js'
 import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange.js'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager.js'
-import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
-import { ZeaTouchEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaTouchEvent'
-import { ZeaPointerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaPointerEvent'
+
 import { getPointerRay } from '../utility.js'
 
 /**

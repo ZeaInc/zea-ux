@@ -1,8 +1,17 @@
-import { TreeItem, Ray, ColorParameter, Color, Parameter, Vec3 } from '@zeainc/zea-engine' // , PointerEvent
-import { XRControllerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/XRControllerEvent'
-import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
-import { ZeaPointerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaPointerEvent'
-import { ZeaWheelEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaWheelEvent'
+import {
+  TreeItem,
+  Ray,
+  ColorParameter,
+  Color,
+  Parameter,
+  Vec3,
+  ZeaWheelEvent,
+  ZeaPointerEvent,
+  ZeaMouseEvent,
+  ZeaTouchEvent,
+  XRControllerEvent,
+} from '@zeainc/zea-engine' // , PointerEvent
+
 import { getPointerRay } from '../utility'
 
 /**

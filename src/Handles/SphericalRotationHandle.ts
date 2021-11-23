@@ -1,11 +1,21 @@
-import { Color, Xfo, GeomItem, Material, Sphere, Vec3, Parameter, XfoParameter } from '@zeainc/zea-engine'
+import {
+  Color,
+  Xfo,
+  GeomItem,
+  Material,
+  Sphere,
+  Vec3,
+  Parameter,
+  XfoParameter,
+  ZeaPointerEvent,
+  ZeaMouseEvent,
+  ZeaTouchEvent,
+  XRControllerEvent,
+} from '@zeainc/zea-engine'
 import Handle from './Handle'
 import './Shaders/HandleShader'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 import { ParameterValueChange } from '../UndoRedo/Changes/ParameterValueChange'
-import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
-import { ZeaTouchEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaTouchEvent'
-import { ZeaPointerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaPointerEvent'
 
 /**
  * Class representing an axial rotation scene widget.

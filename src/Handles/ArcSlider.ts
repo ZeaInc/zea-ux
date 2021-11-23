@@ -11,14 +11,15 @@ import {
   Sphere,
   Registry,
   Parameter,
+  ZeaPointerEvent,
+  ZeaMouseEvent,
+  ZeaTouchEvent, 
+  XRControllerEvent
 } from '@zeainc/zea-engine'
 import { BaseAxialRotationHandle } from './BaseAxialRotationHandle'
 import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
 import './Shaders/HandleShader'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
-import { ZeaPointerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaPointerEvent'
-import { ZeaTouchEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaTouchEvent'
-import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
 
 /**
  * Class representing a slider scene widget with an arc shape. There are two parts in this widget, the slider and the handle.<br>
@@ -258,7 +259,6 @@ class ArcSlider extends BaseAxialRotationHandle {
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
   onDrag(event: ZeaPointerEvent): void {
-
     const vec1 = this.holdPos.subtract(this.baseXfo.tr)
     vec1.normalizeInPlace()
 

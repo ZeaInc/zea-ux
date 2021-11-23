@@ -1,10 +1,11 @@
-import { Ray } from "@zeainc/zea-engine"
-import { XRControllerEvent } from "@zeainc/zea-engine/dist/Utilities/Events/XRControllerEvent"
-import { ZeaMouseEvent } from "@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent"
-import { ZeaPointerEvent } from "@zeainc/zea-engine/dist/Utilities/Events/ZeaPointerEvent"
-import { ZeaTouchEvent } from "@zeainc/zea-engine/dist/Utilities/Events/ZeaTouchEvent"
+import { Ray, XRControllerEvent, ZeaMouseEvent, ZeaPointerEvent, ZeaTouchEvent } from '@zeainc/zea-engine'
 
-function getPointerRay(event: ZeaPointerEvent)  {
+
+function getPointerRay(event: ZeaPointerEvent) {
+  if (typeof event === 'undefined') {
+    console.warn('undefined event')
+    return
+  }
   if (event instanceof ZeaMouseEvent) {
     return event.pointerRay
   } else if (event instanceof ZeaTouchEvent) {
@@ -20,5 +21,4 @@ function getPointerRay(event: ZeaPointerEvent)  {
   }
 }
 
-
-export {getPointerRay}
+export { getPointerRay }

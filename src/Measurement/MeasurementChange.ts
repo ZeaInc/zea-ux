@@ -1,4 +1,12 @@
-import { Xfo, Registry, TreeItem } from '@zeainc/zea-engine'
+import {
+  Xfo,
+  Registry,
+  TreeItem,
+  ZeaPointerEvent,
+  ZeaMouseEvent,
+  ZeaTouchEvent,
+  XRControllerEvent,
+} from '@zeainc/zea-engine'
 import { MeasureDistance } from '.'
 import { UndoRedoManager, Change } from '../UndoRedo/index'
 
