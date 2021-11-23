@@ -184,7 +184,7 @@ class SelectionTool extends BaseTool {
           Math.max(this.pointerDownPos.y, pointerUpPos.y)
         )
 
-        let geomItems = event.viewport.getGeomItemsInRect(tl, br)
+        let geomItems = Array.from(event.viewport.getGeomItemsInRect(tl, br)) // TODO: check, using Array.from() since we have a Set<>
 
         if (this.__selectionFilterFn) {
           const newSet = []
@@ -214,7 +214,7 @@ class SelectionTool extends BaseTool {
           this.rectItem.globalXfoParam.setValue(this.selectionRectXfo)
         }
       } else {
-        const intersectionData = event.viewport.getGeomDataAtPos(event.pointerPos)
+        const intersectionData = event.viewport.getGeomDataAtPos(event.pointerPos, undefined) // TODO: check if this was intended
         if (intersectionData != undefined && !(intersectionData.geomItem.getOwner() instanceof Handle)) {
           let treeItem = intersectionData.geomItem
           if (this.__selectionFilterFn) treeItem = this.__selectionFilterFn(treeItem)

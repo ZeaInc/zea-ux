@@ -32,7 +32,7 @@ class MeasurementChange extends Change {
    * @param {object} data - An object containing potentially the start and end positions.
    * @memberof MeasurementChange
    */
-  update(data: Record<string,any>) {
+  update(data: Record<string, any>) {
     this.measurement.fromJSON(data.measurementData)
     this.emit('updated', data)
   }
@@ -71,7 +71,7 @@ class MeasurementChange extends Change {
   toJSON(context: Record<any, any>) {
     const j: Record<any, any> = super.toJSON(context)
     j.parentItemPath = this.measurement.getOwner().getPath()
-    j.measurementType = Registry.getClassName(this.measurement)// TODO: check
+    j.measurementType = Registry.getClassName(this.measurement) // TODO: check
     j.measurementData = this.measurement.toJSON(context)
     return j
   }
@@ -82,7 +82,7 @@ class MeasurementChange extends Change {
    * @param {object} j - The j param.
    * @param {object} context - The appData param.
    */
-  fromJSON(j: Record<string,any>, context: Record<string,any>) {
+  fromJSON(j: Record<string, any>, context: Record<string, any>) {
     const sceneRoot = context.appData.scene.getRoot()
     const parentItem = sceneRoot.resolvePath(j.parentItemPath, 1)
     if (parentItem) {
