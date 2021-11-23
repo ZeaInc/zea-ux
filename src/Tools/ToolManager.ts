@@ -1,6 +1,5 @@
 /* eslint-disable require-jsdoc */
-import { BaseTool } from '@zeainc/zea-engine'
-import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
+import { BaseTool, ZeaPointerEvent, ZeaMouseEvent, ZeaTouchEvent, XRControllerEvent } from '@zeainc/zea-engine'
 
 /**
  * @extends BaseTool

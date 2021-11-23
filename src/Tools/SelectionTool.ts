@@ -1,13 +1,22 @@
-import { Vec2, Color, Xfo, GeomItem, Material, Rect, BaseTool, TreeItem } from '@zeainc/zea-engine'
+import {
+  Vec2,
+  Color,
+  Xfo,
+  GeomItem,
+  Material,
+  Rect,
+  BaseTool,
+  TreeItem,
+  ZeaPointerEvent,
+  ZeaMouseEvent,
+  ZeaTouchEvent,
+  XRControllerEvent,
+} from '@zeainc/zea-engine'
 
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 import Handle from '../Handles/Handle'
 import { AppData } from '../../types/temp'
 import { SelectionManager } from '..'
-import { ZeaMouseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaMouseEvent'
-import { ZeaTouchEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaTouchEvent'
-import { XRControllerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/XRControllerEvent'
-import { ZeaPointerEvent } from '@zeainc/zea-engine/dist/Utilities/Events/ZeaPointerEvent'
 
 /**
  * Class representing a selection tool.
@@ -129,7 +138,7 @@ class SelectionTool extends BaseTool {
    * @return {boolean} The return value.
    */
   onPointerDown(event: ZeaPointerEvent) {
-    if (event instanceof ZeaTouchEvent || (event instanceof ZeaMouseEvent && (event.button == 0 && !event.altKey))) {
+    if (event instanceof ZeaTouchEvent || (event instanceof ZeaMouseEvent && event.button == 0 && !event.altKey)) {
       this.pointerDownPos = event.pointerPos
       this.dragging = false
 
@@ -145,7 +154,7 @@ class SelectionTool extends BaseTool {
    */
   onPointerMove(event: ZeaPointerEvent) {
     if (!(event instanceof ZeaMouseEvent) && !(event instanceof ZeaTouchEvent)) {
-      console.warn("not handling VR")
+      console.warn('not handling VR')
       return
     }
     if (this.pointerDownPos) {
