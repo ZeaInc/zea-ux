@@ -11,14 +11,10 @@ import {
   Lines,
   BaseTool,
   Vec3Attribute,
-  ZeaPointerEvent,
-  ZeaMouseEvent,
-  ZeaTouchEvent,
-  XRControllerEvent
+  XRControllerEvent,
+  XRPoseEvent,
 } from '@zeainc/zea-engine'
-import { VRController } from '@zeainc/zea-engine/dist/Renderer/VR/VRController'
 
-import { XRPoseEvent } from '@zeainc/zea-engine/dist/Utilities/Events/XRPoseEvent'
 import { AppData } from '../../../types/temp'
 import VRControllerUI from './VRControllerUI'
 
@@ -35,8 +31,8 @@ class VRUITool extends BaseTool {
   __uiPointerItem: GeomItem
   __triggerHeld: boolean
   uiOpen: boolean
-  uiController: VRController
-  pointerController: VRController
+  uiController: any
+  pointerController: any
   _element: Element
   __triggerDownElem: Element
 
@@ -115,7 +111,7 @@ class VRUITool extends BaseTool {
    * @param {VRController} : VRController - The pointerController param.
    * @param {Xfo} headXfo - The headXfo param.
    */
-  displayUI(uiController: VRController, pointerController: VRController, headXfo: Xfo) {
+  displayUI(uiController: any, pointerController: any, headXfo: Xfo) {
     this.controllerUI.activate()
     this.uiController = uiController
     this.pointerController = pointerController
@@ -196,7 +192,7 @@ class VRUITool extends BaseTool {
    * The setPointerLength method.
    * @param {number} length - The length param.
    */
-  setPointerLength(length) {
+  setPointerLength(length: number) {
     this.__pointerLocalXfo.sc.set(1, 1, length)
     this.__uiPointerItem.localXfoParam.value = this.__pointerLocalXfo
   }
@@ -334,7 +330,7 @@ class VRUITool extends BaseTool {
         // Y = Up.
         // Z = Towards handle base.
         const headXfo = event.viewXfo
-        const checkControllers = (ctrlA, ctrlB) => {
+        const checkControllers = (ctrlA: any, ctrlB: any) => {
           // Note: do not open the UI when the controller buttons are pressed.
           const xfoA = ctrlA.getTreeItem().globalXfoParam.value
           const headToCtrlA = xfoA.tr.subtract(headXfo.tr)
