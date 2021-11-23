@@ -7,12 +7,14 @@ import { AppData } from '../../types/temp'
  * @extends BaseTool
  */
 export default class BaseCreateTool extends BaseTool {
+  appData: AppData
   /**
    * Creates an instance of BaseCreateTool.
    *
    * @param {object} appData - The appData value.
    */
   constructor(appData: AppData) {
-    super(appData)
+    super()
+    this.appData = appData
   }
 }
