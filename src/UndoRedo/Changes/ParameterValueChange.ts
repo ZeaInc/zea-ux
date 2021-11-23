@@ -12,17 +12,17 @@ import Change from '../Change'
  */
 class ParameterValueChange extends Change {
   __param: Parameter<unknown>
-  __nextValue
-  __prevValue
-  suppressPrimaryChange
-  secondaryChanges
+  __nextValue: any
+  __prevValue: any
+  suppressPrimaryChange: boolean
+  secondaryChanges: Change[]
   /**
    * Creates an instance of ParameterValueChange.
    *
    * @param {Parameter} param - The param value.
    * @param {object|string|number|any} newValue - The newValue value.
    */
-  constructor(param?, newValue?) {
+  constructor(param?: Parameter<unknown>, newValue?: any) {
     if (param) {
       super(param ? param.getName() + ' Changed' : 'ParameterValueChange')
       this.__prevValue = param.getValue()
@@ -42,7 +42,7 @@ class ParameterValueChange extends Change {
   /**
    * Rollbacks the value of the parameter to the previous one, passing it to the redo stack in case you wanna recover it later on.
    */
-  undo() {
+  undo(): void {
     if (!this.__param) return
 
     if (!this.suppressPrimaryChange) this.__param.setValue(this.__prevValue)
@@ -54,7 +54,7 @@ class ParameterValueChange extends Change {
    * Rollbacks the `undo` action by moving the change from the `redo` stack to the `undo` stack
    * and updating the parameter with the new value.
    */
-  redo() {
+  redo(): void {
     if (!this.__param) return
     if (!this.suppressPrimaryChange) this.__param.setValue(this.__nextValue)
 
@@ -66,7 +66,7 @@ class ParameterValueChange extends Change {
    *
    * @param {Parameter} updateData - The updateData param.
    */
-  update(updateData: Record<string, any>) {
+  update(updateData: Record<string, any>): void {
     if (!this.__param) return
     this.__nextValue = updateData.value
     this.__param.setValue(this.__nextValue)
@@ -101,7 +101,7 @@ class ParameterValueChange extends Change {
    * @param {Record<any, any>} j - The j param.
    * @param {Record<any, any>} context - The context param.
    */
-  fromJSON(j, context: Record<any, any>): Record<any, any> {
+  fromJSON(j: Record<any, any>, context: Record<any, any>): Record<any, any> {
     const param = context.appData.scene.getRoot().resolvePath(j.paramPath, 1)
     if (!param || !(param instanceof Parameter)) {
       console.warn('resolvePath is unable to resolve', j.paramPath)

@@ -11,10 +11,10 @@ import { AppData } from '../../../types/temp.js'
  * @extends Change
  */
 class TreeItemsRemoveChange extends Change {
-  items = []
-  itemOwners = []
-  itemPaths = []
-  itemIndices = []
+  items:Array<TreeItem> = []
+  itemOwners:Array<TreeItem> = []
+  itemPaths:Array<Array<string>> = []
+  itemIndices:Array<number> = []
 
   selectionManager: SelectionManager
   prevSelection: Set<TreeItem>
@@ -160,7 +160,8 @@ class TreeItemsRemoveChange extends Change {
    * GPU resources cleaned up.
    */
   destroy() {
-    this.items.forEach((item) => item.removeRef(this))
+    // TODO: line below removed.
+    // this.items.forEach((item) => item.removeRef(this))
   }
 }
 
