@@ -30,7 +30,7 @@ class HoldObjectsChange extends Change {
    *
    * @param {object} data - The data value.
    */
-  constructor(data) {
+  constructor(data: any) {
     super('HoldObjectsChange')
 
     if (data) this.update(data)
@@ -82,7 +82,7 @@ class HoldObjectsChange extends Change {
    * @param {object} context - The context param.
    * @return {object} The return value.
    */
-  toJSON(context?) {
+  toJSON(context?: Record<string,any>): Record<string,any> {
     const j: Record<any, any> = super.toJSON(context)
 
     const itemPaths = []
@@ -103,7 +103,7 @@ class HoldObjectsChange extends Change {
    * @param {object} j - The j param.
    * @param {object} context - The context param.
    */
-  fromJSON(j, context) {
+  fromJSON(j: Record<string,any>, context: Record<string,any>) {
     super.fromJSON(j, context)
 
     const sceneRoot = context.appData.scene.getRoot()
@@ -125,7 +125,7 @@ class HoldObjectsChange extends Change {
    *
    * @param {object} j - The j param.
    */
-  updateFromJSON(j) {
+  updateFromJSON(j: Record<string,any>) {
     this.update(j)
   }
 }
@@ -334,7 +334,7 @@ class VRHoldObjectsTool extends BaseTool {
   onPointerMove(event: XRPoseEvent) {
     if (event.pointerType === POINTER_TYPES.xr) {
       if (!this.change) {
-        event.controllers.forEach((controller) => {
+        event.controllers.forEach((controller: any) => {
           const id = controller.getId()
           const intersectionData = controller.getGeomItemAtTip()
           if (intersectionData) {
