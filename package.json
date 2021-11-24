@@ -16,17 +16,17 @@
   "scripts": {
     "build:tsc": "npx tsc",
     "build:tsc:watch": "npx tsc --watch",
-    "copyJSFilesToDist": "copyfiles -u 1 src/**/*.{js,wasm,glsl,vert,frag} dist/src",
-    "copyPackageJson": "copyfiles -f \"./package.json\" dist",
     "clean:build": "rm -Rf dist/ buildcache",
     "build:rollup": "rollup -c",
     "build:rollup:watch": "rollup -w -c",
-    "build": "npm-run-all clean:build build:tsc  copyPackageJson build:rollup",
-    "dev": "npm-run-all --parallel build:tsc:watch  copyPackageJson build:rollup:watch start:watch",
-    "build:watch": "rollup -w -c",
-    "release": "standard-version",
-    "start": "es-dev-server",
+    
+    "build": "npm-run-all clean:build build:rollup start",
+    "dev": "npm-run-all build:rollup start:watch",
+    
+    "start": "es-dev-server --app-index testing-e2e/index.html --open",
     "start:watch": "es-dev-server --app-index testing-e2e/index.html --open --watch",
+
+    "release": "standard-version",
     "dist": "yarn publish --access=public",
     "docs": "adg --config adg.config.json",
     "docs-w": "adg -w --config=adg.config.json",
@@ -77,11 +77,17 @@
     "standard-version": "^9.0.0"
   },
   "dependencies": {
+    "@types/ms": "^0.7.31",
     "@zeainc/zea-cad": "^4",
     "@zeainc/zea-engine": "^4",
     "copyfiles": "^2.4.1",
     "dom-to-image": "^2.6.0",
     "husky-run": "^0.0.0",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-typescript": "^1.0.1",
+    "ts-node": "^10.4.0",
+    "tslib": "^2.3.1",
     "typescript": "^4.4.4"
   },
   "husky": {

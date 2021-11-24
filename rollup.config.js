@@ -1,12 +1,19 @@
 import json from '@rollup/plugin-json'
 import { terser } from 'rollup-plugin-terser'
+import resolve from 'rollup-plugin-node-resolve'
+import commonjs from 'rollup-plugin-commonjs'
+import typescript from 'rollup-plugin-typescript'
 
 import pkg from './package.json'
 
 const external = ['@zeainc/zea-engine']
 
-const plugins = [json()]
-
+const plugins = [
+  json(),
+  resolve(), // so Rollup can find `ms`
+  commonjs(), // so Rollup can convert `ms` to an ES module
+  typescript(), // so Rollup can convert TypeScript to JavaScript]
+]
 const isProduction = !process.env.ROLLUP_WATCH
 
 if (isProduction) {
@@ -18,7 +25,7 @@ const sourcemap = true
 export default [
   // Browser-friendly UMD build.
   {
-    input: 'dist/src/index.js',
+    input: 'src/index.ts',
     external,
     output: {
       name: 'zeaUx',
@@ -39,12 +46,15 @@ export default [
   // an array for the `output` option, where we can specify
   // `file` and `format` for each target)
   {
-    input: 'dist/src/index.js',
-    external,
+    input: 'src/index.ts',
+    external: ['ms'],
+    plugins: [
+      json(),
+      typescript(), // so Rollup can convert TypeScript to JavaScript
+    ],
     output: [
       { file: pkg.main, format: 'cjs', sourcemap },
       { file: pkg.module, format: 'es', sourcemap },
     ],
-    plugins,
   },
 ]
