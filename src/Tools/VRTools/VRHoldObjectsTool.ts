@@ -10,6 +10,7 @@ import {
   ZeaMouseEvent,
   XRControllerEvent,
   XRPoseEvent,
+  GeomItem,
 } from '@zeainc/zea-engine'
 // import Handle from '../../Handles/Handle'
 import UndoRedoManager from '../../UndoRedo/UndoRedoManager'
@@ -39,7 +40,7 @@ class HoldObjectsChange extends Change {
   /**
    * The undo method.
    */
-  undo() {
+  undo(): void {
     for (let i = 0; i < this.__selection.length; i++) {
       if (this.__selection[i] && this.__prevXfos[i]) {
         this.__selection[i].globalXfoParam.setValue(this.__prevXfos[i])
@@ -50,7 +51,7 @@ class HoldObjectsChange extends Change {
   /**
    * The redo method.
    */
-  redo() {
+  redo(): void {
     for (let i = 0; i < this.__selection.length; i++) {
       if (this.__selection[i] && this.__newXfos[i]) {
         this.__selection[i].globalXfoParam.setValue(this.__newXfos[i])
@@ -62,7 +63,7 @@ class HoldObjectsChange extends Change {
    * The update method.
    * @param {object} updateData - The updateData param.
    */
-  update(updateData) {
+  update(updateData: any) {
     if (updateData.newItem) {
       this.__selection[updateData.newItemId] = updateData.newItem
       this.__prevXfos[updateData.newItemId] = updateData.newItem.globalXfoParam.value
@@ -82,7 +83,7 @@ class HoldObjectsChange extends Change {
    * @param {object} context - The context param.
    * @return {object} The return value.
    */
-  toJSON(context?: Record<string,any>): Record<string,any> {
+  toJSON(context?: Record<string, any>): Record<string, any> {
     const j: Record<any, any> = super.toJSON(context)
 
     const itemPaths = []
@@ -103,7 +104,7 @@ class HoldObjectsChange extends Change {
    * @param {object} j - The j param.
    * @param {object} context - The context param.
    */
-  fromJSON(j: Record<string,any>, context: Record<string,any>) {
+  fromJSON(j: Record<string, any>, context: Record<string, any>) {
     super.fromJSON(j, context)
 
     const sceneRoot = context.appData.scene.getRoot()
@@ -125,7 +126,7 @@ class HoldObjectsChange extends Change {
    *
    * @param {object} j - The j param.
    */
-  updateFromJSON(j: Record<string,any>) {
+  updateFromJSON(j: Record<string, any>) {
     this.update(j)
   }
 }
@@ -143,11 +144,11 @@ class VRHoldObjectsTool extends BaseTool {
   __freeIndices = []
   __vrControllers = []
   __heldObjectCount = 0
-  __heldGeomItems = []
-  __highlightedGeomItemIds = [] // controller id to held goem id.
-  __heldGeomItemIds = [] // controller id to held goem id.
-  __heldGeomItemRefs = []
-  __heldGeomItemOffsets = []
+  __heldGeomItems: Array<GeomItem> = []
+  __highlightedGeomItemIds: Array<TreeItem> = [] // controller id to held goem id.
+  __heldGeomItemIds: Array<number> = [] // controller id to held goem id.
+  __heldGeomItemRefs: any = []
+  __heldGeomItemOffsets: Array<Xfo> = []
 
   addIconToControllerId
   change
@@ -264,14 +265,14 @@ class VRHoldObjectsTool extends BaseTool {
       this.__vrControllers[id] = event.controller
 
       // const intersectionData = event.controller.getGeomItemAtTip()
-      const geomItem = this.__highlightedGeomItemIds[id]
+      const geomItem = <GeomItem>this.__highlightedGeomItemIds[id]
       if (geomItem) {
         // if (geomItem.getOwner() instanceof Handle) return false
 
         // console.log("onMouseDown on Geom"); // + " Material:" + geomItem.getMaterial().name);
         // console.log(geomItem.getPath()) // + " Material:" + geomItem.getMaterial().name);
 
-        let gidx = this.__heldGeomItems.indexOf(geomItem)
+        let gidx = this.__heldGeomItems.indexOf( <GeomItem>geomItem)
         if (gidx == -1) {
           gidx = this.__heldGeomItems.length
           this.__heldObjectCount++
