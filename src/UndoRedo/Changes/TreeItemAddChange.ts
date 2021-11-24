@@ -44,7 +44,7 @@ class TreeItemAddChange extends Change {
       const op = this.treeItem
       op.detach()
     } else if (this.treeItem instanceof TreeItem) {
-      this.treeItem.traverse((subTreeItem) => {
+      this.treeItem.traverse((subTreeItem: TreeItem) => {
         if (subTreeItem instanceof Operator) {
           const op = subTreeItem
           op.detach()
@@ -64,7 +64,7 @@ class TreeItemAddChange extends Change {
       const op = this.treeItem
       op.reattach()
     } else if (this.treeItem instanceof TreeItem) {
-      this.treeItem.traverse((subTreeItem) => {
+      this.treeItem.traverse((subTreeItem: TreeItem) => {
         if (subTreeItem instanceof Operator) {
           const op = subTreeItem
           op.reattach()

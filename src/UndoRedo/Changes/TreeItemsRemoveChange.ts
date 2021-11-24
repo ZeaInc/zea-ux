@@ -48,7 +48,7 @@ class TreeItemsRemoveChange extends Change {
           const op = item
           op.detach()
         } else if (item instanceof TreeItem) {
-          item.traverse((subTreeItem) => {
+          item.traverse((subTreeItem: TreeItem) => {
             if (subTreeItem instanceof Operator) {
               const op = subTreeItem
               op.detach()
@@ -77,7 +77,7 @@ class TreeItemsRemoveChange extends Change {
         const op = item
         op.reattach()
       } else if (item instanceof TreeItem) {
-        item.traverse((subTreeItem) => {
+        item.traverse((subTreeItem: TreeItem) => {
           if (subTreeItem instanceof Operator) {
             const op = subTreeItem
             op.reattach()
