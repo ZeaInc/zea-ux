@@ -1,4 +1,4 @@
-import { EventEmitter, Color, TreeItem, Xfo, GLRenderer } from '@zeainc/zea-engine'
+import { EventEmitter, Color, TreeItem, GLRenderer } from '@zeainc/zea-engine'
 import { AppData } from '../types/temp'
 import XfoHandle from './Handles/XfoHandle'
 import SelectionGroup from './SelectionGroup'
@@ -82,7 +82,7 @@ class SelectionManager extends EventEmitter {
    */
   setXfoMode(mode: number): void {
     if (this.xfoHandle) {
-      this.selectionGroup.initialXfoModeParam.value =(mode)
+      this.selectionGroup.initialXfoModeParam.value = mode
     }
   }
 
