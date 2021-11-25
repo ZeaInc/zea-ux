@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.1](https://github.com/ZeaInc/zea-ux/compare/v4.0.0...v4.0.1) (2021-11-25)
+
+
+### Bug Fixes
+
+* TypeScript support.
+* Cleaned up regression in the UndoRedoManager. An exception was thrown when a new Undo/Redo object was added to the stack. ([b320260](https://github.com/ZeaInc/zea-ux/commit/b320260528f93c2fa06534a9dcdb395e9af788da))
+* Cleaned up regressions due to migration to engine 4.0.0 ([ad9fac8](https://github.com/ZeaInc/zea-ux/commit/ad9fac8a5722996fc64a56277496f95231feea03))
+* HandleShader 'MaintainScreenSize' now eliminates scale from the modelMatrix in the shader. ([1084191](https://github.com/ZeaInc/zea-ux/commit/1084191a01587ef857854ccd8c63b04027735904))
+
 ## [4.0.0](https://github.com/ZeaInc/zea-ux/compare/v3.2.1...v4.0.0) (2021-11-12)
 
 
