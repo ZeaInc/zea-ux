@@ -28,7 +28,7 @@ class CreateGeomChange extends Change {
     this.parentItem = parentItem
     const name = this.parentItem.generateUniqueName(this.geomItem.getName())
     this.geomItem.setName(name)
-    this.geomItem.globalXfoParam.setValue(xfo)
+    this.geomItem.globalXfoParam.value = (xfo)
     this.parentItem.addChild(this.geomItem)
 
   }
@@ -83,7 +83,7 @@ class CreateGeomChange extends Change {
       const color = new Color(0.7, 0.2, 0.2)
       color.fromJSON(j.color)
       const material = this.geomItem.getParameter('Material').getValue()
-      material.getParameter('BaseColor').setValue(color)
+      material.getParameter('BaseColor').value = (color)
     }
   }
 

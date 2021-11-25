@@ -40,14 +40,14 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
   constructor(name, length, thickness, color = new Color()) {
     super(name)
 
-    this.colorParam.setValue(color)
+    this.colorParam.value = (color)
     this.handleMat = new Material('handle', 'HandleShader')
-    this.handleMat.getParameter('BaseColor').setValue(color)
-    this.handleMat.getParameter('MaintainScreenSize').setValue(1)
-    this.handleMat.getParameter('Overlay').setValue(0.9)
+    this.handleMat.getParameter('BaseColor').value = (color)
+    this.handleMat.getParameter('MaintainScreenSize').value = (1)
+    this.handleMat.getParameter('Overlay').value = (0.9)
 
     const handleGeom = new Cylinder(thickness, length - thickness * 10, 64)
-    handleGeom.getParameter('BaseZAtZero').setValue(true)
+    handleGeom.getParameter('BaseZAtZero').value = (true)
     const tipGeom = new Cuboid(thickness * 10, thickness * 10, thickness * 10)
     const handle = new GeomItem('handle', handleGeom, this.handleMat)
 
@@ -62,7 +62,7 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
     transformVertices(tipGeom, tipXfo)
 
     this.colorParam.on('valueChanged', () => {
-      this.handleMat.getParameter('BaseColor').setValue(this.colorParam.getValue())
+      this.handleMat.getParameter('BaseColor').value = (this.colorParam.getValue())
     })
     this.addChild(handle)
     this.addChild(tip)
@@ -73,7 +73,7 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
    */
   highlight() {
     super.highlight()
-    this.handleMat.getParameter('BaseColor').setValue(this.highlightColorParam.getValue())
+    this.handleMat.getParameter('BaseColor').value = (this.highlightColorParam.getValue())
   }
 
   /**
@@ -81,7 +81,7 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
    */
   unhighlight() {
     super.unhighlight()
-    this.handleMat.getParameter('BaseColor').setValue(this.colorParam.getValue())
+    this.handleMat.getParameter('BaseColor').value = (this.colorParam.getValue())
   }
 
   /**
@@ -94,7 +94,7 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
     this.param = param
     if (track) {
       const __updateGizmo = () => {
-        this.globalXfoParam.setValue(param.getValue())
+        this.globalXfoParam.value = (param.getValue())
       }
       __updateGizmo()
       param.on('valueChanged', __updateGizmo)

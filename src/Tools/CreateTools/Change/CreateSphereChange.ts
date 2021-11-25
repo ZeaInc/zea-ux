@@ -27,7 +27,7 @@ class CreateSphereChange extends CreateGeomChange {
     this.geomItem.setSelectable(false)
 
     if (parentItem && xfo && color) {
-      material.getParameter('BaseColor').setValue(color)
+      material.getParameter('BaseColor').value = (color)
       this.setParentAndXfo(parentItem, xfo)
     }
   }

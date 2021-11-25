@@ -44,17 +44,17 @@ class SphericalRotationHandle extends Handle {
 
     this.radius = radius
 
-    this.colorParam.setValue(color)
+    this.colorParam.value = (color)
     this.maskMat = new Material('mask', 'HandleShader')
-    this.maskMat.getParameter('BaseColor').setValue(color)
-    this.maskMat.getParameter('MaintainScreenSize').setValue(1)
-    this.maskMat.getParameter('Overlay').setValue(0.9)
+    this.maskMat.getParameter('BaseColor').value = (color)
+    this.maskMat.getParameter('MaintainScreenSize').value = (1)
+    this.maskMat.getParameter('Overlay').value = (0.9)
 
     const maskGeom = new Sphere(radius, 64)
     const maskGeomItem = new GeomItem('mask', maskGeom, this.maskMat)
 
     this.colorParam.on('valueChanged', () => {
-      this.maskMat.getParameter('BaseColor').setValue(this.colorParam.getValue())
+      this.maskMat.getParameter('BaseColor').value = (this.colorParam.getValue())
     })
 
     this.addChild(maskGeomItem)
@@ -70,7 +70,7 @@ class SphericalRotationHandle extends Handle {
     this.param = param
     if (track) {
       const __updateGizmo = () => {
-        this.globalXfoParam.setValue(param.getValue())
+        this.globalXfoParam.value = (param.getValue())
       }
       __updateGizmo()
       param.on('valueChanged', __updateGizmo)
@@ -147,7 +147,7 @@ class SphericalRotationHandle extends Handle {
     this.vec0.normalizeInPlace()
 
     // Hilight the material.
-    this.colorParam.setValue(new Color(1, 1, 1))
+    this.colorParam.value = (new Color(1, 1, 1))
 
     this.change = new ParameterValueChange(param)
     UndoRedoManager.getInstance().addChange(this.change)

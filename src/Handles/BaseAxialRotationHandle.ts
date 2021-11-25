@@ -46,7 +46,7 @@ class BaseAxialRotationHandle extends Handle {
     this.param = param
     if (track) {
       const __updateGizmo = () => {
-        this.globalXfoParam.setValue(param.getValue())
+        this.globalXfoParam.value = (param.getValue())
       }
       __updateGizmo()
       param.on('valueChanged', __updateGizmo)

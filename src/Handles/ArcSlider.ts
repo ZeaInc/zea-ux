@@ -73,10 +73,10 @@ class ArcSlider extends BaseAxialRotationHandle {
     // this.barRadiusParam = this.addParameter(
     //   new NumberParameter('Bar Radius', radius * 0.25)
     // );
-    this.colorParam.setValue(color)
+    this.colorParam.value = (color)
 
     this.handleMat = new Material('handleMat', 'HandleShader')
-    this.handleMat.getParameter('BaseColor').setValue(color)
+    this.handleMat.getParameter('BaseColor').value = (color)
 
     const arcGeom = new Circle(arcRadius, 64, arcAngle)
     const handleGeom = new Sphere(handleRadius, 64)
@@ -87,7 +87,7 @@ class ArcSlider extends BaseAxialRotationHandle {
     this.handle.geomOffsetXfoParam.value = this.handleGeomOffsetXfo
 
     // this.barRadiusParam.on('valueChanged', () => {
-    //   arcGeom.radiusParam.setValue(this.barRadiusParam.getValue());
+    //   arcGeom.radiusParam.value = (this.barRadiusParam.getValue());
     // });
 
     this.range = [0, arcAngle]
@@ -107,7 +107,7 @@ class ArcSlider extends BaseAxialRotationHandle {
     })
 
     this.colorParam.on('valueChanged', () => {
-      this.handleMat.getParameter('BaseColor').setValue(this.colorParam.getValue())
+      this.handleMat.getParameter('BaseColor').value = (this.colorParam.getValue())
     })
 
     this.addChild(this.handle)
@@ -155,7 +155,7 @@ class ArcSlider extends BaseAxialRotationHandle {
    */
   highlight(): void {
     super.highlight()
-    this.handleMat.getParameter('BaseColor').setValue(this.highlightColorParam.getValue())
+    this.handleMat.getParameter('BaseColor').value = (this.highlightColorParam.getValue())
   }
 
   /**
@@ -163,7 +163,7 @@ class ArcSlider extends BaseAxialRotationHandle {
    */
   unhighlight(): void {
     super.unhighlight()
-    this.handleMat.getParameter('BaseColor').setValue(this.colorParam.getValue())
+    this.handleMat.getParameter('BaseColor').value = (this.colorParam.getValue())
   }
 
   // /**
@@ -190,14 +190,14 @@ class ArcSlider extends BaseAxialRotationHandle {
     if (track) {
       if (this.param instanceof XfoParameter) {
         const __updateGizmo = () => {
-          this.globalXfoParam.setValue(<Xfo>param.value)
+          this.globalXfoParam.value = (<Xfo>param.value)
         }
         __updateGizmo()
         param.on('valueChanged', __updateGizmo)
       } else if (this.param instanceof NumberParameter) {
         const __updateGizmo = () => {
           this.handleXfo.ori.setFromAxisAndAngle(new Vec3(0, 0, 1), <number>param.getValue())
-          this.handle.globalXfoParam.setValue(this.handleXfo)
+          this.handle.globalXfoParam.value = (this.handleXfo)
         }
         __updateGizmo()
         param.on('valueChanged', __updateGizmo)
@@ -294,9 +294,9 @@ class ArcSlider extends BaseAxialRotationHandle {
       }
     } else {
       if (this.param instanceof XfoParameter) {
-        this.param.setValue(value)
+        this.param.value = (value)
       } else if (this.param instanceof NumberParameter) {
-        this.param.setValue(angle)
+        this.param.value = (angle)
       }
     }
   }
