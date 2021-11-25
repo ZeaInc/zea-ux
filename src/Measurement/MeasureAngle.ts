@@ -62,8 +62,8 @@ class MeasureAngle extends TreeItem {
     this.markerMaterialB.getParameter('Overlay').setValue(0.5)
 
     this.lineMaterial = new LinesMaterial('Line')
-    this.lineMaterial.baseColorParam.setValue(new Color(0, 0, 0))
-    this.lineMaterial.overlayParam.setValue(0.5)
+    this.lineMaterial.baseColorParam.value = new Color(0, 0, 0)
+    this.lineMaterial.overlayParam.value = (0.5)
 
     this.markerA = new GeomItem(`markerA`, sphere, this.markerMaterial)
     this.markerB = new GeomItem(`markerB`, sphere, this.markerMaterialB)
