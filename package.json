@@ -53,8 +53,8 @@
   "devDependencies": {
     "@babel/preset-env": "^7.12.7",
     "@percy/cypress": "^2.3.1",
-    "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-commonjs": "^21.0.1",
+    "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^13.0.6",
     "@zeainc/jsdocs2md": "^0.0.7",
     "canvas": "^2.6.1",
@@ -76,9 +76,9 @@
     "standard-version": "^9.0.0"
   },
   "dependencies": {
-    "@types/ms": "^0.7.31",
     "@zeainc/zea-cad": "^4",
-    "@zeainc/zea-engine": "^4",
+    "@zeainc/zea-collab": "^6.0.0",
+    "@zeainc/zea-engine": "^4.0.1",
     "copyfiles": "^2.4.1",
     "dom-to-image": "^2.6.0",
     "husky-run": "^0.0.0",
