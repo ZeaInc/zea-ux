@@ -40,12 +40,12 @@ class XfoPlanarMovementHandle extends PlanarMovementHandle {
 
     this.sizeParam = new NumberParameter('Size', size)
     this.addParameter(this.sizeParam)
-    this.colorParam.value = (color)
+    this.colorParam.value = color
 
     this.handleMat = new Material('handle', 'HandleShader')
-    this.handleMat.getParameter('BaseColor').value = (color)
-    this.handleMat.getParameter('MaintainScreenSize').value = (1)
-    this.handleMat.getParameter('Overlay').value = (0.9)
+    this.handleMat.getParameter('BaseColor').value = color
+    this.handleMat.getParameter('MaintainScreenSize').value = 1
+    this.handleMat.getParameter('Overlay').value = 0.9
 
     const handleGeom = new Cuboid(size, size, size * 0.02)
 
@@ -62,7 +62,7 @@ class XfoPlanarMovementHandle extends PlanarMovementHandle {
     })
 
     this.colorParam.on('valueChanged', () => {
-      this.handleMat.getParameter('BaseColor').value = (this.colorParam.getValue())
+      this.handleMat.getParameter('BaseColor').value = this.colorParam.getValue()
     })
     this.addChild(this.handle)
   }
@@ -72,7 +72,7 @@ class XfoPlanarMovementHandle extends PlanarMovementHandle {
    */
   highlight() {
     super.highlight()
-    this.handleMat.getParameter('BaseColor').value = (this.highlightColorParam.getValue())
+    this.handleMat.getParameter('BaseColor').value = this.highlightColorParam.getValue()
   }
 
   /**
@@ -80,7 +80,7 @@ class XfoPlanarMovementHandle extends PlanarMovementHandle {
    */
   unhighlight() {
     super.unhighlight()
-    this.handleMat.getParameter('BaseColor').value = (this.colorParam.getValue())
+    this.handleMat.getParameter('BaseColor').value = this.colorParam.getValue()
   }
 }
 

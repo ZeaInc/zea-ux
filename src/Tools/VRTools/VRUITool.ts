@@ -53,7 +53,7 @@ class VRUITool extends BaseTool {
 
     const pointermat = new Material('pointermat', 'LinesShader')
     pointermat.setSelectable(false)
-    pointermat.getParameter('BaseColor').value = (new Color(1.2, 0, 0))
+    pointermat.getParameter('BaseColor').value = new Color(1.2, 0, 0)
 
     const line = new Lines()
     line.setNumVertices(2)

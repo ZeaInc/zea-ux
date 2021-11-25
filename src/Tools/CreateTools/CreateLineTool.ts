@@ -76,7 +76,7 @@ class CreateLineTool extends CreateGeomTool {
     if (this.stage == 0) {
       //@ts-ignore
       const stageScale = event.viewport.__stageScale
-      this.lineThickness.value = (stageScale * 0.003)
+      this.lineThickness.value = stageScale * 0.003
     }
     super.onVRControllerButtonDown(event)
   }

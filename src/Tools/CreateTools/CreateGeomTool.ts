@@ -62,7 +62,7 @@ class CreateGeomTool extends BaseCreateTool {
     if (!this.vrControllerToolTip) {
       this.vrControllerToolTip = new Cross(0.05)
       this.vrControllerToolTipMat = new Material('VRController Cross', 'LinesShader')
-      this.vrControllerToolTipMat.getParameter('BaseColor').value = (this.colorParam.getValue())
+      this.vrControllerToolTipMat.getParameter('BaseColor').value = this.colorParam.getValue()
       this.vrControllerToolTipMat.setSelectable(false)
     }
     const geomItem = new GeomItem('CreateGeomToolTip', this.vrControllerToolTip, this.vrControllerToolTipMat)
@@ -305,7 +305,7 @@ class CreateGeomTool extends BaseCreateTool {
    * @param {object} event - The event param.
    */
   onVRControllerButtonDown(event: XRControllerEvent): void {
-    if ( !this.__activeController) {
+    if (!this.__activeController) {
       // TODO: Snap the Xfo to any nearby construction planes.
       this.__activeController = event.controller
       this.constructionPlane = new Xfo()

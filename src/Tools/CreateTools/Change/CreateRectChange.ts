@@ -22,7 +22,7 @@ class CreateRectChange extends CreateGeomChange {
     super('CreateRect')
 
     const material = new Material('circle', 'FatLinesShader')
-    material.getParameter('BaseColor').value = (new Color(0.7, 0.2, 0.2))
+    material.getParameter('BaseColor').value = new Color(0.7, 0.2, 0.2)
     this.geomItem = new GeomItem('Rect', this.rect, material)
 
     if (parentItem && xfo) {

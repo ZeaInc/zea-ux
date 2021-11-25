@@ -75,7 +75,6 @@ class CreateFreehandLineChange extends CreateGeomChange {
     }
     const positions = <Vec3Attribute>this.line.getVertexAttribute('positions')
     positions.setValue(this.used, updateData.point)
-    // this.line.getVertexAttributes().lineThickness.value = (this.used, updateData.lineThickness);
     this.line.setSegmentVertexIndices(this.used - 1, this.used - 1, this.used)
     this.line.setBoundingBoxDirty()
 

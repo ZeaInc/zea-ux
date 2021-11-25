@@ -40,12 +40,12 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
    */
   constructor(name, length = 0.1, thickness = 0.003, color = new Color()) {
     super(name)
-    this.colorParam.value = (color)
+    this.colorParam.value = color
 
     this.handleMat = new Material('handle', 'HandleShader')
-    this.handleMat.getParameter('BaseColor').value = (color)
-    this.handleMat.getParameter('MaintainScreenSize').value = (1)
-    this.handleMat.getParameter('Overlay').value = (0.9)
+    this.handleMat.getParameter('BaseColor').value = color
+    this.handleMat.getParameter('MaintainScreenSize').value = 1
+    this.handleMat.getParameter('Overlay').value = 0.9
 
     const handleGeom = new Cylinder(thickness, length, 64)
     handleGeom.baseZAtZeroParam.value = true
@@ -59,7 +59,7 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
     transformVertices(tipGeom, tipXfo)
 
     this.colorParam.on('valueChanged', () => {
-      this.handleMat.getParameter('BaseColor').value = (this.colorParam.getValue())
+      this.handleMat.getParameter('BaseColor').value = this.colorParam.getValue()
     })
 
     this.addChild(handle)
@@ -71,7 +71,7 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
    */
   highlight() {
     super.highlight()
-    this.handleMat.getParameter('BaseColor').value = (this.highlightColorParam.getValue())
+    this.handleMat.getParameter('BaseColor').value = this.highlightColorParam.getValue()
   }
 
   /**
@@ -79,7 +79,7 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
    */
   unhighlight() {
     super.unhighlight()
-    this.handleMat.getParameter('BaseColor').value = (this.colorParam.getValue())
+    this.handleMat.getParameter('BaseColor').value = this.colorParam.getValue()
   }
 
   /**
@@ -92,7 +92,7 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
     this.param = param
     if (track) {
       const __updateGizmo = () => {
-        this.globalXfoParam.value = (param.getValue())
+        this.globalXfoParam.value = param.getValue()
       }
       __updateGizmo()
       param.on('valueChanged', __updateGizmo)
