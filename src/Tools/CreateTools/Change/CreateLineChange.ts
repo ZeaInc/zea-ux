@@ -60,8 +60,7 @@ class CreateLineChange extends CreateGeomChange {
    */
   update(updateData: Record<any, any>) {
     if (updateData.p1) {
-      console.log(updateData.p1.toString())
-      ;(<Vec3Attribute>this.line.getVertexAttribute('positions')).getValueRef(1).setFromOther(updateData.p1)
+      this.line.positions.getValueRef(1).setFromOther(updateData.p1)
       this.line.setBoundingBoxDirty()
       this.line.emit('geomDataChanged')
     }
