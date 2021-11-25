@@ -61,13 +61,13 @@ class SliderHandle extends BaseLinearMovementHandle {
     this.addParameter(this.lengthParam)
     this.addParameter(this.handleRadiusParam)
     this.addParameter(this.barRadiusParam)
-    this.colorParam.setValue(color)
+    this.colorParam.value = (color)
 
     this.handleMat = new Material('handle', 'FlatSurfaceShader')
-    this.handleMat.getParameter('BaseColor').setValue(this.colorParam.getValue())
+    this.handleMat.getParameter('BaseColor').value = (this.colorParam.getValue())
 
     const topBarMat = new Material('topBar', 'FlatSurfaceShader')
-    topBarMat.getParameter('BaseColor').setValue(new Color(0.5, 0.5, 0.5))
+    topBarMat.getParameter('BaseColor').value = (new Color(0.5, 0.5, 0.5))
 
     const barGeom = new Cylinder(radius * 0.25, 1, 64, 2, true, true)
     const handleGeom = new Sphere(radius, 64)
@@ -77,16 +77,16 @@ class SliderHandle extends BaseLinearMovementHandle {
     this.topBar = new GeomItem('topBar', barGeom, topBarMat)
 
     this.barRadiusParam.on('valueChanged', () => {
-      barGeom.radiusParam.setValue(this.barRadiusParam.getValue())
+      barGeom.radiusParam.value = (this.barRadiusParam.getValue())
     })
     this.handleRadiusParam.on('valueChanged', () => {
-      handleGeom.radiusParam.setValue(this.handleRadiusParam.getValue())
+      handleGeom.radiusParam.value = (this.handleRadiusParam.getValue())
     })
     this.lengthParam.on('valueChanged', () => {
       this.__updateSlider(this.value)
     })
     this.colorParam.on('valueChanged', () => {
-      this.handleMat.getParameter('BaseColor').setValue(this.colorParam.getValue())
+      this.handleMat.getParameter('BaseColor').value = (this.colorParam.getValue())
     })
 
     this.addChild(this.handle)
@@ -101,7 +101,7 @@ class SliderHandle extends BaseLinearMovementHandle {
    */
   highlight() {
     super.highlight()
-    this.handleMat.getParameter('BaseColor').setValue(this.highlightColorParam.getValue())
+    this.handleMat.getParameter('BaseColor').value = (this.highlightColorParam.getValue())
   }
 
   /**
@@ -109,7 +109,7 @@ class SliderHandle extends BaseLinearMovementHandle {
    */
   unhighlight() {
     super.unhighlight()
-    this.handleMat.getParameter('BaseColor').setValue(this.colorParam.getValue())
+    this.handleMat.getParameter('BaseColor').value = (this.colorParam.getValue())
   }
 
   /**

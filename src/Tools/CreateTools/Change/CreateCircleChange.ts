@@ -23,7 +23,7 @@ class CreateCircleChange extends CreateGeomChange {
     super('CreateCircle')
 
     const material = new Material('circle', 'FatLinesShader')
-    material.getParameter('BaseColor').setValue(new Color(0.7, 0.2, 0.2))
+    material.getParameter('BaseColor').value = (new Color(0.7, 0.2, 0.2))
 
     this.geomItem = new GeomItem('Circle', this.circle, material)
 
@@ -60,7 +60,7 @@ class CreateCircleChange extends CreateGeomChange {
    */
   updateFromJSON(j: Record<any, any>) {
     console.log('CreateCircleChange:', j)
-    if (j.radius) this.circle.radiusParam.setValue(j.radius)
+    if (j.radius) this.circle.radiusParam.value = (j.radius)
   }
 }
 
