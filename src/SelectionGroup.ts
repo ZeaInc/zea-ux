@@ -105,7 +105,7 @@ class SelectionGroup extends SelectionSet {
         }
       })
 
-      this.selectionGroupXfoOp.addItem(item, index)
+      this.selectionGroupXfoOp.addItem(item)
     }
   }
 
@@ -124,7 +124,7 @@ class SelectionGroup extends SelectionSet {
         }
       })
 
-      this.selectionGroupXfoOp.removeItem(item, index)
+      this.selectionGroupXfoOp.removeItem(item)
     }
   }
 }
