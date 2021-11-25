@@ -22,13 +22,13 @@ const GROUP_XFO_MODES = {
  * @extends {SelectionSet}
  */
 class SelectionGroup extends SelectionSet {
-  initialXfoModeParam =new MultiChoiceParameter('InitialXfoMode', GROUP_XFO_MODES.average, [
+  initialXfoModeParam = new MultiChoiceParameter('InitialXfoMode', GROUP_XFO_MODES.average, [
     'manual',
     'first',
     'average',
     'global',
   ])
-  selectionGroupXfoOp:  SelectionGroupXfoOperator
+  selectionGroupXfoOp: SelectionGroupXfoOperator
   /**
    * Creates an instance of SelectionGroup.
    *
@@ -51,12 +51,10 @@ class SelectionGroup extends SelectionSet {
       subtreeColor.a = 0.1
     }
 
-    this.highlightColorParam.value = (selectionColor)
+    this.highlightColorParam.value = selectionColor
     this.addParameter(new ColorParameter('SubtreeHighlightColor', subtreeColor))
 
     this.itemsParam.setFilterFn((item) => item instanceof BaseItem)
-
-    
 
     this.addParameter(this.initialXfoModeParam)
 

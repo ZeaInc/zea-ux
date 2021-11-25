@@ -1,4 +1,4 @@
-import { GeomItem, Material, Cone, TreeItem, Xfo, Color,} from '@zeainc/zea-engine'
+import { GeomItem, Material, Cone, TreeItem, Xfo, Color } from '@zeainc/zea-engine'
 import { UndoRedoManager } from '../../../UndoRedo/index'
 import CreateGeomChange from './CreateGeomChange'
 
@@ -26,7 +26,7 @@ class CreateConeChange extends CreateGeomChange {
     this.geomItem = new GeomItem('Cone', cone, material)
 
     if (parentItem && xfo) {
-      material.getParameter('BaseColor').value = (color)
+      material.getParameter('BaseColor').value = color
       this.setParentAndXfo(parentItem, xfo)
     }
   }
@@ -37,9 +37,9 @@ class CreateConeChange extends CreateGeomChange {
    * @param {object} updateData - The updateData param.
    */
   update(updateData: Record<any, any>) {
-    if (updateData.radius) this.geomItem.getParameter('Geometry').getValue().radiusParam.value = (updateData.radius)
+    if (updateData.radius) this.geomItem.getParameter('Geometry').getValue().radiusParam.value = updateData.radius
     if (updateData.height)
-      this.geomItem.getParameter('Geometry').getValue().getParameter('Height').value = (updateData.height)
+      this.geomItem.getParameter('Geometry').getValue().getParameter('Height').value = updateData.height
 
     this.emit('updated', updateData)
   }

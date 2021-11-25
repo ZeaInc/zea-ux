@@ -43,7 +43,7 @@ class HoldObjectsChange extends Change {
   undo(): void {
     for (let i = 0; i < this.__selection.length; i++) {
       if (this.__selection[i] && this.__prevXfos[i]) {
-        this.__selection[i].globalXfoParam.value = (this.__prevXfos[i])
+        this.__selection[i].globalXfoParam.value = this.__prevXfos[i]
       }
     }
   }
@@ -54,7 +54,7 @@ class HoldObjectsChange extends Change {
   redo(): void {
     for (let i = 0; i < this.__selection.length; i++) {
       if (this.__selection[i] && this.__newXfos[i]) {
-        this.__selection[i].globalXfoParam.value = (this.__newXfos[i])
+        this.__selection[i].globalXfoParam.value = this.__newXfos[i]
       }
     }
   }
@@ -71,7 +71,7 @@ class HoldObjectsChange extends Change {
       for (let i = 0; i < updateData.changeXfoIds.length; i++) {
         const gidx = updateData.changeXfoIds[i]
         if (!this.__selection[gidx]) continue
-        this.__selection[gidx].globalXfoParam.value = (updateData.changeXfos[i])
+        this.__selection[gidx].globalXfoParam.value = updateData.changeXfos[i]
         this.__newXfos[gidx] = updateData.changeXfos[i]
       }
     }
@@ -174,7 +174,7 @@ class VRHoldObjectsTool extends BaseTool {
       if (!this.__activated) return
       // const cross = new Cross(0.03)
       // const mat = new Material('Cross', 'FlatSurfaceShader')
-      // mat.getParameter('BaseColor').value = (new Color('#03E3AC'))
+      // mat.getParameter('BaseColor').value = new Color('#03E3AC')
       // mat.visibleInGeomDataBuffer = false
       // const geomItem = new GeomItem('HandleToolTip', cross, mat)
       // controller.getTipItem().removeAllChildren()
@@ -272,7 +272,7 @@ class VRHoldObjectsTool extends BaseTool {
         // console.log("onMouseDown on Geom"); // + " Material:" + geomItem.getMaterial().name);
         // console.log(geomItem.getPath()) // + " Material:" + geomItem.getMaterial().name);
 
-        let gidx = this.__heldGeomItems.indexOf( <GeomItem>geomItem)
+        let gidx = this.__heldGeomItems.indexOf(<GeomItem>geomItem)
         if (gidx == -1) {
           gidx = this.__heldGeomItems.length
           this.__heldObjectCount++

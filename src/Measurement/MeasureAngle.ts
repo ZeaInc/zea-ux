@@ -52,18 +52,18 @@ class MeasureAngle extends TreeItem {
     this.colorParam = <ColorParameter>this.addParameter(new ColorParameter('Color', color))
 
     this.markerMaterial = new HandleMaterial('Marker')
-    this.markerMaterial.getParameter('BaseColor').value = (new Color(0, 0, 0))
-    this.markerMaterial.getParameter('MaintainScreenSize').value = (1)
-    this.markerMaterial.getParameter('Overlay').value = (0.5)
+    this.markerMaterial.getParameter('BaseColor').value = new Color(0, 0, 0)
+    this.markerMaterial.getParameter('MaintainScreenSize').value = 1
+    this.markerMaterial.getParameter('Overlay').value = 0.5
 
     this.markerMaterialB = new HandleMaterial('Marker')
-    this.markerMaterialB.getParameter('BaseColor').value = (new Color(0, 0, 0))
-    this.markerMaterialB.getParameter('MaintainScreenSize').value = (1)
-    this.markerMaterialB.getParameter('Overlay').value = (0.5)
+    this.markerMaterialB.getParameter('BaseColor').value = new Color(0, 0, 0)
+    this.markerMaterialB.getParameter('MaintainScreenSize').value = 1
+    this.markerMaterialB.getParameter('Overlay').value = 0.5
 
     this.lineMaterial = new LinesMaterial('Line')
     this.lineMaterial.baseColorParam.value = new Color(0, 0, 0)
-    this.lineMaterial.overlayParam.value = (0.5)
+    this.lineMaterial.overlayParam.value = 0.5
 
     this.markerA = new GeomItem(`markerA`, sphere, this.markerMaterial)
     this.markerB = new GeomItem(`markerB`, sphere, this.markerMaterialB)
@@ -115,7 +115,7 @@ class MeasureAngle extends TreeItem {
 
     this.colorParam.on('valueChanged', () => {
       const color = this.colorParam.getValue()
-      this.markerMaterial.getParameter('BaseColor').value = (color)
+      this.markerMaterial.getParameter('BaseColor').value = color
       this.lineMaterial.baseColorParam.value = color
       this.label.backgroundColorParam.value = color
     })
@@ -126,9 +126,9 @@ class MeasureAngle extends TreeItem {
     labelXfo.tr.scaleInPlace(0.5)
 
     xfoA.ori.setFromDirectionAndUpvector(tangentA, normA)
-    this.markerA.globalXfoParam.value = (xfoA)
+    this.markerA.globalXfoParam.value = xfoA
     xfoB.ori.setFromDirectionAndUpvector(tangentB, normA)
-    this.markerB.globalXfoParam.value = (xfoB)
+    this.markerB.globalXfoParam.value = xfoB
 
     const lineAXfo = new Xfo()
     lineAXfo.sc.z = params[0]
@@ -137,7 +137,7 @@ class MeasureAngle extends TreeItem {
     lineBXfo.sc.z = params[1]
     this.markerB.getChild(0).localXfoParam.value = lineBXfo
 
-    this.billboard.globalXfoParam.value = (labelXfo)
+    this.billboard.globalXfoParam.value = labelXfo
   }
 
   /**
@@ -146,8 +146,8 @@ class MeasureAngle extends TreeItem {
    * @param {Xfo} xfo
    */
   setXfoA(xfo: Xfo) {
-    this.markerA.globalXfoParam.value = (xfo)
-    this.markerB.globalXfoParam.value = (xfo)
+    this.markerA.globalXfoParam.value = xfo
+    this.markerB.globalXfoParam.value = xfo
   }
 
   /**
@@ -165,7 +165,7 @@ class MeasureAngle extends TreeItem {
    * @param {Xfo} xfo
    */
   setXfoB(xfo: Xfo) {
-    this.markerB.globalXfoParam.value = (xfo)
+    this.markerB.globalXfoParam.value = xfo
     this.createLinesAndLabel()
   }
 }

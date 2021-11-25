@@ -98,7 +98,7 @@ export default class VRControllerUI extends TreeItem {
       this.size = new Vec3(vrUIDOMElement.clientWidth * dpm, vrUIDOMElement.clientHeight * dpm, 1)
 
       // debugGeomItemXfo.sc = this.size
-      // debugGeomItem.localXfoParam.value = (debugGeomItemXfo)
+      // debugGeomItem.localXfoParam.value = debugGeomItemXfo
 
       traverse(vrUIDOMElement, 0, (elem: HTMLElement, depth: number) => {
         if (elem.className == 'button') {
@@ -118,9 +118,9 @@ export default class VRControllerUI extends TreeItem {
           )
 
           const uimat = new Material('element-vr-ui-mat', 'FlatSurfaceShader')
-          uimat.getParameter('BaseColor').value = (new Color(0.3, 0.3, 0.3))
+          uimat.getParameter('BaseColor').value = new Color(0.3, 0.3, 0.3)
           const image = new DataImage()
-          uimat.getParameter('BaseColor').value = (image)
+          uimat.getParameter('BaseColor').value = image
 
           const geomItem = new GeomItem('element-vr-ui', plane, uimat, localXfo)
           geomItem.setSelectable(false)

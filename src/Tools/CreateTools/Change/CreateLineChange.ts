@@ -80,7 +80,7 @@ class CreateLineChange extends CreateGeomChange {
       const color = new Color()
       color.fromJSON(j.color)
       const material = this.geomItem.materialParam.value
-      material.getParameter('BaseColor').value = (color)
+      material.getParameter('BaseColor').value = color
     }
   }
 }

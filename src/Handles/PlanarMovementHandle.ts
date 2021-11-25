@@ -44,7 +44,7 @@ class PlanarMovementHandle extends Handle {
     this.param = param
     if (track) {
       const __updateGizmo = () => {
-        this.globalXfoParam.value = (param.getValue())
+        this.globalXfoParam.value = param.getValue()
       }
       __updateGizmo()
       param.on('valueChanged', __updateGizmo)
@@ -134,7 +134,7 @@ class PlanarMovementHandle extends Handle {
         })
       } else {
         const param = this.getTargetParam()
-        param.value = (newXfo)
+        param.value = newXfo
       }
     } else {
       super.onVRPoseChanged(event)

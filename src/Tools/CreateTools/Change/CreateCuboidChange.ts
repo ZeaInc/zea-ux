@@ -25,7 +25,7 @@ class CreateCuboidChange extends CreateGeomChange {
     this.geomItem = new GeomItem('Cuboid', this.cuboid, material)
 
     if (parentItem && xfo) {
-      material.getParameter('BaseColor').value = (color)
+      material.getParameter('BaseColor').value = color
       this.setParentAndXfo(parentItem, xfo)
     }
   }

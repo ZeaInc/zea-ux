@@ -58,9 +58,9 @@ class MeasureDistance extends TreeItem {
     this.addParameter(this.unitsParameter)
 
     this.markerMaterial = new HandleMaterial('Marker')
-    this.markerMaterial.getParameter('BaseColor').value = (new Color(0, 0, 0))
-    this.markerMaterial.getParameter('MaintainScreenSize').value = (1)
-    this.markerMaterial.getParameter('Overlay').value = (0.5)
+    this.markerMaterial.getParameter('BaseColor').value = new Color(0, 0, 0)
+    this.markerMaterial.getParameter('MaintainScreenSize').value = 1
+    this.markerMaterial.getParameter('Overlay').value = 0.5
 
     this.startMarker = new GeomItem(`${name}StartMarker`, sphere, this.markerMaterial)
     this.endMarker = new GeomItem(`${name}EndMarker`, sphere, this.markerMaterial)
@@ -70,9 +70,9 @@ class MeasureDistance extends TreeItem {
 
     this.colorParam.on('valueChanged', () => {
       const color = this.colorParam.getValue()
-      this.markerMaterial.getParameter('BaseColor').value = (color)
-      this.lineMaterial.getParameter('BaseColor').value = (color)
-      this.label.getParameter('BackgroundColor').value = (color)
+      this.markerMaterial.getParameter('BaseColor').value = color
+      this.lineMaterial.getParameter('BaseColor').value = color
+      this.label.getParameter('BackgroundColor').value = color
     })
   }
 
@@ -97,41 +97,41 @@ class MeasureDistance extends TreeItem {
     console.log(units, distanceInMM)
     if (!this.label) {
       this.label = new Label('Distance')
-      this.label.getParameter('FontSize').value = (20)
-      this.label.getParameter('BackgroundColor').value = (color)
-      this.label.getParameter('Text').value = (labelTest)
+      this.label.getParameter('FontSize').value = 20
+      this.label.getParameter('BackgroundColor').value = color
+      this.label.getParameter('Text').value = labelTest
 
       this.billboard = new BillboardItem('DistanceBillboard', this.label)
       this.billboard.localXfoParam.value = new Xfo()
-      this.billboard.getParameter('PixelsPerMeter').value = (1500)
-      this.billboard.getParameter('AlignedToCamera').value = (true)
-      this.billboard.getParameter('DrawOnTop').value = (true)
-      this.billboard.getParameter('FixedSizeOnscreen').value = (true)
-      this.billboard.getParameter('Alpha').value = (1)
+      this.billboard.getParameter('PixelsPerMeter').value = 1500
+      this.billboard.getParameter('AlignedToCamera').value = true
+      this.billboard.getParameter('DrawOnTop').value = true
+      this.billboard.getParameter('FixedSizeOnscreen').value = true
+      this.billboard.getParameter('Alpha').value = 1
 
       this.addChild(this.billboard)
 
       this.lineMaterial = new LinesMaterial('Line')
-      this.lineMaterial.getParameter('BaseColor').value = (new Color(0, 0, 0))
-      this.lineMaterial.getParameter('Overlay').value = (0.5)
+      this.lineMaterial.getParameter('BaseColor').value = new Color(0, 0, 0)
+      this.lineMaterial.getParameter('Overlay').value = 0.5
       this.lineGeomItem = new GeomItem('Line', line, this.lineMaterial)
       this.lineGeomItem.setSelectable(false)
       this.addChild(this.lineGeomItem)
     } else {
-      this.label.getParameter('Text').value = (labelTest)
+      this.label.getParameter('Text').value = labelTest
     }
 
     const lineXfo = startXfo.clone()
     lineXfo.ori.setFromDirectionAndUpvector(vector, new Vec3(vector.z, vector.x, vector.y))
     lineXfo.sc.z = distance
 
-    this.lineGeomItem.globalXfoParam.value = (lineXfo)
+    this.lineGeomItem.globalXfoParam.value = lineXfo
 
     vector.normalizeInPlace()
     const midPoint = startXfo.tr.add(vector.scale(distance * 0.5))
     const labelXfo = new Xfo(midPoint)
     labelXfo.ori.setFromDirectionAndUpvector(vector, new Vec3(vector.z, vector.x, vector.y))
-    this.billboard.globalXfoParam.value = (labelXfo)
+    this.billboard.globalXfoParam.value = labelXfo
   }
 
   /**
@@ -142,7 +142,7 @@ class MeasureDistance extends TreeItem {
   setStartMarkerPos(position) {
     const newXfo = this.startMarker.globalXfoParam.value
     newXfo.tr = position
-    this.startMarker.globalXfoParam.value = (newXfo)
+    this.startMarker.globalXfoParam.value = newXfo
     if (this.label) this.updateMeasurement()
   }
 
@@ -154,7 +154,7 @@ class MeasureDistance extends TreeItem {
   setEndMarkerPos(position) {
     const endXfo = this.endMarker.globalXfoParam.value
     endXfo.tr = position
-    this.endMarker.globalXfoParam.value = (endXfo)
+    this.endMarker.globalXfoParam.value = endXfo
     this.updateMeasurement()
   }
 

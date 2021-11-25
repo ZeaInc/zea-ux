@@ -51,13 +51,13 @@ class SelectionTool extends BaseTool {
 
     this.selectionRect = new Rect(1, 1)
     this.selectionRectMat = new Material('marker', 'ScreenSpaceShader')
-    this.selectionRectMat.getParameter('BaseColor').value = (new Color('#03E3AC'))
+    this.selectionRectMat.getParameter('BaseColor').value = new Color('#03E3AC')
     this.selectionRectXfo = new Xfo()
     this.selectionRectXfo.tr.set(0.5, 0.5, 0)
     this.selectionRectXfo.sc.set(0, 0, 0)
 
     this.rectItem = new GeomItem('selectionRect', this.selectionRect, this.selectionRectMat)
-    this.rectItem.getParameter('Visible').value = (false)
+    this.rectItem.getParameter('Visible').value = false
     this.appData.renderer.addTreeItem(this.rectItem)
   }
 
@@ -90,8 +90,8 @@ class SelectionTool extends BaseTool {
   deactivateTool() {
     super.deactivateTool()
     this.selectionRectXfo.sc.set(0, 0, 0)
-    this.rectItem.globalXfoParam.value = (this.selectionRectXfo)
-    this.rectItem.getParameter('Visible').value = (false)
+    this.rectItem.globalXfoParam.value = this.selectionRectXfo
+    this.rectItem.getParameter('Visible').value = false
   }
   /**
    * Activates selection tool.
@@ -121,7 +121,7 @@ class SelectionTool extends BaseTool {
 
     this.selectionRectXfo.tr.x = tr.x
     this.selectionRectXfo.tr.y = -tr.y
-    this.rectItem.globalXfoParam.value = (this.selectionRectXfo)
+    this.rectItem.globalXfoParam.value = this.selectionRectXfo
   }
 
   /**
@@ -166,7 +166,7 @@ class SelectionTool extends BaseTool {
       if (dist > 4) {
         this.dragging = true
         // Start drawing the selection rectangle on screen.
-        this.rectItem.getParameter('Visible').value = (true)
+        this.rectItem.getParameter('Visible').value = true
         this.__resizeRect(event.viewport, delta)
       }
       event.stopPropagation()
@@ -183,7 +183,7 @@ class SelectionTool extends BaseTool {
     if ((event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) && this.pointerDownPos) {
       // event.viewport.renderGeomDataFbo();
       if (this.dragging) {
-        this.rectItem.getParameter('Visible').value = (false)
+        this.rectItem.getParameter('Visible').value = false
         const pointerUpPos = event.pointerPos
         const tl = new Vec2(
           Math.min(this.pointerDownPos.x, pointerUpPos.x),
@@ -212,7 +212,9 @@ class SelectionTool extends BaseTool {
           this.selectionManager.pick(geomItems)
         } else {
           // Remove all the scene widgets. (UI elements should not be selectable.)
-          const regularGeomItems: Set<TreeItem> = new Set([...geomItems].filter((x) => !(x.getOwner() instanceof Handle)))
+          const regularGeomItems: Set<TreeItem> = new Set(
+            [...geomItems].filter((x) => !(x.getOwner() instanceof Handle))
+          )
 
           if (!event.shiftKey) {
             this.selectionManager.selectItems(regularGeomItems, !event.ctrlKey)
@@ -221,7 +223,7 @@ class SelectionTool extends BaseTool {
           }
 
           this.selectionRectXfo.sc.set(0, 0, 0)
-          this.rectItem.globalXfoParam.value = (this.selectionRectXfo)
+          this.rectItem.globalXfoParam.value = this.selectionRectXfo
         }
       } else {
         const intersectionData = event.viewport.getGeomDataAtPos(event.pointerPos, undefined) // TODO: check if this was intended

@@ -29,7 +29,7 @@ class ParameterValueChange extends Change {
       this.__param = param
       if (newValue != undefined) {
         this.__nextValue = newValue
-        this.__param.value = (this.__nextValue)
+        this.__param.value = this.__nextValue
       }
     } else {
       super()
@@ -45,7 +45,7 @@ class ParameterValueChange extends Change {
   undo(): void {
     if (!this.__param) return
 
-    if (!this.suppressPrimaryChange) this.__param.value = (this.__prevValue)
+    if (!this.suppressPrimaryChange) this.__param.value = this.__prevValue
 
     this.secondaryChanges.forEach((change) => change.undo())
   }
@@ -56,7 +56,7 @@ class ParameterValueChange extends Change {
    */
   redo(): void {
     if (!this.__param) return
-    if (!this.suppressPrimaryChange) this.__param.value = (this.__nextValue)
+    if (!this.suppressPrimaryChange) this.__param.value = this.__nextValue
 
     this.secondaryChanges.forEach((change) => change.redo())
   }
@@ -69,7 +69,7 @@ class ParameterValueChange extends Change {
   update(updateData: Record<string, any>): void {
     if (!this.__param) return
     this.__nextValue = updateData.value
-    this.__param.value = (this.__nextValue)
+    this.__param.value = this.__nextValue
     this.emit('updated', updateData)
   }
 
@@ -125,7 +125,7 @@ class ParameterValueChange extends Change {
     if (!this.__param) return
     if (this.__nextValue.fromJSON) this.__nextValue.fromJSON(j.value)
     else this.__nextValue = j.value
-    this.__param.value = (this.__nextValue)
+    this.__param.value = this.__nextValue
   }
 }
 

@@ -9,7 +9,7 @@ import {
   ZeaPointerEvent,
   ZeaMouseEvent,
   ZeaTouchEvent,
-  XRControllerEvent
+  XRControllerEvent,
 } from '@zeainc/zea-engine'
 
 import BaseAxialRotationHandle from './BaseAxialRotationHandle'
@@ -23,7 +23,7 @@ import './Shaders/HandleShader'
  * const xfo = new Xfo()
  * // This is rotation over `Y` axis
  * xfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI * 0.5)
- * axialRotationHandle.localXfoParam.value = (xfo)
+ * axialRotationHandle.localXfoParam.value = xfo
  * ```
  * **Parameters**
  * * **Radius(`NumberParameter`):** Specifies the radius of the handler.
@@ -47,13 +47,13 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
     super(name)
 
     this.radiusParam = new NumberParameter('Radius', radius)
-    this.colorParam.value = (color)
+    this.colorParam.value = color
     this.addParameter(this.radiusParam)
 
     this.handleMat = new Material('handle', 'HandleShader')
-    this.handleMat.getParameter('BaseColor').value = (color)
-    this.handleMat.getParameter('MaintainScreenSize').value = (1)
-    this.handleMat.getParameter('Overlay').value = (0.9)
+    this.handleMat.getParameter('BaseColor').value = color
+    this.handleMat.getParameter('MaintainScreenSize').value = 1
+    this.handleMat.getParameter('Overlay').value = 0.9
 
     // const handleGeom = new Cylinder(radius, thickness * 2, 64, 2, false);
     const handleGeom = new Torus(thickness, radius, 64, Math.PI * 0.5)
@@ -67,7 +67,7 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
     })
 
     this.colorParam.on('valueChanged', () => {
-      this.handleMat.getParameter('BaseColor').value = (this.colorParam.getValue())
+      this.handleMat.getParameter('BaseColor').value = this.colorParam.getValue()
     })
 
     this.addChild(this.handle)
@@ -78,7 +78,7 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
    */
   highlight(): void {
     super.highlight()
-    this.handleMat.getParameter('BaseColor').value = (this.highlightColorParam.getValue())
+    this.handleMat.getParameter('BaseColor').value = this.highlightColorParam.getValue()
   }
 
   /**
@@ -86,7 +86,7 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
    */
   unhighlight(): void {
     super.unhighlight()
-    this.handleMat.getParameter('BaseColor').value = (this.colorParam.getValue())
+    this.handleMat.getParameter('BaseColor').value = this.colorParam.getValue()
   }
 
   /**
