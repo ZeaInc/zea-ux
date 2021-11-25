@@ -170,7 +170,7 @@ class UndoRedoManager extends EventEmitter {
    */
   // TODO: register not working
   static getChangeClassName(inst): string {
-    return Registry.getClassName(inst)
+    return Registry.getClassName(Object.getPrototypeOf(inst).constructor)
   }
 
   /**
