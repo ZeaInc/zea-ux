@@ -12,7 +12,7 @@ import CreateGeomChange from './CreateGeomChange'
  */
 class CreateCircleChange extends CreateGeomChange {
   circle: Circle = new Circle(0, 64)
-  geomItem
+  geomItem: GeomItem
   /**
    * Creates an instance of CreateCircleChange.
    *
