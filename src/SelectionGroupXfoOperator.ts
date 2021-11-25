@@ -1,4 +1,14 @@
-import { Xfo, KinematicGroup, Operator, XfoOperatorInput, XfoOperatorOutput, TreeItem } from '@zeainc/zea-engine'
+import {
+  Xfo,
+  KinematicGroup,
+  Operator,
+  XfoOperatorInput,
+  NumberOperatorInput,
+  XfoOperatorOutput,
+  TreeItem,
+  NumberParameter,
+  XfoParameter,
+} from '@zeainc/zea-engine'
 
 /**
  * An operator for aiming items at targets.
@@ -7,20 +17,18 @@ import { Xfo, KinematicGroup, Operator, XfoOperatorInput, XfoOperatorOutput, Tre
  */
 class SelectionGroupXfoOperator extends Operator {
   currGroupXfo: Xfo
-  xfoOperatorInputParam: XfoOperatorInput = new XfoOperatorInput('InitialXfoMode')
-  xfoOperatorOutputParam: XfoOperatorOutput = new XfoOperatorOutput('GroupGlobalXfo')
+  xfoModeInput = new NumberOperatorInput('InitialXfoMode')
+  xfoOutput = new XfoOperatorOutput('GroupGlobalXfo')
   /**
    * Creates an instance of SelectionGroupXfoOperator.
    *
    * @param {number} initialXfoModeParam - Initial XFO Mode, check `INITIAL_XFO_MODES` in `KinematicGroup` documentation
    * @param {XfoParameter} globalXfoParam - The GlobalXfo param found on the KinematicKinematicGroup.
    */
-  constructor(initialXfoModeParam, globalXfoParam) {
+  constructor(initialXfoModeParam: NumberParameter, globalXfoParam: XfoParameter) {
     super()
-    // this.xfoOperatorInputParam = initialXfoModeParam // TODO: is this necessary?
-    // this.xfoOperatorOutputParam = globalXfoParam
-    this.addInput(this.xfoOperatorInputParam).setParam(initialXfoModeParam)
-    this.addOutput(this.xfoOperatorOutputParam).setParam(globalXfoParam)
+    this.addInput(this.xfoModeInput).setParam(initialXfoModeParam)
+    this.addOutput(this.xfoOutput).setParam(globalXfoParam)
 
     this.currGroupXfo = new Xfo()
   }
@@ -31,7 +39,9 @@ class SelectionGroupXfoOperator extends Operator {
    * @param {TreeItem} item - The tree item being added
    */
   addItem(item: TreeItem): void {
-    this.addInput(new XfoOperatorInput('MemberGlobalXfo' + this.getNumInputs())).setParam(item.globalXfoParam)
+    const xfoInput = new XfoOperatorInput('MemberGlobalXfo' + this.getNumInputs())
+    xfoInput.setParam(item.globalXfoParam)
+    this.addInput(xfoInput)
     this.setDirty()
   }
 
@@ -85,18 +95,17 @@ class SelectionGroupXfoOperator extends Operator {
    * Calculates a new Xfo for the group based on the members.
    */
   evaluate(): void {
-    const groupTransformOutput = this.getOutput('GroupGlobalXfo')
     this.currGroupXfo = new Xfo()
 
     if (this.getNumInputs() == 1) {
-      groupTransformOutput.setClean(this.currGroupXfo)
+      this.xfoOutput.setClean(this.currGroupXfo)
       return
     }
 
-    const initialXfoMode = this.getInput('InitialXfoMode').getValue()
+    const initialXfoMode = this.xfoModeInput.getValue()
     if (initialXfoMode == KinematicGroup.INITIAL_XFO_MODES.manual) {
       // The xfo is manually set by the current global xfo.
-      this.currGroupXfo = groupTransformOutput.getValue().clone()
+      this.currGroupXfo = this.xfoOutput.getValue().clone()
       return
     } else if (initialXfoMode == KinematicGroup.INITIAL_XFO_MODES.first) {
       const itemXfo = this.getInputByIndex(1).getValue()
@@ -127,7 +136,7 @@ class SelectionGroupXfoOperator extends Operator {
       throw new Error('Invalid KinematicGroup.INITIAL_XFO_MODES.')
     }
     this.currGroupXfo.ori.normalizeInPlace()
-    groupTransformOutput.setClean(this.currGroupXfo)
+    this.xfoOutput.setClean(this.currGroupXfo)
   }
 }
 
