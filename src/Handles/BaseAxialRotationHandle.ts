@@ -7,6 +7,7 @@ import {
   ZeaPointerEvent,
   ZeaMouseEvent,
   ZeaTouchEvent,
+  NumberParameter,
 } from '@zeainc/zea-engine'
 import Handle from './Handle'
 import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
@@ -18,7 +19,7 @@ import UndoRedoManager from '../UndoRedo/UndoRedoManager'
  * @extends Handle
  */
 class BaseAxialRotationHandle extends Handle {
-  param: Parameter<unknown>
+  param: NumberParameter | XfoParameter
   baseXfo: Xfo
   deltaXfo: Xfo
   offsetXfo: Xfo
@@ -57,7 +58,7 @@ class BaseAxialRotationHandle extends Handle {
    *
    * @return {Parameter} - returns handle's target global Xfo.
    */
-  getTargetParam(): Parameter<unknown> {
+  getTargetParam(): NumberParameter | XfoParameter {
     return this.param ? this.param : this.globalXfoParam
   }
 

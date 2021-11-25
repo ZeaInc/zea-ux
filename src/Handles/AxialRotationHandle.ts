@@ -20,10 +20,10 @@ import './Shaders/HandleShader'
  * You can do it by specifying the localXfo orientation:
  *
  * ```javascript
- * const xfo1 = new Xfo()
+ * const xfo = new Xfo()
  * // This is rotation over `Y` axis
- * xfo1.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI * 0.5)
- * axialRotationHandle.localXfoParam.value = (xfo1)
+ * xfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI * 0.5)
+ * axialRotationHandle.localXfoParam.value = (xfo)
  * ```
  * **Parameters**
  * * **Radius(`NumberParameter`):** Specifies the radius of the handler.

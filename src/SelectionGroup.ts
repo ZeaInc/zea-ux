@@ -22,8 +22,13 @@ const GROUP_XFO_MODES = {
  * @extends {SelectionSet}
  */
 class SelectionGroup extends SelectionSet {
-  initialXfoModeParam
-  selectionGroupXfoOp
+  initialXfoModeParam =new MultiChoiceParameter('InitialXfoMode', GROUP_XFO_MODES.average, [
+    'manual',
+    'first',
+    'average',
+    'global',
+  ])
+  selectionGroupXfoOp:  SelectionGroupXfoOperator
   /**
    * Creates an instance of SelectionGroup.
    *
@@ -51,16 +56,11 @@ class SelectionGroup extends SelectionSet {
 
     this.itemsParam.setFilterFn((item) => item instanceof BaseItem)
 
-    this.initialXfoModeParam = new MultiChoiceParameter('InitialXfoMode', GROUP_XFO_MODES.average, [
-      'manual',
-      'first',
-      'average',
-      'global',
-    ])
+    
 
     this.addParameter(this.initialXfoModeParam)
 
-    this.selectionGroupXfoOp = new SelectionGroupXfoOperator(this.getParameter('InitialXfoMode'), this.globalXfoParam)
+    this.selectionGroupXfoOp = new SelectionGroupXfoOperator(this.initialXfoModeParam, this.globalXfoParam)
   }
 
   /**
