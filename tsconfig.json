@@ -24,7 +24,7 @@
     "suppressImplicitAnyIndexErrors": true,
     "outDir": "dist",
     // stricter type-checking for stronger correctness. Recommended by TS
-    //"strict": true,
+    "strict": true,
     // linter checks for common issues
     // "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
