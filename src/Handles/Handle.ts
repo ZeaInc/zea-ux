@@ -25,7 +25,7 @@ import { getPointerRay } from '../utility'
  */
 class Handle extends TreeItem {
   gizmoRay: Ray
-  activeController
+  activeController: any
   captured = false
   colorParam = new ColorParameter('Color', new Color())
   highlightColorParam = new ColorParameter('HighlightColor', new Color(1, 1, 1))
@@ -43,7 +43,7 @@ class Handle extends TreeItem {
    *
    * @param {string} name - The name value.
    */
-  constructor(name) {
+  constructor(name?: string) {
     super(name)
 
     this.addParameter(this.colorParam)
@@ -131,7 +131,6 @@ class Handle extends TreeItem {
       }
     }
 
-    // TODO: (check) used to be event.preventDefault()
     //@ts-ignore
     event.preventDefault()
   }

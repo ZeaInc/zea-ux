@@ -10,12 +10,14 @@ import {
   ZeaMouseEvent,
   ZeaTouchEvent,
   XRControllerEvent,
+  TreeItem,
 } from '@zeainc/zea-engine'
 import { MeasureDistance } from './MeasureDistance'
 import { MeasurementChange } from './MeasurementChange'
 import { AppData } from '../../types/temp'
 
 import { getPointerRay } from '../utility'
+import { Change } from '../UndoRedo'
 /**
  * UI Tool for measurements
  *
@@ -24,18 +26,18 @@ import { getPointerRay } from '../utility'
 class MeasureCenterDistancesTool extends BaseTool {
   colorParam
   appData: AppData
-  measurementChange
-  highlightedItemA
-  highlightedItemB
+  measurementChange: Change
+  highlightedItemA: GeomItem
+  highlightedItemB: GeomItem
   stage
-  prevCursor
-  measurement
+  prevCursor: string
+  measurement: MeasureDistance
   /**
    * Creates an instance of MeasureCenterDistancesTool.
    *
    * @param {object} appData - The appData value
    */
-  constructor(appData) {
+  constructor(appData: AppData) {
     super()
 
     this.colorParam = new ColorParameter('Color', new Color('#F9CE03'))
@@ -69,7 +71,7 @@ class MeasureCenterDistancesTool extends BaseTool {
     }
 
     if (this.stage != 0) {
-      const parentItem = this.measurement.getOwner()
+      const parentItem = this.measurement.getOwner() as TreeItem
       parentItem.removeChild(parentItem.getChildIndex(this.measurement))
       this.measurement = null
 

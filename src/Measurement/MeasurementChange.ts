@@ -1,13 +1,5 @@
-import {
-  Xfo,
-  Registry,
-  TreeItem,
-  ZeaPointerEvent,
-  ZeaMouseEvent,
-  ZeaTouchEvent,
-  XRControllerEvent,
-} from '@zeainc/zea-engine'
-import { MeasureDistance } from '.'
+import { Registry, TreeItem } from '@zeainc/zea-engine'
+import { MeasureAngle, MeasureDistance } from '.'
 import { UndoRedoManager, Change } from '../UndoRedo/index'
 
 /**
@@ -26,11 +18,11 @@ class MeasurementChange extends Change {
    *
    * @param {TreeItem} measurement - The parent that the measurement will be added to.
    */
-  constructor(measurement) {
+  constructor(measurement: TreeItem) {
     super('MeasurementChange')
 
     if (measurement) {
-      this.measurement = measurement
+      this.measurement = <MeasureDistance>measurement
     }
   }
 

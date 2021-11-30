@@ -29,11 +29,11 @@ class MeasureAngleTool extends BaseTool {
   appData: AppData
   colorParam = new ColorParameter('Color', new Color('#F9CE03'))
   measurementChange: MeasurementChange = null
-  highlightedItemA = null
-  highlightedItemB = null
-  highlightedItemAHitPos = null
+  highlightedItemA: GeomItem = null
+  highlightedItemB: GeomItem = null
+  highlightedItemAHitPos: any = null
   stage: number = 0
-  prevCursor
+  prevCursor: string
   hitPosA: Vec3
   measurement: MeasureAngle
   geomItemA: GeomItem
@@ -43,7 +43,7 @@ class MeasureAngleTool extends BaseTool {
    *
    * @param {object} appData - The appData value
    */
-  constructor(appData) {
+  constructor(appData: AppData) {
     super()
 
     this.addParameter(this.colorParam)
@@ -92,7 +92,7 @@ class MeasureAngleTool extends BaseTool {
    * @param {GeomItem} geomItem - The geomItem to check
    * @return {boolean}
    */
-  checkSurface(geomItem) {
+  checkSurface(geomItem: GeomItem) {
     const surfaceTypeParm = geomItem.getParameter('SurfaceType')
     return (
       surfaceTypeParm &&
@@ -116,7 +116,7 @@ class MeasureAngleTool extends BaseTool {
     )
       return
 
-    const getSurfaceXfo = (geomItem: GeomItem, hitPos, closestTo?) => {
+    const getSurfaceXfo = (geomItem: GeomItem, hitPos: Vec3, closestTo?: Xfo) => {
       const xfo = new Xfo()
       const surfaceTypeParm = geomItem.getParameter('SurfaceType')
       if (surfaceTypeParm) {

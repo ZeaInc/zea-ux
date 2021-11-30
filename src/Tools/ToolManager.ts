@@ -144,7 +144,7 @@ class ToolManager extends BaseTool {
    * @param {KeyboardEvent} event - The event param.
    */
   //TODO: keyboard event?
-  onKeyPressed(event): void {
+  onKeyPressed(event: any): void {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
       const tool = this.toolStack[i]
       if (tool.onKeyPressed) {
@@ -159,7 +159,7 @@ class ToolManager extends BaseTool {
    *
    * @param {KeyboardEvent} event - The event param.
    */
-  onKeyDown(event): void {
+  onKeyDown(event: any): void {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
       const tool = this.toolStack[i]
       if (tool.onKeyDown) {
@@ -174,7 +174,7 @@ class ToolManager extends BaseTool {
    *
    * @param {KeyboardEvent} event - The event param.
    */
-  onKeyUp(event): void {
+  onKeyUp(event: any): void {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
       const tool = this.toolStack[i]
       if (tool.onKeyUp) {

@@ -13,11 +13,7 @@ import {
   StringParameter,
   Registry,
   Vec3Attribute,
-  NumberParameter,
-  ZeaPointerEvent,
-  ZeaMouseEvent,
-  ZeaTouchEvent,
-  XRControllerEvent,
+
 } from '@zeainc/zea-engine'
 
 import { HandleMaterial } from '../Handles/Shaders/HandleMaterial'
@@ -139,7 +135,7 @@ class MeasureDistance extends TreeItem {
    *
    * @param {Vec3} position
    */
-  setStartMarkerPos(position) {
+  setStartMarkerPos(position: Vec3) {
     const newXfo = this.startMarker.globalXfoParam.value
     newXfo.tr = position
     this.startMarker.globalXfoParam.value = newXfo
@@ -151,7 +147,7 @@ class MeasureDistance extends TreeItem {
    *
    * @param {Vec3} position
    */
-  setEndMarkerPos(position) {
+  setEndMarkerPos(position: Vec3) {
     const endXfo = this.endMarker.globalXfoParam.value
     endXfo.tr = position
     this.endMarker.globalXfoParam.value = endXfo
@@ -163,7 +159,7 @@ class MeasureDistance extends TreeItem {
    *
    * @param {boolean} isVisible -
    */
-  setGeomBuffersVisibility(isVisible) {
+  setGeomBuffersVisibility(isVisible: boolean) {
     this.startMarker.setSelectable(!isVisible)
     this.endMarker.setSelectable(!isVisible)
   }

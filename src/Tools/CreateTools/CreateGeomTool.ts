@@ -12,12 +12,14 @@ import {
   ZeaMouseEvent,
   ZeaTouchEvent,
   XRControllerEvent,
+  BaseGeom,
 } from '@zeainc/zea-engine'
 import BaseCreateTool from '../BaseCreateTool'
 import { UndoRedoManager } from '../../UndoRedo/index'
 import { AppData } from '../../../types/temp'
 
 import { getPointerRay } from '../../utility'
+import { VRController } from '@zeainc/zea-engine/dist/Renderer/VR/VRController'
 
 /**
  * Base class for creating geometry tools.
@@ -30,11 +32,11 @@ class CreateGeomTool extends BaseCreateTool {
   removeToolOnRightClick: boolean
   parentItem: TreeItem
   colorParam = new ColorParameter('Color', new Color(0.7, 0.2, 0.2))
-  vrControllerToolTipMat
-  vrControllerToolTip
+  vrControllerToolTipMat: Material
+  vrControllerToolTip: BaseGeom | Cross
   prevCursor: string
   constructionPlane: Xfo
-  __activeController
+  __activeController: VRController
   /**
    * Create a create geom tool.
    *
@@ -71,7 +73,7 @@ class CreateGeomTool extends BaseCreateTool {
     controller.getTipItem().addChild(geomItem, false)
   }
 
-  controllerAddedHandler(event): void {
+  controllerAddedHandler(event: { controller: any }): void {
     this.addIconToVRController(event.controller)
   }
 
@@ -220,13 +222,14 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param {MouseEvent|TouchEvent} event - The event param.
    */
-  onPointerMove(event): void {
+  onPointerMove(event: ZeaPointerEvent): void {
     if (event.pointerType === 'xr') {
-      this.onVRPoseChanged(event)
+      this.onVRPoseChanged(event as XRControllerEvent)
     } else if (this.stage > 0) {
       const xfo = this.screenPosToXfo(event)
       this.createMove(xfo.tr)
       event.stopPropagation()
+      //@ts-ignore
       event.preventDefault() // prevent browser features like scroll and drag n drop
     }
   }
@@ -263,7 +266,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param {KeyboardEvent} event - The event param.
    */
-  onKeyPressed(event): void {
+  onKeyPressed(event: any): void {
     // console.warn('Implement me')
   }
 
@@ -272,7 +275,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param {KeyboardEvent} event - The event param.
    */
-  onKeyDown(event): void {
+  onKeyDown(event: any): void {
     // console.warn('Implement me')
   }
 
@@ -281,7 +284,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param {KeyboardEvent} event - The event param.
    */
-  onKeyUp(event): void {
+  onKeyUp(event: any): void {
     // console.warn('Implement me')
   }
 

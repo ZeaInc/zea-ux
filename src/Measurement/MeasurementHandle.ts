@@ -5,7 +5,6 @@ import {
   ZeaPointerEvent,
   ZeaMouseEvent,
   ZeaTouchEvent,
-  XRControllerEvent,
 } from '@zeainc/zea-engine'
 
 import { ScreenSpaceMovementHandle } from '../Handles/ScreenSpaceMovementHandle'

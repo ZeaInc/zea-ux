@@ -39,7 +39,7 @@ class CreateFreehandLineTool extends CreateLineTool {
    *
    * @param {Xfo} xfo - The xfo param.
    */
-  createStart(xfo) {
+  createStart(xfo: Xfo) {
     const color = this.colorParam.getValue()
     const lineThickness = this.lineThickness.getValue()
 
@@ -58,7 +58,7 @@ class CreateFreehandLineTool extends CreateLineTool {
    *
    * @param {Vec3} pt - The pt param.
    */
-  createMove(pt) {
+  createMove(pt: Vec3) {
     const p = this.invXfo.transformVec3(pt)
     const delta = p.subtract(this.prevP).length()
     this.change.update({
@@ -74,7 +74,7 @@ class CreateFreehandLineTool extends CreateLineTool {
    *
    * @param {Vec3} pt - The pt param.
    */
-  createRelease(pt) {
+  createRelease(pt: Vec3) {
     if (this.length == 0) {
       UndoRedoManager.getInstance().cancel()
     }

@@ -10,7 +10,6 @@ import {
   ZeaPointerEvent,
   ZeaMouseEvent,
   ZeaTouchEvent,
-  XRControllerEvent,
 } from '@zeainc/zea-engine'
 import { MeasurementChange } from './MeasurementChange'
 import { MeasureDistance } from './MeasureDistance'
@@ -186,7 +185,7 @@ class MeasureRadiusTool extends BaseTool {
    *
    * @param {MouseEvent|TouchEvent} event - The event value
    */
-  onPointerUp(event): void {}
+  onPointerUp(event: ZeaPointerEvent): void {}
 }
 
 export { MeasureRadiusTool }

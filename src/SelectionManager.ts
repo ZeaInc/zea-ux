@@ -17,7 +17,7 @@ import UndoRedoManager from './UndoRedo/UndoRedoManager'
  */
 class SelectionManager extends EventEmitter {
   appData: AppData
-  leadSelection = undefined
+  leadSelection: TreeItem = undefined
   selectionGroup: SelectionGroup
   xfoHandle: XfoHandle
   xfoHandleVisible: boolean
@@ -348,6 +348,7 @@ class SelectionManager extends EventEmitter {
   toggleSelectionVisibility(): void {
     if (this.leadSelection) {
       const selection = this.selectionGroup.getItems()
+      //@ts-ignore
       const state = !this.leadSelection.getVisible()
       const change = new SelectionVisibilityChange(selection, state)
       UndoRedoManager.getInstance().addChange(change)

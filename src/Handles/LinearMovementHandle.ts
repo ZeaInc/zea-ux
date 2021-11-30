@@ -38,7 +38,7 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
    * @param {number} thickness - The thickness value.
    * @param {Color} color - The color value.
    */
-  constructor(name, length = 0.1, thickness = 0.003, color = new Color()) {
+  constructor(name?: string, length = 0.1, thickness = 0.003, color = new Color()) {
     super(name)
     this.colorParam.value = color
 
@@ -88,7 +88,7 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
    * @param {Parameter} param - The video param.
    * @param {boolean} track - The track param.
    */
-  setTargetParam(param, track = true) {
+  setTargetParam(param: Parameter<any>, track = true) {
     this.param = param
     if (track) {
       const __updateGizmo = () => {

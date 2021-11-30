@@ -36,7 +36,7 @@ class SelectionGroup extends SelectionSet {
    * **Parameters**
    * @param {object} options - Custom options for selection
    */
-  constructor(options?) {
+  constructor(options?: Record<string, any>) {
     super()
 
     let selectionColor
@@ -92,7 +92,7 @@ class SelectionGroup extends SelectionSet {
    * @param {number} index -
    * @private
    */
-  bindItem(item, index) {
+  bindItem(item: TreeItem, index: number) {
     if (item instanceof TreeItem) {
       const highlightColor = this.highlightColorParam.value
       highlightColor.a = this.highlightFillParam.value
@@ -115,7 +115,7 @@ class SelectionGroup extends SelectionSet {
    * @param {number} index -
    * @private
    */
-  unbindItem(item, index) {
+  unbindItem(item: TreeItem, index: number) {
     if (item instanceof TreeItem) {
       item.removeHighlight('selected' + this.getId())
       item.getChildren().forEach((childItem) => {
