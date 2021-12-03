@@ -10,7 +10,10 @@ const external = ['@zeainc/zea-engine']
 
 const plugins = [
   json(),
-  resolve(), // so Rollup can find `ms`
+  resolve({
+    browser: true,
+    dedupe: ['@zeainc'],
+  }), // so Rollup can find `ms`
   commonjs(), // so Rollup can convert `ms` to an ES module
   typescript(), // so Rollup can convert TypeScript to JavaScript]
 ]
