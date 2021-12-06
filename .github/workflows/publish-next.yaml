@@ -1,0 +1,24 @@
+name: Publish to the "next" release channel
+
+on:
+  push:
+    branches:
+      - next
+
+jobs:
+  publish-next:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '16'
+          registry-url: 'https://registry.npmjs.org'
+      - run: yarn install --frozen-lockfile
+      - name: get-npm-version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@master
+      - run: yarn publish --no-git-tag-version --new-version $PACKAGE_JSON_VERSION-$(git rev-parse --short "$GITHUB_SHA") --tag next
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          PACKAGE_JSON_VERSION: ${{ steps.package-version.outputs.current-version}}
