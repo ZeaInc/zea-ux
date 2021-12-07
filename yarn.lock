@@ -2100,6 +2100,13 @@
   dependencies:
     lodash-es "^4.17.21"
 
+"@zeainc/zea-engine@next":
+  version "4.0.1-a4d97c7"
+  resolved "https://registry.yarnpkg.com/@zeainc/zea-engine/-/zea-engine-4.0.1-a4d97c7.tgz#6d23a45f9b312bc300c5553e18cb3ad8e946e7f3"
+  integrity sha512-fjiRZEHfhnJ2U+/6A1fCrrsi46Vr9GhldIBSz2aTL80XeY1nLTooRMmpzxWdIy5kMUp+S5dT4P8AcE53Mtucgg==
+  dependencies:
+    lodash-es "^4.17.21"
+
 "@zeainc/zea-ux@^4":
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/@zeainc/zea-ux/-/zea-ux-4.0.1.tgz#b66255b211a49adfee31214f1dac06e192dc83d2"

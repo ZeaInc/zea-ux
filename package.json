@@ -88,7 +88,7 @@
     "typescript": "^4.4.4"
   },
   "dependencies": {
-    "@zeainc/zea-engine": "^4",
+    "@zeainc/zea-engine": "next",
     "dom-to-image": "^2.6.0"
   },
   "husky": {
