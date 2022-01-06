@@ -2074,20 +2074,13 @@
     meow "^7.0.1"
     rimraf "^3.0.2"
 
-"@zeainc/zea-cad@^4":
+"@zeainc/zea-cad@^4", "@zeainc/zea-cad@^4.0.1":
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/@zeainc/zea-cad/-/zea-cad-4.0.1.tgz#81d182ff0a28e5ccac37638c24027c5b00076fa3"
   integrity sha512-R3K9ZB/LsoOuEJG+0jUoAnFZYg6KS+CPMlBoj6yw57j1eb0dQ/EYDO8L7rHXlg5zo6iFiWTndxYjb9v3luEpEw==
   dependencies:
     "@rollup/plugin-json" "^4.1.0"
     "@zeainc/zea-engine" "^4"
-
-"@zeainc/zea-cad@^4.0.2-next.2":
-  version "4.0.2-next.2"
-  resolved "https://registry.yarnpkg.com/@zeainc/zea-cad/-/zea-cad-4.0.2-next.2.tgz#99f94c65283a9a54a7ad781fb8c9ea17eb559b80"
-  integrity sha512-epw/+1NFFJtN74/ktupYEud+h9Vp07VXX78qwmMKkIW0XDH/UXXNFuzIYSeStzPxsWH/XdC6SpYrHny3cETuQA==
-  dependencies:
-    "@zeainc/zea-engine" "^4.0.2-next.0"
 
 "@zeainc/zea-collab@^6.0.0":
   version "6.0.0"
@@ -2107,7 +2100,7 @@
   dependencies:
     lodash-es "^4.17.21"
 
-"@zeainc/zea-engine@^4.0.2-next.0":
+"@zeainc/zea-engine@^4.0.2":
   version "4.0.2-strict.2"
   resolved "https://registry.yarnpkg.com/@zeainc/zea-engine/-/zea-engine-4.0.2-strict.2.tgz#5d6913953aa8140fb193af9c642f183a4ea724f8"
   integrity sha512-DOiqKeH9aUO2volTVZbG2sc6b283nMdIE7K5ILelZhQdX6+IyxoSdCo96jwtMURsg4MRALwsUfuAUa0u6i7VCQ==

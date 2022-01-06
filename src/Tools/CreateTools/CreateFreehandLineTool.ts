@@ -14,16 +14,9 @@ import { AppData } from '../../../types/temp'
  */
 class CreateFreehandLineTool extends CreateLineTool {
   mp = new BooleanParameter('Modulate Thickness By Stroke Speed', false)
-  change: CreateFreehandLineChange
-  colorParam: ColorParameter
-  lineThickness: NumberParameter
-  parentItem: TreeItem
 
-  xfo: Xfo
   invXfo: Xfo
-  stage: number
   prevP: Vec3
-  length: number
   /**
    * Create a create freehand line tool.
    *

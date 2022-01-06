@@ -7,6 +7,7 @@ import {
   ZeaMouseEvent,
   ZeaTouchEvent,
   XRControllerEvent,
+  GLViewport,
 } from '@zeainc/zea-engine'
 import Handle from './Handle.js'
 import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange.js'
@@ -22,7 +23,6 @@ import { getPointerRay } from '../utility.js'
 class ScreenSpaceMovementHandle extends Handle {
   param: Parameter<unknown>
   change: ParameterValueChange
-  grabPos: Vec3
   baseXfo: Xfo
   /**
    * Create a planar movement scene widget.
@@ -39,7 +39,7 @@ class ScreenSpaceMovementHandle extends Handle {
    * @param {Parameter} param - The video param.
    * @param {boolean} track - The track param.
    */
-  setTargetParam(param, track = true): void {
+  setTargetParam(param: any, track = true): void {
     this.param = param
     if (track) {
       const __updateGizmo = () => {
@@ -71,7 +71,8 @@ class ScreenSpaceMovementHandle extends Handle {
   handlePointerDown(event: ZeaMouseEvent) {
     this.gizmoRay = new Ray()
     const ray = getPointerRay(event)
-    const cameraXfo = event.viewport.getCamera().globalXfoParam.value
+    const viewport =  event.viewport as GLViewport
+    const cameraXfo = viewport.getCamera().globalXfoParam.value
     this.gizmoRay.dir = cameraXfo.ori.getZaxis()
     const param = this.getTargetParam()
     const baseXfo = <Xfo>param.value

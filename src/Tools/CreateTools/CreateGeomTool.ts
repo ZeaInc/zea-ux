@@ -13,13 +13,13 @@ import {
   ZeaTouchEvent,
   XRControllerEvent,
   BaseGeom,
+  GLViewport,
 } from '@zeainc/zea-engine'
 import BaseCreateTool from '../BaseCreateTool'
 import { UndoRedoManager } from '../../UndoRedo/index'
 import { AppData } from '../../../types/temp'
 
 import { getPointerRay } from '../../utility'
-import { VRController } from '@zeainc/zea-engine/dist/Renderer/VR/VRController'
 
 /**
  * Base class for creating geometry tools.
@@ -27,7 +27,6 @@ import { VRController } from '@zeainc/zea-engine/dist/Renderer/VR/VRController'
  * @extends BaseCreateTool
  */
 class CreateGeomTool extends BaseCreateTool {
-  appData: AppData
   stage: number
   removeToolOnRightClick: boolean
   parentItem: TreeItem
@@ -36,7 +35,7 @@ class CreateGeomTool extends BaseCreateTool {
   vrControllerToolTip: BaseGeom | Cross
   prevCursor: string
   constructionPlane: Xfo
-  __activeController: VRController
+  __activeController: any
   /**
    * Create a create geom tool.
    *
@@ -137,7 +136,8 @@ class CreateGeomTool extends BaseCreateTool {
       return xfo
     }
 
-    const camera = event.viewport.getCamera()
+    const viewport = event.viewport as GLViewport
+    const camera = viewport.getCamera()
     const xfo = camera.globalXfoParam.value.clone()
     xfo.tr = ray.pointAtDist(camera.getFocalDistance())
     return xfo

@@ -11,6 +11,7 @@ import {
   ZeaMouseEvent,
   ZeaTouchEvent,
   XRControllerEvent,
+  GLBaseViewport,
 } from '@zeainc/zea-engine'
 
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
@@ -111,7 +112,7 @@ class SelectionTool extends BaseTool {
    * @param {*} delta - The delta value
    * @private
    */
-  __resizeRect(viewport: GLViewport, delta: any) {
+  __resizeRect(viewport: GLBaseViewport, delta: any) {
     const sc = new Vec2((1 / viewport.getWidth()) * 2, (1 / viewport.getHeight()) * 2)
     const size = delta.multiply(sc)
     this.selectionRectXfo.sc.set(Math.abs(size.x), Math.abs(size.y), 1)
@@ -193,8 +194,9 @@ class SelectionTool extends BaseTool {
           Math.max(this.pointerDownPos.x, pointerUpPos.x),
           Math.max(this.pointerDownPos.y, pointerUpPos.y)
         )
-
-        let geomItems: Array<TreeItem> = Array.from(event.viewport.getGeomItemsInRect(tl, br)) // TODO: check, using Array.from() since we have a Set<>
+        
+        const viewport  = event.viewport as GLViewport
+        let geomItems: Array<TreeItem> = Array.from(viewport.getGeomItemsInRect(tl, br)) // TODO: check, using Array.from() since we have a Set<>
 
         if (this.__selectionFilterFn) {
           const newSet: Array<TreeItem> = [] // TODO: using Array for 'newSet', not a Set<>
@@ -226,7 +228,8 @@ class SelectionTool extends BaseTool {
           this.rectItem.globalXfoParam.value = this.selectionRectXfo
         }
       } else {
-        const intersectionData = event.viewport.getGeomDataAtPos(event.pointerPos, undefined) // TODO: check if this was intended
+        const viewport =  event.viewport as GLViewport
+        const intersectionData = viewport.getGeomDataAtPos(event.pointerPos, undefined) // TODO: check if this was intended
         if (intersectionData != undefined && !(intersectionData.geomItem.getOwner() instanceof Handle)) {
           let treeItem = intersectionData.geomItem
           if (this.__selectionFilterFn) treeItem = this.__selectionFilterFn(treeItem)

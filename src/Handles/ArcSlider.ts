@@ -38,7 +38,6 @@ import UndoRedoManager from '../UndoRedo/UndoRedoManager'
  * @extends BaseAxialRotationHandle
  */
 class ArcSlider extends BaseAxialRotationHandle {
-  param: Parameter<unknown>
   arcRadiusParam: NumberParameter
   arcAngleParam: NumberParameter
   handleRadiusParam: NumberParameter
@@ -47,12 +46,7 @@ class ArcSlider extends BaseAxialRotationHandle {
   arc: GeomItem
   handleXfo = new Xfo()
   handleGeomOffsetXfo = new Xfo()
-  range: Array<number>
 
-  baseXfo: Xfo
-  deltaXfo: Xfo
-  vec0: Vec3
-  change: ParameterValueChange
   /**
    * Creates an instance of ArcSlider.
    *
@@ -336,7 +330,7 @@ class ArcSlider extends BaseAxialRotationHandle {
     super.fromJSON(json, context)
 
     if (json.targetParam) {
-      context.resolvePath(json.targetParam).then((param) => {
+      context.resolvePath(json.targetParam).then((param: any) => {
         this.setTargetParam(param)
       })
     }

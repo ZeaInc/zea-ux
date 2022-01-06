@@ -19,7 +19,6 @@ import {
 class PlanarMovementHandle extends Handle {
   param: Parameter<unknown>
   fullXfoManipulationInVR: boolean
-  grabPos: Vec3
   grabOffset: Vec3
   baseXfo: Xfo
   change: ParameterValueChange
@@ -29,7 +28,7 @@ class PlanarMovementHandle extends Handle {
    *
    * @param {string} name - The name value.
    */
-  constructor(name) {
+  constructor(name: string) {
     super(name)
     this.fullXfoManipulationInVR = true
   }
@@ -40,7 +39,7 @@ class PlanarMovementHandle extends Handle {
    * @param {Parameter} param - The video param.
    * @param {boolean} track - The track param.
    */
-  setTargetParam(param, track = true) {
+  setTargetParam(param: any, track = true) {
     this.param = param
     if (track) {
       const __updateGizmo = () => {

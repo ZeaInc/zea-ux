@@ -16,7 +16,7 @@ class HandleMaterial extends Material {
    *
    * @param {string} name - The name of the material. Note: this value is entirely optional.
    */
-  constructor(name?) {
+  constructor(name?: string) {
     super(name)
     this.__shaderName = 'HandleShader'
     this.addParameter(this.baseColorParam)

@@ -27,7 +27,6 @@ import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 class LinearMovementHandle extends BaseLinearMovementHandle {
   param: Parameter<unknown>
   handleMat: Material
-  grabPos: Vec3
   baseXfo: Xfo
   change: ParameterValueChange
   /**
