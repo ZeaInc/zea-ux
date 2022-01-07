@@ -120,9 +120,10 @@ class TreeItemsRemoveChange extends Change {
    * @memberof TreeItemsRemoveChange
    */
   toJSON(appData: AppData): Record<string, any> {
+
     const j = {
       name: this.name,
-      items: [],
+      items: [] as any[],
       itemPaths: this.itemPaths,
       itemIndices: this.itemIndices,
     }
@@ -141,7 +142,7 @@ class TreeItemsRemoveChange extends Change {
    */
   fromJSON(j: Record<string, any>, appData: AppData) {
     this.name = j.name
-    j.itemPaths.forEach((itemPath) => {
+    j.itemPaths.forEach((itemPath: any) => {
       const item =  <TreeItem>appData.scene.getRoot().resolvePath(itemPath, 1)
       if (!item) {
         console.warn('resolvePath is unable to resolve', itemPath)

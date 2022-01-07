@@ -1,3 +1,4 @@
+import dts from 'rollup-plugin-dts'
 import json from '@rollup/plugin-json'
 import { terser } from 'rollup-plugin-terser'
 import resolve from 'rollup-plugin-node-resolve'
@@ -59,5 +60,11 @@ export default [
       { file: pkg.main, format: 'cjs', sourcemap },
       { file: pkg.module, format: 'es', sourcemap },
     ],
+  },
+
+  {
+    input: 'src/index.ts',
+    output: [{ file: pkg.types, format: 'es' }],
+    plugins: [dts()],
   },
 ]

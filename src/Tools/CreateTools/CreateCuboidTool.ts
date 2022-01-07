@@ -14,14 +14,10 @@ import { AppData } from '../../../types/temp'
  */
 class CreateCuboidTool extends CreateGeomTool {
   change: CreateCuboidChange
-  parentItem: TreeItem
-  colorParam: ColorParameter
   xfo: Xfo
   invXfo: Xfo
-  stage: number
   _height: number
   pt1: Vec3
-  constructionPlane: Xfo
   /**
    * Create a create cuboid tool.
    *

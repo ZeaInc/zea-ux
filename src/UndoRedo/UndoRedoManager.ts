@@ -152,7 +152,7 @@ class UndoRedoManager extends EventEmitter {
    * @return {boolean} - Returns 'true' if the class has been registered.
    */
   // TODO: register not working
-  static isChangeClassRegistered(inst): boolean {
+  static isChangeClassRegistered(inst: any): boolean {
     try {
       const name = Registry.getClassName(inst)
       return true
@@ -169,7 +169,7 @@ class UndoRedoManager extends EventEmitter {
    * @return {string} - The return value.
    */
   // TODO: register not working
-  static getChangeClassName(inst): string {
+  static getChangeClassName(inst: any): string {
     return Registry.getClassName(Object.getPrototypeOf(inst).constructor)
   }
 
@@ -182,7 +182,7 @@ class UndoRedoManager extends EventEmitter {
    * @param {Change} cls - The cls param.
    */
   // TODO: register not working
-  static registerChange(name: string, cls) {
+  static registerChange(name: string, cls: any) {
     Registry.register(name, cls)
   }
 
@@ -194,7 +194,8 @@ class UndoRedoManager extends EventEmitter {
   }
 }
 
-let inst
+
+let inst: any
 
 export default UndoRedoManager
 export { UndoRedoManager }

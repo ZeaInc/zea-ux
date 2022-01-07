@@ -21,7 +21,7 @@ class HandleShader extends GLShader {
    *
    * @param {*} gl - The gl value
    */
-  constructor(gl?) {
+  constructor(gl?: any) {
     super(gl)
 
     this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader(
@@ -229,7 +229,6 @@ void main(void) {
 `
     )
   }
-
 
   /**
    * The getPackedMaterialData method.

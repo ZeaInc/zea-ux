@@ -9,7 +9,7 @@ import domtoimage from './dom-to-image.js'
  * @param {number} depth
  * @param {function} func
  */
-function traverse(node, depth, func) {
+function traverse(node: any, depth: number, func: any) {
   if (!func(node, depth)) return
   node = node.firstChild
   while (node) {
@@ -36,7 +36,7 @@ function elemSize(elem: any) {
 }
 
 const idx = 'data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg"'.length
-const renderElementUI = (elem: any, size, key: string, callback: any) => {
+const renderElementUI = (elem: any, size: any, key: string, callback: any) => {
   domtoimage.toSvg(elem).then((uri: string) => {
     // To work around a bug in domtoimage, we insert a viewBox into the SVG that ensures it renders
     // all the way to the edges. otherwise, an image is generated that crops the left and bottom borders.

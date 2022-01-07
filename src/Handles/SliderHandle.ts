@@ -32,7 +32,6 @@ import UndoRedoManager from '../UndoRedo/UndoRedoManager'
  */
 class SliderHandle extends BaseLinearMovementHandle {
   param: Parameter<unknown>
-  value: number
   lengthParam: NumberParameter
   barRadiusParam: NumberParameter
   handleRadiusParam: NumberParameter
@@ -133,7 +132,7 @@ class SliderHandle extends BaseLinearMovementHandle {
    * @param {*} value -
    * @private
    */
-  __updateSlider(value) {
+  __updateSlider(value: any) {
     this.value = value
     const param = <NumberParameter>this.param
     const range = param && param.getRange() ? param.getRange() : [0, 1]
@@ -178,7 +177,7 @@ class SliderHandle extends BaseLinearMovementHandle {
     const param = <NumberParameter>this.param
     const range = param && param.getRange() ? param.getRange() : [0, 1]
     const value = MathFunctions.clamp(
-      MathFunctions.remap(this.value, 0, length, range[0], range[1]),
+      MathFunctions.remap(this.value as number, 0, length, range[0], range[1]), // NOTE: assumes this.value is a number
       range[0],
       range[1]
     )
@@ -227,7 +226,7 @@ class SliderHandle extends BaseLinearMovementHandle {
     super.fromJSON(json, context)
 
     if (json.targetParam) {
-      context.resolvePath(json.targetParam).then((param) => {
+      context.resolvePath(json.targetParam).then((param: any) => {
         this.setTargetParam(param)
       })
     }

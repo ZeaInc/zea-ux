@@ -13,15 +13,11 @@ import { AppData } from '../../../types/temp'
  * @extends CreateGeomTool
  */
 class CreateConeTool extends CreateGeomTool {
-  parentItem: TreeItem
   xfo: Xfo
   invXfo: Xfo
   change: CreateConeChange
-  colorParam: ColorParameter
-  stage: number
   _radius: number
   _height: number
-  constructionPlane: Xfo
   /**
    * Create a create cone tool.
    * @param {object} appData - The appData value.
