@@ -68,7 +68,7 @@ class TreeItemMoveChange extends Change {
    * @param {object} j - The serialized object with the change data.
    * @param {object} context - The context value
    */
-  fromJSON(j: Record<string, any>, context: Record<string, any>) {
+  fromJSON(j: Record<string, any>, context: Record<string, any>): void {
     if (!context || !context.scene) return
 
     const treeItem = context.scene.getRoot().resolvePath(j.treeItemPath, 1)

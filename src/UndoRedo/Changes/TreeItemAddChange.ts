@@ -81,7 +81,7 @@ class TreeItemAddChange extends Change {
    * @param {object} context - The context treeItem
    * @return {object} - JSON object
    */
-  toJSON(context: Record<any, any>) {
+  toJSON(context: Record<any, any>): Record<string, any> {
     const j = {
       name: this.name,
       treeItem: this.treeItem.toJSON(context),
@@ -97,7 +97,7 @@ class TreeItemAddChange extends Change {
    * @param {object} j -The j treeItem
    * @param {object} context - The context treeItem
    */
-  fromJSON(j: Record<any, any>, context: Record<any, any>) {
+  fromJSON(j: Record<any, any>, context: Record<any, any>): void {
     const treeItem = <TreeItem>Registry.constructClass(j.treeItem.type)
     if (!treeItem) {
       console.warn('resolvePath is unable to construct', j.treeItem)
@@ -113,7 +113,7 @@ class TreeItemAddChange extends Change {
   /**
    * Removes reference of the `TreeItem` from current change.
    */
-  destroy() {
+  destroy(): void {
   }
 }
 

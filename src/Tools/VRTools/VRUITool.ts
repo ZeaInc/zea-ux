@@ -85,7 +85,7 @@ class VRUITool extends BaseTool {
    *
    * @return {string} The return value.
    */
-  getName() {
+  getName(): string {
     return 'VRUITool'
   }
 
@@ -93,14 +93,14 @@ class VRUITool extends BaseTool {
   /**
    * The activateTool method.
    */
-  activateTool() {
+  activateTool(): void {
     super.activateTool()
   }
 
   /**
    * The deactivateTool method.
    */
-  deactivateTool() {
+  deactivateTool(): void {
     if (this.uiOpen) this.closeUI()
     super.deactivateTool()
   }
@@ -111,7 +111,7 @@ class VRUITool extends BaseTool {
    * @param {VRController} : VRController - The pointerController param.
    * @param {Xfo} headXfo - The headXfo param.
    */
-  displayUI(uiController: any, pointerController: any, headXfo: Xfo) {
+  displayUI(uiController: any, pointerController: any, headXfo: Xfo): void {
     this.controllerUI.activate()
     this.uiController = uiController
     this.pointerController = pointerController
@@ -164,7 +164,7 @@ class VRUITool extends BaseTool {
   /**
    * The closeUI method.
    */
-  closeUI() {
+  closeUI(): void {
     this.controllerUI.deactivate()
 
     if (this.uiController) {
@@ -192,7 +192,7 @@ class VRUITool extends BaseTool {
    * The setPointerLength method.
    * @param {number} length - The length param.
    */
-  setPointerLength(length: number) {
+  setPointerLength(length: number): void {
     this.__pointerLocalXfo.sc.set(1, 1, length)
     this.__uiPointerItem.localXfoParam.value = this.__pointerLocalXfo
   }
@@ -239,7 +239,7 @@ class VRUITool extends BaseTool {
    * @param {any} args - The args param.
    * @return {any} The return value.
    */
-  sendEventToUI(eventName: string, args: any) {
+  sendEventToUI(eventName: string, args: any): Element {
     const hit = this.calcUIIntersection()
     if (hit) {
       hit.offsetX = hit.pageX = hit.pageX = hit.screenX = hit.clientX
@@ -269,7 +269,7 @@ class VRUITool extends BaseTool {
    * The onVRControllerButtonDown method.
    * @param {object} event - The event param.
    */
-  onPointerDown(event: XRControllerEvent) {
+  onPointerDown(event: XRControllerEvent): void {
     if (event.pointerType === POINTER_TYPES.xr) {
       if (event.controller == this.pointerController && this.uiOpen) {
         this.__triggerHeld = true
@@ -291,7 +291,7 @@ class VRUITool extends BaseTool {
    * The onVRControllerButtonUp method.
    * @param {object} event - The event param.
    */
-  onPointerUp(event: XRControllerEvent) {
+  onPointerUp(event: XRControllerEvent): void {
     if (event.pointerType === POINTER_TYPES.xr) {
       if (event.controller == this.pointerController && this.uiOpen) {
         this.__triggerHeld = false
@@ -314,7 +314,7 @@ class VRUITool extends BaseTool {
    * The onVRPoseChanged method.
    * @param {object} event - The event param.
    */
-  onPointerMove(event: XRPoseEvent) {
+  onPointerMove(event: XRPoseEvent): void {
     if (event.pointerType === POINTER_TYPES.xr) {
       if (!this.uiOpen) {
         if (

@@ -43,7 +43,7 @@ class SelectionVisibilityChange extends Change {
    * @param {boolean} state - The state param.
    * @private
    */
-  _changeItemsVisibility(state: boolean) {
+  _changeItemsVisibility(state: boolean): void {
     for (const treeItem of this.selection) {
       treeItem.getParameter('Visible').value = state
     }

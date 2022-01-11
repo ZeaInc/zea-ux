@@ -140,7 +140,7 @@ class TreeItemsRemoveChange extends Change {
    * @param {object} appData - The appData value
    * @memberof TreeItemsRemoveChange
    */
-  fromJSON(j: Record<string, any>, appData: AppData) {
+  fromJSON(j: Record<string, any>, appData: AppData): void {
     this.name = j.name
     j.itemPaths.forEach((itemPath: any) => {
       const item =  <TreeItem>appData.scene.getRoot().resolvePath(itemPath, 1)
@@ -160,7 +160,7 @@ class TreeItemsRemoveChange extends Change {
    * Deleted items still on the undo stack are then flushed and any
    * GPU resources cleaned up.
    */
-  destroy() {
+  destroy(): void {
     // TODO: line below removed.
     // this.items.forEach((item) => item.removeRef(this))
   }
