@@ -35,7 +35,7 @@ class CreateCuboidChange extends CreateGeomChange {
    *
    * @param {object} updateData - The updateData param.
    */
-  update(updateData: Record<any, any>) {
+  update(updateData: Record<any, any>): void {
     if (updateData.baseSize) {
       this.cuboid.sizeXParam.value = updateData.baseSize[0]
       this.cuboid.sizeYParam.value = updateData.baseSize[1]

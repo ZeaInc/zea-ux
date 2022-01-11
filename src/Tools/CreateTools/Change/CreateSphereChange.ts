@@ -36,7 +36,7 @@ class CreateSphereChange extends CreateGeomChange {
    *
    * @param {object} updateData - The updateData param.
    */
-  update(updateData: Record<any, any>) {
+  update(updateData: Record<any, any>): void {
     this.sphere.radiusParam.value = updateData.radius
 
     this.emit('updated', updateData)
@@ -58,7 +58,7 @@ class CreateSphereChange extends CreateGeomChange {
    *
    * @param {object} j - The j param.
    */
-  updateFromJSON(j: Record<any, any>) {
+  updateFromJSON(j: Record<any, any>): void {
     if (j.radius) this.sphere.radiusParam.value = j.radius
   }
 }

@@ -5,6 +5,7 @@ import {
   ZeaPointerEvent,
   ZeaMouseEvent,
   ZeaTouchEvent,
+  GLViewport,
 } from '@zeainc/zea-engine'
 
 import { ScreenSpaceMovementHandle } from '../Handles/ScreenSpaceMovementHandle'
@@ -22,13 +23,14 @@ class MeasurementHandle extends ScreenSpaceMovementHandle {
    * @param {MouseEvent|TouchEvent} event - The event param
    * @return {boolean} - The return value
    */
-  handlePointerMove(event: ZeaPointerEvent) {
+  handlePointerMove(event: ZeaPointerEvent): boolean {
     if (!(event instanceof ZeaMouseEvent) && !(event instanceof ZeaTouchEvent)) {
       console.warn('not handling VR')
       return
     }
     const ray = getPointerRay(event)
-    event.intersectionData = event.viewport.getGeomDataAtPos(event.pointerPos, ray)
+    const viewport = <GLViewport>event.viewport
+    event.intersectionData = viewport.getGeomDataAtPos(event.pointerPos, ray)
     if (event.intersectionData) {
       this.holdPos = ray.start.add(ray.dir.scale(event.intersectionData.dist))
     } else {
@@ -45,7 +47,7 @@ class MeasurementHandle extends ScreenSpaceMovementHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragStart(event: ZeaPointerEvent) {
+  onDragStart(event: ZeaPointerEvent): void {
     if (!(event instanceof ZeaMouseEvent) && !(event instanceof ZeaTouchEvent)) {
       console.warn('not handling VR')
       return
@@ -58,7 +60,8 @@ class MeasurementHandle extends ScreenSpaceMovementHandle {
         item.setSelectable(false)
       }
     })
-    event.viewport.renderGeomDataFbo()
+    const viewport = <GLViewport>event.viewport
+    viewport.renderGeomDataFbo()
   }
 
   /**
@@ -66,7 +69,7 @@ class MeasurementHandle extends ScreenSpaceMovementHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDrag(event: ZeaPointerEvent) {
+  onDrag(event: ZeaPointerEvent): void {
     // const dragVec = this.holdPos.subtract(this.grabPos)
 
     const newXfo = this.baseXfo.clone()
@@ -83,7 +86,7 @@ class MeasurementHandle extends ScreenSpaceMovementHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragEnd(event: ZeaPointerEvent) {
+  onDragEnd(event: ZeaPointerEvent): void {
     if (!(event instanceof ZeaMouseEvent) && !(event instanceof ZeaTouchEvent)) {
       console.warn('not handling VR')
       return
@@ -95,8 +98,8 @@ class MeasurementHandle extends ScreenSpaceMovementHandle {
         item.setSelectable(true)
       }
     })
-
-    event.viewport.renderGeomDataFbo()
+    const viewport = <GLViewport>event.viewport
+    viewport.renderGeomDataFbo()
   }
 }
 

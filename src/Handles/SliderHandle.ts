@@ -210,7 +210,7 @@ class SliderHandle extends BaseLinearMovementHandle {
    * @param {object} context - The context param.
    * @return {object} The return value.
    */
-  toJSON(context: Record<string, any>): void {
+  toJSON(context: Record<string, any>): Record<string,any> {
     const json = super.toJSON(context)
     if (this.param) json.targetParam = this.param.getPath()
     return json

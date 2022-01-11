@@ -135,7 +135,7 @@ class MeasureDistance extends TreeItem {
    *
    * @param {Vec3} position
    */
-  setStartMarkerPos(position: Vec3) {
+  setStartMarkerPos(position: Vec3): void {
     const newXfo = this.startMarker.globalXfoParam.value
     newXfo.tr = position
     this.startMarker.globalXfoParam.value = newXfo
@@ -147,7 +147,7 @@ class MeasureDistance extends TreeItem {
    *
    * @param {Vec3} position
    */
-  setEndMarkerPos(position: Vec3) {
+  setEndMarkerPos(position: Vec3): void {
     const endXfo = this.endMarker.globalXfoParam.value
     endXfo.tr = position
     this.endMarker.globalXfoParam.value = endXfo
@@ -159,7 +159,7 @@ class MeasureDistance extends TreeItem {
    *
    * @param {boolean} isVisible -
    */
-  setGeomBuffersVisibility(isVisible: boolean) {
+  setGeomBuffersVisibility(isVisible: boolean): void {
     this.startMarker.setSelectable(!isVisible)
     this.endMarker.setSelectable(!isVisible)
   }
@@ -168,7 +168,7 @@ class MeasureDistance extends TreeItem {
    *
    * @return {string}
    */
-  getMeasurementText() {
+  getMeasurementText(): any {
     return this.label.getParameter('Text').getValue()
   }
 }
