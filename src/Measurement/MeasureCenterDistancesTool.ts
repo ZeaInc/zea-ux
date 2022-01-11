@@ -53,7 +53,7 @@ class MeasureCenterDistancesTool extends BaseTool {
   /**
    * The activateTool method.
    */
-  activateTool() {
+  activateTool(): void {
     super.activateTool()
     if (this.appData && this.appData.renderer) {
       this.prevCursor = this.appData.renderer.getGLCanvas().style.cursor
@@ -64,7 +64,7 @@ class MeasureCenterDistancesTool extends BaseTool {
   /**
    * The deactivateTool method.
    */
-  deactivateTool() {
+  deactivateTool(): void {
     super.deactivateTool()
     if (this.appData && this.appData.renderer) {
       this.appData.renderer.getGLCanvas().style.cursor = this.prevCursor
@@ -100,7 +100,7 @@ class MeasureCenterDistancesTool extends BaseTool {
    * @return {Vec3}
    * @private
    */
-  snapToParametricCenter(geomItem: GeomItem, pos: Vec3) {
+  snapToParametricCenter(geomItem: GeomItem, pos: Vec3): Vec3 {
     const xfo = geomItem.globalXfoParam.value
     if (geomItem.hasParameter('CurveType')) {
       const curveType = geomItem.getParameter('CurveType').getValue()
@@ -137,7 +137,7 @@ class MeasureCenterDistancesTool extends BaseTool {
    *
    * @param {MouseEvent|TouchEvent} event - The event value
    */
-  onPointerDown(event: ZeaPointerEvent) {
+  onPointerDown(event: ZeaPointerEvent): void {
     // skip if the alt key is held. Allows the camera tool to work
     if (
       ((event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) && event.altKey) ||
@@ -202,7 +202,7 @@ class MeasureCenterDistancesTool extends BaseTool {
    * @param {GeomItem} geomItem - The geomItem to check
    * @return {boolean}
    */
-  checkGeom(geomItem: GeomItem) {
+  checkGeom(geomItem: GeomItem): boolean {
     if (geomItem.hasParameter('CurveType')) {
       const curveTypeParm = geomItem.getParameter('CurveType')
       return curveTypeParm.getValue() == 'Circle'
@@ -218,7 +218,7 @@ class MeasureCenterDistancesTool extends BaseTool {
    *
    * @param {MouseEvent|TouchEvent} event - The event value
    */
-  onPointerMove(event: ZeaPointerEvent) {
+  onPointerMove(event: ZeaPointerEvent): void {
     // skip if the alt key is held. Allows the camera tool to work
     if (
       ((event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) && event.altKey) ||
@@ -275,7 +275,7 @@ class MeasureCenterDistancesTool extends BaseTool {
    *
    * @param {MouseEvent|TouchEvent} event - The event value
    */
-  onPointerUp(event: ZeaPointerEvent) {}
+  onPointerUp(event: ZeaPointerEvent): void {}
 }
 
 export { MeasureCenterDistancesTool }

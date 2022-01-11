@@ -42,7 +42,7 @@ class BaseAxialRotationHandle extends Handle {
    * @param {Parameter} param - The param param.
    * @param {boolean} track - The track param.
    */
-  setTargetParam(param: XfoParameter, track = true) {
+  setTargetParam(param: XfoParameter, track = true): void  {
     this.param = param
     if (track) {
       const __updateGizmo = () => {

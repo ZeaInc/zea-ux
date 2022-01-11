@@ -75,7 +75,7 @@ class MeasureDistance extends TreeItem {
   /**
    * Updates the measured value
    */
-  updateMeasurement() {
+  updateMeasurement(): void {
     console.log('updateMeasurement')
     const startXfo = this.startMarker.globalXfoParam.value
     const endXfo = this.endMarker.globalXfoParam.value

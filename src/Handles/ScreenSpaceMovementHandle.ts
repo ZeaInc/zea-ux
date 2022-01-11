@@ -68,7 +68,7 @@ class ScreenSpaceMovementHandle extends Handle {
    * @param {MouseEvent} event - The event param.
    * @return {boolean} - The return value.
    */
-  handlePointerDown(event: ZeaMouseEvent) {
+  handlePointerDown(event: ZeaMouseEvent): void {
     this.gizmoRay = new Ray()
     const ray = getPointerRay(event)
     const viewport =  event.viewport as GLViewport
@@ -88,7 +88,7 @@ class ScreenSpaceMovementHandle extends Handle {
    * @param {MouseEvent|TouchEvent} event - The event param
    * @return {boolean} - The return value
    */
-  handlePointerMove(event: ZeaPointerEvent) {
+  handlePointerMove(event: ZeaPointerEvent): void {
     const ray = getPointerRay(event)
     const dist = ray.intersectRayPlane(this.gizmoRay)
     this.holdPos = ray.pointAtDist(dist)
@@ -101,7 +101,7 @@ class ScreenSpaceMovementHandle extends Handle {
    * @param {MouseEvent|TouchEvent} event - The event param.
    * @return {boolean} - The return value.
    */
-  handlePointerUp(event: ZeaPointerEvent) {
+  handlePointerUp(event: ZeaPointerEvent): void {
     const ray = getPointerRay(event)
     if (ray) {
       const dist = ray.intersectRayPlane(this.gizmoRay)
@@ -119,7 +119,7 @@ class ScreenSpaceMovementHandle extends Handle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragStart(event: ZeaPointerEvent) {
+  onDragStart(event: ZeaPointerEvent): void {
     this.grabPos = this.grabPos
     const param = this.getTargetParam()
     this.baseXfo = <Xfo>param.value
@@ -133,7 +133,7 @@ class ScreenSpaceMovementHandle extends Handle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDrag(event: ZeaPointerEvent) {
+  onDrag(event: ZeaPointerEvent): void {
     const dragVec = this.holdPos.subtract(this.grabPos)
 
     const newXfo = this.baseXfo.clone()
@@ -149,7 +149,7 @@ class ScreenSpaceMovementHandle extends Handle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragEnd(event: ZeaPointerEvent) {
+  onDragEnd(event: ZeaPointerEvent): void {
     this.change = null
   }
 }

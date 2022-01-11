@@ -64,7 +64,7 @@ class SelectionManager extends EventEmitter {
    *
    * @param {GLBaseRenderer} renderer - The renderer param.
    */
-  setRenderer(renderer: GLRenderer) {
+  setRenderer(renderer: GLRenderer): void {
     if (this.__renderer == renderer) {
       console.warn(`Renderer already set on SelectionManager`)
       return
@@ -158,7 +158,7 @@ class SelectionManager extends EventEmitter {
    * @param {TreeItem} treeItem - The treeItem value
    * @private
    */
-  __setLeadSelection(treeItem?: TreeItem) {
+  __setLeadSelection(treeItem?: TreeItem): void {
     if (this.leadSelection != treeItem) {
       this.leadSelection = treeItem
       this.emit('leadSelectionChanged', { treeItem })
@@ -171,7 +171,7 @@ class SelectionManager extends EventEmitter {
    * @param {TreeItem} treeItem - The treeItem param.
    * @param {boolean} replaceSelection - The replaceSelection param.
    */
-  toggleItemSelection(treeItem: TreeItem, replaceSelection = true) {
+  toggleItemSelection(treeItem: TreeItem, replaceSelection = true): void {
     const selection = new Set(this.selectionGroup.getItems())
     const prevSelection = new Set(selection)
 
@@ -256,7 +256,7 @@ class SelectionManager extends EventEmitter {
    * @param {boolean} newChange - The newChange param.
    * @return {boolean} - The return value.
    */
-  clearSelection(newChange = true) {
+  clearSelection(newChange = true): boolean {
     const selection: Set<TreeItem> = new Set(this.selectionGroup.getItems())
     if (selection.size == 0) return false
     let prevSelection
@@ -283,7 +283,7 @@ class SelectionManager extends EventEmitter {
    * @param {array} treeItems - The treeItems param.
    * @param {boolean} replaceSelection - The replaceSelection param.
    */
-  selectItems(treeItems: Set<TreeItem>, replaceSelection = true) {
+  selectItems(treeItems: Set<TreeItem>, replaceSelection = true): void {
     const selection = new Set(this.selectionGroup.getItems())
     const prevSelection = new Set(selection)
 
@@ -317,7 +317,7 @@ class SelectionManager extends EventEmitter {
    *
    * @param {array} treeItems - The treeItems param.
    */
-  deselectItems(treeItems: Set<TreeItem>) {
+  deselectItems(treeItems: Set<TreeItem>): void {
     const selection = new Set(this.selectionGroup.getItems())
     const prevSelection = new Set(selection)
 
@@ -364,7 +364,7 @@ class SelectionManager extends EventEmitter {
    * @param {function} filterFn - The filterFn param.
    * @param {number} count - The count param.
    */
-  startPickingMode(label: string, fn: any, filterFn: any, count: number) {
+  startPickingMode(label: string, fn: any, filterFn: any, count: number): void {
     // Display this in a status bar.
     console.log(label)
     this.__pickCB = fn

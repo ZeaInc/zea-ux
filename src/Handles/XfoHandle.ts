@@ -171,7 +171,7 @@ class XfoHandle extends TreeItem {
    * @deprecated
    * @param {boolean} visible - The mode of the Xfo parameter
    */
-  showHandles(visible: boolean) {
+  showHandles(visible: boolean): void {
     if (visible) this.setVisible(true)
     else this.setVisible(false)
   }
@@ -181,7 +181,7 @@ class XfoHandle extends TreeItem {
    *
    * @param {Parameter} param - The video param.
    */
-  setTargetParam(param: Parameter<unknown>, track = true) {
+  setTargetParam(param: Parameter<unknown>, track = true): void {
     this.param = param
     this.traverse((item) => {
       if (item instanceof Handle) item.setTargetParam(param, false) // TODO: should this take track?

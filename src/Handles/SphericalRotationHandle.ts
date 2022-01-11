@@ -66,7 +66,7 @@ class SphericalRotationHandle extends Handle {
    * @param {Parameter} param - The video param.
    * @param {boolean} track - The track param.
    */
-  setTargetParam(param, track = true) {
+  setTargetParam(param: XfoParameter, track = true): void {
     this.param = param
     if (track) {
       const __updateGizmo = () => {
@@ -95,7 +95,7 @@ class SphericalRotationHandle extends Handle {
    * @param {MouseEvent} event - The event param.
    * @return {boolean} - The return value.
    */
-  handlePointerDown(event: ZeaMouseEvent) {
+  handlePointerDown(event: ZeaMouseEvent): boolean {
     // const xfo = this.globalXfoParam.value;
     // this.sphere = {
     //   tr: xfo,
@@ -113,7 +113,7 @@ class SphericalRotationHandle extends Handle {
    * @param {MouseEvent} event - The event param
    * @return {boolean} - The return value
    */
-  handlePointerMove(event: ZeaMouseEvent) {
+  handlePointerMove(event: ZeaMouseEvent): void {
     // const dist = event.mouseRay.intersectRaySphere(this.sphere);
     // this.holdPos = event.mouseRay.pointAtDist(dist);
     // this.onDrag(event);
@@ -125,7 +125,7 @@ class SphericalRotationHandle extends Handle {
    * @param {MouseEvent} event - The event param.
    * @return {boolean} - The return value.
    */
-  handlePointerUp(event: ZeaMouseEvent) {
+  handlePointerUp(event: ZeaMouseEvent): void {
     // const dist = event.mouseRay.intersectRaySphere(this.sphere);
     // this.releasePos = event.mouseRay.pointAtDist(dist);
     // this.onDragEnd(event);
@@ -136,7 +136,7 @@ class SphericalRotationHandle extends Handle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragStart(event: ZeaPointerEvent) {
+  onDragStart(event: ZeaPointerEvent): void {
     this.baseXfo = this.globalXfoParam.value
     this.baseXfo.sc.set(1, 1, 1)
     this.deltaXfo = new Xfo()
@@ -158,7 +158,7 @@ class SphericalRotationHandle extends Handle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDrag(event: ZeaPointerEvent) {
+  onDrag(event: ZeaPointerEvent): void {
     const vec1 = this.holdPos.subtract(this.baseXfo.tr)
     vec1.normalizeInPlace()
     const modulator = 1
@@ -180,7 +180,7 @@ class SphericalRotationHandle extends Handle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragEnd(event: ZeaPointerEvent) {
+  onDragEnd(event: ZeaPointerEvent): void {
     this.change = null
   }
 }

@@ -53,14 +53,14 @@ class Handle extends TreeItem {
   /**
    * Applies a special shinning shader to the handle to illustrate interaction with it.
    */
-  highlight() {
+  highlight(): void  {
     this.emit('highlight')
   }
 
   /**
    * Removes the shining shader from the handle.
    */
-  unhighlight() {
+  unhighlight(): void  {
     this.emit('unhighlight')
   }
 
@@ -69,7 +69,7 @@ class Handle extends TreeItem {
    *
    * @return {Ray} The return value.
    */
-  getManipulationPlane() {
+  getManipulationPlane(): Ray {
     const xfo = this.globalXfoParam.value
     return new Ray(xfo.tr, xfo.ori.getZaxis())
   }
@@ -82,7 +82,7 @@ class Handle extends TreeItem {
    *
    * @param {PointerEvent} event - The event param.
    */
-  onPointerEnter(event: ZeaPointerEvent) {
+  onPointerEnter(event: ZeaPointerEvent): void {
     this.highlight()
   }
 
@@ -91,7 +91,7 @@ class Handle extends TreeItem {
    *
    * @param {PointerEvent} event - The event param.
    */
-  onPointerLeave(event: ZeaPointerEvent) {
+  onPointerLeave(event: ZeaPointerEvent): void {
     this.unhighlight()
   }
 
@@ -100,7 +100,7 @@ class Handle extends TreeItem {
    *
    * @param {PointerEvent} event - The event param.
    */
-  onPointerDown(event: ZeaPointerEvent) {
+  onPointerDown(event: ZeaPointerEvent): void {
     event.setCapture(this)
     event.stopPropagation()
     this.captured = true
@@ -121,7 +121,7 @@ class Handle extends TreeItem {
    *
    * @param {PointerEvent} event - The event param.
    */
-  onPointerMove(event: ZeaPointerEvent) {
+  onPointerMove(event: ZeaPointerEvent): void {
     if (this.captured) {
       event.stopPropagation()
       if (event.pointerType == 'mouse' || event.pointerType == 'touch') {
@@ -140,7 +140,7 @@ class Handle extends TreeItem {
    *
    * @param {PointerEvent} event - The event param.
    */
-  onPointerUp(event: ZeaPointerEvent) {
+  onPointerUp(event: ZeaPointerEvent): void {
     if (this.captured) {
       event.releaseCapture()
       event.stopPropagation()
@@ -161,7 +161,7 @@ class Handle extends TreeItem {
    *
    * @param {WheelEvent} event - The event param.
    */
-  onWheel(event: ZeaWheelEvent) {}
+  onWheel(event: ZeaWheelEvent): void {}
 
   /**
    * Handles mouse down interaction with the handle.
@@ -169,7 +169,7 @@ class Handle extends TreeItem {
    * @param {MouseEvent} event - The event param.
    * @return {boolean} - The return value.
    */
-  handlePointerDown(event: ZeaMouseEvent) {
+  handlePointerDown(event: ZeaMouseEvent): void {
     this.gizmoRay = this.getManipulationPlane()
     const ray = getPointerRay(event)
     const dist = ray.intersectRayPlane(this.gizmoRay)
@@ -183,7 +183,7 @@ class Handle extends TreeItem {
    * @param {MouseEvent} event - The event param
    * @return { boolean } - The return value
    */
-  handlePointerMove(event: ZeaPointerEvent) {
+  handlePointerMove(event: ZeaPointerEvent): void {
     const ray = getPointerRay(event)
     const dist = ray.intersectRayPlane(this.gizmoRay)
     this.holdPos = ray.pointAtDist(dist)
@@ -196,7 +196,7 @@ class Handle extends TreeItem {
    * @param {MouseEvent} event - The event param.
    * @return {boolean} - The return value.
    */
-  handlePointerUp(event: ZeaMouseEvent) {
+  handlePointerUp(event: ZeaMouseEvent): void {
     const ray = getPointerRay(event)
     if (ray) {
       const dist = ray.intersectRayPlane(this.gizmoRay)
@@ -215,7 +215,7 @@ class Handle extends TreeItem {
    * @param {object} event - The event param.
    * @return {boolean} The return value.
    */
-  onVRControllerButtonDown(event: XRControllerEvent) {
+  onVRControllerButtonDown(event: XRControllerEvent): void {
     this.activeController = event.controller
     const xfo = this.activeController.getTipXfo().clone()
 
@@ -232,7 +232,7 @@ class Handle extends TreeItem {
    * @param {object} event - The event param.
    * @return {boolean} - The return value.
    */
-  onVRPoseChanged(event: XRControllerEvent) {
+  onVRPoseChanged(event: XRControllerEvent): void {
     if (this.activeController) {
       const xfo = this.activeController.getTipXfo()
       const gizmoRay = this.getManipulationPlane()
@@ -249,7 +249,7 @@ class Handle extends TreeItem {
    * @param {object} event - The event param.
    * @return {boolean} - The return value.
    */
-  onVRControllerButtonUp(event: XRControllerEvent) {
+  onVRControllerButtonUp(event: XRControllerEvent): void {
     if (this.activeController == event.controller) {
       const xfo = this.activeController.getTipXfo()
       // TODO: check this.onDragEnd(event, xfo.tr)
@@ -266,7 +266,7 @@ class Handle extends TreeItem {
    *
    * @param {PointerEvent} event - The event param.
    */
-  onDragStart(event: ZeaPointerEvent) {
+  onDragStart(event: ZeaPointerEvent): void {
     console.warn('@Handle#onDragStart - Implement me!', event)
   }
 
@@ -275,7 +275,7 @@ class Handle extends TreeItem {
    *
    * @param {PointerEvent} event - The event param.
    */
-  onDrag(event: ZeaPointerEvent) {
+  onDrag(event: ZeaPointerEvent): void{
     console.warn('@Handle#onDrag - Implement me!', event)
   }
 
@@ -284,12 +284,12 @@ class Handle extends TreeItem {
    *
    * @param {PointerEvent} event - The event param.
    */
-  onDragEnd(event?: ZeaPointerEvent) {
+  onDragEnd(event?: ZeaPointerEvent): void {
     console.warn('@Handle#onDragEnd - Implement me!', event)
   }
 
   // TODO:(check) added this method since we check for type Handle and call this method in XfoHandle.ts
-  setTargetParam(param: Parameter<unknown>, track: boolean) {
+  setTargetParam(param: Parameter<unknown>, track: boolean): void {
     console.warn('setTargetParam not implemented')
   }
 }

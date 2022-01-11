@@ -27,7 +27,7 @@ class BaseLinearMovementHandle extends Handle {
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    * @return {boolean} - The return value.
    */
-  handlePointerDown(event: ZeaPointerEvent) {
+  handlePointerDown(event: ZeaPointerEvent): void  {
     this.gizmoRay = this.getManipulationPlane()
     const ray = getPointerRay(event)
     this.grabDist = ray.intersectRayVector(this.gizmoRay)[1]
@@ -57,7 +57,7 @@ class BaseLinearMovementHandle extends Handle {
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    * @return {boolean} - The return value.
    */
-  handlePointerUp(event: ZeaPointerEvent) {
+  handlePointerUp(event: ZeaPointerEvent): void  {
     const ray = getPointerRay(event)
     if (ray) {
       const dist = ray.intersectRayVector(this.gizmoRay)[1]
@@ -77,7 +77,7 @@ class BaseLinearMovementHandle extends Handle {
    * @param {object} event - The event param.
    * @return {boolean} The return value.
    */
-  onVRControllerButtonDown(event: XRControllerEvent) {
+  onVRControllerButtonDown(event: XRControllerEvent): void  {
     this.gizmoRay = this.getManipulationPlane()
 
     this.activeController = event.controller
@@ -110,7 +110,7 @@ class BaseLinearMovementHandle extends Handle {
    * @param {object} event - The event param.
    * @return {boolean} - The return value.
    */
-  onVRControllerButtonUp(event: XRControllerEvent) {
+  onVRControllerButtonUp(event: XRControllerEvent): void  {
     if (this.activeController == event.controller) {
       // const xfo = this.activeController.getTipXfo()
       this.onDragEnd()
