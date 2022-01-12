@@ -96,7 +96,7 @@ class CreateGeomChange extends Change {
   /**
    * Removes geometry item reference from change change.
    */
-  destroy() {
+  destroy(): void {
     // this.geomItem.removeRef(this) // remove the tmp ref.
   }
 }

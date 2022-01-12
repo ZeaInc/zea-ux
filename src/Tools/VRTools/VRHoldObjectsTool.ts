@@ -64,7 +64,7 @@ class HoldObjectsChange extends Change {
    * The update method.
    * @param {object} updateData - The updateData param.
    */
-  update(updateData: any) {
+  update(updateData: any): void {
     if (updateData.newItem) {
       this.__selection[updateData.newItemId] = updateData.newItem
       this.__prevXfos[updateData.newItemId] = updateData.newItem.globalXfoParam.value
@@ -105,7 +105,7 @@ class HoldObjectsChange extends Change {
    * @param {object} j - The j param.
    * @param {object} context - The context param.
    */
-  fromJSON(j: Record<string, any>, context: Record<string, any>) {
+  fromJSON(j: Record<string, any>, context: Record<string, any>): void {
     super.fromJSON(j, context)
 
     const sceneRoot = context.appData.scene.getRoot()
@@ -127,7 +127,7 @@ class HoldObjectsChange extends Change {
    *
    * @param {object} j - The j param.
    */
-  updateFromJSON(j: Record<string, any>) {
+  updateFromJSON(j: Record<string, any>): void {
     this.update(j)
   }
 }
@@ -165,7 +165,7 @@ class VRHoldObjectsTool extends BaseTool {
   /**
    * The activateTool method.
    */
-  activateTool() {
+  activateTool(): void {
     super.activateTool()
 
     this.appData.renderer.getGLCanvas().style.cursor = 'crosshair'
@@ -193,7 +193,7 @@ class VRHoldObjectsTool extends BaseTool {
   /**
    * The deactivateTool method.
    */
-  deactivateTool() {
+  deactivateTool(): void {
     super.deactivateTool()
 
     this.appData.renderer.getXRViewport().then((xrvp) => {
@@ -212,7 +212,7 @@ class VRHoldObjectsTool extends BaseTool {
    * @param {array} refs - The refs param.
    * @return {Xfo} The return value.
    */
-  computeGrabXfo(refs: any[]) {
+  computeGrabXfo(refs: any[]): any {
     let grabXfo
     if (refs.length == 1) {
       grabXfo = this.__vrControllers[refs[0]].getTipXfo()
@@ -246,7 +246,7 @@ class VRHoldObjectsTool extends BaseTool {
   /**
    * The initAction method.
    */
-  initAction() {
+  initAction(): void {
     for (let i = 0; i < this.__heldGeomItems.length; i++) {
       const heldGeom = this.__heldGeomItems[i]
       if (!heldGeom) continue
@@ -260,7 +260,7 @@ class VRHoldObjectsTool extends BaseTool {
    *
    * @param {MouseEvent} event - The event param.
    */
-  onPointerDown(event: XRControllerEvent) {
+  onPointerDown(event: XRControllerEvent): void {
     if (event.pointerType === POINTER_TYPES.xr) {
       const id = event.controller.getId()
       this.__vrControllers[id] = event.controller
@@ -306,7 +306,7 @@ class VRHoldObjectsTool extends BaseTool {
    *
    * @param {MouseEvent} event - The event param.
    */
-  onPointerUp(event: XRControllerEvent) {
+  onPointerUp(event: XRControllerEvent): void {
     if (event.pointerType === POINTER_TYPES.xr) {
       const id = event.controller.getId()
 
@@ -333,7 +333,7 @@ class VRHoldObjectsTool extends BaseTool {
    *
    * @param {MouseEvent} event - The event param.
    */
-  onPointerMove(event: XRPoseEvent) {
+  onPointerMove(event: XRPoseEvent): void {
     if (event.pointerType === POINTER_TYPES.xr) {
       if (!this.change) {
         event.controllers.forEach((controller: any) => {
@@ -381,7 +381,7 @@ class VRHoldObjectsTool extends BaseTool {
    *
    * @param {MouseEvent} event - The event param.
    */
-  onPointerDoublePress(event: ZeaMouseEvent) {
+  onPointerDoublePress(event: ZeaMouseEvent): void {
     if (event.pointerType === POINTER_TYPES.xr) {
       // this.onVRControllerDoubleClicked(event)
     }

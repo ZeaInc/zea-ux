@@ -81,14 +81,14 @@ class SelectionTool extends BaseTool {
   /**
    * Activates selection tool.
    */
-  activateTool() {
+  activateTool(): void {
     super.activateTool()
   }
 
   /**
    * Deactivates the selection tool.
    */
-  deactivateTool() {
+  deactivateTool(): void {
     super.deactivateTool()
     this.selectionRectXfo.sc.set(0, 0, 0)
     this.rectItem.globalXfoParam.value = this.selectionRectXfo
@@ -97,11 +97,11 @@ class SelectionTool extends BaseTool {
   /**
    * Activates selection tool.
    */
-  setSelectionManager(selectionManager: SelectionManager) {
+  setSelectionManager(selectionManager: SelectionManager): void {
     this.selectionManager = selectionManager
   }
 
-  setSelectionFilter(fn: any) {
+  setSelectionFilter(fn: any): void {
     this.__selectionFilterFn = fn
   }
 
@@ -112,7 +112,7 @@ class SelectionTool extends BaseTool {
    * @param {*} delta - The delta value
    * @private
    */
-  __resizeRect(viewport: GLBaseViewport, delta: any) {
+  __resizeRect(viewport: GLBaseViewport, delta: any): void {
     const sc = new Vec2((1 / viewport.getWidth()) * 2, (1 / viewport.getHeight()) * 2)
     const size = delta.multiply(sc)
     this.selectionRectXfo.sc.set(Math.abs(size.x), Math.abs(size.y), 1)
@@ -131,7 +131,7 @@ class SelectionTool extends BaseTool {
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    * @private
    */
-  onPointerDoublePress(event: ZeaPointerEvent) {}
+  onPointerDoublePress(event: ZeaPointerEvent): void{}
 
   /**
    * Event fired when a pointing device button is pressed while the pointer is over the tool.
@@ -139,7 +139,7 @@ class SelectionTool extends BaseTool {
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    * @return {boolean} The return value.
    */
-  onPointerDown(event: ZeaPointerEvent) {
+  onPointerDown(event: ZeaPointerEvent): void {
     if (event instanceof ZeaTouchEvent || (event instanceof ZeaMouseEvent && event.button == 0 && !event.altKey)) {
       this.pointerDownPos = event.pointerPos
       this.dragging = false
@@ -154,7 +154,7 @@ class SelectionTool extends BaseTool {
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    * @return {boolean} The return value.
    */
-  onPointerMove(event: ZeaPointerEvent) {
+  onPointerMove(event: ZeaPointerEvent): void {
     if (!(event instanceof ZeaMouseEvent) && !(event instanceof ZeaTouchEvent)) {
       console.warn('not handling VR')
       return
@@ -180,7 +180,7 @@ class SelectionTool extends BaseTool {
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    * @return {boolean} The return value.
    */
-  onPointerUp(event: ZeaPointerEvent) {
+  onPointerUp(event: ZeaPointerEvent): void {
     if ((event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) && this.pointerDownPos) {
       // event.viewport.renderGeomDataFbo();
       if (this.dragging) {
@@ -263,7 +263,7 @@ class SelectionTool extends BaseTool {
    * @param {object} event - The event param.
    * @return {boolean} The return value.
    */
-  onVRControllerButtonDown(event: XRControllerEvent) {
+  onVRControllerButtonDown(event: XRControllerEvent): void {
     if (event.button == 1) {
       if (!this.selectionManager) throw 'Please set the Selection Manager on the Selection Tool before using it.'
       const intersectionData = event.controller.getGeomItemAtTip()

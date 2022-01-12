@@ -61,7 +61,7 @@ class CreateFreehandLineChange extends CreateGeomChange {
    *
    * @param {object} updateData - The updateData param.
    */
-  update(updateData: Record<any, any>) {
+  update(updateData: Record<any, any>): void {
     // console.log("update:", this.used)
 
     this.used++
@@ -96,7 +96,7 @@ class CreateFreehandLineChange extends CreateGeomChange {
    * @param {object} context - The appData param.
    * @return {object} The return value.
    */
-  toJSON(context: Record<any, any>) {
+  toJSON(context: Record<any, any>): Record<string, any> {
     const j = super.toJSON(context)
     const material = <FatLinesMaterial>this.geomItem.materialParam.value
     j.lineThickness = material.lineThicknessParam.value
@@ -110,7 +110,7 @@ class CreateFreehandLineChange extends CreateGeomChange {
    * @param {object} j - The j param.
    * @param {object} context - The appData param.
    */
-  fromJSON(j: Record<any, any>, context: Record<any, any>) {
+  fromJSON(j: Record<any, any>, context: Record<any, any>): void {
     // Need to set line thickness before the geom is added to the tree.
     if (j.lineThickness) {
       const material = <FatLinesMaterial>this.geomItem.materialParam.value

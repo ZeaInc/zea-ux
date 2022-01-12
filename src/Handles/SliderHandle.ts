@@ -98,7 +98,7 @@ class SliderHandle extends BaseLinearMovementHandle {
   /**
    * Applies a special shinning shader to the handle to illustrate interaction with it.
    */
-  highlight() {
+  highlight(): void {
     super.highlight()
     this.handleMat.getParameter('BaseColor').value = this.highlightColorParam.getValue()
   }
@@ -106,7 +106,7 @@ class SliderHandle extends BaseLinearMovementHandle {
   /**
    * Removes the shining shader from the handle.
    */
-  unhighlight() {
+  unhighlight(): void {
     super.unhighlight()
     this.handleMat.getParameter('BaseColor').value = this.colorParam.getValue()
   }
@@ -117,7 +117,7 @@ class SliderHandle extends BaseLinearMovementHandle {
    * @param {Parameter} param - The video param.
    * @param {boolean} track - The track param.
    */
-  setTargetParam(param: Parameter<unknown>) {
+  setTargetParam(param: Parameter<unknown>): void {
     this.param = param
     const __updateSlider = () => {
       this.__updateSlider(param.getValue())
@@ -132,7 +132,7 @@ class SliderHandle extends BaseLinearMovementHandle {
    * @param {*} value -
    * @private
    */
-  __updateSlider(value: any) {
+  __updateSlider(value: any): void {
     this.value = value
     const param = <NumberParameter>this.param
     const range = param && param.getRange() ? param.getRange() : [0, 1]
@@ -155,7 +155,7 @@ class SliderHandle extends BaseLinearMovementHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragStart(event: ZeaPointerEvent) {
+  onDragStart(event: ZeaPointerEvent): void {
     // Hilight the material.
     this.handleXfo.sc.x = this.handleXfo.sc.y = this.handleXfo.sc.z = 1.2
     this.handle.localXfoParam.value = this.handleXfo
@@ -172,7 +172,7 @@ class SliderHandle extends BaseLinearMovementHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDrag(event: ZeaPointerEvent) {
+  onDrag(event: ZeaPointerEvent): void {
     const length = this.lengthParam.getValue()
     const param = <NumberParameter>this.param
     const range = param && param.getRange() ? param.getRange() : [0, 1]
@@ -197,7 +197,7 @@ class SliderHandle extends BaseLinearMovementHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragEnd(event: ZeaPointerEvent) {
+  onDragEnd(event: ZeaPointerEvent): void {
     this.change = null
     // unhilight the material.
     this.handleXfo.sc.x = this.handleXfo.sc.y = this.handleXfo.sc.z = 1.0
@@ -210,7 +210,7 @@ class SliderHandle extends BaseLinearMovementHandle {
    * @param {object} context - The context param.
    * @return {object} The return value.
    */
-  toJSON(context: Record<string, any>) {
+  toJSON(context: Record<string, any>): Record<string,any> {
     const json = super.toJSON(context)
     if (this.param) json.targetParam = this.param.getPath()
     return json
@@ -222,7 +222,7 @@ class SliderHandle extends BaseLinearMovementHandle {
    * @param {object} json - The json param.
    * @param {object} context - The context param.
    */
-  fromJSON(json: Record<string, any>, context: Record<string, any>) {
+  fromJSON(json: Record<string, any>, context: Record<string, any>): void {
     super.fromJSON(json, context)
 
     if (json.targetParam) {

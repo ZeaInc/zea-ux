@@ -54,7 +54,7 @@ class MeasureDistanceTool extends BaseTool {
   /**
    * The activateTool method.
    */
-  activateTool() {
+  activateTool(): void {
     super.activateTool()
     if (this.appData && this.appData.renderer) {
       this.prevCursor = this.appData.renderer.getGLCanvas().style.cursor
@@ -65,7 +65,7 @@ class MeasureDistanceTool extends BaseTool {
   /**
    * The deactivateTool method.
    */
-  deactivateTool() {
+  deactivateTool(): void {
     super.deactivateTool()
     if (this.appData && this.appData.renderer) {
       this.appData.renderer.getGLCanvas().style.cursor = this.prevCursor
@@ -148,7 +148,7 @@ class MeasureDistanceTool extends BaseTool {
    *
    * @param {MouseEvent|TouchEvent} event - The event value
    */
-  onPointerDown(event: ZeaPointerEvent) {
+  onPointerDown(event: ZeaPointerEvent): void {
     // skip if the alt key is held. Allows the camera tool to work
     if (
       ((event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) && event.altKey) ||
@@ -212,7 +212,7 @@ class MeasureDistanceTool extends BaseTool {
    *
    * @param {MouseEvent|TouchEvent} event - The event value
    */
-  onPointerMove(event: ZeaPointerEvent) {
+  onPointerMove(event: ZeaPointerEvent): void {
     // skip if the alt key is held. Allows the camera tool to work
     if (
       ((event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) && event.altKey) ||
@@ -271,7 +271,7 @@ class MeasureDistanceTool extends BaseTool {
    *
    * @param {MouseEvent|TouchEvent} event - The event value
    */
-  onPointerUp(event: ZeaPointerEvent) {}
+  onPointerUp(event: ZeaPointerEvent): void {}
 }
 
 export { MeasureDistanceTool }

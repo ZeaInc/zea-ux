@@ -36,7 +36,7 @@ class CreateConeChange extends CreateGeomChange {
    *
    * @param {object} updateData - The updateData param.
    */
-  update(updateData: Record<any, any>) {
+  update(updateData: Record<any, any>): void {
     if (updateData.radius) this.geomItem.getParameter('Geometry').getValue().radiusParam.value = updateData.radius
     if (updateData.height)
       this.geomItem.getParameter('Geometry').getValue().getParameter('Height').value = updateData.height

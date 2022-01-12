@@ -1,7 +1,7 @@
 import { Ray, XRControllerEvent, ZeaMouseEvent, ZeaPointerEvent, ZeaTouchEvent } from '@zeainc/zea-engine'
 
 
-function getPointerRay(event: ZeaPointerEvent) {
+function getPointerRay(event: ZeaPointerEvent): Ray {
   if (typeof event === 'undefined') {
     console.warn('undefined event')
     return

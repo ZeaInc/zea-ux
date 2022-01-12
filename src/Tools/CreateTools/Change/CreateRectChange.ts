@@ -35,7 +35,7 @@ class CreateRectChange extends CreateGeomChange {
    *
    * @param {object} updateData - The updateData param.
    */
-  update(updateData: Record<any, any>) {
+  update(updateData: Record<any, any>): void {
     if (updateData.baseSize) {
       this.rect.sizeXParam.value = updateData.baseSize[0]
       this.rect.sizeYParam.value = updateData.baseSize[1]

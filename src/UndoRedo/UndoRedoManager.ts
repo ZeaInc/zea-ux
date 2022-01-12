@@ -28,7 +28,7 @@ class UndoRedoManager extends EventEmitter {
    * As the name indicates, it empties undo/redo stacks permanently, losing all stored actions.
    * Right now, before flushing the stacks it calls the `destroy` method on all changes, ensure to at least declare it.
    */
-  flush() {
+  flush(): void {
     for (const change of this.__undoStack) change.destroy()
     this.__undoStack = []
     for (const change of this.__redoStack) change.destroy()
@@ -47,7 +47,7 @@ class UndoRedoManager extends EventEmitter {
    *
    * @param {Change} change - The change param.
    */
-  addChange(change: Change) {
+  addChange(change: Change): void {
     // console.log("AddChange:", change.name)
     if (this.__currChange && this.__currChange.off) {
       this.__currChange.off('updated', this.__currChangeUpdated)
@@ -76,7 +76,7 @@ class UndoRedoManager extends EventEmitter {
    * @private
    * @param {object|any} updateData
    */
-  __currChangeUpdated(updateData: Record<any, any>) {
+  __currChangeUpdated(updateData: Record<any, any>): void {
     this.emit('changeUpdated', updateData)
   }
 
@@ -182,7 +182,7 @@ class UndoRedoManager extends EventEmitter {
    * @param {Change} cls - The cls param.
    */
   // TODO: register not working
-  static registerChange(name: string, cls: any) {
+  static registerChange(name: string, cls: any): void {
     Registry.register(name, cls)
   }
 

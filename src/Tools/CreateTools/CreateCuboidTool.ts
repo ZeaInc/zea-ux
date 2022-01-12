@@ -32,7 +32,7 @@ class CreateCuboidTool extends CreateGeomTool {
    *
    * @param {Xfo} xfo - The xfo param.
    */
-  createStart(xfo: Xfo) {
+  createStart(xfo: Xfo): void {
     this.change = new CreateCuboidChange(this.parentItem, xfo, this.colorParam.getValue())
 
     // During construction, make it note selectable.
@@ -51,7 +51,7 @@ class CreateCuboidTool extends CreateGeomTool {
    *
    * @param {Vec3} pt - The pt param.
    */
-  createMove(pt: Vec3) {
+  createMove(pt: Vec3): void {
     if (this.stage == 1) {
       const delta = this.invXfo.transformVec3(pt)
 
@@ -71,7 +71,7 @@ class CreateCuboidTool extends CreateGeomTool {
    *
    * @param {Vec3} pt - The pt param.
    */
-  createRelease(pt: Vec3) {
+  createRelease(pt: Vec3): void {
     if (this.stage == 1) {
       this.stage = 2
       this.pt1 = pt

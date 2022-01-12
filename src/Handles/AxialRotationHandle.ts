@@ -103,7 +103,7 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragStart(event: ZeaPointerEvent) {
+  onDragStart(event: ZeaPointerEvent): void {
     super.onDragStart(event)
   }
 
@@ -121,7 +121,7 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
    *
    * @param {MouseEvent|TouchEvent|object} event - The event param.
    */
-  onDragEnd(event: ZeaPointerEvent) {
+  onDragEnd(event: ZeaPointerEvent): void {
     super.onDragEnd(event)
   }
 }

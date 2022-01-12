@@ -54,7 +54,7 @@ class MeasureAngleTool extends BaseTool {
   /**
    * The activateTool method.
    */
-  activateTool() {
+  activateTool(): void {
     super.activateTool()
     if (this.appData && this.appData.renderer) {
       this.prevCursor = this.appData.renderer.getGLCanvas().style.cursor
@@ -65,7 +65,7 @@ class MeasureAngleTool extends BaseTool {
   /**
    * The deactivateTool method.
    */
-  deactivateTool() {
+  deactivateTool(): void {
     super.deactivateTool()
     if (this.appData && this.appData.renderer) {
       this.appData.renderer.getGLCanvas().style.cursor = this.prevCursor
@@ -92,7 +92,7 @@ class MeasureAngleTool extends BaseTool {
    * @param {GeomItem} geomItem - The geomItem to check
    * @return {boolean}
    */
-  checkSurface(geomItem: GeomItem) {
+  checkSurface(geomItem: GeomItem): boolean {
     const surfaceTypeParm = geomItem.getParameter('SurfaceType')
     return (
       surfaceTypeParm &&
@@ -107,7 +107,7 @@ class MeasureAngleTool extends BaseTool {
    *
    * @param {MouseEvent|TouchEvent} event - The event value
    */
-  onPointerDown(event: ZeaPointerEvent) {
+  onPointerDown(event: ZeaPointerEvent): void {
     // skip if the alt key is held. Allows the camera tool to work
     if (
       ((event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) && event.altKey) ||
@@ -247,7 +247,7 @@ class MeasureAngleTool extends BaseTool {
    *
    * @param {MouseEvent|TouchEvent} event - The event value
    */
-  onPointerMove(event: ZeaPointerEvent) {
+  onPointerMove(event: ZeaPointerEvent): void {
     // skip if the alt key is held. Allows the camera tool to work
     if (
       ((event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) && event.altKey) ||
@@ -302,7 +302,7 @@ class MeasureAngleTool extends BaseTool {
    *
    * @param {MouseEvent|TouchEvent} event - The event value
    */
-  onPointerUp(event: ZeaPointerEvent) {
+  onPointerUp(event: ZeaPointerEvent): void {
     if (this.dragging) {
       this.dragging = false
       this.measurementChange = null

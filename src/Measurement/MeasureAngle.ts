@@ -74,7 +74,7 @@ class MeasureAngle extends TreeItem {
   /**
    * Given the 2 marker positions, calculate and display the angle.
    */
-  createLinesAndLabel() {
+  createLinesAndLabel(): void {
     // ////////////////////////////////////////
     // Calculate the angle
     const xfoA = this.markerA.globalXfoParam.value
@@ -145,7 +145,7 @@ class MeasureAngle extends TreeItem {
    *
    * @param {Xfo} xfo
    */
-  setXfoA(xfo: Xfo) {
+  setXfoA(xfo: Xfo): void {
     this.markerA.globalXfoParam.value = xfo
     this.markerB.globalXfoParam.value = xfo
   }
@@ -164,7 +164,7 @@ class MeasureAngle extends TreeItem {
    *
    * @param {Xfo} xfo
    */
-  setXfoB(xfo: Xfo) {
+  setXfoB(xfo: Xfo): void {
     this.markerB.globalXfoParam.value = xfo
     this.createLinesAndLabel()
   }

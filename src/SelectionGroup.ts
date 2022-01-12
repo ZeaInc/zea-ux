@@ -80,7 +80,7 @@ class SelectionGroup extends SelectionSet {
    *
    * @return {SelectionGroup} - Cloned selection group.
    */
-  clone() {
+  clone(): SelectionGroup {
     const cloned = new SelectionGroup()
     cloned.copyFrom(this)
     return cloned
@@ -92,7 +92,7 @@ class SelectionGroup extends SelectionSet {
    * @param {number} index -
    * @private
    */
-  bindItem(item: TreeItem, index: number) {
+  bindItem(item: TreeItem, index: number): void {
     if (item instanceof TreeItem) {
       const highlightColor = this.highlightColorParam.value
       highlightColor.a = this.highlightFillParam.value
@@ -115,7 +115,7 @@ class SelectionGroup extends SelectionSet {
    * @param {number} index -
    * @private
    */
-  unbindItem(item: TreeItem, index: number) {
+  unbindItem(item: TreeItem, index: number): void {
     if (item instanceof TreeItem) {
       item.removeHighlight('selected' + this.getId())
       item.getChildren().forEach((childItem) => {

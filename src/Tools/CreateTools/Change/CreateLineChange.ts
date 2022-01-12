@@ -58,7 +58,7 @@ class CreateLineChange extends CreateGeomChange {
    *
    * @param {object} updateData - The updateData param.
    */
-  update(updateData: Record<any, any>) {
+  update(updateData: Record<any, any>): void {
     if (updateData.p1) {
       this.line.positions.getValueRef(1).setFromOther(updateData.p1)
       this.line.setBoundingBoxDirty()
@@ -74,7 +74,7 @@ class CreateLineChange extends CreateGeomChange {
    * @param {Record<any,any>} j - The j param.
    * @param {Record<any,any>} context - The context param.
    */
-  fromJSON(j: Record<any, any>, context: Record<any, any>) {
+  fromJSON(j: Record<any, any>, context: Record<any, any>): void {
     super.fromJSON(j, context)
     if (j.color) {
       const color = new Color()

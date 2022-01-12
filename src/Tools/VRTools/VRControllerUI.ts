@@ -9,7 +9,7 @@ import domtoimage from './dom-to-image.js'
  * @param {number} depth
  * @param {function} func
  */
-function traverse(node: any, depth: number, func: any) {
+function traverse(node: any, depth: number, func: any): void {
   if (!func(node, depth)) return
   node = node.firstChild
   while (node) {
@@ -100,7 +100,7 @@ export default class VRControllerUI extends TreeItem {
       // debugGeomItemXfo.sc = this.size
       // debugGeomItem.localXfoParam.value = debugGeomItemXfo
 
-      traverse(vrUIDOMElement, 0, (elem: HTMLElement, depth: number) => {
+      traverse(vrUIDOMElement, 0, (elem: HTMLElement, depth: number): boolean => {
         if (elem.className == 'button') {
           const size = elemSize(elem)
           // console.log(depth, elem.id, elem.className, size.width, size.height, elem.offsetLeft, elem.offsetTop)
@@ -173,14 +173,14 @@ export default class VRControllerUI extends TreeItem {
   /**
    * The activate method.
    */
-  activate() {
+  activate(): void {
     this.__vrUIDOMElement.style.display = 'block'
   }
 
   /**
    * The deactivate method.
    */
-  deactivate() {
+  deactivate(): void {
     this.__vrUIDOMElement.style.display = 'none'
   }
 
@@ -191,7 +191,7 @@ export default class VRControllerUI extends TreeItem {
    * @param {any} element - The element param.
    * @return {any} The return value.
    */
-  sendMouseEvent(eventName: string, args: any, element: Element) {
+  sendMouseEvent(eventName: string, args: any, element: Element): MouseEvent {
     // console.log('sendMouseEvent:', eventName, element)
 
     const event = new MouseEvent(

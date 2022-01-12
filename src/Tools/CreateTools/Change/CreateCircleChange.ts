@@ -36,7 +36,7 @@ class CreateCircleChange extends CreateGeomChange {
    *
    * @param {object} updateData - The updateData param.
    */
-  update(updateData: Record<any, any>) {
+  update(updateData: Record<any, any>): void {
     this.circle.radiusParam.value = updateData.radius
     this.emit('updated', updateData)
   }
@@ -57,7 +57,7 @@ class CreateCircleChange extends CreateGeomChange {
    *
    * @param {object} j - The j param.
    */
-  updateFromJSON(j: Record<any, any>) {
+  updateFromJSON(j: Record<any, any>): void {
     console.log('CreateCircleChange:', j)
     if (j.radius) this.circle.radiusParam.value = j.radius
   }
