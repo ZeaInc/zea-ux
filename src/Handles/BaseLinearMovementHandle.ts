@@ -10,7 +10,6 @@ import Handle from './Handle'
  */
 class BaseLinearMovementHandle extends Handle {
   grabDist: number
-  grabPos: Vec3
   /**
    * Create base linear movement scene widget.
    * @param {string} name - The name value.

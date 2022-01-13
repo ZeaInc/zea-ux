@@ -1,13 +1,4 @@
-import {
-  Color,
-  Vec3,
-  Xfo,
-  EulerAngles,
-  TreeItem,
-  ColorParameter,
-  XfoParameter,
-  Parameter,
-} from '@zeainc/zea-engine'
+import { Color, Vec3, Xfo, EulerAngles, TreeItem, ColorParameter, XfoParameter, Parameter } from '@zeainc/zea-engine'
 import Handle from './Handle'
 import LinearMovementHandle from './LinearMovementHandle'
 import AxialRotationHandle from './AxialRotationHandle'
@@ -180,7 +171,7 @@ class XfoHandle extends TreeItem {
    * @deprecated
    * @param {boolean} visible - The mode of the Xfo parameter
    */
-  showHandles(visible) {
+  showHandles(visible: boolean) {
     if (visible) this.setVisible(true)
     else this.setVisible(false)
   }
@@ -190,7 +181,7 @@ class XfoHandle extends TreeItem {
    *
    * @param {Parameter} param - The video param.
    */
-  setTargetParam(param, track = true) {
+  setTargetParam(param: Parameter<unknown>, track = true) {
     this.param = param
     this.traverse((item) => {
       if (item instanceof Handle) item.setTargetParam(param, false) // TODO: should this take track?

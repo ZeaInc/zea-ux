@@ -1,7 +1,7 @@
-import { GLRenderer, Scene, Vec3 } from "@zeainc/zea-engine";
-import { SelectionManager } from "../src/SelectionManager";
+import { GLRenderer, Scene, Vec3 } from '@zeainc/zea-engine'
+import { SelectionManager } from '../src/SelectionManager'
 
-interface AppData {
+export interface AppData {
   renderer: GLRenderer
   scene: Scene
   selectionManager: SelectionManager
@@ -9,8 +9,8 @@ interface AppData {
   session: any
 }
 
-
-interface PointerObject{
+export interface PointerObject {
   grabPos: Vec3
   holdPos: Vec3
 }
+

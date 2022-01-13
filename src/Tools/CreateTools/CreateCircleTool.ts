@@ -13,11 +13,8 @@ import { TreeItem, Vec3, Xfo,} from '@zeainc/zea-engine'
  * @extends CreateGeomTool
  */
 class CreateCircleTool extends CreateGeomTool {
-  appData: AppData
   change: CreateCircleChange
-  parentItem: TreeItem
   xfo: Xfo
-  stage: number
   radius: number
   /**
    * Create a create circle tool.

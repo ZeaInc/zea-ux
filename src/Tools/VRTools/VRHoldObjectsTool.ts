@@ -16,6 +16,7 @@ import {
 import UndoRedoManager from '../../UndoRedo/UndoRedoManager'
 import Change from '../../UndoRedo/Change'
 import { AppData } from '../../../types/temp'
+import { ParameterValueChange } from '../..'
 
 /**
  * Class representing a hold objects change.
@@ -141,8 +142,8 @@ class VRHoldObjectsTool extends BaseTool {
   appData: AppData
   __pressedButtonCount = 0
 
-  __freeIndices = []
-  __vrControllers = []
+  __freeIndices: number[] = []
+  __vrControllers: any[]  = []
   __heldObjectCount = 0
   __heldGeomItems: Array<GeomItem> = []
   __highlightedGeomItemIds: Array<TreeItem> = [] // controller id to held goem id.
@@ -150,8 +151,8 @@ class VRHoldObjectsTool extends BaseTool {
   __heldGeomItemRefs: any = []
   __heldGeomItemOffsets: Array<Xfo> = []
 
-  addIconToControllerId
-  change
+  addIconToControllerId: number
+  change: HoldObjectsChange
   /**
    * Create a VR hold objects tool.
    * @param {object} appData - The appData value.
@@ -169,7 +170,7 @@ class VRHoldObjectsTool extends BaseTool {
 
     this.appData.renderer.getGLCanvas().style.cursor = 'crosshair'
 
-    const addIconToController = (controller) => {
+    const addIconToController = (controller: any) => {
       // The tool might already be deactivated.
       if (!this.__activated) return
       // const cross = new Cross(0.03)
@@ -211,7 +212,7 @@ class VRHoldObjectsTool extends BaseTool {
    * @param {array} refs - The refs param.
    * @return {Xfo} The return value.
    */
-  computeGrabXfo(refs) {
+  computeGrabXfo(refs: any[]) {
     let grabXfo
     if (refs.length == 1) {
       grabXfo = this.__vrControllers[refs[0]].getTipXfo()
