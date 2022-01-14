@@ -2,7 +2,7 @@ import { ColorParameter, GeomItem, Quat, TreeItem, Vec3, Xfo } from '@zeainc/zea
 import CreateConeChange from './Change/CreateConeChange'
 import { CreateGeomTool } from './CreateGeomTool'
 import { ParameterValueChange, UndoRedoManager } from '../../UndoRedo/index'
-import { AppData } from '../../../types/temp'
+import { AppData } from '../../../types/types'
 
 /**
  * Tool for creating a Cone geometry.

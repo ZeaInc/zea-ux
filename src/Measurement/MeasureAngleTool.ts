@@ -16,7 +16,7 @@ import {
 } from '@zeainc/zea-engine'
 import { MeasurementChange } from './MeasurementChange'
 import { MeasureAngle } from './MeasureAngle'
-import { AppData } from '../../types/temp'
+import { AppData } from '../../types/types'
 
 import { getPointerRay } from '../utility'
 

@@ -16,7 +16,7 @@ import {
 
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 import Handle from '../Handles/Handle'
-import { AppData } from '../../types/temp'
+import { AppData } from '../../types/types'
 import { SelectionManager } from '..'
 import { GLViewport } from '@zeainc/zea-engine'
 

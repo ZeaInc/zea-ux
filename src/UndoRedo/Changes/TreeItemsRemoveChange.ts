@@ -2,7 +2,7 @@ import { TreeItem, Operator } from '@zeainc/zea-engine'
 import UndoRedoManager from '../UndoRedoManager.js'
 import Change from '../Change.js'
 import SelectionManager from '../../SelectionManager.js'
-import { AppData } from '../../../types/temp.js'
+import { AppData } from '../../../types/types.js'
 
 /**
  * Class representing a TreeItems removal Change,

@@ -1,5 +1,5 @@
 import { BaseTool } from '@zeainc/zea-engine'
-import { AppData } from '../../types/temp'
+import { AppData } from '../../types/types'
 
 /**
  * Class representing a primary create tool.

@@ -14,7 +14,7 @@ import {
 } from '@zeainc/zea-engine'
 import { MeasureDistance } from './MeasureDistance'
 import { MeasurementChange } from './MeasurementChange'
-import { AppData } from '../../types/temp'
+import { AppData } from '../../types/types'
 
 import { getPointerRay } from '../utility'
 import { Change } from '../UndoRedo'

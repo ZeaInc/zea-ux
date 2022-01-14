@@ -17,7 +17,7 @@ import {
 } from '@zeainc/zea-engine'
 import BaseCreateTool from '../BaseCreateTool'
 import { UndoRedoManager } from '../../UndoRedo/index'
-import { AppData } from '../../../types/temp'
+import { AppData } from '../../../types/types'
 
 import { getPointerRay } from '../../utility'
 

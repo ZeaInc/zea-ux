@@ -1,5 +1,5 @@
 import { EventEmitter, Color, TreeItem, GLRenderer } from '@zeainc/zea-engine'
-import { AppData } from '../types/temp'
+import { AppData } from '../types/types'
 import XfoHandle from './Handles/XfoHandle'
 import SelectionGroup from './SelectionGroup'
 import SelectionChange from './UndoRedo/Changes/SelectionChange'

@@ -15,4 +15,4 @@ export * from './Tools/index'
 export * from './Handles/index'
 export * from './Measurement/index'
 
-export type { AppData } from '../types/temp'
+export type { AppData } from '../types/types'

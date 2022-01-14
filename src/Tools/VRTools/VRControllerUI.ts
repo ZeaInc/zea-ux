@@ -1,5 +1,5 @@
 import { Vec3, Xfo, EulerAngles, Color, TreeItem, GeomItem, Material, Plane, DataImage } from '@zeainc/zea-engine'
-import { AppData } from '../../../types/temp.js'
+import { AppData } from '../../../types/types.js'
 
 import domtoimage from './dom-to-image.js'
 

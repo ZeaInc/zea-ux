@@ -2,7 +2,7 @@ import { BooleanParameter, ColorParameter, NumberParameter, TreeItem, Vec3, Xfo 
 import CreateLineTool from './CreateLineTool'
 import CreateFreehandLineChange from './Change/CreateFreehandLineChange'
 import { UndoRedoManager } from '../../UndoRedo/index'
-import { AppData } from '../../../types/temp'
+import { AppData } from '../../../types/types'
 
 /**
  * Tool for creating a free hand line.
