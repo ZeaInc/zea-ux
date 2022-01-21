@@ -21,7 +21,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Features
 
-* Implemented a new HandleMaterial that has statically defined paramters. ([f991269](https://github.com/ZeaInc/zea-ux/commit/f991269f82f1f4dc89e94a326c42a42fe04ca8df))
+* Implemented a new HandleMaterial that has statically defined parameters. ([f991269](https://github.com/ZeaInc/zea-ux/commit/f991269f82f1f4dc89e94a326c42a42fe04ca8df))
 * zea-ux is now upgraded to version 4.0.0 of the engine. ([f10126c](https://github.com/ZeaInc/zea-ux/commit/f10126c6bbbd16be28561b2ab2e44c655b228b7e))
 
 
@@ -38,7 +38,7 @@ All notable changes to this project will be documented in this file. See [standa
 * added reset to 1:1 scale feat to the vr-ui ([8b634dd](https://github.com/ZeaInc/zea-ux/commit/8b634dd228d2dfeabfd1bd42028f8a2eb2f01c09))
 * create geom tools all take colors now. ([0c82f1e](https://github.com/ZeaInc/zea-ux/commit/0c82f1e0c4bb0b219229228e472c71fcc9c32d83))
 * In VR, the CreateLineTool line thickness is now adapted to the stage scale. ([bab217b](https://github.com/ZeaInc/zea-ux/commit/bab217ba87a0e63e7cd90d0caf8e1518b9284e53))
-* VRHoldObjectsTool now hilights items we are about to pick up. ([ee4414c](https://github.com/ZeaInc/zea-ux/commit/ee4414cb21af24b7577903fd1b8a67d3e5f040c3))
+* VRHoldObjectsTool now highlights items we are about to pick up. ([ee4414c](https://github.com/ZeaInc/zea-ux/commit/ee4414cb21af24b7577903fd1b8a67d3e5f040c3))
 
 
 ### Bug Fixes
@@ -48,7 +48,7 @@ All notable changes to this project will be documented in this file. See [standa
 * MeasureCenterDistancesTool correctly handles Cones and Circles ([c3ca45c](https://github.com/ZeaInc/zea-ux/commit/c3ca45ceb7fa11f34c58f97bb470cb7f6c832507))
 * Measurements now assume user units are in mm and scene units are in meters. ([244368c](https://github.com/ZeaInc/zea-ux/commit/244368cf6dd08142eebf87dc0c72caa194010491))
 * on Safari without rendering to float textures, we now support up to 7 registered passes. ([1348fa4](https://github.com/ZeaInc/zea-ux/commit/1348fa4cc638c6e1a35394df82da8c1aa2ec6250))
-* selection manager now correctly handles unhilighting items on deselection ([#131](https://github.com/ZeaInc/zea-ux/issues/131)) ([40a2ef0](https://github.com/ZeaInc/zea-ux/commit/40a2ef0da83bd89244fdc92f4089f8cc2b17869d))
+* selection manager now correctly handles unhighlighting items on deselection ([#131](https://github.com/ZeaInc/zea-ux/issues/131)) ([40a2ef0](https://github.com/ZeaInc/zea-ux/commit/40a2ef0da83bd89244fdc92f4089f8cc2b17869d))
 * When collaborating on line drawing, line thickness is now correctly synchronized. ([2f8ec8b](https://github.com/ZeaInc/zea-ux/commit/2f8ec8b2a8be5dd304449d8e2b4b4cb144d44fbf))
 
 ### [3.1.3](https://github.com/ZeaInc/zea-ux/compare/v3.1.2...v3.1.3) (2021-06-29)
@@ -56,14 +56,14 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Bug Fixes
 
-* Cleaned up incompatiblity with zea-engine 3.10.3 ([ee011a3](https://github.com/ZeaInc/zea-ux/commit/ee011a3f77010e1d2195e7d89dfaf719285ce00a))
+* Cleaned up incompatibility with zea-engine 3.10.3 ([ee011a3](https://github.com/ZeaInc/zea-ux/commit/ee011a3f77010e1d2195e7d89dfaf719285ce00a))
 
 ### [3.1.3](https://github.com/ZeaInc/zea-ux/compare/v3.1.2...v3.1.3) (2021-06-29)
 
 
 ### Bug Fixes
 
-* Cleaned up incompatiblity with zea-engine 3.10.3 ([ee011a3](https://github.com/ZeaInc/zea-ux/commit/ee011a3f77010e1d2195e7d89dfaf719285ce00a))
+* Cleaned up incompatibility with zea-engine 3.10.3 ([ee011a3](https://github.com/ZeaInc/zea-ux/commit/ee011a3f77010e1d2195e7d89dfaf719285ce00a))
 
 ### [3.1.2](https://github.com/ZeaInc/zea-ux/compare/v3.1.1...v3.1.2) (2021-05-14)
 
@@ -77,22 +77,22 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Bug Fixes
 
-* Handle picking became broken after the 3.7.0 engine release. Now the HandleShader is an uberhsader that is also used in Picking. ([f2eae31](https://github.com/ZeaInc/zea-ux/commit/f2eae315ac3fed1c7c1125284fd6283c58549232))
+* Handle picking became broken after the 3.7.0 engine release. Now the HandleShader is an ubershader that is also used in Picking. ([f2eae31](https://github.com/ZeaInc/zea-ux/commit/f2eae315ac3fed1c7c1125284fd6283c58549232))
 
 ## [3.1.0](https://github.com/ZeaInc/zea-ux/compare/v3.0.1...v3.1.0) (2021-02-10)
 
 
 ### Features
 
-* Handles now emit 'highlight' and 'unhighlight events so consumers can manage custom highlighting. ([17fd983](https://github.com/ZeaInc/zea-ux/commit/17fd9835c3ffee415a88022a241ddde86d342e81))
+* Handles now emit 'highlight' and 'unhighlight' events so consumers can manage custom highlighting. ([17fd983](https://github.com/ZeaInc/zea-ux/commit/17fd9835c3ffee415a88022a241ddde86d342e81))
 * SelectionGroup Xfo mode now defaults to 'average' but we no longer average the rotations as this was confusing. ([1ea7484](https://github.com/ZeaInc/zea-ux/commit/1ea748456aac5ddb2dfe86d32eb1bbd25fe40b69))
 
 
 ### Bug Fixes
 
-* Interactions on the ScreenSpaceMovementHandle bacame inaccurate as it moved away from the origin. ([3d81a99](https://github.com/ZeaInc/zea-ux/commit/3d81a99138513641c2d022163b102e4211a6ba6a))
+* Interactions on the ScreenSpaceMovementHandle became inaccurate as it moved away from the origin. ([3d81a99](https://github.com/ZeaInc/zea-ux/commit/3d81a99138513641c2d022163b102e4211a6ba6a))
 * SelectionManager now has a simpler method of showing the XfoHandles, now that the handles combine TR and ORI manipulation ([af7a52e](https://github.com/ZeaInc/zea-ux/commit/af7a52eb9c3c4731a0da9ad11b132627b9963bd3))
-* The MeasurementTool was throwing an exception of the appData object did not containa the renderer. ([0398f64](https://github.com/ZeaInc/zea-ux/commit/0398f6492fde3bb606d1b1425d9e652513a5dbd7))
+* The MeasurementTool was throwing an exception of the appData object did not contain the renderer. ([0398f64](https://github.com/ZeaInc/zea-ux/commit/0398f6492fde3bb606d1b1425d9e652513a5dbd7))
 
 ### [3.0.1](https://github.com/ZeaInc/zea-ux/compare/v3.0.0...v3.0.1) (2020-12-03)
 
@@ -104,9 +104,6 @@ All notable changes to this project will be documented in this file. See [standa
 * renamed 'changeFromJSON' to 'updateFromJSON' to be more consistent.
 
 * refactor: no need to register tools with the UndoRedoManager.
-
-Co-authored-by: Philip Taylor <phil@zea.live>
-Co-authored-by: Vagaro <pajaromen@gmail.com>
 
 * Rename change from json to update from json (#112) ([68fd934](https://github.com/ZeaInc/zea-ux/commit/68fd9349149b38a255af372f7e926b4655130c5d)), closes [#112](https://github.com/ZeaInc/zea-ux/issues/112)
 
@@ -120,9 +117,6 @@ Co-authored-by: Vagaro <pajaromen@gmail.com>
 * renamed 'changeFromJSON' to 'updateFromJSON' to be more consistent.
 
 * refactor: no need to register tools with the UndoRedoManager.
-
-Co-authored-by: Philip Taylor <phil@zea.live>
-Co-authored-by: Alvaro Pajaro <alvaroe.pajaro@gmail.com>
 
 ### Features
 
