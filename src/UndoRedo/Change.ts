@@ -46,7 +46,7 @@ class Change extends EventEmitter {
    *
    * @param {object|string|any} updateData - The updateData param.
    */
-  update(updateData: Record<any,any>): void {
+  update(updateData: Record<string, any>): void {
     throw new Error('Implement me')
   }
 
@@ -58,7 +58,7 @@ class Change extends EventEmitter {
    * @param {object} context - The appData param.
    * @return {object} The return value.
    */
-  toJSON(context: Record<any,any>): void {
+  toJSON(context: Record<string, any>): Record<string, any> {
     return {}
   }
 
@@ -72,7 +72,7 @@ class Change extends EventEmitter {
    * @param {object} j - The j param.
    * @param {object} context - The context param.
    */
-  fromJSON(j: Record<any,any>, context: Record<any,any>): void {}
+  fromJSON(j: Record<string, any>, context: Record<string, any>): void {}
 
   /**
    * Useful method to update the state of an existing identified `Change` through replication.
@@ -81,7 +81,7 @@ class Change extends EventEmitter {
    *
    * @param {object} j - The j param.
    */
-  updateFromJSON(j: Record<any,any>): void {
+  updateFromJSON(j: Record<string, any>): void {
     // Many change objects can load json directly
     // in the update method.
     this.update(j)
