@@ -154,7 +154,7 @@ class UndoRedoManager extends EventEmitter {
   // TODO: register not working
   static isChangeClassRegistered(inst: Change): boolean {
     try {
-      const name = Registry.getClassName(Object.getPrototypeOf(inst).constructor))
+      const name = Registry.getClassName(Object.getPrototypeOf(inst).constructor)
       return true
     } catch (e) {
       return false
