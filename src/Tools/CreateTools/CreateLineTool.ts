@@ -20,7 +20,7 @@ class CreateLineTool extends CreateGeomTool {
   xfo: Xfo
   /**
    * Create a create line tool.
-   * @param {object} appData - The appData value.
+   * @param appData - The appData value.
    */
   constructor(appData: AppData) {
     super(appData)
@@ -30,7 +30,7 @@ class CreateLineTool extends CreateGeomTool {
   /**
    * Starts line geometry creation.
    *
-   * @param {Xfo} xfo - The xfo param.
+   * @param xfo - The xfo param.
    */
   createStart(xfo: Xfo): void {
     const color = this.colorParam.getValue()
@@ -46,7 +46,7 @@ class CreateLineTool extends CreateGeomTool {
   /**
    * Updates line structural data.
    *
-   * @param {Vec3} pt - The pt param.
+   * @param pt - The pt param.
    */
   createMove(pt: Vec3): void {
     const offset = this.xfo.transformVec3(pt)
@@ -57,7 +57,7 @@ class CreateLineTool extends CreateGeomTool {
   /**
    * Finishes Line geometry creation.
    *
-   * @param {Vec3} pt - The pt param.
+   * @param pt - The pt param.
    */
   createRelease(pt: Vec3): void {
     if (this.length == 0) {
@@ -70,7 +70,7 @@ class CreateLineTool extends CreateGeomTool {
   /**
    * The onVRControllerButtonDown method.
    *
-   * @param {object} event - The event param.
+   * @param event - The event param.
    */
   onVRControllerButtonDown(event: XRControllerEvent): void {
     if (this.stage == 0) {

@@ -15,9 +15,9 @@ class SelectionChange extends Change {
   /**
    * Creates an instance of SelectionChange.
    *
-   * @param {SelectionManager} selectionManager - The selectionManager value.
-   * @param {Set} prevSelection - The prevSelection value.
-   * @param {Set} newSelection - The newSelection value.
+   * @param selectionManager - The selectionManager value.
+   * @param prevSelection - The prevSelection value.
+   * @param newSelection - The newSelection value.
    */
   constructor(selectionManager: SelectionManager, prevSelection: Set<TreeItem>, newSelection: Set<TreeItem>) {
     super('SelectionChange')
@@ -43,7 +43,7 @@ class SelectionChange extends Change {
   /**
    * Serializes selection values as a JSON object, allowing persistence/replication.
    *
-   * @param {object} context - The appData param.
+   * @param context - The appData param.
    * @return {object} The return value.
    */
   toJSON(context: Record<any, any>): Record<any, any> {
@@ -60,8 +60,8 @@ class SelectionChange extends Change {
   /**
    * Restores selection state from a JSON object.
    *
-   * @param {object} j - The j param.
-   * @param {object} context - The context param.
+   * @param j - The j param.
+   * @param context - The context param.
    */
   fromJSON(j: Record<any, any>, context: Record<any, any>): void {
     super.fromJSON(j, context)

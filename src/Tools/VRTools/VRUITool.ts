@@ -11,6 +11,7 @@ import {
   Lines,
   BaseTool,
   Vec3Attribute,
+  XRController,
   XRControllerEvent,
   XRPoseEvent,
 } from '@zeainc/zea-engine'
@@ -38,8 +39,8 @@ class VRUITool extends BaseTool {
 
   /**
    * Create a VR UI tool.
-   * @param {object} appData - The appData value.
-   * @param {HTMLElement} vrUIDOMElement - The  dom element we will use as the VR UI
+   * @param appData - The appData value.
+   * @param vrUIDOMElement - The  dom element we will use as the VR UI
    */
   constructor(appData: AppData, vrUIDOMElement: HTMLElement) {
     super()
@@ -107,11 +108,11 @@ class VRUITool extends BaseTool {
 
   /**
    * The displayUI method.
-   * @param {VRController} uiController - The uiController param.
-   * @param {VRController} : VRController - The pointerController param.
-   * @param {Xfo} headXfo - The headXfo param.
+   * @param uiController - The uiController param.
+   * @param : VRController - The pointerController param.
+   * @param headXfo - The headXfo param.
    */
-  displayUI(uiController: any, pointerController: any, headXfo: Xfo): void {
+  displayUI(uiController: XRController, pointerController: XRController, headXfo: Xfo): void {
     this.controllerUI.activate()
     this.uiController = uiController
     this.pointerController = pointerController
@@ -190,7 +191,7 @@ class VRUITool extends BaseTool {
 
   /**
    * The setPointerLength method.
-   * @param {number} length - The length param.
+   * @param length - The length param.
    */
   setPointerLength(length: number): void {
     this.__pointerLocalXfo.sc.set(1, 1, length)
@@ -235,9 +236,9 @@ class VRUITool extends BaseTool {
 
   /**
    * The sendEventToUI method.
-   * @param {string} eventName - The eventName param.
-   * @param {any} args - The args param.
-   * @return {any} The return value.
+   * @param eventName - The eventName param.
+   * @param args - The args param.
+   * @return The return value.
    */
   sendEventToUI(eventName: string, args: any): Element {
     const hit = this.calcUIIntersection()
@@ -267,7 +268,7 @@ class VRUITool extends BaseTool {
 
   /**
    * The onVRControllerButtonDown method.
-   * @param {object} event - The event param.
+   * @param event - The event param.
    */
   onPointerDown(event: XRControllerEvent): void {
     if (event.pointerType === POINTER_TYPES.xr) {
@@ -289,7 +290,7 @@ class VRUITool extends BaseTool {
 
   /**
    * The onVRControllerButtonUp method.
-   * @param {object} event - The event param.
+   * @param event - The event param.
    */
   onPointerUp(event: XRControllerEvent): void {
     if (event.pointerType === POINTER_TYPES.xr) {
@@ -312,7 +313,7 @@ class VRUITool extends BaseTool {
 
   /**
    * The onVRPoseChanged method.
-   * @param {object} event - The event param.
+   * @param event - The event param.
    */
   onPointerMove(event: XRPoseEvent): void {
     if (event.pointerType === POINTER_TYPES.xr) {

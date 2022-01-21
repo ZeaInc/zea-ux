@@ -1,5 +1,5 @@
 /* eslint-disable require-jsdoc */
-import { BaseTool, ZeaPointerEvent, ZeaMouseEvent, ZeaTouchEvent, XRControllerEvent } from '@zeainc/zea-engine'
+import { BaseTool, ZeaMouseEvent, KeyboardEvent } from '@zeainc/zea-engine'
 
 /**
  * @extends BaseTool
@@ -35,7 +35,7 @@ class ToolManager extends BaseTool {
 
   /**
    * Returns the tool currently at the top of the stack.
-   * @return {Tool} - the currently active tool.
+   * @return - the currently active tool.
    */
   activeTool(): BaseTool | undefined {
     if (this.toolStack.length > 0) {
@@ -63,7 +63,7 @@ class ToolManager extends BaseTool {
   /**
    * Event fired when a pointing device button is pressed while the pointer is over the tool.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param event - The event param.
    */
   onPointerDown(event: ZeaMouseEvent): void {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
@@ -78,7 +78,7 @@ class ToolManager extends BaseTool {
   /**
    * Event fired when a pointing device is moved while the cursor's hotspot is inside it.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param event - The event param.
    */
   onPointerMove(event: ZeaMouseEvent): void {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
@@ -93,7 +93,7 @@ class ToolManager extends BaseTool {
   /**
    * Event fired when a pointing device button is released while the pointer is over the tool.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param event - The event param.
    */
   onPointerUp(event: ZeaMouseEvent): void {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
@@ -108,7 +108,7 @@ class ToolManager extends BaseTool {
   /**
    * Event fired when a pointing device button is double clicked on the tool.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param event - The event param.
    */
   onPointerDoublePress(event: ZeaMouseEvent): void {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
@@ -123,7 +123,7 @@ class ToolManager extends BaseTool {
   /**
    * Event fired when the user rotates the pointing device wheel.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param event - The event param.
    */
   onWheel(event: ZeaMouseEvent): void {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
@@ -141,10 +141,9 @@ class ToolManager extends BaseTool {
   /**
    * Event fired when the user presses a key on the keyboard.
    *
-   * @param {KeyboardEvent} event - The event param.
+   * @param event - The event param.
    */
-  //TODO: keyboard event?
-  onKeyPressed(event: any): void {
+  onKeyPressed(event: KeyboardEvent): void {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
       const tool = this.toolStack[i]
       if (tool.onKeyPressed) {
@@ -157,9 +156,9 @@ class ToolManager extends BaseTool {
   /**
    * Event fired when the user presses down a key on the keyboard.
    *
-   * @param {KeyboardEvent} event - The event param.
+   * @param event - The event param.
    */
-  onKeyDown(event: any): void {
+  onKeyDown(event: KeyboardEvent): void {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
       const tool = this.toolStack[i]
       if (tool.onKeyDown) {
@@ -172,9 +171,9 @@ class ToolManager extends BaseTool {
   /**
    * Event fired when the user releases a key on the keyboard.
    *
-   * @param {KeyboardEvent} event - The event param.
+   * @param event - The event param.
    */
-  onKeyUp(event: any): void {
+  onKeyUp(event: KeyboardEvent): void {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
       const tool = this.toolStack[i]
       if (tool.onKeyUp) {

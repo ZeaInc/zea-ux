@@ -50,11 +50,11 @@ class ArcSlider extends BaseAxialRotationHandle {
   /**
    * Creates an instance of ArcSlider.
    *
-   * @param {string} name - The name value
-   * @param {number} [arcRadius=1] - The arcRadius value
-   * @param {number} [arcAngle=1] - The arcAngle value
-   * @param {number} [handleRadius=0.02] - The handleRadius value
-   * @param {Color} [color=new Color(1, 1, 0)] - the color value
+   * @param name - The name value
+   * @param [arcRadius=1] - The arcRadius value
+   * @param [arcAngle=1] - The arcAngle value
+   * @param [handleRadius=0.02] - The handleRadius value
+   * @param [color=new Color(1, 1, 0)] - the color value
    */
   constructor(name?: string, arcRadius = 1, arcAngle = 1, handleRadius = 0.02, color = new Color(1, 1, 0)) {
     super(name)
@@ -117,7 +117,7 @@ class ArcSlider extends BaseAxialRotationHandle {
   /**
    * Event fired when a pointing device is initially moved within the space of the handle.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param event - The event param.
    */
   onPointerEnter(event: ZeaPointerEvent): void {
     if (event.intersectionData && event.intersectionData.geomItem == this.handle) this.highlight()
@@ -126,7 +126,7 @@ class ArcSlider extends BaseAxialRotationHandle {
   /**
    * Event fired when a pointing device moves outside of the space of the handle.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param event - The event param.
    */
   onPointerLeave(event: ZeaPointerEvent): void {
     this.unhighlight()
@@ -135,7 +135,7 @@ class ArcSlider extends BaseAxialRotationHandle {
   /**
    * Event fired when a pointing device button is pressed while the pointer is over the handle element.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param event - The event param.
    */
   onPointerDown(event: ZeaPointerEvent): void {
     // We do not want to handle events
@@ -162,7 +162,7 @@ class ArcSlider extends BaseAxialRotationHandle {
 
   // /**
   //  * The setTargetParam method.
-  //  * @param {any} param - The param param.
+  //  * @param param - The param param.
   //  */
   // setTargetParam(param) {
   //   this.param = param;
@@ -176,8 +176,8 @@ class ArcSlider extends BaseAxialRotationHandle {
   /**
    * Sets global xfo target parameter
    *
-   * @param {Parameter} param - The param param.
-   * @param {boolean} track - The track param.
+   * @param param - The param param.
+   * @param track - The track param.
    */
   setTargetParam(param: XfoParameter | NumberParameter, track = true): void {
     this.param = param
@@ -225,7 +225,7 @@ class ArcSlider extends BaseAxialRotationHandle {
   /**
    * Handles the initially drag interaction of the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param event - The event param.
    */
   onDragStart(event: ZeaPointerEvent): void {
     this.baseXfo = this.globalXfoParam.value.clone()
@@ -250,7 +250,7 @@ class ArcSlider extends BaseAxialRotationHandle {
   /**
    * Handles drag interaction of the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param event - The event param.
    */
   onDrag(event: ZeaPointerEvent): void {
     const vec1 = this.holdPos.subtract(this.baseXfo.tr)
@@ -298,7 +298,7 @@ class ArcSlider extends BaseAxialRotationHandle {
   /**
    * Handles the end of dragging interaction with the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param event - The event param.
    */
   onDragEnd(event: ZeaPointerEvent): void {
     this.change = null
@@ -311,7 +311,7 @@ class ArcSlider extends BaseAxialRotationHandle {
   /**
    * Serializes handle item as a JSON object.
    *
-   * @param {object} context - The context param.
+   * @param context - The context param.
    * @return {object} The return value.
    */
   toJSON(context: Record<string, any>): Record<string, any> {
@@ -323,8 +323,8 @@ class ArcSlider extends BaseAxialRotationHandle {
   /**
    * Restores handle item from a JSON object.
    *
-   * @param {object} json - The json param.
-   * @param {object} context - The context param.
+   * @param json - The json param.
+   * @param context - The context param.
    */
   fromJSON(json: Record<string, any>, context: Record<string, any>): void {
     super.fromJSON(json, context)

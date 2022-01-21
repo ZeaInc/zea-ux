@@ -36,7 +36,7 @@ class MeasureDistanceTool extends BaseTool {
   /**
    * Creates an instance of MeasureDistanceTool.
    *
-   * @param {object} appData - The appData value
+   * @param appData - The appData value
    */
   constructor(appData: AppData) {
     super()
@@ -89,8 +89,8 @@ class MeasureDistanceTool extends BaseTool {
   }
 
   /**
-   * @param {GeomItem} geomItem
-   * @param {Vec3} pos
+   * @param geomItem
+   * @param pos
    * @return {Vec3}
    * @private
    */
@@ -146,7 +146,7 @@ class MeasureDistanceTool extends BaseTool {
   /**
    *
    *
-   * @param {MouseEvent|TouchEvent} event - The event value
+   * @param event - The event value
    */
   onPointerDown(event: ZeaPointerEvent): void {
     // skip if the alt key is held. Allows the camera tool to work
@@ -210,7 +210,7 @@ class MeasureDistanceTool extends BaseTool {
   /**
    *
    *
-   * @param {MouseEvent|TouchEvent} event - The event value
+   * @param event - The event value
    */
   onPointerMove(event: ZeaPointerEvent): void {
     // skip if the alt key is held. Allows the camera tool to work
@@ -269,7 +269,7 @@ class MeasureDistanceTool extends BaseTool {
   /**
    *
    *
-   * @param {MouseEvent|TouchEvent} event - The event value
+   * @param event - The event value
    */
   onPointerUp(event: ZeaPointerEvent): void {}
 }

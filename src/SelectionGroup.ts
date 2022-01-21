@@ -34,7 +34,7 @@ class SelectionGroup extends SelectionSet {
    *
    *
    * **Parameters**
-   * @param {object} options - Custom options for selection
+   * @param options - Custom options for selection
    */
   constructor(options?: Record<string, any>) {
     super()
@@ -78,7 +78,7 @@ class SelectionGroup extends SelectionSet {
   /**
    * Constructs a new selection group by copying the values from current one and returns it.
    *
-   * @return {SelectionGroup} - Cloned selection group.
+   * @return - Cloned selection group.
    */
   clone(): SelectionGroup {
     const cloned = new SelectionGroup()
@@ -88,8 +88,8 @@ class SelectionGroup extends SelectionSet {
 
   /**
    *
-   * @param {TreeItem} item -
-   * @param {number} index -
+   * @param item -
+   * @param index -
    * @private
    */
   bindItem(item: TreeItem, index: number): void {
@@ -111,8 +111,8 @@ class SelectionGroup extends SelectionSet {
 
   /**
    *
-   * @param {TreeItem} item -
-   * @param {number} index -
+   * @param item -
+   * @param index -
    * @private
    */
   unbindItem(item: TreeItem, index: number): void {

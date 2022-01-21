@@ -38,10 +38,10 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
   /**
    * Create an axial rotation scene widget.
    *
-   * @param {string} name - The name value.
-   * @param {number} radius - The radius value.
-   * @param {number} thickness - The thickness value.
-   * @param {Color} color - The color value.
+   * @param name - The name value.
+   * @param radius - The radius value.
+   * @param thickness - The thickness value.
+   * @param color - The color value.
    */
   constructor(name: string, radius: number, thickness: number, color = new Color(1, 1, 0)) {
     super(name)
@@ -101,7 +101,7 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
   /**
    * Handles the initially drag interaction of the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param event - The event param.
    */
   onDragStart(event: ZeaPointerEvent): void {
     super.onDragStart(event)
@@ -110,7 +110,7 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
   /**
    * Handles drag interaction of the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param event - The event param.
    */
   onDrag(event: ZeaPointerEvent) {
     super.onDrag(event)
@@ -119,7 +119,7 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
   /**
    * Handles the end of dragging interaction with the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param event - The event param.
    */
   onDragEnd(event: ZeaPointerEvent): void {
     super.onDragEnd(event)

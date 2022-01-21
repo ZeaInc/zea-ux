@@ -30,7 +30,7 @@ class BaseAxialRotationHandle extends Handle {
   /**
    * Create an axial rotation scene widget.
    *
-   * @param {string} name - The name value.
+   * @param name - The name value.
    */
   constructor(name: string) {
     super(name)
@@ -39,10 +39,10 @@ class BaseAxialRotationHandle extends Handle {
   /**
    * Sets global xfo target parameter
    *
-   * @param {Parameter} param - The param param.
-   * @param {boolean} track - The track param.
+   * @param param - The param param.
+   * @param track - The track param.
    */
-  setTargetParam(param: XfoParameter, track = true): void  {
+  setTargetParam(param: XfoParameter, track = true): void {
     this.param = param
     if (track) {
       const __updateGizmo = () => {
@@ -65,7 +65,7 @@ class BaseAxialRotationHandle extends Handle {
   /**
    * Handles the initially drag of the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param event - The event param.
    */
   onDragStart(event: ZeaPointerEvent): void {
     this.baseXfo = this.globalXfoParam.value.clone()
@@ -86,7 +86,7 @@ class BaseAxialRotationHandle extends Handle {
   /**
    * Handles drag action of the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param event - The event param.
    */
   onDrag(event: ZeaPointerEvent): void {
     const vec1 = this.holdPos.subtract(this.baseXfo.tr)
@@ -129,7 +129,7 @@ class BaseAxialRotationHandle extends Handle {
   /**
    * Handles the end of dragging the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param event - The event param.
    */
   onDragEnd(event: ZeaPointerEvent): void {
     this.change = null

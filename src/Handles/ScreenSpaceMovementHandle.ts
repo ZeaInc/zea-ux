@@ -27,7 +27,7 @@ class ScreenSpaceMovementHandle extends Handle {
   /**
    * Create a planar movement scene widget.
    *
-   * @param {string} name - The name value
+   * @param name - The name value
    */
   constructor(name?: string) {
     super(name)
@@ -36,8 +36,8 @@ class ScreenSpaceMovementHandle extends Handle {
   /**
    * Sets global xfo target parameter.
    *
-   * @param {Parameter} param - The video param.
-   * @param {boolean} track - The track param.
+   * @param param - The video param.
+   * @param track - The track param.
    */
   setTargetParam(param: any, track = true): void {
     this.param = param
@@ -65,13 +65,12 @@ class ScreenSpaceMovementHandle extends Handle {
   /**
    * Handles mouse down interaction with the handle.
    *
-   * @param {MouseEvent} event - The event param.
-   * @return {boolean} - The return value.
+   * @param event - The event param.
    */
   handlePointerDown(event: ZeaMouseEvent): void {
     this.gizmoRay = new Ray()
     const ray = getPointerRay(event)
-    const viewport =  event.viewport as GLViewport
+    const viewport = event.viewport as GLViewport
     const cameraXfo = viewport.getCamera().globalXfoParam.value
     this.gizmoRay.dir = cameraXfo.ori.getZaxis()
     const param = this.getTargetParam()
@@ -85,8 +84,7 @@ class ScreenSpaceMovementHandle extends Handle {
   /**
    * Handles mouse move interaction with the handle.
    *
-   * @param {MouseEvent|TouchEvent} event - The event param
-   * @return {boolean} - The return value
+   * @param event - The event param
    */
   handlePointerMove(event: ZeaPointerEvent): void {
     const ray = getPointerRay(event)
@@ -98,8 +96,7 @@ class ScreenSpaceMovementHandle extends Handle {
   /**
    * Handles mouse up interaction with the handle.
    *
-   * @param {MouseEvent|TouchEvent} event - The event param.
-   * @return {boolean} - The return value.
+   * @param event - The event param.
    */
   handlePointerUp(event: ZeaPointerEvent): void {
     const ray = getPointerRay(event)
@@ -117,7 +114,7 @@ class ScreenSpaceMovementHandle extends Handle {
   /**
    * Handles the initially drag of the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param event - The event param.
    */
   onDragStart(event: ZeaPointerEvent): void {
     this.grabPos = this.grabPos
@@ -131,7 +128,7 @@ class ScreenSpaceMovementHandle extends Handle {
   /**
    * Handles drag action of the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param event - The event param.
    */
   onDrag(event: ZeaPointerEvent): void {
     const dragVec = this.holdPos.subtract(this.grabPos)
@@ -147,7 +144,7 @@ class ScreenSpaceMovementHandle extends Handle {
   /**
    * Handles the end of dragging the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param event - The event param.
    */
   onDragEnd(event: ZeaPointerEvent): void {
     this.change = null

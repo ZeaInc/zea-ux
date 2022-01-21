@@ -27,10 +27,10 @@ class CreateFreehandLineChange extends CreateGeomChange {
   /**
    * Create a create freehand line change.
    *
-   * @param {TreeItem} parentItem - The parentItem value.
-   * @param {Xfo} xfo - The xfo value.
-   * @param {Color} color - The color value.
-   * @param {number} thickness - The thickness value.
+   * @param parentItem - The parentItem value.
+   * @param xfo - The xfo value.
+   * @param color - The color value.
+   * @param thickness - The thickness value.
    */
   constructor(parentItem: TreeItem, xfo: Xfo, color: Color, thickness = 0.001) {
     super('CreateFreehandLine')
@@ -59,7 +59,7 @@ class CreateFreehandLineChange extends CreateGeomChange {
   /**
    * Updates free hand line using the specified data.
    *
-   * @param {object} updateData - The updateData param.
+   * @param updateData - The updateData param.
    */
   update(updateData: Record<any, any>): void {
     // console.log("update:", this.used)
@@ -93,7 +93,7 @@ class CreateFreehandLineChange extends CreateGeomChange {
   /**
    * Serializes change as a JSON object.
    *
-   * @param {object} context - The appData param.
+   * @param context - The appData param.
    * @return {object} The return value.
    */
   toJSON(context: Record<any, any>): Record<string, any> {
@@ -107,8 +107,8 @@ class CreateFreehandLineChange extends CreateGeomChange {
   /**
    * Restores free hand line from a JSON object.
    *
-   * @param {object} j - The j param.
-   * @param {object} context - The appData param.
+   * @param j - The j param.
+   * @param context - The appData param.
    */
   fromJSON(j: Record<any, any>, context: Record<any, any>): void {
     // Need to set line thickness before the geom is added to the tree.

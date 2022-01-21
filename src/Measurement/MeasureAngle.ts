@@ -43,8 +43,8 @@ class MeasureAngle extends TreeItem {
   billboard: BillboardItem
   /**
    * Creates an instance of MeasureAngle.
-   * @param {string} name
-   * @param {Color} color
+   * @param name
+   * @param color
    */
   constructor(name = 'MeasureAngle', color = new Color('#F9CE03')) {
     super(name)
@@ -143,7 +143,7 @@ class MeasureAngle extends TreeItem {
   /**
    *
    *
-   * @param {Xfo} xfo
+   * @param xfo
    */
   setXfoA(xfo: Xfo): void {
     this.markerA.globalXfoParam.value = xfo
@@ -162,7 +162,7 @@ class MeasureAngle extends TreeItem {
   /**
    *
    *
-   * @param {Xfo} xfo
+   * @param xfo
    */
   setXfoB(xfo: Xfo): void {
     this.markerB.globalXfoParam.value = xfo

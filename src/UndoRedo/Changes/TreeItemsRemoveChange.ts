@@ -11,10 +11,10 @@ import { AppData } from '../../../types/types.js'
  * @extends Change
  */
 class TreeItemsRemoveChange extends Change {
-  items:Array<TreeItem> = []
-  itemOwners:Array<TreeItem> = []
-  itemPaths:Array<Array<string>> = []
-  itemIndices:Array<number> = []
+  items: Array<TreeItem> = []
+  itemOwners: Array<TreeItem> = []
+  itemPaths: Array<Array<string>> = []
+  itemIndices: Array<number> = []
 
   selectionManager: SelectionManager
   prevSelection: Set<TreeItem>
@@ -22,8 +22,8 @@ class TreeItemsRemoveChange extends Change {
   /**
    * Creates an instance of TreeItemsRemoveChange.
    *
-   * @param {array} items - List of TreeItems
-   * @param {object} appData - The appData value
+   * @param items - List of TreeItems
+   * @param appData - The appData value
    */
   constructor(items: Array<TreeItem>, appData: AppData) {
     super()
@@ -115,12 +115,11 @@ class TreeItemsRemoveChange extends Change {
   /**
    * Serializes current change data as a JSON object, so this action can be stored/replicated somewhere else.
    *
-   * @param {object} appData - The appData value
+   * @param appData - The appData value
    * @return {object} - JSON Object representation of current change
    * @memberof TreeItemsRemoveChange
    */
   toJSON(appData: AppData): Record<string, any> {
-
     const j = {
       name: this.name,
       items: [] as any[],
@@ -136,14 +135,14 @@ class TreeItemsRemoveChange extends Change {
   /**
    * Restores Change action from a JSON object.
    *
-   * @param {object} j - The JSON object with Change data.
-   * @param {object} appData - The appData value
+   * @param j - The JSON object with Change data.
+   * @param appData - The appData value
    * @memberof TreeItemsRemoveChange
    */
   fromJSON(j: Record<string, any>, appData: AppData): void {
     this.name = j.name
     j.itemPaths.forEach((itemPath: any) => {
-      const item =  <TreeItem>appData.scene.getRoot().resolvePath(itemPath, 1)
+      const item = <TreeItem>appData.scene.getRoot().resolvePath(itemPath, 1)
       if (!item) {
         console.warn('resolvePath is unable to resolve', itemPath)
         return

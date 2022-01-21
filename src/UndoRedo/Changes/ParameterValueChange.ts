@@ -19,8 +19,8 @@ class ParameterValueChange extends Change {
   /**
    * Creates an instance of ParameterValueChange.
    *
-   * @param {Parameter} param - The param value.
-   * @param {object|string|number|any} newValue - The newValue value.
+   * @param param - The param value.
+   * @param newValue - The newValue value.
    */
   constructor(param?: Parameter<unknown>, newValue?: any) {
     if (param) {
@@ -64,7 +64,7 @@ class ParameterValueChange extends Change {
   /**
    * Updates the state of the current parameter change value.
    *
-   * @param {Parameter} updateData - The updateData param.
+   * @param updateData - The updateData param.
    */
   update(updateData: Record<string, any>): void {
     if (!this.__param) return
@@ -76,7 +76,7 @@ class ParameterValueChange extends Change {
   /**
    * Serializes `Parameter` instance value as a JSON object, allowing persistence/replication.
    *
-   * @param {object} context - The context param.
+   * @param context - The context param.
    * @return {object} The return value.
    */
   toJSON(context: Record<any, any>): Record<any, any> {
@@ -98,8 +98,8 @@ class ParameterValueChange extends Change {
   /**
    * Restores `Parameter` instance's state with the specified JSON object.
    *
-   * @param {Record<any, any>} j - The j param.
-   * @param {Record<any, any>} context - The context param.
+   * @param j - The j param.
+   * @param context - The context param.
    */
   fromJSON(j: Record<any, any>, context: Record<any, any>): Record<any, any> {
     const param = context.appData.scene.getRoot().resolvePath(j.paramPath, 1)
@@ -119,7 +119,7 @@ class ParameterValueChange extends Change {
   /**
    * Updates the state of an existing identified `Parameter` through replication.
    *
-   * @param {Record<any, any>} j - The j param.
+   * @param j - The j param.
    */
   updateFromJSON(j: Record<any, any>): void {
     if (!this.__param) return
@@ -129,6 +129,7 @@ class ParameterValueChange extends Change {
   }
 }
 
+// @ts-ignore
 UndoRedoManager.registerChange('ParameterValueChange', ParameterValueChange)
 
 export default ParameterValueChange

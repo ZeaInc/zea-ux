@@ -15,8 +15,8 @@ class TreeItemMoveChange extends Change {
   /**
    * Creates an instance of TreeItemMoveChange.
    *
-   * @param {TreeItem} treeItem - The item to move.
-   * @param {TreeItem} newOwner - The new owner item.
+   * @param treeItem - The item to move.
+   * @param newOwner - The new owner item.
    * @memberof TreeItemMoveChange
    */
   constructor(treeItem: TreeItem, newOwner: TreeItem) {
@@ -49,7 +49,7 @@ class TreeItemMoveChange extends Change {
   /**
    * Returns a JSON object with the specifications of the change(Typically used for replication).
    *
-   * @param {object} context - The context value
+   * @param context - The context value
    * @return {object} - JSON object of the change
    */
   toJSON(context: Record<string, any>): Record<string, any> {
@@ -65,8 +65,8 @@ class TreeItemMoveChange extends Change {
   /**
    * Restores the Change state from the specified JSON object.
    *
-   * @param {object} j - The serialized object with the change data.
-   * @param {object} context - The context value
+   * @param j - The serialized object with the change data.
+   * @param context - The context value
    */
   fromJSON(j: Record<string, any>, context: Record<string, any>): void {
     if (!context || !context.scene) return
