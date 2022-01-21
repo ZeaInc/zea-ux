@@ -2,7 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## [4.0.1](https://github.com/ZeaInc/zea-ux/compare/v4.0.0...v4.0.1) (2021-11-25)
+## [4.0.3](https://github.com/ZeaInc/zea-ux/compare/v4.0.2...v4.0.3) (2022-01-21)
+
+
+### Bug Fixes
+
+* Clearing the selection should emit a `leadSelectionChanged` event. ([#154](https://github.com/ZeaInc/zea-ux/issues/154)) ([5da8edd](https://github.com/ZeaInc/zea-ux/commit/5da8edd0affe6a606a8ad42c472b6dedfb0c2002))
+* TypeScript type definitions ([#148](https://github.com/ZeaInc/zea-ux/issues/148)) ([7253ad1](https://github.com/ZeaInc/zea-ux/commit/7253ad1dd4e296dc4579c5a247229632f17ea5bc)), closes [#147](https://github.com/ZeaInc/zea-ux/issues/147)
+
+## [4.0.2](https://github.com/ZeaInc/zea-ux/compare/v4.0.0...v4.0.2) (2021-12-03)
 
 
 ### Bug Fixes
@@ -51,28 +59,28 @@ All notable changes to this project will be documented in this file. See [standa
 * selection manager now correctly handles unhighlighting items on deselection ([#131](https://github.com/ZeaInc/zea-ux/issues/131)) ([40a2ef0](https://github.com/ZeaInc/zea-ux/commit/40a2ef0da83bd89244fdc92f4089f8cc2b17869d))
 * When collaborating on line drawing, line thickness is now correctly synchronized. ([2f8ec8b](https://github.com/ZeaInc/zea-ux/commit/2f8ec8b2a8be5dd304449d8e2b4b4cb144d44fbf))
 
-### [3.1.3](https://github.com/ZeaInc/zea-ux/compare/v3.1.2...v3.1.3) (2021-06-29)
+## [3.1.3](https://github.com/ZeaInc/zea-ux/compare/v3.1.2...v3.1.3) (2021-06-29)
 
 
 ### Bug Fixes
 
 * Cleaned up incompatibility with zea-engine 3.10.3 ([ee011a3](https://github.com/ZeaInc/zea-ux/commit/ee011a3f77010e1d2195e7d89dfaf719285ce00a))
 
-### [3.1.3](https://github.com/ZeaInc/zea-ux/compare/v3.1.2...v3.1.3) (2021-06-29)
+## [3.1.3](https://github.com/ZeaInc/zea-ux/compare/v3.1.2...v3.1.3) (2021-06-29)
 
 
 ### Bug Fixes
 
 * Cleaned up incompatibility with zea-engine 3.10.3 ([ee011a3](https://github.com/ZeaInc/zea-ux/commit/ee011a3f77010e1d2195e7d89dfaf719285ce00a))
 
-### [3.1.2](https://github.com/ZeaInc/zea-ux/compare/v3.1.1...v3.1.2) (2021-05-14)
+## [3.1.2](https://github.com/ZeaInc/zea-ux/compare/v3.1.1...v3.1.2) (2021-05-14)
 
 
 ### Bug Fixes
 
 * SelectionManager now correctly sets the Selection state of its members. ([5e5bf9c](https://github.com/ZeaInc/zea-ux/commit/5e5bf9c202a403c4a979def18f8e388d98dde9fd))
 
-### [3.1.1](https://github.com/ZeaInc/zea-ux/compare/v3.1.0...v3.1.1) (2021-05-10)
+## [3.1.1](https://github.com/ZeaInc/zea-ux/compare/v3.1.0...v3.1.1) (2021-05-10)
 
 
 ### Bug Fixes
