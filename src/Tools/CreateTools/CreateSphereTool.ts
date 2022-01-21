@@ -1,7 +1,7 @@
 import CreateGeomTool from './CreateGeomTool'
 import CreateSphereChange from './Change/CreateSphereChange'
 import { UndoRedoManager } from '../../UndoRedo/index'
-import { AppData } from '../../../types/temp'
+import { AppData } from '../../../types/types'
 import { Vec3, Xfo } from '@zeainc/zea-engine'
 
 /**

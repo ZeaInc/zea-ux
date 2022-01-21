@@ -13,7 +13,7 @@ import {
 } from '@zeainc/zea-engine'
 import { MeasurementChange } from './MeasurementChange'
 import { MeasureDistance } from './MeasureDistance'
-import { AppData } from '../../types/temp'
+import { AppData } from '../../types/types'
 
 import { getPointerRay } from '../utility'
 /**

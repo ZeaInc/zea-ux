@@ -15,7 +15,7 @@ import {
   XRPoseEvent,
 } from '@zeainc/zea-engine'
 
-import { AppData } from '../../../types/temp'
+import { AppData } from '../../../types/types'
 import VRControllerUI from './VRControllerUI'
 
 /**

@@ -2,7 +2,7 @@ import { NumberParameter, Vec3, Xfo, XRControllerEvent } from '@zeainc/zea-engin
 import CreateGeomTool from './CreateGeomTool'
 import CreateLineChange from './Change/CreateLineChange'
 import { UndoRedoManager } from '../../UndoRedo/index'
-import { AppData } from '../../../types/temp'
+import { AppData } from '../../../types/types'
 import { ZeaPointerEvent } from '@zeainc/zea-engine'
 
 /**

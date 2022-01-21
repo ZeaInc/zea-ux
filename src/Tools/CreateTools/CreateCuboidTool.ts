@@ -2,7 +2,7 @@ import { ColorParameter, Quat, TreeItem, Vec3, Xfo } from '@zeainc/zea-engine'
 import CreateGeomTool from './CreateGeomTool'
 import CreateCuboidChange from './Change/CreateCuboidChange'
 import { UndoRedoManager } from '../../UndoRedo/index'
-import { AppData } from '../../../types/temp'
+import { AppData } from '../../../types/types'
 
 /**
  * Tool for creating Cuboid geometry.
