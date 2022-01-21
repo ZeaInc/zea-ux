@@ -268,6 +268,7 @@ class SelectionManager extends EventEmitter {
     }
     selection.clear()
     this.selectionGroup.setItems(selection)
+    this.__setLeadSelection()
     this.updateHandleVisibility()
     if (newChange) {
       const change = new SelectionChange(this, prevSelection, selection)
