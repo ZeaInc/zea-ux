@@ -32,10 +32,10 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
   /**
    * Create a linear movement scene widget.
    *
-   * @param {string} name - The name value.
-   * @param {number} length - The length value.
-   * @param {number} thickness - The thickness value.
-   * @param {Color} color - The color value.
+   * @param name - The name value.
+   * @param length - The length value.
+   * @param thickness - The thickness value.
+   * @param color - The color value.
    */
   constructor(name?: string, length = 0.1, thickness = 0.003, color = new Color()) {
     super(name)
@@ -84,8 +84,8 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
   /**
    * Sets global xfo target parameter.
    *
-   * @param {Parameter} param - The video param.
-   * @param {boolean} track - The track param.
+   * @param param - The video param.
+   * @param track - The track param.
    */
   setTargetParam(param: Parameter<any>, track = true): void {
     this.param = param
@@ -101,7 +101,7 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
   /**
    * Returns target's global xfo parameter.
    *
-   * @return {Parameter} - returns handle's target global Xfo.
+   * @return - returns handle's target global Xfo.
    */
   getTargetParam(): XfoParameter | Parameter<unknown> {
     return this.param ? this.param : this.globalXfoParam
@@ -110,7 +110,7 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
   /**
    * Handles the initially drag of the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param event - The event param.
    */
   onDragStart(event: ZeaPointerEvent): void {
     const param = this.getTargetParam()
@@ -123,7 +123,7 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
   /**
    * Handles drag action of the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param event - The event param.
    */
   onDrag(event: ZeaPointerEvent): void {
     const dragVec = this.holdPos.subtract(this.grabPos)
@@ -139,7 +139,7 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
   /**
    * Handles the end of dragging the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param event - The event param.
    */
   onDragEnd(event: ZeaPointerEvent): void {
     this.change = null

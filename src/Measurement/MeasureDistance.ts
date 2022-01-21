@@ -13,7 +13,6 @@ import {
   StringParameter,
   Registry,
   Vec3Attribute,
-
 } from '@zeainc/zea-engine'
 
 import { HandleMaterial } from '../Handles/Shaders/HandleMaterial'
@@ -44,8 +43,8 @@ class MeasureDistance extends TreeItem {
   lineGeomItem: GeomItem
   /**
    * Creates an instance of MeasureDistance.
-   * @param {string} name
-   * @param {Color} color
+   * @param name
+   * @param color
    */
   constructor(name = 'MeasureDistance', color = new Color('#F9CE03')) {
     super(name)
@@ -133,7 +132,7 @@ class MeasureDistance extends TreeItem {
   /**
    *
    *
-   * @param {Vec3} position
+   * @param position
    */
   setStartMarkerPos(position: Vec3): void {
     const newXfo = this.startMarker.globalXfoParam.value
@@ -145,7 +144,7 @@ class MeasureDistance extends TreeItem {
   /**
    *
    *
-   * @param {Vec3} position
+   * @param position
    */
   setEndMarkerPos(position: Vec3): void {
     const endXfo = this.endMarker.globalXfoParam.value
@@ -157,7 +156,7 @@ class MeasureDistance extends TreeItem {
   /**
    *
    *
-   * @param {boolean} isVisible -
+   * @param isVisible -
    */
   setGeomBuffersVisibility(isVisible: boolean): void {
     this.startMarker.setSelectable(!isVisible)

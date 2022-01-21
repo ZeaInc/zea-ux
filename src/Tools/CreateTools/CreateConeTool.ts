@@ -20,7 +20,7 @@ class CreateConeTool extends CreateGeomTool {
   _height: number
   /**
    * Create a create cone tool.
-   * @param {object} appData - The appData value.
+   * @param appData - The appData value.
    */
   constructor(appData: AppData) {
     super(appData)
@@ -29,7 +29,7 @@ class CreateConeTool extends CreateGeomTool {
   /**
    * Starts the creation of the geometry.
    *
-   * @param {Xfo} xfo - The xfo param.
+   * @param xfo - The xfo param.
    */
   createStart(xfo: Xfo): void {
     this.xfo = xfo
@@ -49,7 +49,7 @@ class CreateConeTool extends CreateGeomTool {
   /**
    * Updates Cone geometry structural properties.
    *
-   * @param {Vec3} pt - The pt param.
+   * @param pt - The pt param.
    */
   createMove(pt: Vec3): void {
     if (this.stage == 1) {
@@ -66,7 +66,7 @@ class CreateConeTool extends CreateGeomTool {
   /**
    * Finishes the creation of the Cone.
    *
-   * @param {Vec3} pt - The pt param.
+   * @param pt - The pt param.
    */
   createRelease(pt: Vec3): void {
     if (this._radius == 0) {

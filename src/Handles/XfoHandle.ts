@@ -20,8 +20,8 @@ class XfoHandle extends TreeItem {
   /**
    * Create an axial rotation scene widget.
    *
-   * @param {number} size - The size value.
-   * @param {number} thickness - The thickness value.
+   * @param size - The size value.
+   * @param thickness - The thickness value.
    */
   constructor(size = 0.1, thickness = 0.003) {
     super('XfoHandle')
@@ -169,7 +169,7 @@ class XfoHandle extends TreeItem {
    * Displays handles depending on the specified mode(Move, Rotate, Scale).
    * If nothing is specified, it hides all of them.
    * @deprecated
-   * @param {boolean} visible - The mode of the Xfo parameter
+   * @param visible - The mode of the Xfo parameter
    */
   showHandles(visible: boolean): void {
     if (visible) this.setVisible(true)
@@ -179,7 +179,7 @@ class XfoHandle extends TreeItem {
   /**
    * Sets global xfo target parameter.
    *
-   * @param {Parameter} param - The video param.
+   * @param param - The video param.
    */
   setTargetParam(param: Parameter<unknown>, track = true): void {
     this.param = param

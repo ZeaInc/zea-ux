@@ -11,7 +11,7 @@ export default class BaseCreateTool extends BaseTool {
   /**
    * Creates an instance of BaseCreateTool.
    *
-   * @param {object} appData - The appData value.
+   * @param appData - The appData value.
    */
   constructor(appData: AppData) {
     super()

@@ -20,7 +20,7 @@ class CreateFreehandLineTool extends CreateLineTool {
   /**
    * Create a create freehand line tool.
    *
-   * @param {object} appData - The appData value.
+   * @param appData - The appData value.
    */
   constructor(appData: AppData) {
     super(appData)
@@ -30,7 +30,7 @@ class CreateFreehandLineTool extends CreateLineTool {
   /**
    * Starts the creation of a free hand line.
    *
-   * @param {Xfo} xfo - The xfo param.
+   * @param xfo - The xfo param.
    */
   createStart(xfo: Xfo): void {
     const color = this.colorParam.getValue()
@@ -49,7 +49,7 @@ class CreateFreehandLineTool extends CreateLineTool {
   /**
    * Updates the free hand line data.
    *
-   * @param {Vec3} pt - The pt param.
+   * @param pt - The pt param.
    */
   createMove(pt: Vec3): void {
     const p = this.invXfo.transformVec3(pt)
@@ -65,7 +65,7 @@ class CreateFreehandLineTool extends CreateLineTool {
   /**
    * Finishes free hand line creation
    *
-   * @param {Vec3} pt - The pt param.
+   * @param pt - The pt param.
    */
   createRelease(pt: Vec3): void {
     if (this.length == 0) {

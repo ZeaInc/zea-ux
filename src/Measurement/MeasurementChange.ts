@@ -16,7 +16,7 @@ class MeasurementChange extends Change {
   /**
    * Creates an instance of MeasurementChange.
    *
-   * @param {TreeItem} measurement - The parent that the measurement will be added to.
+   * @param measurement - The parent that the measurement will be added to.
    */
   constructor(measurement: TreeItem) {
     super('MeasurementChange')
@@ -29,7 +29,7 @@ class MeasurementChange extends Change {
   /**
    *
    *
-   * @param {object} data - An object containing potentially the start and end positions.
+   * @param data - An object containing potentially the start and end positions.
    * @memberof MeasurementChange
    */
   update(data: Record<string, any>): void {
@@ -65,7 +65,7 @@ class MeasurementChange extends Change {
   /**
    * Serializes the change as a JSON object.
    *
-   * @param {Record<any,any>} context - The context value
+   * @param context - The context value
    * @return {Record<any,any>} - The serialized change
    */
   toJSON(context: Record<any, any>): Record<string, any> {
@@ -79,8 +79,8 @@ class MeasurementChange extends Change {
   /**
    * Restores geometry from using the specified JSON
    *
-   * @param {object} j - The j param.
-   * @param {object} context - The appData param.
+   * @param j - The j param.
+   * @param context - The appData param.
    */
   fromJSON(j: Record<string, any>, context: Record<string, any>): void {
     const sceneRoot = context.appData.scene.getRoot()

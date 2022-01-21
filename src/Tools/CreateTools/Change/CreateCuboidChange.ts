@@ -15,8 +15,8 @@ class CreateCuboidChange extends CreateGeomChange {
   /**
    * Create a create cuboid change.
    *
-   * @param {TreeItem} parentItem - The parentItem value.
-   * @param {Xfo} xfo - The xfo value.
+   * @param parentItem - The parentItem value.
+   * @param xfo - The xfo value.
    */
   constructor(parentItem: TreeItem, xfo: Xfo, color: Color) {
     super('CreateCuboid')
@@ -33,7 +33,7 @@ class CreateCuboidChange extends CreateGeomChange {
   /**
    * Updates cuboid using the specified data.
    *
-   * @param {object} updateData - The updateData param.
+   * @param updateData - The updateData param.
    */
   update(updateData: Record<any, any>): void {
     if (updateData.baseSize) {

@@ -22,8 +22,8 @@ class SelectionGroupXfoOperator extends Operator {
   /**
    * Creates an instance of SelectionGroupXfoOperator.
    *
-   * @param {number} initialXfoModeParam - Initial XFO Mode, check `INITIAL_XFO_MODES` in `KinematicGroup` documentation
-   * @param {XfoParameter} globalXfoParam - The GlobalXfo param found on the KinematicKinematicGroup.
+   * @param initialXfoModeParam - Initial XFO Mode, check `INITIAL_XFO_MODES` in `KinematicGroup` documentation
+   * @param globalXfoParam - The GlobalXfo param found on the KinematicKinematicGroup.
    */
   constructor(initialXfoModeParam: NumberParameter, globalXfoParam: XfoParameter) {
     super()
@@ -36,7 +36,7 @@ class SelectionGroupXfoOperator extends Operator {
   /**
    * Updates operator inputs(`OperatorInput`) of current `Operator` using the specified `TreeItem`.
    *
-   * @param {TreeItem} item - The tree item being added
+   * @param item - The tree item being added
    */
   addItem(item: TreeItem): void {
     const xfoInput = new XfoOperatorInput('MemberGlobalXfo' + this.getNumInputs())
@@ -48,7 +48,7 @@ class SelectionGroupXfoOperator extends Operator {
   /**
    * Finds and removes the `OperatorInput` of the specified `TreeItem` from current`Operator`.
    *
-   * @param {TreeItem} item - The Bind Xfo calculated from the initial Transforms of the KinematicGroup Members.
+   * @param item - The Bind Xfo calculated from the initial Transforms of the KinematicGroup Members.
    */
   removeItem(item: TreeItem): void {
     // The first input it the 'InitialXfoMode', so remove the input for the specified item.
@@ -68,7 +68,7 @@ class SelectionGroupXfoOperator extends Operator {
    * Move the group. When the selection group is manipulated, this method is called.
    * Here we propagate the delta to each of the selection members.
    *
-   * @param {Xfo} xfo - The new value being set to the Groups GlobalXfo param.
+   * @param xfo - The new value being set to the Groups GlobalXfo param.
    */
   backPropagateValue(xfo: Xfo): void {
     const invXfo = this.currGroupXfo.inverse()

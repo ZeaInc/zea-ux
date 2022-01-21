@@ -2,7 +2,7 @@ import CreateCircleChange from './Change/CreateCircleChange'
 import CreateGeomTool from './CreateGeomTool'
 import { UndoRedoManager } from '../../UndoRedo/index'
 import { AppData } from '../../../types/types'
-import { TreeItem, Vec3, Xfo,} from '@zeainc/zea-engine'
+import { TreeItem, Vec3, Xfo } from '@zeainc/zea-engine'
 
 /**
  * Tool for creating a circle geometry.
@@ -18,7 +18,7 @@ class CreateCircleTool extends CreateGeomTool {
   radius: number
   /**
    * Create a create circle tool.
-   * @param {object} appData - The appData value.
+   * @param appData - The appData value.
    */
   constructor(appData: AppData) {
     super(appData)
@@ -27,9 +27,9 @@ class CreateCircleTool extends CreateGeomTool {
   /**
    * Starts the creation of the geometry.
    *
-   * @param {Xfo} xfo - The xfo param.
+   * @param xfo - The xfo param.
    */
-  createStart(xfo: Xfo): void{
+  createStart(xfo: Xfo): void {
     this.change = new CreateCircleChange(this.parentItem, xfo)
     UndoRedoManager.getInstance().addChange(this.change)
 
@@ -41,7 +41,7 @@ class CreateCircleTool extends CreateGeomTool {
   /**
    * Updates Circle geometry radius.
    *
-   * @param {Vec3} pt - The pt param.
+   * @param pt - The pt param.
    */
   createMove(pt: Vec3): void {
     this.radius = pt.distanceTo(this.xfo.tr)
@@ -52,7 +52,7 @@ class CreateCircleTool extends CreateGeomTool {
   /**
    * Finishes geometry creation.
    *
-   * @param {Vec3} pt - The pt param.
+   * @param pt - The pt param.
    */
   createRelease(pt: Vec3): void {
     if (this.radius == 0) {

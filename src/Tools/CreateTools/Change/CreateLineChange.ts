@@ -25,10 +25,10 @@ class CreateLineChange extends CreateGeomChange {
   /**
    * Create a create line change.
    *
-   * @param {TreeItem} parentItem - The parentItem value.
-   * @param {Xfo} xfo - The xfo value.
-   * @param {Color} color - The color value.
-   * @param {number} thickness - The thickness value.
+   * @param parentItem - The parentItem value.
+   * @param xfo - The xfo value.
+   * @param color - The color value.
+   * @param thickness - The thickness value.
    */
   constructor(parentItem: TreeItem, xfo: Xfo, color: Color, thickness = 0.001) {
     super('Create Line')
@@ -56,7 +56,7 @@ class CreateLineChange extends CreateGeomChange {
   /**
    * Updates Line using the specified data.
    *
-   * @param {object} updateData - The updateData param.
+   * @param updateData - The updateData param.
    */
   update(updateData: Record<any, any>): void {
     if (updateData.p1) {
@@ -71,8 +71,8 @@ class CreateLineChange extends CreateGeomChange {
   /**
    * Restores line geometry using a JSON object.
    *
-   * @param {Record<any,any>} j - The j param.
-   * @param {Record<any,any>} context - The context param.
+   * @param j - The j param.
+   * @param context - The context param.
    */
   fromJSON(j: Record<any, any>, context: Record<any, any>): void {
     super.fromJSON(j, context)

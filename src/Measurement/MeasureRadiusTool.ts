@@ -30,7 +30,7 @@ class MeasureRadiusTool extends BaseTool {
   /**
    * Creates an instance of MeasureRadiusTool.
    *
-   * @param {object} appData - The appData value
+   * @param appData - The appData value
    */
   constructor(appData: AppData) {
     super()
@@ -64,7 +64,7 @@ class MeasureRadiusTool extends BaseTool {
   /**
    *
    *
-   * @param {MouseEvent|TouchEvent} event - The event value
+   * @param event - The event value
    */
   onPointerDown(event: ZeaPointerEvent): void {
     // skip if the alt key is held. Allows the camera tool to work
@@ -144,7 +144,7 @@ class MeasureRadiusTool extends BaseTool {
   /**
    *
    *
-   * @param {MouseEvent|TouchEvent} event - The event value
+   * @param event - The event value
    */
   onPointerMove(event: ZeaPointerEvent): void {
     // skip if the alt key is held. Allows the camera tool to work
@@ -183,7 +183,7 @@ class MeasureRadiusTool extends BaseTool {
   /**
    *
    *
-   * @param {MouseEvent|TouchEvent} event - The event value
+   * @param event - The event value
    */
   onPointerUp(event: ZeaPointerEvent): void {}
 }

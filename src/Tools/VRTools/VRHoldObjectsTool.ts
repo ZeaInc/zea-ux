@@ -30,7 +30,7 @@ class HoldObjectsChange extends Change {
   /**
    * Create a hold objects change.
    *
-   * @param {object} data - The data value.
+   * @param data - The data value.
    */
   constructor(data: any) {
     super('HoldObjectsChange')
@@ -62,7 +62,7 @@ class HoldObjectsChange extends Change {
 
   /**
    * The update method.
-   * @param {object} updateData - The updateData param.
+   * @param updateData - The updateData param.
    */
   update(updateData: any): void {
     if (updateData.newItem) {
@@ -81,7 +81,7 @@ class HoldObjectsChange extends Change {
 
   /**
    * The toJSON method.
-   * @param {object} context - The context param.
+   * @param context - The context param.
    * @return {object} The return value.
    */
   toJSON(context?: Record<string, any>): Record<string, any> {
@@ -102,8 +102,8 @@ class HoldObjectsChange extends Change {
 
   /**
    * The fromJSON method.
-   * @param {object} j - The j param.
-   * @param {object} context - The context param.
+   * @param j - The j param.
+   * @param context - The context param.
    */
   fromJSON(j: Record<string, any>, context: Record<string, any>): void {
     super.fromJSON(j, context)
@@ -125,7 +125,7 @@ class HoldObjectsChange extends Change {
   /**
    * Updates the state of an existing identified `Parameter` through replication.
    *
-   * @param {object} j - The j param.
+   * @param j - The j param.
    */
   updateFromJSON(j: Record<string, any>): void {
     this.update(j)
@@ -143,7 +143,7 @@ class VRHoldObjectsTool extends BaseTool {
   __pressedButtonCount = 0
 
   __freeIndices: number[] = []
-  __vrControllers: any[]  = []
+  __vrControllers: any[] = []
   __heldObjectCount = 0
   __heldGeomItems: Array<GeomItem> = []
   __highlightedGeomItemIds: Array<TreeItem> = [] // controller id to held goem id.
@@ -155,7 +155,7 @@ class VRHoldObjectsTool extends BaseTool {
   change: HoldObjectsChange
   /**
    * Create a VR hold objects tool.
-   * @param {object} appData - The appData value.
+   * @param appData - The appData value.
    */
   constructor(appData: AppData) {
     super()
@@ -209,7 +209,7 @@ class VRHoldObjectsTool extends BaseTool {
 
   /**
    * The computeGrabXfo method.
-   * @param {array} refs - The refs param.
+   * @param refs - The refs param.
    * @return {Xfo} The return value.
    */
   computeGrabXfo(refs: any[]): any {
@@ -258,7 +258,7 @@ class VRHoldObjectsTool extends BaseTool {
   /**
    * Event fired when a pointing device button is pressed
    *
-   * @param {MouseEvent} event - The event param.
+   * @param event - The event param.
    */
   onPointerDown(event: XRControllerEvent): void {
     if (event.pointerType === POINTER_TYPES.xr) {
@@ -304,7 +304,7 @@ class VRHoldObjectsTool extends BaseTool {
   /**
    * Event fired when a pointing device button is released while the pointer is over the tool.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param event - The event param.
    */
   onPointerUp(event: XRControllerEvent): void {
     if (event.pointerType === POINTER_TYPES.xr) {
@@ -331,7 +331,7 @@ class VRHoldObjectsTool extends BaseTool {
   /**
    * Event fired when a pointing device is moved
    *
-   * @param {MouseEvent} event - The event param.
+   * @param event - The event param.
    */
   onPointerMove(event: XRPoseEvent): void {
     if (event.pointerType === POINTER_TYPES.xr) {
@@ -379,7 +379,7 @@ class VRHoldObjectsTool extends BaseTool {
   /**
    * Event fired when a pointing device button is double clicked on the tool.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param event - The event param.
    */
   onPointerDoublePress(event: ZeaMouseEvent): void {
     if (event.pointerType === POINTER_TYPES.xr) {

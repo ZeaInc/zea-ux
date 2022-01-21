@@ -33,10 +33,10 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
   /**
    * Create a linear scale scene widget.
    *
-   * @param {string} name - The name value.
-   * @param {number} length - The length value.
-   * @param {number} thickness - The thickness value.
-   * @param {Color} color - The color value.
+   * @param name - The name value.
+   * @param length - The length value.
+   * @param thickness - The thickness value.
+   * @param color - The color value.
    */
   constructor(name: string, length: number, thickness: number, color = new Color()) {
     super(name)
@@ -88,8 +88,8 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
   /**
    * Sets global xfo target parameter.
    *
-   * @param {Parameter} param - The video param.
-   * @param {boolean} track - The track param.
+   * @param param - The video param.
+   * @param track - The track param.
    */
   setTargetParam(param: XfoParameter, track = true): void {
     this.param = param
@@ -107,14 +107,14 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
    *
    * @return {Parameter} - returns handle's target global Xfo.
    */
-  getTargetParam(): XfoParameter | Parameter<unknown>{
+  getTargetParam(): XfoParameter | Parameter<unknown> {
     return this.param ? this.param : this.globalXfoParam
   }
 
   /**
    * Handles the initially drag of the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param event - The event param.
    */
   onDragStart(event: ZeaPointerEvent): void {
     this.oriXfo = this.globalXfoParam.value
@@ -129,7 +129,7 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
   /**
    * Handles drag action of the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param event - The event param.
    */
   onDrag(event: ZeaPointerEvent): void {
     // const dragVec = this.holdPos.subtract(this.grabPos);
@@ -161,7 +161,7 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
   /**
    * Handles the end of dragging the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param event - The event param.
    */
   onDragEnd(event: ZeaPointerEvent): void {
     this.change = null

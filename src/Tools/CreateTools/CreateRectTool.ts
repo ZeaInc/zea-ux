@@ -19,7 +19,7 @@ class CreateRectTool extends CreateGeomTool {
   _size: number
   /**
    * Create a create rect tool.
-   * @param {object} appData - The appData value.
+   * @param appData - The appData value.
    */
   constructor(appData: AppData) {
     super(appData)
@@ -28,7 +28,7 @@ class CreateRectTool extends CreateGeomTool {
   /**
    * Starts the creation of a rectangle geometry.
    *
-   * @param {Xfo} xfo - The xfo param.
+   * @param xfo - The xfo param.
    */
   createStart(xfo: Xfo): void {
     this.change = new CreateRectChange(this.parentItem, xfo)
@@ -47,7 +47,7 @@ class CreateRectTool extends CreateGeomTool {
   /**
    * Updated the rectangle geometry structural properties.
    *
-   * @param {Vec3} pt - The pt param.
+   * @param pt - The pt param.
    */
   createMove(pt: Vec3): void {
     if (this.stage == 1) {
@@ -69,7 +69,7 @@ class CreateRectTool extends CreateGeomTool {
   /**
    * Finishes the creation of a rectangle geometry.
    *
-   * @param {Vec3} pt - The pt param.
+   * @param pt - The pt param.
    */
   createRelease(pt: Vec3): void {
     if (this._size == 0) {

@@ -13,7 +13,7 @@ class Change extends EventEmitter {
    * Every class that extends from `Change` must contain a global `name` attribute.
    * It is used by the `UndoRedoManager` factory to re-construct the class of the specific implementation of the `Change` class.
    *
-   * @param {string} name - The name value.
+   * @param name - The name value.
    */
   constructor(name?: string) {
     super()
@@ -44,9 +44,9 @@ class Change extends EventEmitter {
    *
    * @note This method needs to be implemented, otherwise it will throw an Error.
    *
-   * @param {object|string|any} updateData - The updateData param.
+   * @param updateData - The updateData param.
    */
-  update(updateData: Record<any,any>): void {
+  update(updateData: Record<any, any>): void {
     throw new Error('Implement me')
   }
 
@@ -55,10 +55,9 @@ class Change extends EventEmitter {
    *
    * @note This method needs to be implemented, otherwise it will return an empty object.
    *
-   * @param {object} context - The appData param.
-   * @return {object} The return value.
+   * @param context - The appData param.
    */
-  toJSON(context: Record<any,any>): void {
+  toJSON(context: Record<any, any>): Record<any, any> {
     return {}
   }
 
@@ -69,19 +68,19 @@ class Change extends EventEmitter {
    *
    * @note This method needs to be implemented, otherwise it will do nothing.
    *
-   * @param {object} j - The j param.
-   * @param {object} context - The context param.
+   * @param j - The j param.
+   * @param context - The context param.
    */
-  fromJSON(j: Record<any,any>, context: Record<any,any>): void {}
+  fromJSON(j: Record<any, any>, context: Record<any, any>): void {}
 
   /**
    * Useful method to update the state of an existing identified `Change` through replication.
    *
    * @note By default it calls the `update` method in the `Change` class, but you can override this if you need to.
    *
-   * @param {object} j - The j param.
+   * @param j - The j param.
    */
-  updateFromJSON(j: Record<any,any>): void {
+  updateFromJSON(j: Record<any, any>): void {
     // Many change objects can load json directly
     // in the update method.
     this.update(j)

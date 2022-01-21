@@ -12,7 +12,7 @@ class BaseLinearMovementHandle extends Handle {
   grabDist: number
   /**
    * Create base linear movement scene widget.
-   * @param {string} name - The name value.
+   * @param name - The name value.
    */
   constructor(name: string) {
     super(name)
@@ -24,10 +24,9 @@ class BaseLinearMovementHandle extends Handle {
   /**
    * Handles mouse down interaction with the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
-   * @return {boolean} - The return value.
+   * @param event - The event param.
    */
-  handlePointerDown(event: ZeaPointerEvent): void  {
+  handlePointerDown(event: ZeaPointerEvent): void {
     this.gizmoRay = this.getManipulationPlane()
     const ray = getPointerRay(event)
     this.grabDist = ray.intersectRayVector(this.gizmoRay)[1]
@@ -39,7 +38,7 @@ class BaseLinearMovementHandle extends Handle {
   /**
    * Handles mouse move interaction with the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param
+   * @param event - The event param
    */
   handlePointerMove(event: ZeaPointerEvent) {
     const ray = getPointerRay(event)
@@ -54,10 +53,9 @@ class BaseLinearMovementHandle extends Handle {
   /**
    * Handles mouse up interaction with the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
-   * @return {boolean} - The return value.
+   * @param event - The event param.
    */
-  handlePointerUp(event: ZeaPointerEvent): void  {
+  handlePointerUp(event: ZeaPointerEvent): void {
     const ray = getPointerRay(event)
     if (ray) {
       const dist = ray.intersectRayVector(this.gizmoRay)[1]
@@ -74,10 +72,9 @@ class BaseLinearMovementHandle extends Handle {
   /**
    * Event fired when a VR controller button is pressed over the handle.
    *
-   * @param {object} event - The event param.
-   * @return {boolean} The return value.
+   * @param event - The event param.
    */
-  onVRControllerButtonDown(event: XRControllerEvent): void  {
+  onVRControllerButtonDown(event: XRControllerEvent): void {
     this.gizmoRay = this.getManipulationPlane()
 
     this.activeController = event.controller
@@ -92,10 +89,9 @@ class BaseLinearMovementHandle extends Handle {
   /**
    * The onVRPoseChanged method.
    *
-   * @param {object} event - The event param.
-   * @return {boolean} The return value.
+   * @param event - The event param.
    */
-  onVRPoseChanged(event: XRControllerEvent) {
+  onVRPoseChanged(event: XRControllerEvent): void {
     const xfo = this.activeController.getTipXfo()
     const dist = xfo.tr.subtract(this.gizmoRay.start).dot(this.gizmoRay.dir)
     this.holdPos = this.gizmoRay.start.add(this.gizmoRay.dir.scale(dist))
@@ -107,10 +103,10 @@ class BaseLinearMovementHandle extends Handle {
   /**
    * Event fired when a VR controller button is released over the handle.
    *
-   * @param {object} event - The event param.
-   * @return {boolean} - The return value.
+   * @param event - The event param.
+   * @return - The return value.
    */
-  onVRControllerButtonUp(event: XRControllerEvent): void  {
+  onVRControllerButtonUp(event: XRControllerEvent): void {
     if (this.activeController == event.controller) {
       // const xfo = this.activeController.getTipXfo()
       this.onDragEnd()

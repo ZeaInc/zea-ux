@@ -14,7 +14,7 @@ class HandleMaterial extends Material {
   /**
    * Creates an instance of HandleMaterial.
    *
-   * @param {string} name - The name of the material. Note: this value is entirely optional.
+   * @param name - The name of the material. Note: this value is entirely optional.
    */
   constructor(name?: string) {
     super(name)

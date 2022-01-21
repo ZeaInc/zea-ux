@@ -45,7 +45,7 @@ class UndoRedoManager extends EventEmitter {
    * Which implies that any future updates to changes that are not the last one, would need a new call to the `addChange` method.
    * Also, resets the redo stack(Calls destroy method when doing it).
    *
-   * @param {Change} change - The change param.
+   * @param change - The change param.
    */
   addChange(change: Change): void {
     // console.log("AddChange:", change.name)
@@ -74,7 +74,7 @@ class UndoRedoManager extends EventEmitter {
 
   /**
    * @private
-   * @param {object|any} updateData
+   * @param updateData
    */
   __currChangeUpdated(updateData: Record<any, any>): void {
     this.emit('changeUpdated', updateData)
@@ -83,7 +83,7 @@ class UndoRedoManager extends EventEmitter {
   /**
    * Rollback the latest action, passing it to the redo stack in case you wanna recover it later on.
    *
-   * @param {boolean} pushOnRedoStack - The pushOnRedoStack param.
+   * @param pushOnRedoStack - The pushOnRedoStack param.
    */
   undo(pushOnRedoStack = true): void {
     if (this.__undoStack.length > 0) {
@@ -138,8 +138,8 @@ class UndoRedoManager extends EventEmitter {
   /**
    * Basically returns a new instance of the derived `Change` class. This is why we need the `name` attribute.
    *
-   * @param {string} className - The className param.
-   * @return {Change} - The return value.
+   * @param className - The className param.
+   * @return - The return value.
    */
   constructChange(className: string): Change {
     return <Change>Registry.constructClass(className)
@@ -148,13 +148,13 @@ class UndoRedoManager extends EventEmitter {
   /**
    * Checks if a class of an instantiated object is registered in the UndoRedo Factory.
    *
-   * @param {Change} inst - The instance of the Change class.
+   * @param inst - The instance of the Change class.
    * @return {boolean} - Returns 'true' if the class has been registered.
    */
   // TODO: register not working
-  static isChangeClassRegistered(inst: any): boolean {
+  static isChangeClassRegistered(inst: Change): boolean {
     try {
-      const name = Registry.getClassName(inst)
+      const name = Registry.getClassName(Object.getPrototypeOf(inst).constructor))
       return true
     } catch (e) {
       return false
@@ -165,11 +165,11 @@ class UndoRedoManager extends EventEmitter {
    * Very simple method that returns the name of the instantiated class, checking first in the registry and returning if found,
    * if not then checks the `name` attribute declared in constructor.
    *
-   * @param {Change} inst - The instance of the Change class.
+   * @param inst - The instance of the Change class.
    * @return {string} - The return value.
    */
   // TODO: register not working
-  static getChangeClassName(inst: any): string {
+  static getChangeClassName(inst: Change): string {
     return Registry.getClassName(Object.getPrototypeOf(inst).constructor)
   }
 
@@ -178,11 +178,11 @@ class UndoRedoManager extends EventEmitter {
    * Why do we need to specify the name of the class?
    * Because when the code is transpiled, the defined class names change, so it won't be known as we declared it anymore.
    *
-   * @param {string} name - The name param.
-   * @param {Change} cls - The cls param.
+   * @param name - The name param.
+   * @param cls - The cls param.
    */
   // TODO: register not working
-  static registerChange(name: string, cls: any): void {
+  static registerChange(name: string, cls: typeof Change): void {
     Registry.register(name, cls)
   }
 
@@ -193,7 +193,6 @@ class UndoRedoManager extends EventEmitter {
     return inst
   }
 }
-
 
 let inst: any
 

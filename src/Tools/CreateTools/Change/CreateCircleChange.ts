@@ -15,8 +15,8 @@ class CreateCircleChange extends CreateGeomChange {
   /**
    * Creates an instance of CreateCircleChange.
    *
-   * @param {TreeItem} parentItem - The parentItem value.
-   * @param {Xfo} xfo - The xfo value.
+   * @param parentItem - The parentItem value.
+   * @param xfo - The xfo value.
    */
   constructor(parentItem: TreeItem, xfo: Xfo) {
     super('CreateCircle')
@@ -34,7 +34,7 @@ class CreateCircleChange extends CreateGeomChange {
   /**
    * Updates circle with the specified data.
    *
-   * @param {object} updateData - The updateData param.
+   * @param updateData - The updateData param.
    */
   update(updateData: Record<any, any>): void {
     this.circle.radiusParam.value = updateData.radius
@@ -44,7 +44,7 @@ class CreateCircleChange extends CreateGeomChange {
   /**
    * Serializes change as a JSON object.
    *
-   * @return {Record<any, any>} - The return value.
+   * @return - The return value.
    */
   toJSON(): Record<any, any> {
     const j: Record<any, any> = super.toJSON()
@@ -55,7 +55,7 @@ class CreateCircleChange extends CreateGeomChange {
   /**
    * Updates circle with the specified JSON
    *
-   * @param {object} j - The j param.
+   * @param j - The j param.
    */
   updateFromJSON(j: Record<any, any>): void {
     console.log('CreateCircleChange:', j)

@@ -30,8 +30,8 @@ class SelectionManager extends EventEmitter {
   /**
    * Creates an instance of SelectionManager.
    *
-   * @param {object} appData - The options object.
-   * @param {object} [options={}] - The appData value.
+   * @param appData - The options object.
+   * @param [options={}] - The appData value.
    *  enableXfoHandles - enables display Xfo Gizmo handles when items are selected.
    *  selectionOutlineColor - enables highlight color to use to outline selected items.
    *  branchSelectionOutlineColor - enables highlight color to use to outline selected items.
@@ -62,7 +62,7 @@ class SelectionManager extends EventEmitter {
   /**
    * Adds specified the renderer to the `SelectionManager` and attaches the `SelectionGroup`.
    *
-   * @param {GLBaseRenderer} renderer - The renderer param.
+   * @param renderer - The renderer param.
    */
   setRenderer(renderer: GLRenderer): void {
     if (this.__renderer == renderer) {
@@ -78,7 +78,7 @@ class SelectionManager extends EventEmitter {
    *
    * @see `KinematicGroup` class documentation
    *
-   * @param {number} mode - The Xfo mode
+   * @param mode - The Xfo mode
    */
   setXfoMode(mode: number): void {
     if (this.xfoHandle) {
@@ -90,7 +90,7 @@ class SelectionManager extends EventEmitter {
    * Displays handles depending on the specified mode(Move, Rotate, Scale).
    * If nothing is specified, it hides all of them.
    * @deprecated
-   * @param {boolean} enabled - The mode of the Xfo parameter
+   * @param enabled - The mode of the Xfo parameter
    */
   showHandles(enabled: boolean): void {
     this.xfoHandleVisible = enabled
@@ -110,7 +110,7 @@ class SelectionManager extends EventEmitter {
   /**
    * Returns an array with the selected items.
    *
-   * @return {array} - The return value.
+   * @return - The return value.
    */
   getSelection(): Set<TreeItem> {
     return this.selectionGroup.getItems()
@@ -119,8 +119,8 @@ class SelectionManager extends EventEmitter {
   /**
    * Sets a new selection of items in the `SelectionManager`
    *
-   * @param {Set} newSelection - The newSelection param
-   * @param {boolean} [createUndo=true] - The createUndo param
+   * @param newSelection - The newSelection param
+   * @param [createUndo=true] - The createUndo param
    */
   setSelection(newSelection: Set<TreeItem>, createUndo = true): void {
     const selection: Set<TreeItem> = new Set(this.selectionGroup.getItems())
@@ -155,7 +155,7 @@ class SelectionManager extends EventEmitter {
 
   /**
    *
-   * @param {TreeItem} treeItem - The treeItem value
+   * @param treeItem - The treeItem value
    * @private
    */
   __setLeadSelection(treeItem?: TreeItem): void {
@@ -168,8 +168,8 @@ class SelectionManager extends EventEmitter {
   /**
    * The toggleItemSelection method.
    *
-   * @param {TreeItem} treeItem - The treeItem param.
-   * @param {boolean} replaceSelection - The replaceSelection param.
+   * @param treeItem - The treeItem param.
+   * @param replaceSelection - The replaceSelection param.
    */
   toggleItemSelection(treeItem: TreeItem, replaceSelection = true): void {
     const selection = new Set(this.selectionGroup.getItems())
@@ -253,7 +253,7 @@ class SelectionManager extends EventEmitter {
   /**
    * Clears selection state by removing previous selected items and the Xfo handlers.
    *
-   * @param {boolean} newChange - The newChange param.
+   * @param newChange - The newChange param.
    * @return {boolean} - The return value.
    */
   clearSelection(newChange = true): boolean {
@@ -280,8 +280,8 @@ class SelectionManager extends EventEmitter {
   /**
    * Selects the specified items replacing previous selection or concatenating new items to it.
    *
-   * @param {array} treeItems - The treeItems param.
-   * @param {boolean} replaceSelection - The replaceSelection param.
+   * @param treeItems - The treeItems param.
+   * @param replaceSelection - The replaceSelection param.
    */
   selectItems(treeItems: Set<TreeItem>, replaceSelection = true): void {
     const selection = new Set(this.selectionGroup.getItems())
@@ -315,7 +315,7 @@ class SelectionManager extends EventEmitter {
   /**
    * Deselects the specified items from the selection group.
    *
-   * @param {array} treeItems - The treeItems param.
+   * @param treeItems - The treeItems param.
    */
   deselectItems(treeItems: Set<TreeItem>): void {
     const selection = new Set(this.selectionGroup.getItems())
@@ -359,10 +359,10 @@ class SelectionManager extends EventEmitter {
   /**
    * The startPickingMode method.
    *
-   * @param {string} label - The label param.
-   * @param {function} fn - The fn param.
-   * @param {function} filterFn - The filterFn param.
-   * @param {number} count - The count param.
+   * @param label - The label param.
+   * @param fn - The fn param.
+   * @param filterFn - The filterFn param.
+   * @param count - The count param.
    */
   startPickingMode(label: string, fn: any, filterFn: any, count: number): void {
     // Display this in a status bar.
@@ -376,8 +376,8 @@ class SelectionManager extends EventEmitter {
   /**
    * The pickingFilter method.
    *
-   * @param {TreeItem} item - The item param.
-   * @return {any} The return value.
+   * @param item - The item param.
+   * @return The return value.
    */
   pickingFilter(item: TreeItem): any {
     return this.__pickFilter(item)
@@ -401,7 +401,7 @@ class SelectionManager extends EventEmitter {
 
   /**
    * The pick method.
-   * @param {TreeItem} item - The item param.
+   * @param item - The item param.
    */
   pick(item: TreeItem | Array<TreeItem>): void {
     if (this.__pickCB) {

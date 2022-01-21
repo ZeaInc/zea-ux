@@ -30,10 +30,10 @@ class XfoPlanarMovementHandle extends PlanarMovementHandle {
   handleMat: Material
   /**
    * Create a planar movement scene widget.
-   * @param {string} name - The name value.
-   * @param {number} size - The size value.
-   * @param {Vec3} offset - The offset value.
-   * @param {Color} color - The color value.
+   * @param name - The name value.
+   * @param size - The size value.
+   * @param offset - The offset value.
+   * @param color - The color value.
    */
   constructor(name: string, size: number, offset: Vec3, color = new Color()) {
     super(name)

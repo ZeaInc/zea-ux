@@ -35,9 +35,9 @@ class SphericalRotationHandle extends Handle {
   /**
    * Create an axial rotation scene widget.
    *
-   * @param {string} name - The name value.
-   * @param {number} radius - The radius value.
-   * @param {Color} color - The color value.
+   * @param name - The name value.
+   * @param radius - The radius value.
+   * @param color - The color value.
    */
   constructor(name: string, radius: number, color = new Color()) {
     super(name)
@@ -63,8 +63,8 @@ class SphericalRotationHandle extends Handle {
   /**
    * Sets global xfo target parameter.
    *
-   * @param {Parameter} param - The video param.
-   * @param {boolean} track - The track param.
+   * @param param - The video param.
+   * @param track - The track param.
    */
   setTargetParam(param: XfoParameter, track = true): void {
     this.param = param
@@ -92,7 +92,7 @@ class SphericalRotationHandle extends Handle {
   /**
    * Handles mouse down interaction with the handle.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param event - The event param.
    * @return {boolean} - The return value.
    */
   handlePointerDown(event: ZeaMouseEvent): boolean {
@@ -110,7 +110,7 @@ class SphericalRotationHandle extends Handle {
   /**
    * Handles mouse move interaction with the handle.
    *
-   * @param {MouseEvent} event - The event param
+   * @param event - The event param
    * @return {boolean} - The return value
    */
   handlePointerMove(event: ZeaMouseEvent): void {
@@ -122,7 +122,7 @@ class SphericalRotationHandle extends Handle {
   /**
    * Handles mouse up interaction with the handle.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param event - The event param.
    * @return {boolean} - The return value.
    */
   handlePointerUp(event: ZeaMouseEvent): void {
@@ -134,7 +134,7 @@ class SphericalRotationHandle extends Handle {
   /**
    * Handles the initially drag of the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param event - The event param.
    */
   onDragStart(event: ZeaPointerEvent): void {
     this.baseXfo = this.globalXfoParam.value
@@ -156,7 +156,7 @@ class SphericalRotationHandle extends Handle {
   /**
    * Handles drag action of the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param event - The event param.
    */
   onDrag(event: ZeaPointerEvent): void {
     const vec1 = this.holdPos.subtract(this.baseXfo.tr)
@@ -178,7 +178,7 @@ class SphericalRotationHandle extends Handle {
   /**
    * Handles the end of dragging the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param event - The event param.
    */
   onDragEnd(event: ZeaPointerEvent): void {
     this.change = null
