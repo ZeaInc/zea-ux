@@ -182,7 +182,7 @@ class UndoRedoManager extends EventEmitter {
    * @param cls - The cls param.
    */
   // TODO: register not working
-  static registerChange(name: string, cls: typeof Change): void {
+  static registerChange(name: string, cls: any): void {
     Registry.register(name, cls)
   }
 

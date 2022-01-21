@@ -82,7 +82,7 @@ class SliderHandle extends BaseLinearMovementHandle {
       handleGeom.radiusParam.value = this.handleRadiusParam.getValue()
     })
     this.lengthParam.on('valueChanged', () => {
-      this.__updateSlider(this.value)
+      this.__updateSlider(<number>this.value)
     })
     this.colorParam.on('valueChanged', () => {
       this.handleMat.getParameter('BaseColor').value = this.colorParam.getValue()
@@ -120,7 +120,7 @@ class SliderHandle extends BaseLinearMovementHandle {
   setTargetParam(param: Parameter<unknown>): void {
     this.param = param
     const __updateSlider = () => {
-      this.__updateSlider(param.getValue())
+      this.__updateSlider(<number>param.getValue())
     }
     __updateSlider()
     param.on('valueChanged', __updateSlider)
