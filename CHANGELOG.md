@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.0.4](https://github.com/ZeaInc/zea-ux/compare/v4.0.3...v4.0.4) (2022-02-07)
+
+
+### Bug Fixes
+
+* moved engine to dev dependencies. This allows the ux library to be used with any version of the engine, including prereleases. ([9b669fe](https://github.com/ZeaInc/zea-ux/commit/9b669fe5b11f0d9a6df336fd5fef8db9394dec66))
+
 ## [4.0.3](https://github.com/ZeaInc/zea-ux/compare/v4.0.2...v4.0.3) (2022-01-21)
 
 
