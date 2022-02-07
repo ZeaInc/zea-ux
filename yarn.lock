@@ -2113,49 +2113,21 @@
     meow "^7.0.1"
     rimraf "^3.0.2"
 
-"@zeainc/zea-cad@^4":
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/@zeainc/zea-cad/-/zea-cad-4.0.1.tgz#81d182ff0a28e5ccac37638c24027c5b00076fa3"
-  integrity sha512-R3K9ZB/LsoOuEJG+0jUoAnFZYg6KS+CPMlBoj6yw57j1eb0dQ/EYDO8L7rHXlg5zo6iFiWTndxYjb9v3luEpEw==
+"@zeainc/zea-collab@^6.0.1":
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/@zeainc/zea-collab/-/zea-collab-6.0.1.tgz#d7f00db82040838de4816f887b2f6736ae9c9acf"
+  integrity sha512-9vx6aeaYkpF95nXX/S5OSSnLFj+5rA6Ac7oNi0EMlqZg8zI4aQzsmDF9ayJA7xugY993bFNA78+KDnoTUe0Ouw==
   dependencies:
-    "@rollup/plugin-json" "^4.1.0"
-    "@zeainc/zea-engine" "^4"
-
-"@zeainc/zea-collab@^6.0.0":
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/@zeainc/zea-collab/-/zea-collab-6.0.0.tgz#cbff96a9aa6f511132cb5598072eea80be9e36c5"
-  integrity sha512-58Ao3wERVvouScXSd1OR5bnPjwHGBMufidlBBrw9Ln75skI5wsHY00umblmCAu4MIS4We9prjJyF/k+hV+Xa4Q==
-  dependencies:
-    "@zeainc/zea-engine" "^4"
-    "@zeainc/zea-ux" "^4"
     debug "^4.1.1"
     socket.io-client "^2.3.0"
     socketio-wildcard "^2.0.0"
 
-"@zeainc/zea-engine@^4", "@zeainc/zea-engine@^4.0.1":
+"@zeainc/zea-engine@^4":
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/@zeainc/zea-engine/-/zea-engine-4.1.0.tgz#3757308300faec5f3ed99849bd56db558cce9b4b"
   integrity sha512-wdEV8QuU6TXtkphnlowzM6EecHpyEtJ9txOKMZC1iDSoCq5xaYqm/94gLSwYAVVRbQ/kVobGiyHbz/idkn0Gig==
   dependencies:
     lodash-es "^4.17.21"
-
-"@zeainc/zea-ux@^4":
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/@zeainc/zea-ux/-/zea-ux-4.0.1.tgz#b66255b211a49adfee31214f1dac06e192dc83d2"
-  integrity sha512-7re+JQplEaKqdNWMGGikEMTWrpmQ+PXGy8n7c0CSqXvfZZC900wOkQOe7KvlXTHqmsz9MyMG1Hkxvn/lTMZOQw==
-  dependencies:
-    "@zeainc/zea-cad" "^4"
-    "@zeainc/zea-collab" "^6.0.0"
-    "@zeainc/zea-engine" "^4.0.1"
-    copyfiles "^2.4.1"
-    dom-to-image "^2.6.0"
-    husky-run "^0.0.0"
-    rollup-plugin-commonjs "^10.1.0"
-    rollup-plugin-node-resolve "^5.2.0"
-    rollup-plugin-typescript "^1.0.1"
-    ts-node "^10.4.0"
-    tslib "^2.3.1"
-    typescript "^4.4.4"
 
 JSONStream@^1.0.3, JSONStream@^1.0.4:
   version "1.3.5"
