@@ -1,22 +1,8 @@
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
-import {
-  Ray,
-  Vec3,
-  Color,
-  ColorParameter,
-  BaseTool,
-  GeomItem,
-  Xfo,
-  Quat,
-  TreeItem,
-  ZeaPointerEvent,
-  ZeaMouseEvent,
-  ZeaTouchEvent,
-  XRControllerEvent,
-} from '@zeainc/zea-engine'
+import { Vec3, GeomItem, ZeaPointerEvent, ZeaMouseEvent, ZeaTouchEvent, Xfo, Quat } from '@zeainc/zea-engine'
 import { MeasurementChange } from './MeasurementChange'
+import { MeasureTool } from './MeasureTool'
 import { MeasureAngle } from './MeasureAngle'
-import { AppData } from '../../types/types'
 
 import { getPointerRay } from '../utility'
 
@@ -25,67 +11,10 @@ import { getPointerRay } from '../utility'
  *
  * @extends {BaseTool}
  */
-class MeasureAngleTool extends BaseTool {
-  appData: AppData
-  colorParam = new ColorParameter('Color', new Color('#F9CE03'))
-  measurementChange: MeasurementChange = null
-  highlightedItemA: GeomItem = null
-  highlightedItemB: GeomItem = null
+class MeasureAngleTool extends MeasureTool {
   highlightedItemAHitPos: any = null
-  stage: number = 0
-  prevCursor: string
   hitPosA: Vec3
-  measurement: MeasureAngle
-  geomItemA: GeomItem
   dragging: boolean
-  /**
-   * Creates an instance of MeasureAngleTool.
-   *
-   * @param appData - The appData value
-   */
-  constructor(appData: AppData) {
-    super()
-
-    this.addParameter(this.colorParam)
-    if (!appData) console.error('App data not provided to tool')
-    this.appData = appData
-  }
-
-  /**
-   * The activateTool method.
-   */
-  activateTool(): void {
-    super.activateTool()
-    if (this.appData && this.appData.renderer) {
-      this.prevCursor = this.appData.renderer.getGLCanvas().style.cursor
-      this.appData.renderer.getGLCanvas().style.cursor = 'crosshair'
-    }
-  }
-
-  /**
-   * The deactivateTool method.
-   */
-  deactivateTool(): void {
-    super.deactivateTool()
-    if (this.appData && this.appData.renderer) {
-      this.appData.renderer.getGLCanvas().style.cursor = this.prevCursor
-    }
-    if (this.stage != 0) {
-      const parentItem = <TreeItem>this.measurement.getOwner()
-      parentItem.removeChild(parentItem.getChildIndex(this.measurement))
-      this.measurement = null
-
-      if (this.highlightedItemB) {
-        this.highlightedItemB.removeHighlight('measure', true)
-        this.highlightedItemB = null
-      }
-      if (this.highlightedItemA) {
-        this.highlightedItemA.removeHighlight('measure', true)
-        this.highlightedItemA = null
-      }
-      this.stage = 0
-    }
-  }
 
   /**
    * Checks to see if the surface is appropriate for this kind of measurement.
@@ -203,15 +132,18 @@ class MeasureAngleTool extends BaseTool {
       const geomItem = <GeomItem>event.intersectionData.geomItem
       if (this.checkSurface(geomItem)) {
         const color = this.colorParam.getValue()
-        this.measurement = new MeasureAngle('MeasureAngle', color)
+        const measurement = new MeasureAngle('MeasureAngle', color)
         this.appData.scene.getRoot().addChild(this.measurement)
 
         const ray = getPointerRay(event)
         const hitPos = ray.start.add(ray.dir.scale(event.intersectionData.dist))
         const xfoA = getSurfaceXfo(geomItem, hitPos)
-        this.measurement.setXfoA(xfoA)
 
-        this.geomItemA = geomItem
+        measurement.setXfoA(xfoA)
+
+        this.measurement = measurement
+
+        this.highlightedItemA = geomItem
         this.hitPosA = hitPos
 
         this.stage++
@@ -224,13 +156,15 @@ class MeasureAngleTool extends BaseTool {
         const hitPos = ray.start.add(ray.dir.scale(event.intersectionData.dist))
         const xfoB = getSurfaceXfo(geomItem, hitPos)
         // this.measurement.setXfoB(xfoB)
-        const xfoA = getSurfaceXfo(this.geomItemA, this.hitPosA, xfoB)
-        this.measurement.setXfoA(xfoA)
+        const xfoA = getSurfaceXfo(this.highlightedItemA, this.hitPosA, xfoB)
+
+        const measurement = <MeasureAngle>this.measurement
+        measurement.setXfoA(xfoA)
 
         // const xfoB2 = getSurfaceXfo(geomItem, hitPos, xfoA)
-        this.measurement.setXfoB(xfoB)
+        measurement.setXfoB(xfoB)
 
-        const measurementChange = new MeasurementChange(this.measurement)
+        const measurementChange = new MeasurementChange(measurement)
         UndoRedoManager.getInstance().addChange(measurementChange)
 
         if (this.highlightedItemA) this.highlightedItemA.removeHighlight('measure', true)

@@ -1,92 +1,18 @@
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
-import {
-  Ray,
-  Vec3,
-  Color,
-  ColorParameter,
-  BaseTool,
-  GeomItem,
-  ZeaPointerEvent,
-  ZeaMouseEvent,
-  ZeaTouchEvent,
-  XRControllerEvent,
-  TreeItem,
-} from '@zeainc/zea-engine'
+import { Ray, Vec3, GeomItem, ZeaPointerEvent, ZeaMouseEvent, ZeaTouchEvent } from '@zeainc/zea-engine'
 import { MeasureDistance } from './MeasureDistance'
+import { MeasureTool } from './MeasureTool'
 import { MeasurementChange } from './MeasurementChange'
 import { AppData } from '../../types/types'
 
 import { getPointerRay } from '../utility'
-import { Change } from '../UndoRedo'
+
 /**
  * UI Tool for measurements
  *
  * @extends {BaseTool}
  */
-class MeasureCenterDistancesTool extends BaseTool {
-  colorParam
-  appData: AppData
-  measurementChange: Change
-  highlightedItemA: GeomItem
-  highlightedItemB: GeomItem
-  stage
-  prevCursor: string
-  measurement: MeasureDistance
-  /**
-   * Creates an instance of MeasureCenterDistancesTool.
-   *
-   * @param appData - The appData value
-   */
-  constructor(appData: AppData) {
-    super()
-
-    this.colorParam = new ColorParameter('Color', new Color('#F9CE03'))
-    this.addParameter(this.colorParam)
-    if (!appData) console.error('App data not provided to tool')
-    this.appData = appData
-    this.measurementChange = null
-    this.highlightedItemA = null
-    this.highlightedItemB = null
-    this.stage = 0
-  }
-
-  /**
-   * The activateTool method.
-   */
-  activateTool(): void {
-    super.activateTool()
-    if (this.appData && this.appData.renderer) {
-      this.prevCursor = this.appData.renderer.getGLCanvas().style.cursor
-      this.appData.renderer.getGLCanvas().style.cursor = 'crosshair'
-    }
-  }
-
-  /**
-   * The deactivateTool method.
-   */
-  deactivateTool(): void {
-    super.deactivateTool()
-    if (this.appData && this.appData.renderer) {
-      this.appData.renderer.getGLCanvas().style.cursor = this.prevCursor
-    }
-
-    if (this.stage != 0) {
-      const parentItem = this.measurement.getOwner() as TreeItem
-      parentItem.removeChild(parentItem.getChildIndex(this.measurement))
-      this.measurement = null
-
-      if (this.highlightedItemB) {
-        this.highlightedItemB.removeHighlight('measure', true)
-        this.highlightedItemB = null
-      }
-      if (this.highlightedItemA) {
-        this.highlightedItemA.removeHighlight('measure', true)
-        this.highlightedItemA = null
-      }
-      this.stage = 0
-    }
-  }
-
+class MeasureCenterDistancesTool extends MeasureTool {
   /**
    * @param geomItem
    * @param key
@@ -161,14 +87,15 @@ class MeasureCenterDistancesTool extends BaseTool {
         const startPos = this.snapToParametricCenter(this.highlightedItemA, hitPos)
         const color = this.colorParam.getValue()
 
-        this.measurement = new MeasureDistance('Measure Distance', color)
-        this.measurement.setStartMarkerPos(startPos)
-        this.measurement.setEndMarkerPos(startPos)
-        this.appData.scene.getRoot().addChild(this.measurement)
+        const measurement = new MeasureDistance('Measure Distance', color)
+        measurement.setStartMarkerPos(startPos)
+        measurement.setEndMarkerPos(startPos)
+        this.appData.scene.getRoot().addChild(measurement)
 
-        this.measurementChange = new MeasurementChange(this.measurement)
+        this.measurementChange = new MeasurementChange(measurement)
         UndoRedoManager.getInstance().addChange(this.measurementChange)
 
+        this.measurement = measurement
         this.stage++
         event.stopPropagation()
       }
@@ -179,8 +106,10 @@ class MeasureCenterDistancesTool extends BaseTool {
         let endPos = this.snapToParametricCenter(this.highlightedItemB, hitPos)
         const startPos = this.snapToParametricCenter(this.highlightedItemA, endPos)
         endPos = this.snapToParametricCenter(this.highlightedItemB, startPos)
-        this.measurement.setStartMarkerPos(startPos)
-        this.measurement.setEndMarkerPos(endPos)
+
+        const measurement = <MeasureDistance>this.measurement
+        measurement.setStartMarkerPos(startPos)
+        measurement.setEndMarkerPos(endPos)
 
         if (this.highlightedItemA) {
           this.highlightedItemA.removeHighlight('measure', true)

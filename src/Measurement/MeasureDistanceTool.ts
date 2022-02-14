@@ -14,6 +14,7 @@ import {
 } from '@zeainc/zea-engine'
 import { MeasureDistance } from './MeasureDistance'
 import { MeasurementChange } from './MeasurementChange'
+import { MeasureTool } from './MeasureTool'
 import { AppData } from '../../types/types'
 
 import { getPointerRay } from '../utility'
@@ -23,75 +24,11 @@ import { getPointerRay } from '../utility'
  *
  * @extends {BaseTool}
  */
-class MeasureDistanceTool extends BaseTool {
-  appData: AppData
-  colorParam: ColorParameter
-
-  measurement: MeasureDistance
-  measurementChange: MeasurementChange
-  highlightedItemA: TreeItem
-  highlightedItemB: TreeItem
-  stage: number
-  prevCursor: string
-  /**
-   * Creates an instance of MeasureDistanceTool.
-   *
-   * @param appData - The appData value
-   */
-  constructor(appData: AppData) {
-    super()
-
-    this.colorParam = new ColorParameter('Color', new Color('#F9CE03'))
-    this.addParameter(this.colorParam)
-    if (!appData) console.error('App data not provided to tool')
-    this.appData = appData
-    this.measurementChange = null
-    this.highlightedItemA = null
-    this.highlightedItemB = null
-    this.stage = 0
-  }
-
-  /**
-   * The activateTool method.
-   */
-  activateTool(): void {
-    super.activateTool()
-    if (this.appData && this.appData.renderer) {
-      this.prevCursor = this.appData.renderer.getGLCanvas().style.cursor
-      this.appData.renderer.getGLCanvas().style.cursor = 'crosshair'
-    }
-  }
-
-  /**
-   * The deactivateTool method.
-   */
-  deactivateTool(): void {
-    super.deactivateTool()
-    if (this.appData && this.appData.renderer) {
-      this.appData.renderer.getGLCanvas().style.cursor = this.prevCursor
-    }
-
-    if (this.stage != 0) {
-      const parentItem = <TreeItem>this.measurement.getOwner()
-      parentItem.removeChild(parentItem.getChildIndex(this.measurement))
-      this.measurement = null
-
-      if (this.highlightedItemB) {
-        this.highlightedItemB.removeHighlight('measure', true)
-        this.highlightedItemB = null
-      }
-      if (this.highlightedItemA) {
-        this.highlightedItemA.removeHighlight('measure', true)
-        this.highlightedItemA = null
-      }
-      this.stage = 0
-    }
-  }
-
+class MeasureDistanceTool extends MeasureTool {
   /**
    * @param geomItem
    * @param pos
-   * @return {Vec3}
+   * @return
    * @private
    */
   snapToParametricEdge(geomItem: GeomItem, pos: Vec3): Vec3 {
@@ -172,14 +109,15 @@ class MeasureDistanceTool extends BaseTool {
         const startPos = this.snapToParametricEdge(<GeomItem>this.highlightedItemA, hitPos)
         const color = this.colorParam.getValue()
 
-        this.measurement = new MeasureDistance('Measure Distance', color)
-        this.measurement.setStartMarkerPos(startPos)
-        this.measurement.setEndMarkerPos(startPos)
-        this.appData.scene.getRoot().addChild(this.measurement)
+        const measurement = new MeasureDistance('Measure Distance', color)
+        measurement.setStartMarkerPos(startPos)
+        measurement.setEndMarkerPos(startPos)
+        this.appData.scene.getRoot().addChild(measurement)
 
-        this.measurementChange = new MeasurementChange(this.measurement)
+        this.measurementChange = new MeasurementChange(measurement)
         UndoRedoManager.getInstance().addChange(this.measurementChange)
 
+        this.measurement = measurement
         this.stage++
         event.stopPropagation()
       }
@@ -189,8 +127,10 @@ class MeasureDistanceTool extends BaseTool {
         const hitPos = ray.start.add(ray.dir.scale(event.intersectionData.dist))
         const startPos = this.snapToParametricEdge(<GeomItem>this.highlightedItemA, hitPos)
         const endPos = this.snapToParametricEdge(<GeomItem>this.highlightedItemB, hitPos)
-        this.measurement.setStartMarkerPos(startPos)
-        this.measurement.setEndMarkerPos(endPos)
+
+        const measurement = <MeasureDistance>this.measurement
+        measurement.setStartMarkerPos(startPos)
+        measurement.setEndMarkerPos(endPos)
 
         if (this.highlightedItemA) {
           this.highlightedItemA.removeHighlight('measure', true)
@@ -217,8 +157,9 @@ class MeasureDistanceTool extends BaseTool {
     if (
       ((event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) && event.altKey) ||
       (event instanceof ZeaMouseEvent && event.button !== 0)
-    )
+    ) {
       return
+    }
 
     const color = this.colorParam.getValue()
     color.a = 0.2

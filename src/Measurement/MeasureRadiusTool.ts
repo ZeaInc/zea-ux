@@ -11,6 +11,7 @@ import {
   ZeaMouseEvent,
   ZeaTouchEvent,
 } from '@zeainc/zea-engine'
+import { MeasureTool } from './MeasureTool'
 import { MeasurementChange } from './MeasurementChange'
 import { MeasureDistance } from './MeasureDistance'
 import { AppData } from '../../types/types'
@@ -19,48 +20,9 @@ import { getPointerRay } from '../utility'
 /**
  * UI Tool for measurements
  *
- * @extends {BaseTool}
+ * @extends {MeasureTool}
  */
-class MeasureRadiusTool extends BaseTool {
-  colorParam = new ColorParameter('Color', new Color('#F9CE03'))
-  appData: AppData
-  highlightedItemA: TreeItem = null
-  prevCursor: string
-  dragging: boolean
-  /**
-   * Creates an instance of MeasureRadiusTool.
-   *
-   * @param appData - The appData value
-   */
-  constructor(appData: AppData) {
-    super()
-
-    this.addParameter(this.colorParam)
-    if (!appData) console.error('App data not provided to tool')
-    this.appData = appData
-  }
-
-  /**
-   * The activateTool method.
-   */
-  activateTool(): void {
-    super.activateTool()
-    if (this.appData && this.appData.renderer) {
-      this.prevCursor = this.appData.renderer.getGLCanvas().style.cursor
-      this.appData.renderer.getGLCanvas().style.cursor = 'crosshair'
-    }
-  }
-
-  /**
-   * The deactivateTool method.
-   */
-  deactivateTool(): void {
-    super.deactivateTool()
-    if (this.appData && this.appData.renderer) {
-      this.appData.renderer.getGLCanvas().style.cursor = this.prevCursor
-    }
-  }
-
+class MeasureRadiusTool extends MeasureTool {
   /**
    *
    *
@@ -154,28 +116,26 @@ class MeasureRadiusTool extends BaseTool {
     )
       return
 
-    if (!this.dragging) {
-      if (event.intersectionData) {
-        const geomItem = <GeomItem>event.intersectionData.geomItem
-        if (
-          (geomItem.hasParameter('CurveType') && geomItem.getParameter('CurveType').getValue() == 'Circle') ||
-          (geomItem.hasParameter('SurfaceType') && geomItem.getParameter('SurfaceType').getValue() == 'Cylinder')
-        ) {
-          if (geomItem != this.highlightedItemA) {
-            if (this.highlightedItemA) {
-              this.highlightedItemA.removeHighlight('measure', true)
-            }
-            this.highlightedItemA = geomItem
-            const color = this.colorParam.getValue()
-            color.a = 0.2
-            this.highlightedItemA.addHighlight('measure', color, true)
+    if (event.intersectionData) {
+      const geomItem = <GeomItem>event.intersectionData.geomItem
+      if (
+        (geomItem.hasParameter('CurveType') && geomItem.getParameter('CurveType').getValue() == 'Circle') ||
+        (geomItem.hasParameter('SurfaceType') && geomItem.getParameter('SurfaceType').getValue() == 'Cylinder')
+      ) {
+        if (geomItem != this.highlightedItemA) {
+          if (this.highlightedItemA) {
+            this.highlightedItemA.removeHighlight('measure', true)
           }
+          this.highlightedItemA = geomItem
+          const color = this.colorParam.getValue()
+          color.a = 0.2
+          this.highlightedItemA.addHighlight('measure', color, true)
         }
-      } else {
-        if (this.highlightedItemA) {
-          this.highlightedItemA.removeHighlight('measure', true)
-          this.highlightedItemA = null
-        }
+      }
+    } else {
+      if (this.highlightedItemA) {
+        this.highlightedItemA.removeHighlight('measure', true)
+        this.highlightedItemA = null
       }
     }
   }

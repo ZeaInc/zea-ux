@@ -1,23 +1,19 @@
 import {
-  TreeItem,
   LinesMaterial,
   Color,
-  Sphere,
   Lines,
   BillboardItem,
   Label,
   GeomItem,
   Xfo,
   Vec3,
-  ColorParameter,
   StringParameter,
   Registry,
   Vec3Attribute,
 } from '@zeainc/zea-engine'
 
-import { HandleMaterial } from '../Handles/Shaders/HandleMaterial'
+import { Measure } from './Measure'
 
-const sphere = new Sphere(0.003)
 const line = new Lines()
 line.setNumVertices(2)
 line.setNumSegments(1)
@@ -31,44 +27,18 @@ line.setBoundingBoxDirty()
  *
  * @extends {TreeItem}
  */
-class MeasureDistance extends TreeItem {
-  lineMaterial: LinesMaterial
-  colorParam: ColorParameter
+class MeasureDistance extends Measure {
   unitsParameter = new StringParameter('Units', 'mm')
-  markerMaterial: HandleMaterial
-  startMarker: GeomItem
-  endMarker: GeomItem
-  label: Label
-  billboard: BillboardItem
-  lineGeomItem: GeomItem
+  lineGeomItem: GeomItem = null
   /**
    * Creates an instance of MeasureDistance.
    * @param name
    * @param color
    */
   constructor(name = 'MeasureDistance', color = new Color('#F9CE03')) {
-    super(name)
+    super(name, color)
 
-    this.colorParam = <ColorParameter>this.addParameter(new ColorParameter('Color', color))
     this.addParameter(this.unitsParameter)
-
-    this.markerMaterial = new HandleMaterial('Marker')
-    this.markerMaterial.getParameter('BaseColor').value = new Color(0, 0, 0)
-    this.markerMaterial.getParameter('MaintainScreenSize').value = 1
-    this.markerMaterial.getParameter('Overlay').value = 0.5
-
-    this.startMarker = new GeomItem(`${name}StartMarker`, sphere, this.markerMaterial)
-    this.endMarker = new GeomItem(`${name}EndMarker`, sphere, this.markerMaterial)
-
-    this.addChild(this.startMarker)
-    this.addChild(this.endMarker)
-
-    this.colorParam.on('valueChanged', () => {
-      const color = this.colorParam.getValue()
-      this.markerMaterial.getParameter('BaseColor').value = color
-      this.lineMaterial.getParameter('BaseColor').value = color
-      this.label.getParameter('BackgroundColor').value = color
-    })
   }
 
   /**
@@ -76,8 +46,8 @@ class MeasureDistance extends TreeItem {
    */
   updateMeasurement(): void {
     console.log('updateMeasurement')
-    const startXfo = this.startMarker.globalXfoParam.value
-    const endXfo = this.endMarker.globalXfoParam.value
+    const startXfo = this.markerA.globalXfoParam.value
+    const endXfo = this.markerB.globalXfoParam.value
 
     const vector = endXfo.tr.subtract(startXfo.tr)
     const distance = vector.length()
@@ -135,9 +105,9 @@ class MeasureDistance extends TreeItem {
    * @param position
    */
   setStartMarkerPos(position: Vec3): void {
-    const newXfo = this.startMarker.globalXfoParam.value
+    const newXfo = this.markerA.globalXfoParam.value
     newXfo.tr = position
-    this.startMarker.globalXfoParam.value = newXfo
+    this.markerA.globalXfoParam.value = newXfo
     if (this.label) this.updateMeasurement()
   }
 
@@ -147,9 +117,9 @@ class MeasureDistance extends TreeItem {
    * @param position
    */
   setEndMarkerPos(position: Vec3): void {
-    const endXfo = this.endMarker.globalXfoParam.value
+    const endXfo = this.markerB.globalXfoParam.value
     endXfo.tr = position
-    this.endMarker.globalXfoParam.value = endXfo
+    this.markerB.globalXfoParam.value = endXfo
     this.updateMeasurement()
   }
 
@@ -159,8 +129,8 @@ class MeasureDistance extends TreeItem {
    * @param isVisible -
    */
   setGeomBuffersVisibility(isVisible: boolean): void {
-    this.startMarker.setSelectable(!isVisible)
-    this.endMarker.setSelectable(!isVisible)
+    this.markerA.setSelectable(!isVisible)
+    this.markerB.setSelectable(!isVisible)
   }
 
   /**
