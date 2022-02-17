@@ -1,24 +1,18 @@
 import {
-  TreeItem,
-  LinesMaterial,
   Color,
-  Sphere,
   Lines,
   BillboardItem,
   Label,
   GeomItem,
   Xfo,
   Vec3,
-  ColorParameter,
   Registry,
   Ray,
   Vec3Attribute,
-  Material,
 } from '@zeainc/zea-engine'
 
-import { HandleMaterial } from '../Handles/Shaders/HandleMaterial'
+import { Measure } from './Measure'
 
-const sphere = new Sphere(0.003, 24, 12, false)
 const line = new Lines() //new Lines(0.0)
 line.setNumVertices(2)
 line.setNumSegments(1)
@@ -32,43 +26,14 @@ line.setBoundingBoxDirty()
  *
  * @extends {TreeItem}
  */
-class MeasureAngle extends TreeItem {
-  colorParam: ColorParameter
-  markerMaterial: Material
-  markerMaterialB: Material
-  lineMaterial: LinesMaterial
-  markerA: GeomItem
-  markerB: GeomItem
-  label: Label
-  billboard: BillboardItem
+class MeasureAngle extends Measure {
   /**
    * Creates an instance of MeasureAngle.
    * @param name
    * @param color
    */
   constructor(name = 'MeasureAngle', color = new Color('#F9CE03')) {
-    super(name)
-
-    this.colorParam = <ColorParameter>this.addParameter(new ColorParameter('Color', color))
-
-    this.markerMaterial = new HandleMaterial('Marker')
-    this.markerMaterial.getParameter('BaseColor').value = new Color(0, 0, 0)
-    this.markerMaterial.getParameter('MaintainScreenSize').value = 1
-    this.markerMaterial.getParameter('Overlay').value = 0.5
-
-    this.markerMaterialB = new HandleMaterial('Marker')
-    this.markerMaterialB.getParameter('BaseColor').value = new Color(0, 0, 0)
-    this.markerMaterialB.getParameter('MaintainScreenSize').value = 1
-    this.markerMaterialB.getParameter('Overlay').value = 0.5
-
-    this.lineMaterial = new LinesMaterial('Line')
-    this.lineMaterial.baseColorParam.value = new Color(0, 0, 0)
-    this.lineMaterial.overlayParam.value = 0.5
-
-    this.markerA = new GeomItem(`markerA`, sphere, this.markerMaterial)
-    this.markerB = new GeomItem(`markerB`, sphere, this.markerMaterialB)
-    this.addChild(this.markerA)
-    this.addChild(this.markerB)
+    super(name, color)
   }
 
   /**
@@ -91,12 +56,14 @@ class MeasureAngle extends TreeItem {
     const rayB = new Ray(xfoB.tr, tangentB)
     const params = rayA.intersectRayVector(rayB)
 
-    const angle = tangentA.angleTo(tangentB)
+    const angle = normA.angleTo(normB)
 
     // ////////////////////////////////////////
     // Build the visualization parts.
-    this.markerA.addChild(new GeomItem('Line', line, this.lineMaterial), false)
-    this.markerB.addChild(new GeomItem('Line', line, this.lineMaterial), false)
+    const lineA = new GeomItem('Line', line, this.lineMaterial)
+    const lineB = new GeomItem('Line', line, this.lineMaterial)
+    this.markerA.addChild(lineA, false)
+    this.markerB.addChild(lineB, false)
 
     this.label = new Label('Distance')
     this.label.fontSizeParam.value = 20
@@ -132,10 +99,10 @@ class MeasureAngle extends TreeItem {
 
     const lineAXfo = new Xfo()
     lineAXfo.sc.z = params[0]
-    this.markerA.getChild(0).localXfoParam.value = lineAXfo
+    lineA.localXfoParam.value = lineAXfo
     const lineBXfo = new Xfo()
     lineBXfo.sc.z = params[1]
-    this.markerB.getChild(0).localXfoParam.value = lineBXfo
+    lineB.localXfoParam.value = lineBXfo
 
     this.billboard.globalXfoParam.value = labelXfo
   }

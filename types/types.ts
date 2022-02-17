@@ -4,6 +4,7 @@ import { SelectionManager } from '../src/SelectionManager'
 export interface AppData {
   renderer?: GLRenderer
   scene?: Scene
+  sceneUnits?: string
   selectionManager?: SelectionManager
   parentItem?: TreeItem
   session?: any

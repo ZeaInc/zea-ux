@@ -21,7 +21,7 @@
     "build:rollup": "rollup -c",
     "build:rollup:watch": "rollup -w -c",
     "build": "npm-run-all clean:build build:rollup",
-    "dev": "npm-run-all build:rollup start:watch",
+    "dev": "npm-run-all --parallel build:rollup:watch start:watch",
     "start": "es-dev-server --app-index testing-e2e/index.html --open",
     "start:watch": "es-dev-server --app-index testing-e2e/index.html --open --watch",
     "release": "standard-version",

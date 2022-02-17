@@ -1,105 +1,152 @@
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 import {
-  Ray,
   Vec3,
-  Color,
-  ColorParameter,
-  BaseTool,
   GeomItem,
-  Xfo,
-  Quat,
-  TreeItem,
   ZeaPointerEvent,
   ZeaMouseEvent,
   ZeaTouchEvent,
-  XRControllerEvent,
+  Xfo,
+  Quat,
+  CompoundGeom,
+  StringParameter,
+  ParameterOwner,
+  XfoParameter,
+  Ray,
 } from '@zeainc/zea-engine'
 import { MeasurementChange } from './MeasurementChange'
+import { MeasureTool } from './MeasureTool'
 import { MeasureAngle } from './MeasureAngle'
-import { AppData } from '../../types/types'
 
 import { getPointerRay } from '../utility'
+import { AppData } from '../../types/types'
 
 /**
  * UI Tool for measurements
  *
  * @extends {BaseTool}
  */
-class MeasureAngleTool extends BaseTool {
-  appData: AppData
-  colorParam = new ColorParameter('Color', new Color('#F9CE03'))
-  measurementChange: MeasurementChange = null
-  highlightedItemA: GeomItem = null
-  highlightedItemB: GeomItem = null
+class MeasureAngleTool extends MeasureTool {
   highlightedItemAHitPos: any = null
-  stage: number = 0
-  prevCursor: string
   hitPosA: Vec3
-  measurement: MeasureAngle
-  geomItemA: GeomItem
   dragging: boolean
+
   /**
-   * Creates an instance of MeasureAngleTool.
-   *
    * @param appData - The appData value
    */
   constructor(appData: AppData) {
-    super()
+    super(appData)
 
-    this.addParameter(this.colorParam)
-    if (!appData) console.error('App data not provided to tool')
-    this.appData = appData
+    this.geomConstraints = {
+      SurfaceType: ['Plane', 'Cylinder', 'Cone'],
+    }
+    this.numStages = 2
   }
 
   /**
-   * The activateTool method.
+   * @private
    */
-  activateTool(): void {
-    super.activateTool()
-    if (this.appData && this.appData.renderer) {
-      this.prevCursor = this.appData.renderer.getGLCanvas().style.cursor
-      this.appData.renderer.getGLCanvas().style.cursor = 'crosshair'
-    }
-  }
+  snapToSurface(geomXfo: Xfo, geomParams: ParameterOwner, hitPos: Vec3, pointerRay: Ray, closestTo?: Xfo) {
+    const xfo = new Xfo()
+    if (geomParams) {
+      const surfaceType = (<StringParameter>geomParams.getParameter('SurfaceType')).value
+      switch (surfaceType) {
+        case 'Plane': {
+          const srfToPnt = hitPos.subtract(geomXfo.tr)
+          let zaxis = geomXfo.ori.getZaxis()
+          if (zaxis.dot(pointerRay.dir) > 0) zaxis = zaxis.negate()
 
-  /**
-   * The deactivateTool method.
-   */
-  deactivateTool(): void {
-    super.deactivateTool()
-    if (this.appData && this.appData.renderer) {
-      this.appData.renderer.getGLCanvas().style.cursor = this.prevCursor
-    }
-    if (this.stage != 0) {
-      const parentItem = <TreeItem>this.measurement.getOwner()
-      parentItem.removeChild(parentItem.getChildIndex(this.measurement))
-      this.measurement = null
+          const surfacePoint = hitPos
+          if (closestTo) {
+            const normA = zaxis
+            const normB = closestTo.ori.getZaxis()
+            const vectorAB = closestTo.tr.subtract(hitPos)
+            const axis = normA.cross(normB).normalize()
+            surfacePoint.addInPlace(axis.scale(vectorAB.dot(axis)))
+          }
 
-      if (this.highlightedItemB) {
-        this.highlightedItemB.removeHighlight('measure', true)
-        this.highlightedItemB = null
+          xfo.ori.setFromDirectionAndUpvector(zaxis, new Vec3(zaxis.z, zaxis.x, zaxis.y))
+          xfo.tr = surfacePoint.subtract(zaxis.scale(srfToPnt.dot(zaxis)))
+          break
+        }
+        case 'Cone': {
+          const semiAngle = geomParams.getParameter('SemiAngle').getValue()
+          const startRadius = geomParams.getParameter('StartRadius').getValue() * geomXfo.sc.x
+          const zaxis = geomXfo.ori.getZaxis()
+          const zaxisDist = hitPos.subtract(geomXfo.tr).dot(zaxis)
+          const radiusAtPoint = startRadius + Math.tan(semiAngle) * zaxisDist
+
+          let surfacePoint = hitPos
+          if (closestTo) {
+            const vec2 = closestTo.tr.subtract(geomXfo.tr)
+            vec2.subtractInPlace(zaxis.scale(vec2.dot(zaxis)))
+            surfacePoint = geomXfo.tr.add(vec2.normalize().scale(radiusAtPoint))
+            surfacePoint.addInPlace(zaxis.scale(zaxisDist))
+          }
+          const vec = surfacePoint.subtract(geomXfo.tr)
+          xfo.ori.setFromDirectionAndUpvector(zaxis, vec)
+
+          // We want the Z-axis to be aligned with the normal of the code.
+          // the previous line generated an orientation with the z along
+          // the length of the cone. Now we rotate by half pi to get a normal aligned
+          // z-axis, and then rotate
+          const rot = new Quat()
+          rot.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * 0.5 - semiAngle)
+          xfo.ori.multiplyInPlace(rot)
+
+          // Note: we don't know if the surface point is on the inside of the cone
+          // or the outside. So we simply check if the resulting normal is facing us
+          // or not. If now, we flip the rotation on the Y axis.
+          // The DeadEyeBearing is a good sample to test this on.
+          if (xfo.ori.getZaxis().dot(pointerRay.dir) > 0) {
+            const rot = new Quat()
+            rot.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI)
+            xfo.ori.multiplyInPlace(rot)
+          }
+
+          xfo.tr = surfacePoint
+          break
+        }
+        case 'Cylinder': {
+          const radius = geomParams.getParameter('Radius').getValue() * geomXfo.sc.x
+          const zaxis = geomXfo.ori.getZaxis()
+          const zaxisDist = hitPos.subtract(geomXfo.tr).dot(zaxis)
+          const pointOnAxis = geomXfo.tr.add(zaxis.scale(zaxisDist))
+
+          const axisToPnt = hitPos.subtract(pointOnAxis)
+          const length = axisToPnt.length()
+          let surfacePoint = pointOnAxis.add(axisToPnt.scale(radius / length))
+          if (closestTo) {
+            const vec2 = closestTo.tr.subtract(geomXfo.tr)
+            vec2.subtractInPlace(zaxis.scale(vec2.dot(zaxis)))
+            surfacePoint = geomXfo.tr.add(vec2.normalize().scale(radius))
+            surfacePoint.addInPlace(zaxis.scale(zaxisDist))
+          }
+          const vec = surfacePoint.subtract(pointOnAxis)
+          xfo.ori.setFromDirectionAndUpvector(zaxis, vec)
+          const rot = new Quat()
+          rot.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * 0.5)
+          xfo.ori.multiplyInPlace(rot)
+
+          // Note: we don't know if the surface point is on the inside of the cylinder
+          // or the outside. So we simply check if the resulting normal is facing us
+          // or not. If now, we flip the rotation on the Y axis.
+          // The DeadEyeBearing is a good sample to test this on.
+          if (xfo.ori.getZaxis().dot(pointerRay.dir) > 0) {
+            const rot = new Quat()
+            rot.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI)
+            xfo.ori.multiplyInPlace(rot)
+          }
+
+          xfo.tr = surfacePoint
+
+          break
+        }
+        default: {
+          console.log('Unhandled Surface Type: ', surfaceType)
+        }
       }
-      if (this.highlightedItemA) {
-        this.highlightedItemA.removeHighlight('measure', true)
-        this.highlightedItemA = null
-      }
-      this.stage = 0
     }
-  }
-
-  /**
-   * Checks to see if the surface is appropriate for this kind of measurement.
-   * @param geomItem - The geomItem to check
-   * @return {boolean}
-   */
-  checkSurface(geomItem: GeomItem): boolean {
-    const surfaceTypeParm = geomItem.getParameter('SurfaceType')
-    return (
-      surfaceTypeParm &&
-      (surfaceTypeParm.getValue() == 'Plane' ||
-        surfaceTypeParm.getValue() == 'Cone' ||
-        surfaceTypeParm.getValue() == 'Cylinder')
-    )
+    return xfo
   }
 
   /**
@@ -113,129 +160,56 @@ class MeasureAngleTool extends BaseTool {
       ((event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) && event.altKey) ||
       (event instanceof ZeaMouseEvent && event.button !== 0) ||
       !event.intersectionData
-    )
+    ) {
       return
-
-    const getSurfaceXfo = (geomItem: GeomItem, hitPos: Vec3, closestTo?: Xfo) => {
-      const xfo = new Xfo()
-      const surfaceTypeParm = geomItem.getParameter('SurfaceType')
-      if (surfaceTypeParm) {
-        const surfaceType = surfaceTypeParm.getValue()
-        switch (surfaceType) {
-          case 'Plane': {
-            const geomMat = geomItem.geomMatParam.value
-            const srfToPnt = hitPos.subtract(geomMat.translation)
-            let zaxis = geomMat.zAxis.clone()
-            if (zaxis.dot(getPointerRay(event).dir) > 0) zaxis = zaxis.negate()
-
-            const hitPos2 = hitPos
-            if (closestTo) {
-              const normA = zaxis
-              const normB = closestTo.ori.getZaxis()
-              const vectorAB = closestTo.tr.subtract(hitPos)
-              const axis = normA.cross(normB).normalize()
-              hitPos2.addInPlace(axis.scale(vectorAB.dot(axis)))
-            }
-
-            xfo.ori.setFromDirectionAndUpvector(zaxis, new Vec3(zaxis.z, zaxis.x, zaxis.y))
-            xfo.tr = hitPos2.subtract(zaxis.scale(srfToPnt.dot(zaxis)))
-            break
-          }
-          case 'Cone': {
-            const globalXfo = geomItem.globalXfoParam.value
-            const semiAngle = geomItem.getParameter('SemiAngle').getValue()
-            const startRadius = geomItem.getParameter('StartRadius').getValue()
-            const zaxis = globalXfo.ori.getZaxis()
-            const zaxisDist = hitPos.subtract(globalXfo.tr).dot(zaxis)
-            const radiusAtPoint = startRadius + Math.tan(semiAngle) * zaxisDist
-            let hitPos2 = hitPos
-            if (closestTo) {
-              const vec2 = closestTo.tr.subtract(globalXfo.tr)
-              vec2.subtractInPlace(zaxis.scale(vec2.dot(zaxis)))
-              hitPos2 = globalXfo.tr.add(vec2.normalize().scale(radiusAtPoint))
-              hitPos2.addInPlace(zaxis.scale(zaxisDist))
-            }
-            const vec = hitPos2.subtract(globalXfo.tr)
-            xfo.ori.setFromDirectionAndUpvector(zaxis, vec)
-            const rot = new Quat()
-            rot.setFromAxisAndAngle(new Vec3(1, 0, 0), semiAngle)
-            xfo.ori.multiplyInPlace(rot)
-            xfo.tr = hitPos2
-
-            const zaxis2 = globalXfo.ori.getZaxis()
-            const angle = zaxis2.angleTo(xfo.ori.getZaxis())
-            console.log(angle, semiAngle)
-            break
-          }
-          case 'Cylinder': {
-            const globalXfo = geomItem.globalXfoParam.value
-            const radius = geomItem.getParameter('Radius').getValue() * globalXfo.sc.x
-            const zaxis = globalXfo.ori.getZaxis()
-            const zaxisDist = hitPos.subtract(globalXfo.tr).dot(zaxis)
-            const pointOnAxis = globalXfo.tr.add(zaxis.scale(zaxisDist))
-
-            const axisToPnt = hitPos.subtract(pointOnAxis)
-            const length = axisToPnt.length()
-            let hitPos2 = pointOnAxis.add(axisToPnt.scale(radius / length))
-            if (closestTo) {
-              const vec2 = closestTo.tr.subtract(globalXfo.tr)
-              vec2.subtractInPlace(zaxis.scale(vec2.dot(zaxis)))
-              hitPos2 = globalXfo.tr.add(vec2.normalize().scale(radius))
-              hitPos2.addInPlace(zaxis.scale(zaxisDist))
-            }
-            const vec = hitPos2.subtract(globalXfo.tr)
-            xfo.ori.setFromDirectionAndUpvector(zaxis, vec)
-            const rot = new Quat()
-            rot.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * 0.5)
-            xfo.ori.multiplyInPlace(rot)
-            xfo.tr = hitPos2
-            break
-          }
-          default: {
-            console.log('Unhandled Surface Type: ', surfaceType)
-          }
-        }
-      }
-      return xfo
     }
 
     if (this.stage == 0) {
-      const geomItem = <GeomItem>event.intersectionData.geomItem
-      if (this.checkSurface(geomItem)) {
+      if (this.highlightedItemA) {
         const color = this.colorParam.getValue()
-        this.measurement = new MeasureAngle('MeasureAngle', color)
-        this.appData.scene.getRoot().addChild(this.measurement)
+        const measurement = new MeasureAngle('MeasureAngle', color)
+        this.appData.scene.getRoot().addChild(measurement)
 
-        const ray = getPointerRay(event)
+        const ray = event.pointerRay
         const hitPos = ray.start.add(ray.dir.scale(event.intersectionData.dist))
-        const xfoA = getSurfaceXfo(geomItem, hitPos)
-        this.measurement.setXfoA(xfoA)
 
-        this.geomItemA = geomItem
+        const geomXfoA = this.getGeomXfo(this.highlightedItemA, this.highlightedItemA_componentId)
+        const xfoA = this.snapToSurface(geomXfoA, this.highlightedItemA_params, hitPos, ray)
+        measurement.setXfoA(xfoA)
+
+        this.measurement = measurement
         this.hitPosA = hitPos
 
         this.stage++
         event.stopPropagation()
       }
     } else if (this.stage == 1) {
-      const geomItem = <GeomItem>event.intersectionData.geomItem
-      if (this.checkSurface(geomItem)) {
-        const ray = getPointerRay(event)
+      if (this.highlightedItemB) {
+        const ray = event.pointerRay
         const hitPos = ray.start.add(ray.dir.scale(event.intersectionData.dist))
-        const xfoB = getSurfaceXfo(geomItem, hitPos)
-        // this.measurement.setXfoB(xfoB)
-        const xfoA = getSurfaceXfo(this.geomItemA, this.hitPosA, xfoB)
-        this.measurement.setXfoA(xfoA)
 
-        // const xfoB2 = getSurfaceXfo(geomItem, hitPos, xfoA)
-        this.measurement.setXfoB(xfoB)
+        const geomXfoB = this.getGeomXfo(this.highlightedItemB, this.highlightedItemB_componentId)
+        const xfoB = this.snapToSurface(geomXfoB, this.highlightedItemB_params, hitPos, ray)
 
-        const measurementChange = new MeasurementChange(this.measurement)
+        // Now re-calculate xfoA closest to xfoB
+        const geomXfoA = this.getGeomXfo(this.highlightedItemA, this.highlightedItemA_componentId)
+        const xfoA = this.snapToSurface(geomXfoA, this.highlightedItemA_params, this.hitPosA, ray, xfoB)
+
+        const measurement = <MeasureAngle>this.measurement
+        measurement.setXfoA(xfoA)
+        measurement.setXfoB(xfoB)
+
+        const measurementChange = new MeasurementChange(measurement)
         UndoRedoManager.getInstance().addChange(measurementChange)
 
-        if (this.highlightedItemA) this.highlightedItemA.removeHighlight('measure', true)
-        if (this.highlightedItemB) this.highlightedItemB.removeHighlight('measure', true)
-
+        if (this.highlightedItemA) {
+          this.highlightedItemA.removeHighlight(this.highlightedItemA_highlightKey, true)
+          this.highlightedItemA = null
+        }
+        if (this.highlightedItemB) {
+          this.highlightedItemB.removeHighlight(this.highlightedItemB_highlightKey, true)
+          this.highlightedItemB = null
+        }
         this.stage = 0
         event.stopPropagation()
       }
@@ -246,7 +220,6 @@ class MeasureAngleTool extends BaseTool {
    *
    *
    * @param event - The event value
-   */
   onPointerMove(event: ZeaPointerEvent): void {
     // skip if the alt key is held. Allows the camera tool to work
     if (
@@ -256,60 +229,49 @@ class MeasureAngleTool extends BaseTool {
       return
 
     if (this.stage == 0) {
-      if (event.intersectionData) {
+      if (event.intersectionData && event.intersectionData.geomItem instanceof GeomItem) {
         const geomItem = <GeomItem>event.intersectionData.geomItem
         if (this.checkSurface(geomItem)) {
           if (geomItem != this.highlightedItemA) {
             if (this.highlightedItemA) {
-              this.highlightedItemA.removeHighlight('measure', true)
+              this.highlightedItemA.removeHighlight(this.highlightedItemA_highlightKey, true)
             }
             this.highlightedItemA = geomItem
+            this.highlightedItemA_componentId = event.intersectionData.componentId
             const color = this.colorParam.getValue()
             color.a = 0.2
-            this.highlightedItemA.addHighlight('measure', color, true)
+            this.highlightedItemA.addHighlight(this.highlightedItemA_highlightKey, color, true)
           }
         }
       } else {
         if (this.highlightedItemA) {
-          this.highlightedItemA.removeHighlight('measure', true)
+          this.highlightedItemA.removeHighlight(this.highlightedItemA_highlightKey, true)
           this.highlightedItemA = null
         }
       }
     } else if (this.stage == 1) {
-      if (event.intersectionData) {
+      if (event.intersectionData && event.intersectionData.geomItem instanceof GeomItem) {
         const geomItem = <GeomItem>event.intersectionData.geomItem
         if (geomItem != this.highlightedItemA && geomItem != this.highlightedItemB && this.checkSurface(geomItem)) {
           if (this.highlightedItemB) {
-            this.highlightedItemB.removeHighlight('measure', true)
+            this.highlightedItemB.removeHighlight(this.highlightedItemB_highlightKey, true)
           }
           this.highlightedItemB = geomItem
+          this.highlightedItemB_componentId = event.intersectionData.componentId
 
           const color = this.colorParam.getValue().clone()
           color.a = 0.2
-          this.highlightedItemB.addHighlight('measure', color, true)
+          this.highlightedItemB.addHighlight(this.highlightedItemB_highlightKey, color, true)
         }
       } else {
         if (this.highlightedItemB) {
-          this.highlightedItemB.removeHighlight('measure', true)
+          this.highlightedItemB.removeHighlight(this.highlightedItemB_highlightKey, true)
           this.highlightedItemB = null
         }
       }
     }
   }
-
-  /**
-   *
-   *
-   * @param event - The event value
    */
-  onPointerUp(event: ZeaPointerEvent): void {
-    if (this.dragging) {
-      this.dragging = false
-      this.measurementChange = null
-      if (this.highlightedItemA) this.highlightedItemA.removeHighlight('measure', true)
-      event.stopPropagation()
-    }
-  }
 }
 
 export { MeasureAngleTool }
