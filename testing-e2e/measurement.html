@@ -64,7 +64,6 @@
     </style>
 
     <script src="../node_modules/@zeainc/zea-engine/dist/index.umd.js"></script>
-    <script src="../node_modules/@zeainc/zea-cad/dist/index.umd.js"></script>
     <script src="../dist/index.umd.js"></script>
 
     <script type="module">
@@ -79,6 +78,8 @@
         Cuboid,
         Torus,
         GLBoundingBoxPass,
+        CADAsset,
+        AssetLoadContext,
       } = window.zeaEngine
       const {
         UndoRedoManager,
@@ -88,19 +89,22 @@
         MeasureAngleTool,
         MeasureCenterDistancesTool,
       } = window.zeaUx
-      const { CADAsset } = window.zeaCad
 
       const undoRedoManager = UndoRedoManager.getInstance()
       const $canvas = document.getElementById('renderer')
 
       const scene = new Scene()
-      scene.setupGrid(10, 10)
+      scene.setupGrid(1000, 10)
 
       const renderer = new GLRenderer($canvas, { hideSplash: true })
       renderer.setScene(scene)
 
       const cadAsset = new CADAsset()
-      cadAsset.load('data/Dead_eye_bearingSTEP.zcad').then(() => {
+      const context = new AssetLoadContext()
+      // context.units = 'Millimeters'
+      const url = 'data/zcad/3.6.0/Dead_eye_bearingSTEP.zcad'
+      // const url = 'data/zcad/3.9.1/Dead_eye_bearing.stp.zcad'
+      cadAsset.load(url, context).then(() => {
         renderer.frameAll()
       })
       scene.getRoot().addChild(cadAsset)

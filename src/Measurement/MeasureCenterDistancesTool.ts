@@ -1,5 +1,16 @@
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
-import { Ray, Vec3, GeomItem, ZeaPointerEvent, ZeaMouseEvent, ZeaTouchEvent } from '@zeainc/zea-engine'
+import {
+  Ray,
+  Vec3,
+  GeomItem,
+  ZeaPointerEvent,
+  ZeaMouseEvent,
+  ZeaTouchEvent,
+  ParameterOwner,
+  CADBody,
+  CompoundGeom,
+  Xfo,
+} from '@zeainc/zea-engine'
 import { MeasureDistance } from './MeasureDistance'
 import { MeasureTool } from './MeasureTool'
 import { MeasurementChange } from './MeasurementChange'
@@ -14,42 +25,44 @@ import { getPointerRay } from '../utility'
  */
 class MeasureCenterDistancesTool extends MeasureTool {
   /**
-   * @param geomItem
-   * @param key
-   * @private
+   * @param appData - The appData value
    */
-  highlightEdge(geomItem: GeomItem, key: string): void {}
+  constructor(appData: AppData) {
+    super(appData)
+
+    this.geomConstraints = {
+      CurveType: ['Circle'],
+      SurfaceType: ['Cylinder'],
+    }
+    this.numStages = 2
+  }
 
   /**
-   * @param geomItem
-   * @param pos
-   * @return {Vec3}
    * @private
    */
-  snapToParametricCenter(geomItem: GeomItem, pos: Vec3): Vec3 {
-    const xfo = geomItem.globalXfoParam.value
-    if (geomItem.hasParameter('CurveType')) {
-      const curveType = geomItem.getParameter('CurveType').getValue()
+  snapToParametricCenter(geomXfo: Xfo, geomParams: ParameterOwner, pos: Vec3): Vec3 {
+    if (geomParams.hasParameter('CurveType')) {
+      const curveType = geomParams.getParameter('CurveType').value
 
       switch (curveType) {
         case 'Circle': {
-          const crvToPnt = pos.subtract(xfo.tr)
-          const zaxis = xfo.ori.getZaxis()
-          return xfo.tr.add(zaxis.scale(crvToPnt.dot(zaxis)))
+          const crvToPnt = pos.subtract(geomXfo.tr)
+          const zaxis = geomXfo.ori.getZaxis()
+          return geomXfo.tr.add(zaxis.scale(crvToPnt.dot(zaxis)))
         }
         default: {
           console.log('Unhandled Edge Type: ', curveType)
         }
       }
-    } else if (geomItem.hasParameter('SurfaceType')) {
-      const surfaceType = geomItem.getParameter('SurfaceType').getValue()
+    } else if (geomParams.hasParameter('SurfaceType')) {
+      const surfaceType = geomParams.getParameter('SurfaceType').value
 
       switch (surfaceType) {
         case 'Cylinder':
         case 'Cone': {
-          const srfToPnt = pos.subtract(xfo.tr)
-          const zaxis = xfo.ori.getZaxis()
-          return xfo.tr.add(zaxis.scale(srfToPnt.dot(zaxis)))
+          const srfToPnt = pos.subtract(geomXfo.tr)
+          const zaxis = geomXfo.ori.getZaxis()
+          return geomXfo.tr.add(zaxis.scale(srfToPnt.dot(zaxis)))
         }
         default: {
           console.log('Unhandled Surface Type: ', surfaceType)
@@ -69,8 +82,9 @@ class MeasureCenterDistancesTool extends MeasureTool {
       ((event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) && event.altKey) ||
       (event instanceof ZeaMouseEvent && event.button !== 0) ||
       !event.intersectionData
-    )
+    ) {
       return
+    }
 
     if (this.stage == 0) {
       if (this.highlightedItemA) {
@@ -84,10 +98,11 @@ class MeasureCenterDistancesTool extends MeasureTool {
           hitPos = ray.start.add(ray.dir.scale(distance))
         }
 
-        const startPos = this.snapToParametricCenter(this.highlightedItemA, hitPos)
-        const color = this.colorParam.getValue()
+        const xfoA = this.getGeomXfo(this.highlightedItemA, this.highlightedItemA_componentId)
+        const startPos = this.snapToParametricCenter(xfoA, this.highlightedItemA_params, hitPos)
+        const color = this.colorParam.value
 
-        const measurement = new MeasureDistance('Measure Distance', color)
+        const measurement = new MeasureDistance('Measure Distance', color, this.appData.sceneUnits)
         measurement.setStartMarkerPos(startPos)
         measurement.setEndMarkerPos(startPos)
         this.appData.scene.getRoot().addChild(measurement)
@@ -103,20 +118,27 @@ class MeasureCenterDistancesTool extends MeasureTool {
       if (this.highlightedItemB) {
         const ray = getPointerRay(event)
         const hitPos = ray.start.add(ray.dir.scale(event.intersectionData.dist))
-        let endPos = this.snapToParametricCenter(this.highlightedItemB, hitPos)
-        const startPos = this.snapToParametricCenter(this.highlightedItemA, endPos)
-        endPos = this.snapToParametricCenter(this.highlightedItemB, startPos)
+
+        const xfoA = this.getGeomXfo(this.highlightedItemA, this.highlightedItemA_componentId)
+        const xfoB = this.getGeomXfo(this.highlightedItemB, this.highlightedItemB_componentId)
+
+        // Find the closes point on highlightedItemB to the point we clicked on with the mouse.
+        let endPos = this.snapToParametricCenter(xfoB, this.highlightedItemB_params, hitPos)
+        // Find the closes point on highlightedItemA to the endPoint.
+        const startPos = this.snapToParametricCenter(xfoA, this.highlightedItemA_params, endPos)
+        // Now find the closest point on highlightedItemB to startPos
+        endPos = this.snapToParametricCenter(xfoB, this.highlightedItemB_params, startPos)
 
         const measurement = <MeasureDistance>this.measurement
         measurement.setStartMarkerPos(startPos)
         measurement.setEndMarkerPos(endPos)
 
         if (this.highlightedItemA) {
-          this.highlightedItemA.removeHighlight('measure', true)
+          this.highlightedItemA.removeHighlight(this.highlightedItemA_highlightKey, true)
           this.highlightedItemA = null
         }
         if (this.highlightedItemB) {
-          this.highlightedItemB.removeHighlight('measure', true)
+          this.highlightedItemB.removeHighlight(this.highlightedItemB_highlightKey, true)
           this.highlightedItemB = null
         }
         this.stage = 0
@@ -125,85 +147,6 @@ class MeasureCenterDistancesTool extends MeasureTool {
       }
     }
   }
-
-  /**
-   * Checks to see if the surface is appropriate for this kind of measurement.
-   * @param geomItem - The geomItem to check
-   */
-  checkGeom(geomItem: GeomItem): boolean {
-    if (geomItem.hasParameter('CurveType')) {
-      const curveTypeParm = geomItem.getParameter('CurveType')
-      return curveTypeParm.getValue() == 'Circle'
-    }
-    if (geomItem.hasParameter('SurfaceType')) {
-      const surfaceTypeParm = geomItem.getParameter('SurfaceType')
-      return surfaceTypeParm.getValue() == 'Cone' || surfaceTypeParm.getValue() == 'Cylinder'
-    }
-  }
-
-  /**
-   *
-   *
-   * @param event - The event value
-   */
-  onPointerMove(event: ZeaPointerEvent): void {
-    // skip if the alt key is held. Allows the camera tool to work
-    if (
-      ((event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) && event.altKey) ||
-      (event instanceof ZeaMouseEvent && event.button !== 0)
-    )
-      return
-
-    if (this.stage == 0) {
-      if (event.intersectionData) {
-        const geomItem = <GeomItem>event.intersectionData.geomItem
-        if (geomItem != this.highlightedItemA && this.checkGeom(geomItem)) {
-          if (this.highlightedItemA) {
-            this.highlightedItemA.removeHighlight('measure', true)
-          }
-          this.highlightedItemA = geomItem
-
-          const color = this.colorParam.getValue()
-          color.a = 0.2
-          this.highlightedItemA.addHighlight('measure', color, true)
-        }
-      } else {
-        if (this.highlightedItemA) {
-          this.highlightedItemA.removeHighlight('measure', true)
-          this.highlightedItemA = null
-        }
-      }
-      event.stopPropagation()
-    } else if (this.stage == 1) {
-      if (event.intersectionData) {
-        const geomItem = <GeomItem>event.intersectionData.geomItem
-        if (geomItem != this.highlightedItemA && geomItem != this.highlightedItemB && this.checkGeom(geomItem)) {
-          if (this.highlightedItemB) {
-            this.highlightedItemB.removeHighlight('measure', true)
-            this.highlightedItemB = null
-          }
-
-          this.highlightedItemB = geomItem
-          const color = this.colorParam.getValue().clone()
-          color.a = 0.2
-          this.highlightedItemB.addHighlight('measure', color, true)
-        }
-      } else {
-        if (this.highlightedItemB) {
-          this.highlightedItemB.removeHighlight('measure', true)
-          this.highlightedItemB = null
-        }
-      }
-      event.stopPropagation()
-    }
-  }
-
-  /**
-   *
-   *
-   * @param event - The event value
-   */
-  onPointerUp(event: ZeaPointerEvent): void {}
 }
 
 export { MeasureCenterDistancesTool }

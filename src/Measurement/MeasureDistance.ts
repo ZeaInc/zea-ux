@@ -45,7 +45,6 @@ class MeasureDistance extends Measure {
    * Updates the measured value
    */
   updateMeasurement(): void {
-    console.log('updateMeasurement')
     const startXfo = this.markerA.globalXfoParam.value
     const endXfo = this.markerB.globalXfoParam.value
 

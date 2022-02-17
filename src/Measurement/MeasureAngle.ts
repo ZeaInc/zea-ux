@@ -56,12 +56,14 @@ class MeasureAngle extends Measure {
     const rayB = new Ray(xfoB.tr, tangentB)
     const params = rayA.intersectRayVector(rayB)
 
-    const angle = tangentA.angleTo(tangentB)
+    const angle = normA.angleTo(normB)
 
     // ////////////////////////////////////////
     // Build the visualization parts.
-    this.markerA.addChild(new GeomItem('Line', line, this.lineMaterial), false)
-    this.markerB.addChild(new GeomItem('Line', line, this.lineMaterial), false)
+    const lineA = new GeomItem('Line', line, this.lineMaterial)
+    const lineB = new GeomItem('Line', line, this.lineMaterial)
+    this.markerA.addChild(lineA, false)
+    this.markerB.addChild(lineB, false)
 
     this.label = new Label('Distance')
     this.label.fontSizeParam.value = 20
@@ -97,10 +99,10 @@ class MeasureAngle extends Measure {
 
     const lineAXfo = new Xfo()
     lineAXfo.sc.z = params[0]
-    this.markerA.getChild(0).localXfoParam.value = lineAXfo
+    lineA.localXfoParam.value = lineAXfo
     const lineBXfo = new Xfo()
     lineBXfo.sc.z = params[1]
-    this.markerB.getChild(0).localXfoParam.value = lineBXfo
+    lineB.localXfoParam.value = lineBXfo
 
     this.billboard.globalXfoParam.value = labelXfo
   }
