@@ -28,17 +28,17 @@ line.setBoundingBoxDirty()
  * @extends {TreeItem}
  */
 class MeasureDistance extends Measure {
-  unitsParameter = new StringParameter('Units', 'mm')
   lineGeomItem: GeomItem = null
+  sceneUnits: String = null
   /**
    * Creates an instance of MeasureDistance.
    * @param name
    * @param color
    */
-  constructor(name = 'MeasureDistance', color = new Color('#F9CE03')) {
+  constructor(name = 'MeasureDistance', color = new Color('#F9CE03'), sceneUnits = 'Meters') {
     super(name, color)
 
-    this.addParameter(this.unitsParameter)
+    this.sceneUnits = sceneUnits
   }
 
   /**
@@ -55,10 +55,16 @@ class MeasureDistance extends Measure {
     const color = this.colorParam.getValue()
 
     // Convert meters to mm.
-    const distanceInMM = distance * 1000
-    const units = this.unitsParameter.getValue()
-    const labelTest = `${parseFloat(distanceInMM.toFixed(4))}${units}`
-    console.log(units, distanceInMM)
+    let scaleFactor = 1
+    switch (this.sceneUnits) {
+      case 'Millimeters':
+        break
+      case 'Meters':
+        scaleFactor = 1000
+        break
+    }
+    const distanceInMM = distance * scaleFactor
+    const labelTest = `${parseFloat(distanceInMM.toFixed(3))}mm`
     if (!this.label) {
       this.label = new Label('Distance')
       this.label.getParameter('FontSize').value = 20

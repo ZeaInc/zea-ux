@@ -99,11 +99,14 @@
       const renderer = new GLRenderer($canvas, { hideSplash: true })
       renderer.setScene(scene)
 
+      const sceneUnits = 'Meters'
+      // const sceneUnits = 'Millimeters'
+
       const cadAsset = new CADAsset()
       const context = new AssetLoadContext()
-      // context.units = 'Millimeters'
-      const url = 'data/zcad/3.6.0/Dead_eye_bearingSTEP.zcad'
-      // const url = 'data/zcad/3.9.1/Dead_eye_bearing.stp.zcad'
+      context.units = sceneUnits
+      // const url = 'data/zcad/3.6.0/Dead_eye_bearingSTEP.zcad'
+      const url = 'data/zcad/3.9.1/Dead_eye_bearing.stp.zcad'
       cadAsset.load(url, context).then(() => {
         renderer.frameAll()
       })
@@ -154,7 +157,7 @@
       }
 */
       {
-        const appData = { scene, renderer }
+        const appData = { scene, renderer, sceneUnits }
         const toolManager = new ToolManager()
         const measureDistanceTool = new MeasureDistanceTool(appData)
         const measureRadiusTool = new MeasureRadiusTool(appData)
