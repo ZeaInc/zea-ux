@@ -51,7 +51,7 @@
 
     <script type="module">
       const { GLRenderer, Scene, GeomItem, Material, Vec3, Xfo, Color, Cuboid, Torus } = window.zeaEngine
-      const { SelectionManager, SelectionTool } = window.zeaUx
+      const { SelectionManager, SelectionTool, UndoRedoManager } = window.zeaUx
 
       const $canvas = document.getElementById('renderer')
 
@@ -131,6 +131,16 @@
                 return
               }
               setToolToSelectionTool()
+              break
+            case 'z':
+              if (e.ctrlKey) {
+                UndoRedoManager.getInstance().undo()
+              }
+              break
+            case 'y':
+              if (e.ctrlKey) {
+                UndoRedoManager.getInstance().redo()
+              }
               break
           }
         })
