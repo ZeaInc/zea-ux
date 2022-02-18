@@ -9,6 +9,8 @@ import { UndoRedoManager } from './UndoRedoManager.js'
  */
 class Change extends EventEmitter {
   name: string
+  secondaryChanges: Change[] = []
+  suppressPrimaryChange: boolean = false
   /**
    * Every class that extends from `Change` must contain a global `name` attribute.
    * It is used by the `UndoRedoManager` factory to re-construct the class of the specific implementation of the `Change` class.
@@ -20,6 +22,12 @@ class Change extends EventEmitter {
     this.name = name ? name : UndoRedoManager.getChangeClassName(this)
   }
 
+  addSecondaryChange(secondaryChange: Change) {
+    const index = this.secondaryChanges.length
+    this.secondaryChanges.push(secondaryChange)
+    return index
+  }
+
   /**
    * Called by the `UndoRedoManager` in the `undo` method, and contains the code you wanna run when the undo action is triggered,
    * of course it depends on what you're doing.
@@ -27,7 +35,7 @@ class Change extends EventEmitter {
    * @note This method needs to be implemented, otherwise it will throw an Error.
    */
   undo(): void {
-    throw new Error('Implement me')
+    this.secondaryChanges.forEach((change) => change.undo())
   }
 
   /**
@@ -36,7 +44,7 @@ class Change extends EventEmitter {
    * @note This method needs to be implemented, otherwise it will throw an Error.
    */
   redo(): void {
-    throw new Error('Implement me')
+    this.secondaryChanges.forEach((change) => change.redo())
   }
 
   /**
