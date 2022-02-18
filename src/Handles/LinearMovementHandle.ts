@@ -6,18 +6,17 @@ import {
   Cylinder,
   Cone,
   Parameter,
-  Vec3,
   XfoParameter,
   ZeaPointerEvent,
-  ZeaMouseEvent,
-  ZeaTouchEvent,
-  XRControllerEvent,
 } from '@zeainc/zea-engine'
 import BaseLinearMovementHandle from './BaseLinearMovementHandle'
 import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
 import './Shaders/HandleShader'
 import transformVertices from './transformVertices'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
+import SelectionGroup from '../SelectionGroup'
+import SelectionXfoChange from '../UndoRedo/Changes/SelectionXfoChange'
+import { Change } from '..'
 
 /**
  * Class representing a linear movement scene widget.
@@ -28,7 +27,9 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
   param: Parameter<unknown>
   handleMat: Material
   baseXfo: Xfo
-  change: ParameterValueChange
+  change: Change
+
+  selectionGroup: SelectionGroup
   /**
    * Create a linear movement scene widget.
    *
@@ -82,6 +83,15 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
   }
 
   /**
+   * Sets selectionGroup so this handle can modify the items.
+   *
+   * @param selectionGroup - The SelectionGroup.
+   */
+  setSelectionGroup(selectionGroup: SelectionGroup): void {
+    this.selectionGroup = selectionGroup
+  }
+
+  /**
    * Sets global xfo target parameter.
    *
    * @param param - The video param.
@@ -116,8 +126,14 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
     const param = this.getTargetParam()
     this.baseXfo = <Xfo>param.getValue()
 
-    this.change = new ParameterValueChange(param)
-    UndoRedoManager.getInstance().addChange(this.change)
+    if (this.selectionGroup) {
+      const items = this.selectionGroup.getItems()
+      this.change = new SelectionXfoChange(Array.from(items), this.globalXfoParam.value)
+      UndoRedoManager.getInstance().addChange(this.change)
+    } else {
+      this.change = new ParameterValueChange(param)
+      UndoRedoManager.getInstance().addChange(this.change)
+    }
   }
 
   /**
@@ -128,12 +144,18 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
   onDrag(event: ZeaPointerEvent): void {
     const dragVec = this.holdPos.subtract(this.grabPos)
 
-    const newXfo = this.baseXfo.clone()
-    newXfo.tr.addInPlace(dragVec)
+    if (this.selectionGroup) {
+      const selectionXfoChange = <SelectionXfoChange>this.change
+      const deltaXfo = new Xfo(dragVec)
+      selectionXfoChange.setDeltaXfo(deltaXfo)
+    } else {
+      const newXfo = this.baseXfo.clone()
+      newXfo.tr.addInPlace(dragVec)
 
-    this.change.update({
-      value: newXfo,
-    })
+      this.change.update({
+        value: newXfo,
+      })
+    }
   }
 
   /**
@@ -142,6 +164,10 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
    * @param event - The event param.
    */
   onDragEnd(event: ZeaPointerEvent): void {
+    if (this.selectionGroup) {
+      const selectionXfoChange = <SelectionXfoChange>this.change
+      selectionXfoChange.setDone()
+    }
     this.change = null
   }
 }

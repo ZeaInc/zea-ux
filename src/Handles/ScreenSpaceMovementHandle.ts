@@ -1,19 +1,12 @@
-import {
-  Parameter,
-  Ray,
-  Vec3,
-  Xfo,
-  ZeaPointerEvent,
-  ZeaMouseEvent,
-  ZeaTouchEvent,
-  XRControllerEvent,
-  GLViewport,
-} from '@zeainc/zea-engine'
+import { Parameter, Ray, Xfo, ZeaPointerEvent, ZeaMouseEvent, GLViewport } from '@zeainc/zea-engine'
 import Handle from './Handle.js'
 import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange.js'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager.js'
 
 import { getPointerRay } from '../utility.js'
+import { Change } from '../index.js'
+import SelectionXfoChange from '../UndoRedo/Changes/SelectionXfoChange.js'
+import SelectionGroup from '../SelectionGroup.js'
 
 /**
  * Class representing a planar movement scene widget.
@@ -22,8 +15,9 @@ import { getPointerRay } from '../utility.js'
  */
 class ScreenSpaceMovementHandle extends Handle {
   param: Parameter<unknown>
-  change: ParameterValueChange
   baseXfo: Xfo
+  change: Change
+  selectionGroup: SelectionGroup
   /**
    * Create a planar movement scene widget.
    *
@@ -31,6 +25,15 @@ class ScreenSpaceMovementHandle extends Handle {
    */
   constructor(name?: string) {
     super(name)
+  }
+
+  /**
+   * Sets selectionGroup so this handle can modify the items.
+   *
+   * @param selectionGroup - The SelectionGroup.
+   */
+  setSelectionGroup(selectionGroup: SelectionGroup): void {
+    this.selectionGroup = selectionGroup
   }
 
   /**
@@ -121,8 +124,14 @@ class ScreenSpaceMovementHandle extends Handle {
     const param = this.getTargetParam()
     this.baseXfo = <Xfo>param.value
 
-    this.change = new ParameterValueChange(param)
-    UndoRedoManager.getInstance().addChange(this.change)
+    if (this.selectionGroup) {
+      const items = this.selectionGroup.getItems()
+      this.change = new SelectionXfoChange(Array.from(items), this.globalXfoParam.value)
+      UndoRedoManager.getInstance().addChange(this.change)
+    } else {
+      this.change = new ParameterValueChange(param)
+      UndoRedoManager.getInstance().addChange(this.change)
+    }
   }
 
   /**
@@ -133,12 +142,18 @@ class ScreenSpaceMovementHandle extends Handle {
   onDrag(event: ZeaPointerEvent): void {
     const dragVec = this.holdPos.subtract(this.grabPos)
 
-    const newXfo = this.baseXfo.clone()
-    newXfo.tr.addInPlace(dragVec)
+    if (this.selectionGroup) {
+      const selectionXfoChange = <SelectionXfoChange>this.change
+      const deltaXfo = new Xfo(dragVec)
+      selectionXfoChange.setDeltaXfo(deltaXfo)
+    } else {
+      const newXfo = this.baseXfo.clone()
+      newXfo.tr.addInPlace(dragVec)
 
-    this.change.update({
-      value: newXfo,
-    })
+      this.change.update({
+        value: newXfo,
+      })
+    }
   }
 
   /**

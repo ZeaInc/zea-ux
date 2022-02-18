@@ -4,6 +4,7 @@ import LinearMovementHandle from './LinearMovementHandle'
 import AxialRotationHandle from './AxialRotationHandle'
 import './Shaders/HandleShader'
 import XfoPlanarMovementHandle from './XfoPlanarMovementHandle'
+import SelectionGroup from '../SelectionGroup'
 
 /**
  * Class representing a xfo handle. Base transformations for objects in the scene
@@ -185,6 +186,23 @@ class XfoHandle extends TreeItem {
     this.param = param
     this.traverse((item) => {
       if (item instanceof Handle) item.setTargetParam(param, false) // TODO: should this take track?
+    })
+  }
+
+  /**
+   * Sets selectionGroup so this handle can modify the items.
+   *
+   * @param selectionGroup - The SelectionGroup.
+   */
+  setSelectionGroup(selectionGroup: SelectionGroup): void {
+    this.traverse((item) => {
+      if (
+        item instanceof LinearMovementHandle ||
+        item instanceof XfoPlanarMovementHandle ||
+        item instanceof AxialRotationHandle
+      ) {
+        item.setSelectionGroup(selectionGroup) // TODO: should this take track?
+      }
     })
   }
 }

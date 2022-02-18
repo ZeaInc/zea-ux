@@ -1,15 +1,10 @@
 import Handle from './Handle'
 import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
-import {
-  Parameter,
-  Vec3,
-  Xfo,
-  ZeaPointerEvent,
-  ZeaMouseEvent,
-  ZeaTouchEvent,
-  XRControllerEvent,
-} from '@zeainc/zea-engine'
+import { Parameter, Vec3, Xfo, ZeaPointerEvent, XRControllerEvent } from '@zeainc/zea-engine'
+import { Change } from '..'
+import SelectionGroup from '../SelectionGroup'
+import SelectionXfoChange from '../UndoRedo/Changes/SelectionXfoChange'
 
 /**
  * Class representing a planar movement scene widget.
@@ -21,7 +16,8 @@ class PlanarMovementHandle extends Handle {
   fullXfoManipulationInVR: boolean
   grabOffset: Vec3
   baseXfo: Xfo
-  change: ParameterValueChange
+  change: Change
+  selectionGroup: SelectionGroup
 
   /**
    * Create a planar movement scene widget.
@@ -31,6 +27,15 @@ class PlanarMovementHandle extends Handle {
   constructor(name: string) {
     super(name)
     this.fullXfoManipulationInVR = true
+  }
+
+  /**
+   * Sets selectionGroup so this handle can modify the items.
+   *
+   * @param selectionGroup - The SelectionGroup.
+   */
+  setSelectionGroup(selectionGroup: SelectionGroup): void {
+    this.selectionGroup = selectionGroup
   }
 
   /**
@@ -69,8 +74,14 @@ class PlanarMovementHandle extends Handle {
     const param = this.getTargetParam()
     this.baseXfo = <Xfo>param.value
 
-    this.change = new ParameterValueChange(param)
-    UndoRedoManager.getInstance().addChange(this.change)
+    if (this.selectionGroup) {
+      const items = this.selectionGroup.getItems()
+      this.change = new SelectionXfoChange(Array.from(items), this.globalXfoParam.value)
+      UndoRedoManager.getInstance().addChange(this.change)
+    } else {
+      this.change = new ParameterValueChange(param)
+      UndoRedoManager.getInstance().addChange(this.change)
+    }
   }
 
   /**
@@ -81,12 +92,18 @@ class PlanarMovementHandle extends Handle {
   onDrag(event: ZeaPointerEvent): void {
     const dragVec = this.holdPos.subtract(this.grabPos)
 
-    const newXfo = this.baseXfo.clone()
-    newXfo.tr.addInPlace(dragVec)
+    if (this.selectionGroup) {
+      const selectionXfoChange = <SelectionXfoChange>this.change
+      const deltaXfo = new Xfo(dragVec)
+      selectionXfoChange.setDeltaXfo(deltaXfo)
+    } else {
+      const newXfo = this.baseXfo.clone()
+      newXfo.tr.addInPlace(dragVec)
 
-    this.change.update({
-      value: newXfo,
-    })
+      this.change.update({
+        value: newXfo,
+      })
+    }
   }
 
   /**
@@ -95,6 +112,10 @@ class PlanarMovementHandle extends Handle {
    * @param event - The event param.
    */
   onDragEnd(event: ZeaPointerEvent): void {
+    if (this.selectionGroup) {
+      const selectionXfoChange = <SelectionXfoChange>this.change
+      selectionXfoChange.setDone()
+    }
     this.change = null
   }
 

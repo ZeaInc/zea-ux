@@ -12,6 +12,9 @@ import {
 import Handle from './Handle'
 import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
+import SelectionXfoChange from '../UndoRedo/Changes/SelectionXfoChange'
+import SelectionGroup from '../SelectionGroup'
+import { Change } from '..'
 
 /**
  * Class representing an axial rotation scene widget.
@@ -21,12 +24,14 @@ import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 class BaseAxialRotationHandle extends Handle {
   param: NumberParameter | XfoParameter
   baseXfo: Xfo
-  deltaXfo: Xfo
-  offsetXfo: Xfo
+  deltaXfo: Xfo = new Xfo()
+  offsetXfo: Xfo = new Xfo()
   grabCircleRadius: number
   vec0: Vec3
-  change: ParameterValueChange
+  change: Change
   range: Array<number>
+
+  selectionGroup: SelectionGroup
   /**
    * Create an axial rotation scene widget.
    *
@@ -34,6 +39,15 @@ class BaseAxialRotationHandle extends Handle {
    */
   constructor(name: string) {
     super(name)
+  }
+
+  /**
+   * Sets selectionGroup so this handle can modify the items.
+   *
+   * @param selectionGroup - The SelectionGroup.
+   */
+  setSelectionGroup(selectionGroup: SelectionGroup): void {
+    this.selectionGroup = selectionGroup
   }
 
   /**
@@ -72,15 +86,23 @@ class BaseAxialRotationHandle extends Handle {
     this.baseXfo.sc.set(1, 1, 1)
     this.deltaXfo = new Xfo()
 
-    const param = this.getTargetParam()
-    const paramXfo = <Xfo>param.value
-    this.offsetXfo = this.baseXfo.inverse().multiply(paramXfo)
     this.vec0 = this.grabPos.subtract(this.baseXfo.tr)
     this.grabCircleRadius = this.vec0.length()
     this.vec0.normalizeInPlace()
 
-    this.change = new ParameterValueChange(param)
-    UndoRedoManager.getInstance().addChange(this.change)
+    if (this.selectionGroup) {
+      this.offsetXfo = this.localXfoParam.value.inverse()
+      const items = this.selectionGroup.getItems()
+      this.change = new SelectionXfoChange(Array.from(items), this.baseXfo)
+      UndoRedoManager.getInstance().addChange(this.change)
+    } else {
+      const param = this.getTargetParam()
+      const paramXfo = <Xfo>param.value
+      this.offsetXfo = this.baseXfo.inverse().multiply(paramXfo)
+
+      this.change = new ParameterValueChange(param)
+      UndoRedoManager.getInstance().addChange(this.change)
+    }
   }
 
   /**
@@ -116,14 +138,19 @@ class BaseAxialRotationHandle extends Handle {
       angle = Math.floor(angle / increment) * increment
     }
 
-    this.deltaXfo.ori.setFromAxisAndAngle(new Vec3(0, 0, 1), angle)
+    this.deltaXfo.ori.setFromAxisAndAngle(this.baseXfo.ori.getZaxis(), angle)
 
-    const newXfo = this.baseXfo.multiply(this.deltaXfo)
-    const value = newXfo.multiply(this.offsetXfo)
+    if (this.selectionGroup) {
+      const selectionXfoChange = <SelectionXfoChange>this.change
+      selectionXfoChange.setDeltaXfo(this.deltaXfo)
+    } else {
+      const newXfo = this.baseXfo.multiply(this.deltaXfo)
+      const value = newXfo.multiply(this.offsetXfo)
 
-    this.change.update({
-      value,
-    })
+      this.change.update({
+        value,
+      })
+    }
   }
 
   /**
@@ -132,6 +159,10 @@ class BaseAxialRotationHandle extends Handle {
    * @param event - The event param.
    */
   onDragEnd(event: ZeaPointerEvent): void {
+    if (this.selectionGroup) {
+      const selectionXfoChange = <SelectionXfoChange>this.change
+      selectionXfoChange.setDone()
+    }
     this.change = null
   }
 }
