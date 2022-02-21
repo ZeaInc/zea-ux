@@ -7,7 +7,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Bug Fixes
 
-* the XfoHandle now generates a SelectionXfoChange object that manages the xfo values for all selected items during manipulation ([c08ea5f](https://github.com/ZeaInc/zea-ux/commit/c08ea5f14f2087a87959db9ad9ce38a209e273eb))
+* The XfoHandle now generates a SelectionXfoChange object that manages the xfo values for all selected items during manipulation ([c08ea5f](https://github.com/ZeaInc/zea-ux/commit/c08ea5f14f2087a87959db9ad9ce38a209e273eb))
 
 ### [4.0.4](https://github.com/ZeaInc/zea-ux/compare/v4.0.3...v4.0.4) (2022-02-07)
 
