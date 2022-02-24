@@ -39,25 +39,13 @@ class SelectionGroup extends SelectionSet {
   constructor(options?: Record<string, any>) {
     super()
 
-    let selectionColor
-    let subtreeColor
-    options.selectionOutlineColor
-      ? (selectionColor = options.selectionOutlineColor)
-      : (selectionColor = new Color(3 / 255, 227 / 255, 172 / 255, 0.1))
-
-    if (options.branchSelectionOutlineColor) subtreeColor = options.branchSelectionOutlineColor
-    else {
-      subtreeColor = selectionColor.lerp(new Color('white'), 0.5)
-      subtreeColor.a = 0.1
-    }
-
+    const selectionColor = options.selectionOutlineColor
+      ? options.selectionOutlineColor
+      : new Color(3 / 255, 227 / 255, 172 / 255, 0.1)
     this.highlightColorParam.value = selectionColor
-    this.addParameter(new ColorParameter('SubtreeHighlightColor', subtreeColor))
-
     this.itemsParam.setFilterFn((item) => item instanceof BaseItem)
 
     this.addParameter(this.initialXfoModeParam)
-
     this.selectionGroupXfoOp = new SelectionGroupXfoOperator(this.initialXfoModeParam, this.globalXfoParam)
   }
 
@@ -96,15 +84,7 @@ class SelectionGroup extends SelectionSet {
     if (item instanceof TreeItem) {
       const highlightColor = this.highlightColorParam.value
       highlightColor.a = this.highlightFillParam.value
-      item.addHighlight('selected' + this.getId(), highlightColor, false)
-
-      const subTreeColor = this.getParameter('SubtreeHighlightColor').getValue()
-      item.getChildren().forEach((childItem) => {
-        if (childItem instanceof TreeItem) {
-          childItem.addHighlight('branchselected' + this.getId(), subTreeColor, true)
-        }
-      })
-
+      item.addHighlight('selected' + this.getId(), highlightColor, true)
       this.selectionGroupXfoOp.addItem(item)
     }
   }
@@ -117,13 +97,7 @@ class SelectionGroup extends SelectionSet {
    */
   unbindItem(item: TreeItem, index: number): void {
     if (item instanceof TreeItem) {
-      item.removeHighlight('selected' + this.getId())
-      item.getChildren().forEach((childItem) => {
-        if (childItem instanceof TreeItem) {
-          childItem.removeHighlight('branchselected' + this.getId(), true)
-        }
-      })
-
+      item.removeHighlight('selected' + this.getId(), true)
       this.selectionGroupXfoOp.removeItem(item)
     }
   }
