@@ -107,11 +107,13 @@
         const setToolToSelectionTool = () => {
           renderer.getViewport().setManipulator(selectionTool)
           selectionOn = true
+          $selectionCheckbox.checked = selectionOn
         }
 
         const setToolToCameraManipulator = () => {
           renderer.getViewport().setManipulator(cameraManipulator)
           selectionOn = false
+          $selectionCheckbox.checked = selectionOn
         }
 
         renderer.getViewport().on('pointerDown', (event) => {
@@ -125,12 +127,8 @@
         })
         document.addEventListener('keydown', (e) => {
           switch (e.key) {
-            case 'b':
-              if (selectionOn) {
-                setToolToCameraManipulator()
-                return
-              }
-              setToolToSelectionTool()
+            case 'Alt':
+              if (!selectionOn) setToolToSelectionTool()
               break
             case 'z':
               if (e.ctrlKey) {
@@ -141,6 +139,13 @@
               if (e.ctrlKey) {
                 UndoRedoManager.getInstance().redo()
               }
+              break
+          }
+        })
+        document.addEventListener('keyup', (e) => {
+          switch (e.key) {
+            case 'Alt':
+              if (selectionOn) setToolToCameraManipulator()
               break
           }
         })
