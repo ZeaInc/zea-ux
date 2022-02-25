@@ -140,7 +140,7 @@ class SelectionTool extends BaseTool {
    * @return {boolean} The return value.
    */
   onPointerDown(event: ZeaPointerEvent): void {
-    if (event instanceof ZeaTouchEvent || (event instanceof ZeaMouseEvent && event.button == 0 && !event.altKey)) {
+    if (event instanceof ZeaTouchEvent || (event instanceof ZeaMouseEvent && event.button == 0)) {
       this.pointerDownPos = event.pointerPos
       this.dragging = false
 
