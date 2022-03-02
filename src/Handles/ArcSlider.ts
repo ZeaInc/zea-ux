@@ -230,7 +230,6 @@ class ArcSlider extends BaseAxialRotationHandle {
   onDragStart(event: ZeaPointerEvent): void {
     this.baseXfo = this.globalXfoParam.value.clone()
     this.baseXfo.sc.set(1, 1, 1)
-    this.deltaXfo = new Xfo()
     // this.offsetXfo = this.baseXfo.inverse().multiply(this.param.getValue());
 
     this.vec0 = this.globalXfoParam.value.ori.getXaxis()
@@ -271,9 +270,10 @@ class ArcSlider extends BaseAxialRotationHandle {
       angle = Math.floor(angle / increment) * increment
     }
 
-    this.deltaXfo.ori.setFromAxisAndAngle(new Vec3(0, 0, 1), angle)
+    const deltaXfo = new Xfo()
+    deltaXfo.ori.setFromAxisAndAngle(new Vec3(0, 0, 1), angle)
 
-    const newXfo = this.baseXfo.multiply(this.deltaXfo)
+    const newXfo = this.baseXfo.multiply(deltaXfo)
     const value = newXfo // .multiply(this.offsetXfo);
 
     if (this.change) {

@@ -24,8 +24,6 @@ import { Change } from '..'
 class BaseAxialRotationHandle extends Handle {
   param: NumberParameter | XfoParameter
   baseXfo: Xfo
-  deltaXfo: Xfo = new Xfo()
-  offsetXfo: Xfo = new Xfo()
   grabCircleRadius: number
   vec0: Vec3
   change: Change
@@ -83,23 +81,18 @@ class BaseAxialRotationHandle extends Handle {
    */
   onDragStart(event: ZeaPointerEvent): void {
     this.baseXfo = this.globalXfoParam.value.clone()
-    this.baseXfo.sc.set(1, 1, 1)
-    this.deltaXfo = new Xfo()
 
     this.vec0 = this.grabPos.subtract(this.baseXfo.tr)
     this.grabCircleRadius = this.vec0.length()
     this.vec0.normalizeInPlace()
 
+    // this.offsetXfo = this.localXfoParam.value.inverse()
     if (this.selectionGroup) {
-      this.offsetXfo = this.localXfoParam.value.inverse()
       const items = this.selectionGroup.getItems()
       this.change = new SelectionXfoChange(Array.from(items), this.baseXfo)
       UndoRedoManager.getInstance().addChange(this.change)
     } else {
       const param = this.getTargetParam()
-      const paramXfo = <Xfo>param.value
-      this.offsetXfo = this.baseXfo.inverse().multiply(paramXfo)
-
       this.change = new ParameterValueChange(param)
       UndoRedoManager.getInstance().addChange(this.change)
     }
@@ -138,14 +131,15 @@ class BaseAxialRotationHandle extends Handle {
       angle = Math.floor(angle / increment) * increment
     }
 
-    this.deltaXfo.ori.setFromAxisAndAngle(this.baseXfo.ori.getZaxis(), angle)
+    const deltaXfo = new Xfo()
+    deltaXfo.ori.setFromAxisAndAngle(this.baseXfo.ori.getZaxis(), angle)
 
     if (this.selectionGroup) {
       const selectionXfoChange = <SelectionXfoChange>this.change
-      selectionXfoChange.setDeltaXfo(this.deltaXfo)
+      selectionXfoChange.setDeltaXfo(deltaXfo)
     } else {
-      const newXfo = this.baseXfo.multiply(this.deltaXfo)
-      const value = newXfo.multiply(this.offsetXfo)
+      const value = this.baseXfo.clone()
+      value.ori = deltaXfo.ori.multiply(value.ori)
 
       this.change.update({
         value,
