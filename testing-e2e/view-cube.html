@@ -78,6 +78,7 @@
       scene.getRoot().addChild(geomItem2)
 
       const manipulator = renderer.getViewport().getManipulator()
+      // manipulator.setDefaultManipulationMode(CameraManipulator.MANIPULATION_MODES.turntable)
       manipulator.setDefaultManipulationMode(CameraManipulator.MANIPULATION_MODES.tumbler)
 
       renderer.getViewport().on('keyDown', (event) => {
