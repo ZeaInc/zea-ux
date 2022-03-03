@@ -1,16 +1,4 @@
-import {
-  Color,
-  Xfo,
-  NumberParameter,
-  GeomItem,
-  Material,
-  Torus,
-  Mat4,
-  ZeaPointerEvent,
-  ZeaMouseEvent,
-  ZeaTouchEvent,
-  XRControllerEvent,
-} from '@zeainc/zea-engine'
+import { Color, Xfo, NumberParameter, GeomItem, Material, Torus, ZeaPointerEvent } from '@zeainc/zea-engine'
 
 import BaseAxialRotationHandle from './BaseAxialRotationHandle'
 import './Shaders/HandleShader'
