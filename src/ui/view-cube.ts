@@ -1,5 +1,7 @@
-import { Camera, CameraManipulator, GLViewport, Mat3, Mat4, MathFunctions, Quat, Vec3, Xfo } from '@zeainc/zea-engine'
+import { CameraManipulator, GLViewport, MathFunctions, Quat, Vec3, Xfo } from '@zeainc/zea-engine'
+import { ToolManager } from '../Tools/ToolManager'
 
+// This ViewCube was created while referencing the following tutorial.
 // https://3dtransforms.desandro.com/cube
 // https://codepen.io/desandro/pen/KRWjzm
 
@@ -232,7 +234,20 @@ input:checked + .slider:before {
       }
     }
 
-    const manipulator = this.viewport.getManipulator()
+    let manipulator = this.viewport.getManipulator()
+    if (manipulator instanceof ToolManager) {
+      const toolManager: ToolManager = manipulator
+      if ('CameraManipulator' in toolManager.tools) {
+        manipulator = toolManager.tools['CameraManipulator']
+      } else {
+        for (let key in toolManager.tools) {
+          if (toolManager.tools[key] instanceof CameraManipulator) {
+            manipulator = toolManager.tools[key]
+            break
+          }
+        }
+      }
+    }
     if (manipulator instanceof CameraManipulator) {
       if (manipulator.defaultManipulationState == CameraManipulator.MANIPULATION_MODES.turntable) {
         if (normal.approxEqual(new Vec3(0, 0, 1)) || normal.approxEqual(new Vec3(0, 0, -1))) {
