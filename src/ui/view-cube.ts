@@ -1,10 +1,14 @@
 import { Camera, CameraManipulator, GLViewport, Mat3, Mat4, MathFunctions, Quat, Vec3, Xfo } from '@zeainc/zea-engine'
 
-let currentClass: string = null
+// https://3dtransforms.desandro.com/cube
+// https://codepen.io/desandro/pen/KRWjzm
+
 class ZeaViewCube extends HTMLElement {
+  home: HTMLDivElement
   scene: HTMLDivElement
   cube: HTMLDivElement
   viewport: GLViewport
+  perspective: boolean = true
   constructor() {
     super()
 
@@ -34,13 +38,116 @@ class ZeaViewCube extends HTMLElement {
     addCubeFace('Z', new Vec3(0, 0, 1))
     addCubeFace('-Z', new Vec3(0, 0, -1))
 
+    const home = document.createElement('div')
+    home.classList.add('home')
+    this.shadowRoot?.appendChild(home)
+    const label = document.createElement('label')
+    const input = document.createElement('input')
+    const span = document.createElement('span')
+    input.setAttribute('type', 'checkbox')
+    label.classList.add('switch')
+    span.classList.add('slider')
+    span.classList.add('round')
+    label.appendChild(input)
+    const spanText = document.createElement('span')
+    spanText.classList.add('switch-label')
+    spanText.textContent = 'Persp'
+    home.appendChild(spanText)
+    label.appendChild(span)
+    home.appendChild(label)
+    input.checked = true
+    input.addEventListener('change', () => {
+      this.perspective = !this.perspective
+
+      const camera = this.viewport.getCamera()
+      const startXfo = camera.globalXfoParam.getValue()
+      const normal = startXfo.ori.getZaxis()
+      this.alignFace(normal)
+    })
+
     const styleTag = document.createElement('style')
     styleTag.appendChild(
       document.createTextNode(`
 
+      
+      .home {
+        position: absolute;
+        bottom: 0px;
+        right: 10px;
+        font-family: sans-serif;
+      }
+
+      /* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+}
+
+.switch-label {
+  position: absolute;
+  left: -50px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(20px);
+  -ms-transform: translateX(20px);
+  transform: translateX(20px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 10px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
       .scene {
         width: 80px;
-        height: 80px;
+        height: 95px;
         border: 0px;
         margin: 20px;
         perspective: 800px;
@@ -146,7 +253,7 @@ class ZeaViewCube extends HTMLElement {
     const endDist = startDist
     // const endViewHeight = Math.sin(camera.fovParam.value * 0.5) * endDist * 2
 
-    const endOrtho = 1
+    const endOrtho = this.perspective ? 0 : 1
     if (endOrtho > 0.5 && startOrtho < 0.5) {
       // IF we are transitioning to an orthographic projection, we match the orthographic
       // view height with the current perspective projection height at the target distance.
