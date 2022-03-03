@@ -14,5 +14,6 @@ export * from './UndoRedo/index'
 export * from './Tools/index'
 export * from './Handles/index'
 export * from './Measurement/index'
+export * from './ui/index'
 
 export type { AppData } from '../types/types'
