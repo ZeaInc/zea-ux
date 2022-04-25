@@ -16,7 +16,7 @@ class MeasurementChange extends Change {
   /**
    * Creates an instance of MeasurementChange.
    *
-   * @param {TreeItem} measurement - The parent that the measurement will be added to.
+   * @param measurement - The parent that the measurement will be added to.
    */
   constructor(measurement: TreeItem) {
     super('MeasurementChange')
@@ -29,10 +29,10 @@ class MeasurementChange extends Change {
   /**
    *
    *
-   * @param {object} data - An object containing potentially the start and end positions.
+   * @param data - An object containing potentially the start and end positions.
    * @memberof MeasurementChange
    */
-  update(data: Record<string, any>) {
+  update(data: Record<string, any>): void {
     this.measurement.fromJSON(data.measurementData)
     this.emit('updated', data)
   }
@@ -40,14 +40,14 @@ class MeasurementChange extends Change {
   /**
    *
    */
-  end() {
+  end(): void {
     this.measurement.setGeomBuffersVisibility(true)
   }
 
   /**
    * Removes recently created geometry from its parent.
    */
-  undo() {
+  undo(): void {
     console.log('undo MeasurementChange')
     this.parentItem = <TreeItem>this.measurement.getOwner()
     this.childIndex = this.parentItem.getChildIndex(this.measurement)
@@ -57,7 +57,7 @@ class MeasurementChange extends Change {
   /**
    * Restores recently created geometry and adds it to the specified parent tree item.
    */
-  redo() {
+  redo(): void {
     console.log('redo MeasurementChange')
     this.parentItem.insertChild(this.measurement, this.childIndex)
   }
@@ -65,10 +65,10 @@ class MeasurementChange extends Change {
   /**
    * Serializes the change as a JSON object.
    *
-   * @param {Record<any,any>} context - The context value
+   * @param context - The context value
    * @return {Record<any,any>} - The serialized change
    */
-  toJSON(context: Record<any, any>) {
+  toJSON(context: Record<any, any>): Record<string, any> {
     const j: Record<any, any> = super.toJSON(context)
     j.parentItemPath = this.measurement.getOwner().getPath()
     j.measurementType = Registry.getClassName(Object.getPrototypeOf(this.measurement).constructor)
@@ -79,10 +79,10 @@ class MeasurementChange extends Change {
   /**
    * Restores geometry from using the specified JSON
    *
-   * @param {object} j - The j param.
-   * @param {object} context - The appData param.
+   * @param j - The j param.
+   * @param context - The appData param.
    */
-  fromJSON(j: Record<string, any>, context: Record<string, any>) {
+  fromJSON(j: Record<string, any>, context: Record<string, any>): void {
     const sceneRoot = context.appData.scene.getRoot()
     const parentItem = sceneRoot.resolvePath(j.parentItemPath, 1)
     if (parentItem) {
@@ -95,7 +95,7 @@ class MeasurementChange extends Change {
   /**
    * Removes geometry item reference from change change.
    */
-  destroy() {}
+  destroy(): void {}
 }
 
 UndoRedoManager.registerChange('MeasurementChange', MeasurementChange)

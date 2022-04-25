@@ -1,29 +1,32 @@
 import { Vec3, Xfo, EulerAngles, Color, TreeItem, GeomItem, Material, Plane, DataImage } from '@zeainc/zea-engine'
-import { AppData } from '../../../types/temp.js'
+import { AppData } from '../../../types/types.js'
 
 import domtoimage from './dom-to-image.js'
 
 /**
  * Traverse a dom tree and call a callback at each node.
- * @param {HTMLElement} node
- * @param {number} depth
- * @param {function} func
+ * @param node
+ * @param depth
+ * @param func
  */
-function traverse(node: any, depth: number, func: any) {
+function traverse(node: HTMLElement, depth: number, func: any): void {
   if (!func(node, depth)) return
+  // @ts-ignore
   node = node.firstChild
   while (node) {
     traverse(node, depth + 1, func)
+    // @ts-ignore
     node = node.nextSibling
   }
 }
 
 /**
  * Computes the size of th element, including margins.
- * @param {HTMLElement} elem
+ * @param elem
  * @return {object}
  */
-function elemSize(elem: any) {
+function elemSize(elem: HTMLElement) {
+  // @ts-ignore
   const computedStyle = elem.computedStyleMap()
   const elmWidth = computedStyle.get('width').value
   const elmMarginHorizontal = computedStyle.get('margin-left').value + computedStyle.get('margin-right').value
@@ -62,8 +65,8 @@ export default class VRControllerUI extends TreeItem {
   size: Vec3
   /**
    * Create a VR controller UI.
-   * @param {any} appData - The appData value.
-   * @param {any} vrUIDOMElement - The vrUIDOMElement value.
+   * @param appData - The appData value.
+   * @param vrUIDOMElement - The vrUIDOMElement value.
    */
   constructor(appData: AppData, vrUIDOMElement: HTMLElement) {
     super('VRControllerUI')
@@ -100,7 +103,7 @@ export default class VRControllerUI extends TreeItem {
       // debugGeomItemXfo.sc = this.size
       // debugGeomItem.localXfoParam.value = debugGeomItemXfo
 
-      traverse(vrUIDOMElement, 0, (elem: HTMLElement, depth: number) => {
+      traverse(vrUIDOMElement, 0, (elem: HTMLElement, depth: number): boolean => {
         if (elem.className == 'button') {
           const size = elemSize(elem)
           // console.log(depth, elem.id, elem.className, size.width, size.height, elem.offsetLeft, elem.offsetTop)
@@ -173,25 +176,25 @@ export default class VRControllerUI extends TreeItem {
   /**
    * The activate method.
    */
-  activate() {
+  activate(): void {
     this.__vrUIDOMElement.style.display = 'block'
   }
 
   /**
    * The deactivate method.
    */
-  deactivate() {
+  deactivate(): void {
     this.__vrUIDOMElement.style.display = 'none'
   }
 
   /**
    * The sendMouseEvent method.
-   * @param {any} eventName - The eventName param.
-   * @param {any} args - The args param.
-   * @param {any} element - The element param.
-   * @return {any} The return value.
+   * @param eventName - The eventName param.
+   * @param args - The args param.
+   * @param element - The element param.
+   * @return The return value.
    */
-  sendMouseEvent(eventName: string, args: any, element: Element) {
+  sendMouseEvent(eventName: string, args: any, element: Element): MouseEvent {
     // console.log('sendMouseEvent:', eventName, element)
 
     const event = new MouseEvent(

@@ -14,9 +14,9 @@ class CreateSphereChange extends CreateGeomChange {
   sphere = new Sphere(0, 24, 12)
   /**
    * Create a create sphere change.
-   * @param {TreeItem} parentItem - The parentItem value.
-   * @param {Xfo} xfo - The xfo value.
-   * @param {Color} color - The color of the sphere to create.
+   * @param parentItem - The parentItem value.
+   * @param xfo - The xfo value.
+   * @param color - The color of the sphere to create.
    */
   constructor(parentItem: TreeItem, xfo: Xfo, color: Color) {
     super('CreateSphere', parentItem)
@@ -34,9 +34,9 @@ class CreateSphereChange extends CreateGeomChange {
   /**
    * Updates sphere geometry using the specified data.
    *
-   * @param {object} updateData - The updateData param.
+   * @param updateData - The updateData param.
    */
-  update(updateData: Record<any, any>) {
+  update(updateData: Record<any, any>): void {
     this.sphere.radiusParam.value = updateData.radius
 
     this.emit('updated', updateData)
@@ -56,9 +56,9 @@ class CreateSphereChange extends CreateGeomChange {
   /**
    * Updates sphere geometry using a JSON object.
    *
-   * @param {object} j - The j param.
+   * @param j - The j param.
    */
-  updateFromJSON(j: Record<any, any>) {
+  updateFromJSON(j: Record<any, any>): void {
     if (j.radius) this.sphere.radiusParam.value = j.radius
   }
 }

@@ -16,7 +16,7 @@ import {
 
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 import Handle from '../Handles/Handle'
-import { AppData } from '../../types/temp'
+import { AppData } from '../../types/types'
 import { SelectionManager } from '..'
 import { GLViewport } from '@zeainc/zea-engine'
 
@@ -38,7 +38,7 @@ class SelectionTool extends BaseTool {
   /**
    * Creates an instance of SelectionTool.
    *
-   * @param {object} appData - The appData value
+   * @param appData - The appData value
    */
   constructor(appData: AppData) {
     super()
@@ -81,14 +81,14 @@ class SelectionTool extends BaseTool {
   /**
    * Activates selection tool.
    */
-  activateTool() {
+  activateTool(): void {
     super.activateTool()
   }
 
   /**
    * Deactivates the selection tool.
    */
-  deactivateTool() {
+  deactivateTool(): void {
     super.deactivateTool()
     this.selectionRectXfo.sc.set(0, 0, 0)
     this.rectItem.globalXfoParam.value = this.selectionRectXfo
@@ -97,22 +97,22 @@ class SelectionTool extends BaseTool {
   /**
    * Activates selection tool.
    */
-  setSelectionManager(selectionManager: SelectionManager) {
+  setSelectionManager(selectionManager: SelectionManager): void {
     this.selectionManager = selectionManager
   }
 
-  setSelectionFilter(fn: any) {
+  setSelectionFilter(fn: any): void {
     this.__selectionFilterFn = fn
   }
 
   /**
    *
    *
-   * @param {GLViewport} viewport - The viewport value
-   * @param {*} delta - The delta value
+   * @param viewport - The viewport value
+   * @param delta - The delta value
    * @private
    */
-  __resizeRect(viewport: GLBaseViewport, delta: any) {
+  __resizeRect(viewport: GLBaseViewport, delta: any): void {
     const sc = new Vec2((1 / viewport.getWidth()) * 2, (1 / viewport.getHeight()) * 2)
     const size = delta.multiply(sc)
     this.selectionRectXfo.sc.set(Math.abs(size.x), Math.abs(size.y), 1)
@@ -128,19 +128,19 @@ class SelectionTool extends BaseTool {
   /**
    *
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param event - The event param.
    * @private
    */
-  onPointerDoublePress(event: ZeaPointerEvent) {}
+  onPointerDoublePress(event: ZeaPointerEvent): void {}
 
   /**
    * Event fired when a pointing device button is pressed while the pointer is over the tool.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param event - The event param.
    * @return {boolean} The return value.
    */
-  onPointerDown(event: ZeaPointerEvent) {
-    if (event instanceof ZeaTouchEvent || (event instanceof ZeaMouseEvent && event.button == 0 && !event.altKey)) {
+  onPointerDown(event: ZeaPointerEvent): void {
+    if (event instanceof ZeaTouchEvent || (event instanceof ZeaMouseEvent && event.button == 0)) {
       this.pointerDownPos = event.pointerPos
       this.dragging = false
 
@@ -151,10 +151,10 @@ class SelectionTool extends BaseTool {
   /**
    * Event fired when a pointing device is moved while the cursor's hotspot is inside it.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param event - The event param.
    * @return {boolean} The return value.
    */
-  onPointerMove(event: ZeaPointerEvent) {
+  onPointerMove(event: ZeaPointerEvent): void {
     if (!(event instanceof ZeaMouseEvent) && !(event instanceof ZeaTouchEvent)) {
       console.warn('not handling VR')
       return
@@ -177,10 +177,10 @@ class SelectionTool extends BaseTool {
   /**
    * Event fired when a pointing device button is released while the pointer is over the tool.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param event - The event param.
    * @return {boolean} The return value.
    */
-  onPointerUp(event: ZeaPointerEvent) {
+  onPointerUp(event: ZeaPointerEvent): void {
     if ((event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) && this.pointerDownPos) {
       // event.viewport.renderGeomDataFbo();
       if (this.dragging) {
@@ -194,8 +194,8 @@ class SelectionTool extends BaseTool {
           Math.max(this.pointerDownPos.x, pointerUpPos.x),
           Math.max(this.pointerDownPos.y, pointerUpPos.y)
         )
-        
-        const viewport  = event.viewport as GLViewport
+
+        const viewport = event.viewport as GLViewport
         let geomItems: Array<TreeItem> = Array.from(viewport.getGeomItemsInRect(tl, br)) // TODO: check, using Array.from() since we have a Set<>
 
         if (this.__selectionFilterFn) {
@@ -228,7 +228,7 @@ class SelectionTool extends BaseTool {
           this.rectItem.globalXfoParam.value = this.selectionRectXfo
         }
       } else {
-        const viewport =  event.viewport as GLViewport
+        const viewport = event.viewport as GLViewport
         const intersectionData = viewport.getGeomDataAtPos(event.pointerPos, undefined) // TODO: check if this was intended
         if (intersectionData != undefined && !(intersectionData.geomItem.getOwner() instanceof Handle)) {
           let treeItem = intersectionData.geomItem
@@ -260,10 +260,10 @@ class SelectionTool extends BaseTool {
   /**
    * Event fired when a VR controller button is pressed over a tool.
    *
-   * @param {object} event - The event param.
+   * @param event - The event param.
    * @return {boolean} The return value.
    */
-  onVRControllerButtonDown(event: XRControllerEvent) {
+  onVRControllerButtonDown(event: XRControllerEvent): void {
     if (event.button == 1) {
       if (!this.selectionManager) throw 'Please set the Selection Manager on the Selection Tool before using it.'
       const intersectionData = event.controller.getGeomItemAtTip()

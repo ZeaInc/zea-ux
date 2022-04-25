@@ -30,10 +30,10 @@ class XfoPlanarMovementHandle extends PlanarMovementHandle {
   handleMat: Material
   /**
    * Create a planar movement scene widget.
-   * @param {string} name - The name value.
-   * @param {number} size - The size value.
-   * @param {Vec3} offset - The offset value.
-   * @param {Color} color - The color value.
+   * @param name - The name value.
+   * @param size - The size value.
+   * @param offset - The offset value.
+   * @param color - The color value.
    */
   constructor(name: string, size: number, offset: Vec3, color = new Color()) {
     super(name)
@@ -70,7 +70,7 @@ class XfoPlanarMovementHandle extends PlanarMovementHandle {
   /**
    * Applies a special shinning shader to the handle to illustrate interaction with it.
    */
-  highlight() {
+  highlight(): void {
     super.highlight()
     this.handleMat.getParameter('BaseColor').value = this.highlightColorParam.getValue()
   }
@@ -78,7 +78,7 @@ class XfoPlanarMovementHandle extends PlanarMovementHandle {
   /**
    * Removes the shining shader from the handle.
    */
-  unhighlight() {
+  unhighlight(): void {
     super.unhighlight()
     this.handleMat.getParameter('BaseColor').value = this.colorParam.getValue()
   }

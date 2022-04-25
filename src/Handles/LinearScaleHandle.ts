@@ -7,15 +7,16 @@ import {
   Cuboid,
   Parameter,
   ZeaPointerEvent,
-  ZeaMouseEvent,
-  ZeaTouchEvent,
-  XRControllerEvent,
+  XfoParameter,
 } from '@zeainc/zea-engine'
 import BaseLinearMovementHandle from './BaseLinearMovementHandle'
 import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
 import './Shaders/HandleShader'
 import transformVertices from './transformVertices'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
+import { Change } from '..'
+import SelectionGroup from '../SelectionGroup'
+import SelectionXfoChange from '../UndoRedo/Changes/SelectionXfoChange'
 
 /**
  * Class representing a linear scale scene widget.
@@ -27,17 +28,18 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
   handleMat: Material
   oriXfo: Xfo
   tmplocalXfo: Xfo
-  change: ParameterValueChange
   baseXfo: Xfo
+  change: Change
+  selectionGroup: SelectionGroup
   /**
    * Create a linear scale scene widget.
    *
-   * @param {string} name - The name value.
-   * @param {number} length - The length value.
-   * @param {number} thickness - The thickness value.
-   * @param {Color} color - The color value.
+   * @param name - The name value.
+   * @param length - The length value.
+   * @param thickness - The thickness value.
+   * @param color - The color value.
    */
-  constructor(name, length, thickness, color = new Color()) {
+  constructor(name: string, length: number, thickness: number, color = new Color()) {
     super(name)
 
     this.colorParam.value = color
@@ -71,7 +73,7 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
   /**
    * Applies a special shinning shader to the handle to illustrate interaction with it.
    */
-  highlight() {
+  highlight(): void {
     super.highlight()
     this.handleMat.getParameter('BaseColor').value = this.highlightColorParam.getValue()
   }
@@ -79,18 +81,27 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
   /**
    * Removes the shining shader from the handle.
    */
-  unhighlight() {
+  unhighlight(): void {
     super.unhighlight()
     this.handleMat.getParameter('BaseColor').value = this.colorParam.getValue()
   }
 
   /**
+   * Sets selectionGroup so this handle can modify the items.
+   *
+   * @param selectionGroup - The SelectionGroup.
+   */
+  setSelectionGroup(selectionGroup: SelectionGroup): void {
+    this.selectionGroup = selectionGroup
+  }
+
+  /**
    * Sets global xfo target parameter.
    *
-   * @param {Parameter} param - The video param.
-   * @param {boolean} track - The track param.
+   * @param param - The video param.
+   * @param track - The track param.
    */
-  setTargetParam(param, track = true) {
+  setTargetParam(param: XfoParameter, track = true): void {
     this.param = param
     if (track) {
       const __updateGizmo = () => {
@@ -106,31 +117,36 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
    *
    * @return {Parameter} - returns handle's target global Xfo.
    */
-  getTargetParam() {
+  getTargetParam(): XfoParameter | Parameter<unknown> {
     return this.param ? this.param : this.globalXfoParam
   }
 
   /**
    * Handles the initially drag of the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param event - The event param.
    */
-  onDragStart(event: ZeaPointerEvent) {
+  onDragStart(event: ZeaPointerEvent): void {
     this.oriXfo = this.globalXfoParam.value
     this.tmplocalXfo = this.localXfoParam.getValue()
     const param = this.getTargetParam()
     this.baseXfo = <Xfo>param.getValue()
 
-    this.change = new ParameterValueChange(param)
-    UndoRedoManager.getInstance().addChange(this.change)
+    if (this.selectionGroup) {
+      const items = this.selectionGroup.getItems()
+      this.change = new SelectionXfoChange(Array.from(items), this.globalXfoParam.value)
+    } else {
+      this.change = new ParameterValueChange(param)
+      UndoRedoManager.getInstance().addChange(this.change)
+    }
   }
 
   /**
    * Handles drag action of the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param event - The event param.
    */
-  onDrag(event: ZeaPointerEvent) {
+  onDrag(event: ZeaPointerEvent): void {
     // const dragVec = this.holdPos.subtract(this.grabPos);
 
     const newXfo = this.baseXfo.clone()
@@ -152,17 +168,28 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
     this.tmplocalXfo.sc.set(1, 1, sc)
     this.localXfoParam.value = this.tmplocalXfo
 
-    this.change.update({
-      value: newXfo,
-    })
+    if (this.selectionGroup) {
+      const selectionXfoChange = <SelectionXfoChange>this.change
+      const deltaXfo = new Xfo()
+      deltaXfo.sc.set(sc, sc, sc)
+      selectionXfoChange.setDeltaXfo(deltaXfo)
+    } else {
+      this.change.update({
+        value: newXfo,
+      })
+    }
   }
 
   /**
    * Handles the end of dragging the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param event - The event param.
    */
-  onDragEnd(event: ZeaPointerEvent) {
+  onDragEnd(event: ZeaPointerEvent): void {
+    if (this.selectionGroup) {
+      const selectionXfoChange = <SelectionXfoChange>this.change
+      selectionXfoChange.setDone()
+    }
     this.change = null
 
     this.tmplocalXfo.sc.set(1, 1, 1)

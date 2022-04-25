@@ -1,15 +1,10 @@
 import Handle from './Handle'
 import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
-import {
-  Parameter,
-  Vec3,
-  Xfo,
-  ZeaPointerEvent,
-  ZeaMouseEvent,
-  ZeaTouchEvent,
-  XRControllerEvent,
-} from '@zeainc/zea-engine'
+import { Parameter, Vec3, Xfo, ZeaPointerEvent, XRControllerEvent } from '@zeainc/zea-engine'
+import { Change } from '..'
+import SelectionGroup from '../SelectionGroup'
+import SelectionXfoChange from '../UndoRedo/Changes/SelectionXfoChange'
 
 /**
  * Class representing a planar movement scene widget.
@@ -21,12 +16,13 @@ class PlanarMovementHandle extends Handle {
   fullXfoManipulationInVR: boolean
   grabOffset: Vec3
   baseXfo: Xfo
-  change: ParameterValueChange
+  change: Change
+  selectionGroup: SelectionGroup
 
   /**
    * Create a planar movement scene widget.
    *
-   * @param {string} name - The name value.
+   * @param name - The name value.
    */
   constructor(name: string) {
     super(name)
@@ -34,12 +30,21 @@ class PlanarMovementHandle extends Handle {
   }
 
   /**
+   * Sets selectionGroup so this handle can modify the items.
+   *
+   * @param selectionGroup - The SelectionGroup.
+   */
+  setSelectionGroup(selectionGroup: SelectionGroup): void {
+    this.selectionGroup = selectionGroup
+  }
+
+  /**
    * Sets global xfo target parameter.
    *
-   * @param {Parameter} param - The video param.
-   * @param {boolean} track - The track param.
+   * @param param - The video param.
+   * @param track - The track param.
    */
-  setTargetParam(param: any, track = true) {
+  setTargetParam(param: any, track = true): void {
     this.param = param
     if (track) {
       const __updateGizmo = () => {
@@ -62,39 +67,55 @@ class PlanarMovementHandle extends Handle {
   /**
    * Handles the initially drag of the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param event - The event param.
    */
-  onDragStart(event: ZeaPointerEvent) {
+  onDragStart(event: ZeaPointerEvent): void {
     this.grabPos = this.grabPos
     const param = this.getTargetParam()
     this.baseXfo = <Xfo>param.value
 
-    this.change = new ParameterValueChange(param)
-    UndoRedoManager.getInstance().addChange(this.change)
+    if (this.selectionGroup) {
+      const items = this.selectionGroup.getItems()
+      this.change = new SelectionXfoChange(Array.from(items), this.globalXfoParam.value)
+      UndoRedoManager.getInstance().addChange(this.change)
+    } else {
+      this.change = new ParameterValueChange(param)
+      UndoRedoManager.getInstance().addChange(this.change)
+    }
   }
 
   /**
    * Handles drag action of the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param event - The event param.
    */
-  onDrag(event: ZeaPointerEvent) {
+  onDrag(event: ZeaPointerEvent): void {
     const dragVec = this.holdPos.subtract(this.grabPos)
 
-    const newXfo = this.baseXfo.clone()
-    newXfo.tr.addInPlace(dragVec)
+    if (this.selectionGroup) {
+      const selectionXfoChange = <SelectionXfoChange>this.change
+      const deltaXfo = new Xfo(dragVec)
+      selectionXfoChange.setDeltaXfo(deltaXfo)
+    } else {
+      const newXfo = this.baseXfo.clone()
+      newXfo.tr.addInPlace(dragVec)
 
-    this.change.update({
-      value: newXfo,
-    })
+      this.change.update({
+        value: newXfo,
+      })
+    }
   }
 
   /**
    * Handles the end of dragging the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param event - The event param.
    */
-  onDragEnd(event: ZeaPointerEvent) {
+  onDragEnd(event: ZeaPointerEvent): void {
+    if (this.selectionGroup) {
+      const selectionXfoChange = <SelectionXfoChange>this.change
+      selectionXfoChange.setDone()
+    }
     this.change = null
   }
 
@@ -104,10 +125,10 @@ class PlanarMovementHandle extends Handle {
   /**
    * Event fired when a VR controller button is pressed over the handle.
    *
-   * @param {object} event - The event param.
+   * @param event - The event param.
    * @return {boolean} The return value.
    */
-  onVRControllerButtonDown(event: XRControllerEvent) {
+  onVRControllerButtonDown(event: XRControllerEvent): void {
     if (this.fullXfoManipulationInVR) {
       this.activeController = event.controller
       const xfo = this.activeController.getTipXfo()
@@ -121,9 +142,9 @@ class PlanarMovementHandle extends Handle {
   /**
    * The onVRPoseChanged method.
    *
-   * @param {object} event - The event param.
+   * @param event - The event param.
    */
-  onVRPoseChanged(event: XRControllerEvent) {
+  onVRPoseChanged(event: XRControllerEvent): void {
     if (this.fullXfoManipulationInVR) {
       const xfo = this.activeController.getTipXfo()
       const newXfo = xfo.multiply(this.grabOffset)
@@ -143,9 +164,9 @@ class PlanarMovementHandle extends Handle {
   /**
    * Event fired when a VR controller button is released over the handle.
    *
-   * @param {object} event - The event param.
+   * @param event - The event param.
    */
-  onVRControllerButtonUp(event: XRControllerEvent) {
+  onVRControllerButtonUp(event: XRControllerEvent): void {
     if (this.fullXfoManipulationInVR) {
       this.change = null
     } else {

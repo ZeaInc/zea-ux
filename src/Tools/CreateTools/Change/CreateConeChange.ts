@@ -14,8 +14,8 @@ class CreateConeChange extends CreateGeomChange {
   /**
    * Create a create cone change.
    *
-   * @param {TreeItem} parentItem - The parentItem value.
-   * @param {Xfo} xfo - The xfo value.
+   * @param parentItem - The parentItem value.
+   * @param xfo - The xfo value.
    */
   constructor(parentItem: TreeItem, xfo: Xfo, color: Color) {
     super('Create Cone')
@@ -34,9 +34,9 @@ class CreateConeChange extends CreateGeomChange {
   /**
    * Updates cone with the specified data.
    *
-   * @param {object} updateData - The updateData param.
+   * @param updateData - The updateData param.
    */
-  update(updateData: Record<any, any>) {
+  update(updateData: Record<any, any>): void {
     if (updateData.radius) this.geomItem.getParameter('Geometry').getValue().radiusParam.value = updateData.radius
     if (updateData.height)
       this.geomItem.getParameter('Geometry').getValue().getParameter('Height').value = updateData.height

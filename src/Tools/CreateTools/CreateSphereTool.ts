@@ -1,7 +1,7 @@
 import CreateGeomTool from './CreateGeomTool'
 import CreateSphereChange from './Change/CreateSphereChange'
 import { UndoRedoManager } from '../../UndoRedo/index'
-import { AppData } from '../../../types/temp'
+import { AppData } from '../../../types/types'
 import { Vec3, Xfo } from '@zeainc/zea-engine'
 
 /**
@@ -19,7 +19,7 @@ class CreateSphereTool extends CreateGeomTool {
   /**
    * Create a create sphere tool.
    *
-   * @param {object} appData - The appData value.
+   * @param appData - The appData value.
    */
   constructor(appData: AppData) {
     super(appData)
@@ -28,7 +28,7 @@ class CreateSphereTool extends CreateGeomTool {
   /**
    * Starts the creation of the sphere geometry.
    *
-   * @param {Xfo} xfo - The xfo param.
+   * @param xfo - The xfo param.
    */
   createStart(xfo: Xfo): void {
     this.change = new CreateSphereChange(this.parentItem, xfo, this.colorParam.getValue())
@@ -45,7 +45,7 @@ class CreateSphereTool extends CreateGeomTool {
   /**
    * Updates the sphere geometry structural properties.
    *
-   * @param {vec3} pt - The pt param.
+   * @param pt - The pt param.
    */
   createMove(pt: Vec3): void {
     this.radius = pt.distanceTo(this.xfo.tr)
@@ -55,7 +55,7 @@ class CreateSphereTool extends CreateGeomTool {
   /**
    * Finishes the creation of the sphere geometry.
    *
-   * @param {Vec3} pt - The pt param.
+   * @param pt - The pt param.
    */
   createRelease(pt: Vec3): void {
     if (this.radius == 0) {

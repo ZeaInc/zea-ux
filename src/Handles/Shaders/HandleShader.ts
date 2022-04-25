@@ -232,10 +232,10 @@ void main(void) {
 
   /**
    * The getPackedMaterialData method.
-   * @param {any} material - The material param.
-   * @return {any} - The return value.
+   * @param material - The material param.
+   * @return - The return value.
    */
-  static getPackedMaterialData(material: Material) {
+  static getPackedMaterialData(material: Material): Float32Array {
     const matData = new Float32Array(8)
     const baseColor = material.getParameter('BaseColor').getValue()
     matData[0] = baseColor.r

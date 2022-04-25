@@ -12,7 +12,7 @@ class CreateGeomChange extends Change {
   childIndex: number
   /**
    * Create a create circle change.
-   * @param {string} name - The name value.
+   * @param name - The name value.
    */
   constructor(name: string, parentItem?: TreeItem) {
     super(name)
@@ -21,8 +21,8 @@ class CreateGeomChange extends Change {
 
   /**
    * The setParentAndXfo method.
-   * @param {TreeItem} parentItem - The parentItem param.
-   * @param {Xfo} xfo - The xfo param.
+   * @param parentItem - The parentItem param.
+   * @param xfo - The xfo param.
    */
   setParentAndXfo(parentItem: TreeItem, xfo: Xfo): void {
     this.parentItem = parentItem
@@ -49,8 +49,8 @@ class CreateGeomChange extends Change {
   /**
    * Serializes the change as a JSON object.
    *
-   * @param {Record<any, any>} context - The context value
-   * @return {Record<any, any>} - The serialized change
+   * @param context - The context value
+   * @return - The serialized change
    */
   toJSON(context?: Record<any, any>): Record<any, any> {
     const j: Record<any, any> = super.toJSON(context)
@@ -66,8 +66,8 @@ class CreateGeomChange extends Change {
   /**
    * Restores geometry from using the specified JSON
    *
-   * @param {object} j - The j param.
-   * @param {object} context - The appData param.
+   * @param j - The j param.
+   * @param context - The appData param.
    */
   fromJSON(j: Record<any, any>, context: Record<any, any>): void {
     const sceneRoot = context.appData.scene.getRoot()
@@ -96,7 +96,7 @@ class CreateGeomChange extends Change {
   /**
    * Removes geometry item reference from change change.
    */
-  destroy() {
+  destroy(): void {
     // this.geomItem.removeRef(this) // remove the tmp ref.
   }
 }

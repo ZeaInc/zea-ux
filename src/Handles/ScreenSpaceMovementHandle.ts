@@ -1,19 +1,12 @@
-import {
-  Parameter,
-  Ray,
-  Vec3,
-  Xfo,
-  ZeaPointerEvent,
-  ZeaMouseEvent,
-  ZeaTouchEvent,
-  XRControllerEvent,
-  GLViewport,
-} from '@zeainc/zea-engine'
+import { Parameter, Ray, Xfo, ZeaPointerEvent, ZeaMouseEvent, GLViewport } from '@zeainc/zea-engine'
 import Handle from './Handle.js'
 import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange.js'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager.js'
 
 import { getPointerRay } from '../utility.js'
+import { Change } from '../index.js'
+import SelectionXfoChange from '../UndoRedo/Changes/SelectionXfoChange.js'
+import SelectionGroup from '../SelectionGroup.js'
 
 /**
  * Class representing a planar movement scene widget.
@@ -22,22 +15,32 @@ import { getPointerRay } from '../utility.js'
  */
 class ScreenSpaceMovementHandle extends Handle {
   param: Parameter<unknown>
-  change: ParameterValueChange
   baseXfo: Xfo
+  change: Change
+  selectionGroup: SelectionGroup
   /**
    * Create a planar movement scene widget.
    *
-   * @param {string} name - The name value
+   * @param name - The name value
    */
   constructor(name?: string) {
     super(name)
   }
 
   /**
+   * Sets selectionGroup so this handle can modify the items.
+   *
+   * @param selectionGroup - The SelectionGroup.
+   */
+  setSelectionGroup(selectionGroup: SelectionGroup): void {
+    this.selectionGroup = selectionGroup
+  }
+
+  /**
    * Sets global xfo target parameter.
    *
-   * @param {Parameter} param - The video param.
-   * @param {boolean} track - The track param.
+   * @param param - The video param.
+   * @param track - The track param.
    */
   setTargetParam(param: any, track = true): void {
     this.param = param
@@ -65,13 +68,12 @@ class ScreenSpaceMovementHandle extends Handle {
   /**
    * Handles mouse down interaction with the handle.
    *
-   * @param {MouseEvent} event - The event param.
-   * @return {boolean} - The return value.
+   * @param event - The event param.
    */
-  handlePointerDown(event: ZeaMouseEvent) {
+  handlePointerDown(event: ZeaMouseEvent): void {
     this.gizmoRay = new Ray()
     const ray = getPointerRay(event)
-    const viewport =  event.viewport as GLViewport
+    const viewport = event.viewport as GLViewport
     const cameraXfo = viewport.getCamera().globalXfoParam.value
     this.gizmoRay.dir = cameraXfo.ori.getZaxis()
     const param = this.getTargetParam()
@@ -85,10 +87,9 @@ class ScreenSpaceMovementHandle extends Handle {
   /**
    * Handles mouse move interaction with the handle.
    *
-   * @param {MouseEvent|TouchEvent} event - The event param
-   * @return {boolean} - The return value
+   * @param event - The event param
    */
-  handlePointerMove(event: ZeaPointerEvent) {
+  handlePointerMove(event: ZeaPointerEvent): void {
     const ray = getPointerRay(event)
     const dist = ray.intersectRayPlane(this.gizmoRay)
     this.holdPos = ray.pointAtDist(dist)
@@ -98,10 +99,9 @@ class ScreenSpaceMovementHandle extends Handle {
   /**
    * Handles mouse up interaction with the handle.
    *
-   * @param {MouseEvent|TouchEvent} event - The event param.
-   * @return {boolean} - The return value.
+   * @param event - The event param.
    */
-  handlePointerUp(event: ZeaPointerEvent) {
+  handlePointerUp(event: ZeaPointerEvent): void {
     const ray = getPointerRay(event)
     if (ray) {
       const dist = ray.intersectRayPlane(this.gizmoRay)
@@ -117,39 +117,51 @@ class ScreenSpaceMovementHandle extends Handle {
   /**
    * Handles the initially drag of the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param event - The event param.
    */
-  onDragStart(event: ZeaPointerEvent) {
+  onDragStart(event: ZeaPointerEvent): void {
     this.grabPos = this.grabPos
     const param = this.getTargetParam()
     this.baseXfo = <Xfo>param.value
 
-    this.change = new ParameterValueChange(param)
-    UndoRedoManager.getInstance().addChange(this.change)
+    if (this.selectionGroup) {
+      const items = this.selectionGroup.getItems()
+      this.change = new SelectionXfoChange(Array.from(items), this.globalXfoParam.value)
+      UndoRedoManager.getInstance().addChange(this.change)
+    } else {
+      this.change = new ParameterValueChange(param)
+      UndoRedoManager.getInstance().addChange(this.change)
+    }
   }
 
   /**
    * Handles drag action of the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param event - The event param.
    */
-  onDrag(event: ZeaPointerEvent) {
+  onDrag(event: ZeaPointerEvent): void {
     const dragVec = this.holdPos.subtract(this.grabPos)
 
-    const newXfo = this.baseXfo.clone()
-    newXfo.tr.addInPlace(dragVec)
+    if (this.selectionGroup) {
+      const selectionXfoChange = <SelectionXfoChange>this.change
+      const deltaXfo = new Xfo(dragVec)
+      selectionXfoChange.setDeltaXfo(deltaXfo)
+    } else {
+      const newXfo = this.baseXfo.clone()
+      newXfo.tr.addInPlace(dragVec)
 
-    this.change.update({
-      value: newXfo,
-    })
+      this.change.update({
+        value: newXfo,
+      })
+    }
   }
 
   /**
    * Handles the end of dragging the handle.
    *
-   * @param {MouseEvent|TouchEvent|object} event - The event param.
+   * @param event - The event param.
    */
-  onDragEnd(event: ZeaPointerEvent) {
+  onDragEnd(event: ZeaPointerEvent): void {
     this.change = null
   }
 }

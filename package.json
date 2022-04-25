@@ -1,6 +1,6 @@
 {
   "name": "@zeainc/zea-ux",
-  "version": "4.0.2",
+  "version": "4.0.5",
   "description": "Zea UX",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -21,7 +21,7 @@
     "build:rollup": "rollup -c",
     "build:rollup:watch": "rollup -w -c",
     "build": "npm-run-all clean:build build:rollup",
-    "dev": "npm-run-all build:rollup start:watch",
+    "dev": "npm-run-all --parallel build:rollup:watch start:watch",
     "start": "es-dev-server --app-index testing-e2e/index.html --open",
     "start:watch": "es-dev-server --app-index testing-e2e/index.html --open --watch",
     "release": "standard-version",
@@ -58,8 +58,8 @@
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^13.0.6",
     "@zeainc/jsdocs2md": "^0.0.7",
-    "@zeainc/zea-cad": "^4",
-    "@zeainc/zea-collab": "^6.0.0",
+    "@zeainc/zea-collab": "^6.0.1",
+    "@zeainc/zea-engine": "next",
     "canvas": "^2.6.1",
     "copyfiles": "^2.4.1",
     "cypress": "^5.6.0",
@@ -88,7 +88,6 @@
     "typescript": "^4.4.4"
   },
   "dependencies": {
-    "@zeainc/zea-engine": "next",
     "dom-to-image": "^2.6.0"
   },
   "husky": {

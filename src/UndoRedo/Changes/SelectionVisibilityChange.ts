@@ -13,8 +13,8 @@ class SelectionVisibilityChange extends Change {
   /**
    * Create a toggle selection visibility.
    *
-   * @param {Set} selection - The selection value.
-   * @param {boolean} state - The state value.
+   * @param selection - The selection value.
+   * @param state - The state value.
    */
   constructor(selection: Set<TreeItem>, state: boolean) {
     super('Selection Visibility Change')
@@ -40,10 +40,10 @@ class SelectionVisibilityChange extends Change {
   /**
    * Changes items visibility.
    *
-   * @param {boolean} state - The state param.
+   * @param state - The state param.
    * @private
    */
-  _changeItemsVisibility(state: boolean) {
+  _changeItemsVisibility(state: boolean): void {
     for (const treeItem of this.selection) {
       treeItem.getParameter('Visible').value = state
     }

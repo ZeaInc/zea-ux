@@ -4,6 +4,7 @@ import LinearMovementHandle from './LinearMovementHandle'
 import AxialRotationHandle from './AxialRotationHandle'
 import './Shaders/HandleShader'
 import XfoPlanarMovementHandle from './XfoPlanarMovementHandle'
+import SelectionGroup from '../SelectionGroup'
 
 /**
  * Class representing a xfo handle. Base transformations for objects in the scene
@@ -20,8 +21,8 @@ class XfoHandle extends TreeItem {
   /**
    * Create an axial rotation scene widget.
    *
-   * @param {number} size - The size value.
-   * @param {number} thickness - The thickness value.
+   * @param size - The size value.
+   * @param thickness - The thickness value.
    */
   constructor(size = 0.1, thickness = 0.003) {
     super('XfoHandle')
@@ -169,9 +170,9 @@ class XfoHandle extends TreeItem {
    * Displays handles depending on the specified mode(Move, Rotate, Scale).
    * If nothing is specified, it hides all of them.
    * @deprecated
-   * @param {boolean} visible - The mode of the Xfo parameter
+   * @param visible - The mode of the Xfo parameter
    */
-  showHandles(visible: boolean) {
+  showHandles(visible: boolean): void {
     if (visible) this.setVisible(true)
     else this.setVisible(false)
   }
@@ -179,12 +180,29 @@ class XfoHandle extends TreeItem {
   /**
    * Sets global xfo target parameter.
    *
-   * @param {Parameter} param - The video param.
+   * @param param - The video param.
    */
-  setTargetParam(param: Parameter<unknown>, track = true) {
+  setTargetParam(param: Parameter<unknown>, track = true): void {
     this.param = param
     this.traverse((item) => {
       if (item instanceof Handle) item.setTargetParam(param, false) // TODO: should this take track?
+    })
+  }
+
+  /**
+   * Sets selectionGroup so this handle can modify the items.
+   *
+   * @param selectionGroup - The SelectionGroup.
+   */
+  setSelectionGroup(selectionGroup: SelectionGroup): void {
+    this.traverse((item) => {
+      if (
+        item instanceof LinearMovementHandle ||
+        item instanceof XfoPlanarMovementHandle ||
+        item instanceof AxialRotationHandle
+      ) {
+        item.setSelectionGroup(selectionGroup) // TODO: should this take track?
+      }
     })
   }
 }

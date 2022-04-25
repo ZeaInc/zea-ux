@@ -34,30 +34,18 @@ class SelectionGroup extends SelectionSet {
    *
    *
    * **Parameters**
-   * @param {object} options - Custom options for selection
+   * @param options - Custom options for selection
    */
   constructor(options?: Record<string, any>) {
     super()
 
-    let selectionColor
-    let subtreeColor
-    options.selectionOutlineColor
-      ? (selectionColor = options.selectionOutlineColor)
-      : (selectionColor = new Color(3 / 255, 227 / 255, 172 / 255, 0.1))
-
-    if (options.branchSelectionOutlineColor) subtreeColor = options.branchSelectionOutlineColor
-    else {
-      subtreeColor = selectionColor.lerp(new Color('white'), 0.5)
-      subtreeColor.a = 0.1
-    }
-
+    const selectionColor = options.selectionOutlineColor
+      ? options.selectionOutlineColor
+      : new Color(3 / 255, 227 / 255, 172 / 255, 0.1)
     this.highlightColorParam.value = selectionColor
-    this.addParameter(new ColorParameter('SubtreeHighlightColor', subtreeColor))
-
     this.itemsParam.setFilterFn((item) => item instanceof BaseItem)
 
     this.addParameter(this.initialXfoModeParam)
-
     this.selectionGroupXfoOp = new SelectionGroupXfoOperator(this.initialXfoModeParam, this.globalXfoParam)
   }
 
@@ -78,9 +66,9 @@ class SelectionGroup extends SelectionSet {
   /**
    * Constructs a new selection group by copying the values from current one and returns it.
    *
-   * @return {SelectionGroup} - Cloned selection group.
+   * @return - Cloned selection group.
    */
-  clone() {
+  clone(): SelectionGroup {
     const cloned = new SelectionGroup()
     cloned.copyFrom(this)
     return cloned
@@ -88,42 +76,28 @@ class SelectionGroup extends SelectionSet {
 
   /**
    *
-   * @param {TreeItem} item -
-   * @param {number} index -
+   * @param item -
+   * @param index -
    * @private
    */
-  bindItem(item: TreeItem, index: number) {
+  bindItem(item: TreeItem, index: number): void {
     if (item instanceof TreeItem) {
       const highlightColor = this.highlightColorParam.value
       highlightColor.a = this.highlightFillParam.value
-      item.addHighlight('selected' + this.getId(), highlightColor, false)
-
-      const subTreeColor = this.getParameter('SubtreeHighlightColor').getValue()
-      item.getChildren().forEach((childItem) => {
-        if (childItem instanceof TreeItem) {
-          childItem.addHighlight('branchselected' + this.getId(), subTreeColor, true)
-        }
-      })
-
+      item.addHighlight('selected' + this.getId(), highlightColor, true)
       this.selectionGroupXfoOp.addItem(item)
     }
   }
 
   /**
    *
-   * @param {TreeItem} item -
-   * @param {number} index -
+   * @param item -
+   * @param index -
    * @private
    */
-  unbindItem(item: TreeItem, index: number) {
+  unbindItem(item: TreeItem, index: number): void {
     if (item instanceof TreeItem) {
-      item.removeHighlight('selected' + this.getId())
-      item.getChildren().forEach((childItem) => {
-        if (childItem instanceof TreeItem) {
-          childItem.removeHighlight('branchselected' + this.getId(), true)
-        }
-      })
-
+      item.removeHighlight('selected' + this.getId(), true)
       this.selectionGroupXfoOp.removeItem(item)
     }
   }

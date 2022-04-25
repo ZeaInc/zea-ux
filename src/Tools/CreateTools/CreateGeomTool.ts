@@ -11,13 +11,15 @@ import {
   ZeaPointerEvent,
   ZeaMouseEvent,
   ZeaTouchEvent,
-  XRControllerEvent,
   BaseGeom,
   GLViewport,
+  KeyboardEvent,
+  XRController,
+  XRControllerEvent,
 } from '@zeainc/zea-engine'
 import BaseCreateTool from '../BaseCreateTool'
 import { UndoRedoManager } from '../../UndoRedo/index'
-import { AppData } from '../../../types/temp'
+import { AppData } from '../../../types/types'
 
 import { getPointerRay } from '../../utility'
 
@@ -39,7 +41,7 @@ class CreateGeomTool extends BaseCreateTool {
   /**
    * Create a create geom tool.
    *
-   * @param {object} appData - The appData value.
+   * @param appData - The appData value.
    */
   constructor(appData: AppData) {
     super(appData)
@@ -57,9 +59,9 @@ class CreateGeomTool extends BaseCreateTool {
 
   /**
    * Adds a geometry icon to the VR Controller
-   * @param {VRController} controller - The controller object.
+   * @param controller - The controller object.
    */
-  addIconToVRController(controller: any): void {
+  addIconToVRController(controller: XRController): void {
     if (!this.vrControllerToolTip) {
       this.vrControllerToolTip = new Cross(0.05)
       this.vrControllerToolTipMat = new Material('VRController Cross', 'LinesShader')
@@ -112,7 +114,7 @@ class CreateGeomTool extends BaseCreateTool {
   /**
    * Transforms the screen position in the viewport to an Xfo object.
    *
-   * @param {MouseEvent|TouchEvent} event - The event param
+   * @param event - The event param
    * @return {Xfo} The return value.
    */
   screenPosToXfo(event: ZeaPointerEvent): Xfo {
@@ -146,7 +148,7 @@ class CreateGeomTool extends BaseCreateTool {
   /**
    * Starts the creation of the geometry.
    *
-   * @param {Xfo} xfo - The xfo param.
+   * @param xfo - The xfo param.
    */
   createStart(xfo?: Xfo, treeItem?: TreeItem): void {
     this.stage = 1
@@ -155,7 +157,7 @@ class CreateGeomTool extends BaseCreateTool {
   /**
    * The createPoint method.
    *
-   * @param {Vec3} pt - The pt param.
+   * @param pt - The pt param.
    */
   createPoint(pt: Vec3): void {
     // console.warn('Implement me')
@@ -164,7 +166,7 @@ class CreateGeomTool extends BaseCreateTool {
   /**
    * The createMove method.
    *
-   * @param {Vec3} pt - The pt param.
+   * @param pt - The pt param.
    */
   createMove(pt: Vec3): void {
     // console.warn('Implement me')
@@ -173,7 +175,7 @@ class CreateGeomTool extends BaseCreateTool {
   /**
    * The createRelease method.
    *
-   * @param {Vec3} pt - The pt param.
+   * @param pt - The pt param.
    */
   createRelease(pt: Vec3): void {
     // console.warn('Implement me')
@@ -185,7 +187,7 @@ class CreateGeomTool extends BaseCreateTool {
   /**
    * Event fired when a pointing device button is pressed over the viewport while the tool is activated.
    *
-   * @param {MouseEvent|TouchEvent} event - The event param.
+   * @param event - The event param.
    */
   onPointerDown(event: ZeaPointerEvent): void {
     // skip if the alt key is held. Allows the camera tool to work
@@ -220,7 +222,7 @@ class CreateGeomTool extends BaseCreateTool {
   /**
    * Event fired when a pointing device is moved while the cursor's hotspot is inside the viewport, while tool is activated.
    *
-   * @param {MouseEvent|TouchEvent} event - The event param.
+   * @param event - The event param.
    */
   onPointerMove(event: ZeaPointerEvent): void {
     if (event.pointerType === 'xr') {
@@ -237,7 +239,7 @@ class CreateGeomTool extends BaseCreateTool {
   /**
    * Event fired when a pointing device button is released while the pointer is over the viewport, while the tool is activated.
    *
-   * @param {MouseEvent|TouchEvent} event - The event param.
+   * @param event - The event param.
    */
   onPointerUp(event: ZeaPointerEvent): void {
     if (event instanceof XRControllerEvent) {
@@ -252,7 +254,7 @@ class CreateGeomTool extends BaseCreateTool {
   /**
    * Event fired when the user rotates the pointing device wheel, while the tool is activated.
    *
-   * @param {MouseEvent} event - The event param.
+   * @param event - The event param.
    */
   onWheel(event: ZeaPointerEvent): void {
     // console.warn('Implement me')
@@ -264,27 +266,27 @@ class CreateGeomTool extends BaseCreateTool {
   /**
    * Event fired when the user presses a key on the keyboard, while the tool is activated.
    *
-   * @param {KeyboardEvent} event - The event param.
+   * @param event - The event param.
    */
-  onKeyPressed(event: any): void {
+  onKeyPressed(event: KeyboardEvent): void {
     // console.warn('Implement me')
   }
 
   /**
    * Event fired when the user presses down a key on the keyboard, while the tool is activated.
    *
-   * @param {KeyboardEvent} event - The event param.
+   * @param event - The event param.
    */
-  onKeyDown(event: any): void {
+  onKeyDown(event: KeyboardEvent): void {
     // console.warn('Implement me')
   }
 
   /**
    * Event fired when the user releases a key on the keyboard.
    *
-   * @param {KeyboardEvent} event - The event param.
+   * @param event - The event param.
    */
-  onKeyUp(event: any): void {
+  onKeyUp(event: KeyboardEvent): void {
     // console.warn('Implement me')
   }
 
@@ -293,7 +295,7 @@ class CreateGeomTool extends BaseCreateTool {
   /**
    * Event fired when one or more touch points have been disrupted in an implementation-specific manner inside the viewport, when the tool is activated.
    *
-   * @param {TouchEvent} event - The event param.
+   * @param event - The event param.
    */
   onTouchCancel(event: ZeaPointerEvent): void {
     // console.warn('Implement me')
@@ -305,7 +307,7 @@ class CreateGeomTool extends BaseCreateTool {
   /**
    * Event fired when a VR controller button is pressed inside the viewport, when the tool is activated.
    *
-   * @param {object} event - The event param.
+   * @param event - The event param.
    */
   onVRControllerButtonDown(event: XRControllerEvent): void {
     if (!this.__activeController) {
@@ -322,7 +324,7 @@ class CreateGeomTool extends BaseCreateTool {
   /**
    * The onVRPoseChanged method.
    *
-   * @param {object} event - The event param.
+   * @param event - The event param.
    */
   onVRPoseChanged(event: XRControllerEvent): void {
     if (this.__activeController && this.stage > 0) {
@@ -336,7 +338,7 @@ class CreateGeomTool extends BaseCreateTool {
   /**
    * Event fired when a VR controller button is released inside the viewport, when the tool is activated.
    *
-   * @param {object} event - The event param.
+   * @param event - The event param.
    */
   onVRControllerButtonUp(event: XRControllerEvent): void {
     if (this.stage > 0) {

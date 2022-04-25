@@ -15,8 +15,8 @@ class CreateRectChange extends CreateGeomChange {
   /**
    * Create a create rect change.
    *
-   * @param {TreeItem} parentItem - The parentItem value.
-   * @param {Xfo} xfo - The xfo value.
+   * @param parentItem - The parentItem value.
+   * @param xfo - The xfo value.
    */
   constructor(parentItem: TreeItem, xfo: Xfo) {
     super('CreateRect')
@@ -33,9 +33,9 @@ class CreateRectChange extends CreateGeomChange {
   /**
    * Updates rectangle with the specified data.
    *
-   * @param {object} updateData - The updateData param.
+   * @param updateData - The updateData param.
    */
-  update(updateData: Record<any, any>) {
+  update(updateData: Record<any, any>): void {
     if (updateData.baseSize) {
       this.rect.sizeXParam.value = updateData.baseSize[0]
       this.rect.sizeYParam.value = updateData.baseSize[1]

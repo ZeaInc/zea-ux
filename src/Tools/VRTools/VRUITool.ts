@@ -11,11 +11,12 @@ import {
   Lines,
   BaseTool,
   Vec3Attribute,
+  XRController,
   XRControllerEvent,
   XRPoseEvent,
 } from '@zeainc/zea-engine'
 
-import { AppData } from '../../../types/temp'
+import { AppData } from '../../../types/types'
 import VRControllerUI from './VRControllerUI'
 
 /**
@@ -38,8 +39,8 @@ class VRUITool extends BaseTool {
 
   /**
    * Create a VR UI tool.
-   * @param {object} appData - The appData value.
-   * @param {HTMLElement} vrUIDOMElement - The  dom element we will use as the VR UI
+   * @param appData - The appData value.
+   * @param vrUIDOMElement - The  dom element we will use as the VR UI
    */
   constructor(appData: AppData, vrUIDOMElement: HTMLElement) {
     super()
@@ -85,7 +86,7 @@ class VRUITool extends BaseTool {
    *
    * @return {string} The return value.
    */
-  getName() {
+  getName(): string {
     return 'VRUITool'
   }
 
@@ -93,25 +94,25 @@ class VRUITool extends BaseTool {
   /**
    * The activateTool method.
    */
-  activateTool() {
+  activateTool(): void {
     super.activateTool()
   }
 
   /**
    * The deactivateTool method.
    */
-  deactivateTool() {
+  deactivateTool(): void {
     if (this.uiOpen) this.closeUI()
     super.deactivateTool()
   }
 
   /**
    * The displayUI method.
-   * @param {VRController} uiController - The uiController param.
-   * @param {VRController} : VRController - The pointerController param.
-   * @param {Xfo} headXfo - The headXfo param.
+   * @param uiController - The uiController param.
+   * @param : VRController - The pointerController param.
+   * @param headXfo - The headXfo param.
    */
-  displayUI(uiController: any, pointerController: any, headXfo: Xfo) {
+  displayUI(uiController: XRController, pointerController: XRController, headXfo: Xfo): void {
     this.controllerUI.activate()
     this.uiController = uiController
     this.pointerController = pointerController
@@ -164,7 +165,7 @@ class VRUITool extends BaseTool {
   /**
    * The closeUI method.
    */
-  closeUI() {
+  closeUI(): void {
     this.controllerUI.deactivate()
 
     if (this.uiController) {
@@ -190,9 +191,9 @@ class VRUITool extends BaseTool {
 
   /**
    * The setPointerLength method.
-   * @param {number} length - The length param.
+   * @param length - The length param.
    */
-  setPointerLength(length: number) {
+  setPointerLength(length: number): void {
     this.__pointerLocalXfo.sc.set(1, 1, length)
     this.__uiPointerItem.localXfoParam.value = this.__pointerLocalXfo
   }
@@ -235,11 +236,11 @@ class VRUITool extends BaseTool {
 
   /**
    * The sendEventToUI method.
-   * @param {string} eventName - The eventName param.
-   * @param {any} args - The args param.
-   * @return {any} The return value.
+   * @param eventName - The eventName param.
+   * @param args - The args param.
+   * @return The return value.
    */
-  sendEventToUI(eventName: string, args: any) {
+  sendEventToUI(eventName: string, args: any): Element {
     const hit = this.calcUIIntersection()
     if (hit) {
       hit.offsetX = hit.pageX = hit.pageX = hit.screenX = hit.clientX
@@ -267,9 +268,9 @@ class VRUITool extends BaseTool {
 
   /**
    * The onVRControllerButtonDown method.
-   * @param {object} event - The event param.
+   * @param event - The event param.
    */
-  onPointerDown(event: XRControllerEvent) {
+  onPointerDown(event: XRControllerEvent): void {
     if (event.pointerType === POINTER_TYPES.xr) {
       if (event.controller == this.pointerController && this.uiOpen) {
         this.__triggerHeld = true
@@ -289,9 +290,9 @@ class VRUITool extends BaseTool {
 
   /**
    * The onVRControllerButtonUp method.
-   * @param {object} event - The event param.
+   * @param event - The event param.
    */
-  onPointerUp(event: XRControllerEvent) {
+  onPointerUp(event: XRControllerEvent): void {
     if (event.pointerType === POINTER_TYPES.xr) {
       if (event.controller == this.pointerController && this.uiOpen) {
         this.__triggerHeld = false
@@ -312,9 +313,9 @@ class VRUITool extends BaseTool {
 
   /**
    * The onVRPoseChanged method.
-   * @param {object} event - The event param.
+   * @param event - The event param.
    */
-  onPointerMove(event: XRPoseEvent) {
+  onPointerMove(event: XRPoseEvent): void {
     if (event.pointerType === POINTER_TYPES.xr) {
       if (!this.uiOpen) {
         if (

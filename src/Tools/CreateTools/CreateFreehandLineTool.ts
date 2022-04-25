@@ -2,7 +2,7 @@ import { BooleanParameter, ColorParameter, NumberParameter, TreeItem, Vec3, Xfo 
 import CreateLineTool from './CreateLineTool'
 import CreateFreehandLineChange from './Change/CreateFreehandLineChange'
 import { UndoRedoManager } from '../../UndoRedo/index'
-import { AppData } from '../../../types/temp'
+import { AppData } from '../../../types/types'
 
 /**
  * Tool for creating a free hand line.
@@ -20,7 +20,7 @@ class CreateFreehandLineTool extends CreateLineTool {
   /**
    * Create a create freehand line tool.
    *
-   * @param {object} appData - The appData value.
+   * @param appData - The appData value.
    */
   constructor(appData: AppData) {
     super(appData)
@@ -30,9 +30,9 @@ class CreateFreehandLineTool extends CreateLineTool {
   /**
    * Starts the creation of a free hand line.
    *
-   * @param {Xfo} xfo - The xfo param.
+   * @param xfo - The xfo param.
    */
-  createStart(xfo: Xfo) {
+  createStart(xfo: Xfo): void {
     const color = this.colorParam.getValue()
     const lineThickness = this.lineThickness.getValue()
 
@@ -49,9 +49,9 @@ class CreateFreehandLineTool extends CreateLineTool {
   /**
    * Updates the free hand line data.
    *
-   * @param {Vec3} pt - The pt param.
+   * @param pt - The pt param.
    */
-  createMove(pt: Vec3) {
+  createMove(pt: Vec3): void {
     const p = this.invXfo.transformVec3(pt)
     const delta = p.subtract(this.prevP).length()
     this.change.update({
@@ -65,9 +65,9 @@ class CreateFreehandLineTool extends CreateLineTool {
   /**
    * Finishes free hand line creation
    *
-   * @param {Vec3} pt - The pt param.
+   * @param pt - The pt param.
    */
-  createRelease(pt: Vec3) {
+  createRelease(pt: Vec3): void {
     if (this.length == 0) {
       UndoRedoManager.getInstance().cancel()
     }
