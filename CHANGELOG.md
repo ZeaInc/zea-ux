@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.1.0](https://github.com/ZeaInc/zea-ux/compare/v4.0.5...v4.1.0) (2022-04-26)
+
+
+### Features
+
+* Implemented a new 'view-cube' custom element to add to editors for easier camera configuration. ([b7a3a4a](https://github.com/ZeaInc/zea-ux/commit/b7a3a4a6b1c50940760f55c15ed4e55bb2846a24))
+
+
+### Bug Fixes
+
+* Axial rotation gizmo did not rotate correctly on its axis, when it was rotated on a different axis to the target parameter. ([10e24f3](https://github.com/ZeaInc/zea-ux/commit/10e24f3b31eedc9b0b01d0010e4f1bc3ce65b0bf))
+* SelectionTool no longer filters its self based on the 'Alt' key. ([c6707b6](https://github.com/ZeaInc/zea-ux/commit/c6707b6b42a9bc96698dc4c575b083213ab0736f))
+* The 'SubtreeHighlightColor' parameter was removed from the SelectionGroup so that TreeItems could control highlight propagation locally. ([f72957d](https://github.com/ZeaInc/zea-ux/commit/f72957dcd03f7db45f9582c9cd0059727de40d41))
+
 ### [4.0.5](https://github.com/ZeaInc/zea-ux/compare/v4.0.4...v4.0.5) (2022-02-18)
 
 
@@ -14,7 +28,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Bug Fixes
 
-* moved engine to dev dependencies. This allows the ux library to be used with any version of the engine, including prereleases. ([9b669fe](https://github.com/ZeaInc/zea-ux/commit/9b669fe5b11f0d9a6df336fd5fef8db9394dec66))
+* Moved engine to dev dependencies. This allows the ux library to be used with any version of the engine, including prereleases. ([9b669fe](https://github.com/ZeaInc/zea-ux/commit/9b669fe5b11f0d9a6df336fd5fef8db9394dec66))
 
 ## [4.0.3](https://github.com/ZeaInc/zea-ux/compare/v4.0.2...v4.0.3) (2022-01-21)
 
