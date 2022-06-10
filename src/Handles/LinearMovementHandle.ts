@@ -49,7 +49,7 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
 
     const handleGeom = new Cylinder(thickness, length, 64)
     handleGeom.baseZAtZeroParam.value = true
-    const tipGeom = new Cone(thickness * 4, thickness * 10, 64, true)
+    const tipGeom = new Cone(thickness * 8, thickness * 20, 64, true)
     const handle = new GeomItem('handle', handleGeom, this.handleMat)
 
     const tip = new GeomItem('tip', tipGeom, this.handleMat)

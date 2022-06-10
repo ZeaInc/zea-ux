@@ -24,7 +24,7 @@ class XfoHandle extends TreeItem {
    * @param size - The size value.
    * @param thickness - The thickness value.
    */
-  constructor(size = 0.1, thickness = 0.003) {
+  constructor(size = 0.1, thickness = 0.001) {
     super('XfoHandle')
 
     this.highlightColorParam.on('valueChanged', () => {
@@ -70,12 +70,12 @@ class XfoHandle extends TreeItem {
 
     // ////////////////////////////////
     // planarXYWidget
-    const planarSize = size * 0.35
+    const planarSize = size * 0.25
     {
       const planarXYWidget = new XfoPlanarMovementHandle(
         'planarXY',
         planarSize,
-        new Vec3(planarSize * 0.5, planarSize * 0.5, 0.0),
+        new Vec3(planarSize * 0.85, planarSize * 0.85, 0.0),
         blue
       )
       const xfo = new Xfo()
@@ -86,7 +86,7 @@ class XfoHandle extends TreeItem {
       const planarYZWidget = new XfoPlanarMovementHandle(
         'planarYZ',
         planarSize,
-        new Vec3(planarSize * -0.5, planarSize * 0.5, 0.0),
+        new Vec3(planarSize * -0.85, planarSize * 0.85, 0.0),
         red
       )
       const xfo = new Xfo()
@@ -98,7 +98,7 @@ class XfoHandle extends TreeItem {
       const planarXZWidget = new XfoPlanarMovementHandle(
         'planarXZ',
         planarSize,
-        new Vec3(planarSize * 0.5, planarSize * 0.5, 0.0),
+        new Vec3(planarSize * 0.85, planarSize * 0.85, 0.0),
         green
       )
       const xfo = new Xfo()
