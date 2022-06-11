@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.2.0](https://github.com/ZeaInc/zea-ux/compare/v4.1.0...v4.2.0) (2022-06-11)
+
+
+### Features
+
+* fine tuned the XFoHandle to make it appear cleaner. ([0092cb0](https://github.com/ZeaInc/zea-ux/commit/0092cb02b0c247ab7461aab95f331118614f906e))
+* implemented ViewCube and AxisTripod using 3d Geometry. ([580fe0f](https://github.com/ZeaInc/zea-ux/commit/580fe0f5dcb2ee911b83da4f7566e962a111bd9e))
+
 ## [4.1.0](https://github.com/ZeaInc/zea-ux/compare/v4.0.5...v4.1.0) (2022-04-26)
 
 
