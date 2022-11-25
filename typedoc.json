@@ -5,6 +5,6 @@
   "plugin": ["typedoc-plugin-markdown"],
   "excludeExternals": true,
   "readme": "none",
-  "entryDocument": "API.md",
+  "entryDocument": "api.md",
   "cleanOutputDir": false
 }
