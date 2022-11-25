@@ -14,6 +14,7 @@
     "allowJs": true,
     // output .d.ts declaration files for consumers
     "declaration": true,
+    "declarationMap": true,
     // output .js.map sourcemap files for consumers
     "sourceMap": true,
     "resolveJsonModule": true,

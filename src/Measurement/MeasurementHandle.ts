@@ -61,6 +61,8 @@ class MeasurementHandle extends ScreenSpaceMovementHandle {
       }
     })
     const viewport = <GLViewport>event.viewport
+    // TODO: make this methgod public
+    // @ts-ignore
     viewport.renderGeomDataFbo()
   }
 
@@ -99,6 +101,8 @@ class MeasurementHandle extends ScreenSpaceMovementHandle {
       }
     })
     const viewport = <GLViewport>event.viewport
+    // TODO: make this methgod public
+    // @ts-ignore
     viewport.renderGeomDataFbo()
   }
 }

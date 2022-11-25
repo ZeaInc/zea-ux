@@ -12,30 +12,7 @@ const defaultOptions = {
   cacheBust: false,
 }
 
-interface Options {
-  cacheBust: any
-  imagePlaceholder: any
-}
-
-interface Impl {
-  fontFaces: any
-  images: any
-  util: any
-  inliner: any
-  options: Options
-}
-
-interface DomToImage {
-  toSvg: any
-  toPng: any
-  toJpeg: any
-  toBlob: any
-  toPixelData: any
-  toCanvas: any
-  impl: Impl
-}
-
-const domtoimage: DomToImage = {
+const domtoimage = {
   toSvg: toSvg,
   toPng: toPng,
   toJpeg: toJpeg,
@@ -52,7 +29,7 @@ const domtoimage: DomToImage = {
 }
 
 /**
-     * @param {Node} node - The DOM Node object to render
+     * @param {HTMLElement} node - The DOM Node object to render
      * @param {Object} options - Rendering options
      * @param {Function} options.filter - Should return true if passed node should be included in the output
      *          (excluding node means excluding it's children as well). Not called on the root node.
@@ -66,8 +43,7 @@ const domtoimage: DomToImage = {
      * @param options.cacheBust - set to true to cache bust by appending the time to the request url
      * @return {Promise} - A promise that is fulfilled with a SVG image data URL
      * */
-function toSvg(node, options) {
-  options = options || {}
+function toSvg(node, options = {}) {
   copyOptions(options)
   return Promise.resolve(node)
     .then(function (node) {
@@ -160,7 +136,7 @@ function toBlob(node, options) {
  *
  * @param {Option} options -
  */
-function copyOptions(options: Options) {
+function copyOptions(options) {
   // Copy options to impl options for use in impl
   if (typeof options.imagePlaceholder === 'undefined') {
     domtoimage.impl.options.imagePlaceholder = defaultOptions.imagePlaceholder
@@ -185,7 +161,7 @@ function draw(domNode, options) {
   return toSvg(domNode, options)
     .then(util.makeImage)
     .then(util.delay(100))
-    .then(function (image: CanvasImageSource) {
+    .then(function (image) {
       const canvas = newCanvas(domNode)
       canvas.getContext('2d').drawImage(image, 0, 0)
       return canvas
@@ -212,7 +188,7 @@ function draw(domNode, options) {
   }
 }
 
-function cloneNode(node: any, filter: any, root?: any) {
+function cloneNode(node, filter, root) {
   if (!root && filter && !filter(node)) return Promise.resolve()
 
   return Promise.resolve(node)
@@ -564,11 +540,11 @@ function newUtil() {
     return 'data:' + type + ';base64,' + content
   }
 
-  function escape(string: string) {
+  function escape(string) {
     return string.replace(/([.*+?^${}()|\[\]\/\\])/g, '\\$1')
   }
 
-  function delay(ms: number) {
+  function delay(ms) {
     return function (arg) {
       return new Promise(function (resolve) {
         setTimeout(function () {
@@ -619,7 +595,7 @@ function newInliner() {
     },
   }
 
-  function shouldProcess(string: string) {
+  function shouldProcess(string) {
     return string.search(URL_REGEX) !== -1
   }
 
@@ -634,7 +610,7 @@ function newInliner() {
     })
   }
 
-  function inline(string: string, url: string, baseUrl: string, get: any) {
+  function inline(string, url, baseUrl, get) {
     return Promise.resolve(url)
       .then(function (url) {
         return baseUrl ? util.resolveUrl(url, baseUrl) : url
@@ -652,7 +628,7 @@ function newInliner() {
     }
   }
 
-  function inlineAll(string?: string, baseUrl?: string, get?: any) {
+  function inlineAll(string, baseUrl, get) {
     if (nothingToInline()) return Promise.resolve(string)
 
     return Promise.resolve(string)
@@ -695,7 +671,7 @@ function newFontFaces() {
       })
   }
 
-  function readAll(document: any) {
+  function readAll(document) {
     return Promise.resolve(util.asArray(document.styleSheets))
       .then(getCssRules)
       .then(selectWebFontRules)
@@ -752,7 +728,7 @@ function newImages() {
       inline: inline,
     }
 
-    function inline(get?) {
+    function inline(get) {
       if (util.isDataUrl(element.src)) return Promise.resolve()
 
       return Promise.resolve(element.src)
@@ -770,7 +746,7 @@ function newImages() {
     }
   }
 
-  function inlineAll(node: any) {
+  function inlineAll(node) {
     if (!(node instanceof Element)) return Promise.resolve(node)
 
     return inlineBackground(node).then(function () {

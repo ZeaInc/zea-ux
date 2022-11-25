@@ -1,9 +1,9 @@
-import { Xfo } from "@zeainc/zea-engine"
+import { ProceduralMesh, Xfo } from '@zeainc/zea-engine'
 
-const transformVertices = (geometry, xfo: Xfo) => {
+const transformVertices = (geometry: ProceduralMesh, xfo: Xfo) => {
   geometry.update()
 
-  const positions = geometry.getVertexAttribute('positions')
+  const positions = geometry.positions
   for (let i = 0; i < positions.getCount(); i++) {
     const v = positions.getValueRef(i)
     const v2 = xfo.transformVec3(v)
