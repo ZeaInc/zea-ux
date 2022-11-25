@@ -2182,12 +2182,11 @@
     socket.io-client "^2.3.0"
     socketio-wildcard "^2.0.0"
 
-"@zeainc/zea-engine@^4":
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/@zeainc/zea-engine/-/zea-engine-4.2.0.tgz#d2b997d21866f82cbc8d236cfc4e3b6edeb6c214"
-  integrity sha512-rM8sLbvMo35mg80NZw88KPDnGSSAQWMznSDndrQIkPjhUOsWFj/hVn2w8e1SW0L6D9sFR0YMgMeBxGIG6SGSdg==
+"@zeainc/zea-engine@4.6.0":
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/@zeainc/zea-engine/-/zea-engine-4.6.0.tgz#9ada50c892d5033e780d61dc658d08664a6235f9"
+  integrity sha512-xbt6u5tZLeJCG081pQkHOnE8pDu1FdmIPWgPdvVat5lA9yCsby7eNgk2fxKdcU3E7UIDlSmiB4um5s6dQR3BJg==
   dependencies:
-    caniuse-lite "^1.0.30001309"
     lodash-es "^4.17.21"
 
 JSONStream@^1.0.3, JSONStream@^1.0.4:
@@ -3074,7 +3073,7 @@ caniuse-api@^3.0.0:
     lodash.memoize "^4.1.2"
     lodash.uniq "^4.5.0"
 
-caniuse-lite@^1.0.0, caniuse-lite@^1.0.30001033, caniuse-lite@^1.0.30001309, caniuse-lite@^1.0.30001312:
+caniuse-lite@^1.0.0, caniuse-lite@^1.0.30001033, caniuse-lite@^1.0.30001312:
   version "1.0.30001312"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001312.tgz#e11eba4b87e24d22697dae05455d5aea28550d5f"
   integrity sha512-Wiz1Psk2MEK0pX3rUzWaunLTZzqS2JYZFzNKqAiJGiuxIjRPLgV6+VDPOg6lQOUxmDwhTlh198JsTTi8Hzw6aQ==

@@ -42,6 +42,8 @@ attribute vec2 texCoords;
 
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
+uniform lowp int isOrthographic;
+uniform vec4 viewportFrustum;
 
 #ifdef ENABLE_MULTI_DRAW
 <%include file="materialparams.glsl"/>
@@ -94,15 +96,31 @@ void main(void) {
   }
   mat4 modelViewMatrix = viewMatrix * modelMatrix;
   if (maintainScreenSize != 0) {
-    float dist = modelViewMatrix[3][2];
-    float sc = abs(dist); // Note: items in front of the camera will have a negative value here.
-    mat4 scmat = mat4(
-      sc, 0.0, 0.0, 0.0,
-      0.0, sc, 0.0, 0.0,
-      0.0, 0.0, sc, 0.0,
-      0.0, 0.0, 0.0, 1.0
-    );
-    modelViewMatrix = modelViewMatrix * scmat;
+    if (isOrthographic > 0){
+      // At a distance of 1, we should match the orthographic and perspective sizes.
+      // Calculate the size of the handle in perpective projection at 1 meter.
+      // With a 24mm camera, the Fov is 46.4 degrees, or 0.8098327729253689 radians.
+      // (0.81 / 2.0) * focalDist * 2.0
+      // The frustum height at 1m is 0.81.
+      float sc = viewportFrustum.y / 0.8098327;
+      mat4 scmat = mat4(
+        sc, 0.0, 0.0, 0.0,
+        0.0, sc, 0.0, 0.0,
+        0.0, 0.0, sc, 0.0,
+        0.0, 0.0, 0.0, 1.0
+      );
+      modelViewMatrix = modelViewMatrix * scmat;
+    } else {
+      float dist = modelViewMatrix[3][2];
+      float sc = abs(dist); // Note: items in front of the camera will have a negative value here.
+      mat4 scmat = mat4(
+        sc, 0.0, 0.0, 0.0,
+        0.0, sc, 0.0, 0.0,
+        0.0, 0.0, sc, 0.0,
+        0.0, 0.0, 0.0, 1.0
+      );
+      modelViewMatrix = modelViewMatrix * scmat;
+    }
   }
 
   vec4 viewPos = modelViewMatrix * vec4(positions, 1.0);
@@ -142,7 +160,7 @@ uniform int BaseColorTexType;
 
 #elif defined(DRAW_GEOMDATA)
 
-uniform int isOrthographic;
+uniform lowp int isOrthographic;
 import 'surfaceGeomData.glsl'
 
 #elif defined(DRAW_HIGHLIGHT)

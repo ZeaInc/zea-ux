@@ -55,15 +55,23 @@
       translationXfoHandle.setTargetParam(translationTreeItem.getParameter('GlobalXfo'))
       translationXfoHandle.showHandles('Translate')
 
+      const camera = renderer.getViewport().getCamera()
       // {{{ Messages handler.
       const handleMessage = (event) => {
         const { data } = event
 
-        if (data === 'front') {
-          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(1, 1, 1.7), new Vec3(0, 0, 0))
+        if (data === 'orthographic') {
+          camera.setIsOrthographic(1)
+          window.postMessage(`done-${data}`)
+        }
+        if (data === 'perspective') {
+          camera.setIsOrthographic(0)
+          window.postMessage(`done-${data}`)
+        } else if (data === 'front') {
+          camera.setPositionAndTarget(new Vec3(1, 1, 1.7), new Vec3(0, 0, 0))
           window.postMessage(`done-${data}`)
         } else if (data === 'back') {
-          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-1, -1, 1.7), new Vec3(0, 0, 0))
+          camera.setPositionAndTarget(new Vec3(-1, -1, 1.7), new Vec3(0, 0, 0))
           window.postMessage(`done-${data}`)
         }
       }
