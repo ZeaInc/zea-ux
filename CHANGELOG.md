@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.2.1](https://github.com/ZeaInc/zea-ux/compare/v4.2.0...v4.2.1) (2022-11-25)
+
+
+### Bug Fixes
+
+* Handles now maintain screen size in orthographic viewports. ([4e44551](https://github.com/ZeaInc/zea-ux/commit/4e44551a643e9d49dc7f1873c84f0dba8c575230))
+
 ## [4.2.0](https://github.com/ZeaInc/zea-ux/compare/v4.1.0...v4.2.0) (2022-06-11)
 
 
