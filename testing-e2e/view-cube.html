@@ -71,8 +71,8 @@
       // ///////////////////////
       // Setup Scene
 
-      const axisTripod = new AxisTripod()
-      axisTripod.bindToViewport(renderer, renderer.getViewport())
+      const axisTripod = new AxisTripod(0.5)
+      axisTripod.bindToViewport(renderer, renderer.getViewport(), 200, [-1, -1])
       // scene.getRoot().addChild(axisTripod)
 
       const material1 = new Material('material1', 'SimpleSurfaceShader')

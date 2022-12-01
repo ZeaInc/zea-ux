@@ -13,6 +13,8 @@ import {
   Material,
   ZeaPointerEvent,
   GLRenderer,
+  Label,
+  BillboardItem,
 } from '@zeainc/zea-engine'
 
 class AxisTripod extends TreeItem {
@@ -21,7 +23,7 @@ class AxisTripod extends TreeItem {
    *
    * @param size - The size value.
    */
-  constructor(public size = 1) {
+  constructor(size = 1) {
     super('AxisTripod')
 
     const redMaterial = new FlatSurfaceMaterial('redMaterial')
@@ -31,34 +33,50 @@ class AxisTripod extends TreeItem {
     const blueMaterial = new FlatSurfaceMaterial('blueMaterial')
     blueMaterial.baseColorParam.value = new Color(0, 0, 1)
 
-    const arrowTailLength = 0.8 * this.size
-    const arrowHeadLength = 0.2 * this.size
+    const arrowTailLength = 0.8 * size
+    const arrowHeadLength = 0.2 * size
 
-    const cylinder = new Cylinder(0.02 * this.size, arrowTailLength, 64, 2, true, true)
-    const cone = new Cone(0.08 * this.size, arrowHeadLength, 64, true)
+    const cylinder = new Cylinder(0.02 * size, arrowTailLength, 64, 2, true, true)
+    const cone = new Cone(0.08 * size, arrowHeadLength, 64, true)
 
-    const buildArrow = (material: Material, quat: Quat, name: string) => {
+    const buildArrow = (material: FlatSurfaceMaterial, quat: Quat, name: string) => {
       const xfo = new Xfo()
       xfo.ori = quat
 
       const tailItem = new GeomItem('tail' + name, cylinder, material, xfo)
       const coneItem = new GeomItem('cone' + name, cone, material, new Xfo(new Vec3(0, 0, arrowTailLength)))
-      tailItem.setOverlay(true)
-      coneItem.setOverlay(true)
+
+      material.overlayParam.value = 0.35
       tailItem.addChild(coneItem, false, false)
       this.addChild(tailItem, false, false)
+
+      const label = new Label(name)
+      label.fontSizeParam.value = 48
+      label.fontColorParam.value = material.baseColorParam.value
+      label.backgroundParam.value = false
+
+      // Setup the label
+      const billboard = new BillboardItem('billboard' + name, label)
+      const labelXfo = new Xfo(new Vec3(0, 0, 0))
+      billboard.localXfoParam.value = labelXfo
+      billboard.pixelsPerMeterParam.value = 2000 / size
+      billboard.alignedToCameraParam.value = true
+      billboard.drawOnTopParam.value = true
+      billboard.alphaParam.value = 1
+      billboard.fixedSizeOnscreenParam.value = true
+      coneItem.addChild(billboard, false)
     }
     const quatRed = new Quat()
     quatRed.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI * 0.5)
-    buildArrow(redMaterial, quatRed, 'Red')
+    buildArrow(redMaterial, quatRed, 'X')
     const quatGreen = new Quat()
     quatGreen.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * -0.5)
-    buildArrow(greenMaterial, quatGreen, 'Green')
+    buildArrow(greenMaterial, quatGreen, 'Y')
     const quatBlue = new Quat()
-    buildArrow(blueMaterial, quatBlue, 'Blue')
+    buildArrow(blueMaterial, quatBlue, 'Z')
   }
 
-  bindToViewport(renderer: GLRenderer, viewport: GLViewport, pixelOffset = 100) {
+  bindToViewport(renderer: GLRenderer, viewport: GLViewport, pixelOffset = 100, screenSpaceCoord: number[] = [1, -1]) {
     renderer.addTreeItem(this)
     const updateXfo = () => {
       const focalDistance = camera.focalDistanceParam.value
@@ -72,15 +90,18 @@ class AxisTripod extends TreeItem {
 
       // @ts-ignore
       const viewHeightOrth = camera.viewHeight * 0.5
-      const viewHeight = MathFunctions.lerp(viewHeightPersp, viewHeightOrth, camera.isOrthographicParam.value)
+      const halfViewHeight = MathFunctions.lerp(viewHeightPersp, viewHeightOrth, camera.isOrthographicParam.value)
       const offsetOrth = (viewHeightOrth / viewport.getHeight()) * pixelOffset
 
       const aspectRatio = viewport.getWidth() / viewport.getHeight()
-      const viewWidth = viewHeight * aspectRatio
+      const halfViewWidth = halfViewHeight * aspectRatio
 
       const margin = MathFunctions.lerp(offsetPersp, offsetOrth, camera.isOrthographicParam.value)
-      pos.set(0, 0, -focalDistance)
-      pos.set(viewWidth - margin, -viewHeight + margin, -focalDistance)
+      pos.set(
+        (halfViewWidth - margin) * screenSpaceCoord[0],
+        (halfViewHeight - margin) * screenSpaceCoord[1],
+        -focalDistance
+      )
 
       xfo.tr = camera.globalXfoParam.value.transformVec3(pos)
 
