@@ -22,7 +22,6 @@ import { ToolManager } from '../Tools'
 
 class ViewCube extends TreeItem {
   viewport: GLViewport
-  private pointerOverItem: GeomItem
   /**
    * Create an axial rotation scene widget.
    *
@@ -223,7 +222,7 @@ class ViewCube extends TreeItem {
     }
   }
 
-  bindToViewport(renderer: GLRenderer, viewport: GLViewport, pixelOffset = 100) {
+  bindToViewport(renderer: GLRenderer, viewport: GLViewport, pixelOffset = 100, screenSpaceCoord: number[] = [1, 1]) {
     renderer.addTreeItem(this)
     this.viewport = viewport
     const camera = this.viewport.getCamera()
@@ -239,15 +238,18 @@ class ViewCube extends TreeItem {
 
       // @ts-ignore
       const viewHeightOrth = camera.viewHeight * 0.5
-      const viewHeight = MathFunctions.lerp(viewHeightPersp, viewHeightOrth, camera.isOrthographicParam.value)
+      const halfViewHeight = MathFunctions.lerp(viewHeightPersp, viewHeightOrth, camera.isOrthographicParam.value)
       const offsetOrth = (viewHeightOrth / viewport.getHeight()) * pixelOffset
 
       const aspectRatio = viewport.getWidth() / viewport.getHeight()
-      const viewWidth = viewHeight * aspectRatio
+      const halfViewWidth = halfViewHeight * aspectRatio
 
       const margin = MathFunctions.lerp(offsetPersp, offsetOrth, camera.isOrthographicParam.value)
-      pos.set(0, 0, -focalDistance)
-      pos.set(viewWidth - margin, viewHeight - margin, -focalDistance)
+      pos.set(
+        (halfViewWidth - margin) * screenSpaceCoord[0],
+        (halfViewHeight - margin) * screenSpaceCoord[1],
+        -focalDistance
+      )
 
       xfo.tr = camera.globalXfoParam.value.transformVec3(pos)
 
