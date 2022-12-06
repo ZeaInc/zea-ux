@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.3.0](https://github.com/ZeaInc/zea-ux/compare/v4.2.1...v4.3.0) (2022-12-06)
+
+
+### Features
+
+* Updated AxisTripod ([1584daa](https://github.com/ZeaInc/zea-ux/commit/1584daa3faa86e11684130c0f1f336be16363f9f))
+* Updated ViewCube ([15692bc](https://github.com/ZeaInc/zea-ux/commit/15692bca19368b4336b71b14a53c6c3361dc572f))
+
 ### [4.2.1](https://github.com/ZeaInc/zea-ux/compare/v4.2.0...v4.2.1) (2022-11-25)
 
 
