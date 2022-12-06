@@ -82,7 +82,7 @@ class UndoRedoManager extends EventEmitter {
 
   /**
    * Rollback the latest action, passing it to the redo stack in case you wanna recover it later on.
-   *
+   * Emits the `changeRedone` event and passes the change in the event
    * @param pushOnRedoStack - The pushOnRedoStack param.
    */
   undo(pushOnRedoStack = true): void {
@@ -97,7 +97,7 @@ class UndoRedoManager extends EventEmitter {
       change.undo()
       if (pushOnRedoStack) {
         this.__redoStack.push(change)
-        this.emit('changeUndone')
+        this.emit('changeUndone', {change})
       }
     }
   }
@@ -120,7 +120,7 @@ class UndoRedoManager extends EventEmitter {
 
   /**
    * Rollbacks the `undo` action by moving the change from the `redo` stack to the `undo` stack.
-   * Emits the `changeRedone` event, if you want to subscribe to it.
+   * Emits the `changeRedone` event, passing the change in the event, if you want to subscribe to it.
    */
   redo(): void {
     if (this.__redoStack.length > 0) {
@@ -128,7 +128,7 @@ class UndoRedoManager extends EventEmitter {
       // console.log("redo:", change.name)
       change.redo()
       this.__undoStack.push(change)
-      this.emit('changeRedone')
+      this.emit('changeRedone', {change})
     }
   }
 
