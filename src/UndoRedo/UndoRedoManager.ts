@@ -82,7 +82,7 @@ class UndoRedoManager extends EventEmitter {
 
   /**
    * Rollback the latest action, passing it to the redo stack in case you wanna recover it later on.
-   * Emits the `changeRedone` event and passes the change in the event
+   * Emits the `changeRedone` event, passing the change
    * @param pushOnRedoStack - The pushOnRedoStack param.
    */
   undo(pushOnRedoStack = true): void {
