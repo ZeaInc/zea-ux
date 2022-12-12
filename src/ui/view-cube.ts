@@ -71,7 +71,7 @@ class ZeaViewCube extends HTMLElement {
     styleTag.appendChild(
       document.createTextNode(`
 
-      
+
       .home {
         position: absolute;
         bottom: 0px;
@@ -159,7 +159,7 @@ input:checked + .slider:before {
         user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome, Edge, Opera and Firefox */
       }
-      
+
       .cube {
         width: 80px;
         height: 80px;
@@ -167,7 +167,7 @@ input:checked + .slider:before {
         transform-style: preserve-3d;
         transform: translateZ(-80px);
       }
-      
+
       .cube__face {
         position: absolute;
         width: 76px;
@@ -179,26 +179,26 @@ input:checked + .slider:before {
         color: black;
         text-align: center;
       }
-      
+
       .cube__face:hover {
         border: 2px solid white;
         color: white;
       }
-      
+
       .cube__face_X   { background: rgba(255, 0, 0, 0.85); }
       .cube__face_-X  { background: rgba(255, 0, 0, 0.85); }
       .cube__face_Y  { background: rgba(  0, 255, 0, 0.85); }
       .cube__face_-Y   { background: rgba(  0, 255, 0, 0.85); }
       .cube__face_Z    { background: rgba(0, 0, 255, 0.85); }
       .cube__face_-Z { background: rgba(0, 0, 255, 0.85); }
-      
+
       .cube__face_X   { transform: rotateY(-90deg) translateZ(40px); }
       .cube__face_-X  { transform: rotateY( 90deg) translateZ(40px); }
       .cube__face_Y  { transform: rotateY(  0deg) translateZ(40px); }
       .cube__face_-Y   { transform: rotateY(180deg) translateZ(40px); }
       .cube__face_Z    { transform: rotateX( 90deg) translateZ(40px); }
       .cube__face_-Z { transform: rotateX(-90deg) translateZ(40px); }
-      
+
 `)
     )
     this.shadowRoot?.appendChild(styleTag)
@@ -343,4 +343,6 @@ input:checked + .slider:before {
   }
 }
 
-customElements.define('zea-view-cube', ZeaViewCube)
+if (!customElements.get('zea-view-cube')) {
+  customElements.define('zea-view-cube', ZeaViewCube)
+}
