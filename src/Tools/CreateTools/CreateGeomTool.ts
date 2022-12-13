@@ -88,6 +88,7 @@ class CreateGeomTool extends BaseCreateTool {
     this.appData.renderer.getGLCanvas().style.cursor = 'crosshair'
 
     this.appData.renderer.getXRViewport().then((xrvp) => {
+      //@ts-ignore :  TODO: Remove this after the next release of the engine.
       for (const controller of xrvp.getControllers()) {
         this.addIconToVRController(controller)
       }
