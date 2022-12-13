@@ -4,24 +4,27 @@ import {
   GeomItem,
   Xfo,
   Quat,
-  Cylinder,
   TreeItem,
   FlatSurfaceMaterial,
   MathFunctions,
   GLViewport,
   ZeaPointerEvent,
   Plane,
-  Sphere,
   Label,
   EulerAngles,
   GLRenderer,
   Camera,
   CameraManipulator,
+  Cuboid,
+  LinesCuboid,
 } from '@zeainc/zea-engine'
 import { ToolManager } from '../Tools'
 
 class ViewCube extends TreeItem {
-  viewport: GLViewport
+  private viewport: GLViewport
+  private normalMaterial = new FlatSurfaceMaterial('material')
+  private highlightedMaterial = new FlatSurfaceMaterial('material')
+  private highlightedGeom: GeomItem
   /**
    * Create an axial rotation scene widget.
    *
@@ -30,9 +33,8 @@ class ViewCube extends TreeItem {
   constructor(
     size = 1,
     roundness = 0.15,
-    faceColor = new Color(0.75, 0.75, 0.75),
-    edgeColor = new Color(0.65, 0.65, 0.65),
-    cornerColor = new Color(0.5, 0.5, 0.5),
+    faceColor = new Color(1, 0.8, 0.15),
+    faceHighlightColor = new Color(1, 0.9, 0.5),
     labels: Record<string, string> = {
       YPos: 'FRONT',
       YNeg: 'BACK',
@@ -41,23 +43,38 @@ class ViewCube extends TreeItem {
       ZPos: 'TOP',
       ZNeg: 'BOTTOM',
     },
-    fontSize = 30,
-    margin = 20
+    fontSize = 50,
+    margin = 10
   ) {
     super('ViewCube')
 
-    const up = new Vec3(0, 0, 1)
-    const material = new FlatSurfaceMaterial('material')
-    material.baseColorParam.value = faceColor
+    this.normalMaterial.baseColorParam.value = faceColor
+    this.highlightedMaterial.baseColorParam.value = faceHighlightColor
 
-    const plane = new Plane(size * (1 - roundness * 2), size * (1 - roundness * 2))
-    const sphere = new Sphere(size * roundness, 40)
-    const cylinder = new Cylinder(size * roundness, 1 - roundness * 2, 20, 2, true, false)
+    const up = new Vec3(0, 0, 1)
+
+    const marginSize = size * roundness
+    const plane = new Plane(size - marginSize * 2, size - marginSize * 2)
+    const sphere = new Cuboid(marginSize, marginSize, marginSize, false)
+    const cylinder = new Cuboid(marginSize, size - marginSize * 2, marginSize, false)
+
+    const linesMaterial = new FlatSurfaceMaterial('material')
+    linesMaterial.baseColorParam.value = new Color(0.1, 0.1, 0.1, 1)
+    const lines = new LinesCuboid(size, size, size, false)
+
+    const linesItem = new GeomItem('borderlines', lines, linesMaterial)
+    linesItem.setOverlay(true)
+    linesItem.setSelectable(false)
+    this.addChild(linesItem, false, false)
 
     const buildFace = (quat: Quat, name: string) => {
       const xfo = new Xfo()
       xfo.ori = quat
       xfo.tr = quat.rotateVec3(new Vec3(0, 0, size * 0.5))
+
+      const planeItem = new GeomItem('face' + name, plane, this.normalMaterial, xfo)
+      planeItem.setOverlay(true)
+      this.addChild(planeItem, false, false)
 
       const labelMaterial = new FlatSurfaceMaterial('material')
       labelMaterial.baseColorParam.value = faceColor
@@ -65,11 +82,8 @@ class ViewCube extends TreeItem {
       const label = new Label(name)
       label.fontParam.value = 'Verdana'
       label.fontColorParam.value = new Color(0, 0, 0)
-      label.backgroundColorParam.value = material.baseColorParam.value
       label.fontSizeParam.value = fontSize
-      // label.fillBackgroundParam.value = false
-      label.borderRadiusParam.value = 0
-      label.borderWidthParam.value = 1
+      label.fillBackgroundParam.value = false
       label.marginParam.value = margin
       label.strokeBackgroundOutlineParam.value = false
       label.mipMapped = true
@@ -77,9 +91,10 @@ class ViewCube extends TreeItem {
 
       labelMaterial.baseColorParam.setImage(label)
 
-      const planeItem = new GeomItem('face' + name, plane, labelMaterial, xfo)
-      planeItem.setOverlay(true)
-      this.addChild(planeItem, false, false)
+      const planeLabelItem = new GeomItem('face' + name, plane, labelMaterial, new Xfo(new Vec3(0, 0, 0.01)))
+      planeLabelItem.setOverlay(true)
+      planeLabelItem.setSelectable(false)
+      planeItem.addChild(planeLabelItem, false, false)
     }
     const quatYPos = new Quat()
     quatYPos.setFromEulerAngles(new EulerAngles(MathFunctions.degToRad(-90), 0, MathFunctions.degToRad(180)))
@@ -104,16 +119,18 @@ class ViewCube extends TreeItem {
 
     // /////////////////////
     // Corners
-
-    const cornerMaterial = new FlatSurfaceMaterial('material')
-    cornerMaterial.baseColorParam.value = cornerColor
     const buildCorner = (vec3: Vec3, text: string) => {
       const xfo = new Xfo()
-      xfo.tr = vec3.scale(0.5)
-      xfo.tr.subtractInPlace(vec3.scale(sphere.radiusParam.value))
+      xfo.tr = vec3.scale(size * 0.5)
+      xfo.tr.subtractInPlace(vec3.scale(marginSize * 0.5))
       xfo.ori.setFromDirectionAndUpvector(xfo.tr.normalize(), up)
 
-      const cornerItem = new GeomItem('corner' + text, sphere, cornerMaterial, xfo)
+      const cornerItem = new GeomItem('corner' + text, sphere, this.normalMaterial, xfo)
+
+      const geomOffsetXfo = new Xfo()
+      geomOffsetXfo.ori = xfo.ori.inverse()
+      cornerItem.geomOffsetXfoParam.value = geomOffsetXfo
+
       cornerItem.setOverlay(true)
       this.addChild(cornerItem, false, false)
     }
@@ -129,18 +146,15 @@ class ViewCube extends TreeItem {
 
     // /////////////////////
     // Edges
-    const edgeMaterial = new FlatSurfaceMaterial('material')
-    edgeMaterial.baseColorParam.value = edgeColor
-
-    const buildEdge = (xfo: Xfo, text: string) => {
-      const offset = xfo.tr.scale(cylinder.radiusParam.value)
-      xfo.tr.scaleInPlace(0.5)
+    const buildEdge = (xfo: Xfo, up: Vec3, text: string) => {
+      const offset = xfo.tr.scale(marginSize * 0.5)
+      xfo.tr.scaleInPlace(size * 0.5)
       xfo.tr.subtractInPlace(offset)
 
-      const edgeItem = new GeomItem('edge' + text, cylinder, edgeMaterial, xfo)
+      const edgeItem = new GeomItem('edge' + text, cylinder, this.normalMaterial, xfo)
 
       const geomOffsetXfo = new Xfo()
-      geomOffsetXfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * 0.5)
+      geomOffsetXfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), MathFunctions.degToRad(45))
       edgeItem.geomOffsetXfoParam.value = geomOffsetXfo
 
       edgeItem.setOverlay(true)
@@ -151,78 +165,78 @@ class ViewCube extends TreeItem {
       const xfo = new Xfo()
       xfo.tr.set(1, 1, 0)
       xfo.ori.setFromDirectionAndUpvector(xfo.tr.normalize(), up)
-      buildEdge(xfo, '110')
+      buildEdge(xfo, up, '110')
     }
     {
       const xfo = new Xfo()
       xfo.tr.set(-1, 1, 0)
       xfo.ori.setFromDirectionAndUpvector(xfo.tr.normalize(), up)
-      buildEdge(xfo, '-110')
+      buildEdge(xfo, up, '-110')
     }
     {
       const xfo = new Xfo()
       xfo.tr.set(1, -1, 0)
       xfo.ori.setFromDirectionAndUpvector(xfo.tr.normalize(), up)
-      buildEdge(xfo, '1-10')
+      buildEdge(xfo, up, '1-10')
     }
     {
       const xfo = new Xfo()
       xfo.tr.set(-1, -1, 0)
       xfo.ori.setFromDirectionAndUpvector(xfo.tr.normalize(), up)
-      buildEdge(xfo, '-1-10')
+      buildEdge(xfo, up, '-1-10')
     }
     {
       const xfo = new Xfo()
       xfo.tr.set(1, 0, 1)
       xfo.ori.setFromDirectionAndUpvector(xfo.tr.normalize(), new Vec3(0, 1, 0))
-      buildEdge(xfo, '101')
+      buildEdge(xfo, new Vec3(0, 1, 0), '101')
     }
     {
       const xfo = new Xfo()
       xfo.tr.set(-1, 0, 1)
       xfo.ori.setFromDirectionAndUpvector(xfo.tr.normalize(), new Vec3(0, 1, 0))
-      buildEdge(xfo, '-101')
+      buildEdge(xfo, new Vec3(0, 1, 0), '-101')
     }
     {
       const xfo = new Xfo()
       xfo.tr.set(0, 1, 1)
       xfo.ori.setFromDirectionAndUpvector(xfo.tr.normalize(), new Vec3(1, 0, 0))
-      buildEdge(xfo, '011')
+      buildEdge(xfo, new Vec3(1, 0, 0), '011')
     }
     {
       const xfo = new Xfo()
       xfo.tr.set(0, -1, 1)
       xfo.ori.setFromDirectionAndUpvector(xfo.tr.normalize(), new Vec3(1, 0, 0))
-      buildEdge(xfo, '0-11')
+      buildEdge(xfo, new Vec3(1, 0, 0), '0-11')
     }
 
     {
       const xfo = new Xfo()
       xfo.tr.set(1, 0, -1)
       xfo.ori.setFromDirectionAndUpvector(xfo.tr.normalize(), new Vec3(0, 1, 0))
-      buildEdge(xfo, '10-1')
+      buildEdge(xfo, new Vec3(0, 1, 0), '10-1')
     }
     {
       const xfo = new Xfo()
       xfo.tr.set(-1, 0, -1)
       xfo.ori.setFromDirectionAndUpvector(xfo.tr.normalize(), new Vec3(0, 1, 0))
-      buildEdge(xfo, '-10-1')
+      buildEdge(xfo, new Vec3(0, 1, 0), '-10-1')
     }
     {
       const xfo = new Xfo()
       xfo.tr.set(0, 1, -1)
       xfo.ori.setFromDirectionAndUpvector(xfo.tr.normalize(), new Vec3(1, 0, 0))
-      buildEdge(xfo, '01-1')
+      buildEdge(xfo, new Vec3(1, 0, 0), '01-1')
     }
     {
       const xfo = new Xfo()
       xfo.tr.set(0, -1, -1)
       xfo.ori.setFromDirectionAndUpvector(xfo.tr.normalize(), new Vec3(1, 0, 0))
-      buildEdge(xfo, '0-1-1')
+      buildEdge(xfo, new Vec3(1, 0, 0), '0-1-1')
     }
   }
 
-  bindToViewport(renderer: GLRenderer, viewport: GLViewport, pixelOffset = 100, screenSpaceCoord: number[] = [1, 1]) {
+  bindToViewport(renderer: GLRenderer, viewport: GLViewport, pixelOffset = 200, screenSpaceCoord: number[] = [1, 1]) {
     renderer.addTreeItem(this)
     this.viewport = viewport
     const camera = this.viewport.getCamera()
@@ -381,6 +395,29 @@ class ViewCube extends TreeItem {
    */
   onPointerMove(event: ZeaPointerEvent): void {
     event.stopPropagation()
+  }
+
+  /**
+   * Event fired when a pointing device is moved while the cursor's hotspot is over the handle.
+   *
+   * @param event - The event param.
+   */
+  onPointerEnter(event: ZeaPointerEvent): void {
+    event.stopPropagation()
+
+    this.highlightedGeom = event.intersectionData!.geomItem as GeomItem
+    this.highlightedGeom.materialParam.value = this.highlightedMaterial
+  }
+
+  /**
+   * Event fired when a pointing device is moved while the cursor's hotspot is over the handle.
+   *
+   * @param event - The event param.
+   */
+  onPointerLeave(event: ZeaPointerEvent): void {
+    event.stopPropagation()
+
+    this.highlightedGeom.materialParam.value = this.normalMaterial
   }
 
   /**
