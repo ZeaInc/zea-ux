@@ -1,0 +1,44 @@
+.hud {
+  color: #333333;
+  font-size: 16px;
+}
+#fps-display {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+}
+
+#status {
+  color: rgb(0, 0, 0);
+  position: fixed;
+  bottom: 15px;
+  left: 10px;
+}
+
+.variant-buttons {
+  left: 10px;
+  top: 10px;
+  display: block;
+  position: fixed;
+}
+
+.variant-button {
+  top: 10px;
+  font-family: 'arial';
+  background-color: #f9ce03; /* Green */
+  border: none;
+  color: black;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  user-select: none;
+}
+
+#cull-stats {
+  color: rgb(0, 0, 0);
+  position: fixed;
+  bottom: 40px;
+  left: 10px;
+}

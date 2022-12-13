@@ -16,6 +16,8 @@ import {
   Label,
   BillboardItem,
 } from '@zeainc/zea-engine'
+import HandleMaterial from './Shaders/HandleMaterial'
+import transformVertices from './transformVertices'
 
 class AxisTripod extends TreeItem {
   /**
@@ -23,28 +25,35 @@ class AxisTripod extends TreeItem {
    *
    * @param size - The size value.
    */
-  constructor(size = 1) {
+  constructor(size = 0.1) {
     super('AxisTripod')
 
-    const redMaterial = new FlatSurfaceMaterial('redMaterial')
+    const redMaterial = new HandleMaterial('redMaterial')
     redMaterial.baseColorParam.value = new Color(1, 0, 0)
-    const greenMaterial = new FlatSurfaceMaterial('greenMaterial')
+    redMaterial.maintainScreenSizeParam.value = 1
+    const greenMaterial = new HandleMaterial('greenMaterial')
     greenMaterial.baseColorParam.value = new Color(0, 1, 0)
-    const blueMaterial = new FlatSurfaceMaterial('blueMaterial')
+    greenMaterial.maintainScreenSizeParam.value = 1
+    const blueMaterial = new HandleMaterial('blueMaterial')
     blueMaterial.baseColorParam.value = new Color(0, 0, 1)
+    blueMaterial.maintainScreenSizeParam.value = 1
 
     const arrowTailLength = 0.8 * size
     const arrowHeadLength = 0.2 * size
 
-    const cylinder = new Cylinder(0.02 * size, arrowTailLength, 64, 2, true, true)
-    const cone = new Cone(0.08 * size, arrowHeadLength, 64, true)
+    const cylinder = new Cylinder(0.01 * size, arrowTailLength, 64, 2, true, true)
 
-    const buildArrow = (material: FlatSurfaceMaterial, quat: Quat, name: string) => {
+    const buildArrow = (material: HandleMaterial, quat: Quat, name: string) => {
       const xfo = new Xfo()
       xfo.ori = quat
 
+      const cone = new Cone(0.06 * size, arrowHeadLength, 64, true)
+      const tipXfo = new Xfo()
+      tipXfo.tr.set(0, 0, arrowTailLength)
+      transformVertices(cone, tipXfo)
+
       const tailItem = new GeomItem('tail' + name, cylinder, material, xfo)
-      const coneItem = new GeomItem('cone' + name, cone, material, new Xfo(new Vec3(0, 0, arrowTailLength)))
+      const coneItem = new GeomItem('cone' + name, cone, material)
 
       material.overlayParam.value = 0.35
       tailItem.addChild(coneItem, false, false)
@@ -57,15 +66,18 @@ class AxisTripod extends TreeItem {
 
       // Setup the label
       const billboard = new BillboardItem('billboard' + name, label)
-      const labelXfo = new Xfo(new Vec3(0, 0, 0))
-      billboard.localXfoParam.value = labelXfo
-      billboard.pixelsPerMeterParam.value = 2000 / size
+      billboard.pixelsPerMeterParam.value = 200 / size
       billboard.alignedToCameraParam.value = true
       billboard.drawOnTopParam.value = true
       billboard.alphaParam.value = 1
       billboard.fixedSizeOnscreenParam.value = true
-      coneItem.addChild(billboard, false)
+
+      const labelXfo = new Xfo(new Vec3(0, 0, arrowTailLength * 12))
+      billboard.localXfoParam.value = labelXfo
+
+      tailItem.addChild(billboard, false)
     }
+
     const quatRed = new Quat()
     quatRed.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI * 0.5)
     buildArrow(redMaterial, quatRed, 'X')
@@ -76,12 +88,13 @@ class AxisTripod extends TreeItem {
     buildArrow(blueMaterial, quatBlue, 'Z')
   }
 
-  bindToViewport(renderer: GLRenderer, viewport: GLViewport, pixelOffset = 100, screenSpaceCoord: number[] = [1, -1]) {
+  bindToViewport(renderer: GLRenderer, viewport: GLViewport, pixelOffset = 100, screenSpaceCoord: number[] = [1, 1]) {
     renderer.addTreeItem(this)
+    const camera = viewport.getCamera()
+
     const updateXfo = () => {
       const focalDistance = camera.focalDistanceParam.value
-      const xfo = new Xfo() // camera.globalXfoParam.value.clone()
-      xfo.ori = xfo.ori.inverse()
+      const xfo = new Xfo()
 
       const pos = new Vec3()
       const fov = camera.fovParam.value
@@ -104,12 +117,10 @@ class AxisTripod extends TreeItem {
       )
 
       xfo.tr = camera.globalXfoParam.value.transformVec3(pos)
-
-      xfo.sc.set(margin * 0.75, margin * 0.75, margin * 0.75)
+      xfo.sc.set(margin, margin, margin)
       this.globalXfoParam.value = xfo
     }
-    const camera = viewport.getCamera()
-    camera.addChild(this, false)
+
     updateXfo()
     camera.on('projectionParamChanged', updateXfo)
     camera.globalXfoParam.on('valueChanged', updateXfo)
