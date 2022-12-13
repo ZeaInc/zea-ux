@@ -17,9 +17,17 @@
         right: 8px;
       }
     </style>
+    <link rel="stylesheet" href="styles/tailwind.min.css" />
+    <link rel="stylesheet" href="styles/test.css" />
   </head>
   <body>
     <canvas id="canvas"></canvas>
+    <div id="status" class="hud"></div>
+    <div class="variant-buttons">
+      <button class="variant-button" id="variant-01">variant-01</button>
+      <button class="variant-button" id="variant-02">variant-02</button>
+      <button class="variant-button" id="variant-03">variant-03</button>
+    </div>
 
     <script src="../node_modules/@zeainc/zea-engine/dist/index.umd.js"></script>
     <script src="../dist/index.umd.js"></script>
@@ -56,9 +64,8 @@
 
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(3, 3, 1.7), new Vec3(0, 0, 0))
 
-      const viewCube = new ViewCube()
-      viewCube.bindToViewport(renderer, renderer.getViewport())
-      // scene.getRoot().addChild(viewCube)
+      const viewCube = new ViewCube(0.8)
+      viewCube.bindToViewport(renderer, renderer.getViewport(), 150)
 
       const manipulator = renderer.getViewport().getManipulator()
       manipulator.setDefaultManipulationMode(CameraManipulator.MANIPULATION_MODES.turntable)
@@ -71,8 +78,8 @@
       // ///////////////////////
       // Setup Scene
 
-      const axisTripod = new AxisTripod(0.5)
-      axisTripod.bindToViewport(renderer, renderer.getViewport(), 200, [-1, -1])
+      const axisTripod = new AxisTripod(0.07)
+      axisTripod.bindToViewport(renderer, renderer.getViewport(), 200, [1, -1])
       // scene.getRoot().addChild(axisTripod)
 
       const material1 = new Material('material1', 'SimpleSurfaceShader')
@@ -102,15 +109,37 @@
         const { data } = event
 
         if (data === 'front') {
-          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(1, 1, 1.7), new Vec3(0, 0, 0))
+      renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-3, 3, 1.7), new Vec3(0, 0, 0))
           window.postMessage(`done-${data}`)
         } else if (data === 'back') {
-          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-1, -1, 1.7), new Vec3(0, 0, 0))
+      renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-3, -3, 1.7), new Vec3(0, 0, 0))
           window.postMessage(`done-${data}`)
         }
       }
 
       window.addEventListener('message', handleMessage, false)
+      // }}}
+            // {{{ Variants
+      const statusElement = document.getElementById('status')
+      const setStatusText = (text) => {
+        renderer.forceRender()
+        statusElement.textContent = text
+      }
+      document.getElementById('variant-01').addEventListener('click', function (event) {
+        renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-3, 3, 1.7), new Vec3(0, 0, 0))
+        window.postMessage(`done-variant-01`)
+        setStatusText(`done-variant-01`)
+      })
+      document.getElementById('variant-02').addEventListener('click', function (event) {
+        renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-3,-3, 1.7), new Vec3(0, 0, 0))
+        window.postMessage(`done-variant-02`)
+        setStatusText(`done-variant-02`)
+      })
+      document.getElementById('variant-03').addEventListener('click', function (event) {
+        renderer.getViewport().getCamera().setIsOrthographic(1, 0);
+        renderer.frameAll()
+        setStatusText(`done-variant-03`)
+      })
       // }}}
     </script>
   </body>
