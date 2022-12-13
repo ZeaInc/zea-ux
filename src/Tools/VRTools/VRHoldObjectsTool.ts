@@ -183,6 +183,7 @@ class VRHoldObjectsTool extends BaseTool {
     }
 
     this.appData.renderer.getXRViewport().then((xrvp) => {
+      //@ts-ignore :  TODO: Remove this after the next release of the engine.
       for (const controller of xrvp.getControllers()) {
         addIconToController(controller)
       }
