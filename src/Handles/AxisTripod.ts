@@ -73,7 +73,7 @@ class AxisTripod extends TreeItem {
       billboard.alphaParam.value = 1
       billboard.fixedSizeOnscreenParam.value = true
 
-      const labelXfo = new Xfo(new Vec3(0, 0, size))
+      const labelXfo = new Xfo(new Vec3(0, 0, size * 1.15))
       billboard.localXfoParam.value = labelXfo
 
       tailItem.addChild(billboard, false)
