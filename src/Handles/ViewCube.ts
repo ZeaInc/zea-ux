@@ -31,7 +31,7 @@ class ViewCube extends TreeItem {
    * @param size - The size value.
    */
   constructor(
-    size = 1,
+    size = 0.1,
     roundness = 0.15,
     faceColor = new Color(1, 0.8, 0.15),
     faceHighlightColor = new Color(1, 0.9, 0.5),
@@ -91,10 +91,17 @@ class ViewCube extends TreeItem {
 
       labelMaterial.baseColorParam.setImage(label)
 
-      const planeLabelItem = new GeomItem('face' + name, plane, labelMaterial, new Xfo(new Vec3(0, 0, 0.01)))
+      const planeLabelItem = new GeomItem('face' + name, plane, labelMaterial, new Xfo(new Vec3(0, 0, 0.001)))
       planeLabelItem.setOverlay(true)
       planeLabelItem.setSelectable(false)
       planeItem.addChild(planeLabelItem, false, false)
+
+      label.once('labelRendered', (event: any) => {
+        const xfo =planeLabelItem.localXfoParam.value
+        xfo.sc.x = event.width / 160
+        xfo.sc.y = event.height / 100
+        planeLabelItem.localXfoParam.value = xfo
+      })
     }
     const quatYPos = new Quat()
     quatYPos.setFromEulerAngles(new EulerAngles(MathFunctions.degToRad(-90), 0, MathFunctions.degToRad(180)))
@@ -248,17 +255,15 @@ class ViewCube extends TreeItem {
       const pos = new Vec3()
       const fov = camera.fovParam.value
       const viewHeightPersp = Math.tan(fov * 0.5) * focalDistance
-      const offsetPersp = (viewHeightPersp / viewport.getHeight()) * pixelOffset
 
       // @ts-ignore
       const viewHeightOrth = camera.viewHeight * 0.5
       const halfViewHeight = MathFunctions.lerp(viewHeightPersp, viewHeightOrth, camera.isOrthographicParam.value)
-      const offsetOrth = (viewHeightOrth / viewport.getHeight()) * pixelOffset
 
       const aspectRatio = viewport.getWidth() / viewport.getHeight()
       const halfViewWidth = halfViewHeight * aspectRatio
 
-      const margin = MathFunctions.lerp(offsetPersp, offsetOrth, camera.isOrthographicParam.value)
+      const margin = pixelOffset * (halfViewHeight / viewport.getHeight())
       pos.set(
         (halfViewWidth - margin) * screenSpaceCoord[0],
         (halfViewHeight - margin) * screenSpaceCoord[1],
@@ -266,8 +271,7 @@ class ViewCube extends TreeItem {
       )
 
       xfo.tr = camera.globalXfoParam.value.transformVec3(pos)
-
-      xfo.sc.set(margin, margin, margin)
+      xfo.sc.set(halfViewHeight * 2.0, halfViewHeight * 2.0, halfViewHeight * 2.0)
       this.globalXfoParam.value = xfo
     }
 

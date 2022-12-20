@@ -7,10 +7,8 @@ import {
   Cone,
   Cylinder,
   TreeItem,
-  FlatSurfaceMaterial,
   MathFunctions,
   GLViewport,
-  Material,
   ZeaPointerEvent,
   GLRenderer,
   Label,
@@ -25,17 +23,20 @@ class AxisTripod extends TreeItem {
    *
    * @param size - The size value.
    */
-  constructor(size = 0.1) {
+  constructor(size = 0.1, 
+    xaxisColor: Color = new Color(1, 0, 0), 
+    yaxisColor: Color = new Color(0, 1, 0), 
+    zaxisColor: Color = new Color(0, 0, 1)) {
     super('AxisTripod')
 
     const redMaterial = new HandleMaterial('redMaterial')
-    redMaterial.baseColorParam.value = new Color(1, 0, 0)
+    redMaterial.baseColorParam.value = xaxisColor
     redMaterial.maintainScreenSizeParam.value = 1
     const greenMaterial = new HandleMaterial('greenMaterial')
-    greenMaterial.baseColorParam.value = new Color(0, 1, 0)
+    greenMaterial.baseColorParam.value = yaxisColor
     greenMaterial.maintainScreenSizeParam.value = 1
     const blueMaterial = new HandleMaterial('blueMaterial')
-    blueMaterial.baseColorParam.value = new Color(0, 0, 1)
+    blueMaterial.baseColorParam.value = zaxisColor
     blueMaterial.maintainScreenSizeParam.value = 1
 
     const arrowTailLength = 0.8 * size
@@ -72,7 +73,7 @@ class AxisTripod extends TreeItem {
       billboard.alphaParam.value = 1
       billboard.fixedSizeOnscreenParam.value = true
 
-      const labelXfo = new Xfo(new Vec3(0, 0, arrowTailLength * 12))
+      const labelXfo = new Xfo(new Vec3(0, 0, size * 1.15))
       billboard.localXfoParam.value = labelXfo
 
       tailItem.addChild(billboard, false)
@@ -99,17 +100,15 @@ class AxisTripod extends TreeItem {
       const pos = new Vec3()
       const fov = camera.fovParam.value
       const viewHeightPersp = Math.tan(fov * 0.5) * focalDistance
-      const offsetPersp = (viewHeightPersp / viewport.getHeight()) * pixelOffset
 
       // @ts-ignore
       const viewHeightOrth = camera.viewHeight * 0.5
       const halfViewHeight = MathFunctions.lerp(viewHeightPersp, viewHeightOrth, camera.isOrthographicParam.value)
-      const offsetOrth = (viewHeightOrth / viewport.getHeight()) * pixelOffset
 
       const aspectRatio = viewport.getWidth() / viewport.getHeight()
       const halfViewWidth = halfViewHeight * aspectRatio
 
-      const margin = MathFunctions.lerp(offsetPersp, offsetOrth, camera.isOrthographicParam.value)
+      const margin = pixelOffset * (halfViewHeight / viewport.getHeight())
       pos.set(
         (halfViewWidth - margin) * screenSpaceCoord[0],
         (halfViewHeight - margin) * screenSpaceCoord[1],
@@ -117,7 +116,7 @@ class AxisTripod extends TreeItem {
       )
 
       xfo.tr = camera.globalXfoParam.value.transformVec3(pos)
-      xfo.sc.set(margin, margin, margin)
+      xfo.sc.set(halfViewHeight * 2.0, halfViewHeight * 2.0, halfViewHeight * 2.0)
       this.globalXfoParam.value = xfo
     }
 
