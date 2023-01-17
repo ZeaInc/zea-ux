@@ -283,7 +283,7 @@ class Handle extends TreeItem {
   }
 
   /**
-   * Sets the taget parameter for manipulation
+   * Sets the target parameter for manipulation
    *
    * @param param - The parameter that will be modified during manipulation
    */
