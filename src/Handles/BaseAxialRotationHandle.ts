@@ -1,6 +1,5 @@
 import {
   MathFunctions,
-  Parameter,
   Vec3,
   Xfo,
   XfoParameter,
@@ -14,7 +13,7 @@ import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 import SelectionXfoChange from '../UndoRedo/Changes/SelectionXfoChange'
 import SelectionGroup from '../SelectionGroup'
-import { Change } from '..'
+import { Change } from '../UndoRedo/Change'
 
 /**
  * Class representing an axial rotation scene widget.
@@ -22,14 +21,14 @@ import { Change } from '..'
  * @extends Handle
  */
 class BaseAxialRotationHandle extends Handle {
-  param: NumberParameter | XfoParameter
-  baseXfo: Xfo
-  grabCircleRadius: number
-  vec0: Vec3
-  change: Change
-  range: Array<number>
-
+  param: XfoParameter
+  private baseXfo: Xfo
+  private handleXfo: Xfo
+  private handleToTargetXfo: Xfo
+  private vec0: Vec3
+  private change: Change
   selectionGroup: SelectionGroup
+
   /**
    * Create an axial rotation scene widget.
    *
@@ -49,28 +48,21 @@ class BaseAxialRotationHandle extends Handle {
   }
 
   /**
-   * Sets global xfo target parameter
+   * Sets the target parameter for this manipulator.
+   * This parameter will be modified by interactions on the manipulator.
    *
-   * @param param - The param param.
-   * @param track - The track param.
+   * @param param - The parameter that will be modified during manipulation
    */
-  setTargetParam(param: XfoParameter, track = true): void {
+  setTargetParam(param: XfoParameter): void {
     this.param = param
-    if (track) {
-      const __updateGizmo = () => {
-        this.globalXfoParam.value = param.getValue()
-      }
-      __updateGizmo()
-      param.on('valueChanged', __updateGizmo)
-    }
   }
 
   /**
    * Returns target's global xfo parameter.
    *
-   * @return {Parameter} - returns handle's target global Xfo.
+   * @return {Parameter} - returns parameter
    */
-  getTargetParam(): NumberParameter | XfoParameter {
+  getTargetParam(): XfoParameter {
     return this.param ? this.param : this.globalXfoParam
   }
 
@@ -83,7 +75,6 @@ class BaseAxialRotationHandle extends Handle {
     this.baseXfo = this.globalXfoParam.value.clone()
 
     this.vec0 = this.grabPos.subtract(this.baseXfo.tr)
-    this.grabCircleRadius = this.vec0.length()
     this.vec0.normalizeInPlace()
 
     // this.offsetXfo = this.localXfoParam.value.inverse()
@@ -92,7 +83,9 @@ class BaseAxialRotationHandle extends Handle {
       this.change = new SelectionXfoChange(Array.from(items), this.baseXfo)
       UndoRedoManager.getInstance().addChange(this.change)
     } else {
-      const param = this.getTargetParam()
+      const invBaseXfo = this.baseXfo.inverse()
+      const param = this.getTargetParam() as XfoParameter
+      this.handleToTargetXfo = invBaseXfo.multiply(param.value)
       this.change = new ParameterValueChange(param)
       UndoRedoManager.getInstance().addChange(this.change)
     }
@@ -105,29 +98,13 @@ class BaseAxialRotationHandle extends Handle {
    */
   onDrag(event: ZeaPointerEvent): void {
     const vec1 = this.holdPos.subtract(this.baseXfo.tr)
-    // const dragCircleRadius = vec1.length()
     vec1.normalizeInPlace()
-
-    // modulate the angle by the radius the mouse moves
-    // away from the center of the handle.
-    // This makes it possible to rotate the object more than
-    // 180 degrees in a single movement.
-    // Note: this modulator made rotations quite unpredictable
-    // especially when the angle between the ray and the plane is acute.
-    // disabling for now.
-    const modulator = 1.0 //dragCircleRadius / this.grabCircleRadius
-    let angle = this.vec0.angleTo(vec1) * modulator
+    let angle = this.vec0.angleTo(vec1)
     if (this.vec0.cross(vec1).dot(this.baseXfo.ori.getZaxis()) < 0) angle = -angle
 
-    if (this.range) {
-      angle = MathFunctions.clamp(angle, this.range[0], this.range[1])
-    }
-
     if ((event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) && event.shiftKey) {
-      // modulat the angle to X degree increments.
-      const degree: number = 22.5
-      const rad: number = degree * (Math.PI / 180)
-      const increment = rad //Math.degToRad(22.5)
+      // modulate the angle to X degree increments.
+      const increment = MathFunctions.degToRad(22.5)
       angle = Math.floor(angle / increment) * increment
     }
 
@@ -138,8 +115,10 @@ class BaseAxialRotationHandle extends Handle {
       const selectionXfoChange = <SelectionXfoChange>this.change
       selectionXfoChange.setDeltaXfo(deltaXfo)
     } else {
-      const value = this.baseXfo.clone()
-      value.ori = deltaXfo.ori.multiply(value.ori)
+      // Add the values in global space.
+      const newBase = this.baseXfo.clone()
+      newBase.ori = deltaXfo.ori.multiply(newBase.ori)
+      const value = newBase.multiply(this.handleToTargetXfo)
 
       this.change.update({
         value,

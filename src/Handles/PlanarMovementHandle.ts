@@ -1,7 +1,7 @@
 import Handle from './Handle'
 import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
-import { Parameter, Vec3, Xfo, ZeaPointerEvent, XRControllerEvent } from '@zeainc/zea-engine'
+import { Parameter, Vec3, Xfo, ZeaPointerEvent, XRControllerEvent, XfoParameter } from '@zeainc/zea-engine'
 import { Change } from '..'
 import SelectionGroup from '../SelectionGroup'
 import SelectionXfoChange from '../UndoRedo/Changes/SelectionXfoChange'
@@ -13,10 +13,10 @@ import SelectionXfoChange from '../UndoRedo/Changes/SelectionXfoChange'
  */
 class PlanarMovementHandle extends Handle {
   param: Parameter<unknown>
-  fullXfoManipulationInVR: boolean
-  grabOffset: Vec3
-  baseXfo: Xfo
-  change: Change
+  private fullXfoManipulationInVR: boolean
+  private grabOffset: Vec3
+  private baseXfo: Xfo
+  private change: Change
   selectionGroup: SelectionGroup
 
   /**
@@ -41,18 +41,10 @@ class PlanarMovementHandle extends Handle {
   /**
    * Sets global xfo target parameter.
    *
-   * @param param - The video param.
-   * @param track - The track param.
+   * @param param - The parameter that will be modified during manipulation
    */
-  setTargetParam(param: any, track = true): void {
+  setTargetParam(param: XfoParameter): void {
     this.param = param
-    if (track) {
-      const __updateGizmo = () => {
-        this.globalXfoParam.value = param.getValue()
-      }
-      __updateGizmo()
-      param.on('valueChanged', __updateGizmo)
-    }
   }
 
   /**
