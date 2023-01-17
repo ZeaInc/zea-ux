@@ -73,11 +73,10 @@
       widget2.getParameter('Color').setValue(new Color('#AA1122'))
       widgets.addChild(widget2)
 
-
-      // Note: Set 'track' to false, we as we add the widgets to the asset 
-      widget1.setTargetParam(cadAsset.globalXfoParam, false)
-      widget2.setTargetParam(cadAsset.globalXfoParam, false)
-      scene.getRoot().addChild(widgets)
+      // Now connect both widgets to the CADAsset.
+      widget1.setTargetParam(cadAsset.globalXfoParam)
+      widget2.setTargetParam(cadAsset.globalXfoParam)
+      cadAsset.addChild(widgets)
 
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(3, 5, 2), new Vec3(1, 0, 0))
 
