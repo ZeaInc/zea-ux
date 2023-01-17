@@ -24,11 +24,11 @@ import { Change } from '..'
  * @extends BaseLinearMovementHandle
  */
 class LinearMovementHandle extends BaseLinearMovementHandle {
-  param: Parameter<unknown>
-  handleMat: Material
-  baseXfo: Xfo
-  change: Change
+  private handleMat: Material
+  private baseXfo: Xfo
+  private change: Change
 
+  param: XfoParameter
   selectionGroup: SelectionGroup
   /**
    * Create a linear movement scene widget.
@@ -59,7 +59,7 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
     transformVertices(tipGeom, tipXfo)
 
     this.colorParam.on('valueChanged', () => {
-      this.handleMat.getParameter('BaseColor').value = this.colorParam.getValue()
+      this.handleMat.getParameter('BaseColor').value = this.colorParam.value
     })
 
     this.addChild(handle)
@@ -71,7 +71,7 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
    */
   highlight(): void {
     super.highlight()
-    this.handleMat.getParameter('BaseColor').value = this.highlightColorParam.getValue()
+    this.handleMat.getParameter('BaseColor').value = this.highlightColorParam.value
   }
 
   /**
@@ -79,7 +79,7 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
    */
   unhighlight(): void {
     super.unhighlight()
-    this.handleMat.getParameter('BaseColor').value = this.colorParam.getValue()
+    this.handleMat.getParameter('BaseColor').value = this.colorParam.value
   }
 
   /**
@@ -92,20 +92,13 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
   }
 
   /**
-   * Sets global xfo target parameter.
+   * Sets the target parameter for this manipulator.
+   * This parameter will be modified by interactions on the manipulator.
    *
-   * @param param - The video param.
-   * @param track - The track param.
+   * @param param - The parameter that will be modified during manipulation
    */
-  setTargetParam(param: Parameter<any>, track = true): void {
+  setTargetParam(param: Parameter<any>): void {
     this.param = param
-    if (track) {
-      const __updateGizmo = () => {
-        this.globalXfoParam.value = param.getValue()
-      }
-      __updateGizmo()
-      param.on('valueChanged', __updateGizmo)
-    }
   }
 
   /**
@@ -113,7 +106,7 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
    *
    * @return - returns handle's target global Xfo.
    */
-  getTargetParam(): XfoParameter | Parameter<unknown> {
+  getTargetParam(): XfoParameter {
     return this.param ? this.param : this.globalXfoParam
   }
 
@@ -123,8 +116,8 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
    * @param event - The event param.
    */
   onDragStart(event: ZeaPointerEvent): void {
-    const param = this.getTargetParam()
-    this.baseXfo = <Xfo>param.getValue()
+    const param = this.getTargetParam() as XfoParameter
+    this.baseXfo = param.value
 
     if (this.selectionGroup) {
       const items = this.selectionGroup.getItems()

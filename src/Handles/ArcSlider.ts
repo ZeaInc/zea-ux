@@ -10,16 +10,15 @@ import {
   Circle,
   Sphere,
   Registry,
-  Parameter,
   ZeaPointerEvent,
   ZeaMouseEvent,
   ZeaTouchEvent,
-  XRControllerEvent,
 } from '@zeainc/zea-engine'
-import { BaseAxialRotationHandle } from './BaseAxialRotationHandle'
+import { Handle } from './Handle'
 import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
 import './Shaders/HandleShader'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
+import { Change } from '../UndoRedo/Change'
 
 /**
  * Class representing a slider scene widget with an arc shape. There are two parts in this widget, the slider and the handle.<br>
@@ -35,17 +34,22 @@ import UndoRedoManager from '../UndoRedo/UndoRedoManager'
  * * **dragStart:** Triggered when the pointer is down.
  * * **dragEnd:** Triggered when the pointer is released.
  *
- * @extends BaseAxialRotationHandle
+ * @extends Handle
  */
-class ArcSlider extends BaseAxialRotationHandle {
+class ArcSlider extends Handle {
+  param: XfoParameter | NumberParameter
   arcRadiusParam: NumberParameter
   arcAngleParam: NumberParameter
   handleRadiusParam: NumberParameter
-  handleMat: Material
-  handle: GeomItem
-  arc: GeomItem
-  handleXfo = new Xfo()
-  handleGeomOffsetXfo = new Xfo()
+  range: Array<number>
+  private handleMat: Material
+  private handle: GeomItem
+  private arc: GeomItem
+  private baseXfo: Xfo
+  private handleXfo = new Xfo()
+  private vec0: Vec3
+  private change: Change
+  private handleGeomOffsetXfo = new Xfo()
 
   /**
    * Creates an instance of ArcSlider.
@@ -81,27 +85,27 @@ class ArcSlider extends BaseAxialRotationHandle {
     this.handle.geomOffsetXfoParam.value = this.handleGeomOffsetXfo
 
     // this.barRadiusParam.on('valueChanged', () => {
-    //   arcGeom.radiusParam.value = this.barRadiusParam.getValue();
+    //   arcGeom.radiusParam.value = this.barRadiusParam.value;
     // });
 
     this.range = [0, arcAngle]
     this.arcAngleParam.on('valueChanged', () => {
-      const arcAngle = this.arcAngleParam.getValue()
+      const arcAngle = this.arcAngleParam.value
       arcGeom.angleParam.value = arcAngle
       this.range = [0, arcAngle]
     })
     this.arcRadiusParam.on('valueChanged', () => {
-      const arcRadius = this.arcRadiusParam.getValue()
+      const arcRadius = this.arcRadiusParam.value
       arcGeom.radiusParam.value = arcRadius
       this.handleGeomOffsetXfo.tr.x = arcRadius
       this.handle.geomOffsetXfoParam.value = this.handleGeomOffsetXfo
     })
     this.handleRadiusParam.on('valueChanged', () => {
-      handleGeom.radiusParam.value = this.handleRadiusParam.getValue()
+      handleGeom.radiusParam.value = this.handleRadiusParam.value
     })
 
     this.colorParam.on('valueChanged', () => {
-      this.handleMat.getParameter('BaseColor').value = this.colorParam.getValue()
+      this.handleMat.getParameter('BaseColor').value = this.colorParam.value
     })
 
     this.addChild(this.handle)
@@ -149,7 +153,7 @@ class ArcSlider extends BaseAxialRotationHandle {
    */
   highlight(): void {
     super.highlight()
-    this.handleMat.getParameter('BaseColor').value = this.highlightColorParam.getValue()
+    this.handleMat.getParameter('BaseColor').value = this.highlightColorParam.value
   }
 
   /**
@@ -157,26 +161,13 @@ class ArcSlider extends BaseAxialRotationHandle {
    */
   unhighlight(): void {
     super.unhighlight()
-    this.handleMat.getParameter('BaseColor').value = this.colorParam.getValue()
+    this.handleMat.getParameter('BaseColor').value = this.colorParam.value
   }
-
-  // /**
-  //  * The setTargetParam method.
-  //  * @param param - The param param.
-  //  */
-  // setTargetParam(param) {
-  //   this.param = param;
-  //   const __updateSlider = () => {
-  //     this.__updateSlider(param.getValue());
-  //   };
-  //   __updateSlider();
-  //   param.on('valueChanged', __updateSlider);
-  // }
 
   /**
    * Sets global xfo target parameter
    *
-   * @param param - The param param.
+   * @param param - The parameter that will be modified during manipulation
    * @param track - The track param.
    */
   setTargetParam(param: XfoParameter | NumberParameter, track = true): void {
@@ -190,7 +181,7 @@ class ArcSlider extends BaseAxialRotationHandle {
         param.on('valueChanged', __updateGizmo)
       } else if (this.param instanceof NumberParameter) {
         const __updateGizmo = () => {
-          this.handleXfo.ori.setFromAxisAndAngle(new Vec3(0, 0, 1), <number>param.getValue())
+          this.handleXfo.ori.setFromAxisAndAngle(new Vec3(0, 0, 1), <number>param.value)
           this.handle.globalXfoParam.value = this.handleXfo
         }
         __updateGizmo()
@@ -205,7 +196,7 @@ class ArcSlider extends BaseAxialRotationHandle {
   //   const range =
   //     this.param && this.param.getRange() ? this.param.getRange() : [0, 1];
   //   const v = Math.remap(value, range[0], range[1], 0, 1);
-  //   const length = this.arcAngleParam.getValue();
+  //   const length = this.arcAngleParam.value;
   //   this.handleXfo.ori.setFromAxisAndAngle(this.axis, ) = v * length;
   //   this.handle.localXfoParam.value = this.handleXfo;
   // }
@@ -230,10 +221,10 @@ class ArcSlider extends BaseAxialRotationHandle {
   onDragStart(event: ZeaPointerEvent): void {
     this.baseXfo = this.globalXfoParam.value.clone()
     this.baseXfo.sc.set(1, 1, 1)
-    // this.offsetXfo = this.baseXfo.inverse().multiply(this.param.getValue());
+    // this.offsetXfo = this.baseXfo.inverse().multiply(this.param.value);
 
     this.vec0 = this.globalXfoParam.value.ori.getXaxis()
-    // this.grabCircleRadius = this.arcRadiusParam.getValue();
+    // this.grabCircleRadius = this.arcRadiusParam.value;
     this.vec0.normalizeInPlace()
 
     this.change = new ParameterValueChange(this.param)

@@ -1,4 +1,4 @@
-import { Parameter, Ray, Xfo, ZeaPointerEvent, ZeaMouseEvent, GLViewport } from '@zeainc/zea-engine'
+import { Parameter, Ray, Xfo, ZeaPointerEvent, ZeaMouseEvent, GLViewport, XfoParameter } from '@zeainc/zea-engine'
 import Handle from './Handle.js'
 import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange.js'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager.js'
@@ -14,7 +14,7 @@ import SelectionGroup from '../SelectionGroup.js'
  * @extends Handle
  */
 class ScreenSpaceMovementHandle extends Handle {
-  param: Parameter<unknown>
+  param: XfoParameter
   baseXfo: Xfo
   change: Change
   selectionGroup: SelectionGroup
@@ -39,18 +39,10 @@ class ScreenSpaceMovementHandle extends Handle {
   /**
    * Sets global xfo target parameter.
    *
-   * @param param - The video param.
-   * @param track - The track param.
+   * @param param - The parameter that will be modified during manipulation
    */
-  setTargetParam(param: any, track = true): void {
+  setTargetParam(param: XfoParameter): void {
     this.param = param
-    if (track) {
-      const __updateGizmo = () => {
-        this.globalXfoParam.value = param.getValue()
-      }
-      __updateGizmo()
-      param.on('valueChanged', __updateGizmo)
-    }
   }
 
   /**
@@ -58,7 +50,7 @@ class ScreenSpaceMovementHandle extends Handle {
    *
    * @return {Parameter} - returns handle's target global Xfo.
    */
-  getTargetParam(): Parameter<unknown> {
+  getTargetParam(): XfoParameter {
     return this.param ? this.param : this.globalXfoParam
   }
 

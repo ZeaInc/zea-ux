@@ -114,8 +114,7 @@ class SliderHandle extends BaseLinearMovementHandle {
   /**
    * Sets global xfo target parameter.
    *
-   * @param param - The video param.
-   * @param track - The track param.
+   * @param param - The parameter that will be modified during manipulation
    */
   setTargetParam(param: Parameter<unknown>): void {
     this.param = param

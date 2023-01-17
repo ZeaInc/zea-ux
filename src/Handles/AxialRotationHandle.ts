@@ -20,8 +20,7 @@ import './Shaders/HandleShader'
  */
 class AxialRotationHandle extends BaseAxialRotationHandle {
   radiusParam: NumberParameter
-  handleMat: Material
-  handleXfo: Xfo
+  private handleMat: Material
   handle: GeomItem
   /**
    * Create an axial rotation scene widget.
@@ -46,7 +45,6 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
     // const handleGeom = new Cylinder(radius, thickness * 2, 64, 2, false);
     const handleGeom = new Torus(thickness, radius, 64, Math.PI * 0.5)
     this.handle = new GeomItem('handle', handleGeom, this.handleMat)
-    this.handleXfo = new Xfo()
 
     this.radiusParam.on('valueChanged', () => {
       radius = this.radiusParam.getValue()
