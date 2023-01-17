@@ -180,12 +180,18 @@ class XfoHandle extends TreeItem {
   /**
    * Sets global xfo target parameter.
    *
-   * @param param - The video param.
+   * @param param - The parameter that will be modified during manipulation
    */
-  setTargetParam(param: Parameter<unknown>, track = true): void {
+  setTargetParam(param: XfoParameter): void {
     this.param = param
     this.traverse((item) => {
-      if (item instanceof Handle) item.setTargetParam(param, false) // TODO: should this take track?
+      if (
+        item instanceof LinearMovementHandle ||
+        item instanceof XfoPlanarMovementHandle ||
+        item instanceof AxialRotationHandle
+      ) {
+        item.setTargetParam(param)
+      }
     })
   }
 
@@ -201,7 +207,7 @@ class XfoHandle extends TreeItem {
         item instanceof XfoPlanarMovementHandle ||
         item instanceof AxialRotationHandle
       ) {
-        item.setSelectionGroup(selectionGroup) // TODO: should this take track?
+        item.setSelectionGroup(selectionGroup)
       }
     })
   }

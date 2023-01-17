@@ -23,7 +23,7 @@ import { ParameterValueChange } from '../UndoRedo/Changes/ParameterValueChange'
  * @extends Handle
  */
 class SphericalRotationHandle extends Handle {
-  param: Parameter<unknown>
+  param: XfoParameter
   radius: number
   vec0: Vec3
   baseXfo: Xfo
@@ -63,18 +63,10 @@ class SphericalRotationHandle extends Handle {
   /**
    * Sets global xfo target parameter.
    *
-   * @param param - The video param.
-   * @param track - The track param.
+   * @param param - The parameter that will be modified during manipulation
    */
-  setTargetParam(param: XfoParameter, track = true): void {
+  setTargetParam(param: XfoParameter): void {
     this.param = param
-    if (track) {
-      const __updateGizmo = () => {
-        this.globalXfoParam.value = param.getValue()
-      }
-      __updateGizmo()
-      param.on('valueChanged', __updateGizmo)
-    }
   }
 
   /**

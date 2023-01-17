@@ -17,7 +17,7 @@ class ParameterValueChange extends Change {
   /**
    * Creates an instance of ParameterValueChange.
    *
-   * @param param - The param value.
+   * @param param - The Parameter object that is modified by this change.
    * @param newValue - The newValue value.
    */
   constructor(param?: Parameter<unknown>, newValue?: any) {

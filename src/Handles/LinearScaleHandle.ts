@@ -24,13 +24,15 @@ import SelectionXfoChange from '../UndoRedo/Changes/SelectionXfoChange'
  * @extends BaseLinearMovementHandle
  */
 class LinearScaleHandle extends BaseLinearMovementHandle {
+  private handleMat: Material
+  private oriXfo: Xfo
+  private tmplocalXfo: Xfo
+  private baseXfo: Xfo
+  private change: Change
+
   param: Parameter<unknown>
-  handleMat: Material
-  oriXfo: Xfo
-  tmplocalXfo: Xfo
-  baseXfo: Xfo
-  change: Change
   selectionGroup: SelectionGroup
+
   /**
    * Create a linear scale scene widget.
    *
@@ -98,18 +100,10 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
   /**
    * Sets global xfo target parameter.
    *
-   * @param param - The video param.
-   * @param track - The track param.
+   * @param param - The parameter that will be modified during manipulation
    */
-  setTargetParam(param: XfoParameter, track = true): void {
+  setTargetParam(param: XfoParameter): void {
     this.param = param
-    if (track) {
-      const __updateGizmo = () => {
-        this.globalXfoParam.value = param.getValue()
-      }
-      __updateGizmo()
-      param.on('valueChanged', __updateGizmo)
-    }
   }
 
   /**

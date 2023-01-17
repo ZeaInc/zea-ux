@@ -282,8 +282,12 @@ class Handle extends TreeItem {
     console.warn('@Handle#onDragEnd - Implement me!', event)
   }
 
-  // TODO:(check) added this method since we check for type Handle and call this method in XfoHandle.ts
-  setTargetParam(param: Parameter<unknown>, track: boolean): void {
+  /**
+   * Sets the target parameter for manipulation
+   *
+   * @param param - The parameter that will be modified during manipulation
+   */
+  setTargetParam(param: Parameter<unknown>): void {
     console.warn('setTargetParam not implemented')
   }
 }
