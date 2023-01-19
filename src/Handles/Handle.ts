@@ -36,8 +36,6 @@ class Handle extends TreeItem {
   value: number | Vec3 | number[]
   delta: number | Vec3 | number[]
   releasePos: Vec3
-  changedTouches: boolean
-  preventDefault: any
   /**
    * Creates an instance of Handle.
    *
@@ -51,14 +49,14 @@ class Handle extends TreeItem {
   }
 
   /**
-   * Applies a special shinning shader to the handle to illustrate interaction with it.
+   * highlight the handle to indicate it is under the mouse.
    */
   highlight(): void {
     this.emit('highlight')
   }
 
   /**
-   * Removes the shining shader from the handle.
+   * Removes the highlight from the handle once the mouse moves away.
    */
   unhighlight(): void {
     this.emit('unhighlight')
@@ -105,12 +103,12 @@ class Handle extends TreeItem {
     event.stopPropagation()
     this.captured = true
 
-    if (this.changedTouches) {
+    if (event instanceof ZeaTouchEvent) {
       this.highlight()
     }
 
     if (event.pointerType == 'mouse' || event.pointerType == 'touch') {
-      this.handlePointerDown(<ZeaMouseEvent>event)
+      this.handlePointerDown(event)
     } else if (event.pointerType == 'xr') {
       this.onVRControllerButtonDown(<XRControllerEvent>event)
     }
@@ -145,7 +143,7 @@ class Handle extends TreeItem {
       event.releaseCapture()
       event.stopPropagation()
       this.captured = false
-      if (this.changedTouches) {
+      if (event instanceof ZeaTouchEvent) {
         this.unhighlight()
       }
       if (event.pointerType == 'mouse' || event.pointerType == 'touch') {
@@ -168,9 +166,10 @@ class Handle extends TreeItem {
    *
    * @param event - The event param.
    */
-  handlePointerDown(event: ZeaMouseEvent): void {
+  handlePointerDown(event: ZeaPointerEvent): void {
     this.gizmoRay = this.getManipulationPlane()
     const ray = getPointerRay(event)
+
     const dist = ray.intersectRayPlane(this.gizmoRay)
     this.grabPos = ray.pointAtDist(dist)
     this.onDragStart(event)

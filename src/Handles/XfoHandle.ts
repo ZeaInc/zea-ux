@@ -117,21 +117,21 @@ class XfoHandle extends TreeItem {
     //   rotationHandles.addChild(rotationWidget)
     // }
     {
-      const rotationXWidget = new AxialRotationHandle('rotationX', size * 0.75, thickness, red)
+      const rotationXWidget = new AxialRotationHandle('rotationX', size * 0.75, thickness, Math.PI * 0.5, red)
       const xfo = new Xfo()
       xfo.ori.setFromEulerAngles(new EulerAngles(Math.PI * -0.5, Math.PI * -0.5, 0))
       rotationXWidget.localXfoParam.value = xfo
       rotationHandles.addChild(rotationXWidget)
     }
     {
-      const rotationYWidget = new AxialRotationHandle('rotationY', size * 0.75, thickness, green)
+      const rotationYWidget = new AxialRotationHandle('rotationY', size * 0.75, thickness, Math.PI * 0.5, green)
       const xfo = new Xfo()
       xfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * -0.5)
       rotationYWidget.localXfoParam.value = xfo
       rotationHandles.addChild(rotationYWidget)
     }
     {
-      const rotationZWidget = new AxialRotationHandle('rotationZ', size * 0.75, thickness, blue)
+      const rotationZWidget = new AxialRotationHandle('rotationZ', size * 0.75, thickness, Math.PI * 0.5, blue)
       const xfo = new Xfo()
       xfo.ori.setFromAxisAndAngle(new Vec3(0, 0, 1), Math.PI * 0.5)
       rotationZWidget.localXfoParam.value = xfo
