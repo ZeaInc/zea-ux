@@ -62,7 +62,7 @@ class ScreenSpaceMovementHandle extends Handle {
    *
    * @param event - The event param.
    */
-  handlePointerDown(event: ZeaMouseEvent): void {
+  handlePointerDown(event: ZeaPointerEvent): void {
     this.gizmoRay = new Ray()
     const ray = getPointerRay(event)
     const viewport = event.viewport as GLViewport

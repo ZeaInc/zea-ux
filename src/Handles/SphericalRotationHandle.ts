@@ -82,12 +82,12 @@ class SphericalRotationHandle extends Handle {
   // Mouse events
 
   /**
-   * Handles mouse down interaction with the handle.
+   * Handles pointer interaction with the handle.
    *
    * @param event - The event param.
    * @return {boolean} - The return value.
    */
-  handlePointerDown(event: ZeaMouseEvent): boolean {
+  handlePointerDown(event: ZeaPointerEvent): boolean {
     // const xfo = this.globalXfoParam.value;
     // this.sphere = {
     //   tr: xfo,
