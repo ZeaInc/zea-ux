@@ -5,7 +5,6 @@ import {
   XfoParameter,
   ZeaPointerEvent,
   ZeaMouseEvent,
-  ZeaTouchEvent,
   NumberParameter,
   GeomItem,
   Material,
@@ -27,8 +26,11 @@ import { Change } from '../UndoRedo/Change'
 class AxialRotationHandle extends Handle {
   param: XfoParameter
   radiusParam: NumberParameter
+  // Angle in degrees that the rotation handle should snap to.
+  snapIncrementAngle: number = 22.5 
+  // set to true to force snaps to always be enabled for this handle.
+  enableAngleSnapping: boolean = false
   private baseXfo: Xfo
-  private handleXfo: Xfo
   private handleToTargetXfo: Xfo
   private vec0: Vec3
   private change: Change
@@ -159,9 +161,9 @@ class AxialRotationHandle extends Handle {
     let angle = this.vec0.angleTo(vec1)
     if (this.vec0.cross(vec1).dot(this.baseXfo.ori.getZaxis()) < 0) angle = -angle
 
-    if ((event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) && event.shiftKey) {
-      // modulate the angle to X degree increments.
-      const increment = MathFunctions.degToRad(22.5)
+    if (((event instanceof ZeaMouseEvent) && event.shiftKey) || this.enableAngleSnapping) {
+      // modulate the angle to snapIncrementAngle degree increments.
+      const increment = MathFunctions.degToRad(this.snapIncrementAngle)
       angle = Math.floor(angle / increment) * increment
     }
 
