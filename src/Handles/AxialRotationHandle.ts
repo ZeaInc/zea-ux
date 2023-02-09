@@ -1,34 +1,54 @@
-import { Color, Xfo, NumberParameter, GeomItem, Material, Torus, ZeaPointerEvent } from '@zeainc/zea-engine'
-
-import BaseAxialRotationHandle from './BaseAxialRotationHandle'
-import './Shaders/HandleShader'
+import {
+  MathFunctions,
+  Vec3,
+  Xfo,
+  XfoParameter,
+  ZeaPointerEvent,
+  ZeaMouseEvent,
+  ZeaTouchEvent,
+  NumberParameter,
+  GeomItem,
+  Material,
+  Color,
+  Torus,
+} from '@zeainc/zea-engine'
+import Handle from './Handle'
+import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
+import UndoRedoManager from '../UndoRedo/UndoRedoManager'
+import SelectionXfoChange from '../UndoRedo/Changes/SelectionXfoChange'
+import SelectionGroup from '../SelectionGroup'
+import { Change } from '../UndoRedo/Change'
 
 /**
- * Class representing an axial rotation scene widget. It has a `Torus` shape and is used to rotate objects around the specified axes.
- * You can do it by specifying the localXfo orientation:
+ * Class representing an axial rotation scene widget.
  *
- * ```javascript
- * const xfo = new Xfo()
- * // This is rotation over `Y` axis
- * xfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI * 0.5)
- * axialRotationHandle.localXfoParam.value = xfo
- * ```
- * **Parameters**
- * * **Radius(`NumberParameter`):** Specifies the radius of the handler.
- *
- * @extends BaseAxialRotationHandle
+ * @extends Handle
  */
+class AxialRotationHandle extends Handle {
   param: XfoParameter
   radiusParam: NumberParameter
-  handleMat: Material
-  handleXfo: Xfo
-  handle: GeomItem
+  private baseXfo: Xfo
+  private handleXfo: Xfo
+  private handleToTargetXfo: Xfo
+  private vec0: Vec3
+  private change: Change
+  private handleMat: Material
+  private handle: GeomItem
+
+  selectionGroup: SelectionGroup
+
   /**
    * Create an axial rotation scene widget.
    *
    * @param name - The name value.
    */
-  constructor(name: string, radius: number, thickness: number, color = new Color(1, 1, 0)) {
+  constructor(
+    name: string,
+    radius: number,
+    thickness: number,
+    radians: number = Math.PI * 0.5,
+    color = new Color(1, 1, 0)
+  ) {
     super(name)
 
     this.radiusParam = new NumberParameter('Radius', radius)
@@ -41,9 +61,8 @@ import './Shaders/HandleShader'
     this.handleMat.getParameter('Overlay').value = 0.9
 
     // const handleGeom = new Cylinder(radius, thickness * 2, 64, 2, false);
-    const handleGeom = new Torus(thickness, radius, 64, Math.PI * 0.5)
+    const handleGeom = new Torus(thickness, radius, 64, radians)
     this.handle = new GeomItem('handle', handleGeom, this.handleMat)
-    this.handleXfo = new Xfo()
 
     this.radiusParam.on('valueChanged', () => {
       radius = this.radiusParam.getValue()
@@ -75,39 +94,106 @@ import './Shaders/HandleShader'
   }
 
   /**
-   * Returns handle's global Xfo
+   * Sets selectionGroup so this handle can modify the items.
    *
-   * @return {Xfo} - The Xfo value
+   * @param selectionGroup - The SelectionGroup.
    */
-  getBaseXfo(): Xfo {
-    return this.globalXfoParam.value
+  setSelectionGroup(selectionGroup: SelectionGroup): void {
+    this.selectionGroup = selectionGroup
   }
 
   /**
-   * Handles the initially drag interaction of the handle.
+   * Sets the target parameter for this manipulator.
+   * This parameter will be modified by interactions on the manipulator.
+   *
+   * @param param - The parameter that will be modified during manipulation
+   */
+  setTargetParam(param: XfoParameter): void {
+    this.param = param
+  }
+
+  /**
+   * Returns target's global xfo parameter.
+   *
+   * @return {Parameter} - returns parameter
+   */
+  getTargetParam(): XfoParameter {
+    return this.param ? this.param : this.globalXfoParam
+  }
+
+  /**
+   * Handles the initially drag of the handle.
    *
    * @param event - The event param.
    */
   onDragStart(event: ZeaPointerEvent): void {
-    super.onDragStart(event)
+    this.highlight()
+
+    this.baseXfo = this.globalXfoParam.value.clone()
+
+    this.vec0 = this.grabPos.subtract(this.baseXfo.tr)
+    this.vec0.normalizeInPlace()
+
+    // this.offsetXfo = this.localXfoParam.value.inverse()
+    if (this.selectionGroup) {
+      const items = this.selectionGroup.getItems()
+      this.change = new SelectionXfoChange(Array.from(items), this.baseXfo)
+      UndoRedoManager.getInstance().addChange(this.change)
+    } else {
+      const invBaseXfo = this.baseXfo.inverse()
+      const param = this.getTargetParam() as XfoParameter
+      this.handleToTargetXfo = invBaseXfo.multiply(param.value)
+      this.change = new ParameterValueChange(param)
+      UndoRedoManager.getInstance().addChange(this.change)
+    }
   }
 
   /**
-   * Handles drag interaction of the handle.
+   * Handles drag action of the handle.
    *
    * @param event - The event param.
    */
-  onDrag(event: ZeaPointerEvent) {
-    super.onDrag(event)
+  onDrag(event: ZeaPointerEvent): void {
+    const vec1 = this.holdPos.subtract(this.baseXfo.tr)
+    vec1.normalizeInPlace()
+    let angle = this.vec0.angleTo(vec1)
+    if (this.vec0.cross(vec1).dot(this.baseXfo.ori.getZaxis()) < 0) angle = -angle
+
+    if ((event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) && event.shiftKey) {
+      // modulate the angle to X degree increments.
+      const increment = MathFunctions.degToRad(22.5)
+      angle = Math.floor(angle / increment) * increment
+    }
+
+    const deltaXfo = new Xfo()
+    deltaXfo.ori.setFromAxisAndAngle(this.baseXfo.ori.getZaxis(), angle)
+
+    if (this.selectionGroup) {
+      const selectionXfoChange = <SelectionXfoChange>this.change
+      selectionXfoChange.setDeltaXfo(deltaXfo)
+    } else {
+      // Add the values in global space.
+      const newBase = this.baseXfo.clone()
+      newBase.ori = deltaXfo.ori.multiply(newBase.ori)
+      const value = newBase.multiply(this.handleToTargetXfo)
+
+      this.change.update({
+        value,
+      })
+    }
   }
 
   /**
-   * Handles the end of dragging interaction with the handle.
+   * Handles the end of dragging the handle.
    *
    * @param event - The event param.
    */
   onDragEnd(event: ZeaPointerEvent): void {
-    super.onDragEnd(event)
+    if (this.selectionGroup) {
+      const selectionXfoChange = <SelectionXfoChange>this.change
+      selectionXfoChange.setDone()
+    }
+    this.change = null
   }
 }
 

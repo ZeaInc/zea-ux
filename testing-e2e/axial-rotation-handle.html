@@ -34,6 +34,8 @@
         GeomItem,
         NumberParameter,
         TreeItem,
+        CADAsset,
+        AssetLoadContext
       } = window.zeaEngine
       const { AxialRotationHandle } = window.zeaUx
       const domElement = document.getElementById('canvas')
@@ -46,46 +48,37 @@
       renderer.getViewport().backgroundColorParam.value = color
       renderer.setScene(scene)
 
-      const treeItem1 = new TreeItem('TranslateTarget')
-      scene.getRoot().addChild(treeItem1)
-      const widget1 = new AxialRotationHandle('axial1', 0.2, 0.007, new Color('#6600FF'))
-      widget1.getParameter('HighlightColor').setValue(new Color(1, 0.5, 1))
+      
+      const cadAsset = new CADAsset()
+      const context = new AssetLoadContext()
+      const url = 'data/zcad/3.9.1/Dead_eye_bearing.stp.zcad'
+      cadAsset.localXfoParam.value.sc.set(10, 10, 10)
+      cadAsset.load(url, context).then(() => {
+        // renderer.frameAll()
+      })
+      scene.getRoot().addChild(cadAsset)
+
+      const widgets = new TreeItem('Widgets')
+      scene.getRoot().addChild(widgets)
+
+      const widget1 = new AxialRotationHandle('axial1', 0.2, 0.007, Math.PI * 2, new Color('#6600FF'))
+      widget1.highlightColorParam.setValue(new Color(1, 0.5, 1))
       const xfo1 = new Xfo()
       xfo1.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI * 0.5)
-      widget1.getParameter('LocalXfo').setValue(xfo1)
+      widget1.localXfoParam.setValue(xfo1)
+      widgets.addChild(widget1)
 
-      const handleGeom1 = new Cuboid(0.5, 0.5, 0.5)
-      const material1 = new Material('handle', 'SimpleSurfaceShader')
-      material1.getParameter('BaseColor').setValue(new Color(89 / 255, 182 / 255, 92 / 255))
-      const geomItem1 = new GeomItem('handle', handleGeom1, material1)
-      widget1.addChild(geomItem1)
 
-      treeItem1.addChild(widget1)
-
-      const treeItem2 = new TreeItem('TranslateTarget')
-      scene.getRoot().addChild(treeItem2)
-      const widget2 = new AxialRotationHandle('axial2', 0.15, 0.004)
+      const widget2 = new AxialRotationHandle('axial2', 0.15, 0.004, Math.PI * 2)
       widget2.getParameter('Color').setValue(new Color('#AA1122'))
+      widgets.addChild(widget2)
 
-      const xfo2 = new Xfo()
-      xfo2.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * 0.5)
-      widget2.getParameter('LocalXfo').setValue(xfo2)
-
-      const handleGeom2 = new Cuboid(0.6, 0.8, 0.7)
-      const material2 = new Material('handle', 'SimpleSurfaceShader')
-      material2.getParameter('BaseColor').setValue(new Color('#5522AA'))
-      const geomItem2 = new GeomItem('handle', handleGeom2, material2)
-      widget2.addChild(geomItem2)
-      treeItem2.addChild(widget2)
-
-      const translateXfo1 = new Xfo(new Vec3(2, 0, 0))
-      treeItem2.getParameter('GlobalXfo').setValue(translateXfo1)
+      // Now connect both widgets to the CADAsset.
+      widget1.setTargetParam(cadAsset.globalXfoParam)
+      widget2.setTargetParam(cadAsset.globalXfoParam)
+      cadAsset.addChild(widgets)
 
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(3, 5, 2), new Vec3(1, 0, 0))
-
-      renderer.getViewport().on('pointerDown', (event) => {
-        console.log(event.clientX, event.clientY)
-      })
 
       const handleMessage = (event) => {
         const { data } = event
