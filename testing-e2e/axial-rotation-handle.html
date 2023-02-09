@@ -62,6 +62,9 @@
       scene.getRoot().addChild(widgets)
 
       const widget1 = new AxialRotationHandle('axial1', 0.2, 0.007, Math.PI * 2, new Color('#6600FF'))
+      widget1.snapIncrementAngle = 45 / 4
+      widget1.enableAngleSnapping = true
+      
       widget1.highlightColorParam.setValue(new Color(1, 0.5, 1))
       const xfo1 = new Xfo()
       xfo1.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI * 0.5)
