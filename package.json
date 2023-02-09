@@ -2,14 +2,30 @@
   "name": "@zeainc/zea-ux",
   "version": "4.4.0",
   "description": "Zea UX",
+  "homepage": "https://github.com/ZeaInc/zea-ux#readme",
+  "author": "Zea Inc.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/ZeaInc/zea-ux.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ZeaInc/zea-ux/issues"
+  },
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "browser": "dist/index.umd.js",
+  "umd": "dist/index.umd.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.cjs.js"
+    }
+  },
   "types": "dist/zea-ux.d.ts",
   "files": [
-    "dist/",
-    "css/"
-  ],
+    "dist/"
+  ],  
   "keywords": [
     "Zea",
     "UX"
@@ -41,16 +57,6 @@
     "to-cleanup": "rm -Rf dist/ node_modules/ yarn.lock",
     "to-link-packages": "yarn link @zeainc/zea-engine"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com/ZeaInc/zea-ux.git"
-  },
-  "bugs": {
-    "url": "https://github.com/ZeaInc/zea-ux/issues"
-  },
-  "homepage": "https://github.com/ZeaInc/zea-ux#readme",
-  "author": "Zea Inc.",
-  "license": "MIT",
   "devDependencies": {
     "@babel/preset-env": "^7.12.7",
     "@percy/cypress": "^2.3.1",
