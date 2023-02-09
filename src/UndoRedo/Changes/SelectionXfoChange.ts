@@ -19,7 +19,7 @@ class SelectionXfoChange extends Change {
   /**
    * Creates an instance of SelectionXfoChange.
    *
-   * @param param - The param value.
+   * @param param - The Parameter object that is modified by this change.
    * @param newValue - The newValue value.
    */
   constructor(treeItems: TreeItem[], baseXfo: Xfo) {

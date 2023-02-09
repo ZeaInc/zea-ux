@@ -96,7 +96,7 @@ class SliderHandle extends BaseLinearMovementHandle {
   }
 
   /**
-   * Applies a special shinning shader to the handle to illustrate interaction with it.
+   * highlight the handle to indicate it is under the mouse.
    */
   highlight(): void {
     super.highlight()
@@ -104,7 +104,7 @@ class SliderHandle extends BaseLinearMovementHandle {
   }
 
   /**
-   * Removes the shining shader from the handle.
+   * Removes the highlight from the handle once the mouse moves away.
    */
   unhighlight(): void {
     super.unhighlight()
@@ -114,8 +114,7 @@ class SliderHandle extends BaseLinearMovementHandle {
   /**
    * Sets global xfo target parameter.
    *
-   * @param param - The video param.
-   * @param track - The track param.
+   * @param param - The parameter that will be modified during manipulation
    */
   setTargetParam(param: Parameter<unknown>): void {
     this.param = param

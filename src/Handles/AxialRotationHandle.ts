@@ -18,7 +18,7 @@ import './Shaders/HandleShader'
  *
  * @extends BaseAxialRotationHandle
  */
-class AxialRotationHandle extends BaseAxialRotationHandle {
+  param: XfoParameter
   radiusParam: NumberParameter
   handleMat: Material
   handleXfo: Xfo
@@ -27,9 +27,6 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
    * Create an axial rotation scene widget.
    *
    * @param name - The name value.
-   * @param radius - The radius value.
-   * @param thickness - The thickness value.
-   * @param color - The color value.
    */
   constructor(name: string, radius: number, thickness: number, color = new Color(1, 1, 0)) {
     super(name)
@@ -62,7 +59,7 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
   }
 
   /**
-   * Applies a special shinning shader to the handle to illustrate interaction with it.
+   * highlight the handle to indicate it is under the mouse.
    */
   highlight(): void {
     super.highlight()
@@ -70,7 +67,7 @@ class AxialRotationHandle extends BaseAxialRotationHandle {
   }
 
   /**
-   * Removes the shining shader from the handle.
+   * Removes the highlight from the handle once the mouse moves away.
    */
   unhighlight(): void {
     super.unhighlight()
