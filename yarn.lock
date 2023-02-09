@@ -2190,10 +2190,10 @@
     socket.io-client "^2.3.0"
     socketio-wildcard "^2.0.0"
 
-"@zeainc/zea-engine@^4.6.0":
-  version "4.6.0"
-  resolved "https://registry.yarnpkg.com/@zeainc/zea-engine/-/zea-engine-4.6.0.tgz#9ada50c892d5033e780d61dc658d08664a6235f9"
-  integrity sha512-xbt6u5tZLeJCG081pQkHOnE8pDu1FdmIPWgPdvVat5lA9yCsby7eNgk2fxKdcU3E7UIDlSmiB4um5s6dQR3BJg==
+"@zeainc/zea-engine@next":
+  version "4.6.0-81076f8"
+  resolved "https://registry.yarnpkg.com/@zeainc/zea-engine/-/zea-engine-4.6.0-81076f8.tgz#06739a93022d1b04a0b3bed5bab687299cc83953"
+  integrity sha512-KL8qReXgjEkM9lSp0P4eWxppH4SQozrAA9pZFN6h9nhjOmszSo/q3LSYZX9k4AnUVDkcSC2fCBQIs4svahqPFQ==
   dependencies:
     lodash-es "^4.17.21"
 
@@ -3062,6 +3062,11 @@ caniuse-lite@^1.0.0, caniuse-lite@^1.0.30001033, caniuse-lite@^1.0.30001400:
   version "1.0.30001439"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001439.tgz#ab7371faeb4adff4b74dad1718a6fd122e45d9cb"
   integrity sha512-1MgUzEkoMO6gKfXflStpYgZDlFM7M/ck/bgfVCACO5vnAf0fXoNVHdWtqGU+MYca+4bL9Z5bpOVmR33cWW9G2A==
+
+caniuse-lite@^1.0.30001312:
+  version "1.0.30001451"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001451.tgz#2e197c698fc1373d63e1406d6607ea4617c613f1"
+  integrity sha512-XY7UbUpGRatZzoRft//5xOa69/1iGJRBlrieH6QYrkKLIFn3m7OVEJ81dSrKoy2BnKsdbX5cLrOispZNYo9v2w==
 
 canvas@^2.6.1:
   version "2.10.2"
@@ -4513,6 +4518,11 @@ electron-to-chromium@^1.4.67:
   version "1.4.73"
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.73.tgz#422f6f514315bcace9615903e4a9b6b9fa283137"
   integrity sha512-RlCffXkE/LliqfA5m29+dVDPB2r72y2D2egMMfIy3Le8ODrxjuZNVo4NIC2yPL01N4xb4nZQLwzi6Z5tGIGLnA==
+
+electron-to-chromium@^1.4.71:
+  version "1.4.292"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.292.tgz#e3a3dca3780c8ce01e2c1866b5ec2fbe31c423e3"
+  integrity sha512-ESWOSyJy5odDlE8wvh5NNAMORv4r6assPwIPGHEMWrWD0SONXcG/xT+9aD9CQyeRwyYDPo6dJT4Bbeg5uevVQQ==
 
 elegant-spinner@^1.0.1:
   version "1.0.1"
@@ -8553,6 +8563,11 @@ node-plop@^0.26.3:
     mkdirp "^0.5.1"
     resolve "^1.12.0"
 
+node-releases@^2.0.2:
+  version "2.0.10"
+  resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-2.0.10.tgz#c311ebae3b6a148c89b1813fd7c4d3c024ef537f"
+  integrity sha512-5GFldHPXVG/YZmFzJvKK2zDSzPKhEp0+ZR5SVaoSag9fsL5YgHbUHDfnG5494ISANDcK4KwPXAx2xqVEydmd7w==
+
 node-releases@^2.0.6:
   version "2.0.7"
   resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-2.0.7.tgz#593edbc7c22860ee4d32d3933cfebdfab0c0e0e5"
@@ -10601,7 +10616,7 @@ source-map@^0.6.0, source-map@^0.6.1, source-map@~0.6.0, source-map@~0.6.1:
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.6.1.tgz#74722af32e9614e9c287a8d0bbde48b5e2f1a263"
   integrity sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==
 
-source-map@^0.7.3:
+source-map@^0.7.3, source-map@~0.7.2:
   version "0.7.4"
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.7.4.tgz#a9bbe705c9d8846f4e08ff6765acf0f1b0898656"
   integrity sha512-l3BikUxvPOcn5E74dZiq5BGsTb5yEwhaTSzccU6t4sDOH8NWJCstKO5QT2CvtFoK6F0saL7p9xHAqHOlCPJygA==
