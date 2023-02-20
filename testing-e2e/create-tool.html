@@ -76,15 +76,12 @@
       const $canvas = document.getElementById('renderer')
 
       const scene = new Scene()
-      // scene.setupGrid(10, 10)
+      scene.setupGrid(10, 10)
 
       const renderer = new GLRenderer($canvas, {
         enableFrustumCulling: true,
       })
       renderer.setScene(scene)
-
-      const color = new Color('#aaaaaa')
-      renderer.getViewport().backgroundColorParam.value = color
 
       {
         const material1 = new Material('material1', 'SimpleSurfaceShader')
