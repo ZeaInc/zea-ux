@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.4.0](https://github.com/ZeaInc/zea-ux/compare/v4.3.0...v4.4.0) (2023-01-25)
+
+
+### Features
+
+* AxisTripod now supports arguments for each of the axis colors. ([d0b3ecf](https://github.com/ZeaInc/zea-ux/commit/d0b3ecff6ddf48aa596e1cc3edecda9579ea32bd))
+* Viewcube has been overhauled for a cleaner design. ([6d486cb](https://github.com/ZeaInc/zea-ux/commit/6d486cbe81c19645ca3628e808ab471ba1e6688e))
+
+
+### Bug Fixes
+
+* AxialRotationHandle now correctly handles rotating objects ([#187](https://github.com/ZeaInc/zea-ux/issues/187)) ([a16509d](https://github.com/ZeaInc/zea-ux/commit/a16509d46f361e638ee3e26912716b1140c0fe9a))
+* AxisTripod now maintains a fixed size in Orthographic viewports. ([24589b6](https://github.com/ZeaInc/zea-ux/commit/24589b6d6b1e967cb62ef6406a1df2c873a3caee))
+* disable errors caused by TypeScript build. ([d099341](https://github.com/ZeaInc/zea-ux/commit/d0993413afe971c784a5130a52220a631bbe8371))
+* Gizmo handles now respond correctly to touch intereactions ([aa1f08a](https://github.com/ZeaInc/zea-ux/commit/aa1f08a9565ba0c3d3ac68c031332c986b7c60ad))
+* The ViewCube size would change based on the distance to the border. The labels on the cube were distorted. ([c28672e](https://github.com/ZeaInc/zea-ux/commit/c28672eaabd2f09714c9ffd1db0eb956e25ad566))
+
 ## [4.3.0](https://github.com/ZeaInc/zea-ux/compare/v4.2.1...v4.3.0) (2022-12-06)
 
 
