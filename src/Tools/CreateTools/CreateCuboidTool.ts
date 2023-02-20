@@ -1,4 +1,4 @@
-import { ColorParameter, Quat, TreeItem, Vec3, Xfo } from '@zeainc/zea-engine'
+import { ColorParameter, Quat, TreeItem, Vec3, Xfo, ZeaPointerEvent } from '@zeainc/zea-engine'
 import CreateGeomTool from './CreateGeomTool'
 import CreateCuboidChange from './Change/CreateCuboidChange'
 import { UndoRedoManager } from '../../UndoRedo/index'
@@ -32,7 +32,7 @@ class CreateCuboidTool extends CreateGeomTool {
    *
    * @param xfo - The xfo param.
    */
-  createStart(xfo: Xfo): void {
+  createStart(xfo: Xfo, event: ZeaPointerEvent): void {
     this.change = new CreateCuboidChange(this.parentItem, xfo, this.colorParam.getValue())
 
     // During construction, make it note selectable.
@@ -51,7 +51,7 @@ class CreateCuboidTool extends CreateGeomTool {
    *
    * @param pt - The pt param.
    */
-  createMove(pt: Vec3): void {
+  createMove(pt: Vec3, event: ZeaPointerEvent): void {
     if (this.stage == 1) {
       const delta = this.invXfo.transformVec3(pt)
 
@@ -71,7 +71,7 @@ class CreateCuboidTool extends CreateGeomTool {
    *
    * @param pt - The pt param.
    */
-  createRelease(pt: Vec3): void {
+  createRelease(pt: Vec3, event: ZeaPointerEvent): void {
     if (this.stage == 1) {
       this.stage = 2
       this.pt1 = pt
