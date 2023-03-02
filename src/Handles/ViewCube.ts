@@ -276,7 +276,6 @@ class ViewCube extends TreeItem {
       // the 60 is just a magic number to make the view cube a nice size with a 1.0
       // size parameter.
       const sc = (halfViewHeight * 2.0) / (height / 60)
-      console.log(sc)
 
       xfo.tr = camera.globalXfoParam.value.transformVec3(pos)
       xfo.sc.set(sc, sc, sc)
