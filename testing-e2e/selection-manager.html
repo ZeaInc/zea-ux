@@ -117,12 +117,14 @@
         }
 
         renderer.getViewport().on('pointerDown', (event) => {
-          console.log(event.pointerRay.dir.toString())
+          if (renderer.getViewport().getManipulator() != selectionTool) {
+            console.log(event.pointerRay.dir.toString())
 
-          if (event.intersectionData) {
-            const geomItem = event.intersectionData.geomItem
+            if (event.intersectionData) {
+              const geomItem = event.intersectionData.geomItem
 
-            selectionManager.toggleItemSelection(geomItem, !event.ctrlKey)
+              selectionManager.toggleItemSelection(geomItem, !event.ctrlKey)
+            }
           }
         })
         document.addEventListener('keydown', (e) => {
