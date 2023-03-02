@@ -260,8 +260,8 @@ class ViewCube extends TreeItem {
       const viewHeightOrth = camera.viewHeight * 0.5
       const halfViewHeight = MathFunctions.lerp(viewHeightPersp, viewHeightOrth, camera.isOrthographicParam.value)
 
-      const width = viewport.width
-      const height = viewport.height
+      const width = viewport.getWidth()
+      const height = viewport.getHeight()
       const aspectRatio = width / height
       const halfViewWidth = halfViewHeight * aspectRatio
 
