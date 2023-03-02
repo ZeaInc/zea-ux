@@ -31,7 +31,7 @@ class ViewCube extends TreeItem {
    * @param size - The size value.
    */
   constructor(
-    size = 0.1,
+    size = 1,
     roundness = 0.15,
     faceColor = new Color(1, 0.8, 0.15),
     faceHighlightColor = new Color(1, 0.9, 0.5),
@@ -97,7 +97,7 @@ class ViewCube extends TreeItem {
       planeItem.addChild(planeLabelItem, false, false)
 
       label.once('labelRendered', (event: any) => {
-        const xfo =planeLabelItem.localXfoParam.value
+        const xfo = planeLabelItem.localXfoParam.value
         xfo.sc.x = event.width / 160
         xfo.sc.y = event.height / 100
         planeLabelItem.localXfoParam.value = xfo
@@ -260,18 +260,26 @@ class ViewCube extends TreeItem {
       const viewHeightOrth = camera.viewHeight * 0.5
       const halfViewHeight = MathFunctions.lerp(viewHeightPersp, viewHeightOrth, camera.isOrthographicParam.value)
 
-      const aspectRatio = viewport.getWidth() / viewport.getHeight()
+      const width = viewport.width
+      const height = viewport.height
+      const aspectRatio = width / height
       const halfViewWidth = halfViewHeight * aspectRatio
 
-      const margin = pixelOffset * (halfViewHeight / viewport.getHeight())
+      const margin = pixelOffset * (halfViewHeight / height)
       pos.set(
         (halfViewWidth - margin) * screenSpaceCoord[0],
         (halfViewHeight - margin) * screenSpaceCoord[1],
         -focalDistance
       )
 
+      // normalize the hight so it is the same size on all screen resolutions.
+      // the 60 is just a magic number to make the view cube a nice size with a 1.0
+      // size parameter.
+      const sc = (halfViewHeight * 2.0) / (height / 60)
+      console.log(sc)
+
       xfo.tr = camera.globalXfoParam.value.transformVec3(pos)
-      xfo.sc.set(halfViewHeight * 2.0, halfViewHeight * 2.0, halfViewHeight * 2.0)
+      xfo.sc.set(sc, sc, sc)
       this.globalXfoParam.value = xfo
     }
 
