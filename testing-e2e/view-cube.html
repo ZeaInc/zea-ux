@@ -65,7 +65,7 @@
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(3, 3, 1.7), new Vec3(0, 0, 0))
 
       const viewCube = new ViewCube()
-      viewCube.bindToViewport(renderer, renderer.getViewport(), 150)
+      viewCube.bindToViewport(renderer, renderer.getViewport(), 100)
 
       const manipulator = renderer.getViewport().getManipulator()
       manipulator.setDefaultManipulationMode(CameraManipulator.MANIPULATION_MODES.turntable)
@@ -109,17 +109,17 @@
         const { data } = event
 
         if (data === 'front') {
-      renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-3, 3, 1.7), new Vec3(0, 0, 0))
+          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-3, 3, 1.7), new Vec3(0, 0, 0))
           window.postMessage(`done-${data}`)
         } else if (data === 'back') {
-      renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-3, -3, 1.7), new Vec3(0, 0, 0))
+          renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-3, -3, 1.7), new Vec3(0, 0, 0))
           window.postMessage(`done-${data}`)
         }
       }
 
       window.addEventListener('message', handleMessage, false)
       // }}}
-            // {{{ Variants
+      // {{{ Variants
       const statusElement = document.getElementById('status')
       const setStatusText = (text) => {
         renderer.forceRender()
@@ -131,12 +131,12 @@
         setStatusText(`done-variant-01`)
       })
       document.getElementById('variant-02').addEventListener('click', function (event) {
-        renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-3,-3, 1.7), new Vec3(0, 0, 0))
+        renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-3, -3, 1.7), new Vec3(0, 0, 0))
         window.postMessage(`done-variant-02`)
         setStatusText(`done-variant-02`)
       })
       document.getElementById('variant-03').addEventListener('click', function (event) {
-        renderer.getViewport().getCamera().setIsOrthographic(1, 0);
+        renderer.getViewport().getCamera().setIsOrthographic(1, 0)
         renderer.frameAll()
         setStatusText(`done-variant-03`)
       })

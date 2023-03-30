@@ -260,8 +260,8 @@ class ViewCube extends TreeItem {
       const viewHeightOrth = camera.viewHeight * 0.5
       const halfViewHeight = MathFunctions.lerp(viewHeightPersp, viewHeightOrth, camera.isOrthographicParam.value)
 
-      const width = viewport.getWidth()
-      const height = viewport.getHeight()
+      const width = viewport.getWidth() / window.devicePixelRatio
+      const height = viewport.getHeight() / window.devicePixelRatio
       const aspectRatio = width / height
       const halfViewWidth = halfViewHeight * aspectRatio
 
@@ -275,7 +275,7 @@ class ViewCube extends TreeItem {
       // normalize the hight so it is the same size on all screen resolutions.
       // the 60 is just a magic number to make the view cube a nice size with a 1.0
       // size parameter.
-      const sc = (halfViewHeight * 2.0) / (height / 60)
+      const sc = (halfViewHeight * 2.0) / (height / 50)
 
       xfo.tr = camera.globalXfoParam.value.transformVec3(pos)
       xfo.sc.set(sc, sc, sc)
