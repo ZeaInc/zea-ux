@@ -8,7 +8,7 @@ import Change from '../../../UndoRedo/Change'
  */
 class CreateGeomChange extends Change {
   parentItem: TreeItem
-  geomItem: GeomItem
+  geomItem: TreeItem
   childIndex: number
   /**
    * Create a create circle change.
@@ -24,7 +24,7 @@ class CreateGeomChange extends Change {
    * @param parentItem - The parentItem param.
    * @param xfo - The xfo param.
    */
-  setParentAndXfo(parentItem: TreeItem, xfo: Xfo): void {
+  protected setParentAndXfo(parentItem: TreeItem, xfo: Xfo): void {
     this.parentItem = parentItem
     const name = this.parentItem.generateUniqueName(this.geomItem.getName())
     this.geomItem.setName(name)

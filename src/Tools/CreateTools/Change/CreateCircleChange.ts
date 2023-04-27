@@ -21,14 +21,18 @@ class CreateCircleChange extends CreateGeomChange {
   constructor(parentItem: TreeItem, xfo: Xfo) {
     super('CreateCircle')
 
-    const material = new Material('circle', 'FatLinesShader')
-    material.getParameter('BaseColor').value = new Color(0.7, 0.2, 0.2)
-
-    this.geomItem = new GeomItem('Circle', this.circle, material)
+    this.createGeoItem()
 
     if (parentItem && xfo) {
       this.setParentAndXfo(parentItem, xfo)
     }
+  }
+
+  protected createGeoItem() {
+    const material = new Material('circle', 'FatLinesShader')
+    material.getParameter('BaseColor').value = new Color(0.7, 0.2, 0.2)
+
+    this.geomItem = new GeomItem('Circle', this.circle, material)
   }
 
   /**

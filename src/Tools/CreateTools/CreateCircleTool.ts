@@ -2,7 +2,7 @@ import CreateCircleChange from './Change/CreateCircleChange'
 import CreateGeomTool from './CreateGeomTool'
 import { UndoRedoManager } from '../../UndoRedo/index'
 import { AppData } from '../../../types/types'
-import { TreeItem, Vec3, Xfo } from '@zeainc/zea-engine'
+import { Color, GeomItem, Material, TreeItem, Vec3, Xfo, ZeaPointerEvent } from '@zeainc/zea-engine'
 
 /**
  * Tool for creating a circle geometry.
@@ -29,7 +29,7 @@ class CreateCircleTool extends CreateGeomTool {
    *
    * @param xfo - The xfo param.
    */
-  createStart(xfo: Xfo): void {
+  createStart(xfo: Xfo, event: ZeaPointerEvent): void {
     this.change = new CreateCircleChange(this.parentItem, xfo)
     UndoRedoManager.getInstance().addChange(this.change)
 
@@ -43,7 +43,7 @@ class CreateCircleTool extends CreateGeomTool {
    *
    * @param pt - The pt param.
    */
-  createMove(pt: Vec3): void {
+  createMove(pt: Vec3, event: ZeaPointerEvent): void {
     this.radius = pt.distanceTo(this.xfo.tr)
     this.change.update({ radius: this.radius })
     this.appData.renderer.forceRender()
@@ -54,7 +54,7 @@ class CreateCircleTool extends CreateGeomTool {
    *
    * @param pt - The pt param.
    */
-  createRelease(pt: Vec3): void {
+  createRelease(pt: Vec3, event: ZeaPointerEvent): void {
     if (this.radius == 0) {
       UndoRedoManager.getInstance().cancel()
     }

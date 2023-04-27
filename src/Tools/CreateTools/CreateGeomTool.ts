@@ -151,7 +151,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param xfo - The xfo param.
    */
-  createStart(xfo?: Xfo, treeItem?: TreeItem): void {
+  protected createStart(xfo: Xfo, event: ZeaPointerEvent): void {
     this.stage = 1
   }
 
@@ -160,7 +160,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param pt - The pt param.
    */
-  createPoint(pt: Vec3): void {
+  protected createPoint(pt: Vec3, event?: ZeaPointerEvent): void {
     // console.warn('Implement me')
   }
 
@@ -169,7 +169,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param pt - The pt param.
    */
-  createMove(pt: Vec3): void {
+  protected createMove(pt: Vec3, event: ZeaPointerEvent): void {
     // console.warn('Implement me')
   }
 
@@ -178,7 +178,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param pt - The pt param.
    */
-  createRelease(pt: Vec3): void {
+  protected createRelease(pt: Vec3, event: ZeaPointerEvent): void {
     // console.warn('Implement me')
   }
 
@@ -201,7 +201,7 @@ class CreateGeomTool extends BaseCreateTool {
           this.constructionPlane = new Xfo()
 
           const xfo = this.screenPosToXfo(event)
-          this.createStart(xfo)
+          this.createStart(xfo, event)
           event.stopPropagation()
         } else if (event.button == 2) {
           // Cancel the tool.
@@ -230,7 +230,7 @@ class CreateGeomTool extends BaseCreateTool {
       this.onVRPoseChanged(event as XRControllerEvent)
     } else if (this.stage > 0) {
       const xfo = this.screenPosToXfo(event)
-      this.createMove(xfo.tr)
+      this.createMove(xfo.tr, event)
       event.stopPropagation()
       //@ts-ignore
       event.preventDefault() // prevent browser features like scroll and drag n drop
@@ -247,7 +247,7 @@ class CreateGeomTool extends BaseCreateTool {
       this.onVRControllerButtonUp(event)
     } else if (this.stage > 0) {
       const xfo = this.screenPosToXfo(event)
-      this.createRelease(xfo.tr)
+      this.createRelease(xfo.tr, event)
       event.stopPropagation()
     }
   }
@@ -317,7 +317,7 @@ class CreateGeomTool extends BaseCreateTool {
       this.constructionPlane = new Xfo()
       const xfo = this.constructionPlane.clone()
       xfo.tr = this.__activeController.getTipXfo().tr
-      this.createStart(xfo, this.appData.scene.getRoot())
+      this.createStart(xfo, event)
     }
     event.stopPropagation()
   }
@@ -331,7 +331,7 @@ class CreateGeomTool extends BaseCreateTool {
     if (this.__activeController && this.stage > 0) {
       // TODO: Snap the Xfo to any nearby construction planes.
       const xfo = this.__activeController.getTipXfo()
-      this.createMove(xfo.tr)
+      this.createMove(xfo.tr, event)
       event.stopPropagation()
     }
   }
@@ -345,7 +345,7 @@ class CreateGeomTool extends BaseCreateTool {
     if (this.stage > 0) {
       if (this.__activeController == event.controller) {
         const xfo = this.__activeController.getTipXfo()
-        this.createRelease(xfo.tr)
+        this.createRelease(xfo.tr, event)
         if (this.stage == 0) this.__activeController = undefined
         event.stopPropagation()
       }
