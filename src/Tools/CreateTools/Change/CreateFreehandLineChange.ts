@@ -11,9 +11,9 @@ import CreateGeomChange from './CreateGeomChange'
  * @extends CreateGeomChange
  */
 class CreateFreehandLineChange extends CreateGeomChange {
-  vertexCount = 100
-  used = 0
-  line: Lines = new Lines()
+  vertexCount: number
+  used: number
+  line: Lines
   /**
    * Create a create freehand line change.
    *
@@ -22,9 +22,14 @@ class CreateFreehandLineChange extends CreateGeomChange {
    * @param color - The color value.
    * @param thickness - The thickness value.
    */
-  constructor(parentItem: TreeItem, xfo: Xfo, color: Color, thickness = 0.001) {
-    super('CreateFreehandLine')
+  constructor(parentItem: TreeItem, xfo: Xfo) {
+    super('CreateFreehandLine', parentItem, xfo)
+  }
 
+  protected createGeoItem() {
+    this.vertexCount = 100
+    this.used = 0
+    this.line = new Lines()
     this.line.setNumVertices(this.vertexCount)
     this.line.setNumSegments(this.vertexCount - 1)
     const positions = <Vec3Attribute>this.line.getVertexAttribute('positions')
@@ -32,18 +37,11 @@ class CreateFreehandLineChange extends CreateGeomChange {
 
     // TODO: added lineThicknessParam to LinesMaterial
     const material = new LinesMaterial('freeHandLine')
-    if (color) {
-      material.baseColorParam.value = color
-    }
     // if (material.lineThicknessParam) {
     //   material.lineThicknessParam.value = thickness
     // }
 
     this.geomItem = new GeomItem('freeHandLine', this.line, material)
-
-    if (parentItem && xfo) {
-      this.setParentAndXfo(parentItem, xfo)
-    }
   }
 
   /**

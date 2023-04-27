@@ -14,9 +14,19 @@ class CreateGeomChange extends Change {
    * Create a create circle change.
    * @param name - The name value.
    */
-  constructor(name: string, parentItem?: TreeItem) {
+  constructor(name: string, parentItem: TreeItem, xfo: Xfo) {
     super(name)
-    this.parentItem = parentItem ? parentItem : null
+    this.parentItem = parentItem
+
+    this.createGeoItem()
+
+    if (parentItem && xfo) {
+      this.setParentAndXfo(parentItem, xfo)
+    }
+  }
+
+  protected createGeoItem() {
+    throw 'This method must be implemented by each specialzed change class.'
   }
 
   /**

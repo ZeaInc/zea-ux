@@ -3,7 +3,7 @@ import CreateGeomTool from './CreateGeomTool'
 import CreateLineChange from './Change/CreateLineChange'
 import { UndoRedoManager } from '../../UndoRedo/index'
 import { AppData } from '../../../types/types'
-import { ZeaPointerEvent } from '@zeainc/zea-engine'
+import CreateGeomChange from './Change/CreateGeomChange'
 
 /**
  * Tool for creating a line tool.
@@ -15,7 +15,7 @@ import { ZeaPointerEvent } from '@zeainc/zea-engine'
  */
 class CreateLineTool extends CreateGeomTool {
   lineThickness = new NumberParameter('LineThickness', 0.01, [0, 0.1])
-  change: CreateLineChange
+  change: CreateGeomChange
   length: number
   xfo: Xfo
   /**
