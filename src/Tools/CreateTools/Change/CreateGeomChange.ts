@@ -8,7 +8,7 @@ import Change from '../../../UndoRedo/Change'
  */
 class CreateGeomChange extends Change {
   parentItem: TreeItem
-  geomItem: TreeItem
+  geomItem: GeomItem
   childIndex: number
   /**
    * Create a create circle change.

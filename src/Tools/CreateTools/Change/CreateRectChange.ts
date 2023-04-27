@@ -1,4 +1,4 @@
-import { Color, Rect, Material, GeomItem, TreeItem, Xfo } from '@zeainc/zea-engine'
+import { Color, Rect, LinesMaterial, GeomItem, TreeItem, Xfo } from '@zeainc/zea-engine'
 import UndoRedoManager from '../../../UndoRedo/UndoRedoManager'
 import CreateGeomChange from './CreateGeomChange'
 
@@ -21,7 +21,7 @@ class CreateRectChange extends CreateGeomChange {
   constructor(parentItem: TreeItem, xfo: Xfo) {
     super('CreateRect')
 
-    const material = new Material('circle', 'FatLinesShader')
+    const material = new LinesMaterial('circle')
     material.getParameter('BaseColor').value = new Color(0.7, 0.2, 0.2)
     this.geomItem = new GeomItem('Rect', this.rect, material)
 

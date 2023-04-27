@@ -39,13 +39,13 @@ class CreateLineChange extends CreateGeomChange {
     positions.setValue(0, new Vec3())
     this.line.setSegmentVertexIndices(0, 0, 1)
 
-    const material = new FatLinesMaterial('Line')
+    const material = new LinesMaterial('Line')
     if (color) {
       material.baseColorParam.value = color
     }
-    if (material.lineThicknessParam) {
-      material.lineThicknessParam.value = thickness
-    }
+    // if (material.lineThicknessParam) {
+    //   material.lineThicknessParam.value = thickness
+    // }
     this.geomItem = new GeomItem('Line', this.line, material)
 
     if (parentItem && xfo) {
@@ -60,7 +60,7 @@ class CreateLineChange extends CreateGeomChange {
    */
   update(updateData: Record<any, any>): void {
     if (updateData.p1) {
-      this.line.positions.getValueRef(1).setFromOther(updateData.p1)
+      this.line.positions.setValue(1, updateData.p1)
       this.line.setBoundingBoxDirty()
       this.line.emit('geomDataChanged')
     }
