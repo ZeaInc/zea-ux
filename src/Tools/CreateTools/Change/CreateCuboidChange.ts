@@ -18,7 +18,7 @@ class CreateCuboidChange extends CreateGeomChange {
    * @param parentItem - The parentItem value.
    * @param xfo - The xfo value.
    */
-  constructor(parentItem: TreeItem, xfo: Xfo) {
+  constructor(parentItem: TreeItem, xfo: Xfo, color: Color) {
     super('CreateCuboid', parentItem, xfo)
   }
 

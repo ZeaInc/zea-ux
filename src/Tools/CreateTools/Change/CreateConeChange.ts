@@ -18,7 +18,7 @@ class CreateConeChange extends CreateGeomChange {
    * @param parentItem - The parentItem value.
    * @param xfo - The xfo value.
    */
-  constructor(parentItem: TreeItem, xfo: Xfo) {
+  constructor(parentItem: TreeItem, xfo: Xfo, color: Color) {
     super('Create Cone', parentItem, xfo)
   }
 

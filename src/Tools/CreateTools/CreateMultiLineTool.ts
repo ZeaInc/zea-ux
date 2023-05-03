@@ -1,0 +1,169 @@
+import { NumberParameter, Vec3, Xfo, XRControllerEvent } from '@zeainc/zea-engine'
+import CreateGeomTool from './CreateGeomTool'
+import CreateMultiLineChange from './Change/CreateMultiLineChange'
+import { UndoRedoManager } from '../../UndoRedo/index'
+import { AppData } from '../../../types/types'
+import CreateGeomChange from './Change/CreateGeomChange'
+
+/**
+ * Tool for creating a line tool.
+ *
+ * **Events**
+ * * **actionFinished:** Triggered when the creation of the geometry is completed.
+ *
+ * @extends CreateGeomTool
+ */
+
+let keyPressHandler: EventListener
+
+class CreateMultiLineTool extends CreateGeomTool {
+  lineThickness = new NumberParameter('LineThickness', 0.01, [0, 0.1])
+  change: CreateGeomChange
+  length: number
+  xfo: Xfo
+  vertices: Vec3[] = []
+  distanceToSnap = 0.5
+  looseVertex: Vec3 = new Vec3()
+  lastClickTime = 0
+  lastClickPt = new Vec3()
+  doubleClickTime = 500
+  doubleClickMaxDistance = 0.5
+
+  /**
+   * Create a create line tool.
+   * @param appData - The appData value.
+   */
+  constructor(appData: AppData) {
+    super(appData)
+    this.addParameter(this.lineThickness) // 1cm.
+  }
+
+  /**
+   * Starts line geometry creation.
+   *
+   * @param xfo - The xfo param.
+   */
+  createStart(xfo: Xfo): void {
+    if (this.stage == 1) return
+
+    const color = this.colorParam.getValue()
+    const lineThickness = this.lineThickness.getValue()
+    this.change = new CreateMultiLineChange(this.parentItem, xfo, color, lineThickness)
+    UndoRedoManager.getInstance().addChange(this.change)
+
+    this.xfo = xfo.inverse()
+    this.stage = 1
+    this.length = 0.0
+
+    keyPressHandler = this.handleKeyPress.bind(this)
+    document.addEventListener('keyup', keyPressHandler)
+  }
+
+  /**
+   * Updates line structural data.
+   *
+   * @param pt - The pt param.
+   */
+  createMove(pt: Vec3): void {
+    this.looseVertex = this.xfo.transformVec3(pt)
+
+    if (this.shouldClosePoligon()) {
+      this.looseVertex = this.vertices[0]
+    }
+
+    this.change.update({
+      shouldFinish: false,
+      vertices: [...this.vertices, this.looseVertex],
+    })
+  }
+
+  /**
+   * Add vertex or finish Line geometry creation.
+   *
+   * @param pt - The pt param.
+   */
+  createRelease(pt: Vec3): void {
+    let shouldFinish = false
+
+    if (this.shouldClosePoligon()) {
+      shouldFinish = true
+    }
+
+    const isDoubleClick =
+      pt.distanceTo(this.lastClickPt) < this.doubleClickMaxDistance &&
+      Date.now() - this.lastClickTime < this.doubleClickTime
+
+    if (isDoubleClick) {
+      shouldFinish = true
+    } else {
+      // Add vertex if not a double click
+      this.vertices.push(this.looseVertex)
+    }
+
+    this.lastClickTime = Date.now()
+    this.lastClickPt = pt
+
+    this.change.update({
+      shouldFinish,
+      vertices: [...this.vertices, this.looseVertex],
+    })
+
+    if (shouldFinish) {
+      this.emit('actionFinished')
+      this.resetTool()
+    }
+  }
+
+  shouldClosePoligon() {
+    let shouldClosePoligon = false
+    if (this.vertices.length > 2) {
+      const distanceToFirst = this.looseVertex.distanceTo(this.vertices[0])
+      if (distanceToFirst < this.distanceToSnap) {
+        shouldClosePoligon = true
+      }
+    }
+    return shouldClosePoligon
+  }
+
+  handleKeyPress(event: any): void {
+    if (event.key == 'Escape') {
+      UndoRedoManager.getInstance().cancel()
+      this.resetTool()
+    }
+
+    if (event.key == 'Enter') {
+      const vertices = [...this.vertices]
+      if (this.shouldClosePoligon()) {
+        vertices.push(this.looseVertex)
+
+        // if the last vertex closes the polygon add a dummy
+        // vertex at the end, to keep the closing segment
+        vertices.push(new Vec3())
+      }
+      this.change.update({
+        shouldFinish: true,
+        vertices,
+      })
+      this.resetTool()
+    }
+  }
+
+  resetTool() {
+    this.stage = 0
+    this.vertices = []
+    this.looseVertex = new Vec3()
+    document.removeEventListener('keyup', keyPressHandler)
+  }
+
+  /**
+   * The onVRControllerButtonDown method.
+   *
+   * @param event - The event param.
+   */
+  onVRControllerButtonDown(event: XRControllerEvent): void {
+    //
+  }
+}
+
+export default CreateMultiLineTool
+export { CreateMultiLineTool }
