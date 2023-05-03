@@ -70,11 +70,17 @@ class CreateMultiLineChange extends CreateGeomChange {
 
     const looseVertex = updateData.vertices.pop()
 
-    let lastFixedVertex
-    if (updateData.vertices.length > this.vertices.length) {
-      lastFixedVertex = updateData.vertices.pop()
-      this.addVertex(lastFixedVertex)
+    this.vertices = []
+
+    for (const vertex of updateData.vertices) {
+      this.addVertex(vertex)
     }
+
+    // let lastFixedVertex
+    // if (updateData.vertices.length > this.vertices.length) {
+    //   lastFixedVertex = updateData.vertices.pop()
+    //   this.addVertex(lastFixedVertex)
+    // }
 
     if (this.vertices.length && looseVertex) {
       this.line.positions.setValue(this.vertices.length, looseVertex)

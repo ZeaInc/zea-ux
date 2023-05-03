@@ -46,6 +46,7 @@ class CreateGeomChange extends Change {
    * Removes recently created geometry from its parent.
    */
   undo(): void {
+    console.log('this.geomItem', this.geomItem)
     this.parentItem.removeChild(this.parentItem.getChildIndex(this.geomItem))
   }
 

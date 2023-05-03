@@ -1,4 +1,4 @@
-import { NumberParameter, Vec3, Xfo, XRControllerEvent } from '@zeainc/zea-engine'
+import { NumberParameter, Vec3, Xfo, XRControllerEvent, ZeaPointerEvent } from '@zeainc/zea-engine'
 import CreateGeomTool from './CreateGeomTool'
 import CreateMultiLineChange from './Change/CreateMultiLineChange'
 import { UndoRedoManager } from '../../UndoRedo/index'
@@ -22,8 +22,9 @@ class CreateMultiLineTool extends CreateGeomTool {
   length: number
   xfo: Xfo
   vertices: Vec3[] = []
-  distanceToSnap = 0.5
-  looseVertex: Vec3 = new Vec3()
+  distanceToSnap = 0.3
+  pointerVertex: Vec3 = new Vec3()
+  tailVertex: Vec3 = new Vec3()
   lastClickTime = 0
   lastClickPt = new Vec3()
   doubleClickTime = 500
@@ -63,18 +64,43 @@ class CreateMultiLineTool extends CreateGeomTool {
    * Updates line structural data.
    *
    * @param pt - The pt param.
+   * @param event - The event param.
    */
-  createMove(pt: Vec3): void {
-    this.looseVertex = this.xfo.transformVec3(pt)
+  createMove(pt: Vec3, event: any): void {
+    if (event.altKey) return
+
+    this.pointerVertex = this.xfo.transformVec3(pt)
 
     if (this.shouldClosePoligon()) {
-      this.looseVertex = this.vertices[0]
+      this.tailVertex = this.vertices[0] // same as first
+    } else if (event.shiftKey) {
+      this.tailVertex = this.snapToClosestAxis(this.pointerVertex)
+    } else {
+      this.tailVertex = this.pointerVertex
     }
 
     this.change.update({
       shouldFinish: false,
-      vertices: [...this.vertices, this.looseVertex],
+      vertices: [...this.vertices, this.tailVertex],
     })
+  }
+
+  snapToClosestAxis(vertex: Vec3) {
+    let closest = 'x'
+    let lowest = vertex.x
+
+    for (const axis of ['y', 'z']) {
+      if (Math.abs(vertex[axis]) < Math.abs(lowest)) {
+        lowest = vertex[axis]
+        closest = axis
+      }
+    }
+
+    console.log('snap ', vertex)
+
+    vertex.x = 0
+
+    return vertex
   }
 
   /**
@@ -96,8 +122,8 @@ class CreateMultiLineTool extends CreateGeomTool {
     if (isDoubleClick) {
       shouldFinish = true
     } else {
-      // Add vertex if not a double click
-      this.vertices.push(this.looseVertex)
+      // Add vertex only if not a double click
+      this.vertices.push(this.tailVertex)
     }
 
     this.lastClickTime = Date.now()
@@ -105,7 +131,7 @@ class CreateMultiLineTool extends CreateGeomTool {
 
     this.change.update({
       shouldFinish,
-      vertices: [...this.vertices, this.looseVertex],
+      vertices: [...this.vertices, this.tailVertex],
     })
 
     if (shouldFinish) {
@@ -117,7 +143,7 @@ class CreateMultiLineTool extends CreateGeomTool {
   shouldClosePoligon() {
     let shouldClosePoligon = false
     if (this.vertices.length > 2) {
-      const distanceToFirst = this.looseVertex.distanceTo(this.vertices[0])
+      const distanceToFirst = this.pointerVertex.distanceTo(this.vertices[0])
       if (distanceToFirst < this.distanceToSnap) {
         shouldClosePoligon = true
       }
@@ -126,6 +152,8 @@ class CreateMultiLineTool extends CreateGeomTool {
   }
 
   handleKeyPress(event: any): void {
+    console.log(event)
+
     if (event.key == 'Escape') {
       UndoRedoManager.getInstance().cancel()
       this.resetTool()
@@ -134,7 +162,7 @@ class CreateMultiLineTool extends CreateGeomTool {
     if (event.key == 'Enter') {
       const vertices = [...this.vertices]
       if (this.shouldClosePoligon()) {
-        vertices.push(this.looseVertex)
+        vertices.push(this.pointerVertex)
 
         // if the last vertex closes the polygon add a dummy
         // vertex at the end, to keep the closing segment
@@ -142,16 +170,25 @@ class CreateMultiLineTool extends CreateGeomTool {
       }
       this.change.update({
         shouldFinish: true,
-        vertices,
+        vertices: [...this.vertices, this.tailVertex],
       })
       this.resetTool()
+    }
+
+    if (event.key == 'Backspace') {
+      this.vertices.pop()
+      this.change.update({
+        shouldFinish: false,
+        vertices: this.vertices,
+      })
     }
   }
 
   resetTool() {
     this.stage = 0
     this.vertices = []
-    this.looseVertex = new Vec3()
+    this.pointerVertex = new Vec3()
+    this.tailVertex = new Vec3()
     document.removeEventListener('keyup', keyPressHandler)
   }
 

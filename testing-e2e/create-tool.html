@@ -74,12 +74,13 @@
       CreateMultiLineTool,
       CreateRectTool,
       CreateSphereTool,
+      UndoRedoManager
     } = window.zeaUx
 
     const $canvas = document.getElementById('renderer')
 
     const scene = new Scene()
-    // scene.setupGrid(10, 10)
+    scene.setupGrid(100, 100)
 
     const renderer = new GLRenderer($canvas, {
       enableFrustumCulling: false,
@@ -144,6 +145,24 @@
     }
 
     renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(0, 4, 3), new Vec3(0, 0, 0))
+
+
+    const handleHotkey = (e) => {
+      console.log('handleHotkey')
+      e.preventDefault()
+      const undoRedoManager = UndoRedoManager && UndoRedoManager.getInstance()
+      console.log(undoRedoManager)
+      switch (e.key) {
+        case 'y':
+          if (e.ctrlKey && undoRedoManager) undoRedoManager.redo()
+          break
+        case 'z':
+          if (e.ctrlKey && undoRedoManager) undoRedoManager.undo()
+          break
+      }
+    }
+
+    document.addEventListener('keyup', handleHotkey)
   </script>
 </head>
 
