@@ -16,12 +16,36 @@ import {
   KeyboardEvent,
   XRController,
   XRControllerEvent,
+  Quat,
 } from '@zeainc/zea-engine'
 import BaseCreateTool from '../BaseCreateTool'
 import { UndoRedoManager } from '../../UndoRedo/index'
 import { AppData } from '../../../types/types'
 
 import { getPointerRay } from '../../utility'
+
+const snapPlanNormal = (dir: Vec3): Vec3 => {
+  const x = Math.abs(dir.x)
+  const y = Math.abs(dir.y)
+  const z = Math.abs(dir.z)
+  if (x > y && x > z) {
+    const result = dir.clone()
+    result.y = 0
+    result.z = 0
+    return result.normalize()
+  } else if (y > x && y > z) {
+    const result = dir.clone()
+    result.x = 0
+    result.z = 0
+    return result.normalize()
+  } else if (z > x && z > y) {
+    const result = dir.clone()
+    result.x = 0
+    result.y = 0
+    return result.normalize()
+  }
+  return dir
+}
 
 /**
  * Base class for creating geometry tools.
@@ -123,14 +147,13 @@ class CreateGeomTool extends BaseCreateTool {
       console.warn('not handling VR')
       return
     }
+    const ray = event.pointerRay
     if (event.intersectionData) {
-      const ray = getPointerRay(event)
       const xfo = this.constructionPlane.clone()
       xfo.tr = ray.pointAtDist(event.intersectionData.dist)
       return xfo
     }
 
-    const ray = getPointerRay(event)
     const planeRay = new Ray(this.constructionPlane.tr, this.constructionPlane.ori.getZaxis())
     const dist = ray.intersectRayPlane(planeRay)
     if (dist > 0.0) {
@@ -191,14 +214,24 @@ class CreateGeomTool extends BaseCreateTool {
    * @param event - The event param.
    */
   onPointerDown(event: ZeaPointerEvent): void {
-    // skip if the alt key is held. Allows the camera tool to work
     if (event instanceof XRControllerEvent) {
       this.onVRControllerButtonDown(event)
     } else if (event instanceof ZeaMouseEvent) {
+      // skip if the alt key is held. Allows the camera tool to work
       if (event.altKey) return
       if (this.stage == 0) {
         if (event.button == 0 || event.pointerType !== 'mouse') {
           this.constructionPlane = new Xfo()
+
+          // this code align the construction plane with the current view direction
+          // It tries to orthogonalize the view directionto get a perfect orthogonal plane.
+          const normal = snapPlanNormal(event.pointerRay.dir.negate())
+          if (Math.abs(this.constructionPlane.ori.getZaxis().dot(normal)) < 1) {
+            const quat = new Quat()
+            quat.setFrom2Vectors(this.constructionPlane.ori.getZaxis(), normal)
+            quat.normalizeInPlace()
+            this.constructionPlane.ori = quat.multiply(this.constructionPlane.ori)
+          }
 
           const xfo = this.screenPosToXfo(event)
           this.createStart(xfo, event)
