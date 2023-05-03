@@ -86,21 +86,58 @@ class CreateMultiLineTool extends CreateGeomTool {
   }
 
   snapToClosestAxis(vertex: Vec3) {
-    let closest = 'x'
-    let lowest = vertex.x
+    // let closest = 'x'
+    // let lowest = vertex.x
 
-    for (const axis of ['y', 'z']) {
-      if (Math.abs(vertex[axis]) < Math.abs(lowest)) {
-        lowest = vertex[axis]
-        closest = axis
+    // for (const axis of ['y', 'z']) {
+    //   if (Math.abs(vertex[axis]) < Math.abs(lowest)) {
+    //     lowest = vertex[axis]
+    //     closest = axis
+    //   }
+    // }
+
+    // console.log('snap ', vertex)
+
+    // vertex.x = 0
+
+    if (this.vertices.length == 0) {
+      return vertex
+    } else {
+      const prevVertex = this.vertices[this.vertices.length - 1] // same as first
+
+      const xsnap = vertex.clone()
+      xsnap.x = prevVertex.x
+
+      const ysnap = vertex.clone()
+      ysnap.y = prevVertex.y
+
+      const xysnap = vertex.subtract(prevVertex)
+      const value = (Math.abs(xysnap.x) + Math.abs(xysnap.y)) * 0.5
+      if (xysnap.x < 0) {
+        xysnap.x = -value
+      } else {
+        xysnap.x = value
       }
+      if (xysnap.y < 0) {
+        xysnap.y = -value
+      } else {
+        xysnap.y = value
+      }
+      xysnap.addInPlace(prevVertex)
+
+      const xsnapDist = vertex.distanceTo(xsnap)
+      const ysnapDist = vertex.distanceTo(ysnap)
+      const xysnapDist = vertex.distanceTo(xysnap)
+
+      // const delta = vertex.subtract(prevVertex)
+      if (xsnapDist < ysnapDist && xsnapDist < xysnapDist) {
+        return xsnap
+      }
+      if (ysnapDist < xsnapDist && ysnapDist < xysnapDist) {
+        return ysnap
+      }
+      return xysnap
     }
-
-    console.log('snap ', vertex)
-
-    vertex.x = 0
-
-    return vertex
   }
 
   /**
