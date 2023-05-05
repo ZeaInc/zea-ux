@@ -74,7 +74,8 @@
       CreateMultiLineTool,
       CreateRectTool,
       CreateSphereTool,
-      UndoRedoManager
+      UndoRedoManager,
+      ToolManager
     } = window.zeaUx
 
     const $canvas = document.getElementById('renderer')
@@ -115,6 +116,8 @@
     }
 
     /** */
+    const toolManager = new ToolManager()
+
     {
       const appData = {
         scene,
@@ -124,31 +127,33 @@
       const freeHandLineTool = new CreateFreehandLineTool(appData)
       freeHandLineTool.getParameter('LineThickness').setValue(0.01)
 
-      const tools = {
-        circleTool: new CreateCircleTool(appData),
-        coneTool: new CreateConeTool(appData),
-        cuboidTool: new CreateCuboidTool(appData),
-        freeHandLineTool,
-        lineTool: new CreateLineTool(appData),
-        multiLineTool: new CreateMultiLineTool(appData),
-        rectTool: new CreateRectTool(appData),
-        sphereTool: new CreateSphereTool(appData),
-        cameraManipulator: renderer.getViewport().getManipulator(),
-      }
+
+      toolManager.registerTool('circleTool', new CreateCircleTool(appData))
+      toolManager.registerTool('coneTool', new CreateConeTool(appData))
+      toolManager.registerTool('cuboidTool', new CreateCuboidTool(appData))
+      toolManager.registerTool('freeHandLineTool', freeHandLineTool)
+      toolManager.registerTool('lineTool', new CreateLineTool(appData))
+      toolManager.registerTool('multiLineTool', new CreateMultiLineTool(appData))
+      toolManager.registerTool('rectTool', new CreateRectTool(appData))
+      toolManager.registerTool('sphereTool', new CreateSphereTool(appData))
+      toolManager.registerTool('cameraManipulator', renderer.getViewport().getManipulator())
+
+      renderer.getViewport().setManipulator(toolManager)
+
+      toolManager.pushTool('cameraManipulator')
 
       const $toolRadios = document.querySelectorAll('input[type=radio][name="tool-radio"]')
       $toolRadios.forEach((toolRadio) => {
         toolRadio.addEventListener('change', (e) => {
-          renderer.getViewport().setManipulator(tools[e.target.value])
+          toolManager.popTool()
+          toolManager.pushTool(e.target.value)
         })
       })
     }
 
     renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(0, 4, 3), new Vec3(0, 0, 0))
 
-
     const handleHotkey = (e) => {
-      console.log('handleHotkey')
       e.preventDefault()
       const undoRedoManager = UndoRedoManager && UndoRedoManager.getInstance()
       console.log(undoRedoManager)
@@ -159,10 +164,20 @@
         case 'z':
           if (e.ctrlKey && undoRedoManager) undoRedoManager.undo()
           break
+        case 'Alt':
+          toolManager.popTool()
+          break;
+      }
+    }
+
+    const handleKeyDown = (e) => {
+      if (e.key == 'Alt') {
+        toolManager.pushTool('cameraManipulator')
       }
     }
 
     document.addEventListener('keyup', handleHotkey)
+    document.addEventListener('keydown', handleKeyDown)
   </script>
 </head>
 
