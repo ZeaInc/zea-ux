@@ -24,8 +24,8 @@ class HandleShader extends GLShader {
   constructor(gl?: any) {
     super(gl)
 
-    this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader(
-      'HandleShader.vertexShader',
+    this.setShaderStage(
+      'VERTEX_SHADER',
       `
 precision highp float;
 
@@ -137,8 +137,8 @@ void main(void) {
 `
     )
 
-    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader(
-      'HandleShader.fragmentShader',
+    this.setShaderStage(
+      'FRAGMENT_SHADER',
       `
 precision highp float;
 

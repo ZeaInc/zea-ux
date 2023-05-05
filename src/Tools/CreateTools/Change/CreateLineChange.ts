@@ -60,7 +60,7 @@ class CreateLineChange extends CreateGeomChange {
    */
   update(updateData: Record<any, any>): void {
     if (updateData.p1) {
-      this.line.positions.getValueRef(1).setFromOther(updateData.p1)
+      this.line.positions.setValue(1, updateData.p1)
       this.line.setBoundingBoxDirty()
       this.line.emit('geomDataChanged')
     }
