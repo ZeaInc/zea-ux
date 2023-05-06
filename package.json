@@ -1,6 +1,6 @@
 {
   "name": "@zeainc/zea-ux",
-  "version": "4.4.0",
+  "version": "4.4.1",
   "description": "Zea UX",
   "homepage": "https://github.com/ZeaInc/zea-ux#readme",
   "author": "Zea Inc.",
@@ -25,7 +25,7 @@
   "types": "dist/zea-ux.d.ts",
   "files": [
     "dist/"
-  ],  
+  ],
   "keywords": [
     "Zea",
     "UX"

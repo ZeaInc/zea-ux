@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.4.1](https://github.com/ZeaInc/zea-ux/compare/v4.4.0...v4.4.1) (2023-05-06)
+
+
+### Bug Fixes
+
+* AxialRotationHandle now correctly handles rotating objects ([#187](https://github.com/ZeaInc/zea-ux/issues/187)) ([f4c3b7b](https://github.com/ZeaInc/zea-ux/commit/f4c3b7bc0a210b0864e0834d421b8fe365c9c5f1))
+* disable errors caused by TypeScript build. ([f636aef](https://github.com/ZeaInc/zea-ux/commit/f636aef159ac938616ca59d274a47ee472c57b02))
+* disable errors caused by TypeScript build. ([bad45c7](https://github.com/ZeaInc/zea-ux/commit/bad45c7ae3e0c2ec184ec7148cfa7415e95365d4))
+* Gizmo handles now respond correctly to touch intereactions ([e5a7b70](https://github.com/ZeaInc/zea-ux/commit/e5a7b7066d7caa4d064e8030933e40195465dae5))
+* Selection rectangle on high-dpi screens ([#191](https://github.com/ZeaInc/zea-ux/issues/191)) ([962cb87](https://github.com/ZeaInc/zea-ux/commit/962cb871d551dcb7636b8bd541a1fe89c613079f))
+* ViewCube is now the same size at all screen resolutions. ([1fdd552](https://github.com/ZeaInc/zea-ux/commit/1fdd5524bbda1b0017bbc8469cc1b5ac9533cc1f))
+* ViewCube now scales based on devicePixelRatio ([133803e](https://github.com/ZeaInc/zea-ux/commit/133803ed6efdf2f180837cfb30ccb216c2c98447))
+
 ## [4.4.0](https://github.com/ZeaInc/zea-ux/compare/v4.3.0...v4.4.0) (2023-01-25)
 
 
