@@ -41,8 +41,9 @@
       const scene = new Scene()
       scene.setupGrid(10, 10)
       const color = new Color('#E5E5E5')
-
-      const renderer = new GLRenderer(domElement, { hideSplash: true })
+      // HandleShader became incompatible with the non-multidraw pipeline.
+      const disableMultiDraw = true
+      const renderer = new GLRenderer(domElement, { disableMultiDraw })
       renderer.getViewport().backgroundColorParam.value = color
       renderer.setScene(scene)
 
