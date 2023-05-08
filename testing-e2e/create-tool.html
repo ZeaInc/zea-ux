@@ -142,11 +142,22 @@
 
       toolManager.pushTool('cameraManipulator')
 
+      // Pop all tools leaving only the camera manipulator
+      const resetTools = () => {
+        while (toolManager.toolStack.length > 1) {
+          toolManager.popTool()
+        }
+      }
+
       const $toolRadios = document.querySelectorAll('input[type=radio][name="tool-radio"]')
       $toolRadios.forEach((toolRadio) => {
         toolRadio.addEventListener('change', (e) => {
-          toolManager.popTool()
-          toolManager.pushTool(e.target.value)
+          if (toolRadio.id == 'cameramanipulator-cbx') {
+            resetTools()
+          } else {
+            resetTools()
+            toolManager.pushTool(e.target.value)
+          }
         })
       })
     }
@@ -156,28 +167,18 @@
     const handleHotkey = (e) => {
       e.preventDefault()
       const undoRedoManager = UndoRedoManager && UndoRedoManager.getInstance()
-      console.log(undoRedoManager)
+
       switch (e.key) {
         case 'y':
           if (e.ctrlKey && undoRedoManager) undoRedoManager.redo()
           break
         case 'z':
           if (e.ctrlKey && undoRedoManager) undoRedoManager.undo()
-          break
-        case 'Alt':
-          if (toolManager.length > 1) toolManager.popTool()
           break;
       }
     }
 
-    const handleKeyDown = (e) => {
-      if (e.key == 'Alt' && toolManager.length > 1) {
-        toolManager.pushTool('cameraManipulator')
-      }
-    }
-
     document.addEventListener('keyup', handleHotkey)
-    document.addEventListener('keydown', handleKeyDown)
   </script>
 </head>
 

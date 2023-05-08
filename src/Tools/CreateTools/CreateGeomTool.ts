@@ -276,6 +276,7 @@ class CreateGeomTool extends BaseCreateTool {
    * @param event - The event param.
    */
   onPointerUp(event: ZeaPointerEvent): void {
+    if (event instanceof ZeaMouseEvent && event.altKey) return
     if (event instanceof XRControllerEvent) {
       this.onVRControllerButtonUp(event)
     } else if (this.stage > 0) {

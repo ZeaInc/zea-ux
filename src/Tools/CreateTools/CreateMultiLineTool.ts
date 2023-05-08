@@ -70,7 +70,7 @@ class CreateMultiLineTool extends CreateGeomTool {
     if (event.altKey) return
 
     this.pointerVertex = this.inverseXfo.transformVec3(pt)
-    console.log(this.pointerVertex.toJSON())
+
     if (this.shouldClosePoligon()) {
       this.tailVertex = this.vertices[0] // same as first
     } else if (event.shiftKey) {
@@ -86,20 +86,6 @@ class CreateMultiLineTool extends CreateGeomTool {
   }
 
   snapToClosestAxis(vertex: Vec3) {
-    // let closest = 'x'
-    // let lowest = vertex.x
-
-    // for (const axis of ['y', 'z']) {
-    //   if (Math.abs(vertex[axis]) < Math.abs(lowest)) {
-    //     lowest = vertex[axis]
-    //     closest = axis
-    //   }
-    // }
-
-    // console.log('snap ', vertex)
-
-    // vertex.x = 0
-
     if (this.vertices.length == 0) {
       return vertex
     } else {
@@ -129,7 +115,6 @@ class CreateMultiLineTool extends CreateGeomTool {
       const ysnapDist = vertex.distanceTo(ysnap)
       const xysnapDist = vertex.distanceTo(xysnap)
 
-      // const delta = vertex.subtract(prevVertex)
       if (xsnapDist < ysnapDist && xsnapDist < xysnapDist) {
         return xsnap
       }
@@ -189,8 +174,6 @@ class CreateMultiLineTool extends CreateGeomTool {
   }
 
   handleKeyPress(event: any): void {
-    console.log(event)
-
     if (event.key == 'Escape') {
       UndoRedoManager.getInstance().cancel()
       this.resetTool()
