@@ -1,4 +1,4 @@
-import { NumberParameter, Vec3, Xfo, XRControllerEvent } from '@zeainc/zea-engine'
+import { NumberParameter, Vec3, Xfo, XRControllerEvent, ZeaPointerEvent } from '@zeainc/zea-engine'
 import CreateGeomTool from './CreateGeomTool'
 import CreateLineChange from './Change/CreateLineChange'
 import { UndoRedoManager } from '../../UndoRedo/index'
