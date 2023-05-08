@@ -33,7 +33,7 @@ class CreateMultiLineChange extends CreateGeomChange {
    * @param color - The color value.
    * @param thickness - The thickness value.
    */
-  constructor(parentItem: TreeItem, xfo: Xfo, color: Color, thickness = 0.001) {
+  constructor(parentItem: TreeItem, xfo: Xfo) {
     super('Create Line', parentItem, xfo)
   }
 

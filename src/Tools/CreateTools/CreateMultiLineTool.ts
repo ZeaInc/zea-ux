@@ -17,7 +17,6 @@ import CreateGeomChange from './Change/CreateGeomChange'
 let keyPressHandler: EventListener
 
 class CreateMultiLineTool extends CreateGeomTool {
-  lineThickness = new NumberParameter('LineThickness', 0.01, [0, 0.1])
   change: CreateGeomChange
   length: number
   inverseXfo: Xfo
@@ -36,7 +35,6 @@ class CreateMultiLineTool extends CreateGeomTool {
    */
   constructor(appData: AppData) {
     super(appData)
-    this.addParameter(this.lineThickness) // 1cm.
   }
 
   /**
@@ -47,9 +45,7 @@ class CreateMultiLineTool extends CreateGeomTool {
   createStart(xfo: Xfo): void {
     if (this.stage == 1) return
 
-    const color = this.colorParam.getValue()
-    const lineThickness = this.lineThickness.getValue()
-    this.change = new CreateMultiLineChange(this.parentItem, xfo, color, lineThickness)
+    this.change = new CreateMultiLineChange(this.parentItem, xfo)
     UndoRedoManager.getInstance().addChange(this.change)
 
     this.inverseXfo = xfo.inverse()
@@ -71,7 +67,7 @@ class CreateMultiLineTool extends CreateGeomTool {
 
     this.pointerVertex = this.inverseXfo.transformVec3(pt)
 
-    if (this.shouldClosePoligon()) {
+    if (this.shouldClosePolygon()) {
       this.tailVertex = this.vertices[0] // same as first
     } else if (event.shiftKey) {
       this.tailVertex = this.snapToClosestAxis(this.pointerVertex)
@@ -133,7 +129,7 @@ class CreateMultiLineTool extends CreateGeomTool {
   createRelease(pt: Vec3): void {
     let shouldFinish = false
 
-    if (this.shouldClosePoligon()) {
+    if (this.shouldClosePolygon()) {
       shouldFinish = true
     }
 
@@ -162,15 +158,15 @@ class CreateMultiLineTool extends CreateGeomTool {
     }
   }
 
-  shouldClosePoligon() {
-    let shouldClosePoligon = false
+  protected shouldClosePolygon() {
+    let shouldClosePolygon = false
     if (this.vertices.length > 2) {
       const distanceToFirst = this.pointerVertex.distanceTo(this.vertices[0])
       if (distanceToFirst < this.distanceToSnap) {
-        shouldClosePoligon = true
+        shouldClosePolygon = true
       }
     }
-    return shouldClosePoligon
+    return shouldClosePolygon
   }
 
   handleKeyPress(event: any): void {
@@ -181,7 +177,7 @@ class CreateMultiLineTool extends CreateGeomTool {
 
     if (event.key == 'Enter') {
       const vertices = [...this.vertices]
-      if (this.shouldClosePoligon()) {
+      if (this.shouldClosePolygon()) {
         vertices.push(this.pointerVertex)
 
         // if the last vertex closes the polygon add a dummy
