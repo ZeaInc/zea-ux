@@ -32,7 +32,7 @@ class CreateLineTool extends CreateGeomTool {
    *
    * @param xfo - The xfo param.
    */
-  createStart(xfo: Xfo): void {
+  createStart(xfo: Xfo, event: ZeaPointerEvent): void {
     const color = this.colorParam.getValue()
     const lineThickness = this.lineThickness.getValue()
     this.change = new CreateLineChange(this.parentItem, xfo, color, lineThickness)
@@ -48,7 +48,7 @@ class CreateLineTool extends CreateGeomTool {
    *
    * @param pt - The pt param.
    */
-  createMove(pt: Vec3): void {
+  createMove(pt: Vec3, event: ZeaPointerEvent): void {
     const offset = this.xfo.transformVec3(pt)
     this.length = offset.length()
     this.change.update({ p1: offset })
@@ -59,7 +59,7 @@ class CreateLineTool extends CreateGeomTool {
    *
    * @param pt - The pt param.
    */
-  createRelease(pt: Vec3): void {
+  createRelease(pt: Vec3, event: ZeaPointerEvent): void {
     if (this.length == 0) {
       UndoRedoManager.getInstance().cancel()
     }

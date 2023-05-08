@@ -1,4 +1,4 @@
-import { ColorParameter, GeomItem, Quat, TreeItem, Vec3, Xfo } from '@zeainc/zea-engine'
+import { ColorParameter, GeomItem, Quat, TreeItem, Vec3, Xfo, ZeaPointerEvent } from '@zeainc/zea-engine'
 import CreateConeChange from './Change/CreateConeChange'
 import { CreateGeomTool } from './CreateGeomTool'
 import { ParameterValueChange, UndoRedoManager } from '../../UndoRedo/index'
@@ -31,7 +31,7 @@ class CreateConeTool extends CreateGeomTool {
    *
    * @param xfo - The xfo param.
    */
-  createStart(xfo: Xfo): void {
+  createStart(xfo: Xfo, event: ZeaPointerEvent): void {
     this.xfo = xfo
     this.invXfo = xfo.inverse()
     this.change = new CreateConeChange(this.parentItem, xfo, this.colorParam.getValue())
@@ -51,7 +51,7 @@ class CreateConeTool extends CreateGeomTool {
    *
    * @param pt - The pt param.
    */
-  createMove(pt: Vec3): void {
+  createMove(pt: Vec3, event: ZeaPointerEvent): void {
     if (this.stage == 1) {
       const vec = pt.subtract(this.xfo.tr)
       // TODO: Rotate the cone so the base is aligned with the vector towards the controller
@@ -68,7 +68,7 @@ class CreateConeTool extends CreateGeomTool {
    *
    * @param pt - The pt param.
    */
-  createRelease(pt: Vec3): void {
+  createRelease(pt: Vec3, event: ZeaPointerEvent): void {
     if (this._radius == 0) {
       UndoRedoManager.getInstance().cancel()
       this.stage = 0

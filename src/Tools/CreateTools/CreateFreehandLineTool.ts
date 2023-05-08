@@ -1,4 +1,12 @@
-import { BooleanParameter, ColorParameter, NumberParameter, TreeItem, Vec3, Xfo } from '@zeainc/zea-engine'
+import {
+  BooleanParameter,
+  ColorParameter,
+  NumberParameter,
+  TreeItem,
+  Vec3,
+  Xfo,
+  ZeaPointerEvent,
+} from '@zeainc/zea-engine'
 import CreateLineTool from './CreateLineTool'
 import CreateFreehandLineChange from './Change/CreateFreehandLineChange'
 import { UndoRedoManager } from '../../UndoRedo/index'
@@ -32,7 +40,7 @@ class CreateFreehandLineTool extends CreateLineTool {
    *
    * @param xfo - The xfo param.
    */
-  createStart(xfo: Xfo): void {
+  createStart(xfo: Xfo, event: ZeaPointerEvent): void {
     const color = this.colorParam.getValue()
     const lineThickness = this.lineThickness.getValue()
 
@@ -51,7 +59,7 @@ class CreateFreehandLineTool extends CreateLineTool {
    *
    * @param pt - The pt param.
    */
-  createMove(pt: Vec3): void {
+  createMove(pt: Vec3, event: ZeaPointerEvent): void {
     const p = this.invXfo.transformVec3(pt)
     const delta = p.subtract(this.prevP).length()
     this.change.update({
@@ -67,7 +75,7 @@ class CreateFreehandLineTool extends CreateLineTool {
    *
    * @param pt - The pt param.
    */
-  createRelease(pt: Vec3): void {
+  createRelease(pt: Vec3, event: ZeaPointerEvent): void {
     if (this.length == 0) {
       UndoRedoManager.getInstance().cancel()
     }

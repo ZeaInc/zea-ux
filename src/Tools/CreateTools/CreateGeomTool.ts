@@ -174,6 +174,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param xfo - The xfo param.
    */
+   
   protected createStart(xfo: Xfo, event: ZeaPointerEvent): void {
     this.stage = 1
   }
@@ -183,6 +184,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param pt - The pt param.
    */
+   
   protected createPoint(pt: Vec3, event?: ZeaPointerEvent): void {
     // console.warn('Implement me')
   }
@@ -192,6 +194,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param pt - The pt param.
    */
+   
   protected createMove(pt: Vec3, event: ZeaPointerEvent): void {
     // console.warn('Implement me')
   }
@@ -201,6 +204,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param pt - The pt param.
    */
+   
   protected createRelease(pt: Vec3, event: ZeaPointerEvent): void {
     // console.warn('Implement me')
   }

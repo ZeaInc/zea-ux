@@ -1,3 +1,4 @@
+export * from './CreateGeomChange'
 export * from './CreateCircleChange'
 export * from './CreateConeChange'
 export * from './CreateCuboidChange'
