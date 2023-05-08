@@ -165,13 +165,13 @@
           if (e.ctrlKey && undoRedoManager) undoRedoManager.undo()
           break
         case 'Alt':
-          toolManager.popTool()
+          if (toolManager.length > 1) toolManager.popTool()
           break;
       }
     }
 
     const handleKeyDown = (e) => {
-      if (e.key == 'Alt') {
+      if (e.key == 'Alt' && toolManager.length > 1) {
         toolManager.pushTool('cameraManipulator')
       }
     }

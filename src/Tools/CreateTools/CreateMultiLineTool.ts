@@ -20,7 +20,7 @@ class CreateMultiLineTool extends CreateGeomTool {
   lineThickness = new NumberParameter('LineThickness', 0.01, [0, 0.1])
   change: CreateGeomChange
   length: number
-  xfo: Xfo
+  inverseXfo: Xfo
   vertices: Vec3[] = []
   distanceToSnap = 0.3
   pointerVertex: Vec3 = new Vec3()
@@ -52,7 +52,7 @@ class CreateMultiLineTool extends CreateGeomTool {
     this.change = new CreateMultiLineChange(this.parentItem, xfo, color, lineThickness)
     UndoRedoManager.getInstance().addChange(this.change)
 
-    this.xfo = xfo.inverse()
+    this.inverseXfo = xfo.inverse()
     this.stage = 1
     this.length = 0.0
 
@@ -69,8 +69,8 @@ class CreateMultiLineTool extends CreateGeomTool {
   createMove(pt: Vec3, event: any): void {
     if (event.altKey) return
 
-    this.pointerVertex = this.xfo.transformVec3(pt)
-
+    this.pointerVertex = this.inverseXfo.transformVec3(pt)
+    console.log(this.pointerVertex.toJSON())
     if (this.shouldClosePoligon()) {
       this.tailVertex = this.vertices[0] // same as first
     } else if (event.shiftKey) {
