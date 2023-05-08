@@ -44,7 +44,7 @@ class CreateFreehandLineTool extends CreateLineTool {
     const color = this.colorParam.getValue()
     const lineThickness = this.lineThickness.getValue()
 
-    this.change = new CreateFreehandLineChange(this.parentItem, xfo, color, lineThickness)
+    this.change = new CreateFreehandLineChange(this.parentItem, xfo)
     UndoRedoManager.getInstance().addChange(this.change)
 
     this.xfo = xfo

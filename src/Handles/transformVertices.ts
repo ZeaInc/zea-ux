@@ -5,9 +5,9 @@ const transformVertices = (geometry: ProceduralMesh, xfo: Xfo) => {
 
   const positions = geometry.positions
   for (let i = 0; i < positions.getCount(); i++) {
-    const v = positions.getValueRef(i)
+    const v = positions.getValue(i)
     const v2 = xfo.transformVec3(v)
-    v.set(v2.x, v2.y, v2.z)
+    positions.setValue(i, v2)
   }
 }
 

@@ -1,4 +1,4 @@
-import { Cuboid, Material, GeomItem, TreeItem, Xfo, Color } from '@zeainc/zea-engine'
+import { Cuboid, SimpleSurfaceMaterial, GeomItem, TreeItem, Xfo, Color } from '@zeainc/zea-engine'
 import { UndoRedoManager } from '../../../UndoRedo/index'
 import CreateGeomChange from './CreateGeomChange'
 
@@ -11,7 +11,7 @@ import CreateGeomChange from './CreateGeomChange'
  * @extends CreateGeomChange
  */
 class CreateCuboidChange extends CreateGeomChange {
-  cuboid = new Cuboid(0, 0, 0, true)
+  cuboid: Cuboid
   /**
    * Create a create cuboid change.
    *
@@ -19,15 +19,13 @@ class CreateCuboidChange extends CreateGeomChange {
    * @param xfo - The xfo value.
    */
   constructor(parentItem: TreeItem, xfo: Xfo, color: Color) {
-    super('CreateCuboid')
+    super('CreateCuboid', parentItem, xfo)
+  }
 
-    const material = new Material('Cuboid', 'SimpleSurfaceShader')
+  protected createGeoItem() {
+    this.cuboid = new Cuboid(0, 0, 0, true)
+    const material = new SimpleSurfaceMaterial('Cone')
     this.geomItem = new GeomItem('Cuboid', this.cuboid, material)
-
-    if (parentItem && xfo) {
-      material.getParameter('BaseColor').value = color
-      this.setParentAndXfo(parentItem, xfo)
-    }
   }
 
   /**
