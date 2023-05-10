@@ -184,7 +184,7 @@ class SelectionTool extends BaseTool {
           const newSet: Array<TreeItem> = [] // TODO: using Array for 'newSet', not a Set<>
           for (let i = 0; i < geomItems.length; i++) {
             const treeItem = this.selectionFilterFn(geomItems[i])
-            if (!newSet.includes(treeItem)) {
+            if (treeItem && !newSet.includes(treeItem)) {
               newSet.push(treeItem)
             }
           }
