@@ -142,13 +142,14 @@ class CreateGeomTool extends BaseCreateTool {
    * @param event - The event param
    * @return {Xfo} The return value.
    */
-  screenPosToXfo(event: ZeaPointerEvent): Xfo {
+  screenPosToXfo(event: ZeaPointerEvent, snapToSurfaceUnderPointer = false): Xfo {
     if (!(event instanceof ZeaMouseEvent) && !(event instanceof ZeaTouchEvent)) {
       console.warn('not handling VR')
       return
     }
     const ray = event.pointerRay
-    if (event.intersectionData) {
+
+    if (snapToSurfaceUnderPointer && event.intersectionData) {
       const xfo = this.constructionPlane.clone()
       xfo.tr = ray.pointAtDist(event.intersectionData.dist)
       return xfo
@@ -174,7 +175,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param xfo - The xfo param.
    */
-   
+
   protected createStart(xfo: Xfo, event: ZeaPointerEvent): void {
     this.stage = 1
   }
@@ -184,7 +185,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param pt - The pt param.
    */
-   
+
   protected createPoint(pt: Vec3, event?: ZeaPointerEvent): void {
     // console.warn('Implement me')
   }
@@ -194,7 +195,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param pt - The pt param.
    */
-   
+
   protected createMove(pt: Vec3, event: ZeaPointerEvent): void {
     // console.warn('Implement me')
   }
@@ -204,7 +205,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param pt - The pt param.
    */
-   
+
   protected createRelease(pt: Vec3, event: ZeaPointerEvent): void {
     // console.warn('Implement me')
   }
@@ -237,7 +238,7 @@ class CreateGeomTool extends BaseCreateTool {
             this.constructionPlane.ori = quat.multiply(this.constructionPlane.ori)
           }
 
-          const xfo = this.screenPosToXfo(event)
+          const xfo = this.screenPosToXfo(event, true)
           this.createStart(xfo, event)
           event.stopPropagation()
         } else if (event.button == 2) {
@@ -269,8 +270,6 @@ class CreateGeomTool extends BaseCreateTool {
       const xfo = this.screenPosToXfo(event)
       this.createMove(xfo.tr, event)
       event.stopPropagation()
-      //@ts-ignore
-      event.preventDefault() // prevent browser features like scroll and drag n drop
     }
   }
 

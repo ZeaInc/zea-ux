@@ -53,16 +53,13 @@ class CreateRectTool extends CreateGeomTool {
     if (this.stage == 1) {
       const delta = this.invXfo.transformVec3(pt)
 
-      ;(this._size = Math.abs(delta.x)), Math.abs(delta.y)
+      this._size = Math.min(Math.abs(delta.x), Math.abs(delta.y))
 
       // const delta = pt.subtract(this.xfo.tr)
       this.change.update({
         baseSize: [Math.abs(delta.x), Math.abs(delta.y)],
-        tr: this.xfo.tr.add(delta.scale(0.5)),
+        tr: this.xfo.tr.add(this.xfo.ori.rotateVec3(delta.scale(0.5))),
       })
-    } else {
-      const vec = this.invXfo.transformVec3(pt)
-      this.change.update({ height: vec.y })
     }
   }
 
