@@ -50,7 +50,21 @@
     <script src="../dist/index.umd.js"></script>
 
     <script type="module">
-      const { GLRenderer, Scene, GeomItem, Material, Vec3, Xfo, Color, Cuboid, Torus } = window.zeaEngine
+      const {
+        GLRenderer,
+        Scene,
+        GeomItem,
+        Material,
+        Vec3,
+        Xfo,
+        TreeItem,
+        Color,
+        Cuboid,
+        Sphere,
+        Torus,
+        SimpleSurfaceMaterial,
+        KinematicGroup,
+      } = window.zeaEngine
       const { SelectionManager, SelectionTool, UndoRedoManager } = window.zeaUx
 
       const $canvas = document.getElementById('renderer')
@@ -61,29 +75,57 @@
       const renderer = new GLRenderer($canvas, { hideSplash: true })
       renderer.setScene(scene)
 
-      window.renderer = renderer
-      {
-        const material1 = new Material('material1', 'SimpleSurfaceShader')
-        material1.getParameter('BaseColor').setValue(new Color('#94C47D'))
+      const count = 100
+      const dim = Math.round(Math.cbrt(count))
 
-        const geomItem1 = new GeomItem('CuboidGeometryItem', new Cuboid(0.7, 0.7, 0.7), material1)
+      const detail = 40
+      const torus = new Torus(0.15, 0.5)
+      const sphere = new Sphere(0.3, 2 * detail, detail)
+      const cubiod = new Cuboid(0.7, 0.7, 0.7)
 
-        const geomItem1Xfo = new Xfo()
-        geomItem1Xfo.tr = new Vec3(0.5, 0, 0.35)
-        geomItem1.getParameter('GlobalXfo').setValue(geomItem1Xfo)
+      let geomItemCount = 0
+      const addLayers = (layerId, treeItem) => {
+        for (let j = 0; j < dim; j += 1) {
+          const treeItemJ = new TreeItem('TreeItem' + j)
+          treeItem.addChild(treeItemJ)
 
-        scene.getRoot().addChild(geomItem1)
+          const material = new SimpleSurfaceMaterial('mat')
+          material.baseColorParam.value = Color.random()
 
-        const material2 = new Material('material2', 'SimpleSurfaceShader')
-        material2.getParameter('BaseColor').setValue(new Color('#35257D'))
+          for (let k = 0; k < dim; k += 1) {
+            let geom
+            switch (geomItemCount % 4) {
+              case 0:
+                geom = torus
+                break
+              case 1:
+                geom = sphere
+                break
+              case 2:
+                geom = cubiod
+                break
+              case 3:
+                geom = torus
+                break
+              default:
+                break
+            }
+            const geomItem = new GeomItem('Geom' + k, geom, material)
+            treeItemJ.addChild(geomItem)
 
-        const geomItem2 = new GeomItem('TorusGeometryItem', new Torus(0.15, 0.5), material2)
+            const xfo = new Xfo()
+            xfo.tr.set(j, k, layerId)
+            geomItem.getParameter('GlobalXfo').setValue(xfo)
+            geomItemCount++
+          }
+        }
+      }
 
-        const geomItem2Xfo = new Xfo()
-        geomItem2Xfo.tr = new Vec3(-1, 0, 0.35)
-        geomItem2.getParameter('GlobalXfo').setValue(geomItem2Xfo)
+      for (let i = 0; i < dim; i += 1) {
+        const treeItem = new TreeItem('TreeItem' + i)
+        scene.getRoot().addChild(treeItem)
 
-        scene.getRoot().addChild(geomItem2)
+        addLayers(i, treeItem)
       }
 
       /** */
@@ -104,19 +146,9 @@
         })
 
         let selectionOn = false
-        const setToolToSelectionTool = () => {
-          renderer.getViewport().setManipulator(selectionTool)
-          selectionOn = true
-          $selectionCheckbox.checked = selectionOn
-        }
+        let pickingOn = false
 
-        const setToolToCameraManipulator = () => {
-          renderer.getViewport().setManipulator(cameraManipulator)
-          selectionOn = false
-          $selectionCheckbox.checked = selectionOn
-        }
-
-        renderer.getViewport().on('pointerDown', (event) => {
+        renderer.getViewport().on('pointerClick', (event) => {
           if (renderer.getViewport().getManipulator() != selectionTool) {
             console.log(event.pointerRay.dir.toString())
 
@@ -129,9 +161,6 @@
         })
         document.addEventListener('keydown', (e) => {
           switch (e.key) {
-            case 'Alt':
-              if (!selectionOn) setToolToSelectionTool()
-              break
             case 'z':
               if (e.ctrlKey) {
                 UndoRedoManager.getInstance().undo()
@@ -144,21 +173,51 @@
               break
           }
         })
-        document.addEventListener('keyup', (e) => {
-          switch (e.key) {
-            case 'Alt':
-              if (selectionOn) setToolToCameraManipulator()
-              break
-          }
-        })
 
         const $selectionCheckbox = document.getElementById('selection-cbx')
 
         $selectionCheckbox.addEventListener('change', (e) => {
-          if (event.target.checked) {
-            setToolToSelectionTool()
+          if ($selectionCheckbox.checked) {
+            renderer.getViewport().setManipulator(selectionTool)
+            selectionOn = true
           } else {
-            setToolToCameraManipulator()
+            renderer.getViewport().setManipulator(cameraManipulator)
+            selectionOn = false
+          }
+        })
+
+        const $pickingCheckbox = document.getElementById('picking-cbx')
+
+        const group = new KinematicGroup()
+        group.addHighlight('highlight', new Color(1, 0, 0, 0.2))
+
+        $pickingCheckbox.addEventListener('change', (e) => {
+          if ($pickingCheckbox.checked) {
+            renderer.getViewport().setManipulator(selectionTool)
+            selectionManager.startPickingMode(
+              (treeItem) => {
+                group.addItem(treeItem)
+              },
+              (treeItem) => {
+                if (treeItem) {
+                  if (treeItem instanceof GeomItem && treeItem.geomParam.value instanceof Torus) {
+                    document.body.style.cursor = 'crosshair'
+                    return treeItem
+                  } else {
+                    document.body.style.cursor = 'not-allowed'
+                  }
+                } else {
+                  document.body.style.cursor = 'default'
+                }
+              }
+            )
+            selectionOn = true
+            pickingOn = true
+          } else {
+            selectionManager.endPickingMode()
+            renderer.getViewport().setManipulator(cameraManipulator)
+            selectionOn = false
+            document.body.style.cursor = 'default'
           }
         })
 
@@ -171,7 +230,7 @@
         })
       }
 
-      renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(0, 4, 3), new Vec3(0, 0, 0))
+      renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-6, -6, 3), new Vec3(1, 1, 2))
     </script>
   </head>
   <body>
@@ -179,6 +238,8 @@
       <div>
         <label for="selection-cbx">Select Tool</label>
         <input type="checkbox" name="selection-cbx" id="selection-cbx" />
+        <label for="selection-cbx">Picking Mode</label>
+        <input type="checkbox" name="picking-cbx" id="picking-cbx" />
       </div>
     </div>
     <div id="rendererHolder">
