@@ -21,11 +21,9 @@ class SelectionManager extends EventEmitter {
   selectionGroup: SelectionGroup
   xfoHandle: XfoHandle
   xfoHandleVisible: boolean
-  __renderer: GLRenderer
-  __pickFilter: any
-  __pickCB: any
-  __pickCount: number
-  __picked: Array<TreeItem>
+  renderer: GLRenderer
+  pickFilter: (treeItem: TreeItem) => TreeItem
+  pickCB: (treeItem: TreeItem) => void
 
   /**
    * Creates an instance of SelectionManager.
@@ -64,12 +62,12 @@ class SelectionManager extends EventEmitter {
    * @param renderer - The renderer param.
    */
   setRenderer(renderer: GLRenderer): void {
-    if (this.__renderer == renderer) {
+    if (this.renderer == renderer) {
       console.warn(`Renderer already set on SelectionManager`)
       return
     }
-    this.__renderer = renderer
-    this.__renderer.addTreeItem(this.selectionGroup)
+    this.renderer = renderer
+    this.renderer.addTreeItem(this.selectionGroup)
   }
 
   /**
@@ -103,7 +101,7 @@ class SelectionManager extends EventEmitter {
     const selection = this.selectionGroup.getItems()
     const visible = Array.from(selection).length > 0
     this.xfoHandle.setVisible(visible && this.xfoHandleVisible)
-    this.__renderer.requestRedraw()
+    this.renderer.requestRedraw()
   }
 
   /**
@@ -364,23 +362,9 @@ class SelectionManager extends EventEmitter {
    * @param filterFn - The filterFn param.
    * @param count - The count param.
    */
-  startPickingMode(label: string, fn: any, filterFn: any, count: number): void {
-    // Display this in a status bar.
-    console.log(label)
-    this.__pickCB = fn
-    this.__pickFilter = filterFn
-    this.__pickCount = count
-    this.__picked = []
-  }
-
-  /**
-   * The pickingFilter method.
-   *
-   * @param item - The item param.
-   * @return The return value.
-   */
-  pickingFilter(item: TreeItem): any {
-    return this.__pickFilter(item)
+  startPickingMode(fn: (treeItem: TreeItem) => void, filterFn: (treeItem: TreeItem) => TreeItem | null): void {
+    this.pickCB = fn
+    this.pickFilter = filterFn
   }
 
   /**
@@ -389,14 +373,14 @@ class SelectionManager extends EventEmitter {
    * @return {boolean} The return value.
    */
   pickingModeActive(): boolean {
-    return this.__pickCB != undefined
+    return this.pickCB != undefined
   }
 
   /**
-   * The cancelPickingMode method.
+   * The endPickingMode method.
    */
-  cancelPickingMode(): void {
-    this.__pickCB = undefined
+  endPickingMode(): void {
+    this.pickCB = undefined
   }
 
   /**
@@ -404,17 +388,15 @@ class SelectionManager extends EventEmitter {
    * @param item - The item param.
    */
   pick(item: TreeItem | Array<TreeItem>): void {
-    if (this.__pickCB) {
+    if (this.pickCB) {
       if (Array.isArray(item)) {
-        if (this.__pickFilter) this.__picked = this.__picked.concat(item.filter(this.__pickFilter))
-        else this.__picked = this.__picked.concat(item)
+        item.forEach((elem) => {
+          const filtered = this.pickFilter ? this.pickFilter(elem) : elem
+          if (filtered) this.pickCB(filtered)
+        })
       } else {
-        if (this.__pickFilter && !this.__pickFilter(item)) return
-        this.__picked.push(item)
-      }
-      if (this.__picked.length == this.__pickCount) {
-        this.__pickCB(this.__picked)
-        this.__pickCB = undefined
+        const filtered = this.pickFilter ? this.pickFilter(item) : item
+        if (filtered) this.pickCB(filtered)
       }
     }
   }

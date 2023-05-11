@@ -154,6 +154,14 @@ class SelectionTool extends BaseTool {
         this.resizeRect(event.viewport, delta)
       }
       event.stopPropagation()
+    } else {
+      if (event.intersectionData) {
+        if (this.selectionManager.pickingModeActive()) {
+          this.selectionManager.pickFilter(event.intersectionData.geomItem)
+        }
+      } else {
+        this.selectionManager.pickFilter(null)
+      }
     }
   }
 
@@ -179,16 +187,10 @@ class SelectionTool extends BaseTool {
 
         const viewport = event.viewport as GLViewport
         let geomItems: Array<TreeItem> = Array.from(viewport.getGeomItemsInRect(tl, br)) // TODO: check, using Array.from() since we have a Set<>
+        geomItems = geomItems.filter((geomItem) => geomItem != this.rectItem && !(geomItem.parent instanceof Handle))
 
         if (this.selectionFilterFn) {
-          const newSet: Array<TreeItem> = [] // TODO: using Array for 'newSet', not a Set<>
-          for (let i = 0; i < geomItems.length; i++) {
-            const treeItem = this.selectionFilterFn(geomItems[i])
-            if (treeItem && !newSet.includes(treeItem)) {
-              newSet.push(treeItem)
-            }
-          }
-          geomItems = newSet
+          geomItems = geomItems.filter((geomItem) => this.selectionFilterFn(geomItem))
         }
 
         if (!this.selectionManager) throw 'Please set the Selection Manager on the Selection Tool before using it.'
