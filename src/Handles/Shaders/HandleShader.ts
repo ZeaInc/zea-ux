@@ -24,8 +24,8 @@ class HandleShader extends GLShader {
   constructor(gl?: any) {
     super(gl)
 
-    this.__shaderStages['VERTEX_SHADER'] = shaderLibrary.parseShader(
-      'HandleShader.vertexShader',
+    this.setShaderStage(
+      'VERTEX_SHADER',
       `
 precision highp float;
 
@@ -39,18 +39,13 @@ attribute vec2 texCoords;
 <%include file="drawItemId.glsl"/>
 <%include file="drawItemTexture.glsl"/>
 <%include file="modelMatrix.glsl"/>
+<%include file="materialparams.glsl"/>
 
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
 uniform lowp int isOrthographic;
 uniform vec4 viewportFrustum;
 
-#ifdef ENABLE_MULTI_DRAW
-<%include file="materialparams.glsl"/>
-#else
-uniform int MaintainScreenSize;
-uniform float Overlay;
-#endif
 
 /* VS Outputs */
 varying float v_drawItemId;
@@ -67,16 +62,10 @@ void main(void) {
 
   //////////////////////////////////////////////
   // Material
-
-#ifdef ENABLE_MULTI_DRAW
   vec2 materialCoords = v_geomItemData.zw;
   vec4 materialValue1 = getMaterialValue(materialCoords, 1);
   int maintainScreenSize = int(materialValue1.x + 0.5);
   float overlay = materialValue1.y;
-#else
-  int maintainScreenSize = MaintainScreenSize;
-  float overlay = Overlay;
-#endif
 
   //////////////////////////////////////////////
   // Matrix
@@ -137,8 +126,8 @@ void main(void) {
 `
     )
 
-    this.__shaderStages['FRAGMENT_SHADER'] = shaderLibrary.parseShader(
-      'HandleShader.fragmentShader',
+    this.setShaderStage(
+      'FRAGMENT_SHADER',
       `
 precision highp float;
 
@@ -204,21 +193,8 @@ void main(void) {
   // Color
 #if defined(DRAW_COLOR)
 
-
-#ifdef ENABLE_MULTI_DRAW
-
   vec2 materialCoords = v_geomItemData.zw;
   vec4 baseColor = toLinear(getMaterialValue(materialCoords, 0));
-
-#else // ENABLE_MULTI_DRAW
-
-#ifndef ENABLE_TEXTURES
-  vec4 baseColor = toLinear(BaseColor);
-#else
-  vec4 baseColor = getColorParamValue(BaseColor, BaseColorTex, BaseColorTexType, v_textureCoord);
-#endif // ENABLE_TEXTURES
-
-#endif // ENABLE_MULTI_DRAW
 
   fragColor = baseColor;
 

@@ -1,9 +1,9 @@
-import { NumberParameter, Vec3, Xfo, XRControllerEvent } from '@zeainc/zea-engine'
+import { NumberParameter, Vec3, Xfo, XRControllerEvent, ZeaPointerEvent } from '@zeainc/zea-engine'
 import CreateGeomTool from './CreateGeomTool'
 import CreateLineChange from './Change/CreateLineChange'
 import { UndoRedoManager } from '../../UndoRedo/index'
 import { AppData } from '../../../types/types'
-import { ZeaPointerEvent } from '@zeainc/zea-engine'
+import CreateGeomChange from './Change/CreateGeomChange'
 
 /**
  * Tool for creating a line tool.
@@ -15,7 +15,7 @@ import { ZeaPointerEvent } from '@zeainc/zea-engine'
  */
 class CreateLineTool extends CreateGeomTool {
   lineThickness = new NumberParameter('LineThickness', 0.01, [0, 0.1])
-  change: CreateLineChange
+  change: CreateGeomChange
   length: number
   xfo: Xfo
   /**
@@ -32,7 +32,7 @@ class CreateLineTool extends CreateGeomTool {
    *
    * @param xfo - The xfo param.
    */
-  createStart(xfo: Xfo): void {
+  createStart(xfo: Xfo, event: ZeaPointerEvent): void {
     const color = this.colorParam.getValue()
     const lineThickness = this.lineThickness.getValue()
     this.change = new CreateLineChange(this.parentItem, xfo, color, lineThickness)
@@ -48,7 +48,7 @@ class CreateLineTool extends CreateGeomTool {
    *
    * @param pt - The pt param.
    */
-  createMove(pt: Vec3): void {
+  createMove(pt: Vec3, event: ZeaPointerEvent): void {
     const offset = this.xfo.transformVec3(pt)
     this.length = offset.length()
     this.change.update({ p1: offset })
@@ -59,7 +59,7 @@ class CreateLineTool extends CreateGeomTool {
    *
    * @param pt - The pt param.
    */
-  createRelease(pt: Vec3): void {
+  createRelease(pt: Vec3, event: ZeaPointerEvent): void {
     if (this.length == 0) {
       UndoRedoManager.getInstance().cancel()
     }

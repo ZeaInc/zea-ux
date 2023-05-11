@@ -21,7 +21,7 @@ import CreateGeomChange from './CreateGeomChange'
  * @extends CreateGeomChange
  */
 class CreateLineChange extends CreateGeomChange {
-  line: Lines = new Lines()
+  line: Lines
   /**
    * Create a create line change.
    *
@@ -31,26 +31,25 @@ class CreateLineChange extends CreateGeomChange {
    * @param thickness - The thickness value.
    */
   constructor(parentItem: TreeItem, xfo: Xfo, color: Color, thickness = 0.001) {
-    super('Create Line')
+    super('Create Line', parentItem, xfo)
+  }
 
+  protected createGeoItem() {
+    this.line = new Lines()
     this.line.setNumVertices(2)
     this.line.setNumSegments(1)
     const positions = <Vec3Attribute>this.line.getVertexAttribute('positions')
     positions.setValue(0, new Vec3())
     this.line.setSegmentVertexIndices(0, 0, 1)
 
-    const material = new FatLinesMaterial('Line')
-    if (color) {
-      material.baseColorParam.value = color
-    }
-    if (material.lineThicknessParam) {
-      material.lineThicknessParam.value = thickness
-    }
+    const material = new LinesMaterial('Line')
+    // if (color) {
+    //   material.baseColorParam.value = color
+    // }
+    // if (material.lineThicknessParam) {
+    //   material.lineThicknessParam.value = thickness
+    // }
     this.geomItem = new GeomItem('Line', this.line, material)
-
-    if (parentItem && xfo) {
-      this.setParentAndXfo(parentItem, xfo)
-    }
   }
 
   /**
@@ -60,7 +59,7 @@ class CreateLineChange extends CreateGeomChange {
    */
   update(updateData: Record<any, any>): void {
     if (updateData.p1) {
-      this.line.positions.getValueRef(1).setFromOther(updateData.p1)
+      this.line.positions.setValue(1, updateData.p1)
       this.line.setBoundingBoxDirty()
       this.line.emit('geomDataChanged')
     }

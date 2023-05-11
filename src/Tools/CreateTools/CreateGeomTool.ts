@@ -16,12 +16,36 @@ import {
   KeyboardEvent,
   XRController,
   XRControllerEvent,
+  Quat,
 } from '@zeainc/zea-engine'
 import BaseCreateTool from '../BaseCreateTool'
 import { UndoRedoManager } from '../../UndoRedo/index'
 import { AppData } from '../../../types/types'
 
 import { getPointerRay } from '../../utility'
+
+const snapPlanNormal = (dir: Vec3): Vec3 => {
+  const x = Math.abs(dir.x)
+  const y = Math.abs(dir.y)
+  const z = Math.abs(dir.z)
+  if (x > y && x > z) {
+    const result = dir.clone()
+    result.y = 0
+    result.z = 0
+    return result.normalize()
+  } else if (y > x && y > z) {
+    const result = dir.clone()
+    result.x = 0
+    result.z = 0
+    return result.normalize()
+  } else if (z > x && z > y) {
+    const result = dir.clone()
+    result.x = 0
+    result.y = 0
+    return result.normalize()
+  }
+  return dir
+}
 
 /**
  * Base class for creating geometry tools.
@@ -123,14 +147,13 @@ class CreateGeomTool extends BaseCreateTool {
       console.warn('not handling VR')
       return
     }
+    const ray = event.pointerRay
     if (event.intersectionData) {
-      const ray = getPointerRay(event)
       const xfo = this.constructionPlane.clone()
       xfo.tr = ray.pointAtDist(event.intersectionData.dist)
       return xfo
     }
 
-    const ray = getPointerRay(event)
     const planeRay = new Ray(this.constructionPlane.tr, this.constructionPlane.ori.getZaxis())
     const dist = ray.intersectRayPlane(planeRay)
     if (dist > 0.0) {
@@ -151,7 +174,8 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param xfo - The xfo param.
    */
-  createStart(xfo?: Xfo, treeItem?: TreeItem): void {
+   
+  protected createStart(xfo: Xfo, event: ZeaPointerEvent): void {
     this.stage = 1
   }
 
@@ -160,7 +184,8 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param pt - The pt param.
    */
-  createPoint(pt: Vec3): void {
+   
+  protected createPoint(pt: Vec3, event?: ZeaPointerEvent): void {
     // console.warn('Implement me')
   }
 
@@ -169,7 +194,8 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param pt - The pt param.
    */
-  createMove(pt: Vec3): void {
+   
+  protected createMove(pt: Vec3, event: ZeaPointerEvent): void {
     // console.warn('Implement me')
   }
 
@@ -178,7 +204,8 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param pt - The pt param.
    */
-  createRelease(pt: Vec3): void {
+   
+  protected createRelease(pt: Vec3, event: ZeaPointerEvent): void {
     // console.warn('Implement me')
   }
 
@@ -191,17 +218,27 @@ class CreateGeomTool extends BaseCreateTool {
    * @param event - The event param.
    */
   onPointerDown(event: ZeaPointerEvent): void {
-    // skip if the alt key is held. Allows the camera tool to work
     if (event instanceof XRControllerEvent) {
       this.onVRControllerButtonDown(event)
     } else if (event instanceof ZeaMouseEvent) {
+      // skip if the alt key is held. Allows the camera tool to work
       if (event.altKey) return
       if (this.stage == 0) {
         if (event.button == 0 || event.pointerType !== 'mouse') {
           this.constructionPlane = new Xfo()
 
+          // this code align the construction plane with the current view direction
+          // It tries to orthogonalize the view directionto get a perfect orthogonal plane.
+          const normal = snapPlanNormal(event.pointerRay.dir.negate())
+          if (Math.abs(this.constructionPlane.ori.getZaxis().dot(normal)) < 1) {
+            const quat = new Quat()
+            quat.setFrom2Vectors(this.constructionPlane.ori.getZaxis(), normal)
+            quat.normalizeInPlace()
+            this.constructionPlane.ori = quat.multiply(this.constructionPlane.ori)
+          }
+
           const xfo = this.screenPosToXfo(event)
-          this.createStart(xfo)
+          this.createStart(xfo, event)
           event.stopPropagation()
         } else if (event.button == 2) {
           // Cancel the tool.
@@ -230,7 +267,7 @@ class CreateGeomTool extends BaseCreateTool {
       this.onVRPoseChanged(event as XRControllerEvent)
     } else if (this.stage > 0) {
       const xfo = this.screenPosToXfo(event)
-      this.createMove(xfo.tr)
+      this.createMove(xfo.tr, event)
       event.stopPropagation()
       //@ts-ignore
       event.preventDefault() // prevent browser features like scroll and drag n drop
@@ -243,11 +280,12 @@ class CreateGeomTool extends BaseCreateTool {
    * @param event - The event param.
    */
   onPointerUp(event: ZeaPointerEvent): void {
+    if (event instanceof ZeaMouseEvent && event.altKey) return
     if (event instanceof XRControllerEvent) {
       this.onVRControllerButtonUp(event)
     } else if (this.stage > 0) {
       const xfo = this.screenPosToXfo(event)
-      this.createRelease(xfo.tr)
+      this.createRelease(xfo.tr, event)
       event.stopPropagation()
     }
   }
@@ -317,7 +355,7 @@ class CreateGeomTool extends BaseCreateTool {
       this.constructionPlane = new Xfo()
       const xfo = this.constructionPlane.clone()
       xfo.tr = this.__activeController.getTipXfo().tr
-      this.createStart(xfo, this.appData.scene.getRoot())
+      this.createStart(xfo, event)
     }
     event.stopPropagation()
   }
@@ -331,7 +369,7 @@ class CreateGeomTool extends BaseCreateTool {
     if (this.__activeController && this.stage > 0) {
       // TODO: Snap the Xfo to any nearby construction planes.
       const xfo = this.__activeController.getTipXfo()
-      this.createMove(xfo.tr)
+      this.createMove(xfo.tr, event)
       event.stopPropagation()
     }
   }
@@ -345,7 +383,7 @@ class CreateGeomTool extends BaseCreateTool {
     if (this.stage > 0) {
       if (this.__activeController == event.controller) {
         const xfo = this.__activeController.getTipXfo()
-        this.createRelease(xfo.tr)
+        this.createRelease(xfo.tr, event)
         if (this.stage == 0) this.__activeController = undefined
         event.stopPropagation()
       }

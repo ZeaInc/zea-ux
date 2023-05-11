@@ -11,7 +11,7 @@ import CreateGeomChange from './CreateGeomChange'
  * @extends CreateGeomChange
  */
 class CreateSphereChange extends CreateGeomChange {
-  sphere = new Sphere(0, 24, 12)
+  sphere: Sphere
   /**
    * Create a create sphere change.
    * @param parentItem - The parentItem value.
@@ -19,16 +19,14 @@ class CreateSphereChange extends CreateGeomChange {
    * @param color - The color of the sphere to create.
    */
   constructor(parentItem: TreeItem, xfo: Xfo, color: Color) {
-    super('CreateSphere', parentItem)
+    super('CreateSphere', parentItem, xfo)
+  }
 
+  protected createGeoItem() {
+    this.sphere = new Sphere(0, 24, 12)
     const material = new Material('Sphere', 'SimpleSurfaceShader')
     this.geomItem = new GeomItem('Sphere', this.sphere, material)
-    this.geomItem.setSelectable(false)
-
-    if (parentItem && xfo && color) {
-      material.getParameter('BaseColor').value = color
-      this.setParentAndXfo(parentItem, xfo)
-    }
+    this.geomItem.setSelectable(false) // At the conclusion of creation, we set selectable to true.
   }
 
   /**

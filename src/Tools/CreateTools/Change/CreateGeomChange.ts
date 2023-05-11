@@ -14,9 +14,19 @@ class CreateGeomChange extends Change {
    * Create a create circle change.
    * @param name - The name value.
    */
-  constructor(name: string, parentItem?: TreeItem) {
+  constructor(name: string, parentItem: TreeItem, xfo: Xfo) {
     super(name)
-    this.parentItem = parentItem ? parentItem : null
+    this.parentItem = parentItem
+
+    this.createGeoItem()
+
+    if (parentItem && xfo) {
+      this.setParentAndXfo(parentItem, xfo)
+    }
+  }
+
+  protected createGeoItem() {
+    throw 'This method must be implemented by each specialzed change class.'
   }
 
   /**
@@ -24,7 +34,7 @@ class CreateGeomChange extends Change {
    * @param parentItem - The parentItem param.
    * @param xfo - The xfo param.
    */
-  setParentAndXfo(parentItem: TreeItem, xfo: Xfo): void {
+  protected setParentAndXfo(parentItem: TreeItem, xfo: Xfo): void {
     this.parentItem = parentItem
     const name = this.parentItem.generateUniqueName(this.geomItem.getName())
     this.geomItem.setName(name)
@@ -36,6 +46,7 @@ class CreateGeomChange extends Change {
    * Removes recently created geometry from its parent.
    */
   undo(): void {
+    console.log('this.geomItem', this.geomItem)
     this.parentItem.removeChild(this.parentItem.getChildIndex(this.geomItem))
   }
 

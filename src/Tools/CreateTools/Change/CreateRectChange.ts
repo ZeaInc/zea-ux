@@ -1,4 +1,4 @@
-import { Color, Rect, Material, GeomItem, TreeItem, Xfo } from '@zeainc/zea-engine'
+import { Color, Rect, LinesMaterial, GeomItem, TreeItem, Xfo } from '@zeainc/zea-engine'
 import UndoRedoManager from '../../../UndoRedo/UndoRedoManager'
 import CreateGeomChange from './CreateGeomChange'
 
@@ -11,7 +11,7 @@ import CreateGeomChange from './CreateGeomChange'
  * @extends CreateGeomChange
  */
 class CreateRectChange extends CreateGeomChange {
-  rect: Rect = new Rect(0, 0)
+  rect: Rect
   /**
    * Create a create rect change.
    *
@@ -19,15 +19,14 @@ class CreateRectChange extends CreateGeomChange {
    * @param xfo - The xfo value.
    */
   constructor(parentItem: TreeItem, xfo: Xfo) {
-    super('CreateRect')
+    super('CreateRect', parentItem, xfo)
+  }
 
-    const material = new Material('circle', 'FatLinesShader')
-    material.getParameter('BaseColor').value = new Color(0.7, 0.2, 0.2)
+  protected createGeoItem() {
+    this.rect = new Rect(0, 0)
+    const material = new LinesMaterial('circle')
+    material.baseColorParam.value = new Color(0.7, 0.2, 0.2)
     this.geomItem = new GeomItem('Rect', this.rect, material)
-
-    if (parentItem && xfo) {
-      this.setParentAndXfo(parentItem, xfo)
-    }
   }
 
   /**

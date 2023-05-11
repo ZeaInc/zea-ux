@@ -14,7 +14,6 @@ import {
   GLBaseViewport,
 } from '@zeainc/zea-engine'
 
-import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 import Handle from '../Handles/Handle'
 import { AppData } from '../../types/types'
 import { SelectionManager } from '..'
@@ -33,7 +32,7 @@ class SelectionTool extends BaseTool {
   selectionRectMat: Material
   selectionRectXfo: Xfo
   rectItem: GeomItem
-  __selectionFilterFn: any
+  selectionFilterFn: (treeItem: TreeItem) => TreeItem | null = null
   pointerDownPos: Vec2
   /**
    * Creates an instance of SelectionTool.
@@ -54,30 +53,13 @@ class SelectionTool extends BaseTool {
     this.selectionRectMat = new Material('marker', 'ScreenSpaceShader')
     this.selectionRectMat.getParameter('BaseColor').value = new Color('#03E3AC')
     this.selectionRectXfo = new Xfo()
-    this.selectionRectXfo.tr.set(0.5, 0.5, 0)
     this.selectionRectXfo.sc.set(0, 0, 0)
 
     this.rectItem = new GeomItem('selectionRect', this.selectionRect, this.selectionRectMat)
-    this.rectItem.getParameter('Visible').value = false
+    this.rectItem.visibleParam.value = false
     this.appData.renderer.addTreeItem(this.rectItem)
   }
 
-  // /**
-  //  * activate this tool
-  //  */
-  // activateTool() {
-  //   super.activateTool()
-  //   this.prevCursor = this.appData.renderer.getGLCanvas().style.cursor
-  //   this.appData.renderer.getGLCanvas().style.cursor = 'auto'
-  // }
-
-  // /**
-  //  * Disables tool usage.
-  //  */
-  // deactivateTool() {
-  //   super.deactivateTool()
-  //   this.appData.renderer.getGLCanvas().style.cursor = this.prevCursor
-  // }
   /**
    * Activates selection tool.
    */
@@ -92,7 +74,7 @@ class SelectionTool extends BaseTool {
     super.deactivateTool()
     this.selectionRectXfo.sc.set(0, 0, 0)
     this.rectItem.globalXfoParam.value = this.selectionRectXfo
-    this.rectItem.getParameter('Visible').value = false
+    this.rectItem.visibleParam.value = false
   }
   /**
    * Activates selection tool.
@@ -101,8 +83,8 @@ class SelectionTool extends BaseTool {
     this.selectionManager = selectionManager
   }
 
-  setSelectionFilter(fn: any): void {
-    this.__selectionFilterFn = fn
+  setSelectionFilter(fn: (treeItem: TreeItem) => TreeItem | null): void {
+    this.selectionFilterFn = fn
   }
 
   /**
@@ -110,10 +92,11 @@ class SelectionTool extends BaseTool {
    *
    * @param viewport - The viewport value
    * @param delta - The delta value
-   * @private
    */
-  __resizeRect(viewport: GLBaseViewport, delta: any): void {
-    const sc = new Vec2((1 / viewport.getWidth()) * 2, (1 / viewport.getHeight()) * 2)
+  private resizeRect(viewport: GLBaseViewport, delta: Vec2): void {
+    const width = viewport.getWidth()
+    const height = viewport.getHeight()
+    const sc = new Vec2((1 / width) * 2, (1 / height) * 2)
     const size = delta.multiply(sc)
     this.selectionRectXfo.sc.set(Math.abs(size.x), Math.abs(size.y), 1)
 
@@ -141,9 +124,8 @@ class SelectionTool extends BaseTool {
    */
   onPointerDown(event: ZeaPointerEvent): void {
     if (event instanceof ZeaTouchEvent || (event instanceof ZeaMouseEvent && event.button == 0)) {
-      this.pointerDownPos = event.pointerPos
+      this.pointerDownPos = event.pointerPos.scale(window.devicePixelRatio)
       this.dragging = false
-
       event.stopPropagation()
     }
   }
@@ -160,15 +142,16 @@ class SelectionTool extends BaseTool {
       return
     }
     if (this.pointerDownPos) {
-      const delta = this.pointerDownPos.subtract(event.pointerPos)
+      const pointerPos = event.pointerPos.scale(window.devicePixelRatio)
+      const delta = this.pointerDownPos.subtract(pointerPos)
       const dist = delta.length()
       // dragging only is activated after 4 pixels.
       // This is to avoid causing as rect selection for nothing.
       if (dist > 4) {
         this.dragging = true
         // Start drawing the selection rectangle on screen.
-        this.rectItem.getParameter('Visible').value = true
-        this.__resizeRect(event.viewport, delta)
+        this.rectItem.visibleParam.value = true
+        this.resizeRect(event.viewport, delta)
       }
       event.stopPropagation()
     }
@@ -182,10 +165,9 @@ class SelectionTool extends BaseTool {
    */
   onPointerUp(event: ZeaPointerEvent): void {
     if ((event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) && this.pointerDownPos) {
-      // event.viewport.renderGeomDataFbo();
       if (this.dragging) {
-        this.rectItem.getParameter('Visible').value = false
-        const pointerUpPos = event.pointerPos
+        this.rectItem.visibleParam.value = false
+        const pointerUpPos = event.pointerPos.scale(window.devicePixelRatio)
         const tl = new Vec2(
           Math.min(this.pointerDownPos.x, pointerUpPos.x),
           Math.min(this.pointerDownPos.y, pointerUpPos.y)
@@ -198,11 +180,11 @@ class SelectionTool extends BaseTool {
         const viewport = event.viewport as GLViewport
         let geomItems: Array<TreeItem> = Array.from(viewport.getGeomItemsInRect(tl, br)) // TODO: check, using Array.from() since we have a Set<>
 
-        if (this.__selectionFilterFn) {
+        if (this.selectionFilterFn) {
           const newSet: Array<TreeItem> = [] // TODO: using Array for 'newSet', not a Set<>
           for (let i = 0; i < geomItems.length; i++) {
-            const treeItem = this.__selectionFilterFn(geomItems[i])
-            if (!newSet.includes(treeItem)) {
+            const treeItem = this.selectionFilterFn(geomItems[i])
+            if (treeItem && !newSet.includes(treeItem)) {
               newSet.push(treeItem)
             }
           }
@@ -229,10 +211,11 @@ class SelectionTool extends BaseTool {
         }
       } else {
         const viewport = event.viewport as GLViewport
-        const intersectionData = viewport.getGeomDataAtPos(event.pointerPos, undefined) // TODO: check if this was intended
+        const pointerUpPos = event.pointerPos
+        const intersectionData = viewport.getGeomDataAtPos(pointerUpPos, undefined) // TODO: check if this was intended
         if (intersectionData != undefined && !(intersectionData.geomItem.getOwner() instanceof Handle)) {
           let treeItem = intersectionData.geomItem
-          if (this.__selectionFilterFn) treeItem = this.__selectionFilterFn(treeItem)
+          if (this.selectionFilterFn) treeItem = this.selectionFilterFn(treeItem)
 
           if (this.selectionManager.pickingModeActive()) {
             this.selectionManager.pick(treeItem)

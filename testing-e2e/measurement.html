@@ -171,7 +171,8 @@
         toolManager.registerTool('measureAngleTool', measureAngleTool)
         toolManager.registerTool('measureCenterDistancesTool', measureCenterDistancesTool)
         renderer.getViewport().setManipulator(toolManager)
-
+        
+        // Push the Camera Manipultor onto the base of the stack.
         toolManager.pushTool('cameraManipulator')
 
         document.addEventListener('keydown', (e) => {
