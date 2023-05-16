@@ -61,7 +61,7 @@ class CreateGeomTool extends BaseCreateTool {
   vrControllerToolTip: BaseGeom | Cross
   prevCursor: string
   constructionPlane: Xfo
-  __activeController: any
+  private activeController: XRController
   /**
    * Create a create geom tool.
    *
@@ -348,12 +348,12 @@ class CreateGeomTool extends BaseCreateTool {
    * @param event - The event param.
    */
   onVRControllerButtonDown(event: XRControllerEvent): void {
-    if (!this.__activeController) {
+    if (!this.activeController) {
       // TODO: Snap the Xfo to any nearby construction planes.
-      this.__activeController = event.controller
+      this.activeController = event.controller
       this.constructionPlane = new Xfo()
       const xfo = this.constructionPlane.clone()
-      xfo.tr = this.__activeController.getTipXfo().tr
+      xfo.tr = this.activeController.getTipXfo().tr
       this.createStart(xfo, event)
     }
     event.stopPropagation()
@@ -365,9 +365,9 @@ class CreateGeomTool extends BaseCreateTool {
    * @param event - The event param.
    */
   onVRPoseChanged(event: XRControllerEvent): void {
-    if (this.__activeController && this.stage > 0) {
+    if (this.activeController && this.stage > 0) {
       // TODO: Snap the Xfo to any nearby construction planes.
-      const xfo = this.__activeController.getTipXfo()
+      const xfo = this.activeController.getTipXfo()
       this.createMove(xfo.tr, event)
       event.stopPropagation()
     }
@@ -380,10 +380,10 @@ class CreateGeomTool extends BaseCreateTool {
    */
   onVRControllerButtonUp(event: XRControllerEvent): void {
     if (this.stage > 0) {
-      if (this.__activeController == event.controller) {
-        const xfo = this.__activeController.getTipXfo()
+      if (this.activeController == event.controller) {
+        const xfo = this.activeController.getTipXfo()
         this.createRelease(xfo.tr, event)
-        if (this.stage == 0) this.__activeController = undefined
+        if (this.stage == 0) this.activeController = undefined
         event.stopPropagation()
       }
     }

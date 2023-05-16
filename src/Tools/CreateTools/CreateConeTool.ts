@@ -16,8 +16,8 @@ class CreateConeTool extends CreateGeomTool {
   xfo: Xfo
   invXfo: Xfo
   change: CreateConeChange
-  _radius: number
-  _height: number
+  radius: number
+  height: number
   /**
    * Create a create cone tool.
    * @param appData - The appData value.
@@ -42,8 +42,8 @@ class CreateConeTool extends CreateGeomTool {
     UndoRedoManager.getInstance().addChange(this.change)
 
     this.stage = 1
-    this._radius = 0.0
-    this._height = 0.0
+    this.radius = 0.0
+    this.height = 0.0
   }
 
   /**
@@ -55,11 +55,11 @@ class CreateConeTool extends CreateGeomTool {
     if (this.stage == 1) {
       const vec = pt.subtract(this.xfo.tr)
       // TODO: Rotate the cone so the base is aligned with the vector towards the controller
-      this._radius = vec.length()
-      this.change.update({ radius: this._radius })
+      this.radius = vec.length()
+      this.change.update({ radius: this.radius })
     } else {
-      this._height = this.invXfo.transformVec3(pt).y
-      this.change.update({ height: this._height })
+      this.height = this.invXfo.transformVec3(pt).y
+      this.change.update({ height: this.height })
     }
   }
 
@@ -69,7 +69,7 @@ class CreateConeTool extends CreateGeomTool {
    * @param pt - The pt param.
    */
   createRelease(pt: Vec3, event: ZeaPointerEvent): void {
-    if (this._radius == 0) {
+    if (this.radius == 0) {
       UndoRedoManager.getInstance().cancel()
       this.stage = 0
       this.emit('actionFinished')
