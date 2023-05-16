@@ -76,12 +76,6 @@ class CreateMultiLineChange extends CreateGeomChange {
       this.addVertex(vertex)
     }
 
-    // let lastFixedVertex
-    // if (updateData.vertices.length > this.vertices.length) {
-    //   lastFixedVertex = updateData.vertices.pop()
-    //   this.addVertex(lastFixedVertex)
-    // }
-
     if (this.vertices.length && looseVertex) {
       this.line.positions.setValue(this.vertices.length, looseVertex)
       this.line.setBoundingBoxDirty()
