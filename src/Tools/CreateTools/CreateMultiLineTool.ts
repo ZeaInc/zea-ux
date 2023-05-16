@@ -67,7 +67,7 @@ class CreateMultiLineTool extends CreateGeomTool {
 
     this.pointerVertex = this.inverseXfo.transformVec3(pt)
 
-    if (this.shouldClosePolygon()) {
+    if (this.shouldClosePolygon() && !event.ctrlKey) {
       this.tailVertex = this.vertices[0] // same as first
     } else if (event.shiftKey) {
       this.tailVertex = this.snapToClosestAxis(this.pointerVertex)
