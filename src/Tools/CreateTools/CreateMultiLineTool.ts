@@ -29,7 +29,7 @@ class CreateMultiLineTool extends CreateGeomTool {
   length: number
   inverseXfo: Xfo
   vertices: Vec3[] = []
-  distanceToSnap = 5
+  distanceToSnap = 20 * window.devicePixelRatio
   pointerVertex: Vec3 = new Vec3()
   tailVertex: Vec3 = new Vec3()
   lastClickTime = 0
@@ -176,6 +176,7 @@ class CreateMultiLineTool extends CreateGeomTool {
       const vertices0_2d = viewport.calcScreenPosFromWorldPos(this.vertices[0])
       const pointerVertex_2d = viewport.calcScreenPosFromWorldPos(this.pointerVertex)
       const distanceToFirst = pointerVertex_2d.distanceTo(vertices0_2d)
+      console.log('distanceToFirst', distanceToFirst)
       if (distanceToFirst < this.distanceToSnap) {
         shouldClosePolygon = true
       }
