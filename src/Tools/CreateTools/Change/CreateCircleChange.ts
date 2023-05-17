@@ -1,4 +1,4 @@
-import { Color, GeomItem, Circle, Xfo, TreeItem, LinesMaterial } from '@zeainc/zea-engine'
+import { GeomItem, Circle, Xfo, TreeItem, LinesMaterial } from '@zeainc/zea-engine'
 import { UndoRedoManager } from '../../../UndoRedo/index'
 import CreateGeomChange from './CreateGeomChange'
 

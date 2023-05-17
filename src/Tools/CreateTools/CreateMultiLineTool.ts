@@ -1,4 +1,4 @@
-import { NumberParameter, Vec3, Xfo, XRControllerEvent, ZeaPointerEvent } from '@zeainc/zea-engine'
+import { GLViewport, Vec3, Xfo, XRControllerEvent, ZeaMouseEvent, ZeaPointerEvent } from '@zeainc/zea-engine'
 import CreateGeomTool from './CreateGeomTool'
 import CreateMultiLineChange from './Change/CreateMultiLineChange'
 import { UndoRedoManager } from '../../UndoRedo/index'
@@ -14,14 +14,14 @@ import CreateGeomChange from './Change/CreateGeomChange'
  * @extends CreateGeomTool
  */
 
-let keyPressHandler: EventListener
+let keyPressHandler: (event: KeyboardEvent) => void
 
 class CreateMultiLineTool extends CreateGeomTool {
   change: CreateGeomChange
   length: number
   inverseXfo: Xfo
   vertices: Vec3[] = []
-  distanceToSnap = 0.3
+  distanceToSnap = 20 * window.devicePixelRatio
   pointerVertex: Vec3 = new Vec3()
   tailVertex: Vec3 = new Vec3()
   lastClickTime = 0
@@ -62,14 +62,15 @@ class CreateMultiLineTool extends CreateGeomTool {
    * @param pt - The pt param.
    * @param event - The event param.
    */
-  createMove(pt: Vec3, event: any): void {
-    if (event.altKey) return
+  createMove(pt: Vec3, event: ZeaPointerEvent): void {
+    if (event instanceof ZeaMouseEvent && event.altKey) return
 
     this.pointerVertex = this.inverseXfo.transformVec3(pt)
 
-    if (this.shouldClosePolygon() && !event.ctrlKey) {
+    // Disable snapping if the ctrlKey is not pressed.
+    if (this.shouldClosePolygon(event) && event instanceof ZeaMouseEvent && !event.ctrlKey) {
       this.tailVertex = this.vertices[0] // same as first
-    } else if (event.shiftKey) {
+    } else if (event instanceof ZeaMouseEvent && event.shiftKey) {
       this.tailVertex = this.snapToClosestAxis(this.pointerVertex)
     } else {
       this.tailVertex = this.pointerVertex
@@ -126,10 +127,10 @@ class CreateMultiLineTool extends CreateGeomTool {
    *
    * @param pt - The pt param.
    */
-  createRelease(pt: Vec3): void {
+  createRelease(pt: Vec3, event: ZeaPointerEvent): void {
     let shouldFinish = false
 
-    if (this.shouldClosePolygon()) {
+    if (this.shouldClosePolygon(event)) {
       shouldFinish = true
     }
 
@@ -158,10 +159,16 @@ class CreateMultiLineTool extends CreateGeomTool {
     }
   }
 
-  protected shouldClosePolygon() {
+  protected shouldClosePolygon(event: ZeaPointerEvent) {
+    // const viewPos = event.pointerRay.start
+    const viewport = event.viewport as GLViewport
+
     let shouldClosePolygon = false
     if (this.vertices.length > 2) {
-      const distanceToFirst = this.pointerVertex.distanceTo(this.vertices[0])
+      const vertices0_2d = viewport.calcScreenPosFromWorldPos(this.vertices[0])
+      const pointerVertex_2d = viewport.calcScreenPosFromWorldPos(this.pointerVertex)
+      const distanceToFirst = pointerVertex_2d.distanceTo(vertices0_2d)
+
       if (distanceToFirst < this.distanceToSnap) {
         shouldClosePolygon = true
       }
@@ -169,29 +176,18 @@ class CreateMultiLineTool extends CreateGeomTool {
     return shouldClosePolygon
   }
 
-  handleKeyPress(event: any): void {
+  handleKeyPress(event: KeyboardEvent): void {
     if (event.key == 'Escape') {
       UndoRedoManager.getInstance().cancel()
       this.resetTool()
-    }
-
-    if (event.key == 'Enter') {
-      const vertices = [...this.vertices]
-      if (this.shouldClosePolygon()) {
-        vertices.push(this.pointerVertex)
-
-        // if the last vertex closes the polygon add a dummy
-        // vertex at the end, to keep the closing segment
-        vertices.push(new Vec3())
-      }
+    } else if (event.key == 'Enter') {
+      // Finish the line
       this.change.update({
         shouldFinish: true,
         vertices: [...this.vertices, this.tailVertex],
       })
       this.resetTool()
-    }
-
-    if (event.key == 'Backspace') {
+    } else if (event.key == 'Backspace') {
       this.vertices.pop()
       this.change.update({
         shouldFinish: false,
