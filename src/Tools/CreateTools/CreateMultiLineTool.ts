@@ -1,12 +1,4 @@
-import {
-  GLViewport,
-  NumberParameter,
-  Vec3,
-  Xfo,
-  XRControllerEvent,
-  ZeaMouseEvent,
-  ZeaPointerEvent,
-} from '@zeainc/zea-engine'
+import { GLViewport, Vec3, Xfo, XRControllerEvent, ZeaMouseEvent, ZeaPointerEvent } from '@zeainc/zea-engine'
 import CreateGeomTool from './CreateGeomTool'
 import CreateMultiLineChange from './Change/CreateMultiLineChange'
 import { UndoRedoManager } from '../../UndoRedo/index'
@@ -176,7 +168,7 @@ class CreateMultiLineTool extends CreateGeomTool {
       const vertices0_2d = viewport.calcScreenPosFromWorldPos(this.vertices[0])
       const pointerVertex_2d = viewport.calcScreenPosFromWorldPos(this.pointerVertex)
       const distanceToFirst = pointerVertex_2d.distanceTo(vertices0_2d)
-      console.log('distanceToFirst', distanceToFirst)
+
       if (distanceToFirst < this.distanceToSnap) {
         shouldClosePolygon = true
       }

@@ -5,7 +5,6 @@ import {
   XfoParameter,
   ZeaPointerEvent,
   ZeaMouseEvent,
-  ZeaTouchEvent,
   NumberParameter,
   GeomItem,
   Material,
