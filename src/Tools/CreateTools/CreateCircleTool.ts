@@ -59,9 +59,9 @@ class CreateCircleTool extends CreateGeomTool {
       UndoRedoManager.getInstance().cancel()
     }
 
+    this.emit('actionFinished')
     this.change = null
     this.stage = 0
-    this.emit('actionFinished')
   }
 }
 
