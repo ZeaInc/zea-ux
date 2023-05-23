@@ -187,6 +187,7 @@ class CreateMultiLineTool extends CreateGeomTool {
   handleKeyPress(event: KeyboardEvent): void {
     if (event.key == 'Escape') {
       UndoRedoManager.getInstance().cancel()
+      this.vertices = []
       this.resetTool()
       this.emit('actionFinished')
     } else if (event.key == 'Enter') {
