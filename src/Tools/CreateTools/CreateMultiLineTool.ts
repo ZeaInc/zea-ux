@@ -202,7 +202,7 @@ class CreateMultiLineTool extends CreateGeomTool {
       this.vertices.pop()
       this.change.update({
         shouldFinish: false,
-        vertices: this.vertices,
+        vertices: [...this.vertices, this.tailVertex],
       })
     }
   }
