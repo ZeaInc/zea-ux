@@ -140,6 +140,10 @@ class CreateMultiLineTool extends CreateGeomTool {
 
     if (isDoubleClick) {
       shouldFinish = true
+      event.stopPropagation()
+
+      //@ts-ignore
+      event.preventDefault()
     } else {
       // Add vertex only if not a double click
       this.vertices.push(this.tailVertex)
