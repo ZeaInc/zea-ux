@@ -26,8 +26,8 @@ class CreateMultiLineTool extends CreateGeomTool {
   tailVertex: Vec3 = new Vec3()
   lastClickTime = 0
   lastClickPt = new Vec3()
-  doubleClickTime = 500
-  doubleClickMaxDistance = 0.5
+  doubleClickTime = 300
+  doubleClickMaxDistance = 10 * window.devicePixelRatio
 
   /**
    * Create a create line tool.
@@ -134,8 +134,12 @@ class CreateMultiLineTool extends CreateGeomTool {
       shouldFinish = true
     }
 
+    const viewport = event.viewport as GLViewport
+    const screenPt = viewport.calcScreenPosFromWorldPos(pt)
+    const lastScreenPt = viewport.calcScreenPosFromWorldPos(this.lastClickPt)
+
     const isDoubleClick =
-      pt.distanceTo(this.lastClickPt) < this.doubleClickMaxDistance &&
+      screenPt.distanceTo(lastScreenPt) < this.doubleClickMaxDistance &&
       Date.now() - this.lastClickTime < this.doubleClickTime
 
     if (isDoubleClick) {
