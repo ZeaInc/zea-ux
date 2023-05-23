@@ -180,6 +180,7 @@ class CreateMultiLineTool extends CreateGeomTool {
     if (event.key == 'Escape') {
       UndoRedoManager.getInstance().cancel()
       this.resetTool()
+      this.emit('actionFinished')
     } else if (event.key == 'Enter') {
       // Finish the line
       this.change.update({
@@ -187,6 +188,7 @@ class CreateMultiLineTool extends CreateGeomTool {
         vertices: [...this.vertices, this.tailVertex],
       })
       this.resetTool()
+      this.emit('actionFinished')
     } else if (event.key == 'Backspace') {
       this.vertices.pop()
       this.change.update({
