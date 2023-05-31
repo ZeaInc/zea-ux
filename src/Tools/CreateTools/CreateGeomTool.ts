@@ -136,6 +136,29 @@ class CreateGeomTool extends BaseCreateTool {
     })
   }
 
+  private setupConstructionPlane(event: ZeaPointerEvent, snapToSurfaceUnderPointer = false) {
+    const pointerRay = event.pointerRay
+
+    const viewport = event.viewport as GLViewport
+    const camera = viewport.getCamera()
+    this.constructionPlane = camera.globalXfoParam.value.clone()
+    this.constructionPlane.tr = pointerRay.pointAtDist(camera.getFocalDistance())
+
+    // this code align the construction plane with the current view direction
+    // It tries to orthogonalize the view directionto get a perfect orthogonal plane.
+    const normal = snapPlanNormal(pointerRay.dir.negate())
+    if (Math.abs(this.constructionPlane.ori.getZaxis().dot(normal)) < 1) {
+      const quat = new Quat()
+      quat.setFrom2Vectors(this.constructionPlane.ori.getZaxis(), normal)
+      quat.normalizeInPlace()
+      this.constructionPlane.ori = quat.multiply(this.constructionPlane.ori)
+    }
+
+    if (snapToSurfaceUnderPointer && event.intersectionData) {
+      this.constructionPlane.tr = pointerRay.pointAtDist(event.intersectionData.dist)
+    }
+  }
+
   /**
    * Transforms the screen position in the viewport to an Xfo object.
    *
@@ -226,20 +249,10 @@ class CreateGeomTool extends BaseCreateTool {
       if (event.altKey) return
       if (this.stage == 0) {
         if (event.button == 0 || event.pointerType !== 'mouse') {
-          this.constructionPlane = new Xfo()
+          const snapToSurfaceUnderPointer = true
+          this.setupConstructionPlane(event, snapToSurfaceUnderPointer)
 
-          // this code align the construction plane with the current view direction
-          // It tries to orthogonalize the view directionto get a perfect orthogonal plane.
-          const normal = snapPlanNormal(event.pointerRay.dir.negate())
-          if (Math.abs(this.constructionPlane.ori.getZaxis().dot(normal)) < 1) {
-            const quat = new Quat()
-            quat.setFrom2Vectors(this.constructionPlane.ori.getZaxis(), normal)
-            quat.normalizeInPlace()
-            this.constructionPlane.ori = quat.multiply(this.constructionPlane.ori)
-          }
-
-          const xfo = this.screenPosToXfo(event, true)
-          this.createStart(xfo, event)
+          this.createStart(this.constructionPlane, event)
           event.stopPropagation()
         } else if (event.button == 2) {
           // Cancel the tool.
@@ -267,7 +280,8 @@ class CreateGeomTool extends BaseCreateTool {
     if (event.pointerType === 'xr') {
       this.onVRPoseChanged(event as XRControllerEvent)
     } else if (this.stage > 0) {
-      const xfo = this.screenPosToXfo(event)
+      const snapToSurfaceUnderPointer = false
+      const xfo = this.screenPosToXfo(event, snapToSurfaceUnderPointer)
       this.createMove(xfo.tr, event)
       event.stopPropagation()
     }
@@ -283,7 +297,8 @@ class CreateGeomTool extends BaseCreateTool {
     if (event instanceof XRControllerEvent) {
       this.onVRControllerButtonUp(event)
     } else if (this.stage > 0) {
-      const xfo = this.screenPosToXfo(event)
+      const snapToSurfaceUnderPointer = false
+      const xfo = this.screenPosToXfo(event, snapToSurfaceUnderPointer)
       this.createRelease(xfo.tr, event)
       event.stopPropagation()
     }

@@ -47,7 +47,8 @@ class CreateFreehandLineTool extends CreateLineTool {
     if (event.pointerType === 'xr') {
       this.onVRPoseChanged(event as XRControllerEvent)
     } else if (this.stage > 0) {
-      const xfo = this.screenPosToXfo(event, true)
+      const snapToSurfaceUnderPointer = true
+      const xfo = this.screenPosToXfo(event, snapToSurfaceUnderPointer)
       this.createMove(xfo.tr, event)
       event.stopPropagation()
     }
