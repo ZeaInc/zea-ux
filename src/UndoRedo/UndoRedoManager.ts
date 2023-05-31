@@ -97,7 +97,7 @@ class UndoRedoManager extends EventEmitter {
       change.undo()
       if (pushOnRedoStack) {
         this.__redoStack.push(change)
-        this.emit('changeUndone', {change})
+        this.emit('changeUndone', { change })
       }
     }
   }
@@ -107,12 +107,9 @@ class UndoRedoManager extends EventEmitter {
    * Reverts the change and discards it.
    */
   cancel(): void {
-    if (this.__undoStack.length > 0) {
-      if (this.__currChange) {
-        this.__currChange.off('updated', this.__currChangeUpdated)
-        this.__currChange = null
-      }
-
+    if (this.__currChange) {
+      this.__currChange.off('updated', this.__currChangeUpdated)
+      this.__currChange = null
       const change = this.__undoStack.pop()
       change.undo()
     }
@@ -128,7 +125,7 @@ class UndoRedoManager extends EventEmitter {
       // console.log("redo:", change.name)
       change.redo()
       this.__undoStack.push(change)
-      this.emit('changeRedone', {change})
+      this.emit('changeRedone', { change })
     }
   }
 
