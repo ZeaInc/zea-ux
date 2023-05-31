@@ -35,6 +35,7 @@ class CreateSphereChange extends CreateGeomChange {
    * @param updateData - The updateData param.
    */
   update(updateData: Record<any, any>): void {
+    this.geomItem.globalXfoParam.value = updateData.xfo
     this.sphere.radiusParam.value = updateData.radius
 
     this.emit('updated', updateData)

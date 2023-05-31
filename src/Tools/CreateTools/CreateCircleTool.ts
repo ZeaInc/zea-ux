@@ -44,8 +44,10 @@ class CreateCircleTool extends CreateGeomTool {
    * @param pt - The pt param.
    */
   createMove(pt: Vec3, event: ZeaPointerEvent): void {
-    this.radius = pt.distanceTo(this.xfo.tr)
-    this.change.update({ radius: this.radius })
+    const xfo = this.constructionPlane.clone()
+    xfo.tr = xfo.tr.lerp(pt, 0.5)
+    this.radius = pt.distanceTo(this.xfo.tr) / 2
+    this.change.update({ radius: this.radius, xfo })
     this.appData.renderer.forceRender()
   }
 

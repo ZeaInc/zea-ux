@@ -34,6 +34,7 @@ class CreateCircleChange extends CreateGeomChange {
    * @param updateData - The updateData param.
    */
   update(updateData: Record<any, any>): void {
+    this.geomItem.globalXfoParam.value = updateData.xfo
     this.circle.radiusParam.value = updateData.radius
     this.emit('updated', updateData)
   }
