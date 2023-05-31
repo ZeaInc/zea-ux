@@ -1,20 +1,17 @@
-import { GLViewport, Vec3, Xfo, XRControllerEvent, ZeaMouseEvent, ZeaPointerEvent } from '@zeainc/zea-engine'
+import {
+  GLViewport,
+  Vec3,
+  Xfo,
+  XRControllerEvent,
+  KeyboardEvent,
+  ZeaMouseEvent,
+  ZeaPointerEvent,
+} from '@zeainc/zea-engine'
 import CreateGeomTool from './CreateGeomTool'
 import CreateMultiLineChange from './Change/CreateMultiLineChange'
 import { UndoRedoManager } from '../../UndoRedo/index'
 import { AppData } from '../../../types/types'
 import CreateGeomChange from './Change/CreateGeomChange'
-
-/**
- * Tool for creating a line tool.
- *
- * **Events**
- * * **actionFinished:** Triggered when the creation of the geometry is completed.
- *
- * @extends CreateGeomTool
- */
-
-let keyPressHandler: (event: KeyboardEvent) => void
 
 class CreateMultiLineTool extends CreateGeomTool {
   change: CreateGeomChange
@@ -51,9 +48,6 @@ class CreateMultiLineTool extends CreateGeomTool {
     this.inverseXfo = xfo.inverse()
     this.stage = 1
     this.length = 0.0
-
-    keyPressHandler = this.handleKeyPress.bind(this)
-    document.addEventListener('keyup', keyPressHandler)
   }
 
   /**
@@ -184,12 +178,14 @@ class CreateMultiLineTool extends CreateGeomTool {
     return shouldClosePolygon
   }
 
-  handleKeyPress(event: KeyboardEvent): void {
+  onKeyUp(event: KeyboardEvent): void {
     if (event.key == 'Escape') {
-      UndoRedoManager.getInstance().cancel()
-      this.vertices = []
-      this.resetTool()
-      this.emit('actionFinished')
+      if (this.stage > 0) {
+        UndoRedoManager.getInstance().cancel()
+        this.vertices = []
+        this.resetTool()
+        this.emit('actionFinished')
+      }
     } else if (event.key == 'Enter') {
       // Finish the line
       this.change.update({
@@ -212,7 +208,6 @@ class CreateMultiLineTool extends CreateGeomTool {
     this.vertices = []
     this.pointerVertex = new Vec3()
     this.tailVertex = new Vec3()
-    document.removeEventListener('keyup', keyPressHandler)
   }
 
   /**
