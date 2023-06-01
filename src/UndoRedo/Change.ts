@@ -11,6 +11,7 @@ class Change extends EventEmitter {
   name: string
   secondaryChanges: Change[] = []
   suppressPrimaryChange: boolean = false
+  closed: boolean = false
   /**
    * Every class that extends from `Change` must contain a global `name` attribute.
    * It is used by the `UndoRedoManager` factory to re-construct the class of the specific implementation of the `Change` class.
@@ -34,18 +35,14 @@ class Change extends EventEmitter {
    *
    * @note This method needs to be implemented, otherwise it will throw an Error.
    */
-  undo(): void {
-    this.secondaryChanges.forEach((change) => change.undo())
-  }
+  undo(): void {}
 
   /**
    * Called by the `UndoRedoManager` in the `redo` method, and is the same as the `undo` method, contains the specific code you wanna run.
    *
    * @note This method needs to be implemented, otherwise it will throw an Error.
    */
-  redo(): void {
-    this.secondaryChanges.forEach((change) => change.redo())
-  }
+  redo(): void {}
 
   /**
    * Use this method to update the state of your `Change` class.

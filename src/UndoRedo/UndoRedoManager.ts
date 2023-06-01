@@ -112,6 +112,7 @@ class UndoRedoManager extends EventEmitter {
       this.__currChange = null
       const change = this.__undoStack.pop()
       change.undo()
+      change.secondaryChanges.forEach((secondaryChange) => secondaryChange.undo())
     }
   }
 
@@ -124,6 +125,7 @@ class UndoRedoManager extends EventEmitter {
       const change = this.__redoStack.pop()
       // console.log("redo:", change.name)
       change.redo()
+      change.secondaryChanges.forEach((secondaryChange) => secondaryChange.redo())
       this.__undoStack.push(change)
       this.emit('changeRedone', { change })
     }
