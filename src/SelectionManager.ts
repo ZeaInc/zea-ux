@@ -3,7 +3,6 @@ import { AppData } from '../types/types'
 import XfoHandle from './Handles/XfoHandle'
 import SelectionGroup from './SelectionGroup'
 import SelectionChange from './UndoRedo/Changes/SelectionChange'
-import SelectionVisibilityChange from './UndoRedo/Changes/SelectionVisibilityChange'
 import UndoRedoManager from './UndoRedo/UndoRedoManager'
 
 /**
@@ -138,8 +137,8 @@ class SelectionManager extends EventEmitter {
     this.selectionGroup.setItems(selection)
 
     // Deselecting can change the lead selected item.
-    if (selection.size > 0) this.__setLeadSelection(selection.values().next().value)
-    else this.__setLeadSelection()
+    if (selection.size > 0) this.setLeadSelection(selection.values().next().value)
+    else this.setLeadSelection()
     this.updateHandleVisibility()
 
     if (createUndo) {
@@ -151,11 +150,9 @@ class SelectionManager extends EventEmitter {
   }
 
   /**
-   *
    * @param treeItem - The treeItem value
-   * @private
    */
-  __setLeadSelection(treeItem?: TreeItem): void {
+  private setLeadSelection(treeItem?: TreeItem): void {
     if (this.leadSelection != treeItem) {
       this.leadSelection = treeItem
       this.emit('leadSelectionChanged', { treeItem })
@@ -168,7 +165,7 @@ class SelectionManager extends EventEmitter {
    * @param treeItem - The treeItem param.
    * @param replaceSelection - The replaceSelection param.
    */
-  toggleItemSelection(treeItem: TreeItem, replaceSelection = true): void {
+  toggleItemSelection(treeItem: TreeItem, replaceSelection = true, createUndo = true): void {
     const selection = new Set(this.selectionGroup.getItems())
     const prevSelection = new Set(selection)
 
@@ -233,15 +230,17 @@ class SelectionManager extends EventEmitter {
     this.selectionGroup.setItems(selection)
 
     if (sel && selection.size === 1) {
-      this.__setLeadSelection(treeItem)
+      this.setLeadSelection(treeItem)
     } else if (!sel) {
       // Deselecting can change the lead selected item.
-      if (selection.size === 1) this.__setLeadSelection(selection.values().next().value)
-      else if (selection.size === 0) this.__setLeadSelection()
+      if (selection.size === 1) this.setLeadSelection(selection.values().next().value)
+      else if (selection.size === 0) this.setLeadSelection()
     }
 
-    const change = new SelectionChange(this, prevSelection, selection)
-    UndoRedoManager.getInstance().addChange(change)
+    if (createUndo) {
+      const change = new SelectionChange(this, prevSelection, selection)
+      UndoRedoManager.getInstance().addChange(change)
+    }
 
     this.updateHandleVisibility()
     this.emit('selectionChanged', { prevSelection, selection })
@@ -250,14 +249,14 @@ class SelectionManager extends EventEmitter {
   /**
    * Clears selection state by removing previous selected items and the Xfo handlers.
    *
-   * @param newChange - The newChange param.
+   * @param createUndo - The createUndo param.
    * @return {boolean} - The return value.
    */
-  clearSelection(newChange = true): boolean {
+  clearSelection(createUndo = true): void {
     const selection: Set<TreeItem> = new Set(this.selectionGroup.getItems())
-    if (selection.size == 0) return false
+    if (selection.size == 0) return
     let prevSelection
-    if (newChange) {
+    if (createUndo) {
       prevSelection = new Set(selection)
     }
     for (const treeItem of selection) {
@@ -265,14 +264,15 @@ class SelectionManager extends EventEmitter {
     }
     selection.clear()
     this.selectionGroup.setItems(selection)
-    this.__setLeadSelection()
+    this.setLeadSelection()
     this.updateHandleVisibility()
-    if (newChange) {
+
+    if (createUndo) {
       const change = new SelectionChange(this, prevSelection, selection)
       UndoRedoManager.getInstance().addChange(change)
-      this.emit('selectionChanged', { selection, prevSelection })
     }
-    return true
+
+    this.emit('selectionChanged', { selection, prevSelection })
   }
 
   /**
@@ -281,7 +281,7 @@ class SelectionManager extends EventEmitter {
    * @param treeItems - The treeItems param.
    * @param replaceSelection - The replaceSelection param.
    */
-  selectItems(treeItems: Set<TreeItem>, replaceSelection = true): void {
+  selectItems(treeItems: Set<TreeItem>, replaceSelection = true, createUndo = true): void {
     const selection = new Set(this.selectionGroup.getItems())
     const prevSelection = new Set(selection)
 
@@ -296,17 +296,19 @@ class SelectionManager extends EventEmitter {
       }
     }
 
-    const change = new SelectionChange(this, prevSelection, selection)
-
-    UndoRedoManager.getInstance().addChange(change)
-
     this.selectionGroup.setItems(selection)
     if (selection.size === 1) {
-      this.__setLeadSelection(selection.values().next().value)
+      this.setLeadSelection(selection.values().next().value)
     } else if (selection.size === 0) {
-      this.__setLeadSelection()
+      this.setLeadSelection()
     }
     this.updateHandleVisibility()
+
+    if (createUndo) {
+      const change = new SelectionChange(this, prevSelection, selection)
+      UndoRedoManager.getInstance().addChange(change)
+    }
+
     this.emit('selectionChanged', { prevSelection, selection })
   }
 
@@ -315,7 +317,7 @@ class SelectionManager extends EventEmitter {
    *
    * @param treeItems - The treeItems param.
    */
-  deselectItems(treeItems: Set<TreeItem>): void {
+  deselectItems(treeItems: Set<TreeItem>, createUndo = true): void {
     const selection = new Set(this.selectionGroup.getItems())
     const prevSelection = new Set(selection)
 
@@ -327,30 +329,20 @@ class SelectionManager extends EventEmitter {
     }
 
     this.selectionGroup.setItems(selection)
-    const change = new SelectionChange(this, prevSelection, selection)
-
-    UndoRedoManager.getInstance().addChange(change)
 
     if (selection.size === 1) {
-      this.__setLeadSelection(selection.values().next().value)
+      this.setLeadSelection(selection.values().next().value)
     } else if (selection.size === 0) {
-      this.__setLeadSelection()
+      this.setLeadSelection()
     }
     this.updateHandleVisibility()
-    this.emit('selectionChanged', { prevSelection, selection })
-  }
 
-  /**
-   * Toggles selection visibility, if the visibility is `true`then sets it to `false` and vice versa.
-   */
-  toggleSelectionVisibility(): void {
-    if (this.leadSelection) {
-      const selection = this.selectionGroup.getItems()
-      //@ts-ignore
-      const state = !this.leadSelection.getVisible()
-      const change = new SelectionVisibilityChange(selection, state)
+    if (createUndo) {
+      const change = new SelectionChange(this, prevSelection, selection)
       UndoRedoManager.getInstance().addChange(change)
     }
+
+    this.emit('selectionChanged', { prevSelection, selection })
   }
 
   // ////////////////////////////////////
