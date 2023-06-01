@@ -21,7 +21,7 @@ class UndoRedoManager extends EventEmitter {
    */
   constructor() {
     super()
-    this.__currChangeUpdated = this.__currChangeUpdated.bind(this)
+    this.currChangeUpdated = this.currChangeUpdated.bind(this)
   }
 
   /**
@@ -34,7 +34,7 @@ class UndoRedoManager extends EventEmitter {
     for (const change of this.__redoStack) change.destroy()
     this.__redoStack = []
     if (this.__currChange) {
-      this.__currChange.off('updated', this.__currChangeUpdated)
+      this.__currChange.off('updated', this.currChangeUpdated)
       this.__currChange = null
     }
   }
@@ -50,12 +50,12 @@ class UndoRedoManager extends EventEmitter {
   addChange(change: Change): void {
     // console.log("AddChange:", change.name)
     if (this.__currChange && this.__currChange.off) {
-      this.__currChange.off('updated', this.__currChangeUpdated)
+      this.__currChange.off('updated', this.currChangeUpdated)
     }
 
     this.__undoStack.push(change)
     this.__currChange = change
-    if (this.__currChange.on) this.__currChange.on('updated', this.__currChangeUpdated)
+    if (this.__currChange.on) this.__currChange.on('updated', this.currChangeUpdated)
 
     for (const change of this.__redoStack) change.destroy()
     this.__redoStack = []
@@ -73,10 +73,9 @@ class UndoRedoManager extends EventEmitter {
   }
 
   /**
-   * @private
    * @param updateData
    */
-  __currChangeUpdated(updateData: Record<any, any>): void {
+  private currChangeUpdated(updateData: Record<any, any>): void {
     this.emit('changeUpdated', updateData)
   }
 
@@ -88,13 +87,13 @@ class UndoRedoManager extends EventEmitter {
   undo(pushOnRedoStack = true): void {
     if (this.__undoStack.length > 0) {
       if (this.__currChange) {
-        this.__currChange.off('updated', this.__currChangeUpdated)
+        this.__currChange.off('updated', this.currChangeUpdated)
         this.__currChange = null
       }
 
       const change = this.__undoStack.pop()
-      // console.log("undo:", change.name)
       change.undo()
+      change.secondaryChanges.forEach((secondaryChange) => secondaryChange.undo())
       if (pushOnRedoStack) {
         this.__redoStack.push(change)
         this.emit('changeUndone', { change })
@@ -108,7 +107,7 @@ class UndoRedoManager extends EventEmitter {
    */
   cancel(): void {
     if (this.__currChange) {
-      this.__currChange.off('updated', this.__currChangeUpdated)
+      this.__currChange.off('updated', this.currChangeUpdated)
       this.__currChange = null
       const change = this.__undoStack.pop()
       change.undo()
