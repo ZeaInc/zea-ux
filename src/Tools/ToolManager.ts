@@ -106,15 +106,30 @@ class ToolManager extends BaseTool {
   }
 
   /**
+   * Event fired when a pointing device button is released and released in the same location.
+   *
+   * @param event - The event param.
+   */
+  onPointerClick(event: ZeaMouseEvent): void {
+    for (let i = this.toolStack.length - 1; i >= 0; i--) {
+      const tool = this.toolStack[i]
+      if (tool.onPointerUp) {
+        tool.onPointerClick(event)
+        if (!event.propagating) break
+      }
+    }
+  }
+
+  /**
    * Event fired when a pointing device button is double clicked on the tool.
    *
    * @param event - The event param.
    */
-  onPointerDoublePress(event: ZeaMouseEvent): void {
+  onPointerDoubleClick(event: ZeaMouseEvent): void {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
       const tool = this.toolStack[i]
-      if (tool.onPointerDoublePress) {
-        tool.onPointerDoublePress(event)
+      if (tool.onPointerDoubleClick) {
+        tool.onPointerDoubleClick(event)
         if (!event.propagating) break
       }
     }
