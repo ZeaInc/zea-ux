@@ -61,7 +61,7 @@ class CreateGeomTool extends BaseCreateTool {
   vrControllerToolTip: BaseGeom | Cross
   prevCursor: string
   constructionPlane: Xfo
-  __activeController: any
+  private activeController: XRController
   /**
    * Create a create geom tool.
    *
@@ -136,19 +136,43 @@ class CreateGeomTool extends BaseCreateTool {
     })
   }
 
+  private setupConstructionPlane(event: ZeaPointerEvent, snapToSurfaceUnderPointer = false) {
+    const pointerRay = event.pointerRay
+
+    const viewport = event.viewport as GLViewport
+    const camera = viewport.getCamera()
+    this.constructionPlane = camera.globalXfoParam.value.clone()
+    this.constructionPlane.tr = pointerRay.pointAtDist(camera.getFocalDistance())
+
+    // this code align the construction plane with the current view direction
+    // It tries to orthogonalize the view directionto get a perfect orthogonal plane.
+    const normal = snapPlanNormal(pointerRay.dir.negate())
+    if (Math.abs(this.constructionPlane.ori.getZaxis().dot(normal)) < 1) {
+      const quat = new Quat()
+      quat.setFrom2Vectors(this.constructionPlane.ori.getZaxis(), normal)
+      quat.normalizeInPlace()
+      this.constructionPlane.ori = quat.multiply(this.constructionPlane.ori)
+    }
+
+    if (snapToSurfaceUnderPointer && event.intersectionData) {
+      this.constructionPlane.tr = pointerRay.pointAtDist(event.intersectionData.dist)
+    }
+  }
+
   /**
    * Transforms the screen position in the viewport to an Xfo object.
    *
    * @param event - The event param
    * @return {Xfo} The return value.
    */
-  screenPosToXfo(event: ZeaPointerEvent): Xfo {
+  screenPosToXfo(event: ZeaPointerEvent, snapToSurfaceUnderPointer = false): Xfo {
     if (!(event instanceof ZeaMouseEvent) && !(event instanceof ZeaTouchEvent)) {
       console.warn('not handling VR')
       return
     }
     const ray = event.pointerRay
-    if (event.intersectionData) {
+
+    if (snapToSurfaceUnderPointer && event.intersectionData) {
       const xfo = this.constructionPlane.clone()
       xfo.tr = ray.pointAtDist(event.intersectionData.dist)
       return xfo
@@ -174,7 +198,6 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param xfo - The xfo param.
    */
-   
   protected createStart(xfo: Xfo, event: ZeaPointerEvent): void {
     this.stage = 1
   }
@@ -184,7 +207,6 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param pt - The pt param.
    */
-   
   protected createPoint(pt: Vec3, event?: ZeaPointerEvent): void {
     // console.warn('Implement me')
   }
@@ -194,7 +216,6 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param pt - The pt param.
    */
-   
   protected createMove(pt: Vec3, event: ZeaPointerEvent): void {
     // console.warn('Implement me')
   }
@@ -204,7 +225,6 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param pt - The pt param.
    */
-   
   protected createRelease(pt: Vec3, event: ZeaPointerEvent): void {
     // console.warn('Implement me')
   }
@@ -225,20 +245,10 @@ class CreateGeomTool extends BaseCreateTool {
       if (event.altKey) return
       if (this.stage == 0) {
         if (event.button == 0 || event.pointerType !== 'mouse') {
-          this.constructionPlane = new Xfo()
+          const snapToSurfaceUnderPointer = true
+          this.setupConstructionPlane(event, snapToSurfaceUnderPointer)
 
-          // this code align the construction plane with the current view direction
-          // It tries to orthogonalize the view directionto get a perfect orthogonal plane.
-          const normal = snapPlanNormal(event.pointerRay.dir.negate())
-          if (Math.abs(this.constructionPlane.ori.getZaxis().dot(normal)) < 1) {
-            const quat = new Quat()
-            quat.setFrom2Vectors(this.constructionPlane.ori.getZaxis(), normal)
-            quat.normalizeInPlace()
-            this.constructionPlane.ori = quat.multiply(this.constructionPlane.ori)
-          }
-
-          const xfo = this.screenPosToXfo(event)
-          this.createStart(xfo, event)
+          this.createStart(this.constructionPlane, event)
           event.stopPropagation()
         } else if (event.button == 2) {
           // Cancel the tool.
@@ -266,11 +276,10 @@ class CreateGeomTool extends BaseCreateTool {
     if (event.pointerType === 'xr') {
       this.onVRPoseChanged(event as XRControllerEvent)
     } else if (this.stage > 0) {
-      const xfo = this.screenPosToXfo(event)
+      const snapToSurfaceUnderPointer = false
+      const xfo = this.screenPosToXfo(event, snapToSurfaceUnderPointer)
       this.createMove(xfo.tr, event)
       event.stopPropagation()
-      //@ts-ignore
-      event.preventDefault() // prevent browser features like scroll and drag n drop
     }
   }
 
@@ -284,7 +293,8 @@ class CreateGeomTool extends BaseCreateTool {
     if (event instanceof XRControllerEvent) {
       this.onVRControllerButtonUp(event)
     } else if (this.stage > 0) {
-      const xfo = this.screenPosToXfo(event)
+      const snapToSurfaceUnderPointer = false
+      const xfo = this.screenPosToXfo(event, snapToSurfaceUnderPointer)
       this.createRelease(xfo.tr, event)
       event.stopPropagation()
     }
@@ -349,12 +359,12 @@ class CreateGeomTool extends BaseCreateTool {
    * @param event - The event param.
    */
   onVRControllerButtonDown(event: XRControllerEvent): void {
-    if (!this.__activeController) {
+    if (!this.activeController) {
       // TODO: Snap the Xfo to any nearby construction planes.
-      this.__activeController = event.controller
+      this.activeController = event.controller
       this.constructionPlane = new Xfo()
       const xfo = this.constructionPlane.clone()
-      xfo.tr = this.__activeController.getTipXfo().tr
+      xfo.tr = this.activeController.getTipXfo().tr
       this.createStart(xfo, event)
     }
     event.stopPropagation()
@@ -366,9 +376,9 @@ class CreateGeomTool extends BaseCreateTool {
    * @param event - The event param.
    */
   onVRPoseChanged(event: XRControllerEvent): void {
-    if (this.__activeController && this.stage > 0) {
+    if (this.activeController && this.stage > 0) {
       // TODO: Snap the Xfo to any nearby construction planes.
-      const xfo = this.__activeController.getTipXfo()
+      const xfo = this.activeController.getTipXfo()
       this.createMove(xfo.tr, event)
       event.stopPropagation()
     }
@@ -381,10 +391,10 @@ class CreateGeomTool extends BaseCreateTool {
    */
   onVRControllerButtonUp(event: XRControllerEvent): void {
     if (this.stage > 0) {
-      if (this.__activeController == event.controller) {
-        const xfo = this.__activeController.getTipXfo()
+      if (this.activeController == event.controller) {
+        const xfo = this.activeController.getTipXfo()
         this.createRelease(xfo.tr, event)
-        if (this.stage == 0) this.__activeController = undefined
+        if (this.stage == 0) this.activeController = undefined
         event.stopPropagation()
       }
     }

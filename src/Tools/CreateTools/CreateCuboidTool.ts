@@ -16,7 +16,7 @@ class CreateCuboidTool extends CreateGeomTool {
   change: CreateCuboidChange
   xfo: Xfo
   invXfo: Xfo
-  _height: number
+  height: number
   pt1: Vec3
   /**
    * Create a create cuboid tool.
@@ -43,7 +43,7 @@ class CreateCuboidTool extends CreateGeomTool {
     this.xfo = xfo
     this.invXfo = xfo.inverse()
     this.stage = 1
-    this._height = 0.0
+    this.height = 0.0
   }
 
   /**

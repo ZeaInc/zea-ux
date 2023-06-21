@@ -64,8 +64,6 @@ class SelectionXfoChange extends Change {
     this.treeItems.forEach((treeItem: TreeItem, index: number) => {
       treeItem.globalXfoParam.value = this.prevValues[index]
     })
-
-    super.undo()
   }
 
   /**
@@ -76,8 +74,6 @@ class SelectionXfoChange extends Change {
     this.treeItems.forEach((treeItem: TreeItem, index: number) => {
       treeItem.globalXfoParam.value = this.newValues[index]
     })
-
-    super.redo()
   }
 
   /**

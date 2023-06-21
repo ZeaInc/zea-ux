@@ -41,8 +41,6 @@ class ParameterValueChange extends Change {
     if (this.param && !this.suppressPrimaryChange) {
       this.param.value = this.prevValue
     }
-
-    super.undo()
   }
 
   /**
@@ -53,8 +51,6 @@ class ParameterValueChange extends Change {
     if (this.param && !this.suppressPrimaryChange) {
       this.param.value = this.nextValue
     }
-
-    super.redo()
   }
 
   /**

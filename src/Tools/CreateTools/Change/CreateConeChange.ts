@@ -11,7 +11,7 @@ import CreateGeomChange from './CreateGeomChange'
  * @extends CreateGeomChange
  */
 class CreateConeChange extends CreateGeomChange {
-  private cone: Cone
+  cone: Cone
   /**
    * Create a create cone change.
    *

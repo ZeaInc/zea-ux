@@ -1,14 +1,4 @@
-import {
-  Color,
-  GeomItem,
-  LinesMaterial,
-  FatLinesMaterial,
-  Lines,
-  Vec3,
-  Vec3Attribute,
-  TreeItem,
-  Xfo,
-} from '@zeainc/zea-engine'
+import { Color, GeomItem, LinesMaterial, Lines, Vec3, Vec3Attribute, TreeItem, Xfo } from '@zeainc/zea-engine'
 import UndoRedoManager from '../../../UndoRedo/UndoRedoManager'
 import CreateGeomChange from './CreateGeomChange'
 
@@ -75,12 +65,6 @@ class CreateMultiLineChange extends CreateGeomChange {
     for (const vertex of updateData.vertices) {
       this.addVertex(vertex)
     }
-
-    // let lastFixedVertex
-    // if (updateData.vertices.length > this.vertices.length) {
-    //   lastFixedVertex = updateData.vertices.pop()
-    //   this.addVertex(lastFixedVertex)
-    // }
 
     if (this.vertices.length && looseVertex) {
       this.line.positions.setValue(this.vertices.length, looseVertex)

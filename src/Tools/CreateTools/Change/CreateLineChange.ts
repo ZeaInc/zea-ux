@@ -1,14 +1,4 @@
-import {
-  Color,
-  GeomItem,
-  LinesMaterial,
-  FatLinesMaterial,
-  Lines,
-  Vec3,
-  Vec3Attribute,
-  TreeItem,
-  Xfo,
-} from '@zeainc/zea-engine'
+import { Color, GeomItem, LinesMaterial, Lines, Vec3, Vec3Attribute, TreeItem, Xfo } from '@zeainc/zea-engine'
 import UndoRedoManager from '../../../UndoRedo/UndoRedoManager'
 import CreateGeomChange from './CreateGeomChange'
 

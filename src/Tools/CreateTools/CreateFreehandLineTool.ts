@@ -1,12 +1,4 @@
-import {
-  BooleanParameter,
-  ColorParameter,
-  NumberParameter,
-  TreeItem,
-  Vec3,
-  Xfo,
-  ZeaPointerEvent,
-} from '@zeainc/zea-engine'
+import { BooleanParameter, Vec3, XRControllerEvent, Xfo, ZeaPointerEvent } from '@zeainc/zea-engine'
 import CreateLineTool from './CreateLineTool'
 import CreateFreehandLineChange from './Change/CreateFreehandLineChange'
 import { UndoRedoManager } from '../../UndoRedo/index'
@@ -33,6 +25,22 @@ class CreateFreehandLineTool extends CreateLineTool {
   constructor(appData: AppData) {
     super(appData)
     this.addParameter(this.mp)
+  }
+
+  /**
+   * Event fired when a pointing device is moved while the cursor's hotspot is inside the viewport, while tool is activated.
+   *
+   * @param event - The event param.
+   */
+  onPointerMove(event: ZeaPointerEvent): void {
+    if (event.pointerType === 'xr') {
+      this.onVRPoseChanged(event as XRControllerEvent)
+    } else if (this.stage > 0) {
+      const snapToSurfaceUnderPointer = true
+      const xfo = this.screenPosToXfo(event, snapToSurfaceUnderPointer)
+      this.createMove(xfo.tr, event)
+      event.stopPropagation()
+    }
   }
 
   /**

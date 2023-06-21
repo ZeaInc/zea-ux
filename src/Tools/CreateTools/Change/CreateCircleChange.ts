@@ -1,4 +1,4 @@
-import { Color, GeomItem, Circle, Xfo, TreeItem, LinesMaterial } from '@zeainc/zea-engine'
+import { GeomItem, Circle, Xfo, TreeItem, LinesMaterial } from '@zeainc/zea-engine'
 import { UndoRedoManager } from '../../../UndoRedo/index'
 import CreateGeomChange from './CreateGeomChange'
 
@@ -34,6 +34,7 @@ class CreateCircleChange extends CreateGeomChange {
    * @param updateData - The updateData param.
    */
   update(updateData: Record<any, any>): void {
+    this.geomItem.globalXfoParam.value = updateData.xfo
     this.circle.radiusParam.value = updateData.radius
     this.emit('updated', updateData)
   }

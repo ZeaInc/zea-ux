@@ -16,7 +16,7 @@ class CreateRectTool extends CreateGeomTool {
   change: CreateRectChange
   xfo: Xfo
   invXfo: Xfo
-  _size: number
+  size: number
   /**
    * Create a create rect tool.
    * @param appData - The appData value.
@@ -41,7 +41,7 @@ class CreateRectTool extends CreateGeomTool {
     this.xfo = xfo
     this.invXfo = xfo.inverse()
     this.stage = 1
-    this._size = 0.0
+    this.size = 0.0
   }
 
   /**
@@ -53,16 +53,13 @@ class CreateRectTool extends CreateGeomTool {
     if (this.stage == 1) {
       const delta = this.invXfo.transformVec3(pt)
 
-      ;(this._size = Math.abs(delta.x)), Math.abs(delta.y)
+      this.size = Math.min(Math.abs(delta.x), Math.abs(delta.y))
 
       // const delta = pt.subtract(this.xfo.tr)
       this.change.update({
         baseSize: [Math.abs(delta.x), Math.abs(delta.y)],
-        tr: this.xfo.tr.add(delta.scale(0.5)),
+        tr: this.xfo.tr.add(this.xfo.ori.rotateVec3(delta.scale(0.5))),
       })
-    } else {
-      const vec = this.invXfo.transformVec3(pt)
-      this.change.update({ height: vec.y })
     }
   }
 
@@ -72,7 +69,7 @@ class CreateRectTool extends CreateGeomTool {
    * @param pt - The pt param.
    */
   createRelease(pt: Vec3, event: ZeaPointerEvent): void {
-    if (this._size == 0) {
+    if (this.size == 0) {
       UndoRedoManager.getInstance().cancel()
     }
 
