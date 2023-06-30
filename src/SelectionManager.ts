@@ -365,7 +365,7 @@ class SelectionManager extends EventEmitter {
    * @return {boolean} The return value.
    */
   pickingModeActive(): boolean {
-    return this.pickCB != undefined
+    return !!this.pickCB && !!this.pickFilter
   }
 
   /**

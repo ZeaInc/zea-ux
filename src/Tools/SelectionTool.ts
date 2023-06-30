@@ -155,12 +155,12 @@ class SelectionTool extends BaseTool {
       }
       event.stopPropagation()
     } else {
-      if (event.intersectionData) {
-        if (this.selectionManager.pickingModeActive()) {
+      if (this.selectionManager.pickingModeActive()) {
+        if (event.intersectionData) {
           this.selectionManager.pickFilter(event.intersectionData.geomItem)
+        } else {
+          this.selectionManager.pickFilter(null)
         }
-      } else {
-        this.selectionManager.pickFilter(null)
       }
     }
   }
