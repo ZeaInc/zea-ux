@@ -1,5 +1,15 @@
-import { TreeItem, EventEmitter, Registry } from '@zeainc/zea-engine'
+import { EventEmitter, Registry } from '@zeainc/zea-engine'
 import { Change } from '.'
+
+const undoChangeTree = (change: Change) => {
+  change.undo()
+  change.secondaryChanges.forEach((secondaryChange) => undoChangeTree(secondaryChange))
+}
+
+const redoChangeTree = (change: Change) => {
+  change.redo()
+  change.secondaryChanges.forEach((secondaryChange) => redoChangeTree(secondaryChange))
+}
 
 /**
  * `UndoRedoManager` is a mixture of the [Factory Design Pattern](https://en.wikipedia.org/wiki/Factory_method_pattern) and the actual changes stacks manager.
@@ -92,8 +102,7 @@ class UndoRedoManager extends EventEmitter {
       }
 
       const change = this.__undoStack.pop()
-      change.undo()
-      change.secondaryChanges.forEach((secondaryChange) => secondaryChange.undo())
+      undoChangeTree(change)
       if (pushOnRedoStack) {
         this.__redoStack.push(change)
         this.emit('changeUndone', { change })
@@ -110,8 +119,7 @@ class UndoRedoManager extends EventEmitter {
       this.__currChange.off('updated', this.currChangeUpdated)
       this.__currChange = null
       const change = this.__undoStack.pop()
-      change.undo()
-      change.secondaryChanges.forEach((secondaryChange) => secondaryChange.undo())
+      undoChangeTree(change)
     }
   }
 
@@ -123,8 +131,7 @@ class UndoRedoManager extends EventEmitter {
     if (this.__redoStack.length > 0) {
       const change = this.__redoStack.pop()
       // console.log("redo:", change.name)
-      change.redo()
-      change.secondaryChanges.forEach((secondaryChange) => secondaryChange.redo())
+      redoChangeTree(change)
       this.__undoStack.push(change)
       this.emit('changeRedone', { change })
     }
