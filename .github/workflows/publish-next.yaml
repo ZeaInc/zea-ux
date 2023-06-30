@@ -3,7 +3,7 @@ name: Publish to the "next" release channel
 on:
   push:
     branches:
-      - next
+      - main
 
 jobs:
   publish-next:
