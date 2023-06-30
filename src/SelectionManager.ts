@@ -4,6 +4,7 @@ import XfoHandle from './Handles/XfoHandle'
 import SelectionGroup from './SelectionGroup'
 import SelectionChange from './UndoRedo/Changes/SelectionChange'
 import UndoRedoManager from './UndoRedo/UndoRedoManager'
+import { Change } from './UndoRedo'
 
 /**
  * Class representing a selection manager
@@ -118,7 +119,7 @@ class SelectionManager extends EventEmitter {
    * @param newSelection - The newSelection param
    * @param [createUndo=true] - The createUndo param
    */
-  setSelection(newSelection: Set<TreeItem>, createUndo = true): void {
+  setSelection(newSelection: Set<TreeItem>, createUndo = true, parentChange?: Change): void {
     const selection: Set<TreeItem> = new Set(this.selectionGroup.getItems())
     const prevSelection = new Set(selection)
     for (const treeItem of newSelection) {
@@ -143,7 +144,8 @@ class SelectionManager extends EventEmitter {
 
     if (createUndo) {
       const change = new SelectionChange(this, prevSelection, selection)
-      UndoRedoManager.getInstance().addChange(change)
+      if (parentChange) parentChange.addSecondaryChange(change)
+      else UndoRedoManager.getInstance().addChange(change)
     }
 
     this.emit('selectionChanged', { prevSelection, selection })
@@ -165,7 +167,7 @@ class SelectionManager extends EventEmitter {
    * @param treeItem - The treeItem param.
    * @param replaceSelection - The replaceSelection param.
    */
-  toggleItemSelection(treeItem: TreeItem, replaceSelection = true, createUndo = true): void {
+  toggleItemSelection(treeItem: TreeItem, replaceSelection = true, createUndo = true, parentChange?: Change): void {
     const selection = new Set(this.selectionGroup.getItems())
     const prevSelection = new Set(selection)
 
@@ -239,7 +241,8 @@ class SelectionManager extends EventEmitter {
 
     if (createUndo) {
       const change = new SelectionChange(this, prevSelection, selection)
-      UndoRedoManager.getInstance().addChange(change)
+      if (parentChange) parentChange.addSecondaryChange(change)
+      else UndoRedoManager.getInstance().addChange(change)
     }
 
     this.updateHandleVisibility()
@@ -252,7 +255,7 @@ class SelectionManager extends EventEmitter {
    * @param createUndo - The createUndo param.
    * @return {boolean} - The return value.
    */
-  clearSelection(createUndo = true): void {
+  clearSelection(createUndo = true, parentChange?: Change): void {
     const selection: Set<TreeItem> = new Set(this.selectionGroup.getItems())
     if (selection.size == 0) return
     let prevSelection
@@ -269,7 +272,8 @@ class SelectionManager extends EventEmitter {
 
     if (createUndo) {
       const change = new SelectionChange(this, prevSelection, selection)
-      UndoRedoManager.getInstance().addChange(change)
+      if (parentChange) parentChange.addSecondaryChange(change)
+      else UndoRedoManager.getInstance().addChange(change)
     }
 
     this.emit('selectionChanged', { selection, prevSelection })
@@ -281,7 +285,7 @@ class SelectionManager extends EventEmitter {
    * @param treeItems - The treeItems param.
    * @param replaceSelection - The replaceSelection param.
    */
-  selectItems(treeItems: Set<TreeItem>, replaceSelection = true, createUndo = true): void {
+  selectItems(treeItems: Set<TreeItem>, replaceSelection = true, createUndo = true, parentChange?: Change): void {
     const selection = new Set(this.selectionGroup.getItems())
     const prevSelection = new Set(selection)
 
@@ -306,7 +310,8 @@ class SelectionManager extends EventEmitter {
 
     if (createUndo) {
       const change = new SelectionChange(this, prevSelection, selection)
-      UndoRedoManager.getInstance().addChange(change)
+      if (parentChange) parentChange.addSecondaryChange(change)
+      else UndoRedoManager.getInstance().addChange(change)
     }
 
     this.emit('selectionChanged', { prevSelection, selection })
@@ -317,7 +322,7 @@ class SelectionManager extends EventEmitter {
    *
    * @param treeItems - The treeItems param.
    */
-  deselectItems(treeItems: Set<TreeItem>, createUndo = true): void {
+  deselectItems(treeItems: Set<TreeItem>, createUndo = true, parentChange?: Change): void {
     const selection = new Set(this.selectionGroup.getItems())
     const prevSelection = new Set(selection)
 
@@ -339,7 +344,8 @@ class SelectionManager extends EventEmitter {
 
     if (createUndo) {
       const change = new SelectionChange(this, prevSelection, selection)
-      UndoRedoManager.getInstance().addChange(change)
+      if (parentChange) parentChange.addSecondaryChange(change)
+      else UndoRedoManager.getInstance().addChange(change)
     }
 
     this.emit('selectionChanged', { prevSelection, selection })
