@@ -102,5 +102,7 @@ class Change extends EventEmitter {
   destroy(): void {}
 }
 
+UndoRedoManager.registerChange('Change', Change)
+
 export default Change
 export { Change }
