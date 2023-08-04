@@ -88,11 +88,11 @@ class SelectionXfoChange extends Change {
    */
   update(updateData: Record<string, any>): void {
     this.newValues = updateData.newValues
-    this.treeItems.forEach((treeItem: TreeItem, index: number) => {
-      if (!this.supressed) {
+    if (!this.supressed) {
+      this.treeItems.forEach((treeItem: TreeItem, index: number) => {
         treeItem.globalXfoParam.value = this.newValues[index]
-      }
-    })
+      })
+    }
 
     this.emit('updated', updateData)
   }
@@ -140,18 +140,6 @@ class SelectionXfoChange extends Change {
       if (!this.prevValues[index]) this.prevValues[index] = new Xfo()
       this.prevValues[index].fromJSON(j.prevValues[index])
       if (!this.newValues[index]) this.newValues[index] = new Xfo()
-      this.newValues[index].fromJSON(j.newValues[index])
-    })
-  }
-
-  /**
-   * Updates the state of an existing identified `Parameter` through replication.
-   *
-   * @param j - The j param.
-   */
-  updateFromJSON(j: Record<any, any>): void {
-    j.treeItems.forEach((path: string[], index: number) => {
-      this.prevValues[index].fromJSON(j.prevValues[index])
       this.newValues[index].fromJSON(j.newValues[index])
     })
   }

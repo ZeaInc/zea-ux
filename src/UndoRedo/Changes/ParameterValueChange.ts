@@ -105,18 +105,10 @@ class ParameterValueChange extends Change {
     if (this.prevValue.clone) this.nextValue = this.prevValue.clone()
     else this.nextValue = this.prevValue
 
-    if (j.value != undefined) this.updateFromJSON(j)
-  }
-
-  /**
-   * Updates the state of an existing identified `Parameter` through replication.
-   *
-   * @param j - The j param.
-   */
-  updateFromJSON(j: Record<any, any>): void {
-    if (!this.param) return
-    if (this.nextValue.fromJSON) this.nextValue.fromJSON(j.value)
-    else this.nextValue = j.value
+    if (j.value != undefined) {
+      if (this.nextValue.fromJSON) this.nextValue.fromJSON(j.value)
+      else this.nextValue = j.value
+    }
     if (j.supressed) return
     this.param.value = this.nextValue
   }

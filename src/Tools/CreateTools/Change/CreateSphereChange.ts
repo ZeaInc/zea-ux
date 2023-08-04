@@ -51,15 +51,6 @@ class CreateSphereChange extends CreateGeomChange {
     j.radius = this.sphere.radiusParam.getValue()
     return j
   }
-
-  /**
-   * Updates sphere geometry using a JSON object.
-   *
-   * @param j - The j param.
-   */
-  updateFromJSON(j: Record<any, any>): void {
-    if (j.radius) this.sphere.radiusParam.value = j.radius
-  }
 }
 
 UndoRedoManager.registerChange('CreateSphereChange', CreateSphereChange)

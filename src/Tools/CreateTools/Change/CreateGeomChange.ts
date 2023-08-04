@@ -98,13 +98,6 @@ class CreateGeomChange extends Change {
     }
   }
 
-  // updateFromJSON(j) {
-  //   if (this.__newValue.fromJSON)
-  //     this.__newValue.fromJSON(j.value);
-  //   else
-  //     this.__newValue = j.value;
-  // }
-
   /**
    * Removes geometry item reference from change change.
    */

@@ -94,19 +94,6 @@ class Change extends EventEmitter {
   }
 
   /**
-   * Useful method to update the state of an existing identified `Change` through replication.
-   *
-   * @note By default it calls the `update` method in the `Change` class, but you can override this if you need to.
-   *
-   * @param j - The j param.
-   */
-  updateFromJSON(j: Record<any, any>): void {
-    // Many change objects can load json directly
-    // in the update method.
-    this.update(j)
-  }
-
-  /**
    * Method destined to clean up things that would need to be cleaned manually.
    * It is executed when flushing the undo/redo stacks or adding a new change to the undo stack,
    * so it is require in any class that represents a change.
