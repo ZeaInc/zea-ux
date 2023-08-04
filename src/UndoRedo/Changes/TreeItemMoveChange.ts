@@ -53,11 +53,9 @@ class TreeItemMoveChange extends Change {
    * @return {object} - JSON object of the change
    */
   toJSON(context: Record<string, any>): Record<string, any> {
-    const j = {
-      name: this.name,
-      treeItemPath: this.treeItem.getPath(),
-      newOwnerPath: this.newOwner.getPath(),
-    }
+    const j = super.toJSON(context)
+    j.treeItemPath = this.treeItem.getPath()
+    j.newOwnerPath = this.newOwner.getPath()
 
     return j
   }
@@ -70,6 +68,8 @@ class TreeItemMoveChange extends Change {
    */
   fromJSON(j: Record<string, any>, context: Record<string, any>): void {
     if (!context || !context.scene) return
+
+    super.fromJSON(j, context)
 
     const treeItem = context.scene.getRoot().resolvePath(j.treeItemPath, 1)
     if (!treeItem) {

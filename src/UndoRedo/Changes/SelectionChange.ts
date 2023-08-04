@@ -21,6 +21,9 @@ class SelectionChange extends Change {
    */
   constructor(selectionManager: SelectionManager, prevSelection: Set<TreeItem>, newSelection: Set<TreeItem>) {
     super('SelectionChange')
+
+    if (!selectionManager || !prevSelection || !newSelection) return
+
     this.__selectionManager = selectionManager
     this.__prevSelection = prevSelection
     this.__newSelection = newSelection

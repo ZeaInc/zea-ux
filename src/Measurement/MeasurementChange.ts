@@ -83,6 +83,8 @@ class MeasurementChange extends Change {
    * @param context - The appData param.
    */
   fromJSON(j: Record<string, any>, context: Record<string, any>): void {
+    super.fromJSON(j, context)
+
     const sceneRoot = context.appData.scene.getRoot()
     const parentItem = sceneRoot.resolvePath(j.parentItemPath, 1)
     if (parentItem) {

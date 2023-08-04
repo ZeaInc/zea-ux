@@ -1,5 +1,6 @@
 import { Xfo, Color, GeomItem, TreeItem } from '@zeainc/zea-engine'
 import Change from '../../../UndoRedo/Change'
+import { UndoRedoManager } from '../../..'
 
 /**
  * Class representing a create geom change.
@@ -15,8 +16,7 @@ class CreateGeomChange extends Change {
    * @param name - The name value.
    */
   constructor(name: string, parentItem: TreeItem, xfo: Xfo) {
-    super(name)
-    this.parentItem = parentItem
+    super(name ? name : 'CreateGeomChange')
 
     this.createGeoItem()
 
@@ -46,7 +46,6 @@ class CreateGeomChange extends Change {
    * Removes recently created geometry from its parent.
    */
   undo(): void {
-    console.log('this.geomItem', this.geomItem)
     this.parentItem.removeChild(this.parentItem.getChildIndex(this.geomItem))
   }
 
@@ -70,7 +69,7 @@ class CreateGeomChange extends Change {
     j.geomItemXfo = this.geomItem.localXfoParam.getValue()
 
     const material = this.geomItem.getParameter('Material').getValue()
-    j.color = material.getParameter('BaseColor').getValue()
+    j.color = material.getParameter('BaseColor')?.getValue()
     return j
   }
 
@@ -81,6 +80,8 @@ class CreateGeomChange extends Change {
    * @param context - The appData param.
    */
   fromJSON(j: Record<any, any>, context: Record<any, any>): void {
+    super.fromJSON(j, context)
+
     const sceneRoot = context.appData.scene.getRoot()
     this.parentItem = sceneRoot.resolvePath(j.parentItemPath, 1)
     this.geomItem.setName(this.parentItem.generateUniqueName(j.geomItemName))
@@ -111,6 +112,8 @@ class CreateGeomChange extends Change {
     // this.geomItem.removeRef(this) // remove the tmp ref.
   }
 }
+
+UndoRedoManager.registerChange('CreateGeomChange', CreateGeomChange)
 
 export default CreateGeomChange
 export { CreateGeomChange }

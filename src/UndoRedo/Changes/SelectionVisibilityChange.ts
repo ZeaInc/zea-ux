@@ -18,6 +18,9 @@ class SelectionVisibilityChange extends Change {
    */
   constructor(selection: Set<TreeItem>, state: boolean) {
     super('Selection Visibility Change')
+
+    if (!selection || typeof state !== 'boolean') return
+
     this.selection = selection
     this.state = state
     this._changeItemsVisibility(this.state)

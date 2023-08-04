@@ -120,12 +120,11 @@ class TreeItemsRemoveChange extends Change {
    * @memberof TreeItemsRemoveChange
    */
   toJSON(appData: AppData): Record<string, any> {
-    const j = {
-      name: this.name,
-      items: [] as any[],
-      itemPaths: this.itemPaths,
-      itemIndices: this.itemIndices,
-    }
+    const j = super.toJSON({ appData })
+    j.items = [] as any[]
+    j.itemPaths = this.itemPaths
+    j.itemIndices = this.itemIndices
+
     this.items.forEach((item) => {
       j.items.push(item.toJSON())
     })
@@ -140,7 +139,7 @@ class TreeItemsRemoveChange extends Change {
    * @memberof TreeItemsRemoveChange
    */
   fromJSON(j: Record<string, any>, appData: AppData): void {
-    this.name = j.name
+    super.fromJSON(j, { appData })
     j.itemPaths.forEach((itemPath: any) => {
       const item = <TreeItem>appData.scene.getRoot().resolvePath(itemPath, 1)
       if (!item) {
