@@ -65,9 +65,10 @@ class ParameterValueChange extends Change {
     // The supressed value is set to true by Zea Platform when the change should
     // not be applied on a local computer due to the local user  viewing a different
     // pose to the original  user who created the change.
-    if (this.supressed) return
+    if (!this.supressed) {
+      this.param.value = this.nextValue
+    }
 
-    this.param.value = this.nextValue
     this.emit('updated', updateData)
   }
 
