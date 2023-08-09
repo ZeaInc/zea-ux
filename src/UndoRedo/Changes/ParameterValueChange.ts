@@ -74,7 +74,6 @@ class ParameterValueChange extends Change {
   toJSON(context: Record<any, any>): Record<any, any> {
     const j = super.toJSON(context)
     j.paramPath = this.param.getPath()
-    j.supressed = this.supressed
 
     if (this.nextValue != undefined) {
       if (this.nextValue.toJSON) {
@@ -109,7 +108,7 @@ class ParameterValueChange extends Change {
       if (this.nextValue.fromJSON) this.nextValue.fromJSON(j.value)
       else this.nextValue = j.value
     }
-    if (j.supressed) return
+    if (this.supressed) return
     this.param.value = this.nextValue
   }
 }
