@@ -162,11 +162,10 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
     this.tmplocalXfo.sc.set(1, 1, sc)
     this.localXfoParam.value = this.tmplocalXfo
 
-    if (this.selectionGroup) {
-      const selectionXfoChange = <SelectionXfoChange>this.change
+    if (this.change instanceof SelectionXfoChange) {
       const deltaXfo = new Xfo()
       deltaXfo.sc.set(sc, sc, sc)
-      selectionXfoChange.setDeltaXfo(deltaXfo)
+      this.change.setDeltaXfo(deltaXfo)
     } else {
       this.change.update({
         value: newXfo,
@@ -180,9 +179,8 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
    * @param event - The event param.
    */
   onDragEnd(event: ZeaPointerEvent): void {
-    if (this.selectionGroup) {
-      const selectionXfoChange = <SelectionXfoChange>this.change
-      selectionXfoChange.setDone()
+    if (this.change instanceof SelectionXfoChange) {
+      this.change.setDone()
     }
     this.change = null
 
