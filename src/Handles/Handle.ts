@@ -139,9 +139,9 @@ class Handle extends TreeItem {
    * @param event - The event param.
    */
   onPointerUp(event: ZeaPointerEvent): void {
+    event.stopPropagation()
     if (this.captured) {
       event.releaseCapture()
-      event.stopPropagation()
       this.captured = false
       if (event instanceof ZeaTouchEvent) {
         this.unhighlight()
@@ -152,6 +152,20 @@ class Handle extends TreeItem {
         this.onVRControllerButtonUp(<XRControllerEvent>event)
       }
     }
+  }
+
+  onPointerClick(event: ZeaPointerEvent): void {
+    // Prevent the click on the handle from having any secondary effect.
+    // e.g. triggering a selection change, or context menu.
+    // We do not want to be able to select a handle by clicking on it.
+    event.stopPropagation()
+  }
+
+  onPointerDoubleClick(event: ZeaPointerEvent): void {
+    // Prevent the click on the handle from having any secondary effect.
+    // e.g. triggering a selection change, or context menu.
+    // We do not want to be able to select a handle by clicking on it.
+    event.stopPropagation()
   }
 
   /**
