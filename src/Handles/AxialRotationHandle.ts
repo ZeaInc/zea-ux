@@ -171,9 +171,8 @@ class AxialRotationHandle extends Handle {
     const deltaXfo = new Xfo()
     deltaXfo.ori.setFromAxisAndAngle(this.baseXfo.ori.getZaxis(), angle)
 
-    if (this.selectionGroup) {
-      const selectionXfoChange = <SelectionXfoChange>this.change
-      selectionXfoChange.setDeltaXfo(deltaXfo)
+    if (this.change instanceof SelectionXfoChange) {
+      this.change.setDeltaXfo(deltaXfo)
     } else {
       // Add the values in global space.
       const newBase = this.baseXfo.clone()
@@ -192,9 +191,8 @@ class AxialRotationHandle extends Handle {
    * @param event - The event param.
    */
   onDragEnd(event: ZeaPointerEvent): void {
-    if (this.selectionGroup) {
-      const selectionXfoChange = <SelectionXfoChange>this.change
-      selectionXfoChange.setDone()
+    if (this.change instanceof SelectionXfoChange) {
+      this.change.setDone()
     }
     this.change = null
   }

@@ -26,8 +26,11 @@ class Change extends EventEmitter {
   addSecondaryChange(secondaryChange: Change) {
     const index = this.secondaryChanges.length
     this.secondaryChanges.push(secondaryChange)
+    secondaryChange.setPrimaryChange(this)
     return index
   }
+
+  setPrimaryChange(primaryChange: Change) {}
 
   /**
    * Called by the `UndoRedoManager` in the `undo` method, and contains the code you wanna run when the undo action is triggered,
@@ -63,7 +66,11 @@ class Change extends EventEmitter {
    * @param context - The appData param.
    */
   toJSON(context: Record<any, any>): Record<any, any> {
-    return {}
+    return {
+      name: this.name,
+      className: this.getClassName(),
+      secondaryChanges: this.secondaryChanges.map((change) => change.toJSON(context)),
+    }
   }
 
   /**
@@ -76,19 +83,14 @@ class Change extends EventEmitter {
    * @param j - The j param.
    * @param context - The context param.
    */
-  fromJSON(j: Record<any, any>, context: Record<any, any>): void {}
+  fromJSON(j: Record<any, any>, context: Record<any, any>): void {
+    this.name = j.name
 
-  /**
-   * Useful method to update the state of an existing identified `Change` through replication.
-   *
-   * @note By default it calls the `update` method in the `Change` class, but you can override this if you need to.
-   *
-   * @param j - The j param.
-   */
-  updateFromJSON(j: Record<any, any>): void {
-    // Many change objects can load json directly
-    // in the update method.
-    this.update(j)
+    j.secondaryChanges.forEach((childJson: Record<any, any>) => {
+      const change = UndoRedoManager.getInstance().constructChange(childJson.className)
+      change.fromJSON(childJson, context)
+      this.addSecondaryChange(change)
+    })
   }
 
   /**
@@ -99,6 +101,8 @@ class Change extends EventEmitter {
    */
   destroy(): void {}
 }
+
+UndoRedoManager.registerChange('Change', Change)
 
 export default Change
 export { Change }

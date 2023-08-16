@@ -84,10 +84,9 @@ class PlanarMovementHandle extends Handle {
   onDrag(event: ZeaPointerEvent): void {
     const dragVec = this.holdPos.subtract(this.grabPos)
 
-    if (this.selectionGroup) {
-      const selectionXfoChange = <SelectionXfoChange>this.change
+    if (this.change instanceof SelectionXfoChange) {
       const deltaXfo = new Xfo(dragVec)
-      selectionXfoChange.setDeltaXfo(deltaXfo)
+      this.change.setDeltaXfo(deltaXfo)
     } else {
       const newXfo = this.baseXfo.clone()
       newXfo.tr.addInPlace(dragVec)
@@ -104,9 +103,8 @@ class PlanarMovementHandle extends Handle {
    * @param event - The event param.
    */
   onDragEnd(event: ZeaPointerEvent): void {
-    if (this.selectionGroup) {
-      const selectionXfoChange = <SelectionXfoChange>this.change
-      selectionXfoChange.setDone()
+    if (this.change instanceof SelectionXfoChange) {
+      this.change.setDone()
     }
     this.change = null
   }

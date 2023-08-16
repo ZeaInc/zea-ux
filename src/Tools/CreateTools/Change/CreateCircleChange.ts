@@ -49,16 +49,6 @@ class CreateCircleChange extends CreateGeomChange {
     j.radius = this.circle.radiusParam.value
     return j
   }
-
-  /**
-   * Updates circle with the specified JSON
-   *
-   * @param j - The j param.
-   */
-  updateFromJSON(j: Record<any, any>): void {
-    console.log('CreateCircleChange:', j)
-    if (j.radius) this.circle.radiusParam.value = j.radius
-  }
 }
 
 UndoRedoManager.registerChange('CreateCircleChange', CreateCircleChange)

@@ -14,6 +14,7 @@ class ParameterValueChange extends Change {
   param: Parameter<unknown>
   nextValue: any
   prevValue: any
+  supressed: boolean = false
   /**
    * Creates an instance of ParameterValueChange.
    *
@@ -21,16 +22,15 @@ class ParameterValueChange extends Change {
    * @param newValue - The newValue value.
    */
   constructor(param?: Parameter<unknown>, newValue?: any) {
+    super(param ? param.getName() + ' Changed' : 'ParameterValueChange')
+
     if (param) {
-      super(param ? param.getName() + ' Changed' : 'ParameterValueChange')
       this.prevValue = param.getValue()
       this.param = param
       if (newValue != undefined) {
         this.nextValue = newValue
         this.param.value = this.nextValue
       }
-    } else {
-      super()
     }
   }
 
@@ -61,7 +61,14 @@ class ParameterValueChange extends Change {
   update(updateData: Record<string, any>): void {
     if (!this.param) return
     this.nextValue = updateData.value
-    this.param.value = this.nextValue
+
+    // The supressed value is set to true by Zea Platform when the change should
+    // not be applied on a local computer due to the local user  viewing a different
+    // pose to the original  user who created the change.
+    if (!this.supressed) {
+      this.param.value = this.nextValue
+    }
+
     this.emit('updated', updateData)
   }
 
@@ -72,10 +79,8 @@ class ParameterValueChange extends Change {
    * @return {object} The return value.
    */
   toJSON(context: Record<any, any>): Record<any, any> {
-    const j: Record<any, any> = {
-      name: this.name,
-      paramPath: this.param.getPath(),
-    }
+    const j = super.toJSON(context)
+    j.paramPath = this.param.getPath()
 
     if (this.nextValue != undefined) {
       if (this.nextValue.toJSON) {
@@ -94,6 +99,8 @@ class ParameterValueChange extends Change {
    * @param context - The context param.
    */
   fromJSON(j: Record<any, any>, context: Record<any, any>): Record<any, any> {
+    super.fromJSON(j, context)
+
     const param = context.appData.scene.getRoot().resolvePath(j.paramPath, 1)
     if (!param || !(param instanceof Parameter)) {
       console.warn('resolvePath is unable to resolve', j.paramPath)
@@ -104,19 +111,11 @@ class ParameterValueChange extends Change {
     if (this.prevValue.clone) this.nextValue = this.prevValue.clone()
     else this.nextValue = this.prevValue
 
-    this.name = j.name
-    if (j.value != undefined) this.updateFromJSON(j)
-  }
-
-  /**
-   * Updates the state of an existing identified `Parameter` through replication.
-   *
-   * @param j - The j param.
-   */
-  updateFromJSON(j: Record<any, any>): void {
-    if (!this.param) return
-    if (this.nextValue.fromJSON) this.nextValue.fromJSON(j.value)
-    else this.nextValue = j.value
+    if (j.value != undefined) {
+      if (this.nextValue.fromJSON) this.nextValue.fromJSON(j.value)
+      else this.nextValue = j.value
+    }
+    if (this.supressed) return
     this.param.value = this.nextValue
   }
 }

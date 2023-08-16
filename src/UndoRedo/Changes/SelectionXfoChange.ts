@@ -11,6 +11,7 @@ import Change from '../Change'
  * @extends Change
  */
 class SelectionXfoChange extends Change {
+  supressed: boolean = false
   treeItems: TreeItem[] = []
   baseXfo: Xfo
   localXfos: Xfo[] = []
@@ -24,6 +25,8 @@ class SelectionXfoChange extends Change {
    */
   constructor(treeItems: TreeItem[], baseXfo: Xfo) {
     super('SelectionXfoChange')
+
+    if (!treeItems || !baseXfo) return
 
     this.treeItems = treeItems
 
@@ -50,7 +53,9 @@ class SelectionXfoChange extends Change {
       this.treeItems[index].globalXfoParam.value = this.newValues[index].clone()
     })
 
-    this.emit('updated')
+    // this.emit('updated', { newValues: [...this.newValues] })
+    // only for testing purposes
+    this.emit('updated', { newValues: [...this.newValues], newBase })
   }
 
   setDone() {
@@ -83,9 +88,11 @@ class SelectionXfoChange extends Change {
    */
   update(updateData: Record<string, any>): void {
     this.newValues = updateData.newValues
-    this.treeItems.forEach((treeItem: TreeItem, index: number) => {
-      treeItem.globalXfoParam.value = this.newValues[index]
-    })
+    if (!this.supressed) {
+      this.treeItems.forEach((treeItem: TreeItem, index: number) => {
+        treeItem.globalXfoParam.value = this.newValues[index]
+      })
+    }
 
     this.emit('updated', updateData)
   }
@@ -97,12 +104,12 @@ class SelectionXfoChange extends Change {
    * @return {object} The return value.
    */
   toJSON(context: Record<any, any>): Record<any, any> {
-    const j: Record<any, any> = {
-      name: this.name,
-      treeItems: [],
-      prevValues: [],
-      newValues: [],
-    }
+    const j = super.toJSON(context)
+    j.treeItems = []
+    j.prevValues = []
+    j.newValues = []
+    j.baseXfo = this.baseXfo.toJSON()
+    j.supressed = this.supressed
 
     this.treeItems.forEach((treeItem: TreeItem, index: number) => {
       j.treeItems[index] = this.treeItems[index].getPath()
@@ -119,30 +126,20 @@ class SelectionXfoChange extends Change {
    * @param j - The j param.
    * @param context - The context param.
    */
-  fromJSON(j: Record<any, any>, context: Record<any, any>): Record<any, any> {
-    const param = context.appData.scene.getRoot().resolvePath(j.paramPath, 1)
-    if (!param || !(param instanceof Parameter)) {
-      console.warn('resolvePath is unable to resolve', j.paramPath)
-      return
-    }
+  fromJSON(j: Record<any, any>, context: Record<any, any>): void {
+    super.fromJSON(j, context)
+
+    if (!this.baseXfo) this.baseXfo = new Xfo()
+    this.baseXfo.fromJSON(j.baseXfo)
+    const invBaseXfo = this.baseXfo.inverse()
 
     j.treeItems.forEach((path: string[], index: number) => {
-      this.treeItems[index] = context.appData.scene.getRoot().resolvePath(path, 1)
+      this.treeItems[index] = context.appData.scene.getRoot().resolvePath(path)
+
+      this.localXfos.push(invBaseXfo.multiply(this.treeItems[index].globalXfoParam.value))
       if (!this.prevValues[index]) this.prevValues[index] = new Xfo()
       this.prevValues[index].fromJSON(j.prevValues[index])
       if (!this.newValues[index]) this.newValues[index] = new Xfo()
-      this.newValues[index].fromJSON(j.newValues[index])
-    })
-  }
-
-  /**
-   * Updates the state of an existing identified `Parameter` through replication.
-   *
-   * @param j - The j param.
-   */
-  updateFromJSON(j: Record<any, any>): void {
-    j.treeItems.forEach((path: string[], index: number) => {
-      this.prevValues[index].fromJSON(j.prevValues[index])
       this.newValues[index].fromJSON(j.newValues[index])
     })
   }

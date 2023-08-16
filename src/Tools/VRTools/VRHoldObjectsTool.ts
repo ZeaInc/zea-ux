@@ -121,15 +121,6 @@ class HoldObjectsChange extends Change {
       }
     }
   }
-
-  /**
-   * Updates the state of an existing identified `Parameter` through replication.
-   *
-   * @param j - The j param.
-   */
-  updateFromJSON(j: Record<string, any>): void {
-    this.update(j)
-  }
 }
 
 UndoRedoManager.registerChange('HoldObjectsChange', HoldObjectsChange)
