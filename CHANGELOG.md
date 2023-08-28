@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.5.0](https://github.com/ZeaInc/zea-ux/compare/v4.4.1...v4.5.0) (2023-08-28)
+
+
+### Features
+
+* Each method on the SelectionManager that causes a selection change now has the option of providing a parent change to allow selection changes to be more easily layered on top of other changes. ([cc5e28f](https://github.com/ZeaInc/zea-ux/commit/cc5e28f35b5c3c03231155b7ed8781cc32c2c575))
+* SelectionManager methods toggleItemSelection and clearSelection and selectItems and deselectItems now all take an optional argument to constol if an undo is created. ([b92b84e](https://github.com/ZeaInc/zea-ux/commit/b92b84e55d7e690ec53df3d9edd77f9bc5edbea2))
+
+
+### Bug Fixes
+
+* A regression caused exceptions to be thrown when the SelectionTool was activated and the pointer moved. ([6018ee4](https://github.com/ZeaInc/zea-ux/commit/6018ee473753bcf182a3ecfb178e16093d42c7ee))
+* added support for onPointerClick event propagation in the ToolManager. ([7332f4e](https://github.com/ZeaInc/zea-ux/commit/7332f4e6d71b5846fb5eef48266cf597ca7c05fd))
+* Create Sphere and circle tools now draw from one edge of the geometry to the other, instead of from the center of the to the boundary. ([e467abf](https://github.com/ZeaInc/zea-ux/commit/e467abfbb9bd17d73a18c9321c04b01fabc72d51))
+* CreateMultiLineTool snapping is now in screen space. ([e7fcaeb](https://github.com/ZeaInc/zea-ux/commit/e7fcaeb11b2d14e27a6807d99bfb868f288aeb09))
+* CreateRectTool now works on any construction plane. ([7a138dd](https://github.com/ZeaInc/zea-ux/commit/7a138dd0eaa7b412c791acea938549999216dc4a))
+* Handles can no longer be accidentally selected by single clicking on them. ([b942f11](https://github.com/ZeaInc/zea-ux/commit/b942f11f6542a291cab2c5fa6c6304a632146c54))
+* HandleShader became incompatible with the non-multidraw pipeline. ([7565f40](https://github.com/ZeaInc/zea-ux/commit/7565f40ab5ac3df1b5054dbd9e8cc09840b42e2f))
+* ParameterValueChange read instance supressed value instead of json ([cd3ec02](https://github.com/ZeaInc/zea-ux/commit/cd3ec02606810ba19bbec2eb17938bee642c2eb5))
+* The Create tools now work correctly when drawing on top of existing geometries. ([e7df2e9](https://github.com/ZeaInc/zea-ux/commit/e7df2e9e2350ed38028b5c4347014cfab57536fc))
+* The UndoRedoManager now correctly handles undo and redo on multiple levels of nesting in the Undo/Redo change object tree. ([64e78cb](https://github.com/ZeaInc/zea-ux/commit/64e78cb3cf36cf1899584750d11b8c253ec3b2b4))
+* UndoRedoManager.cancel now only cancels the active change. Previously it would preform an undo on any change in the stack. ([acc8e08](https://github.com/ZeaInc/zea-ux/commit/acc8e08c91294992449b18a13f283fad709b9f9b))
+* when ParameterValueChange is suppressed, discard the change during update. ([1f38696](https://github.com/ZeaInc/zea-ux/commit/1f38696be231898de2eec5594c2342c3dc5294cf))
+
 ### [4.4.1](https://github.com/ZeaInc/zea-ux/compare/v4.4.0...v4.4.1) (2023-05-06)
 
 
