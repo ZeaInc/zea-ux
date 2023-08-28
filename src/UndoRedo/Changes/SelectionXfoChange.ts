@@ -53,9 +53,7 @@ class SelectionXfoChange extends Change {
       this.treeItems[index].globalXfoParam.value = this.newValues[index].clone()
     })
 
-    // this.emit('updated', { newValues: [...this.newValues] })
-    // only for testing purposes
-    this.emit('updated', { newValues: [...this.newValues], newBase })
+    this.emit('updated', { newValues: [...this.newValues] })
   }
 
   setDone() {
