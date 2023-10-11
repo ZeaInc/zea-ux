@@ -436,9 +436,8 @@ class ViewCube extends TreeItem {
    *
    * @param event - The event param.
    */
-  onPointerUp(event: ZeaPointerEvent): void {
+  onPointerClick(event: ZeaPointerEvent): void {
     const geomItem = event.intersectionData!.geomItem
-    console.log(event.intersectionData!.geomItem.getName())
     const vec = geomItem.globalXfoParam.value.ori.rotateVec3(new Vec3(0, 0, 1))
     this.alignToVector(vec)
     event.stopPropagation()
