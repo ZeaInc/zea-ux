@@ -3,12 +3,16 @@ import { Change } from '.'
 
 const undoChangeTree = (change: Change) => {
   change.undo()
-  change.secondaryChanges.forEach((secondaryChange) => undoChangeTree(secondaryChange))
+  for (let i = change.secondaryChanges.length - 1; i >= 0; i--) {
+    undoChangeTree(change.secondaryChanges[i])
+  }
 }
 
 const redoChangeTree = (change: Change) => {
   change.redo()
-  change.secondaryChanges.forEach((secondaryChange) => redoChangeTree(secondaryChange))
+  for (let i = 0; change.secondaryChanges.length; i++) {
+    redoChangeTree(change.secondaryChanges[i])
+  }
 }
 
 /**
