@@ -25,15 +25,15 @@ import { GLViewport } from '@zeainc/zea-engine'
  * @extends BaseTool
  */
 class SelectionTool extends BaseTool {
-  appData: AppData
-  dragging: boolean
-  selectionRect: Rect
-  selectionManager: SelectionManager
-  selectionRectMat: Material
-  selectionRectXfo: Xfo
-  rectItem: GeomItem
+  private appData: AppData
+  private dragging: boolean
+  private selectionRect: Rect
+  private selectionManager: SelectionManager
+  private selectionRectMat: Material
+  private selectionRectXfo: Xfo
+  private rectItem: GeomItem
+  private pointerDownPos: Vec2
   selectionFilterFn: (treeItem: TreeItem) => TreeItem | null = null
-  pointerDownPos: Vec2
   /**
    * Creates an instance of SelectionTool.
    *
@@ -187,25 +187,29 @@ class SelectionTool extends BaseTool {
 
         const viewport = event.viewport as GLViewport
         let geomItems: Array<TreeItem> = Array.from(viewport.getGeomItemsInRect(tl, br)) // TODO: check, using Array.from() since we have a Set<>
+
+        // Remove all the scene widgets. (UI elements should not be selectable.)
         geomItems = geomItems.filter((geomItem) => geomItem != this.rectItem && !(geomItem.parent instanceof Handle))
 
         if (this.selectionFilterFn) {
-          geomItems = geomItems.filter((geomItem) => this.selectionFilterFn(geomItem))
+          const filteredGeomItems: Array<TreeItem> = []
+          geomItems.forEach((geomItem) => {
+            const filteredItem = this.selectionFilterFn(geomItem)
+            if (filteredItem) filteredGeomItems.push(filteredItem)
+          })
+          geomItems = filteredGeomItems
         }
 
         if (!this.selectionManager) throw 'Please set the Selection Manager on the Selection Tool before using it.'
         if (this.selectionManager.pickingModeActive()) {
           this.selectionManager.pick(geomItems)
         } else {
-          // Remove all the scene widgets. (UI elements should not be selectable.)
-          const regularGeomItems: Set<TreeItem> = new Set(
-            [...geomItems].filter((x) => !(x.getOwner() instanceof Handle))
-          )
+          const geomItemsSet: Set<TreeItem> = new Set(geomItems)
 
           if (!event.shiftKey) {
-            this.selectionManager.selectItems(regularGeomItems, !event.ctrlKey)
+            this.selectionManager.selectItems(geomItemsSet, !event.ctrlKey)
           } else {
-            this.selectionManager.deselectItems(regularGeomItems)
+            this.selectionManager.deselectItems(geomItemsSet)
           }
 
           this.selectionRectXfo.sc.set(0, 0, 0)
