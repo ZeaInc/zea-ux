@@ -27,13 +27,13 @@ import { GLViewport } from '@zeainc/zea-engine'
 class SelectionTool extends BaseTool {
   private appData: AppData
   private dragging: boolean
-  private selectionRect: Rect
   private selectionManager: SelectionManager
-  private selectionRectMat: Material
   private selectionRectXfo: Xfo
   private rectItem: GeomItem
   private pointerDownPos: Vec2
-  selectionFilterFn: (treeItem: TreeItem) => TreeItem | null = null
+  public selectionRect: Rect
+  public selectionRectMat: Material
+  public selectionFilterFn: (treeItem: TreeItem) => TreeItem | null = null
   /**
    * Creates an instance of SelectionTool.
    *
