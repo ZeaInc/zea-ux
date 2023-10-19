@@ -183,6 +183,7 @@ class SelectionTool extends BaseTool {
   onPointerUp(event: ZeaPointerEvent): void {
     if ((event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) && this.pointerDownPos) {
       if (this.dragging) {
+        this.dragging = false
         this.rectItem.visibleParam.value = false
         const pointerUpPos = event.pointerPos.scale(window.devicePixelRatio)
         const tl = new Vec2(
