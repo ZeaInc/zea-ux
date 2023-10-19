@@ -65,7 +65,7 @@
         SimpleSurfaceMaterial,
         KinematicGroup,
       } = window.zeaEngine
-      const { SelectionManager, SelectionTool, UndoRedoManager } = window.zeaUx
+      const { ToolManager, SelectionManager, SelectionTool, UndoRedoManager } = window.zeaUx
 
       const $canvas = document.getElementById('renderer')
 
@@ -140,6 +140,7 @@
         })
 
         const cameraManipulator = renderer.getViewport().getManipulator()
+        cameraManipulator.orbitAroundCursor = true
         const selectionTool = new SelectionTool({
           selectionManager,
           ...appData,
@@ -150,11 +151,16 @@
           return null
         }
 
-        let selectionOn = false
+        const toolManager = new ToolManager()
+        toolManager.registerTool('cameraManipulator', cameraManipulator)
+        toolManager.registerTool('selectionTool', selectionTool)
+        renderer.getViewport().setManipulator(toolManager)
+        toolManager.pushTool('cameraManipulator')
+
         let pickingOn = false
 
         renderer.getViewport().on('pointerClick', (event) => {
-          if (renderer.getViewport().getManipulator() != selectionTool) {
+          if (toolManager.activeTool() != selectionTool) {
             console.log(event.pointerRay.dir.toString())
 
             if (event.intersectionData) {
@@ -183,11 +189,9 @@
 
         $selectionCheckbox.addEventListener('change', (e) => {
           if ($selectionCheckbox.checked) {
-            renderer.getViewport().setManipulator(selectionTool)
-            selectionOn = true
+            toolManager.pushTool('selectionTool')
           } else {
-            renderer.getViewport().setManipulator(cameraManipulator)
-            selectionOn = false
+            toolManager.popTool()
           }
         })
 
@@ -198,7 +202,7 @@
 
         $pickingCheckbox.addEventListener('change', (e) => {
           if ($pickingCheckbox.checked) {
-            renderer.getViewport().setManipulator(selectionTool)
+            toolManager.pushTool('selectionTool')
             selectionManager.startPickingMode(
               (treeItem) => {
                 group.addItem(treeItem)
@@ -216,12 +220,10 @@
                 }
               }
             )
-            selectionOn = true
             pickingOn = true
           } else {
             selectionManager.endPickingMode()
-            renderer.getViewport().setManipulator(cameraManipulator)
-            selectionOn = false
+            toolManager.popTool()
             document.body.style.cursor = 'default'
           }
         })

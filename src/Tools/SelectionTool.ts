@@ -57,6 +57,7 @@ class SelectionTool extends BaseTool {
 
     this.rectItem = new GeomItem('selectionRect', this.selectionRect, this.selectionRectMat)
     this.rectItem.visibleParam.value = false
+    this.rectItem.setSelectable(false)
     this.appData.renderer.addTreeItem(this.rectItem)
   }
 
@@ -114,7 +115,7 @@ class SelectionTool extends BaseTool {
    * @param event - The event param.
    * @private
    */
-  onPointerDoublePress(event: ZeaPointerEvent): void { }
+  onPointerDoublePress(event: ZeaPointerEvent): void {}
 
   /**
    * Event fired when a pointing device button is pressed while the pointer is over the tool.
@@ -123,7 +124,15 @@ class SelectionTool extends BaseTool {
    * @return {boolean} The return value.
    */
   onPointerDown(event: ZeaPointerEvent): void {
-    if (event instanceof ZeaTouchEvent || (event instanceof ZeaMouseEvent && event.button == 0)) {
+    if (this.dragging) {
+      // cancel the select
+      this.selectionRectXfo.sc.set(0, 0, 0)
+      this.rectItem.globalXfoParam.value = this.selectionRectXfo
+      this.rectItem.visibleParam.value = false
+      this.pointerDownPos = undefined
+      this.dragging = false
+      event.stopPropagation()
+    } else if (event instanceof ZeaTouchEvent || (event instanceof ZeaMouseEvent && event.button == 0)) {
       this.pointerDownPos = event.pointerPos.scale(window.devicePixelRatio)
       this.dragging = false
       event.stopPropagation()
