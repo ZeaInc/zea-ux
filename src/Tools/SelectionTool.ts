@@ -114,7 +114,7 @@ class SelectionTool extends BaseTool {
    * @param event - The event param.
    * @private
    */
-  onPointerDoublePress(event: ZeaPointerEvent): void {}
+  onPointerDoublePress(event: ZeaPointerEvent): void { }
 
   /**
    * Event fired when a pointing device button is pressed while the pointer is over the tool.
@@ -223,15 +223,17 @@ class SelectionTool extends BaseTool {
           let treeItem = intersectionData.geomItem
           if (this.selectionFilterFn) treeItem = this.selectionFilterFn(treeItem)
 
-          if (this.selectionManager.pickingModeActive()) {
-            this.selectionManager.pick(treeItem)
-          } else {
-            if (!event.shiftKey) {
-              this.selectionManager.toggleItemSelection(treeItem, !event.ctrlKey)
+          if (treeItem) {
+            if (this.selectionManager.pickingModeActive()) {
+              this.selectionManager.pick(treeItem)
             } else {
-              const items: Set<TreeItem> = new Set()
-              items.add(treeItem)
-              this.selectionManager.deselectItems(items)
+              if (!event.shiftKey) {
+                this.selectionManager.toggleItemSelection(treeItem, !event.ctrlKey)
+              } else {
+                const items: Set<TreeItem> = new Set()
+                items.add(treeItem)
+                this.selectionManager.deselectItems(items)
+              }
             }
           }
         } else {
