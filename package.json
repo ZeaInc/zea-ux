@@ -19,7 +19,8 @@
   "exports": {
     ".": {
       "import": "./dist/index.esm.js",
-      "require": "./dist/index.cjs.js"
+      "require": "./dist/index.cjs.js",
+      "types": "./dist/zea-ux.d.ts"
     }
   },
   "types": "dist/zea-ux.d.ts",
