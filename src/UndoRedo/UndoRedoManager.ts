@@ -10,7 +10,7 @@ const undoChangeTree = (change: Change) => {
 
 const redoChangeTree = (change: Change) => {
   change.redo()
-  for (let i = 0; change.secondaryChanges.length; i++) {
+  for (let i = 0; i < change.secondaryChanges.length; i++) {
     redoChangeTree(change.secondaryChanges[i])
   }
 }
