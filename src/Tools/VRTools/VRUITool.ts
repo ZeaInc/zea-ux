@@ -209,9 +209,7 @@ class VRUITool extends BaseTool {
   }
 
   private calcUIIntersection(ray: Ray): UIIntersection | null {
-    // const pointerXfo = this.uiPointerItem.globalXfoParam.value
-    // const pointerVec = pointerXfo.ori.getZaxis().negate()
-    // const ray = new Ray(pointerXfo.tr, pointerVec)
+    if (!this.controllerUI.ready) return null
 
     const planeXfo = this.controllerUI.globalXfoParam.value
     const planeSize = this.controllerUI.size.multiply(planeXfo.sc)

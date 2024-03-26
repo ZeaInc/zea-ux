@@ -26,15 +26,19 @@ function traverse(node: HTMLElement, depth: number, func: any): void {
  * @return {object}
  */
 function elemSize(elem: HTMLElement) {
-  // @ts-ignore
   const computedStyle = elem.computedStyleMap()
-  const elmWidth = computedStyle.get('width').value
-  const elmMarginHorizontal = computedStyle.get('margin-left').value + computedStyle.get('margin-right').value
-  const elmHeight = computedStyle.get('height').value
-  const elmMarginVertical = computedStyle.get('margin-top').value + computedStyle.get('margin-bottom').value
+  const elmWidth = computedStyle.get('width') as CSSUnitValue
+  const elmMarginLeft = computedStyle.get('margin-left') as CSSUnitValue
+  const elmMarginRight = computedStyle.get('margin-right') as CSSUnitValue
+  const elmMarginTop = computedStyle.get('margin-top') as CSSUnitValue
+  const elmMarginBottom = computedStyle.get('margin-bottom') as CSSUnitValue
+  const elmHeight = computedStyle.get('height') as CSSUnitValue
+
+  const elmMarginHorizontal = elmMarginLeft.value + elmMarginRight.value
+  const elmMarginVertical = elmMarginTop.value + elmMarginBottom.value
   return {
-    width: elmWidth + elmMarginHorizontal,
-    height: elmHeight + elmMarginVertical,
+    width: elmWidth.value + elmMarginHorizontal,
+    height: elmHeight.value + elmMarginVertical,
   }
 }
 
@@ -179,6 +183,7 @@ export default class VRControllerUI extends TreeItem {
    * The activate method.
    */
   activate(): void {
+    // The browser doesn't calculate element layout till the elements are visible.
     this.vrUIDOMElement.style.display = 'block'
     if (!this.ready) {
       this.traverseAndRenderDOM()
