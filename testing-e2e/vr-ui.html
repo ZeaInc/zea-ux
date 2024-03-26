@@ -64,6 +64,7 @@
         CreateCuboidTool,
         CreateConeTool,
         VRUITool,
+        HandHeldTool,
       } = window.zeaUx
 
       const canvas = document.querySelector('#renderer')
@@ -111,6 +112,7 @@
       const b = document.querySelector('#button')
 
       const holdObjectsTool = new VRHoldObjectsTool(appData)
+      const handHeldTool = new HandHeldTool('', new Xfo(), appData)
       const freehandLineTool = new CreateFreehandLineTool(appData)
       const createSphereTool = new CreateSphereTool(appData)
       const createCuboidTool = new CreateCuboidTool(appData)
@@ -119,6 +121,7 @@
 
       // Register both tools.
       vrToolManager.registerTool('VRHoldObjectsTool', holdObjectsTool)
+      vrToolManager.registerTool('HandHeldTool', handHeldTool)
       vrToolManager.registerTool('Create Cuboid', createCuboidTool)
       vrToolManager.registerTool('Create Sphere', createSphereTool)
       vrToolManager.registerTool('Create Cone', createConeTool)
@@ -139,8 +142,17 @@
       cameraTool.deactivateTool()
       toolManager.registerTool('CameraTool', cameraTool)
       toolManager.registerTool('VRUITool', vrUITool)
+
+      toolManager.registerTool('VRHoldObjectsTool', holdObjectsTool)
+      toolManager.registerTool('HandHeldTool', handHeldTool)
+      toolManager.registerTool('Create Cuboid', createCuboidTool)
+      toolManager.registerTool('Create Sphere', createSphereTool)
+      toolManager.registerTool('Create Cone', createConeTool)
+      toolManager.registerTool('Freehand Line Tool', freehandLineTool)
+
       toolManager.pushTool('CameraTool')
       toolManager.pushTool('VRUITool')
+
       renderer.getViewport().setManipulator(toolManager)
 
       renderer.getXRViewport().then((xrViewport) => {

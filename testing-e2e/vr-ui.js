@@ -68,7 +68,7 @@ class VRUI extends HTMLElement {
     //     recording = false
     //   }
     // })
-    addButton('data/view_1_1.png', (img) => {
+    addButton('data/view_1_1.png', () => {
       this.renderer.getXRViewport().then((xrvp) => {
         const { Ray, Xfo, Vec3 } = window.zeaEngine
         const stageXfo = xrvp.getXfo()
@@ -240,6 +240,7 @@ class VRUI extends HTMLElement {
     addToolButton('Create Cuboid', 'data/create-cuboid-icon.png')
     addToolButton('Create Sphere', 'data/create-sphere-icon.png')
     addToolButton('Create Cone', 'data/create-cone-icon.png')
+    addToolButton('HandHeldTool', 'data/wrench-icon.png')
 
     let color = new Color('#FFD800')
     const addColorButton = (icon, cb) => {

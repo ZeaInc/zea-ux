@@ -11,6 +11,7 @@ import {
   XRControllerEvent,
   XRPoseEvent,
   GeomItem,
+  XRController,
 } from '@zeainc/zea-engine'
 // import Handle from '../../Handles/Handle'
 import UndoRedoManager from '../../UndoRedo/UndoRedoManager'
@@ -130,20 +131,19 @@ UndoRedoManager.registerChange('HoldObjectsChange', HoldObjectsChange)
  * @extends BaseTool
  */
 class VRHoldObjectsTool extends BaseTool {
-  appData: AppData
-  __pressedButtonCount = 0
+  private appData: AppData
+  private pressedButtonCount = 0
 
-  __freeIndices: number[] = []
-  __vrControllers: any[] = []
-  __heldObjectCount = 0
-  __heldGeomItems: Array<GeomItem> = []
-  __highlightedGeomItemIds: Array<TreeItem> = [] // controller id to held goem id.
-  __heldGeomItemIds: Array<number> = [] // controller id to held goem id.
-  __heldGeomItemRefs: any = []
-  __heldGeomItemOffsets: Array<Xfo> = []
+  private vrControllers: XRController[] = []
+  private heldObjectCount = 0
+  private heldGeomItems: Array<GeomItem> = []
+  private highlightedGeomItemIds: Array<TreeItem> = [] // controller id to held goem id.
+  private heldGeomItemIds: Array<number> = [] // controller id to held goem id.
+  private heldGeomItemRefs: any = []
+  private heldGeomItemOffsets: Array<Xfo> = []
 
-  addIconToControllerId: number
-  change: HoldObjectsChange
+  private addIconToControllerId: number
+  private change: HoldObjectsChange
   /**
    * Create a VR hold objects tool.
    * @param appData - The appData value.
@@ -161,7 +161,7 @@ class VRHoldObjectsTool extends BaseTool {
 
     this.appData.renderer.getGLCanvas().style.cursor = 'crosshair'
 
-    const addIconToController = (controller: any) => {
+    const addIconToController = (controller: XRController) => {
       // The tool might already be deactivated.
       if (!this.__activated) return
       // const cross = new Cross(0.03)
@@ -174,7 +174,6 @@ class VRHoldObjectsTool extends BaseTool {
     }
 
     this.appData.renderer.getXRViewport().then((xrvp) => {
-      //@ts-ignore :  TODO: Remove this after the next release of the engine.
       for (const controller of xrvp.getControllers()) {
         addIconToController(controller)
       }
@@ -207,10 +206,10 @@ class VRHoldObjectsTool extends BaseTool {
   computeGrabXfo(refs: any[]): any {
     let grabXfo
     if (refs.length == 1) {
-      grabXfo = this.__vrControllers[refs[0]].getTipXfo()
+      grabXfo = this.vrControllers[refs[0]].getTipXfo()
     } else if (refs.length == 2) {
-      const xfo0 = this.__vrControllers[refs[0]].getTipXfo()
-      const xfo1 = this.__vrControllers[refs[1]].getTipXfo()
+      const xfo0 = this.vrControllers[refs[0]].getTipXfo()
+      const xfo1 = this.vrControllers[refs[1]].getTipXfo()
 
       xfo0.ori.alignWith(xfo1.ori)
 
@@ -239,11 +238,11 @@ class VRHoldObjectsTool extends BaseTool {
    * The initAction method.
    */
   initAction(): void {
-    for (let i = 0; i < this.__heldGeomItems.length; i++) {
-      const heldGeom = this.__heldGeomItems[i]
+    for (let i = 0; i < this.heldGeomItems.length; i++) {
+      const heldGeom = this.heldGeomItems[i]
       if (!heldGeom) continue
-      const grabXfo = this.computeGrabXfo(this.__heldGeomItemRefs[i])
-      this.__heldGeomItemOffsets[i] = grabXfo.inverse().multiply(heldGeom.globalXfoParam.value)
+      const grabXfo = this.computeGrabXfo(this.heldGeomItemRefs[i])
+      this.heldGeomItemOffsets[i] = grabXfo.inverse().multiply(heldGeom.globalXfoParam.value)
     }
   }
 
@@ -255,23 +254,23 @@ class VRHoldObjectsTool extends BaseTool {
   onPointerDown(event: XRControllerEvent): void {
     if (event.pointerType === POINTER_TYPES.xr) {
       const id = event.controller.getId()
-      this.__vrControllers[id] = event.controller
+      this.vrControllers[id] = event.controller
 
       // const intersectionData = event.controller.getGeomItemAtTip()
-      const geomItem = <GeomItem>this.__highlightedGeomItemIds[id]
+      const geomItem = <GeomItem>this.highlightedGeomItemIds[id]
       if (geomItem) {
         // if (geomItem.getOwner() instanceof Handle) return false
 
         // console.log("onMouseDown on Geom"); // + " Material:" + geomItem.getMaterial().name);
         // console.log(geomItem.getPath()) // + " Material:" + geomItem.getMaterial().name);
 
-        let gidx = this.__heldGeomItems.indexOf(<GeomItem>geomItem)
+        let gidx = this.heldGeomItems.indexOf(<GeomItem>geomItem)
         if (gidx == -1) {
-          gidx = this.__heldGeomItems.length
-          this.__heldObjectCount++
-          this.__heldGeomItems.push(geomItem)
-          this.__heldGeomItemRefs[gidx] = [id]
-          this.__heldGeomItemIds[id] = gidx
+          gidx = this.heldGeomItems.length
+          this.heldObjectCount++
+          this.heldGeomItems.push(geomItem)
+          this.heldGeomItemRefs[gidx] = [id]
+          this.heldGeomItemIds[id] = gidx
 
           const changeData = {
             newItem: geomItem,
@@ -284,8 +283,8 @@ class VRHoldObjectsTool extends BaseTool {
             this.change.update(changeData)
           }
         } else {
-          this.__heldGeomItemIds[id] = gidx
-          this.__heldGeomItemRefs[gidx].push(id)
+          this.heldGeomItemIds[id] = gidx
+          this.heldGeomItemRefs[gidx].push(id)
         }
         this.initAction()
         event.stopPropagation()
@@ -302,18 +301,18 @@ class VRHoldObjectsTool extends BaseTool {
     if (event.pointerType === POINTER_TYPES.xr) {
       const id = event.controller.getId()
 
-      this.__pressedButtonCount--
-      if (this.__heldGeomItemIds[id] !== undefined) {
-        const gidx = this.__heldGeomItemIds[id]
-        const refs = this.__heldGeomItemRefs[gidx]
+      this.pressedButtonCount--
+      if (this.heldGeomItemIds[id] !== undefined) {
+        const gidx = this.heldGeomItemIds[id]
+        const refs = this.heldGeomItemRefs[gidx]
         refs.splice(refs.indexOf(id), 1)
         if (refs.length == 0) {
-          this.__heldObjectCount--
-          this.__heldGeomItems[gidx] = undefined
+          this.heldObjectCount--
+          this.heldGeomItems[gidx] = undefined
 
           this.change = undefined
         }
-        this.__heldGeomItemIds[id] = undefined
+        this.heldGeomItemIds[id] = undefined
         this.initAction()
         event.stopPropagation()
       }
@@ -333,18 +332,18 @@ class VRHoldObjectsTool extends BaseTool {
           const intersectionData = controller.getGeomItemAtTip()
           if (intersectionData) {
             const geomItem = intersectionData.geomItem
-            if (this.__highlightedGeomItemIds[id] != geomItem) {
-              if (this.__highlightedGeomItemIds[id]) {
-                this.__highlightedGeomItemIds[id].removeHighlight('vrHoldObject')
+            if (this.highlightedGeomItemIds[id] != geomItem) {
+              if (this.highlightedGeomItemIds[id]) {
+                this.highlightedGeomItemIds[id].removeHighlight('vrHoldObject')
               }
               geomItem.addHighlight('vrHoldObject', new Color(1, 0, 0, 0.2))
-              this.__highlightedGeomItemIds[id] = geomItem
+              this.highlightedGeomItemIds[id] = geomItem
             }
           } else {
-            if (this.__highlightedGeomItemIds[id]) {
-              const geomItem = this.__highlightedGeomItemIds[id]
+            if (this.highlightedGeomItemIds[id]) {
+              const geomItem = this.highlightedGeomItemIds[id]
               geomItem.removeHighlight('vrHoldObject')
-              this.__highlightedGeomItemIds[id] = null
+              this.highlightedGeomItemIds[id] = null
             }
           }
         })
@@ -354,11 +353,11 @@ class VRHoldObjectsTool extends BaseTool {
 
       const changeXfos = []
       const changeXfoIds = []
-      for (let i = 0; i < this.__heldGeomItems.length; i++) {
-        const heldGeom = this.__heldGeomItems[i]
+      for (let i = 0; i < this.heldGeomItems.length; i++) {
+        const heldGeom = this.heldGeomItems[i]
         if (!heldGeom) continue
-        const grabXfo = this.computeGrabXfo(this.__heldGeomItemRefs[i])
-        changeXfos.push(grabXfo.multiply(this.__heldGeomItemOffsets[i]))
+        const grabXfo = this.computeGrabXfo(this.heldGeomItemRefs[i])
+        changeXfos.push(grabXfo.multiply(this.heldGeomItemOffsets[i]))
         changeXfoIds.push(i)
       }
 
