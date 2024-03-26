@@ -3,7 +3,7 @@ import {
   Vec3,
   Xfo,
   XRControllerEvent,
-  KeyboardEvent,
+  ZeaKeyboardEvent,
   ZeaMouseEvent,
   ZeaPointerEvent,
 } from '@zeainc/zea-engine'
@@ -178,7 +178,7 @@ class CreateMultiLineTool extends CreateGeomTool {
     return shouldClosePolygon
   }
 
-  onKeyUp(event: KeyboardEvent): void {
+  onKeyUp(event: ZeaKeyboardEvent): void {
     if (event.key == 'Escape') {
       if (this.stage > 0) {
         UndoRedoManager.getInstance().cancel()

@@ -1,5 +1,5 @@
 /* eslint-disable require-jsdoc */
-import { BaseTool, ZeaMouseEvent, KeyboardEvent } from '@zeainc/zea-engine'
+import { BaseTool, ZeaMouseEvent, ZeaKeyboardEvent } from '@zeainc/zea-engine'
 
 /**
  * @extends BaseTool
@@ -158,7 +158,7 @@ class ToolManager extends BaseTool {
    *
    * @param event - The event param.
    */
-  onKeyPressed(event: KeyboardEvent): void {
+  onKeyPressed(event: ZeaKeyboardEvent): void {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
       const tool = this.toolStack[i]
       if (tool.onKeyPressed) {
@@ -173,7 +173,7 @@ class ToolManager extends BaseTool {
    *
    * @param event - The event param.
    */
-  onKeyDown(event: KeyboardEvent): void {
+  onKeyDown(event: ZeaKeyboardEvent): void {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
       const tool = this.toolStack[i]
       if (tool.onKeyDown) {
@@ -188,7 +188,7 @@ class ToolManager extends BaseTool {
    *
    * @param event - The event param.
    */
-  onKeyUp(event: KeyboardEvent): void {
+  onKeyUp(event: ZeaKeyboardEvent): void {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
       const tool = this.toolStack[i]
       if (tool.onKeyUp) {

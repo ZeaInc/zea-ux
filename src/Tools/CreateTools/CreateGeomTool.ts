@@ -13,7 +13,7 @@ import {
   ZeaTouchEvent,
   BaseGeom,
   GLViewport,
-  KeyboardEvent,
+  ZeaKeyboardEvent,
   XRController,
   XRControllerEvent,
   Quat,
@@ -317,7 +317,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param event - The event param.
    */
-  onKeyPressed(event: KeyboardEvent): void {
+  onKeyPressed(event: ZeaKeyboardEvent): void {
     // console.warn('Implement me')
   }
 
@@ -326,7 +326,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param event - The event param.
    */
-  onKeyDown(event: KeyboardEvent): void {
+  onKeyDown(event: ZeaKeyboardEvent): void {
     // console.warn('Implement me')
   }
 
@@ -335,7 +335,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param event - The event param.
    */
-  onKeyUp(event: KeyboardEvent): void {
+  onKeyUp(event: ZeaKeyboardEvent): void {
     // console.warn('Implement me')
   }
 
