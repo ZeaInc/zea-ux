@@ -5,8 +5,8 @@ import { BaseTool, ZeaMouseEvent, ZeaKeyboardEvent } from '@zeainc/zea-engine'
  * @extends BaseTool
  */
 class ToolManager extends BaseTool {
-  toolStack: any[]
-  tools: Record<string, BaseTool>
+  toolStack: BaseTool[] = []
+  tools: Record<string, BaseTool> = {}
   constructor() {
     super()
     this.tools = {}
@@ -152,21 +152,6 @@ class ToolManager extends BaseTool {
 
   // ///////////////////////////////////
   // Keyboard events
-
-  /**
-   * Event fired when the user presses a key on the keyboard.
-   *
-   * @param event - The event param.
-   */
-  onKeyPressed(event: ZeaKeyboardEvent): void {
-    for (let i = this.toolStack.length - 1; i >= 0; i--) {
-      const tool = this.toolStack[i]
-      if (tool.onKeyPressed) {
-        tool.onKeyPressed(event)
-        if (!event.propagating) break
-      }
-    }
-  }
 
   /**
    * Event fired when the user presses down a key on the keyboard.

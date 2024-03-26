@@ -182,7 +182,7 @@ class VRUI extends HTMLElement {
       toolDiv.addEventListener('mousedown', () => {
         toolDiv.classList.add('button-mousedown')
         if (!toolActive) {
-          // while (toolManager.activeToolName() != 'VRUITool') toolManager.popTool()
+          while (toolManager.activeTool() && toolManager.activeToolName() != 'VRUITool') toolManager.popTool()
           toolManager.pushTool(name)
         } else {
           // while (toolManager.activeToolName() != name) toolManager.popTool()
