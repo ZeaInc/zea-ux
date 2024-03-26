@@ -60,7 +60,7 @@ const plane = new Plane(1, 1)
  */
 export default class VRControllerUI extends TreeItem {
   appData: AppData
-  __vrUIDOMElement
+  vrUIDOMElement
   ready: boolean
   size: Vec3
   /**
@@ -73,8 +73,8 @@ export default class VRControllerUI extends TreeItem {
 
     this.setSelectable(false)
     this.appData = appData
-    this.__vrUIDOMElement = vrUIDOMElement
-    this.__vrUIDOMElement.style.display = 'none'
+    this.vrUIDOMElement = vrUIDOMElement
+    this.vrUIDOMElement.style.display = 'none'
 
     // const debugGeomItem = new GeomItem('Debug', new Plane(1, 1), new Material('debug-ui-mat', 'FlatSurfaceShader'))
     // // Flip it over so we see the front.
@@ -82,11 +82,12 @@ export default class VRControllerUI extends TreeItem {
     // debugGeomItemXfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI)
     // this.addChild(debugGeomItem, false)
 
+    this.ready = false
+  }
+
+  private traverseAndRenderDOM() {
     const uiOffset = new TreeItem('Offset')
     this.addChild(uiOffset, false)
-    this.ready = false
-
-    /* */
     const resizeObserver = new ResizeObserver((entries) => {
       resizeObserver.disconnect()
 
@@ -98,12 +99,12 @@ export default class VRControllerUI extends TreeItem {
       // localXfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI)
       uiOffset.localXfoParam.value = localXfo
 
-      this.size = new Vec3(vrUIDOMElement.clientWidth * dpm, vrUIDOMElement.clientHeight * dpm, 1)
+      this.size = new Vec3(this.vrUIDOMElement.clientWidth * dpm, this.vrUIDOMElement.clientHeight * dpm, 1)
 
       // debugGeomItemXfo.sc = this.size
       // debugGeomItem.localXfoParam.value = debugGeomItemXfo
 
-      traverse(vrUIDOMElement, 0, (elem: HTMLElement, depth: number): boolean => {
+      traverse(this.vrUIDOMElement, 0, (elem: HTMLElement, depth: number): boolean => {
         if (elem.className == 'button') {
           const size = elemSize(elem)
           // console.log(depth, elem.id, elem.className, size.width, size.height, elem.offsetLeft, elem.offsetTop)
@@ -115,8 +116,8 @@ export default class VRControllerUI extends TreeItem {
           // To debug the placements of these UI elements, display tbe backing panel by making this class
           // in
           localXfo.tr.set(
-            elem.offsetLeft + size.width * 0.5 - vrUIDOMElement.clientWidth * 0.5,
-            elem.offsetTop + size.height * 0.5 - vrUIDOMElement.clientHeight * 0.5,
+            elem.offsetLeft + size.width * 0.5 - this.vrUIDOMElement.clientWidth * 0.5,
+            elem.offsetTop + size.height * 0.5 - this.vrUIDOMElement.clientHeight * 0.5,
             -depth
           )
 
@@ -133,6 +134,7 @@ export default class VRControllerUI extends TreeItem {
           if (size.width > 0 && size.height > 0) {
             renderElementUI(elem, size, elem.id + elem.className, (data: any, key: string) => {
               // console.log('Rendered', elem.id, elem.className, size.width, size.height, elem.offsetLeft, elem.offsetTop)
+              // document.body.appendChild(data)
               imageDatas[key] = data
               image.setData(size.width, size.height, data)
             })
@@ -145,6 +147,7 @@ export default class VRControllerUI extends TreeItem {
             const key = elem.id + elem.className
             if (!imageDatas[key]) {
               renderElementUI(elem, size, key, (data: any, key: string) => {
+                // document.body.appendChild(data) // uncomment to see the UI elements added to the page.
                 imageDatas[key] = data
                 image.setData(size.width, size.height, data)
               })
@@ -167,8 +170,7 @@ export default class VRControllerUI extends TreeItem {
       this.ready = true
       this.emit('ready')
     })
-    resizeObserver.observe(vrUIDOMElement)
-    /* */
+    resizeObserver.observe(this.vrUIDOMElement)
   }
 
   // ///////////////////////////////////
@@ -177,14 +179,17 @@ export default class VRControllerUI extends TreeItem {
    * The activate method.
    */
   activate(): void {
-    this.__vrUIDOMElement.style.display = 'block'
+    this.vrUIDOMElement.style.display = 'block'
+    if (!this.ready) {
+      this.traverseAndRenderDOM()
+    }
   }
 
   /**
    * The deactivate method.
    */
   deactivate(): void {
-    this.__vrUIDOMElement.style.display = 'none'
+    this.vrUIDOMElement.style.display = 'none'
   }
 
   /**
@@ -194,7 +199,7 @@ export default class VRControllerUI extends TreeItem {
    * @param element - The element param.
    * @return The return value.
    */
-  sendMouseEvent(eventName: string, args: any, element: Element): MouseEvent {
+  sendMouseEvent(element: Element, eventName: string, args: object = {}): MouseEvent {
     // console.log('sendMouseEvent:', eventName, element)
 
     const event = new MouseEvent(

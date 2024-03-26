@@ -91,18 +91,18 @@
       const geomItem2 = new GeomItem('Cuboid', cuboid, material, new Xfo(new Vec3(0, 0, -0.01)))
       scene.getRoot().addChild(geomItem2)
 
-      const objAsset = new ObjAsset('cow')
-      objAsset.getParameter('splitGroupsIntoObjects').setValue(true)
-      scene.getRoot().addChild(objAsset)
+      // const objAsset = new ObjAsset('cow')
+      // objAsset.getParameter('splitGroupsIntoObjects').setValue(true)
+      // scene.getRoot().addChild(objAsset)
 
-      const xfo = new Xfo()
-      xfo.tr.set(0, 0, 3.55 * 0.3048)
-      xfo.ori.setFromEulerAngles(new EulerAngles(90 * (Math.PI / 180), 0, 0))
-      xfo.sc.set(0.3048, 0.3048, 0.3048)
-      objAsset.getParameter('GlobalXfo').setValue(xfo)
-      objAsset.load('data/cow.obj').then(() => {
-        window.postMessage(`done-Loading`)
-      })
+      // const xfo = new Xfo()
+      // xfo.tr.set(0, 0, 3.55 * 0.3048)
+      // xfo.ori.setFromEulerAngles(new EulerAngles(90 * (Math.PI / 180), 0, 0))
+      // xfo.sc.set(0.3048, 0.3048, 0.3048)
+      // objAsset.getParameter('GlobalXfo').setValue(xfo)
+      // objAsset.load('data/cow.obj').then(() => {
+      //   window.postMessage(`done-Loading`)
+      // })
 
       // ///////////////////////////////////////
       // Setup VR

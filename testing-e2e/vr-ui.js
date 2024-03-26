@@ -146,6 +146,11 @@ class VRUI extends HTMLElement {
   background: #FFFFFF;
 }
 
+.button-mousedown {
+  border: 2px solid #FF0000;
+  background: #FFFFFF;
+}
+
 .label {
   color: black;
 }
@@ -175,13 +180,18 @@ class VRUI extends HTMLElement {
       toolDiv.classList.add('button')
       let toolActive = false
       toolDiv.addEventListener('mousedown', () => {
+        toolDiv.classList.add('button-mousedown')
         if (!toolActive) {
-          while (toolManager.activeToolName() != 'VRUITool') toolManager.popTool()
+          // while (toolManager.activeToolName() != 'VRUITool') toolManager.popTool()
           toolManager.pushTool(name)
         } else {
-          while (toolManager.activeToolName() != name) toolManager.popTool()
+          // while (toolManager.activeToolName() != name) toolManager.popTool()
           if (toolManager.activeToolName() == name) toolManager.popTool()
         }
+      })
+
+      toolDiv.addEventListener('mouseup', () => {
+        toolDiv.classList.remove('button-mousedown')
       })
 
       tool.on('activatedChanged', (event) => {
