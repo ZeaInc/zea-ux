@@ -14,6 +14,8 @@ import {
   XRController,
   XRControllerEvent,
   XRPoseEvent,
+  ZeaKeyboardEvent,
+  GLViewport,
 } from '@zeainc/zea-engine'
 
 import { AppData } from '../../../types/types'
@@ -48,9 +50,6 @@ class VRUITool extends BaseTool {
 
     this.__vrUIDOMElement = vrUIDOMElement
     this.controllerUI = new VRControllerUI(appData, this.__vrUIDOMElement)
-
-    // To debug the UI in the renderer without being in VR, enable this line.
-    // appData.renderer.addTreeItem(this.controllerUI)
 
     const pointermat = new Material('pointermat', 'LinesShader')
     pointermat.setSelectable(false)
@@ -198,15 +197,22 @@ class VRUITool extends BaseTool {
     this.__uiPointerItem.localXfoParam.value = this.__pointerLocalXfo
   }
 
+  calcPointerRay(): Ray {
+    const pointerXfo = this.__uiPointerItem.globalXfoParam.value
+    const pointerVec = pointerXfo.ori.getZaxis().negate()
+    const ray = new Ray(pointerXfo.tr, pointerVec)
+    return ray
+  }
+
   /**
    * The calcUIIntersection method.
    *
    * @return {object|undefined} The return value.
    */
-  calcUIIntersection(): Record<any, any> | null {
-    const pointerXfo = this.__uiPointerItem.globalXfoParam.value
-    const pointerVec = pointerXfo.ori.getZaxis().negate()
-    const ray = new Ray(pointerXfo.tr, pointerVec)
+  calcUIIntersection(ray: Ray): Record<any, any> | null {
+    // const pointerXfo = this.__uiPointerItem.globalXfoParam.value
+    // const pointerVec = pointerXfo.ori.getZaxis().negate()
+    // const ray = new Ray(pointerXfo.tr, pointerVec)
 
     const planeXfo = this.controllerUI.globalXfoParam.value
     const planeSize = this.controllerUI.size.multiply(planeXfo.sc)
@@ -218,7 +224,7 @@ class VRUITool extends BaseTool {
       this.setPointerLength(0.5)
       return
     }
-    const hitOffset = pointerXfo.tr.add(pointerVec.scale(res)).subtract(plane.start)
+    const hitOffset = ray.start.add(ray.dir.scale(res)).subtract(plane.start)
     const x = hitOffset.dot(planeXfo.ori.getXaxis()) / planeSize.x
     const y = hitOffset.dot(planeXfo.ori.getYaxis()) / planeSize.y
     if (Math.abs(x) > 0.5 || Math.abs(y) > 0.5) {
@@ -240,30 +246,30 @@ class VRUITool extends BaseTool {
    * @param args - The args param.
    * @return The return value.
    */
-  sendEventToUI(eventName: string, args: any): Element {
-    const hit = this.calcUIIntersection()
-    if (hit) {
-      hit.offsetX = hit.pageX = hit.pageX = hit.screenX = hit.clientX
-      hit.offsetY = hit.pageY = hit.pageY = hit.screenY = hit.clientY
+  sendEventToUI(hit: Record<any, any>, eventName: string, args: any): Element {
+    // const hit = this.calcUIIntersection(ray)
+    // if (hit) {
+    hit.offsetX = hit.pageX = hit.pageX = hit.screenX = hit.clientX
+    hit.offsetY = hit.pageY = hit.pageY = hit.screenY = hit.clientY
 
-      let element = document.elementFromPoint(hit.clientX, hit.clientY)
-      if (element) {
-        // @ts-ignore
-        if (element.shadowRoot) element = element.shadowRoot.elementFromPoint(hit.clientX, hit.clientY)
-        if (element != this._element) {
-          if (this._element) this.controllerUI.sendMouseEvent('mouseleave', Object.assign(args, hit), this._element)
-          this._element = element
-          this.controllerUI.sendMouseEvent('mouseenter', Object.assign(args, hit), this._element)
-        }
-        this.controllerUI.sendMouseEvent(eventName, Object.assign(args, hit), this._element)
-      } else {
-        this._element = null
+    let element = document.elementFromPoint(hit.clientX, hit.clientY)
+    if (element) {
+      // @ts-ignore
+      if (element.shadowRoot) element = element.shadowRoot.elementFromPoint(hit.clientX, hit.clientY)
+      if (element != this._element) {
+        if (this._element) this.controllerUI.sendMouseEvent('mouseleave', Object.assign(args, hit), this._element)
+        this._element = element
+        this.controllerUI.sendMouseEvent('mouseenter', Object.assign(args, hit), this._element)
       }
-      return this._element
-    } else if (this._element) {
-      this.controllerUI.sendMouseEvent('mouseleave', Object.assign(args, hit), this._element)
+      this.controllerUI.sendMouseEvent(eventName, Object.assign(args, hit), this._element)
+    } else {
       this._element = null
     }
+    return this._element
+    // } else if (this._element) {
+    //   this.controllerUI.sendMouseEvent('mouseleave', Object.assign(args, hit), this._element)
+    //   this._element = null
+    // }
   }
 
   /**
@@ -274,16 +280,20 @@ class VRUITool extends BaseTool {
     if (event.pointerType === POINTER_TYPES.xr) {
       if (event.controller == this.pointerController && this.uiOpen) {
         this.__triggerHeld = true
-        const target = this.sendEventToUI('mousedown', {
-          button: event.button - 1,
-        })
-        if (target) {
-          this.__triggerDownElem = target
-        } else {
-          this.__triggerDownElem = null
+        const ray = this.calcPointerRay()
+        const hit = this.calcUIIntersection(ray)
+        if (hit) {
+          const target = this.sendEventToUI(hit, 'mousedown', {
+            button: event.button - 1,
+          })
+          if (target) {
+            this.__triggerDownElem = target
+          } else {
+            this.__triggerDownElem = null
+          }
+          // While the UI is open, no other tools get events.
+          event.stopPropagation()
         }
-        // While the UI is open, no other tools get events.
-        event.stopPropagation()
       }
     }
   }
@@ -296,13 +306,17 @@ class VRUITool extends BaseTool {
     if (event.pointerType === POINTER_TYPES.xr) {
       if (event.controller == this.pointerController && this.uiOpen) {
         this.__triggerHeld = false
-        const target = this.sendEventToUI('mouseup', {
-          button: event.button - 1,
-        })
-        if (target && this.__triggerDownElem == target) {
-          this.sendEventToUI('mouseup', {
+        const ray = this.calcPointerRay()
+        const hit = this.calcUIIntersection(ray)
+        if (hit) {
+          const target = this.sendEventToUI(hit, 'mouseup', {
             button: event.button - 1,
           })
+          if (target && this.__triggerDownElem == target) {
+            this.sendEventToUI(hit, 'mouseup', {
+              button: event.button - 1,
+            })
+          }
         }
         this.__triggerDownElem = null
         // While the UI is open, no other tools get events.
@@ -316,7 +330,16 @@ class VRUITool extends BaseTool {
    * @param event - The event param.
    */
   onPointerMove(event: XRPoseEvent): void {
-    if (event.pointerType === POINTER_TYPES.xr) {
+    if (event.pointerType === POINTER_TYPES.mouse) {
+      const ray = event.pointerRay
+      const hit = this.calcUIIntersection(ray)
+      if (hit) {
+        this.sendEventToUI(hit, 'mousemove', {})
+      } else if (this._element) {
+        this.controllerUI.sendMouseEvent('mouseleave', {}, this._element)
+        this._element = null
+      }
+    } else if (event.pointerType === POINTER_TYPES.xr) {
       if (!this.uiOpen) {
         if (
           !event.controllers[0] ||
@@ -369,11 +392,59 @@ class VRUITool extends BaseTool {
         }
 
         if (checkControllers()) {
-          this.sendEventToUI('mousemove', {})
+          const ray = this.calcPointerRay()
+          const hit = this.calcUIIntersection(ray)
+          if (hit) {
+            this.sendEventToUI(hit, 'mousemove', {})
+          } else if (this._element) {
+            this.controllerUI.sendMouseEvent('mouseleave', {}, this._element)
+            this._element = null
+          }
         }
         // While the UI is open, no other tools get events.
         event.stopPropagation()
       }
+    }
+  }
+
+  /**
+   * Event fired when the user presses down a key on the keyboard.
+   *
+   * @param event - The event param.
+   */
+  onKeyDown(event: ZeaKeyboardEvent) {}
+  /**
+   * Event fired when the user releases a key on the keyboard.
+   *
+   * @param event - The event param.
+   */
+  onKeyUp(event: ZeaKeyboardEvent): void {
+    if (event.key == ' ') {
+      if (!this.uiOpen) {
+        this.controllerUI.activate()
+
+        const viewport = event.viewport as GLViewport
+        const camera = viewport.getCamera()
+        const xfo = new Xfo()
+        xfo.tr.set(0, 0, -0.75)
+        this.controllerUI.localXfoParam.value = xfo
+
+        camera.addChild(this.controllerUI, false)
+
+        // To debug the UI in the renderer without being in VR, enable this line.
+        this.appData.renderer.addTreeItem(this.controllerUI)
+
+        this.uiOpen = true
+      } else {
+        this.controllerUI.deactivate()
+
+        // To debug the UI in the renderer without being in VR, enable this line.
+        this.appData.renderer.removeTreeItem(this.controllerUI)
+
+        this.uiOpen = false
+      }
+
+      // this.controllerUI.localXfoParam.value = new
     }
   }
 }
