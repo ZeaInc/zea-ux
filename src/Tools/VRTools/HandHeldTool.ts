@@ -1,6 +1,7 @@
 import {
   BaseTool,
   CADAsset,
+  TreeItem,
   VRViewport,
   XRController,
   Xfo,
@@ -14,6 +15,7 @@ class HandHeldTool extends BaseTool {
   appData: AppData
   cadAsset: CADAsset
   toolController: XRController
+  private children: TreeItem[] = []
   constructor(assetUrl: string, offsetXfo: Xfo, appData: AppData) {
     super()
     this.appData = appData
@@ -32,6 +34,12 @@ class HandHeldTool extends BaseTool {
     // this.appData.renderer.getGLCanvas().style.cursor = 'crosshair'
 
     const addToolToController = (controller: XRController) => {
+      const treeIem = controller.getTreeItem()
+
+      // cache the original controller geometry.
+      treeIem.getChildren().forEach((child) => this.children.push(child))
+      treeIem.removeAllChildren()
+
       controller.getTreeItem().addChild(this.cadAsset, false)
       this.toolController = controller
     }
@@ -65,7 +73,11 @@ class HandHeldTool extends BaseTool {
   deactivateTool() {
     super.deactivateTool()
     if (this.toolController) {
-      this.toolController.getTreeItem().removeChildByHandle(this.cadAsset)
+      const treeIem = this.toolController.getTreeItem()
+      treeIem.removeChildByHandle(this.cadAsset)
+      // restore the original controller geometry.
+      this.children.forEach((child) => treeIem.addChild(child, false))
+      this.children = []
       this.toolController = null
     }
   }
