@@ -17,11 +17,29 @@ class ToolManager extends BaseTool {
     this.tools[toolName] = tool
   }
 
-  pushTool(toolName: string): void {
-    const tool = this.tools[toolName]
-    if (!tool) throw Error('Tool not found' + toolName)
+  insertTool(tool: string | BaseTool, index: number): void {
+    if (!(tool instanceof BaseTool)) {
+      tool = this.tools[tool]
+    }
     if (tool.activateTool) tool.activateTool()
-    this.toolStack.push(this.tools[toolName])
+    this.toolStack.splice(index, 0, tool)
+  }
+
+  removeTool(tool: string | BaseTool): void {
+    if (!(tool instanceof BaseTool)) {
+      tool = this.tools[tool]
+    }
+    if (tool.deactivateTool) tool.deactivateTool()
+    const index = this.toolStack.indexOf(tool)
+    this.toolStack.splice(index, 1)
+  }
+
+  pushTool(tool: string | BaseTool): void {
+    if (!(tool instanceof BaseTool)) {
+      tool = this.tools[tool]
+    }
+    if (tool.activateTool) tool.activateTool()
+    this.toolStack.push(tool)
   }
 
   popTool(): void {

@@ -39,6 +39,7 @@ class VRUITool extends BaseTool {
   private pointerLocalXfo: Xfo
   private uiPointerItem: GeomItem
   private uiOpen: boolean = false
+  private uiOpenedByMouse: boolean = false
   private triggerHeld: boolean = false
 
   private uiController: XRController
@@ -185,6 +186,9 @@ class VRUITool extends BaseTool {
           },
         })
       }
+    }
+    if (this.uiOpenedByMouse) {
+      this.appData.renderer.removeTreeItem(this.controllerUI)
     }
     this.uiOpen = false
   }
@@ -477,6 +481,7 @@ class VRUITool extends BaseTool {
 
         this.appData.renderer.addTreeItem(this.controllerUI)
 
+        this.uiOpenedByMouse = true
         this.uiOpen = true
       } else {
         this.controllerUI.deactivate()
@@ -485,6 +490,7 @@ class VRUITool extends BaseTool {
         this.appData.renderer.removeTreeItem(this.controllerUI)
 
         this.uiOpen = false
+        this.uiOpenedByMouse = false
       }
 
       // this.controllerUI.localXfoParam.value = new

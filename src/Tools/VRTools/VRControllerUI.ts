@@ -65,7 +65,8 @@ const plane = new Plane(1, 1)
 export default class VRControllerUI extends TreeItem {
   appData: AppData
   vrUIDOMElement
-  ready: boolean
+  ready: boolean = false
+  open: boolean = false
   size: Vec3
   /**
    * Create a VR controller UI.
@@ -85,8 +86,6 @@ export default class VRControllerUI extends TreeItem {
     // const debugGeomItemXfo = new Xfo()
     // debugGeomItemXfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI)
     // this.addChild(debugGeomItem, false)
-
-    this.ready = false
   }
 
   private traverseAndRenderDOM() {
@@ -148,14 +147,19 @@ export default class VRControllerUI extends TreeItem {
             if (size.width == 0 || size.height == 0) return
             // Each time the dome changes, we use the classList as a key to cache
             // the generated images. Update the UI by adding and removing classes
-            const key = elem.id + elem.className
+            const key = elem.className
+            console.log(elem.className, size.width, size.height)
+            if (!this.open) return
             if (!imageDatas[key]) {
               renderElementUI(elem, size, key, (data: any, key: string) => {
                 // document.body.appendChild(data) // uncomment to see the UI elements added to the page.
                 imageDatas[key] = data
-                image.setData(size.width, size.height, data)
+                if (key == elem.className) {
+                  image.setData(size.width, size.height, imageDatas[key])
+                }
               })
             } else {
+              console.log(elem.className, imageDatas[key].width, imageDatas[key].height)
               image.setData(size.width, size.height, imageDatas[key])
             }
           })
@@ -183,6 +187,7 @@ export default class VRControllerUI extends TreeItem {
    * The activate method.
    */
   activate(): void {
+    this.open = true
     // The browser doesn't calculate element layout till the elements are visible.
     this.vrUIDOMElement.style.display = 'block'
     if (!this.ready) {
@@ -194,6 +199,7 @@ export default class VRControllerUI extends TreeItem {
    * The deactivate method.
    */
   deactivate(): void {
+    this.open = false
     this.vrUIDOMElement.style.display = 'none'
   }
 

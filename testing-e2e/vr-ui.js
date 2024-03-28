@@ -1,4 +1,4 @@
-const { Ray, Xfo, Vec3, Color } = window.zeaEngine
+const { Ray, Xfo, Vec3, Color, BaseTool } = window.zeaEngine
 
 /**
  * This sample UI class shows how to build a custom UI for VR interfaces.
@@ -174,6 +174,8 @@ class VRUI extends HTMLElement {
   setToolManager(toolManager) {
     this.toolManager = toolManager
 
+    let activeTool = null
+
     const addToolButton = (name, icon) => {
       const tool = toolManager.tools[name]
       const toolDiv = document.createElement('div')
@@ -182,11 +184,18 @@ class VRUI extends HTMLElement {
       toolDiv.addEventListener('mousedown', () => {
         toolDiv.classList.add('button-mousedown')
         if (!toolActive) {
-          while (toolManager.activeTool() && toolManager.activeToolName() != 'VRUITool') toolManager.popTool()
-          toolManager.pushTool(name)
+          if (activeTool) {
+            toolManager.removeTool(activeTool)
+          }
+          if (toolManager.activeToolName() == 'VRUITool') {
+            toolManager.insertTool(tool, toolManager.toolStack.length - 1)
+          } else {
+            toolManager.pushTool(tool)
+          }
+          activeTool = tool
         } else {
-          // while (toolManager.activeToolName() != name) toolManager.popTool()
-          if (toolManager.activeToolName() == name) toolManager.popTool()
+          activeTool = null
+          toolManager.removeTool(tool)
         }
       })
 
@@ -237,7 +246,7 @@ class VRUI extends HTMLElement {
     // }
     addToolButton('VRHoldObjectsTool', 'data/grab-icon.png')
     addToolButton('Freehand Line Tool', 'data/pen-tool.png')
-    addToolButton('Create Cuboid', 'data/create-cuboid-icon.png')
+    // addToolButton('Create Cuboid', 'data/create-cuboid-icon.png')
     addToolButton('Create Sphere', 'data/create-sphere-icon.png')
     addToolButton('Create Cone', 'data/create-cone-icon.png')
     addToolButton('HandHeldTool', 'data/wrench-icon.png')

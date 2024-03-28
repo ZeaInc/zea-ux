@@ -9,11 +9,11 @@
     <link href="data/zea-logo.png" rel="shortcut icon" />
 
     <link rel="stylesheet" href="styles/tailwind.min.css" />
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <script src="https://websocket.zea.live/socket.io/socket.io.js"></script>
 
     <script src="../node_modules/@zeainc/zea-engine/dist/index.umd.js"></script>
     <script src="../dist/index.umd.js"></script>
-
-    <script src="https://websocket-staging.zea.live/socket.io/socket.io.js"></script>
     <script src="../node_modules/@zeainc/zea-collab/dist/index.umd.js"></script>
 
     <style>
@@ -54,24 +54,15 @@
     <script type="module">
       import './vr-ui.js'
 
-      const {
-        GLRenderer,
-        Scene,
-        Vec3,
-        Xfo,
-        EulerAngles,
-        Color,
-        Cuboid,
-        Material,
-        GeomItem,
-        ObjAsset,
-      } = window.zeaEngine
+      const { GLRenderer, Scene, Vec3, Xfo, EulerAngles, Color, Cuboid, Material, GeomItem, ObjAsset } =
+        window.zeaEngine
       const {
         SelectionManager,
         UndoRedoManager,
         ToolManager,
         SelectionTool,
         VRHoldObjectsTool,
+        HandHeldTool,
         CreateFreehandLineTool,
         CreateSphereTool,
         CreateCuboidTool,
@@ -147,8 +138,8 @@
       const userData = makeUser('', getRandomString())
       console.log('I am:', userData)
 
-      const socketUrl = 'https://websocket-staging.zea.live'
-      const session = new Session(userData, socketUrl)
+      const socketUrl = 'https://websocket.zea.live'
+      const session = new Session(userData, socketUrl, {})
       session.joinRoom('testing-vr-tools')
       session.users[userData.id] = userData
       const sessionSync = new SessionSync(session, appData, userData, { avatarScale: 5 })
@@ -163,37 +154,41 @@
       })
 
       // ///////////////////////////////////////
-      // Setup VR
-
-      const h = document.querySelector('#buttonHolder')
-      const b = document.querySelector('#button')
+      const vrUIDOMElement = document.createElement('vr-ui')
+      document.body.appendChild(vrUIDOMElement)
 
       const holdObjectsTool = new VRHoldObjectsTool(appData)
+      const handHeldTool = new HandHeldTool('', new Xfo(), appData)
       const freehandLineTool = new CreateFreehandLineTool(appData)
       const createSphereTool = new CreateSphereTool(appData)
       const createCuboidTool = new CreateCuboidTool(appData)
       const createConeTool = new CreateConeTool(appData)
-      const vrToolManager = new ToolManager(appData)
 
-      // Register both tools.
-      vrToolManager.registerTool('VRHoldObjectsTool', holdObjectsTool)
-      vrToolManager.registerTool('Create Cuboid', createCuboidTool)
-      vrToolManager.registerTool('Create Sphere', createSphereTool)
-      vrToolManager.registerTool('Create Cone', createConeTool)
-      vrToolManager.registerTool('Freehand Line Tool', freehandLineTool)
+      // ////////////////////////////////////////////
+      // Setup a ToolManger for the main viewport.
+      const toolManager = new ToolManager(appData)
+      const cameraTool = renderer.getViewport().getManipulator()
+      cameraTool.deactivateTool()
+      toolManager.registerTool('CameraTool', cameraTool)
 
-      const vrUIDOMElement = document.createElement('vr-ui')
+      const vrUIToolTest = new VRUITool(appData, vrUIDOMElement.contentDiv)
+      toolManager.registerTool('VRUITool', vrUIToolTest)
+
+      toolManager.registerTool('VRHoldObjectsTool', holdObjectsTool)
+      toolManager.registerTool('HandHeldTool', handHeldTool)
+      // toolManager.registerTool('Create Cuboid', createCuboidTool)
+      toolManager.registerTool('Create Sphere', createSphereTool)
+      toolManager.registerTool('Create Cone', createConeTool)
+      toolManager.registerTool('Freehand Line Tool', freehandLineTool)
+
+      toolManager.pushTool('CameraTool')
+      toolManager.pushTool('VRUITool')
+      renderer.getViewport().setManipulator(toolManager)
 
       vrUIDOMElement.setRenderer(renderer)
-      vrUIDOMElement.setToolManager(vrToolManager)
-      vrUIDOMElement.setSessionRecorder(sessionRecorder)
-
-      document.body.appendChild(vrUIDOMElement)
-
-      const vrUITool = new VRUITool(appData, vrUIDOMElement.contentDiv)
-      vrToolManager.registerTool('VRUITool', vrUITool)
-      // vrUITool.controllerUI.activate()
-
+      vrUIDOMElement.setToolManager(toolManager)
+      // ////////////////////////////////////////////
+      /*
       renderer.getXRViewport().then((xrViewport) => {
         h.textContent = 'XR Device Detected'
         b.textContent = 'Launch VR'
@@ -219,13 +214,27 @@
           }
         })
 
-        const viewManipulator = xrViewport.getManipulator()
+      // Setup VR Tools
+      const vrToolManager = new ToolManager(appData)
+      vrToolManager.registerTool('VRHoldObjectsTool', holdObjectsTool)
+      vrToolManager.registerTool('HandHeldTool', handHeldTool)
+      vrToolManager.registerTool('Create Cuboid', createCuboidTool)
+      vrToolManager.registerTool('Create Sphere', createSphereTool)
+      vrToolManager.registerTool('Create Cone', createConeTool)
+      vrToolManager.registerTool('Freehand Line Tool', freehandLineTool)
 
+      vrUIDOMElement.setRenderer(renderer)
+      vrUIDOMElement.setToolManager(vrToolManager)
+      const vrUITool = new VRUITool(appData, vrUIDOMElement.contentDiv)
+      vrToolManager.registerTool('VRUITool', vrUITool)
+      // vrUIDOMElement.setSessionRecorder(sessionRecorder)
+        const viewManipulator = xrViewport.getManipulator()
         vrToolManager.registerTool('VRViewManipulator', viewManipulator)
         xrViewport.setManipulator(vrToolManager)
         vrToolManager.pushTool('VRViewManipulator')
         vrToolManager.pushTool('VRUITool')
       })
+      */
     </script>
   </head>
   <body class="bg-blue-100 h-full">
