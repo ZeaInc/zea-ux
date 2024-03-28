@@ -245,11 +245,11 @@ class VRUI extends HTMLElement {
     //   addToolButton(key)
     // }
     addToolButton('VRHoldObjectsTool', 'data/grab-icon.png')
+    addToolButton('HandHeldTool', 'data/wrench-icon.png')
     addToolButton('Freehand Line Tool', 'data/pen-tool.png')
     // addToolButton('Create Cuboid', 'data/create-cuboid-icon.png')
-    addToolButton('Create Sphere', 'data/create-sphere-icon.png')
-    addToolButton('Create Cone', 'data/create-cone-icon.png')
-    addToolButton('HandHeldTool', 'data/wrench-icon.png')
+    // addToolButton('Create Sphere', 'data/create-sphere-icon.png')
+    // addToolButton('Create Cone', 'data/create-cone-icon.png')
 
     let color = new Color('#FFD800')
     const addColorButton = (icon, cb) => {

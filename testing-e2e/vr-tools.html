@@ -175,11 +175,11 @@
       toolManager.registerTool('VRUITool', vrUIToolTest)
 
       toolManager.registerTool('VRHoldObjectsTool', holdObjectsTool)
+      toolManager.registerTool('Freehand Line Tool', freehandLineTool)
       toolManager.registerTool('HandHeldTool', handHeldTool)
       // toolManager.registerTool('Create Cuboid', createCuboidTool)
       toolManager.registerTool('Create Sphere', createSphereTool)
       toolManager.registerTool('Create Cone', createConeTool)
-      toolManager.registerTool('Freehand Line Tool', freehandLineTool)
 
       toolManager.pushTool('CameraTool')
       toolManager.pushTool('VRUITool')
@@ -188,7 +188,7 @@
       vrUIDOMElement.setRenderer(renderer)
       vrUIDOMElement.setToolManager(toolManager)
       // ////////////////////////////////////////////
-      /*
+
       renderer.getXRViewport().then((xrViewport) => {
         h.textContent = 'XR Device Detected'
         b.textContent = 'Launch VR'
@@ -214,27 +214,26 @@
           }
         })
 
-      // Setup VR Tools
-      const vrToolManager = new ToolManager(appData)
-      vrToolManager.registerTool('VRHoldObjectsTool', holdObjectsTool)
-      vrToolManager.registerTool('HandHeldTool', handHeldTool)
-      vrToolManager.registerTool('Create Cuboid', createCuboidTool)
-      vrToolManager.registerTool('Create Sphere', createSphereTool)
-      vrToolManager.registerTool('Create Cone', createConeTool)
-      vrToolManager.registerTool('Freehand Line Tool', freehandLineTool)
+        // Setup VR Tools
+        const vrToolManager = new ToolManager(appData)
+        vrToolManager.registerTool('VRHoldObjectsTool', holdObjectsTool)
+        vrToolManager.registerTool('HandHeldTool', handHeldTool)
+        vrToolManager.registerTool('Create Cuboid', createCuboidTool)
+        vrToolManager.registerTool('Create Sphere', createSphereTool)
+        vrToolManager.registerTool('Create Cone', createConeTool)
+        vrToolManager.registerTool('Freehand Line Tool', freehandLineTool)
 
-      vrUIDOMElement.setRenderer(renderer)
-      vrUIDOMElement.setToolManager(vrToolManager)
-      const vrUITool = new VRUITool(appData, vrUIDOMElement.contentDiv)
-      vrToolManager.registerTool('VRUITool', vrUITool)
-      // vrUIDOMElement.setSessionRecorder(sessionRecorder)
+        vrUIDOMElement.setRenderer(renderer)
+        vrUIDOMElement.setToolManager(vrToolManager)
+        const vrUITool = new VRUITool(appData, vrUIDOMElement.contentDiv)
+        vrToolManager.registerTool('VRUITool', vrUITool)
+        // vrUIDOMElement.setSessionRecorder(sessionRecorder)
         const viewManipulator = xrViewport.getManipulator()
         vrToolManager.registerTool('VRViewManipulator', viewManipulator)
         xrViewport.setManipulator(vrToolManager)
         vrToolManager.pushTool('VRViewManipulator')
         vrToolManager.pushTool('VRUITool')
       })
-      */
     </script>
   </head>
   <body class="bg-blue-100 h-full">

@@ -144,12 +144,10 @@ export default class VRControllerUI extends TreeItem {
           }
 
           const mutationObserver = new MutationObserver((mutations) => {
-            if (size.width == 0 || size.height == 0) return
+            if (!this.open || size.width == 0 || size.height == 0) return
             // Each time the dome changes, we use the classList as a key to cache
             // the generated images. Update the UI by adding and removing classes
             const key = elem.className
-            console.log(elem.className, size.width, size.height)
-            if (!this.open) return
             if (!imageDatas[key]) {
               renderElementUI(elem, size, key, (data: any, key: string) => {
                 // document.body.appendChild(data) // uncomment to see the UI elements added to the page.
@@ -159,7 +157,6 @@ export default class VRControllerUI extends TreeItem {
                 }
               })
             } else {
-              console.log(elem.className, imageDatas[key].width, imageDatas[key].height)
               image.setData(size.width, size.height, imageDatas[key])
             }
           })
