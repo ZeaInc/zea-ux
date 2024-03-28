@@ -26,7 +26,8 @@ class VRUI extends HTMLElement {
     this.contentDiv.appendChild(this.toolsContainer)
 
     const addButton = (icon, cb) => {
-      const buttonDiv = document.createElement('div')
+      // const buttonDiv = document.createElement('div')
+      const buttonDiv = document.createElement('button')
       buttonDiv.classList.add('button')
       this.buttonsContainer.appendChild(buttonDiv)
       buttonDiv.addEventListener('mouseenter', () => {
@@ -116,7 +117,7 @@ class VRUI extends HTMLElement {
   border: 2px solid #333333;
   width: 90px;
   height: 90px; 
-  border-radius: 15px;
+  border-radius: 50%;
   background-color: #b0b0b0;
   margin: 5px;
   display: flex;
@@ -178,11 +179,11 @@ class VRUI extends HTMLElement {
 
     const addToolButton = (name, icon) => {
       const tool = toolManager.tools[name]
-      const toolDiv = document.createElement('div')
-      toolDiv.classList.add('button')
+      const elem = document.createElement('button')
+      elem.classList.add('button')
       let toolActive = false
-      toolDiv.addEventListener('mousedown', () => {
-        toolDiv.classList.add('button-mousedown')
+      elem.addEventListener('mousedown', () => {
+        elem.classList.add('button-mousedown')
         if (!toolActive) {
           if (activeTool) {
             toolManager.removeTool(activeTool)
@@ -199,42 +200,42 @@ class VRUI extends HTMLElement {
         }
       })
 
-      toolDiv.addEventListener('mouseup', () => {
-        toolDiv.classList.remove('button-mousedown')
+      elem.addEventListener('mouseup', () => {
+        elem.classList.remove('button-mousedown')
       })
 
       tool.on('activatedChanged', (event) => {
         if (event.activated) {
           if (tool.colorParam) tool.colorParam.setValue(color)
 
-          toolDiv.classList.add('button-active')
+          elem.classList.add('button-active')
           toolActive = true
         } else {
-          toolDiv.classList.remove('button-active')
+          elem.classList.remove('button-active')
           toolActive = false
         }
       })
 
-      toolDiv.addEventListener('mouseenter', () => {
-        toolDiv.classList.add('button-hover')
+      elem.addEventListener('mouseenter', () => {
+        elem.classList.add('button-hover')
       })
 
-      toolDiv.addEventListener('mouseleave', () => {
-        toolDiv.classList.remove('button-hover')
+      elem.addEventListener('mouseleave', () => {
+        elem.classList.remove('button-hover')
       })
 
-      this.buttonsContainer.appendChild(toolDiv)
+      this.buttonsContainer.appendChild(elem)
 
       if (icon) {
         const img = new Image()
         img.classList.add('button-image')
         img.src = icon
-        toolDiv.appendChild(img)
+        elem.appendChild(img)
       } else {
         const toolLabelSpan = document.createElement('span')
         toolLabelSpan.classList.add('label')
         const toolLabel = document.createTextNode(name)
-        toolDiv.appendChild(toolLabelSpan)
+        elem.appendChild(toolLabelSpan)
         toolLabelSpan.appendChild(toolLabel)
       }
     }
@@ -253,7 +254,7 @@ class VRUI extends HTMLElement {
 
     let color = new Color('#FFD800')
     const addColorButton = (icon, cb) => {
-      const buttonDiv = document.createElement('div')
+      const buttonDiv = document.createElement('button')
       buttonDiv.classList.add('button')
       this.buttonsContainer.appendChild(buttonDiv)
       buttonDiv.addEventListener('mouseenter', () => {

@@ -26,9 +26,9 @@ import { ParameterValueChange } from '../..'
  * @extends Change
  */
 class HoldObjectsChange extends Change {
-  __selection: Array<TreeItem> = []
-  __prevXfos: Array<Xfo> = []
-  __newXfos: Array<Xfo> = []
+  selection: Array<TreeItem> = []
+  prevXfos: Array<Xfo> = []
+  newXfos: Array<Xfo> = []
   /**
    * Create a hold objects change.
    *
@@ -44,9 +44,9 @@ class HoldObjectsChange extends Change {
    * The undo method.
    */
   undo(): void {
-    for (let i = 0; i < this.__selection.length; i++) {
-      if (this.__selection[i] && this.__prevXfos[i]) {
-        this.__selection[i].globalXfoParam.value = this.__prevXfos[i]
+    for (let i = 0; i < this.selection.length; i++) {
+      if (this.selection[i] && this.prevXfos[i]) {
+        this.selection[i].globalXfoParam.value = this.prevXfos[i]
       }
     }
   }
@@ -55,9 +55,9 @@ class HoldObjectsChange extends Change {
    * The redo method.
    */
   redo(): void {
-    for (let i = 0; i < this.__selection.length; i++) {
-      if (this.__selection[i] && this.__newXfos[i]) {
-        this.__selection[i].globalXfoParam.value = this.__newXfos[i]
+    for (let i = 0; i < this.selection.length; i++) {
+      if (this.selection[i] && this.newXfos[i]) {
+        this.selection[i].globalXfoParam.value = this.newXfos[i]
       }
     }
   }
@@ -68,14 +68,14 @@ class HoldObjectsChange extends Change {
    */
   update(updateData: any): void {
     if (updateData.newItem) {
-      this.__selection[updateData.newItemId] = updateData.newItem
-      this.__prevXfos[updateData.newItemId] = updateData.newItem.globalXfoParam.value
+      this.selection[updateData.newItemId] = updateData.newItem
+      this.prevXfos[updateData.newItemId] = updateData.newItem.globalXfoParam.value
     } else if (updateData.changeXfos) {
       for (let i = 0; i < updateData.changeXfoIds.length; i++) {
         const gidx = updateData.changeXfoIds[i]
-        if (!this.__selection[gidx]) continue
-        this.__selection[gidx].globalXfoParam.value = updateData.changeXfos[i]
-        this.__newXfos[gidx] = updateData.changeXfos[i]
+        if (!this.selection[gidx]) continue
+        this.selection[gidx].globalXfoParam.value = updateData.changeXfos[i]
+        this.newXfos[gidx] = updateData.changeXfos[i]
       }
     }
     this.emit('updated', updateData)
@@ -90,9 +90,9 @@ class HoldObjectsChange extends Change {
     const j: Record<any, any> = super.toJSON(context)
 
     const itemPaths = []
-    for (let i = 0; i < this.__selection.length; i++) {
-      if (this.__selection[i]) {
-        itemPaths[i] = this.__selection[i].getPath()
+    for (let i = 0; i < this.selection.length; i++) {
+      if (this.selection[i]) {
+        itemPaths[i] = this.selection[i].getPath()
       } else {
         itemPaths.push(null)
       }
@@ -111,14 +111,14 @@ class HoldObjectsChange extends Change {
     super.fromJSON(j, context)
 
     const sceneRoot = context.appData.scene.getRoot()
-    this.__selection = []
+    this.selection = []
     for (let i = 0; i < j.itemPaths.length; i++) {
       const itemPath = j.itemPaths[i]
       if (itemPath && itemPath != '') {
         const newItem = sceneRoot.resolvePath(itemPath, 1)
         if (newItem != sceneRoot) {
-          this.__selection[i] = newItem
-          this.__prevXfos[i] = newItem.globalXfoParam.value
+          this.selection[i] = newItem
+          this.prevXfos[i] = newItem.globalXfoParam.value
         }
       }
     }
@@ -145,6 +145,8 @@ class VRHoldObjectsTool extends BaseTool {
 
   private addIconToControllerId: number
   private change: HoldObjectsChange
+  private prevCursor: string
+
   /**
    * Create a VR hold objects tool.
    * @param appData - The appData value.
@@ -160,6 +162,7 @@ class VRHoldObjectsTool extends BaseTool {
   activateTool(): void {
     super.activateTool()
 
+    this.prevCursor = this.appData.renderer.getGLCanvas().style.cursor
     this.appData.renderer.getGLCanvas().style.cursor = 'crosshair'
 
     const addIconToController = (controller: XRController) => {
@@ -187,6 +190,8 @@ class VRHoldObjectsTool extends BaseTool {
    */
   deactivateTool(): void {
     super.deactivateTool()
+
+    this.appData.renderer.getGLCanvas().style.cursor = this.prevCursor
 
     this.appData.renderer.getXRViewport().then((xrvp) => {
       // for(let controller of xrvp.getControllers()) {

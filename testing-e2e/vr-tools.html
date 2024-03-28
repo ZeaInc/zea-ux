@@ -187,12 +187,11 @@
       // toolManager.registerTool('Create Cuboid', createCuboidTool)
       toolManager.registerTool('Create Sphere', createSphereTool)
       toolManager.registerTool('Create Cone', createConeTool)
+      toolManager.registerTool('VRUITool', vrUITool)
 
       toolManager.pushTool(cameraTool)
       toolManager.pushTool(vrUITool)
       renderer.getViewport().setManipulator(toolManager)
-
-      toolManager.registerTool('VRUITool', vrUITool)
 
       vrUIDOMElement.setRenderer(renderer)
       vrUIDOMElement.setToolManager(toolManager)

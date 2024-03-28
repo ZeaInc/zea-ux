@@ -416,10 +416,6 @@ class VRUITool extends BaseTool {
               this.sendEventToUI(this.element, 'mouseenter', hit, {})
             }
           }
-          if (this.element) {
-            this.sendEventToUI(this.element, 'mousemove', hit, {})
-          }
-
           event.stopPropagation()
         } else if (this.element) {
           this.controllerUI.sendMouseEvent(this.element, 'mouseleave', {})
