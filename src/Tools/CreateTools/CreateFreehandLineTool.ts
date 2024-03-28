@@ -1,4 +1,13 @@
-import { BooleanParameter, Vec3, XRControllerEvent, Xfo, ZeaPointerEvent } from '@zeainc/zea-engine'
+import {
+  BooleanParameter,
+  Vec3,
+  XRControllerEvent,
+  XRPoseEvent,
+  Xfo,
+  ZeaMouseEvent,
+  ZeaPointerEvent,
+  ZeaTouchEvent,
+} from '@zeainc/zea-engine'
 import CreateLineTool from './CreateLineTool'
 import CreateFreehandLineChange from './Change/CreateFreehandLineChange'
 import { UndoRedoManager } from '../../UndoRedo/index'
@@ -33,9 +42,9 @@ class CreateFreehandLineTool extends CreateLineTool {
    * @param event - The event param.
    */
   onPointerMove(event: ZeaPointerEvent): void {
-    if (event instanceof XRControllerEvent) {
+    if (event instanceof XRPoseEvent) {
       this.onVRPoseChanged(event)
-    } else if (this.stage > 0) {
+    } else if (this.stage > 0 && (event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent)) {
       const snapToSurfaceUnderPointer = true
       const xfo = this.screenPosToXfo(event, snapToSurfaceUnderPointer)
       this.createMove(xfo.tr, event)

@@ -17,6 +17,7 @@ import {
   XRController,
   XRControllerEvent,
   Quat,
+  XRPoseEvent,
 } from '@zeainc/zea-engine'
 import BaseCreateTool from '../BaseCreateTool'
 import { UndoRedoManager } from '../../UndoRedo/index'
@@ -165,7 +166,7 @@ class CreateGeomTool extends BaseCreateTool {
    * @param event - The event param
    * @return {Xfo} The return value.
    */
-  screenPosToXfo(event: ZeaPointerEvent, snapToSurfaceUnderPointer = false): Xfo {
+  screenPosToXfo(event: ZeaMouseEvent | ZeaTouchEvent, snapToSurfaceUnderPointer = false): Xfo {
     if (!(event instanceof ZeaMouseEvent) && !(event instanceof ZeaTouchEvent)) {
       console.warn('not handling VR')
       return
@@ -273,8 +274,8 @@ class CreateGeomTool extends BaseCreateTool {
    * @param event - The event param.
    */
   onPointerMove(event: ZeaPointerEvent): void {
-    if (event instanceof XRControllerEvent) {
-      this.onVRPoseChanged(event as XRControllerEvent)
+    if (event instanceof XRPoseEvent) {
+      this.onVRPoseChanged(event)
     } else if (this.stage > 0) {
       const snapToSurfaceUnderPointer = false
       const xfo = this.screenPosToXfo(event, snapToSurfaceUnderPointer)
@@ -292,7 +293,7 @@ class CreateGeomTool extends BaseCreateTool {
     if (event instanceof ZeaMouseEvent && event.altKey) return
     if (event instanceof XRControllerEvent) {
       this.onVRControllerButtonUp(event)
-    } else if (this.stage > 0) {
+    } else if (this.stage > 0 && (event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent)) {
       const snapToSurfaceUnderPointer = false
       const xfo = this.screenPosToXfo(event, snapToSurfaceUnderPointer)
       this.createRelease(xfo.tr, event)
@@ -375,7 +376,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param event - The event param.
    */
-  onVRPoseChanged(event: XRControllerEvent): void {
+  onVRPoseChanged(event: XRPoseEvent): void {
     if (this.activeController && this.stage > 0) {
       // TODO: Snap the Xfo to any nearby construction planes.
       const xfo = this.activeController.getTipXfo()

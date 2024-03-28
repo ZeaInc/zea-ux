@@ -36,33 +36,39 @@ class HandHeldTool extends BaseTool {
     const addToolToController = (controller: XRController) => {
       const treeIem = controller.getTreeItem()
 
-      // cache the original controller geometry.
-      treeIem.getChildren().forEach((child) => this.children.push(child))
-      treeIem.removeAllChildren()
-
-      controller.getTreeItem().addChild(this.cadAsset, false)
+      // hide the controller geometry.
+      treeIem.getChildren().forEach((child) => {
+        child.visibleParam.value = false
+      })
+      this.cadAsset.visibleParam.value = true
+      treeIem.addChild(this.cadAsset, false)
       this.toolController = controller
     }
 
-    const checkController = (controller: XRController, headXfo: Xfo) => {
+    const getControllerAngle = (controller: XRController, headXfo: Xfo) => {
       // Note: do not open the UI when the controller buttons are pressed.
       const xfoA = controller.getTreeItem().globalXfoParam.value
       const headToCtrlA = xfoA.tr.subtract(headXfo.tr)
       headToCtrlA.normalizeInPlace()
-      if (headToCtrlA.angleTo(headXfo.ori.getZaxis()) < Math.PI * 0.25) {
-        return true
-      }
-
-      return false
+      // console.log(controller.getHandedness(), headToCtrlA.angleTo(xfoA.ori.getYaxis()), xfoA.sc.toString())
+      return headToCtrlA.angleTo(xfoA.ori.getYaxis())
     }
+
     this.appData.renderer.getXRViewport().then((xrvp) => {
       if (xrvp instanceof VRViewport) {
         const headXfo = xrvp.getVRHead().getTreeItem().globalXfoParam.value
+
+        let bestController: XRController
+        let bestAngle: number = 0
         for (const controller of xrvp.getControllers()) {
-          if (checkController(controller, headXfo)) {
-            addToolToController(controller)
-            break
+          const angle = getControllerAngle(controller, headXfo)
+          if (angle > bestAngle) {
+            bestAngle = angle
+            bestController = controller
           }
+        }
+        if (bestController) {
+          addToolToController(bestController)
         }
       }
     })
@@ -75,9 +81,10 @@ class HandHeldTool extends BaseTool {
     if (this.toolController) {
       const treeIem = this.toolController.getTreeItem()
       treeIem.removeChildByHandle(this.cadAsset)
-      // restore the original controller geometry.
-      this.children.forEach((child) => treeIem.addChild(child, false))
-      this.children = []
+      treeIem.getChildren().forEach((child) => {
+        child.visibleParam.value = true
+      })
+
       this.toolController = null
     }
   }

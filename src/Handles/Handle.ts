@@ -124,7 +124,7 @@ class Handle extends TreeItem {
       event.stopPropagation()
       if (event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) {
         this.handlePointerMove(event)
-      } else if (event instanceof XRControllerEvent) {
+      } else if (event instanceof XRPoseEvent) {
         this.onVRPoseChanged(event)
       }
     }
@@ -240,7 +240,7 @@ class Handle extends TreeItem {
    *
    * @param event - The event param.
    */
-  onVRPoseChanged(event: XRControllerEvent): void {
+  onVRPoseChanged(event: XRPoseEvent): void {
     if (this.activeController) {
       const xfo = this.activeController.getTipXfo()
       const gizmoRay = this.getManipulationPlane()

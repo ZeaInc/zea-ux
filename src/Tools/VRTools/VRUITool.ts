@@ -19,6 +19,9 @@ import {
   Quat,
   ZeaPointerEvent,
   ZeaMouseEvent,
+  EulerAngles,
+  MathFunctions,
+  TreeItem,
 } from '@zeainc/zea-engine'
 
 import { AppData } from '../../../types/types'
@@ -44,10 +47,11 @@ class VRUITool extends BaseTool {
   private uiOpenedByMouse: boolean = false
   private triggerHeld: boolean = false
 
+  private visibilityStates: Record<string, boolean[]> = {}
   private uiController: XRController
   private pointerController: any
   private element: Element
-  private openUIKeyboardHotkey = ' '
+  private openUIKeyboardHotkey = 'u'
 
   /**
    * Create a VR UI tool.
@@ -70,8 +74,8 @@ class VRUITool extends BaseTool {
     line.setNumSegments(1)
     line.setSegmentVertexIndices(0, 0, 1)
     const positions = <Vec3Attribute>line.getVertexAttribute('positions')
-    positions.getValueRef(0).set(0.0, 0.0, 0.0)
-    positions.getValueRef(1).set(0.0, 0.0, -1.0)
+    positions.setValue(0, new Vec3(0.0, 0.0, 0.0))
+    positions.setValue(1, new Vec3(0.0, 0.0, -1.0))
     line.setBoundingBoxDirty()
     this.pointerLocalXfo = new Xfo()
     this.pointerLocalXfo.sc.set(1, 1, 0.1)
@@ -123,8 +127,18 @@ class VRUITool extends BaseTool {
     this.uiController = uiController
     this.pointerController = pointerController
 
+    const showFirstChild = (handedness: string, treeItem: TreeItem) => {
+      const currentStates: boolean[] = []
+      treeItem.getChildren().forEach((child, index) => {
+        currentStates.push(child.visibleParam.value)
+        child.visibleParam.value = index < 2
+      })
+      this.visibilityStates[handedness] = currentStates
+    }
+    showFirstChild(this.uiController.getHandedness(), this.uiController.getTreeItem())
+    showFirstChild(this.pointerController.getHandedness(), this.pointerController.getTreeItem())
+
     const uiLocalXfo = this.controllerUI.localXfoParam.getValue()
-    uiLocalXfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * -0.6)
     // uiLocalXfo.tr.set(0, -0.05, 0.08)
 
     if (this.pointerController) {
@@ -132,12 +146,19 @@ class VRUITool extends BaseTool {
       const xfoB = this.pointerController.getTreeItem().globalXfoParam.value
       const headToCtrlA = xfoA.tr.subtract(headXfo.tr)
       const headToCtrlB = xfoB.tr.subtract(headXfo.tr)
+
+      // display the UI on the top of the thumb knuckle.
       if (headToCtrlA.cross(headToCtrlB).dot(headXfo.ori.getYaxis()) > 0.0) {
-        uiLocalXfo.tr.set(0.05, -0.05, 0.08)
+        const eulerAngles = new EulerAngles(-MathFunctions.degToRad(90), -MathFunctions.degToRad(90), 0, 'XYZ')
+        uiLocalXfo.ori.setFromEulerAngles(eulerAngles)
+        uiLocalXfo.tr.set(-0.05, -0.02, 0.08)
       } else {
-        uiLocalXfo.tr.set(-0.05, -0.05, 0.08)
+        const eulerAngles = new EulerAngles(-MathFunctions.degToRad(90), MathFunctions.degToRad(90), 0, 'XYZ')
+        uiLocalXfo.ori.setFromEulerAngles(eulerAngles)
+        uiLocalXfo.tr.set(0.05, -0.02, 0.08)
       }
     } else {
+      // uiLocalXfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * -0.6)
       uiLocalXfo.tr.set(0, -0.05, 0.08)
     }
 
@@ -179,6 +200,18 @@ class VRUITool extends BaseTool {
       if (this.pointerController) {
         this.pointerController.getTipItem().removeChildByHandle(this.uiPointerItem)
       }
+
+      // Any tool geoemtry should be restored to is previous visibility state.
+      const restoreVibility = (handedness: string, treeItem: TreeItem) => {
+        const currentStates: boolean[] = this.visibilityStates[handedness]
+        treeItem.getChildren().forEach((child, index) => {
+          if (index < currentStates.length) {
+            child.visibleParam.value = currentStates[index]
+          }
+        })
+      }
+      restoreVibility(this.uiController.getHandedness(), this.uiController.getTreeItem())
+      restoreVibility(this.pointerController.getHandedness(), this.pointerController.getTreeItem())
 
       if (this.appData.session) {
         this.appData.session.pub('pose-message', {
@@ -405,15 +438,15 @@ class VRUITool extends BaseTool {
         }
         // Controller coordinate system
         // X = Horizontal.
-        // Y = Up.
+        // Y = Down
         // Z = Towards handle base.
         const headXfo = event.viewXfo
-        const checkControllers = (ctrlA: any, ctrlB: any) => {
+        const checkControllers = (ctrlA: XRController, ctrlB: XRController) => {
           // Note: do not open the UI when the controller buttons are pressed.
           const xfoA = ctrlA.getTreeItem().globalXfoParam.value
           const headToCtrlA = xfoA.tr.subtract(headXfo.tr)
           headToCtrlA.normalizeInPlace()
-          if (headToCtrlA.angleTo(xfoA.ori.getYaxis()) < Math.PI * 0.25) {
+          if (headToCtrlA.angleTo(xfoA.ori.getYaxis()) < Math.PI * 0.3) {
             this.displayUI(ctrlA, ctrlB, headXfo)
             event.setCapture(this)
             event.stopPropagation()
@@ -427,14 +460,14 @@ class VRUITool extends BaseTool {
       } else {
         // Controller coordinate system
         // X = Horizontal.
-        // Y = Up.
+        // Y = Down
         // Z = Towards handle base.
         const headXfo = event.viewXfo
         const checkControllers = () => {
           const xfoA = this.uiController.getTreeItem().globalXfoParam.value
           const headToCtrlA = xfoA.tr.subtract(headXfo.tr)
           headToCtrlA.normalizeInPlace()
-          if (headToCtrlA.angleTo(xfoA.ori.getYaxis()) > Math.PI * 0.5) {
+          if (headToCtrlA.angleTo(xfoA.ori.getYaxis()) > Math.PI * 0.7) {
             // Remove ourself from the system.
             this.closeUI()
             if (event.getCapture() == this) {
