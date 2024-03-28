@@ -12,6 +12,7 @@ import {
   XRPoseEvent,
   GeomItem,
   XRController,
+  ZeaPointerEvent,
 } from '@zeainc/zea-engine'
 // import Handle from '../../Handles/Handle'
 import UndoRedoManager from '../../UndoRedo/UndoRedoManager'
@@ -251,8 +252,8 @@ class VRHoldObjectsTool extends BaseTool {
    *
    * @param event - The event param.
    */
-  onPointerDown(event: XRControllerEvent): void {
-    if (event.pointerType === POINTER_TYPES.xr) {
+  onPointerDown(event: ZeaPointerEvent): void {
+    if (event instanceof XRControllerEvent) {
       const id = event.controller.getId()
       this.vrControllers[id] = event.controller
 
@@ -297,8 +298,8 @@ class VRHoldObjectsTool extends BaseTool {
    *
    * @param event - The event param.
    */
-  onPointerUp(event: XRControllerEvent): void {
-    if (event.pointerType === POINTER_TYPES.xr) {
+  onPointerUp(event: ZeaPointerEvent): void {
+    if (event instanceof XRControllerEvent) {
       const id = event.controller.getId()
 
       this.pressedButtonCount--
@@ -324,8 +325,8 @@ class VRHoldObjectsTool extends BaseTool {
    *
    * @param event - The event param.
    */
-  onPointerMove(event: XRPoseEvent): void {
-    if (event.pointerType === POINTER_TYPES.xr) {
+  onPointerMove(event: ZeaPointerEvent): void {
+    if (event instanceof XRPoseEvent) {
       if (!this.change) {
         event.controllers.forEach((controller: any) => {
           const id = controller.getId()
@@ -373,7 +374,7 @@ class VRHoldObjectsTool extends BaseTool {
    * @param event - The event param.
    */
   onPointerDoublePress(event: ZeaMouseEvent): void {
-    if (event.pointerType === POINTER_TYPES.xr) {
+    if (event instanceof XRControllerEvent) {
       // this.onVRControllerDoubleClicked(event)
     }
   }

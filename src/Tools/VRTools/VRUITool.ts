@@ -17,6 +17,8 @@ import {
   ZeaKeyboardEvent,
   GLViewport,
   Quat,
+  ZeaPointerEvent,
+  ZeaMouseEvent,
 } from '@zeainc/zea-engine'
 
 import { AppData } from '../../../types/types'
@@ -269,7 +271,7 @@ class VRUITool extends BaseTool {
    * @param event - The event param.
    */
   onPointerDown(event: XRControllerEvent): void {
-    if (event.pointerType === POINTER_TYPES.mouse) {
+    if (event instanceof ZeaMouseEvent) {
       if (this.uiOpen) {
         const ray = event.pointerRay
         const hit = this.calcUIIntersection(ray)
@@ -282,7 +284,7 @@ class VRUITool extends BaseTool {
           event.stopPropagation()
         }
       }
-    } else if (event.pointerType === POINTER_TYPES.xr) {
+    } else if (event instanceof XRControllerEvent) {
       if (event.controller == this.pointerController && this.uiOpen) {
         const ray = this.calcPointerRay()
         const hit = this.calcUIIntersection(ray)
@@ -303,8 +305,8 @@ class VRUITool extends BaseTool {
    * The onVRControllerButtonUp method.
    * @param event - The event param.
    */
-  onPointerUp(event: XRControllerEvent): void {
-    if (event.pointerType === POINTER_TYPES.mouse) {
+  onPointerUp(event: ZeaPointerEvent): void {
+    if (event instanceof ZeaMouseEvent) {
       if (this.triggerHeld) {
         // While the UI is open, no other tools get events.
         event.stopPropagation()
@@ -322,7 +324,7 @@ class VRUITool extends BaseTool {
           }
         }
       }
-    } else if (event.pointerType === POINTER_TYPES.xr) {
+    } else if (event instanceof XRControllerEvent) {
       if (event.controller == this.pointerController && this.uiOpen) {
         const ray = this.calcPointerRay()
         const hit = this.calcUIIntersection(ray)
@@ -333,9 +335,29 @@ class VRUITool extends BaseTool {
               button: event.button - 1,
             })
           }
+          event.stopPropagation()
         }
-        // While the UI is open, no other tools get events.
-        event.stopPropagation()
+      }
+    }
+  }
+
+  onPointerDoubleClick(event: ZeaPointerEvent) {
+    if (event instanceof ZeaMouseEvent) {
+      if (this.uiOpen) {
+        const ray = event.pointerRay
+        const hit = this.calcUIIntersection(ray)
+        if (hit) {
+          // While the UI is open, no other tools get events.
+          event.stopPropagation()
+        }
+      }
+    } else if (event instanceof XRControllerEvent) {
+      if (event.controller == this.pointerController && this.uiOpen) {
+        const ray = this.calcPointerRay()
+        const hit = this.calcUIIntersection(ray)
+        if (hit) {
+          event.stopPropagation()
+        }
       }
     }
   }
@@ -345,7 +367,7 @@ class VRUITool extends BaseTool {
    * @param event - The event param.
    */
   onPointerMove(event: XRPoseEvent): void {
-    if (event.pointerType === POINTER_TYPES.mouse) {
+    if (event instanceof ZeaMouseEvent) {
       if (this.uiOpen) {
         const ray = event.pointerRay
         const hit = this.calcUIIntersection(ray)
@@ -371,7 +393,7 @@ class VRUITool extends BaseTool {
           this.element = null
         }
       }
-    } else if (event.pointerType === POINTER_TYPES.xr) {
+    } else if (event instanceof XRPoseEvent) {
       if (!this.uiOpen) {
         if (
           !event.controllers[0] ||

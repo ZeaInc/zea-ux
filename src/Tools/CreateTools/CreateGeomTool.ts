@@ -240,11 +240,11 @@ class CreateGeomTool extends BaseCreateTool {
   onPointerDown(event: ZeaPointerEvent): void {
     if (event instanceof XRControllerEvent) {
       this.onVRControllerButtonDown(event)
-    } else if (event instanceof ZeaMouseEvent) {
+    } else if (event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) {
       // skip if the alt key is held. Allows the camera tool to work
       if (event.altKey) return
       if (this.stage == 0) {
-        if (event.button == 0 || event.pointerType !== 'mouse') {
+        if ((event instanceof ZeaMouseEvent && event.button == 0) || event instanceof ZeaTouchEvent) {
           const snapToSurfaceUnderPointer = true
           this.setupConstructionPlane(event, snapToSurfaceUnderPointer)
 
@@ -254,7 +254,7 @@ class CreateGeomTool extends BaseCreateTool {
           // Cancel the tool.
           // if (this.removeToolOnRightClick) this.appData.toolManager.removeTool(this.index)
         }
-      } else if (event.button == 2) {
+      } else if (event instanceof ZeaMouseEvent && event.button == 2) {
         // Cancel the draw action.
         UndoRedoManager.getInstance().cancel()
         this.stage = 0
@@ -273,7 +273,7 @@ class CreateGeomTool extends BaseCreateTool {
    * @param event - The event param.
    */
   onPointerMove(event: ZeaPointerEvent): void {
-    if (event.pointerType === 'xr') {
+    if (event instanceof XRControllerEvent) {
       this.onVRPoseChanged(event as XRControllerEvent)
     } else if (this.stage > 0) {
       const snapToSurfaceUnderPointer = false

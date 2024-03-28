@@ -107,10 +107,10 @@ class Handle extends TreeItem {
       this.highlight()
     }
 
-    if (event.pointerType == 'mouse' || event.pointerType == 'touch') {
+    if (event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) {
       this.handlePointerDown(event)
-    } else if (event.pointerType == 'xr') {
-      this.onVRControllerButtonDown(<XRControllerEvent>event)
+    } else if (event instanceof XRControllerEvent) {
+      this.onVRControllerButtonDown(event)
     }
   }
 
@@ -122,10 +122,10 @@ class Handle extends TreeItem {
   onPointerMove(event: ZeaPointerEvent): void {
     if (this.captured) {
       event.stopPropagation()
-      if (event.pointerType == 'mouse' || event.pointerType == 'touch') {
-        this.handlePointerMove(<ZeaMouseEvent>event)
-      } else if (event.pointerType == 'xr') {
-        this.onVRPoseChanged(<XRControllerEvent>event)
+      if (event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) {
+        this.handlePointerMove(event)
+      } else if (event instanceof XRControllerEvent) {
+        this.onVRPoseChanged(event)
       }
     }
 
@@ -146,10 +146,10 @@ class Handle extends TreeItem {
       if (event instanceof ZeaTouchEvent) {
         this.unhighlight()
       }
-      if (event.pointerType == 'mouse' || event.pointerType == 'touch') {
-        this.handlePointerUp(<ZeaMouseEvent>event)
-      } else if (event.pointerType == 'xr') {
-        this.onVRControllerButtonUp(<XRControllerEvent>event)
+      if (event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) {
+        this.handlePointerUp(event)
+      } else if (event instanceof XRControllerEvent) {
+        this.onVRControllerButtonUp(event)
       }
     }
   }
@@ -206,8 +206,8 @@ class Handle extends TreeItem {
    *
    * @param event - The event param.
    */
-  handlePointerUp(event: ZeaMouseEvent): void {
-    const ray = getPointerRay(event)
+  handlePointerUp(event: ZeaPointerEvent): void {
+    const ray = event.pointerRay
     if (ray) {
       const dist = ray.intersectRayPlane(this.gizmoRay)
       this.releasePos = ray.pointAtDist(dist)
