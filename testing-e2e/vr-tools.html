@@ -62,6 +62,7 @@
         ToolManager,
         SelectionTool,
         VRHoldObjectsTool,
+        DropUserTool,
         HandHeldTool,
         CreateFreehandLineTool,
         CreateSphereTool,
@@ -156,6 +157,7 @@
       // ///////////////////////////////////////
 
       const holdObjectsTool = new VRHoldObjectsTool(appData)
+      const dropUserTool = new DropUserTool(appData)
 
       const handToolXfo = new Xfo()
       handToolXfo.sc.set(39.3701, 39.3701, 39.3701) // Tool model is in millimeters
@@ -180,7 +182,7 @@
 
       const toolManager = new ToolManager(appData)
       toolManager.registerTool('CameraTool', cameraTool)
-
+      toolManager.registerTool('dropUserTool', dropUserTool)
       toolManager.registerTool('VRHoldObjectsTool', holdObjectsTool)
       toolManager.registerTool('Freehand Line Tool', freehandLineTool)
       toolManager.registerTool('HandHeldTool', handHeldTool)
@@ -227,6 +229,7 @@
         // Setup VR Tools
         const vrToolManager = new ToolManager(appData)
         vrToolManager.registerTool('VRHoldObjectsTool', holdObjectsTool)
+        vrToolManager.registerTool('dropUserTool', dropUserTool)
         vrToolManager.registerTool('HandHeldTool', handHeldTool)
         vrToolManager.registerTool('Create Cuboid', createCuboidTool)
         vrToolManager.registerTool('Create Sphere', createSphereTool)

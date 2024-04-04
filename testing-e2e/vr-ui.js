@@ -69,37 +69,38 @@ class VRUI extends HTMLElement {
     //     recording = false
     //   }
     // })
-    addButton('data/view_1_1.png', () => {
-      this.renderer.getXRViewport().then((xrvp) => {
-        const { Ray, Xfo, Vec3 } = window.zeaEngine
-        const stageXfo = xrvp.getXfo()
-        const stageScale = stageXfo.sc.z
-        const headLocalXfo = xrvp.getVRHead().getXfo()
-        const headXfo = xrvp.getVRHead().getTreeItem().getParameter('GlobalXfo').getValue()
 
-        stageXfo.sc.set(1, 1, 1)
-        const delta = headXfo.tr.subtract(stageXfo.multiply(headLocalXfo).tr)
-        stageXfo.tr.addInPlace(delta)
+    // addButton('data/view_1_1.png', () => {
+    //   this.renderer.getXRViewport().then((xrvp) => {
+    //     const { Ray, Xfo, Vec3 } = window.zeaEngine
+    //     const stageXfo = xrvp.getXfo()
+    //     const stageScale = stageXfo.sc.z
+    //     const headLocalXfo = xrvp.getVRHead().getXfo()
+    //     const headXfo = xrvp.getVRHead().getTreeItem().getParameter('GlobalXfo').getValue()
 
-        // Now cast a ray straight down to te
-        const ray = new Ray()
-        ray.start = headXfo.tr
-        ray.dir.set(0, 0, -1)
-        const dist = 20 * stageScale
-        const area = 0.5
-        const rayXfo = new Xfo()
-        rayXfo.setLookAt(ray.start, ray.start.add(ray.dir), new Vec3(0, 0, 1))
+    //     stageXfo.sc.set(1, 1, 1)
+    //     const delta = headXfo.tr.subtract(stageXfo.multiply(headLocalXfo).tr)
+    //     stageXfo.tr.addInPlace(delta)
 
-        const result = this.renderer.raycast(rayXfo, ray, dist, area)
-        if (result) {
-          const worldPos = ray.pointAtDist(result.dist)
-          console.log('raycast', stageScale, worldPos.z, stageXfo.tr.z)
-          stageXfo.tr.z += worldPos.z - stageXfo.tr.z
-        }
+    //     // Now cast a ray straight down to te
+    //     const ray = new Ray()
+    //     ray.start = headXfo.tr
+    //     ray.dir.set(0, 0, -1)
+    //     const dist = 20 * stageScale
+    //     const area = 0.5
+    //     const rayXfo = new Xfo()
+    //     rayXfo.setLookAt(ray.start, ray.start.add(ray.dir), new Vec3(0, 0, 1))
 
-        xrvp.setXfo(stageXfo)
-      })
-    })
+    //     const result = this.renderer.raycast(rayXfo, ray, dist, area)
+    //     if (result) {
+    //       const worldPos = ray.pointAtDist(result.dist)
+    //       console.log('raycast', stageScale, worldPos.z, stageXfo.tr.z)
+    //       stageXfo.tr.z += worldPos.z - stageXfo.tr.z
+    //     }
+
+    //     xrvp.setXfo(stageXfo)
+    //   })
+    // })
 
     const styleTag = document.createElement('style')
     styleTag.appendChild(
@@ -182,7 +183,7 @@ class VRUI extends HTMLElement {
       const elem = document.createElement('button')
       elem.classList.add('button')
       let toolActive = false
-      elem.addEventListener('mousedown', () => {
+      elem.addEventListener('mousedown', (event) => {
         elem.classList.add('button-mousedown')
         if (!toolActive) {
           if (activeTool) {
@@ -198,10 +199,14 @@ class VRUI extends HTMLElement {
           activeTool = null
           toolManager.removeTool(tool)
         }
+        event.stopPropagation()
+        event.preventDefault()
       })
 
-      elem.addEventListener('mouseup', () => {
+      elem.addEventListener('mouseup', (event) => {
         elem.classList.remove('button-mousedown')
+        event.stopPropagation()
+        event.preventDefault()
       })
 
       tool.on('activatedChanged', (event) => {
@@ -218,12 +223,16 @@ class VRUI extends HTMLElement {
         }
       })
 
-      elem.addEventListener('mouseenter', () => {
+      elem.addEventListener('mouseenter', (event) => {
         elem.classList.add('button-hover')
+        event.stopPropagation()
+        event.preventDefault()
       })
 
-      elem.addEventListener('mouseleave', () => {
+      elem.addEventListener('mouseleave', (event) => {
         elem.classList.remove('button-hover')
+        event.stopPropagation()
+        event.preventDefault()
       })
 
       this.buttonsContainer.appendChild(elem)
@@ -247,6 +256,7 @@ class VRUI extends HTMLElement {
     //   if (key == 'VRHoldObjectsTool') continue
     //   addToolButton(key)
     // }
+    addToolButton('dropUserTool', 'data/Maps-Street-View-icon.png')
     addToolButton('VRHoldObjectsTool', 'data/grab-icon.png')
     addToolButton('HandHeldTool', 'data/wrench-icon.png')
     addToolButton('Freehand Line Tool', 'data/pen-tool.png')

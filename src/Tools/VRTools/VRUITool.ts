@@ -318,7 +318,7 @@ class VRUITool extends BaseTool {
         }
       }
     } else if (event instanceof XRControllerEvent) {
-      if (event.controller == this.pointerController && this.uiOpen) {
+      if (this.uiOpen) {
         const ray = this.calcPointerRay()
         const hit = this.calcUIIntersection(ray)
         if (hit) {
@@ -355,6 +355,7 @@ class VRUITool extends BaseTool {
               button: event.button - 1,
             })
           }
+          event.stopPropagation()
         }
       }
     } else if (event instanceof XRControllerEvent) {
@@ -365,6 +366,43 @@ class VRUITool extends BaseTool {
           const element = this.getDOMElementFromPoint(hit)
           if (element) {
             this.sendEventToUI(element, 'mouseup', hit, {
+              button: event.button - 1,
+            })
+          }
+          event.stopPropagation()
+        }
+      }
+    }
+  }
+
+  /**
+   * Event fired when a pointing device button is clicked.
+   *
+   * @param event - The event param.
+   */
+  onPointerClick(event: ZeaPointerEvent) {
+    if (event instanceof ZeaMouseEvent) {
+      if (this.uiOpen) {
+        const ray = event.pointerRay
+        const hit = this.calcUIIntersection(ray)
+        if (hit) {
+          const target = this.getDOMElementFromPoint(hit)
+          if (target) {
+            this.sendEventToUI(target, 'click', hit, {
+              button: event.button - 1,
+            })
+          }
+          event.stopPropagation()
+        }
+      }
+    } else if (event instanceof XRControllerEvent) {
+      if (event.controller == this.pointerController && this.uiOpen) {
+        const ray = this.calcPointerRay()
+        const hit = this.calcUIIntersection(ray)
+        if (hit) {
+          const element = this.getDOMElementFromPoint(hit)
+          if (element) {
+            this.sendEventToUI(element, 'click', hit, {
               button: event.button - 1,
             })
           }
