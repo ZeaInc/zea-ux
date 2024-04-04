@@ -62,7 +62,7 @@ class ZeaViewCube extends HTMLElement {
       this.perspective = !this.perspective
 
       const camera = this.viewport.getCamera()
-      const startXfo = camera.globalXfoParam.getValue()
+      const startXfo = camera.globalXfoParam.value
       const normal = startXfo.ori.getZaxis()
       this.alignFace(normal)
     })
@@ -210,7 +210,7 @@ input:checked + .slider:before {
     const startTarget = camera.getTargetPosition()
     const startDist = camera.getFocalDistance()
 
-    const startXfo = camera.globalXfoParam.getValue()
+    const startXfo = camera.globalXfoParam.value
     const startUp = startXfo.ori.getYaxis()
     // const startViewHeight = Math.sin(camera.fovParam.value * 0.5) * startDist * 2
     const startOrtho = camera.isOrthographicParam.value

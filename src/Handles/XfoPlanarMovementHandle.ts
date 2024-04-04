@@ -55,14 +55,14 @@ class XfoPlanarMovementHandle extends PlanarMovementHandle {
     this.handle = new GeomItem('handle', handleGeom, this.handleMat)
 
     this.sizeParam.on('valueChanged', () => {
-      size = this.sizeParam.getValue()
+      size = this.sizeParam.value
       handleGeom.sizeXParam.value = size
       handleGeom.sizeYParam.value = size
       handleGeom.sizeZParam.value = size * 0.02
     })
 
     this.colorParam.on('valueChanged', () => {
-      this.handleMat.getParameter('BaseColor').value = this.colorParam.getValue()
+      this.handleMat.getParameter('BaseColor').value = this.colorParam.value
     })
     this.addChild(this.handle)
   }
@@ -72,7 +72,7 @@ class XfoPlanarMovementHandle extends PlanarMovementHandle {
    */
   highlight(): void {
     super.highlight()
-    this.handleMat.getParameter('BaseColor').value = this.highlightColorParam.getValue()
+    this.handleMat.getParameter('BaseColor').value = this.highlightColorParam.value
   }
 
   /**
@@ -80,7 +80,7 @@ class XfoPlanarMovementHandle extends PlanarMovementHandle {
    */
   unhighlight(): void {
     super.unhighlight()
-    this.handleMat.getParameter('BaseColor').value = this.colorParam.getValue()
+    this.handleMat.getParameter('BaseColor').value = this.colorParam.value
   }
 }
 

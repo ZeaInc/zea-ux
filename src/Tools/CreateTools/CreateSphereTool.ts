@@ -31,7 +31,7 @@ class CreateSphereTool extends CreateGeomTool {
    * @param xfo - The xfo param.
    */
   createStart(xfo: Xfo, event: ZeaPointerEvent): void {
-    this.change = new CreateSphereChange(this.parentItem, xfo, this.colorParam.getValue())
+    this.change = new CreateSphereChange(this.parentItem, xfo, this.colorParam.value)
 
     // During construction, make it note selectable.
     this.change.geomItem.setSelectable(false)

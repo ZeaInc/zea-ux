@@ -54,7 +54,7 @@ class SphericalRotationHandle extends Handle {
     const maskGeomItem = new GeomItem('mask', maskGeom, this.maskMat)
 
     this.colorParam.on('valueChanged', () => {
-      this.maskMat.getParameter('BaseColor').value = this.colorParam.getValue()
+      this.maskMat.getParameter('BaseColor').value = this.colorParam.value
     })
 
     this.addChild(maskGeomItem)

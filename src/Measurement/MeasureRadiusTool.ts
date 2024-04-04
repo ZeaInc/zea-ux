@@ -72,11 +72,11 @@ class MeasureRadiusTool extends MeasureTool {
       let edgePos
       const geomParams = this.highlightedItemA_params
       if (geomParams.hasParameter('CurveType')) {
-        const curveType = geomParams.getParameter('CurveType').getValue()
+        const curveType = geomParams.getParameter('CurveType').value
         switch (curveType) {
           case 'Circle': {
             const crvToPnt = hitPos.subtract(xfo.tr)
-            const radius = geomParams.getParameter('Radius').getValue() * xfo.sc.x
+            const radius = geomParams.getParameter('Radius').value * xfo.sc.x
             const zaxis = xfo.ori.getZaxis()
             crvToPnt.subtractInPlace(zaxis.scale(crvToPnt.dot(zaxis)))
             const length = crvToPnt.length()
@@ -89,14 +89,14 @@ class MeasureRadiusTool extends MeasureTool {
           }
         }
       } else if (geomParams.hasParameter('SurfaceType')) {
-        const surfaceType = geomParams.getParameter('SurfaceType').getValue()
+        const surfaceType = geomParams.getParameter('SurfaceType').value
         switch (surfaceType) {
           case 'Cylinder': {
             const srfToPnt = hitPos.subtract(xfo.tr)
             const zaxis = xfo.ori.getZaxis()
             axisPos = xfo.tr.add(zaxis.scale(srfToPnt.dot(zaxis)))
 
-            const radius = geomParams.getParameter('Radius').getValue() * xfo.sc.x
+            const radius = geomParams.getParameter('Radius').value * xfo.sc.x
             const axisToPnt = hitPos.subtract(axisPos)
             const length = axisToPnt.length()
             edgePos = axisPos.add(axisToPnt.scale(radius / length))
@@ -107,7 +107,7 @@ class MeasureRadiusTool extends MeasureTool {
           }
         }
       }
-      const color = this.colorParam.getValue()
+      const color = this.colorParam.value
 
       const measurement = new MeasureDistance('MeasureRadius', color, this.appData.sceneUnits)
       measurement.setStartMarkerPos(axisPos)

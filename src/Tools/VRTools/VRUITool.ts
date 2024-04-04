@@ -138,7 +138,7 @@ class VRUITool extends BaseTool {
     showFirstChild(this.uiController.getHandedness(), this.uiController.getTreeItem())
     showFirstChild(this.pointerController.getHandedness(), this.pointerController.getTreeItem())
 
-    const uiLocalXfo = this.controllerUI.localXfoParam.getValue()
+    const uiLocalXfo = this.controllerUI.localXfoParam.value
     // uiLocalXfo.tr.set(0, -0.05, 0.08)
 
     if (this.pointerController) {

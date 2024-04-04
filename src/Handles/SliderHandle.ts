@@ -63,7 +63,7 @@ class SliderHandle extends BaseLinearMovementHandle {
     this.colorParam.value = color
 
     this.handleMat = new Material('handle', 'FlatSurfaceShader')
-    this.handleMat.getParameter('BaseColor').value = this.colorParam.getValue()
+    this.handleMat.getParameter('BaseColor').value = this.colorParam.value
 
     const topBarMat = new Material('topBar', 'FlatSurfaceShader')
     topBarMat.getParameter('BaseColor').value = new Color(0.5, 0.5, 0.5)
@@ -76,16 +76,16 @@ class SliderHandle extends BaseLinearMovementHandle {
     this.topBar = new GeomItem('topBar', barGeom, topBarMat)
 
     this.barRadiusParam.on('valueChanged', () => {
-      barGeom.radiusParam.value = this.barRadiusParam.getValue()
+      barGeom.radiusParam.value = this.barRadiusParam.value
     })
     this.handleRadiusParam.on('valueChanged', () => {
-      handleGeom.radiusParam.value = this.handleRadiusParam.getValue()
+      handleGeom.radiusParam.value = this.handleRadiusParam.value
     })
     this.lengthParam.on('valueChanged', () => {
       this.__updateSlider(<number>this.value)
     })
     this.colorParam.on('valueChanged', () => {
-      this.handleMat.getParameter('BaseColor').value = this.colorParam.getValue()
+      this.handleMat.getParameter('BaseColor').value = this.colorParam.value
     })
 
     this.addChild(this.handle)
@@ -100,7 +100,7 @@ class SliderHandle extends BaseLinearMovementHandle {
    */
   highlight(): void {
     super.highlight()
-    this.handleMat.getParameter('BaseColor').value = this.highlightColorParam.getValue()
+    this.handleMat.getParameter('BaseColor').value = this.highlightColorParam.value
   }
 
   /**
@@ -108,7 +108,7 @@ class SliderHandle extends BaseLinearMovementHandle {
    */
   unhighlight(): void {
     super.unhighlight()
-    this.handleMat.getParameter('BaseColor').value = this.colorParam.getValue()
+    this.handleMat.getParameter('BaseColor').value = this.colorParam.value
   }
 
   /**
@@ -119,7 +119,7 @@ class SliderHandle extends BaseLinearMovementHandle {
   setTargetParam(param: Parameter<unknown>): void {
     this.param = param
     const __updateSlider = () => {
-      this.__updateSlider(<number>param.getValue())
+      this.__updateSlider(<number>param.value)
     }
     __updateSlider()
     param.on('valueChanged', __updateSlider)
@@ -136,7 +136,7 @@ class SliderHandle extends BaseLinearMovementHandle {
     const param = <NumberParameter>this.param
     const range = param && param.getRange() ? param.getRange() : [0, 1]
     const v = MathFunctions.remap(value, range[0], range[1], 0, 1)
-    const length = this.lengthParam.getValue()
+    const length = this.lengthParam.value
     this.baseBarXfo.sc.z = v * length
     this.handleXfo.tr.z = v * length
     this.topBarXfo.tr.z = v * length
@@ -172,7 +172,7 @@ class SliderHandle extends BaseLinearMovementHandle {
    * @param event - The event param.
    */
   onDrag(event: ZeaPointerEvent): void {
-    const length = this.lengthParam.getValue()
+    const length = this.lengthParam.value
     const param = <NumberParameter>this.param
     const range = param && param.getRange() ? param.getRange() : [0, 1]
     const value = MathFunctions.clamp(

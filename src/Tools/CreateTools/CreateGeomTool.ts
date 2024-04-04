@@ -23,8 +23,6 @@ import BaseCreateTool from '../BaseCreateTool'
 import { UndoRedoManager } from '../../UndoRedo/index'
 import { AppData } from '../../../types/types'
 
-import { getPointerRay } from '../../utility'
-
 const snapPlanNormal = (dir: Vec3): Vec3 => {
   const x = Math.abs(dir.x)
   const y = Math.abs(dir.y)
@@ -90,7 +88,7 @@ class CreateGeomTool extends BaseCreateTool {
     if (!this.vrControllerToolTip) {
       this.vrControllerToolTip = new Cross(0.05)
       this.vrControllerToolTipMat = new Material('VRController Cross', 'LinesShader')
-      this.vrControllerToolTipMat.getParameter('BaseColor').value = this.colorParam.getValue()
+      this.vrControllerToolTipMat.getParameter('BaseColor').value = this.colorParam.value
       this.vrControllerToolTipMat.setSelectable(false)
     }
     const geomItem = new GeomItem('CreateGeomToolTip', this.vrControllerToolTip, this.vrControllerToolTipMat)
@@ -167,10 +165,6 @@ class CreateGeomTool extends BaseCreateTool {
    * @return {Xfo} The return value.
    */
   screenPosToXfo(event: ZeaMouseEvent | ZeaTouchEvent, snapToSurfaceUnderPointer = false): Xfo {
-    if (!(event instanceof ZeaMouseEvent) && !(event instanceof ZeaTouchEvent)) {
-      console.warn('not handling VR')
-      return
-    }
     const ray = event.pointerRay
 
     if (snapToSurfaceUnderPointer && event.intersectionData) {
@@ -239,9 +233,7 @@ class CreateGeomTool extends BaseCreateTool {
    * @param event - The event param.
    */
   onPointerDown(event: ZeaPointerEvent): void {
-    if (event instanceof XRControllerEvent) {
-      this.onVRControllerButtonDown(event)
-    } else if (event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) {
+    if (event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) {
       // skip if the alt key is held. Allows the camera tool to work
       if (event.altKey) return
       if (this.stage == 0) {
@@ -263,8 +255,8 @@ class CreateGeomTool extends BaseCreateTool {
       event.stopPropagation()
       //@ts-ignore
       event.preventDefault() // prevent browser features like scroll and drag n drop
-    } else {
-      console.warn('Touch event not handled')
+    } else if (event instanceof XRControllerEvent) {
+      this.onVRControllerButtonDown(event)
     }
   }
 
@@ -276,11 +268,13 @@ class CreateGeomTool extends BaseCreateTool {
   onPointerMove(event: ZeaPointerEvent): void {
     if (event instanceof XRPoseEvent) {
       this.onXRPoseChanged(event)
-    } else if (this.stage > 0) {
-      const snapToSurfaceUnderPointer = false
-      const xfo = this.screenPosToXfo(event, snapToSurfaceUnderPointer)
-      this.createMove(xfo.tr, event)
-      event.stopPropagation()
+    } else if (event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) {
+      if (this.stage > 0) {
+        const snapToSurfaceUnderPointer = false
+        const xfo = this.screenPosToXfo(event, snapToSurfaceUnderPointer)
+        this.createMove(xfo.tr, event)
+        event.stopPropagation()
+      }
     }
   }
 
@@ -293,11 +287,13 @@ class CreateGeomTool extends BaseCreateTool {
     if (event instanceof ZeaMouseEvent && event.altKey) return
     if (event instanceof XRControllerEvent) {
       this.onVRControllerButtonUp(event)
-    } else if (this.stage > 0 && (event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent)) {
-      const snapToSurfaceUnderPointer = false
-      const xfo = this.screenPosToXfo(event, snapToSurfaceUnderPointer)
-      this.createRelease(xfo.tr, event)
-      event.stopPropagation()
+    } else if (event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) {
+      if (this.stage > 0) {
+        const snapToSurfaceUnderPointer = false
+        const xfo = this.screenPosToXfo(event, snapToSurfaceUnderPointer)
+        this.createRelease(xfo.tr, event)
+        event.stopPropagation()
+      }
     }
   }
 

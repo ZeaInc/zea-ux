@@ -34,7 +34,7 @@ class MeasureDistanceTool extends MeasureTool {
    */
   snapToParametricEdge(geomXfo: Xfo, geomParams: ParameterOwner, pos: Vec3): Vec3 {
     if (geomParams.hasParameter('CurveType')) {
-      const curveType = geomParams.getParameter('CurveType').getValue()
+      const curveType = geomParams.getParameter('CurveType').value
 
       switch (curveType) {
         case 'Line': {
@@ -44,7 +44,7 @@ class MeasureDistanceTool extends MeasureTool {
         }
         case 'Circle': {
           const crvToPnt = pos.subtract(geomXfo.tr)
-          const radius = geomParams.getParameter('Radius').getValue() * geomXfo.sc.x
+          const radius = geomParams.getParameter('Radius').value * geomXfo.sc.x
           const zaxis = geomXfo.ori.getZaxis()
           crvToPnt.subtractInPlace(zaxis.scale(crvToPnt.dot(zaxis)))
           const length = crvToPnt.length()
@@ -55,7 +55,7 @@ class MeasureDistanceTool extends MeasureTool {
         }
       }
     } else if (geomParams.hasParameter('SurfaceType')) {
-      const surfaceType = geomParams.getParameter('SurfaceType').getValue()
+      const surfaceType = geomParams.getParameter('SurfaceType').value
 
       switch (surfaceType) {
         case 'Plane': {
@@ -68,7 +68,7 @@ class MeasureDistanceTool extends MeasureTool {
           const zaxis = geomXfo.ori.getZaxis()
           const pointOnAxis = geomXfo.tr.add(zaxis.scale(srfToPnt.dot(zaxis)))
 
-          const radius = geomParams.getParameter('Radius').getValue() * geomXfo.sc.x
+          const radius = geomParams.getParameter('Radius').value * geomXfo.sc.x
           const axisToPnt = pos.subtract(pointOnAxis)
           const length = axisToPnt.length()
           return pointOnAxis.add(axisToPnt.scale(radius / length))
@@ -109,7 +109,7 @@ class MeasureDistanceTool extends MeasureTool {
 
         const xfoA = this.getGeomXfo(this.highlightedItemA, this.highlightedItemA_componentId)
         const startPos = this.snapToParametricEdge(xfoA, this.highlightedItemA_params, hitPos)
-        const color = this.colorParam.getValue()
+        const color = this.colorParam.value
 
         const measurement = new MeasureDistance('Measure Distance', color, this.appData.sceneUnits)
         measurement.setStartMarkerPos(startPos)
@@ -166,7 +166,7 @@ class MeasureDistanceTool extends MeasureTool {
       return
     }
 
-    const color = this.colorParam.getValue()
+    const color = this.colorParam.value
     color.a = 0.2
     if (this.stage == 0) {
       if (event.intersectionData && event.intersectionData.geomItem instanceof GeomItem) {

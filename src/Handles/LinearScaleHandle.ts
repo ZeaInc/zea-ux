@@ -66,7 +66,7 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
     transformVertices(tipGeom, tipXfo)
 
     this.colorParam.on('valueChanged', () => {
-      this.handleMat.getParameter('BaseColor').value = this.colorParam.getValue()
+      this.handleMat.getParameter('BaseColor').value = this.colorParam.value
     })
     this.addChild(handle)
     this.addChild(tip)
@@ -77,7 +77,7 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
    */
   highlight(): void {
     super.highlight()
-    this.handleMat.getParameter('BaseColor').value = this.highlightColorParam.getValue()
+    this.handleMat.getParameter('BaseColor').value = this.highlightColorParam.value
   }
 
   /**
@@ -85,7 +85,7 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
    */
   unhighlight(): void {
     super.unhighlight()
-    this.handleMat.getParameter('BaseColor').value = this.colorParam.getValue()
+    this.handleMat.getParameter('BaseColor').value = this.colorParam.value
   }
 
   /**
@@ -122,9 +122,9 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
    */
   onDragStart(event: ZeaPointerEvent): void {
     this.oriXfo = this.globalXfoParam.value
-    this.tmplocalXfo = this.localXfoParam.getValue()
+    this.tmplocalXfo = this.localXfoParam.value
     const param = this.getTargetParam()
-    this.baseXfo = <Xfo>param.getValue()
+    this.baseXfo = <Xfo>param.value
 
     if (this.selectionGroup) {
       const items = this.selectionGroup.getItems()
@@ -188,7 +188,7 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
     this.localXfoParam.value = this.tmplocalXfo
 
     const tip = this.getChildByName('tip')
-    const tipXfo = tip.localXfoParam.getValue()
+    const tipXfo = tip.localXfoParam.value
     tipXfo.sc.set(1, 1, 1)
     tip.localXfoParam.value = tipXfo
   }

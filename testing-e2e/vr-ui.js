@@ -206,7 +206,9 @@ class VRUI extends HTMLElement {
 
       tool.on('activatedChanged', (event) => {
         if (event.activated) {
-          if (tool.colorParam) tool.colorParam.setValue(color)
+          if (tool.colorParam) {
+            tool.colorParam.setValue(color)
+          }
 
           elem.classList.add('button-active')
           toolActive = true
@@ -269,8 +271,9 @@ class VRUI extends HTMLElement {
         activeButtonDiv = buttonDiv
         cb(buttonDiv)
 
-        const tool = toolManager.activeTool()
-        if (tool && tool.colorParam) tool.colorParam.setValue(color)
+        if (activeTool && activeTool.colorParam) {
+          activeTool.colorParam.setValue(color)
+        }
       })
       buttonDiv.addEventListener('mouseup', () => {})
       const img = new Image()

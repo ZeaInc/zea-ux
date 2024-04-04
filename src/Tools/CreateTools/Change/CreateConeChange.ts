@@ -19,13 +19,20 @@ class CreateConeChange extends CreateGeomChange {
    * @param xfo - The xfo value.
    */
   constructor(parentItem: TreeItem, xfo: Xfo, color: Color) {
-    super('Create Cone', parentItem, xfo)
+    super('Create Cone', parentItem, xfo, color)
+    if (this.parentItem) {
+      this.createGeomItem()
+    }
   }
 
-  protected createGeoItem() {
+  protected createGeomItem() {
     this.cone = new Cone(0.0, 0.0)
     const material = new SimpleSurfaceMaterial('Cone')
-    this.geomItem = new GeomItem('Cone', this.cone, material)
+    this.geomItem = new GeomItem('Cone', this.cone, material, this.xfo)
+    this.geomItem.setSelectable(false) // At the conclusion of creation, we set selectable to true.
+    if (this.parentItem) {
+      this.parentItem.addChild(this.geomItem)
+    }
   }
 
   /**

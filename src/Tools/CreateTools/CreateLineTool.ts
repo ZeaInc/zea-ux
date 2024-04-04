@@ -33,8 +33,8 @@ class CreateLineTool extends CreateGeomTool {
    * @param xfo - The xfo param.
    */
   createStart(xfo: Xfo, event: ZeaPointerEvent): void {
-    const color = this.colorParam.getValue()
-    const lineThickness = this.lineThickness.getValue()
+    const color = this.colorParam.value
+    const lineThickness = this.lineThickness.value
     this.change = new CreateLineChange(this.parentItem, xfo, color, lineThickness)
     UndoRedoManager.getInstance().addChange(this.change)
 
@@ -63,6 +63,8 @@ class CreateLineTool extends CreateGeomTool {
     if (this.length == 0) {
       UndoRedoManager.getInstance().cancel()
     }
+    // After completion, make it selectable.
+    this.change.geomItem.setSelectable(true)
     this.stage = 0
     this.emit('actionFinished')
   }

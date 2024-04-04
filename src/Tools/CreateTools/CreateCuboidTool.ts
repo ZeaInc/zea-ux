@@ -33,7 +33,7 @@ class CreateCuboidTool extends CreateGeomTool {
    * @param xfo - The xfo param.
    */
   createStart(xfo: Xfo, event: ZeaPointerEvent): void {
-    this.change = new CreateCuboidChange(this.parentItem, xfo, this.colorParam.getValue())
+    this.change = new CreateCuboidChange(this.parentItem, xfo, this.colorParam.value)
 
     // During construction, make it note selectable.
     this.change.geomItem.setSelectable(false)

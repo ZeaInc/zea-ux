@@ -52,7 +52,7 @@ class MeasureDistance extends Measure {
     const distance = vector.length()
 
     if (distance == 0) return
-    const color = this.colorParam.getValue()
+    const color = this.colorParam.value
 
     // Convert meters to mm.
     let scaleFactor = 1
@@ -143,7 +143,7 @@ class MeasureDistance extends Measure {
    * @return {string}
    */
   getMeasurementText(): any {
-    return this.label.getParameter('Text').getValue()
+    return this.label.getParameter('Text').value
   }
 }
 

@@ -67,7 +67,7 @@ class MeasureAngle extends Measure {
 
     this.label = new Label('Distance')
     this.label.fontSizeParam.value = 20
-    this.label.backgroundColorParam.value = this.colorParam.getValue()
+    this.label.backgroundColorParam.value = this.colorParam.value
     this.label.textParam.value = `${(angle / (Math.PI / 180)).toFixed(3)} °`
 
     this.billboard = new BillboardItem('DistanceBillboard', this.label)
@@ -81,7 +81,7 @@ class MeasureAngle extends Measure {
     this.addChild(this.billboard)
 
     this.colorParam.on('valueChanged', () => {
-      const color = this.colorParam.getValue()
+      const color = this.colorParam.value
       this.markerMaterial.getParameter('BaseColor').value = color
       this.lineMaterial.baseColorParam.value = color
       this.label.backgroundColorParam.value = color

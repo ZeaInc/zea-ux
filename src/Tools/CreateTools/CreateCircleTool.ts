@@ -61,6 +61,9 @@ class CreateCircleTool extends CreateGeomTool {
       UndoRedoManager.getInstance().cancel()
     }
 
+    // After completion, make it selectable.
+    this.change.geomItem.setSelectable(true)
+
     this.emit('actionFinished')
     this.change = null
     this.stage = 0

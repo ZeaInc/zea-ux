@@ -19,13 +19,19 @@ class CreateSphereChange extends CreateGeomChange {
    * @param color - The color of the sphere to create.
    */
   constructor(parentItem: TreeItem, xfo: Xfo, color: Color) {
-    super('CreateSphere', parentItem, xfo)
+    super('CreateSphere', parentItem, xfo, color)
+    if (this.parentItem) {
+      this.createGeomItem()
+    }
   }
 
-  protected createGeoItem() {
+  protected createGeomItem() {
     this.sphere = new Sphere(0, 24, 12)
     const material = new Material('Sphere', 'SimpleSurfaceShader')
-    this.geomItem = new GeomItem('Sphere', this.sphere, material)
+    this.geomItem = new GeomItem('Sphere', this.sphere, material, this.xfo)
+    if (this.parentItem) {
+      this.parentItem.addChild(this.geomItem)
+    }
     this.geomItem.setSelectable(false) // At the conclusion of creation, we set selectable to true.
   }
 
@@ -48,7 +54,7 @@ class CreateSphereChange extends CreateGeomChange {
    */
   toJSON(): Record<any, any> {
     const j = super.toJSON()
-    j.radius = this.sphere.radiusParam.getValue()
+    j.radius = this.sphere.radiusParam.value
     return j
   }
 }

@@ -1,4 +1,15 @@
-import { Vec3, Color, GeomItem, LinesMaterial, Lines, Vec3Attribute, TreeItem, Xfo } from '@zeainc/zea-engine'
+import {
+  Vec3,
+  Color,
+  GeomItem,
+  LinesMaterial,
+  Lines,
+  Vec3Attribute,
+  TreeItem,
+  Xfo,
+  Material,
+  FatLinesMaterial,
+} from '@zeainc/zea-engine'
 import { UndoRedoManager } from '../../../UndoRedo/index'
 import CreateGeomChange from './CreateGeomChange'
 
@@ -22,11 +33,14 @@ class CreateFreehandLineChange extends CreateGeomChange {
    * @param color - The color value.
    * @param thickness - The thickness value.
    */
-  constructor(parentItem: TreeItem, xfo: Xfo) {
-    super('CreateFreehandLine', parentItem, xfo)
+  constructor(parentItem: TreeItem, xfo: Xfo, color: Color, public thickness: number = 0.0) {
+    super('CreateFreehandLine', parentItem, xfo, color)
+    if (this.parentItem) {
+      this.createGeomItem()
+    }
   }
 
-  protected createGeoItem() {
+  protected createGeomItem() {
     this.vertexCount = 100
     this.used = 0
     this.line = new Lines()
@@ -35,13 +49,22 @@ class CreateFreehandLineChange extends CreateGeomChange {
     const positions = <Vec3Attribute>this.line.getVertexAttribute('positions')
     positions.setValue(0, new Vec3())
 
-    // TODO: added lineThicknessParam to LinesMaterial
-    const material = new LinesMaterial('freeHandLine')
-    // if (material.lineThicknessParam) {
-    //   material.lineThicknessParam.value = thickness
-    // }
-
-    this.geomItem = new GeomItem('freeHandLine', this.line, material)
+    let material: Material
+    if (this.thickness > 0) {
+      const fatLinesMaterial = new FatLinesMaterial('freeHandLine')
+      fatLinesMaterial.baseColorParam.value = this.color
+      fatLinesMaterial.lineThicknessParam.value = this.thickness
+      material = fatLinesMaterial
+    } else {
+      const linesMaterial = new LinesMaterial('freeHandLine')
+      linesMaterial.baseColorParam.value = this.color
+      material = linesMaterial
+    }
+    this.geomItem = new GeomItem('freeHandLine', this.line, material, this.xfo)
+    this.geomItem.setSelectable(false) // At the conclusion of creation, we set selectable to true.
+    if (this.parentItem) {
+      this.parentItem.addChild(this.geomItem)
+    }
   }
 
   /**
@@ -86,9 +109,8 @@ class CreateFreehandLineChange extends CreateGeomChange {
    */
   toJSON(context: Record<any, any>): Record<string, any> {
     const j = super.toJSON(context)
-    const material = <LinesMaterial>this.geomItem.materialParam.value
-    // j.lineThickness = material.lineThicknessParam.value
-    j.color = material.baseColorParam.value
+    j.lineThickness = this.thickness
+    j.color = this.color
     return j
   }
 
@@ -99,19 +121,9 @@ class CreateFreehandLineChange extends CreateGeomChange {
    * @param context - The appData param.
    */
   fromJSON(j: Record<any, any>, context: Record<any, any>): void {
-    // Need to set line thickness before the geom is added to the tree.
-    // if (j.lineThickness) {
-    //   const material = <LinesMaterial>this.geomItem.materialParam.value
-    //   material.lineThicknessParam.value = j.lineThickness
-    // }
-
-    if (j.color) {
-      const color = new Color(0.7, 0.2, 0.2)
-      color.fromJSON(j.color)
-      const material = <LinesMaterial>this.geomItem.materialParam.value
-      material.baseColorParam.value = color
+    if (j.lineThickness) {
+      this.thickness = j.lineThickness
     }
-
     super.fromJSON(j, context)
   }
 }

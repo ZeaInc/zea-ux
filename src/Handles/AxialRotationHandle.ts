@@ -68,13 +68,13 @@ class AxialRotationHandle extends Handle {
     this.handle = new GeomItem('handle', handleGeom, this.handleMat)
 
     this.radiusParam.on('valueChanged', () => {
-      radius = this.radiusParam.getValue()
+      radius = this.radiusParam.value
       handleGeom.outerRadiusParam.value = radius
       handleGeom.innerRadiusParam.value = radius * 0.02
     })
 
     this.colorParam.on('valueChanged', () => {
-      this.handleMat.getParameter('BaseColor').value = this.colorParam.getValue()
+      this.handleMat.getParameter('BaseColor').value = this.colorParam.value
     })
 
     this.addChild(this.handle)
@@ -85,7 +85,7 @@ class AxialRotationHandle extends Handle {
    */
   highlight(): void {
     super.highlight()
-    this.handleMat.getParameter('BaseColor').value = this.highlightColorParam.getValue()
+    this.handleMat.getParameter('BaseColor').value = this.highlightColorParam.value
   }
 
   /**
@@ -93,7 +93,7 @@ class AxialRotationHandle extends Handle {
    */
   unhighlight(): void {
     super.unhighlight()
-    this.handleMat.getParameter('BaseColor').value = this.colorParam.getValue()
+    this.handleMat.getParameter('BaseColor').value = this.colorParam.value
   }
 
   /**

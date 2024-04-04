@@ -34,7 +34,7 @@ class CreateConeTool extends CreateGeomTool {
   createStart(xfo: Xfo, event: ZeaPointerEvent): void {
     this.xfo = xfo
     this.invXfo = xfo.inverse()
-    this.change = new CreateConeChange(this.parentItem, xfo, this.colorParam.getValue())
+    this.change = new CreateConeChange(this.parentItem, xfo, this.colorParam.value)
 
     // During construction, make it note selectable.
     this.change.geomItem.setSelectable(false)

@@ -69,7 +69,7 @@ class Measure extends TreeItem {
     this.addChild(this.markerB)
 
     this.colorParam.on('valueChanged', () => {
-      const color = this.colorParam.getValue()
+      const color = this.colorParam.value
       // this.markerMaterial.getParameter('BaseColor').value = color
       // this.lineMaterial.getParameter('BaseColor').value = color
       this.label.getParameter('BackgroundColor').value = color

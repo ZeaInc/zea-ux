@@ -19,13 +19,20 @@ class CreateCuboidChange extends CreateGeomChange {
    * @param xfo - The xfo value.
    */
   constructor(parentItem: TreeItem, xfo: Xfo, color: Color) {
-    super('CreateCuboid', parentItem, xfo)
+    super('CreateCuboid', parentItem, xfo, color)
+    if (this.parentItem) {
+      this.createGeomItem()
+    }
   }
 
-  protected createGeoItem() {
+  protected createGeomItem() {
     this.cuboid = new Cuboid(0, 0, 0, true)
     const material = new SimpleSurfaceMaterial('Cone')
-    this.geomItem = new GeomItem('Cuboid', this.cuboid, material)
+    this.geomItem = new GeomItem('Cuboid', this.cuboid, material, this.xfo)
+    this.geomItem.setSelectable(false) // At the conclusion of creation, we set selectable to true.
+    if (this.parentItem) {
+      this.parentItem.addChild(this.geomItem)
+    }
   }
 
   /**
@@ -39,7 +46,7 @@ class CreateCuboidChange extends CreateGeomChange {
       this.cuboid.sizeYParam.value = updateData.baseSize[1]
     }
     if (updateData.tr) {
-      const xfo = this.geomItem.localXfoParam.getValue()
+      const xfo = this.geomItem.localXfoParam.value
       xfo.tr.fromJSON(updateData.tr)
       this.geomItem.localXfoParam.value = xfo
     }
