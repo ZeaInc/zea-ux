@@ -1,7 +1,7 @@
 import Handle from './Handle'
 import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
-import { Parameter, Vec3, Xfo, ZeaPointerEvent, XRControllerEvent, XfoParameter } from '@zeainc/zea-engine'
+import { Parameter, Vec3, Xfo, ZeaPointerEvent, XRControllerEvent, XfoParameter, XRPoseEvent } from '@zeainc/zea-engine'
 import { Change } from '..'
 import SelectionGroup from '../SelectionGroup'
 import SelectionXfoChange from '../UndoRedo/Changes/SelectionXfoChange'
@@ -130,11 +130,11 @@ class PlanarMovementHandle extends Handle {
   }
 
   /**
-   * The onVRPoseChanged method.
+   * The onXRPoseChanged method.
    *
    * @param event - The event param.
    */
-  onVRPoseChanged(event: XRControllerEvent): void {
+  onXRPoseChanged(event: XRPoseEvent): void {
     if (this.fullXfoManipulationInVR) {
       const xfo = this.activeController.getTipXfo()
       const newXfo = xfo.multiply(this.grabOffset)
@@ -147,7 +147,7 @@ class PlanarMovementHandle extends Handle {
         param.value = newXfo
       }
     } else {
-      super.onVRPoseChanged(event)
+      super.onXRPoseChanged(event)
     }
   }
 

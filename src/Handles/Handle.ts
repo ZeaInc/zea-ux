@@ -10,6 +10,7 @@ import {
   ZeaMouseEvent,
   ZeaTouchEvent,
   XRControllerEvent,
+  XRPoseEvent,
 } from '@zeainc/zea-engine' // , PointerEvent
 
 import { getPointerRay } from '../utility'
@@ -125,7 +126,7 @@ class Handle extends TreeItem {
       if (event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) {
         this.handlePointerMove(event)
       } else if (event instanceof XRPoseEvent) {
-        this.onVRPoseChanged(event)
+        this.onXRPoseChanged(event)
       }
     }
 
@@ -236,11 +237,11 @@ class Handle extends TreeItem {
   }
 
   /**
-   * The onVRPoseChanged method.
+   * The onXRPoseChanged method.
    *
    * @param event - The event param.
    */
-  onVRPoseChanged(event: XRPoseEvent): void {
+  onXRPoseChanged(event: XRPoseEvent): void {
     if (this.activeController) {
       const xfo = this.activeController.getTipXfo()
       const gizmoRay = this.getManipulationPlane()

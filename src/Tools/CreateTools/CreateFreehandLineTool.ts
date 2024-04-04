@@ -43,7 +43,7 @@ class CreateFreehandLineTool extends CreateLineTool {
    */
   onPointerMove(event: ZeaPointerEvent): void {
     if (event instanceof XRPoseEvent) {
-      this.onVRPoseChanged(event)
+      this.onXRPoseChanged(event)
     } else if (this.stage > 0 && (event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent)) {
       const snapToSurfaceUnderPointer = true
       const xfo = this.screenPosToXfo(event, snapToSurfaceUnderPointer)

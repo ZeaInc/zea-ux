@@ -1,4 +1,4 @@
-const { Ray, Xfo, Vec3, Color, BaseTool } = window.zeaEngine
+const { Color } = window.zeaEngine
 
 /**
  * This sample UI class shows how to build a custom UI for VR interfaces.

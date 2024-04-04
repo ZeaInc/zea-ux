@@ -396,7 +396,7 @@ class VRUITool extends BaseTool {
   }
 
   /**
-   * The onVRPoseChanged method.
+   * The onXRPoseChanged method.
    * @param event - The event param.
    */
   onPointerMove(event: XRPoseEvent): void {

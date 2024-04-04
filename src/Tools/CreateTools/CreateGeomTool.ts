@@ -275,7 +275,7 @@ class CreateGeomTool extends BaseCreateTool {
    */
   onPointerMove(event: ZeaPointerEvent): void {
     if (event instanceof XRPoseEvent) {
-      this.onVRPoseChanged(event)
+      this.onXRPoseChanged(event)
     } else if (this.stage > 0) {
       const snapToSurfaceUnderPointer = false
       const xfo = this.screenPosToXfo(event, snapToSurfaceUnderPointer)
@@ -372,11 +372,11 @@ class CreateGeomTool extends BaseCreateTool {
   }
 
   /**
-   * The onVRPoseChanged method.
+   * The onXRPoseChanged method.
    *
    * @param event - The event param.
    */
-  onVRPoseChanged(event: XRPoseEvent): void {
+  onXRPoseChanged(event: XRPoseEvent): void {
     if (this.activeController && this.stage > 0) {
       // TODO: Snap the Xfo to any nearby construction planes.
       const xfo = this.activeController.getTipXfo()
