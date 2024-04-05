@@ -21,7 +21,7 @@ class ToolManager extends BaseTool {
     if (!(tool instanceof BaseTool)) {
       tool = this.tools[tool]
     }
-    if (tool.activateTool) tool.activateTool()
+    tool.activateTool()
     this.toolStack.splice(index, 0, tool)
   }
 
@@ -29,7 +29,7 @@ class ToolManager extends BaseTool {
     if (!(tool instanceof BaseTool)) {
       tool = this.tools[tool]
     }
-    if (tool.deactivateTool) tool.deactivateTool()
+    tool.deactivateTool()
     const index = this.toolStack.indexOf(tool)
     this.toolStack.splice(index, 1)
   }
@@ -38,7 +38,7 @@ class ToolManager extends BaseTool {
     if (!(tool instanceof BaseTool)) {
       tool = this.tools[tool]
     }
-    if (tool.activateTool) tool.activateTool()
+    tool.activateTool()
     this.toolStack.push(tool)
   }
 
@@ -47,7 +47,7 @@ class ToolManager extends BaseTool {
       throw Error('Tool stack is empty')
     }
     const tool = this.toolStack[this.toolStack.length - 1]
-    if (tool.deactivateTool) tool.deactivateTool()
+    tool.deactivateTool()
     this.toolStack.pop()
   }
 

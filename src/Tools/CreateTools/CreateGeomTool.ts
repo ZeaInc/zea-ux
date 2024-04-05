@@ -66,14 +66,14 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param appData - The appData value.
    */
-  constructor(appData: AppData) {
+  constructor(appData: AppData, parentItem: TreeItem) {
     super(appData)
 
     if (!appData) console.error('App data not provided to tool')
     this.appData = appData
     this.stage = 0
     this.removeToolOnRightClick = true
-    this.parentItem = 'parentItem' in appData ? appData.parentItem : appData.scene.getRoot()
+    this.parentItem = parentItem ? parentItem : appData.scene.getRoot()
 
     this.addParameter(this.colorParam)
 

@@ -154,54 +154,57 @@
         removeUser(user)
       })
 
-      // ///////////////////////////////////////
+      // ////////////////////////////////////////////
+      // Setup a ToolManger for the main viewport.
+      const toolManager = new ToolManager(appData)
+
+      const cameraTool = renderer.getViewport().getManipulator()
+      cameraTool.deactivateTool()
+      toolManager.registerTool('CameraTool', cameraTool)
 
       const holdObjectsTool = new VRHoldObjectsTool(appData)
-      const dropUserTool = new DropUserTool(appData)
+      toolManager.registerTool('VRHoldObjectsTool', holdObjectsTool)
+
+      const dropUserTool = new DropUserTool(appData, toolManager)
+      toolManager.registerTool('dropUserTool', dropUserTool)
 
       const handToolXfo = new Xfo()
       handToolXfo.sc.set(39.3701, 39.3701, 39.3701) // Tool model is in millimeters
       const eulerAngles = new EulerAngles(-MathFunctions.degToRad(110), MathFunctions.degToRad(90), 0, 'XYZ')
       handToolXfo.ori.setFromEulerAngles(eulerAngles)
       handToolXfo.tr.set(0, 0, 0.05)
-
       const handHeldTool = new HandHeldTool('data/zcad/TorqueWrench.stp.zcad', handToolXfo, appData)
-      const freehandLineTool = new CreateFreehandLineTool(appData)
-      const createSphereTool = new CreateSphereTool(appData)
-      const createCuboidTool = new CreateCuboidTool(appData)
-      const createConeTool = new CreateConeTool(appData)
+      toolManager.registerTool('HandHeldTool', handHeldTool)
 
-      // ////////////////////////////////////////////
-      // Setup a ToolManger for the main viewport.
-      const cameraTool = renderer.getViewport().getManipulator()
-      cameraTool.deactivateTool()
+      const freehandLineTool = new CreateFreehandLineTool(appData)
+      toolManager.registerTool('Freehand Line Tool', freehandLineTool)
+
+      const createSphereTool = new CreateSphereTool(appData)
+      toolManager.registerTool('Create Sphere', createSphereTool)
+
+      // const createCuboidTool = new CreateCuboidTool(appData)
+      // toolManager.registerTool('Create Cuboid', createCuboidTool)
+
+      const createConeTool = new CreateConeTool(appData)
+      toolManager.registerTool('Create Cone', createConeTool)
 
       const vrUIDOMElement = document.createElement('vr-ui')
       document.body.appendChild(vrUIDOMElement)
       const vrUITool = new VRUITool(appData, vrUIDOMElement.contentDiv)
-
-      const toolManager = new ToolManager(appData)
-      toolManager.registerTool('CameraTool', cameraTool)
-      toolManager.registerTool('dropUserTool', dropUserTool)
-      toolManager.registerTool('VRHoldObjectsTool', holdObjectsTool)
-      toolManager.registerTool('Freehand Line Tool', freehandLineTool)
-      toolManager.registerTool('HandHeldTool', handHeldTool)
-      // toolManager.registerTool('Create Cuboid', createCuboidTool)
-      toolManager.registerTool('Create Sphere', createSphereTool)
-      toolManager.registerTool('Create Cone', createConeTool)
       toolManager.registerTool('VRUITool', vrUITool)
 
       toolManager.pushTool(cameraTool)
       toolManager.pushTool(vrUITool)
       renderer.getViewport().setManipulator(toolManager)
 
-      vrUIDOMElement.setRenderer(renderer)
+      vrUIDOMElement.setAppData(appData)
       vrUIDOMElement.setToolManager(toolManager)
       // ////////////////////////////////////////////
 
       const h = document.querySelector('#buttonHolder')
       const b = document.querySelector('#button')
       renderer.getXRViewport().then((xrViewport) => {
+        appData.xrViewport = xrViewport
         h.textContent = 'XR Device Detected'
         b.textContent = 'Launch VR'
 
@@ -229,17 +232,21 @@
         // Setup VR Tools
         const vrToolManager = new ToolManager(appData)
         vrToolManager.registerTool('VRHoldObjectsTool', holdObjectsTool)
+
+        const dropUserTool = new DropUserTool(appData, vrToolManager)
         vrToolManager.registerTool('dropUserTool', dropUserTool)
+
         vrToolManager.registerTool('HandHeldTool', handHeldTool)
-        vrToolManager.registerTool('Create Cuboid', createCuboidTool)
-        vrToolManager.registerTool('Create Sphere', createSphereTool)
-        vrToolManager.registerTool('Create Cone', createConeTool)
+        // vrToolManager.registerTool('Create Cuboid', createCuboidTool)
+        // vrToolManager.registerTool('Create Sphere', createSphereTool)
+        // vrToolManager.registerTool('Create Cone', createConeTool)
         vrToolManager.registerTool('Freehand Line Tool', freehandLineTool)
 
         const vrUIDOMElement = document.createElement('vr-ui')
-        vrUIDOMElement.setRenderer(renderer)
+        vrUIDOMElement.setAppData(appData)
         vrUIDOMElement.setToolManager(vrToolManager)
         document.body.appendChild(vrUIDOMElement)
+
         const vrUITool = new VRUITool(appData, vrUIDOMElement.contentDiv)
         vrToolManager.registerTool('VRUITool', vrUITool)
         // vrUIDOMElement.setSessionRecorder(sessionRecorder)

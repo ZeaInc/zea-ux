@@ -11,14 +11,16 @@ import {
   ZeaPointerEvent,
 } from '@zeainc/zea-engine'
 import { AppData } from '../../../types/types'
+import { ToolManager } from '../ToolManager'
 
 class DropUserTool extends BaseTool {
-  appData: AppData
-  toolController: XRController
-  vrViewport: VRViewport
+  private appData: AppData
+  private toolManager: ToolManager
+
+  private vrViewport: VRViewport
   private prevCursor: string
 
-  constructor(appData: AppData) {
+  constructor(appData: AppData, toolManager: ToolManager) {
     super()
     this.appData = appData
     this.appData.renderer.getXRViewport().then((xrvp) => {
@@ -26,6 +28,7 @@ class DropUserTool extends BaseTool {
         this.vrViewport = xrvp
       }
     })
+    this.toolManager = toolManager
   }
 
   /**
@@ -55,7 +58,7 @@ class DropUserTool extends BaseTool {
    *
    * @param event - The event param.
    */
-  onPointerClick(event: ZeaPointerEvent) {
+  onPointerDown(event: ZeaPointerEvent) {
     if (event instanceof ZeaMouseEvent) {
       if (event.button == 0) {
         const ray = event.pointerRay
@@ -83,69 +86,34 @@ class DropUserTool extends BaseTool {
         xfo.ori = deltaOri.multiply(xfo.ori)
         camera.globalXfoParam.value = xfo
         camera.focalDistanceParam.value = 1.7
-      } else if (event.button == 2) {
-        const box3 = this.appData.scene.getRoot().boundingBoxParam.value
-        if (!box3.isValid()) {
-          console.warn('Bounding box not valid.')
-          return
-        }
-        // Compute the distance the camera should be to fit the entire bounding sphere
-        const focalDistance = box3.size()
-
-        const camera = this.appData.renderer.getViewport().getCamera()
-        const cameraXfo = camera.globalXfoParam.value.clone()
-        const cameraViewVec = cameraXfo.ori.getZaxis()
-        const targetOffset = cameraViewVec.scale(-focalDistance)
-        const newTarget = box3.center()
-
-        const stageXfo = camera.globalXfoParam.value.clone()
-        // stageXfo.sc.set(focalDistance, focalDistance, focalDistance)
-        stageXfo.tr = newTarget.subtract(targetOffset)
-        camera.globalXfoParam.value = stageXfo
-        camera.focalDistanceParam.value = focalDistance
       }
     } else if (event instanceof XRControllerEvent) {
       const xrController = event.controller
 
       if (this.vrViewport) {
         const headXfo = this.vrViewport.getVRHead().getTreeItem().globalXfoParam.value
-        const headDir = headXfo.ori.getZaxis()
-        headDir.z = 0
-        headDir.normalizeInPlace()
-        headXfo.ori.setFromDirectionAndUpvector(headDir, new Vec3(0, 0, 1))
-
+        const headLocalXfo = this.vrViewport.getVRHead().getXfo()
+        const tipXfo = xrController.getTipItem().globalXfoParam.value
         const stageXfo = this.vrViewport.getXfo()
+
+        // reset the stage scale.
         stageXfo.sc.set(1, 1, 1)
 
-        const tipXfo = xrController.getTipItem().globalXfoParam.value.clone()
+        // Calculate the translation to apply to the stage to maintain the current
+        // head position after the scale reset.
+        const newHeadXfo = stageXfo.multiply(headLocalXfo)
+        const delta = headXfo.tr.subtract(newHeadXfo.tr)
+        stageXfo.tr.addInPlace(delta)
 
-        const controllerDir = tipXfo.ori.getZaxis()
-        controllerDir.z = 0
-        controllerDir.normalizeInPlace()
-        tipXfo.ori.setFromDirectionAndUpvector(controllerDir, new Vec3(0, 0, 1))
-
-        const deltaTr = tipXfo.tr.subtract(stageXfo.tr)
-        // Now cast a ray straight down to the ground
-        // const ray = new Ray()
-        // ray.start = tipXfo.tr
-        // ray.dir.set(0, 0, -1)
-        // const dist = 20 * stageScale
-        // const area = 0.5
-        // const rayXfo = new Xfo()
-        // rayXfo.setLookAt(ray.start, ray.start.add(ray.dir), new Vec3(0, 0, 1))
-
-        // const result = this.appData.renderer.raycast(rayXfo, ray, dist, area)
-        // if (result) {
-        //   const worldPos = ray.pointAtDist(result.dist)
-        //   deltaTr.z += worldPos.z - tipXfo.tr.z
-        // }
-
-        const deltaOri = tipXfo.ori.multiply(headXfo.ori.inverse())
-
-        stageXfo.ori = deltaOri.multiply(stageXfo.ori)
+        // apply the delte beteen the head postion and the controller position to the stage.
+        const deltaTr = tipXfo.tr.subtract(headXfo.tr)
         stageXfo.tr.addInPlace(deltaTr)
 
         this.vrViewport.setXfo(stageXfo)
+
+        if (this.toolManager) {
+          this.toolManager.removeTool(this)
+        }
       }
     }
   }

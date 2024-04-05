@@ -25,36 +25,46 @@ class VRUI extends HTMLElement {
     this.toolsContainer.id = 'toolsContainer'
     this.contentDiv.appendChild(this.toolsContainer)
 
-    const addButton = (icon, cb) => {
-      // const buttonDiv = document.createElement('div')
-      const buttonDiv = document.createElement('button')
-      buttonDiv.classList.add('button')
-      this.buttonsContainer.appendChild(buttonDiv)
-      buttonDiv.addEventListener('mouseenter', () => {
-        buttonDiv.classList.add('button-hover')
-      })
-      buttonDiv.addEventListener('mouseleave', () => {
-        buttonDiv.classList.remove('button-hover')
-      })
-      buttonDiv.addEventListener('mousedown', () => {
-        buttonDiv.classList.add('button-active')
-        cb(img)
-      })
-      buttonDiv.addEventListener('mouseup', () => {
-        buttonDiv.classList.remove('button-active')
-      })
-      const img = new Image()
-      img.classList.add('button-image')
-      img.src = icon
-      buttonDiv.appendChild(img)
-    }
-    addButton('data/dustin-w-Undo-icon.png', () => {
+    this.addButton('data/dustin-w-Undo-icon.png', () => {
       const { UndoRedoManager } = window.zeaUx
       UndoRedoManager.getInstance().undo()
     })
-    addButton('data/dustin-w-Redo-icon.png', () => {
+    this.addButton('data/dustin-w-Redo-icon.png', () => {
       const { UndoRedoManager } = window.zeaUx
       UndoRedoManager.getInstance().redo()
+    })
+    this.addButton('data/Frame-All.png', () => {
+      this.appData.renderer.getXRViewport().then((xrvp) => {
+        const headXfo = xrvp.getVRHead().getTreeItem().globalXfoParam.value
+        const headLocalXfo = xrvp.getVRHead().getXfo()
+        const stageXfo = xrvp.getXfo()
+
+        const box3 = this.appData.scene.getRoot().boundingBoxParam.value
+        if (!box3.isValid()) {
+          console.warn('Bounding box not valid.')
+          return
+        }
+        // Compute the distance the camera should be to fit the entire bounding sphere
+        const newTarget = box3.center()
+        const focalDistance = box3.size() / 2
+
+        // reset the stage scale.
+        stageXfo.sc.set(focalDistance * 1.5, focalDistance * 1.5, focalDistance * 1.5)
+
+        // Calculate the translation to apply to the stage to maintain the current
+        // head position after the scale change.
+        const newHeadXfo = stageXfo.multiply(headLocalXfo)
+        const delta = headXfo.tr.subtract(newHeadXfo.tr)
+        stageXfo.tr.addInPlace(delta)
+
+        // apply the delte beteen the head postion and the controller position to the stage.
+        const headToTarget = headXfo.tr.subtract(newTarget).normalize().scale(focalDistance)
+        const newHeadPos = headToTarget.add(newTarget)
+        // const deltaTr = headXfo.tr.subtract(newHeadPos)
+        const deltaTr = newHeadPos.subtract(headXfo.tr)
+        stageXfo.tr.addInPlace(deltaTr)
+        xrvp.setXfo(stageXfo)
+      })
     })
 
     // let recording = false
@@ -71,7 +81,7 @@ class VRUI extends HTMLElement {
     // })
 
     // addButton('data/view_1_1.png', () => {
-    //   this.renderer.getXRViewport().then((xrvp) => {
+    //   this.appData.getXRViewport().then((xrvp) => {
     //     const { Ray, Xfo, Vec3 } = window.zeaEngine
     //     const stageXfo = xrvp.getXfo()
     //     const stageScale = stageXfo.sc.z
@@ -91,7 +101,7 @@ class VRUI extends HTMLElement {
     //     const rayXfo = new Xfo()
     //     rayXfo.setLookAt(ray.start, ray.start.add(ray.dir), new Vec3(0, 0, 1))
 
-    //     const result = this.renderer.raycast(rayXfo, ray, dist, area)
+    //     const result = this.appData.raycast(rayXfo, ray, dist, area)
     //     if (result) {
     //       const worldPos = ray.pointAtDist(result.dist)
     //       console.log('raycast', stageScale, worldPos.z, stageXfo.tr.z)
@@ -162,11 +172,40 @@ class VRUI extends HTMLElement {
   }
 
   /**
-   * Sets the renderer to the UI so it can support VR actions.
-   * @param {GLRenderer} renderer
+   * Sets the appData to the UI so it can support VR actions.
+   * @param {string} icon
+   * @param {function} cb
    */
-  setRenderer(renderer) {
-    this.renderer = renderer
+  addButton(icon, cb) {
+    // const buttonDiv = document.createElement('div')
+    const buttonDiv = document.createElement('button')
+    buttonDiv.classList.add('button')
+    this.buttonsContainer.appendChild(buttonDiv)
+    buttonDiv.addEventListener('mouseenter', () => {
+      buttonDiv.classList.add('button-hover')
+    })
+    buttonDiv.addEventListener('mouseleave', () => {
+      buttonDiv.classList.remove('button-hover')
+    })
+    buttonDiv.addEventListener('mousedown', () => {
+      buttonDiv.classList.add('button-active')
+      cb(img)
+    })
+    buttonDiv.addEventListener('mouseup', () => {
+      buttonDiv.classList.remove('button-active')
+    })
+    const img = new Image()
+    img.classList.add('button-image')
+    img.src = icon
+    buttonDiv.appendChild(img)
+  }
+
+  /**
+   * Sets the appData to the UI so it can support VR actions.
+   * @param {GLRenderer} appData
+   */
+  setAppData(appData) {
+    this.appData = appData
   }
 
   /**
@@ -251,11 +290,6 @@ class VRUI extends HTMLElement {
       }
     }
 
-    // for (const key in toolManager.tools) {
-    //   if (key == 'VRViewManipulator') continue
-    //   if (key == 'VRHoldObjectsTool') continue
-    //   addToolButton(key)
-    // }
     addToolButton('dropUserTool', 'data/Maps-Street-View-icon.png')
     addToolButton('VRHoldObjectsTool', 'data/grab-icon.png')
     addToolButton('HandHeldTool', 'data/wrench-icon.png')
