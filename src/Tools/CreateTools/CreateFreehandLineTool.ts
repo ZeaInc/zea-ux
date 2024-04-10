@@ -1,5 +1,6 @@
 import {
   BooleanParameter,
+  TreeItem,
   Vec3,
   XRPoseEvent,
   Xfo,
@@ -28,8 +29,8 @@ class CreateFreehandLineTool extends CreateLineTool {
    *
    * @param appData - The appData value.
    */
-  constructor(appData: AppData) {
-    super(appData)
+  constructor(appData: AppData, parentItem: TreeItem) {
+    super(appData, parentItem)
   }
 
   /**
@@ -53,7 +54,7 @@ class CreateFreehandLineTool extends CreateLineTool {
    *
    * @param xfo - The xfo param.
    */
-  createStart(xfo: Xfo, event: ZeaPointerEvent): void {
+  createStart(xfo: Xfo): void {
     const color = this.colorParam.value
     const lineThickness = this.lineThickness.value
 

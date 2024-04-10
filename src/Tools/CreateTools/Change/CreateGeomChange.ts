@@ -58,11 +58,9 @@ class CreateGeomChange extends Change {
   toJSON(context?: Record<any, any>): Record<any, any> {
     const j: Record<any, any> = super.toJSON(context)
     j.parentItemPath = this.parentItem.getPath()
-    j.geomItemName = this.geomItem.getName()
+    j.geomItemName = this.geomItem.name
     j.geomItemXfo = this.geomItem.localXfoParam.value
-
-    const material = this.geomItem.materialParam.value
-    j.color = material.getParameter('BaseColor').value
+    j.color = this.color
     return j
   }
 
@@ -75,25 +73,14 @@ class CreateGeomChange extends Change {
   fromJSON(j: Record<any, any>, context: Record<any, any>): void {
     super.fromJSON(j, context)
 
-    if (j.color) {
-      this.color.fromJSON(j.color)
-    }
-    this.createGeomItem()
-
+    this.color.fromJSON(j.color)
+    this.xfo.fromJSON(j.geomItemXfo)
     const sceneRoot = context.appData.scene.getRoot()
     this.parentItem = sceneRoot.resolvePath(j.parentItemPath, 1)
-    this.geomItem.setName(this.parentItem.generateUniqueName(j.geomItemName))
-    const xfo = new Xfo()
-    xfo.fromJSON(j.geomItemXfo)
-    this.geomItem.localXfoParam.value = xfo
-    this.childIndex = this.parentItem.getChildIndex(this.parentItem.addChild(this.geomItem, false))
-  }
 
-  /**
-   * Removes geometry item reference from change change.
-   */
-  destroy(): void {
-    // this.geomItem.removeRef(this) // remove the tmp ref.
+    this.createGeomItem()
+
+    this.geomItem.setName(j.geomItemName)
   }
 }
 

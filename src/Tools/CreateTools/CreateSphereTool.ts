@@ -2,7 +2,7 @@ import CreateGeomTool from './CreateGeomTool'
 import CreateSphereChange from './Change/CreateSphereChange'
 import { UndoRedoManager } from '../../UndoRedo/index'
 import { AppData } from '../../../types/types'
-import { Vec3, Xfo, ZeaPointerEvent } from '@zeainc/zea-engine'
+import { TreeItem, Vec3, Xfo, ZeaPointerEvent } from '@zeainc/zea-engine'
 
 /**
  * Tool for creating Sphere geometries.
@@ -21,8 +21,8 @@ class CreateSphereTool extends CreateGeomTool {
    *
    * @param appData - The appData value.
    */
-  constructor(appData: AppData) {
-    super(appData)
+  constructor(appData: AppData, parentItem: TreeItem) {
+    super(appData, parentItem)
   }
 
   /**
@@ -30,7 +30,7 @@ class CreateSphereTool extends CreateGeomTool {
    *
    * @param xfo - The xfo param.
    */
-  createStart(xfo: Xfo, event: ZeaPointerEvent): void {
+  createStart(xfo: Xfo): void {
     this.change = new CreateSphereChange(this.parentItem, xfo, this.colorParam.value)
 
     // During construction, make it note selectable.

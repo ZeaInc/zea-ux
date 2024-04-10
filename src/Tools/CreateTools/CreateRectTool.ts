@@ -2,7 +2,7 @@ import CreateGeomTool from './CreateGeomTool'
 import CreateRectChange from './Change/CreateRectChange'
 import { UndoRedoManager } from '../../UndoRedo/index'
 import { AppData } from '../../../types/types'
-import { Vec3, Xfo, ZeaPointerEvent } from '@zeainc/zea-engine'
+import { TreeItem, Vec3, Xfo, ZeaPointerEvent } from '@zeainc/zea-engine'
 
 /**
  * Tool for creating a rectangle geometry.
@@ -21,8 +21,8 @@ class CreateRectTool extends CreateGeomTool {
    * Create a create rect tool.
    * @param appData - The appData value.
    */
-  constructor(appData: AppData) {
-    super(appData)
+  constructor(appData: AppData, parentItem: TreeItem) {
+    super(appData, parentItem)
   }
 
   /**
@@ -30,8 +30,8 @@ class CreateRectTool extends CreateGeomTool {
    *
    * @param xfo - The xfo param.
    */
-  createStart(xfo: Xfo, event: ZeaPointerEvent): void {
-    this.change = new CreateRectChange(this.parentItem, xfo)
+  createStart(xfo: Xfo): void {
+    this.change = new CreateRectChange(this.parentItem, xfo, this.colorParam.value)
 
     // During construction, make it note selectable.
     this.change.geomItem.setSelectable(false)

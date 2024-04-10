@@ -1,5 +1,6 @@
 import {
   GLViewport,
+  TreeItem,
   Vec3,
   Xfo,
   XRControllerEvent,
@@ -30,8 +31,8 @@ class CreateMultiLineTool extends CreateGeomTool {
    * Create a create line tool.
    * @param appData - The appData value.
    */
-  constructor(appData: AppData) {
-    super(appData)
+  constructor(appData: AppData, parentItem: TreeItem) {
+    super(appData, parentItem)
   }
 
   /**
@@ -42,7 +43,7 @@ class CreateMultiLineTool extends CreateGeomTool {
   createStart(xfo: Xfo): void {
     if (this.stage == 1) return
 
-    this.change = new CreateMultiLineChange(this.parentItem, xfo)
+    this.change = new CreateMultiLineChange(this.parentItem, xfo, this.colorParam.value)
     UndoRedoManager.getInstance().addChange(this.change)
 
     this.inverseXfo = xfo.inverse()

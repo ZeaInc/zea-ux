@@ -336,7 +336,7 @@ class VRUI extends HTMLElement {
     addColorButton('data/color-blue.png', (buttonDiv) => {
       color = new Color(0, 0, 1)
     })
-    let activeButtonDiv = addColorButton('data/color-yellow.png', (buttonDiv) => {
+    addColorButton('data/color-yellow.png', (buttonDiv) => {
       color = new Color('#FFD800')
     })
   }

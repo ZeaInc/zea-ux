@@ -22,8 +22,8 @@ class CreateConeTool extends CreateGeomTool {
    * Create a create cone tool.
    * @param appData - The appData value.
    */
-  constructor(appData: AppData) {
-    super(appData)
+  constructor(appData: AppData, parentItem: TreeItem) {
+    super(appData, parentItem)
   }
 
   /**

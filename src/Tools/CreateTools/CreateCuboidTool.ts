@@ -23,8 +23,8 @@ class CreateCuboidTool extends CreateGeomTool {
    *
    * @param appData - The appData value.
    */
-  constructor(appData: AppData) {
-    super(appData)
+  constructor(appData: AppData, parentItem: TreeItem) {
+    super(appData, parentItem)
   }
 
   /**

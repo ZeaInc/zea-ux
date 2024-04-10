@@ -102,10 +102,10 @@ class SelectionGroupXfoOperator extends Operator {
       return
     }
 
-    const initialXfoMode = this.xfoModeInput.value
+    const initialXfoMode = this.xfoModeInput.param.value
     if (initialXfoMode == KinematicGroup.INITIAL_XFO_MODES.manual) {
       // The xfo is manually set by the current global xfo.
-      this.currGroupXfo = this.xfoOutput.value.clone()
+      this.currGroupXfo = this.xfoOutput.getParam().value.clone()
       return
     } else if (initialXfoMode == KinematicGroup.INITIAL_XFO_MODES.first) {
       const itemXfo = this.getInputByIndex(1).value
