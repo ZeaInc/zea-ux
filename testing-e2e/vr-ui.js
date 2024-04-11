@@ -64,6 +64,11 @@ class VRUI extends HTMLElement {
         const deltaTr = newHeadPos.subtract(headXfo.tr)
         stageXfo.tr.addInPlace(deltaTr)
         xrvp.setXfo(stageXfo)
+
+        const viewManipulator = this.toolManager.tools['XRViewManipulator']
+        if (viewManipulator) {
+          viewManipulator.enableViewScale = true
+        }
       })
     })
 
@@ -259,6 +264,7 @@ class VRUI extends HTMLElement {
         } else {
           elem.classList.remove('button-active')
           toolActive = false
+          if (tool == activeTool) activeTool = null
         }
       })
 
@@ -290,7 +296,7 @@ class VRUI extends HTMLElement {
       }
     }
 
-    addToolButton('dropUserTool', 'data/Maps-Street-View-icon.png')
+    addToolButton('DropUserTool', 'data/Maps-Street-View-icon.png')
     addToolButton('VRHoldObjectsTool', 'data/grab-icon.png')
     addToolButton('HandHeldTool', 'data/wrench-icon.png')
     addToolButton('Freehand Line Tool', 'data/pen-tool.png')

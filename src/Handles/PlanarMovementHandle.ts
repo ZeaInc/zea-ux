@@ -118,14 +118,14 @@ class PlanarMovementHandle extends Handle {
    * @param event - The event param.
    * @return {boolean} The return value.
    */
-  onVRControllerButtonDown(event: XRControllerEvent): void {
+  onXRControllerButtonDown(event: XRControllerEvent): void {
     if (this.fullXfoManipulationInVR) {
       this.activeController = event.controller
       const xfo = this.activeController.getTipXfo()
       const handleXfo = this.globalXfoParam.value
       this.grabOffset = xfo.inverse().multiply(handleXfo)
     } else {
-      super.onVRControllerButtonDown(event)
+      super.onXRControllerButtonDown(event)
     }
   }
 

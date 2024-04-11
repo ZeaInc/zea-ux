@@ -74,7 +74,7 @@ class BaseLinearMovementHandle extends Handle {
    *
    * @param event - The event param.
    */
-  onVRControllerButtonDown(event: XRControllerEvent): void {
+  onXRControllerButtonDown(event: XRControllerEvent): void {
     this.gizmoRay = this.getManipulationPlane()
 
     this.activeController = event.controller

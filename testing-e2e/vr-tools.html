@@ -95,6 +95,7 @@
 
       const cuboid = new Cuboid(10, 10, 0.01)
       const geomItem2 = new GeomItem('Cuboid', cuboid, material, new Xfo(new Vec3(0, 0, -0.01)))
+      geomItem2.setSelectable(false)
       scene.getRoot().addChild(geomItem2)
 
       const objAsset = new ObjAsset('cow')
@@ -166,7 +167,7 @@
       toolManager.registerTool('VRHoldObjectsTool', holdObjectsTool)
 
       const dropUserTool = new DropUserTool(appData, toolManager)
-      toolManager.registerTool('dropUserTool', dropUserTool)
+      toolManager.registerTool('DropUserTool', dropUserTool)
 
       const handToolXfo = new Xfo()
       handToolXfo.sc.set(39.3701, 39.3701, 39.3701) // Tool model is in millimeters
@@ -234,7 +235,7 @@
         vrToolManager.registerTool('VRHoldObjectsTool', holdObjectsTool)
 
         const dropUserTool = new DropUserTool(appData, vrToolManager)
-        vrToolManager.registerTool('dropUserTool', dropUserTool)
+        vrToolManager.registerTool('DropUserTool', dropUserTool)
 
         vrToolManager.registerTool('HandHeldTool', handHeldTool)
         // vrToolManager.registerTool('Create Cuboid', createCuboidTool)
@@ -251,7 +252,7 @@
         vrToolManager.registerTool('VRUITool', vrUITool)
         // vrUIDOMElement.setSessionRecorder(sessionRecorder)
         const viewManipulator = xrViewport.getManipulator()
-        vrToolManager.registerTool('VRViewManipulator', viewManipulator)
+        vrToolManager.registerTool('XRViewManipulator', viewManipulator)
         xrViewport.setManipulator(vrToolManager)
         vrToolManager.pushTool(viewManipulator)
         vrToolManager.pushTool(vrUITool)

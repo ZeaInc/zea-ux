@@ -215,11 +215,11 @@ class CreateMultiLineTool extends CreateGeomTool {
   }
 
   /**
-   * The onVRControllerButtonDown method.
+   * The onXRControllerButtonDown method.
    *
    * @param event - The event param.
    */
-  onVRControllerButtonDown(event: XRControllerEvent): void {
+  onXRControllerButtonDown(event: XRControllerEvent): void {
     //
   }
 }

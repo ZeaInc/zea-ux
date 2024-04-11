@@ -4,9 +4,8 @@ import {
   Ray,
   VRViewport,
   Vec3,
-  XRController,
   XRControllerEvent,
-  Xfo,
+  XRViewManipulator,
   ZeaMouseEvent,
   ZeaPointerEvent,
 } from '@zeainc/zea-engine'
@@ -59,35 +58,33 @@ class DropUserTool extends BaseTool {
    * @param event - The event param.
    */
   onPointerDown(event: ZeaPointerEvent) {
-    if (event instanceof ZeaMouseEvent) {
-      if (event.button == 0) {
-        const ray = event.pointerRay
-        const dist = ray.intersectRayPlane(new Ray(new Vec3(), new Vec3(0, 0, 1)))
-        const groundPoint = ray.pointAtDist(dist)
-        const camera = this.appData.renderer.getViewport().getCamera()
+    if (event instanceof ZeaMouseEvent && event.button == 0) {
+      const ray = event.pointerRay
+      const dist = ray.intersectRayPlane(new Ray(new Vec3(), new Vec3(0, 0, 1)))
+      const groundPoint = ray.pointAtDist(dist)
+      const camera = this.appData.renderer.getViewport().getCamera()
 
-        const pointerDir = ray.dir.negate()
-        pointerDir.z = 0
-        pointerDir.normalizeInPlace()
-        const ori = new Quat()
-        ori.setFromDirectionAndUpvector(pointerDir, new Vec3(0, 0, 1))
+      const pointerDir = ray.dir.negate()
+      pointerDir.z = 0
+      pointerDir.normalizeInPlace()
+      const ori = new Quat()
+      ori.setFromDirectionAndUpvector(pointerDir, new Vec3(0, 0, 1))
 
-        const cameraXfo = camera.globalXfoParam.value.clone()
-        const cameraDir = cameraXfo.ori.getZaxis()
-        cameraDir.z = 0
-        cameraDir.normalizeInPlace()
-        cameraXfo.ori.setFromDirectionAndUpvector(cameraDir, new Vec3(0, 0, 1))
+      const cameraXfo = camera.globalXfoParam.value.clone()
+      const cameraDir = cameraXfo.ori.getZaxis()
+      cameraDir.z = 0
+      cameraDir.normalizeInPlace()
+      cameraXfo.ori.setFromDirectionAndUpvector(cameraDir, new Vec3(0, 0, 1))
 
-        const deltaOri = ori.multiply(cameraXfo.ori.inverse())
+      const deltaOri = ori.multiply(cameraXfo.ori.inverse())
 
-        const xfo = camera.globalXfoParam.value.clone()
-        xfo.tr = groundPoint
-        xfo.tr.z += 1.7
-        xfo.ori = deltaOri.multiply(xfo.ori)
-        camera.globalXfoParam.value = xfo
-        camera.focalDistanceParam.value = 1.7
-      }
-    } else if (event instanceof XRControllerEvent) {
+      const xfo = camera.globalXfoParam.value.clone()
+      xfo.tr = groundPoint
+      xfo.tr.z += 1.7
+      xfo.ori = deltaOri.multiply(xfo.ori)
+      camera.globalXfoParam.value = xfo
+      camera.focalDistanceParam.value = 1.7
+    } else if (event instanceof XRControllerEvent && event.button == 0) {
       const xrController = event.controller
 
       if (this.vrViewport) {
@@ -111,8 +108,14 @@ class DropUserTool extends BaseTool {
 
         this.vrViewport.setXfo(stageXfo)
 
+        const viewManipulator = this.toolManager.tools['XRViewManipulator'] as XRViewManipulator
+        if (viewManipulator) {
+          viewManipulator.enableViewScale = false
+        }
+
         if (this.toolManager) {
           this.toolManager.removeTool(this)
+          console.log(this.toolManager.toolStack)
         }
       }
     }

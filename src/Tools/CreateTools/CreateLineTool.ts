@@ -70,12 +70,12 @@ class CreateLineTool extends CreateGeomTool {
   }
 
   /**
-   * The onVRControllerButtonDown method.
+   * The onXRControllerButtonDown method.
    *
    * @param event - The event param.
    */
-  onVRControllerButtonDown(event: XRControllerEvent): void {
-    super.onVRControllerButtonDown(event)
+  onXRControllerButtonDown(event: XRControllerEvent): void {
+    super.onXRControllerButtonDown(event)
   }
 }
 

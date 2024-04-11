@@ -1,7 +1,4 @@
-// TODO: need to export POINTER_TYPES
 import {
-  // @ts-ignore
-  POINTER_TYPES,
   Vec3,
   Color,
   Xfo,
@@ -79,7 +76,6 @@ class VRUITool extends BaseTool {
     line.setBoundingBoxDirty()
     this.pointerLocalXfo = new Xfo()
     this.pointerLocalXfo.sc.set(1, 1, 0.1)
-    this.pointerLocalXfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * -0.2)
 
     this.uiPointerItem = new GeomItem('VRControllerPointer', line, pointermat)
     this.uiPointerItem.setSelectable(false)
@@ -149,13 +145,13 @@ class VRUITool extends BaseTool {
 
       // display the UI on the top of the thumb knuckle.
       if (headToCtrlA.cross(headToCtrlB).dot(headXfo.ori.getYaxis()) > 0.0) {
-        const eulerAngles = new EulerAngles(-MathFunctions.degToRad(90), -MathFunctions.degToRad(90), 0, 'XYZ')
-        uiLocalXfo.ori.setFromEulerAngles(eulerAngles)
-        uiLocalXfo.tr.set(-0.05, -0.02, 0.08)
-      } else {
         const eulerAngles = new EulerAngles(-MathFunctions.degToRad(90), MathFunctions.degToRad(90), 0, 'XYZ')
         uiLocalXfo.ori.setFromEulerAngles(eulerAngles)
-        uiLocalXfo.tr.set(0.05, -0.02, 0.08)
+        uiLocalXfo.tr.set(-0.05, -0.02, 0.15)
+      } else {
+        const eulerAngles = new EulerAngles(-MathFunctions.degToRad(90), -MathFunctions.degToRad(90), 0, 'XYZ')
+        uiLocalXfo.ori.setFromEulerAngles(eulerAngles)
+        uiLocalXfo.tr.set(0.05, -0.1, 0.15)
       }
     } else {
       // uiLocalXfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * -0.6)
@@ -235,7 +231,7 @@ class VRUITool extends BaseTool {
    * The setPointerLength method.
    * @param length - The length param.
    */
-  setPointerLength(length: number): void {
+  private setPointerLength(length: number): void {
     this.pointerLocalXfo.sc.set(1, 1, length)
     this.uiPointerItem.localXfoParam.value = this.pointerLocalXfo
   }
@@ -300,7 +296,7 @@ class VRUITool extends BaseTool {
   }
 
   /**
-   * The onVRControllerButtonDown method.
+   * The onXRControllerButtonDown method.
    * @param event - The event param.
    */
   onPointerDown(event: XRControllerEvent): void {

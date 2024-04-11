@@ -111,7 +111,7 @@ class Handle extends TreeItem {
     if (event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) {
       this.handlePointerDown(event)
     } else if (event instanceof XRControllerEvent) {
-      this.onVRControllerButtonDown(event)
+      this.onXRControllerButtonDown(event)
     }
   }
 
@@ -225,7 +225,7 @@ class Handle extends TreeItem {
    *
    * @param event - The event param.
    */
-  onVRControllerButtonDown(event: XRControllerEvent): void {
+  onXRControllerButtonDown(event: XRControllerEvent): void {
     this.activeController = event.controller
     const xfo = this.activeController.getTipXfo().clone()
 

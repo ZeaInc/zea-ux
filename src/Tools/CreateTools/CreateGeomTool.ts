@@ -256,7 +256,7 @@ class CreateGeomTool extends BaseCreateTool {
       //@ts-ignore
       event.preventDefault() // prevent browser features like scroll and drag n drop
     } else if (event instanceof XRControllerEvent) {
-      this.onVRControllerButtonDown(event)
+      this.onXRControllerButtonDown(event)
     }
   }
 
@@ -355,7 +355,7 @@ class CreateGeomTool extends BaseCreateTool {
    *
    * @param event - The event param.
    */
-  onVRControllerButtonDown(event: XRControllerEvent): void {
+  onXRControllerButtonDown(event: XRControllerEvent): void {
     if (!this.activeController) {
       // TODO: Snap the Xfo to any nearby construction planes.
       this.activeController = event.controller

@@ -1,11 +1,8 @@
-// TODO: need to export POINTER_TYPES
-// @ts-ignore
 import {
   Quat,
   Color,
   Xfo,
   BaseTool,
-  POINTER_TYPES,
   TreeItem,
   ZeaMouseEvent,
   XRControllerEvent,
@@ -13,12 +10,28 @@ import {
   GeomItem,
   XRController,
   ZeaPointerEvent,
+  Lines,
+  Vec3Attribute,
+  Vec3,
+  Material,
 } from '@zeainc/zea-engine'
-// import Handle from '../../Handles/Handle'
+
 import UndoRedoManager from '../../UndoRedo/UndoRedoManager'
 import Change from '../../UndoRedo/Change'
 import { AppData } from '../../../types/types'
-import { ParameterValueChange } from '../..'
+
+const line = new Lines()
+line.setNumVertices(2)
+line.setNumSegments(1)
+line.setSegmentVertexIndices(0, 0, 1)
+const positions = line.getVertexAttribute('positions') as Vec3Attribute
+positions.setValue(0, new Vec3(0.0, 0.0, 0.0))
+positions.setValue(1, new Vec3(0.0, 0.0, -1.0))
+line.setBoundingBoxDirty()
+
+const pointermat = new Material('pointermat', 'LinesShader')
+pointermat.setSelectable(false)
+pointermat.getParameter('BaseColor').value = new Color(0.2, 1.0, 0.2)
 
 /**
  * Class representing a hold objects change.
@@ -132,20 +145,25 @@ UndoRedoManager.registerChange('HoldObjectsChange', HoldObjectsChange)
  * @extends BaseTool
  */
 class VRHoldObjectsTool extends BaseTool {
+  private defaultTaycastDist = 0.0
+  public raycastDist = 20.0
+  public treeWalkSteps = 1 // Setup up form a body Part
+
   private appData: AppData
   private pressedButtonCount = 0
-
   private vrControllers: XRController[] = []
   private heldObjectCount = 0
-  private heldGeomItems: Array<GeomItem> = []
-  private highlightedGeomItemIds: Array<TreeItem> = [] // controller id to held goem id.
-  private heldGeomItemIds: Array<number> = [] // controller id to held goem id.
-  private heldGeomItemRefs: any = []
-  private heldGeomItemOffsets: Array<Xfo> = []
+  private heldTreeItems: Array<TreeItem> = []
+  private highlighteTreeItemIds: Array<TreeItem> = [] // controller id to held goem id.
+  private heldTreeItemItemIds: Array<number> = [] // controller id to held goem id.
+  private heldTreeItemItemRefs: number[][] = []
+  private heldTreeItemItemOffsets: Array<Xfo> = []
 
   private addIconToControllerId: number
   private change: HoldObjectsChange
   private prevCursor: string
+
+  private pointerGeomItems: GeomItem[] = []
 
   /**
    * Create a VR hold objects tool.
@@ -165,7 +183,7 @@ class VRHoldObjectsTool extends BaseTool {
     this.prevCursor = this.appData.renderer.getGLCanvas().style.cursor
     this.appData.renderer.getGLCanvas().style.cursor = 'crosshair'
 
-    const addIconToController = (controller: XRController) => {
+    const bindController = (controller: XRController) => {
       // The tool might already be deactivated.
       if (!this.__activated) return
       // const cross = new Cross(0.03)
@@ -175,13 +193,30 @@ class VRHoldObjectsTool extends BaseTool {
       // const geomItem = new GeomItem('HandleToolTip', cross, mat)
       // controller.getTipItem().removeAllChildren()
       // controller.getTipItem().addChild(geomItem, false)
+
+      this.defaultTaycastDist = controller.raycastDist
+      controller.raycastDist = this.raycastDist
+
+      const pointerGeomItem = new GeomItem('PointerRay', line, pointermat)
+      pointerGeomItem.setSelectable(false)
+      const pointerXfo = new Xfo()
+      pointerXfo.sc.set(1, 1, this.raycastDist)
+      pointerGeomItem.localXfoParam.value = pointerXfo
+      controller.tipItem.addChild(pointerGeomItem, false)
+      this.pointerGeomItems[controller.id] = pointerGeomItem
+
+      // The tip items needs to be rotated down a little to make it
+      // point in the right direction.
+      // const tipItemXfo = controller.tipItem.localXfoParam.value
+      // tipItemXfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), -0.8)
+      // controller.tipItem.localXfoParam.value = tipItemXfo
     }
 
     this.appData.renderer.getXRViewport().then((xrvp) => {
       for (const controller of xrvp.getControllers()) {
-        addIconToController(controller)
+        bindController(controller)
       }
-      this.addIconToControllerId = xrvp.on('controllerAdded', (event) => addIconToController(event.controller))
+      this.addIconToControllerId = xrvp.on('controllerAdded', (event) => bindController(event.controller))
     })
   }
 
@@ -192,11 +227,16 @@ class VRHoldObjectsTool extends BaseTool {
     super.deactivateTool()
 
     this.appData.renderer.getGLCanvas().style.cursor = this.prevCursor
+    const unbindController = (controller: XRController) => {
+      controller.tipItem.removeChildByHandle(this.pointerGeomItems[controller.id])
+
+      controller.raycastDist = this.defaultTaycastDist
+    }
 
     this.appData.renderer.getXRViewport().then((xrvp) => {
-      // for(let controller of xrvp.getControllers()) {
-      //   controller.getTipItem().removeAllChildren();
-      // }
+      for (let controller of xrvp.getControllers()) {
+        unbindController(controller)
+      }
       xrvp.removeListenerById('controllerAdded', this.addIconToControllerId)
     })
   }
@@ -209,7 +249,7 @@ class VRHoldObjectsTool extends BaseTool {
    * @param refs - The refs param.
    * @return {Xfo} The return value.
    */
-  computeGrabXfo(refs: any[]): any {
+  computeGrabXfo(refs: number[]): any {
     let grabXfo
     if (refs.length == 1) {
       grabXfo = this.vrControllers[refs[0]].getTipXfo()
@@ -244,11 +284,11 @@ class VRHoldObjectsTool extends BaseTool {
    * The initAction method.
    */
   initAction(): void {
-    for (let i = 0; i < this.heldGeomItems.length; i++) {
-      const heldGeom = this.heldGeomItems[i]
-      if (!heldGeom) continue
-      const grabXfo = this.computeGrabXfo(this.heldGeomItemRefs[i])
-      this.heldGeomItemOffsets[i] = grabXfo.inverse().multiply(heldGeom.globalXfoParam.value)
+    for (let i = 0; i < this.heldTreeItems.length; i++) {
+      const heldTreeItem = this.heldTreeItems[i]
+      if (!heldTreeItem) continue
+      const grabXfo = this.computeGrabXfo(this.heldTreeItemItemRefs[i])
+      this.heldTreeItemItemOffsets[i] = grabXfo.inverse().multiply(heldTreeItem.globalXfoParam.value)
     }
   }
 
@@ -258,28 +298,28 @@ class VRHoldObjectsTool extends BaseTool {
    * @param event - The event param.
    */
   onPointerDown(event: ZeaPointerEvent): void {
-    if (event instanceof XRControllerEvent) {
+    if (event instanceof XRControllerEvent && event.button == 0) {
       const id = event.controller.getId()
       this.vrControllers[id] = event.controller
 
       // const intersectionData = event.controller.getGeomItemAtTip()
-      const geomItem = <GeomItem>this.highlightedGeomItemIds[id]
-      if (geomItem) {
+      const treeItem = this.highlighteTreeItemIds[id]
+      if (treeItem) {
         // if (geomItem.getOwner() instanceof Handle) return false
 
         // console.log("onMouseDown on Geom"); // + " Material:" + geomItem.getMaterial().name);
         // console.log(geomItem.getPath()) // + " Material:" + geomItem.getMaterial().name);
 
-        let gidx = this.heldGeomItems.indexOf(<GeomItem>geomItem)
+        let gidx = this.heldTreeItems.indexOf(treeItem)
         if (gidx == -1) {
-          gidx = this.heldGeomItems.length
+          gidx = this.heldTreeItems.length
           this.heldObjectCount++
-          this.heldGeomItems.push(geomItem)
-          this.heldGeomItemRefs[gidx] = [id]
-          this.heldGeomItemIds[id] = gidx
+          this.heldTreeItems.push(treeItem)
+          this.heldTreeItemItemRefs[gidx] = [id]
+          this.heldTreeItemItemIds[id] = gidx
 
           const changeData = {
-            newItem: geomItem,
+            newItem: treeItem,
             newItemId: gidx,
           }
           if (!this.change) {
@@ -289,8 +329,8 @@ class VRHoldObjectsTool extends BaseTool {
             this.change.update(changeData)
           }
         } else {
-          this.heldGeomItemIds[id] = gidx
-          this.heldGeomItemRefs[gidx].push(id)
+          this.heldTreeItemItemIds[id] = gidx
+          this.heldTreeItemItemRefs[gidx].push(id)
         }
         this.initAction()
         event.stopPropagation()
@@ -308,21 +348,40 @@ class VRHoldObjectsTool extends BaseTool {
       const id = event.controller.getId()
 
       this.pressedButtonCount--
-      if (this.heldGeomItemIds[id] !== undefined) {
-        const gidx = this.heldGeomItemIds[id]
-        const refs = this.heldGeomItemRefs[gidx]
+      if (this.heldTreeItemItemIds[id] !== undefined) {
+        const gidx = this.heldTreeItemItemIds[id]
+        const refs = this.heldTreeItemItemRefs[gidx]
         refs.splice(refs.indexOf(id), 1)
         if (refs.length == 0) {
           this.heldObjectCount--
-          this.heldGeomItems[gidx] = undefined
+          this.heldTreeItems[gidx] = undefined
 
           this.change = undefined
         }
-        this.heldGeomItemIds[id] = undefined
+        this.heldTreeItemItemIds[id] = undefined
         this.initAction()
         event.stopPropagation()
       }
     }
+  }
+
+  onPointerClick(event: ZeaPointerEvent): void {
+    if (event instanceof XRControllerEvent) {
+      if (event.button == 5) {
+        //'B'
+        this.treeWalkSteps++
+      } else if (event.button == 4) {
+        //'A'
+        if (this.treeWalkSteps > 0) this.treeWalkSteps--
+      }
+    }
+  }
+
+  private setPointerLength(length: number, controller: XRController): void {
+    const pointerGeomItem = this.pointerGeomItems[controller.id]
+    const pointerLocalXfo = pointerGeomItem.localXfoParam.value
+    pointerLocalXfo.sc.set(1, 1, length)
+    pointerGeomItem.localXfoParam.value = pointerLocalXfo
   }
 
   /**
@@ -337,20 +396,31 @@ class VRHoldObjectsTool extends BaseTool {
           const id = controller.getId()
           const intersectionData = controller.getGeomItemAtTip()
           if (intersectionData) {
-            const geomItem = intersectionData.geomItem
-            if (this.highlightedGeomItemIds[id] != geomItem) {
-              if (this.highlightedGeomItemIds[id]) {
-                this.highlightedGeomItemIds[id].removeHighlight('vrHoldObject')
+            let treeItem = intersectionData.geomItem
+            for (let i = 0; i < this.treeWalkSteps; i++) {
+              const parent = treeItem.parent
+              if (!parent) break
+              treeItem = treeItem.parent
+            }
+            if (this.highlighteTreeItemIds[id] != treeItem) {
+              if (this.highlighteTreeItemIds[id]) {
+                this.highlighteTreeItemIds[id].removeHighlight('vrHoldObject')
               }
-              geomItem.addHighlight('vrHoldObject', new Color(1, 0, 0, 0.2))
-              this.highlightedGeomItemIds[id] = geomItem
+              treeItem.addHighlight('vrHoldObject', new Color(1, 0, 0, 0.2))
+              this.highlighteTreeItemIds[id] = treeItem
+
+              this.setPointerLength(intersectionData.dist, controller)
             }
           } else {
-            if (this.highlightedGeomItemIds[id]) {
-              const geomItem = this.highlightedGeomItemIds[id]
-              geomItem.removeHighlight('vrHoldObject')
-              this.highlightedGeomItemIds[id] = null
+            if (this.highlighteTreeItemIds[id]) {
+              const treeItem = this.highlighteTreeItemIds[id]
+              this.highlighteTreeItemIds[id] = null
+
+              if (!this.highlighteTreeItemIds.includes(treeItem)) {
+                treeItem.removeHighlight('vrHoldObject')
+              }
             }
+            this.setPointerLength(this.raycastDist, controller)
           }
         })
 
@@ -359,11 +429,11 @@ class VRHoldObjectsTool extends BaseTool {
 
       const changeXfos = []
       const changeXfoIds = []
-      for (let i = 0; i < this.heldGeomItems.length; i++) {
-        const heldGeom = this.heldGeomItems[i]
-        if (!heldGeom) continue
-        const grabXfo = this.computeGrabXfo(this.heldGeomItemRefs[i])
-        changeXfos.push(grabXfo.multiply(this.heldGeomItemOffsets[i]))
+      for (let i = 0; i < this.heldTreeItems.length; i++) {
+        const heldTreeItem = this.heldTreeItems[i]
+        if (!heldTreeItem) continue
+        const grabXfo = this.computeGrabXfo(this.heldTreeItemItemRefs[i])
+        changeXfos.push(grabXfo.multiply(this.heldTreeItemItemOffsets[i]))
         changeXfoIds.push(i)
       }
 
