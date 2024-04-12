@@ -20,6 +20,7 @@ import {
   MathFunctions,
   TreeItem,
   VRViewport,
+  LinesMaterial,
 } from '@zeainc/zea-engine'
 
 import { AppData } from '../../../types/types'
@@ -63,9 +64,9 @@ class VRUITool extends BaseTool {
     this.vrUIDOMElement = vrUIDOMElement
     this.controllerUI = new VRControllerUI(appData, this.vrUIDOMElement)
 
-    const pointermat = new Material('pointermat', 'LinesShader')
+    const pointermat = new LinesMaterial('pointermat')
     pointermat.setSelectable(false)
-    pointermat.getParameter('BaseColor').value = new Color(1.2, 0, 0)
+    pointermat.baseColorParam.value = new Color(1.2, 0, 0)
 
     const line = new Lines()
     line.setNumVertices(2)

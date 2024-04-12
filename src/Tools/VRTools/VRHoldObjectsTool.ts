@@ -13,7 +13,7 @@ import {
   Lines,
   Vec3Attribute,
   Vec3,
-  Material,
+  LinesMaterial,
 } from '@zeainc/zea-engine'
 
 import UndoRedoManager from '../../UndoRedo/UndoRedoManager'
@@ -29,9 +29,9 @@ positions.setValue(0, new Vec3(0.0, 0.0, 0.0))
 positions.setValue(1, new Vec3(0.0, 0.0, -1.0))
 line.setBoundingBoxDirty()
 
-const pointermat = new Material('pointermat', 'LinesShader')
+const pointermat = new LinesMaterial('pointermat')
 pointermat.setSelectable(false)
-pointermat.getParameter('BaseColor').value = new Color(0.2, 1.0, 0.2)
+pointermat.baseColorParam.value = new Color(0.2, 1.0, 0.2)
 
 /**
  * Class representing a hold objects change.

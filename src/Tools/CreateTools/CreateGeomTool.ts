@@ -18,6 +18,7 @@ import {
   XRControllerEvent,
   Quat,
   XRPoseEvent,
+  LinesMaterial,
 } from '@zeainc/zea-engine'
 import BaseCreateTool from '../BaseCreateTool'
 import { UndoRedoManager } from '../../UndoRedo/index'
@@ -56,7 +57,7 @@ class CreateGeomTool extends BaseCreateTool {
   removeToolOnRightClick: boolean
   parentItem: TreeItem
   colorParam = new ColorParameter('Color', new Color(0.7, 0.2, 0.2))
-  vrControllerToolTipMat: Material
+  vrControllerToolTipMat: LinesMaterial
   vrControllerToolTip: BaseGeom | Cross
   prevCursor: string
   constructionPlane: Xfo
@@ -87,8 +88,8 @@ class CreateGeomTool extends BaseCreateTool {
   addIconToVRController(controller: XRController): void {
     if (!this.vrControllerToolTip) {
       this.vrControllerToolTip = new Cross(0.05)
-      this.vrControllerToolTipMat = new Material('VRController Cross', 'LinesShader')
-      this.vrControllerToolTipMat.getParameter('BaseColor').value = this.colorParam.value
+      this.vrControllerToolTipMat = new LinesMaterial('VRController Cross')
+      this.vrControllerToolTipMat.baseColorParam.value = this.colorParam.value
       this.vrControllerToolTipMat.setSelectable(false)
     }
     const geomItem = new GeomItem('CreateGeomToolTip', this.vrControllerToolTip, this.vrControllerToolTipMat)
