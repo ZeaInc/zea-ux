@@ -186,13 +186,6 @@ class VRHoldObjectsTool extends BaseTool {
     const bindController = (controller: XRController) => {
       // The tool might already be deactivated.
       if (!this.__activated) return
-      // const cross = new Cross(0.03)
-      // const mat = new Material('Cross', 'FlatSurfaceShader')
-      // mat.getParameter('BaseColor').value = new Color('#03E3AC')
-      // mat.visibleInGeomDataBuffer = false
-      // const geomItem = new GeomItem('HandleToolTip', cross, mat)
-      // controller.getTipItem().removeAllChildren()
-      // controller.getTipItem().addChild(geomItem, false)
 
       this.defaultTaycastDist = controller.raycastDist
       controller.raycastDist = this.raycastDist
@@ -204,12 +197,6 @@ class VRHoldObjectsTool extends BaseTool {
       pointerGeomItem.localXfoParam.value = pointerXfo
       controller.tipItem.addChild(pointerGeomItem, false)
       this.pointerGeomItems[controller.id] = pointerGeomItem
-
-      // The tip items needs to be rotated down a little to make it
-      // point in the right direction.
-      // const tipItemXfo = controller.tipItem.localXfoParam.value
-      // tipItemXfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), -0.8)
-      // controller.tipItem.localXfoParam.value = tipItemXfo
     }
 
     this.appData.renderer.getXRViewport().then((xrvp) => {
