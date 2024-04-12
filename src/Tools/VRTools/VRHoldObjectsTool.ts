@@ -380,7 +380,8 @@ class VRHoldObjectsTool extends BaseTool {
   private setPointerLength(length: number, controller: XRController): void {
     const pointerGeomItem = this.pointerGeomItems[controller.id]
     const pointerLocalXfo = pointerGeomItem.localXfoParam.value
-    pointerLocalXfo.sc.set(1, 1, length)
+
+    pointerLocalXfo.sc.set(1, 1, length / controller.getTipXfo().sc.z)
     pointerGeomItem.localXfoParam.value = pointerLocalXfo
   }
 
@@ -396,6 +397,8 @@ class VRHoldObjectsTool extends BaseTool {
           const id = controller.getId()
           const intersectionData = controller.getGeomItemAtTip()
           if (intersectionData) {
+            this.setPointerLength(intersectionData.dist, controller)
+
             let treeItem = intersectionData.geomItem
             for (let i = 0; i < this.treeWalkSteps; i++) {
               const parent = treeItem.parent
@@ -408,10 +411,10 @@ class VRHoldObjectsTool extends BaseTool {
               }
               treeItem.addHighlight('vrHoldObject', new Color(1, 0, 0, 0.2))
               this.highlighteTreeItemIds[id] = treeItem
-
-              this.setPointerLength(intersectionData.dist, controller)
             }
           } else {
+            this.setPointerLength(this.raycastDist, controller)
+
             if (this.highlighteTreeItemIds[id]) {
               const treeItem = this.highlighteTreeItemIds[id]
               this.highlighteTreeItemIds[id] = null
@@ -420,7 +423,6 @@ class VRHoldObjectsTool extends BaseTool {
                 treeItem.removeHighlight('vrHoldObject')
               }
             }
-            this.setPointerLength(this.raycastDist, controller)
           }
         })
 

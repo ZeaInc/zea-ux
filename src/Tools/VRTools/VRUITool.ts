@@ -409,7 +409,6 @@ class VRUITool extends BaseTool {
           const headToCtrlA = controllerXfo.tr.subtract(headXfo.tr)
           headToCtrlA.normalizeInPlace()
           const angle = headToCtrlA.angleTo(controllerXfo.ori.getYaxis())
-          console.log(uiController.getHandedness(), angle)
           if (angle > Math.PI * 0.3) {
             this.displayUI(uiController, pointerController)
             event.setCapture(this)
