@@ -267,10 +267,10 @@ class CreateGeomTool extends BaseCreateTool {
    * @param event - The event param.
    */
   onPointerMove(event: ZeaPointerEvent): void {
-    if (event instanceof XRPoseEvent) {
-      this.onXRPoseChanged(event)
-    } else if (event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) {
-      if (this.stage > 0) {
+    if (this.stage > 0) {
+      if (event instanceof XRPoseEvent) {
+        this.onXRPoseChanged(event)
+      } else if (event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) {
         const snapToSurfaceUnderPointer = false
         const xfo = this.screenPosToXfo(event, snapToSurfaceUnderPointer)
         this.createMove(xfo.tr, event)
@@ -357,15 +357,14 @@ class CreateGeomTool extends BaseCreateTool {
    * @param event - The event param.
    */
   onXRControllerButtonDown(event: XRControllerEvent): void {
-    if (!this.activeController) {
-      // TODO: Snap the Xfo to any nearby construction planes.
+    if (this.stage == 0 && event.button == 0) {
       this.activeController = event.controller
       this.constructionPlane = new Xfo()
       const xfo = this.constructionPlane.clone()
       xfo.tr = this.activeController.getTipXfo().tr
       this.createStart(xfo, event)
+      event.stopPropagation()
     }
-    event.stopPropagation()
   }
 
   /**

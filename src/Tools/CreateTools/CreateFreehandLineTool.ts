@@ -33,20 +33,8 @@ class CreateFreehandLineTool extends CreateLineTool {
     super(appData, parentItem)
   }
 
-  /**
-   * Event fired when a pointing device is moved while the cursor's hotspot is inside the viewport, while tool is activated.
-   *
-   * @param event - The event param.
-   */
-  onPointerMove(event: ZeaPointerEvent): void {
-    if (event instanceof XRPoseEvent) {
-      this.onXRPoseChanged(event)
-    } else if (this.stage > 0 && (event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent)) {
-      const snapToSurfaceUnderPointer = true
-      const xfo = this.screenPosToXfo(event, snapToSurfaceUnderPointer)
-      this.createMove(xfo.tr, event)
-      event.stopPropagation()
-    }
+  screenPosToXfo(event: ZeaMouseEvent | ZeaTouchEvent): Xfo {
+    return super.screenPosToXfo(event, true)
   }
 
   /**
