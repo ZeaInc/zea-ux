@@ -304,6 +304,7 @@ class VRUI extends HTMLElement {
     // addToolButton('Create Sphere', 'data/create-sphere-icon.png')
     // addToolButton('Create Cone', 'data/create-cone-icon.png')
 
+    let activeButtonDiv
     let color = new Color('#FFD800')
     const addColorButton = (icon, cb) => {
       const buttonDiv = document.createElement('button')
@@ -316,7 +317,9 @@ class VRUI extends HTMLElement {
         buttonDiv.classList.remove('button-hover')
       })
       buttonDiv.addEventListener('mousedown', () => {
-        activeButtonDiv.classList.remove('button-active')
+        if (activeButtonDiv) {
+          activeButtonDiv.classList.remove('button-active')
+        }
         buttonDiv.classList.add('button-active')
         activeButtonDiv = buttonDiv
         cb(buttonDiv)

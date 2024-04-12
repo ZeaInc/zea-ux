@@ -19,6 +19,7 @@ import {
   EulerAngles,
   MathFunctions,
   TreeItem,
+  VRViewport,
 } from '@zeainc/zea-engine'
 
 import { AppData } from '../../../types/types'
@@ -118,7 +119,7 @@ class VRUITool extends BaseTool {
    * @param : VRController - The pointerController param.
    * @param headXfo - The headXfo param.
    */
-  displayUI(uiController: XRController, pointerController: XRController, headXfo: Xfo): void {
+  displayUI(uiController: XRController, pointerController: XRController): void {
     this.controllerUI.activate()
     this.uiController = uiController
     this.pointerController = pointerController
@@ -138,13 +139,12 @@ class VRUITool extends BaseTool {
     // uiLocalXfo.tr.set(0, -0.05, 0.08)
 
     if (this.pointerController) {
-      const xfoA = this.uiController.getTreeItem().globalXfoParam.value
-      const xfoB = this.pointerController.getTreeItem().globalXfoParam.value
-      const headToCtrlA = xfoA.tr.subtract(headXfo.tr)
-      const headToCtrlB = xfoB.tr.subtract(headXfo.tr)
-
       // display the UI on the top of the thumb knuckle.
-      if (headToCtrlA.cross(headToCtrlB).dot(headXfo.ori.getYaxis()) > 0.0) {
+      // Controller coordinate system
+      // X = Horizontal.
+      // Y = Down
+      // Z = Towards handle base.
+      if (uiController.getHandedness() == 'right') {
         const eulerAngles = new EulerAngles(-MathFunctions.degToRad(90), MathFunctions.degToRad(90), 0, 'XYZ')
         uiLocalXfo.ori.setFromEulerAngles(eulerAngles)
         uiLocalXfo.tr.set(-0.05, -0.02, 0.15)
@@ -392,7 +392,36 @@ class VRUITool extends BaseTool {
         }
       }
     } else if (event instanceof XRControllerEvent) {
-      if (event.controller == this.pointerController && this.uiOpen) {
+      if (event.button == 4) {
+        if (!this.uiOpen) {
+          const uiController = event.controller
+          const controllers = uiController.xrvp.controllers
+          const pointerController = controllers.find((ctrl) => ctrl != uiController)
+
+          // Controller coordinate system
+          // X = Horizontal.
+          // Y = Down
+          // Z = Towards handle base.
+          const vrvp = uiController.xrvp as VRViewport
+          const headXfo = vrvp.getVRHead().getXfo()
+          // Note: do not open the UI when the controller buttons are pressed.
+          const controllerXfo = uiController.getTreeItem().globalXfoParam.value
+          const headToCtrlA = controllerXfo.tr.subtract(headXfo.tr)
+          headToCtrlA.normalizeInPlace()
+          const angle = headToCtrlA.angleTo(controllerXfo.ori.getYaxis())
+          console.log(uiController.getHandedness(), angle)
+          if (angle > Math.PI * 0.3) {
+            this.displayUI(uiController, pointerController)
+            event.setCapture(this)
+            event.stopPropagation()
+          }
+        } else {
+          this.closeUI()
+          event.releaseCapture()
+          event.stopPropagation()
+        }
+        return
+      } else if (this.uiOpen && event.controller == this.pointerController) {
         const ray = this.calcPointerRay()
         const hit = this.calcUIIntersection(ray)
         if (hit) {
@@ -457,82 +486,30 @@ class VRUITool extends BaseTool {
         }
       }
     } else if (event instanceof XRPoseEvent) {
-      if (!this.uiOpen) {
-        if (
-          !event.controllers[0] ||
-          event.controllers[0].buttonPressed ||
-          !event.controllers[1] ||
-          event.controllers[1].buttonPressed
-        ) {
-          return
-        }
-        // Controller coordinate system
-        // X = Horizontal.
-        // Y = Down
-        // Z = Towards handle base.
-        const headXfo = event.viewXfo
-        const checkControllers = (ctrlA: XRController, ctrlB: XRController) => {
-          // Note: do not open the UI when the controller buttons are pressed.
-          const xfoA = ctrlA.getTreeItem().globalXfoParam.value
-          const headToCtrlA = xfoA.tr.subtract(headXfo.tr)
-          headToCtrlA.normalizeInPlace()
-          if (headToCtrlA.angleTo(xfoA.ori.getYaxis()) < Math.PI * 0.3) {
-            this.displayUI(ctrlA, ctrlB, headXfo)
-            event.setCapture(this)
-            event.stopPropagation()
-            return true
-          }
-          return false
-        }
+      if (this.uiOpen) {
+        const ray = this.calcPointerRay()
+        const hit = this.calcUIIntersection(ray)
+        if (hit) {
+          const element = this.getDOMElementFromPoint(hit)
 
-        if (checkControllers(event.controllers[0], event.controllers[1])) return
-        if (checkControllers(event.controllers[1], event.controllers[0])) return
-      } else {
-        // Controller coordinate system
-        // X = Horizontal.
-        // Y = Down
-        // Z = Towards handle base.
-        const headXfo = event.viewXfo
-        const checkControllers = () => {
-          const xfoA = this.uiController.getTreeItem().globalXfoParam.value
-          const headToCtrlA = xfoA.tr.subtract(headXfo.tr)
-          headToCtrlA.normalizeInPlace()
-          if (headToCtrlA.angleTo(xfoA.ori.getYaxis()) > Math.PI * 0.7) {
-            // Remove ourself from the system.
-            this.closeUI()
-            if (event.getCapture() == this) {
-              event.releaseCapture()
-            }
-            return false
-          }
-          return true
-        }
-
-        if (checkControllers()) {
-          const ray = this.calcPointerRay()
-          const hit = this.calcUIIntersection(ray)
-          if (hit) {
-            const element = this.getDOMElementFromPoint(hit)
-
-            if (element != this.element) {
-              if (this.element) {
-                this.sendEventToUI(this.element, 'mouseleave', hit, {})
-              }
-              this.element = element
-              if (this.element) {
-                this.sendEventToUI(this.element, 'mouseenter', hit, {})
-              }
-            }
+          if (element != this.element) {
             if (this.element) {
-              this.sendEventToUI(this.element, 'mousemove', hit, {})
+              this.sendEventToUI(this.element, 'mouseleave', hit, {})
             }
-          } else if (this.element) {
-            this.controllerUI.sendMouseEvent(this.element, 'mouseleave', {})
-            this.element = null
+            this.element = element
+            if (this.element) {
+              this.sendEventToUI(this.element, 'mouseenter', hit, {})
+            }
           }
+          if (this.element) {
+            this.sendEventToUI(this.element, 'mousemove', hit, {})
+          }
+
+          event.stopPropagation()
+        } else if (this.element) {
+          this.controllerUI.sendMouseEvent(this.element, 'mouseleave', {})
+          this.element = null
         }
-        // While the UI is open, no other tools get events.
-        event.stopPropagation()
       }
     }
   }

@@ -54,8 +54,24 @@
     <script type="module">
       import './vr-ui.js'
 
-      const { GLRenderer, Scene, Vec3, Xfo, EulerAngles, Color, Cuboid, Material, GeomItem, ObjAsset, MathFunctions } =
-        window.zeaEngine
+      const {
+        GLRenderer,
+        Scene,
+        Vec3,
+        Xfo,
+        EulerAngles,
+        Color,
+        Cuboid,
+        Material,
+        GeomItem,
+        ObjAsset,
+        MathFunctions,
+        CADAsset,
+        EnvProjectionMaterial,
+        Sphere,
+        Plane,
+        EnvMap,
+      } = window.zeaEngine
       const {
         SelectionManager,
         UndoRedoManager,
@@ -79,7 +95,24 @@
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(3, 3, 2), new Vec3(0, 0, 0.75))
       renderer.setScene(scene)
 
+      //region Environment
+
+      const envMap = new EnvMap()
+      envMap.load('./data/quarry_01_4k.zenv')
+      scene.setEnvMap(envMap)
+
       scene.setupGrid(10.0, 10, new Color())
+      const envProjectionMaterial = new EnvProjectionMaterial('ground')
+      envProjectionMaterial.projectionCenter.setValue(new Vec3(0.0, 0.0, 1.7))
+      const geomItem0 = new GeomItem('Plane', new Plane(60.0, 60, 3, 3), envProjectionMaterial)
+      geomItem0.setSelectable(false)
+      scene.getRoot().addChild(geomItem0)
+
+      const geomItem1 = new GeomItem('Sphere', new Sphere(30.0), envProjectionMaterial)
+      geomItem1.setSelectable(false)
+      scene.getRoot().addChild(geomItem1)
+
+      //endregion
 
       const appData = {
         renderer,
@@ -90,25 +123,21 @@
       const pointerOverColor = new Color(0, 1, 1)
       const pointerDownColor = new Color(1, 0, 0)
 
-      const material = new Material('surfaces', 'StandardSurfaceShader')
-      material.getParameter('BaseColor').setValue(new Color(0.75, 0.75, 0.75))
-
-      const cuboid = new Cuboid(10, 10, 0.01)
-      const geomItem2 = new GeomItem('Cuboid', cuboid, material, new Xfo(new Vec3(0, 0, -0.01)))
-      geomItem2.setSelectable(false)
-      scene.getRoot().addChild(geomItem2)
-
-      const objAsset = new ObjAsset('cow')
-      objAsset.getParameter('splitGroupsIntoObjects').setValue(true)
-      scene.getRoot().addChild(objAsset)
-
+      const rootAsset = new CADAsset()
       const xfo = new Xfo()
-      xfo.tr.set(0, 0, 3.55 * 0.3048)
-      xfo.ori.setFromEulerAngles(new EulerAngles(90 * (Math.PI / 180), 0, 0))
-      xfo.sc.set(0.3048, 0.3048, 0.3048)
-      objAsset.getParameter('GlobalXfo').setValue(xfo)
-      objAsset.load('data/cow.obj').then(() => {
-        window.postMessage(`done-Loading`)
+      xfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * 0.5) // y-up
+      // xfo.ori.setFromAxisAndAngle(new Vec3(-1, 0, 0), Math.PI * 0.5); // y-down
+
+      xfo.tr.z = 1.42
+      rootAsset.globalXfoParam.value = xfo
+
+      const promises = []
+
+      rootAsset.load('./data/DodgeChallenger.xcgm.zcad')
+
+      scene.getRoot().addChild(rootAsset)
+      rootAsset.once('loaded', () => {
+        renderer.frameAll()
       })
 
       // ///////////////////////////////////////
