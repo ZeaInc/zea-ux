@@ -66,15 +66,15 @@ class VRUITool extends BaseTool {
 
     const pointermat = new LinesMaterial('pointermat')
     pointermat.setSelectable(false)
-    pointermat.baseColorParam.value = new Color(1.2, 0, 0)
+    pointermat.baseColorParam.value = new Color(1, 0, 0)
 
     const line = new Lines()
     line.setNumVertices(2)
     line.setNumSegments(1)
     line.setSegmentVertexIndices(0, 0, 1)
     const positions = <Vec3Attribute>line.getVertexAttribute('positions')
-    positions.setValue(0, new Vec3(0.0, 0.0, 0.0))
-    positions.setValue(1, new Vec3(0.0, 0.0, -1.0))
+    positions.setValue(0, new Vec3(0, 0, 0))
+    positions.setValue(1, new Vec3(0, 0, -1))
     line.setBoundingBoxDirty()
     this.pointerLocalXfo = new Xfo()
     this.pointerLocalXfo.sc.set(1, 1, 0.1)
@@ -115,12 +115,12 @@ class VRUITool extends BaseTool {
   }
 
   /**
-   * The displayUI method.
+   * The openUI method.
    * @param uiController - The uiController param.
    * @param : VRController - The pointerController param.
    * @param headXfo - The headXfo param.
    */
-  displayUI(uiController: XRController, pointerController: XRController): void {
+  openUI(uiController: XRController, pointerController: XRController): void {
     this.controllerUI.activate()
     this.uiController = uiController
     this.pointerController = pointerController
@@ -396,22 +396,25 @@ class VRUITool extends BaseTool {
       if (event.button == 4) {
         if (!this.uiOpen) {
           const uiController = event.controller
-          const controllers = uiController.xrvp.controllers
-          const pointerController = controllers.find((ctrl) => ctrl != uiController)
-
           // Controller coordinate system
           // X = Horizontal.
           // Y = Down
           // Z = Towards handle base.
           const vrvp = uiController.xrvp as VRViewport
-          const headXfo = vrvp.getVRHead().getXfo()
+          const headXfo = vrvp.getVRHead().getTreeItem().globalXfoParam.value
           // Note: do not open the UI when the controller buttons are pressed.
           const controllerXfo = uiController.getTreeItem().globalXfoParam.value
           const headToCtrlA = controllerXfo.tr.subtract(headXfo.tr)
           headToCtrlA.normalizeInPlace()
-          const angle = headToCtrlA.angleTo(controllerXfo.ori.getYaxis())
-          if (angle > Math.PI * 0.3) {
-            this.displayUI(uiController, pointerController)
+          const controllerXAxis =
+            uiController.getHandedness() == 'left'
+              ? controllerXfo.ori.getXaxis().negate()
+              : controllerXfo.ori.getXaxis()
+          const angle = headToCtrlA.angleTo(controllerXAxis)
+          if (angle < 0.3) {
+            const controllers = uiController.xrvp.controllers
+            const pointerController = controllers.find((ctrl) => ctrl != uiController)
+            this.openUI(uiController, pointerController)
             event.setCapture(this)
             event.stopPropagation()
           }

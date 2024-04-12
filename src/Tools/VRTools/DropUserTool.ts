@@ -57,7 +57,7 @@ class DropUserTool extends BaseTool {
    *
    * @param event - The event param.
    */
-  onPointerDown(event: ZeaPointerEvent) {
+  onPointerClick(event: ZeaPointerEvent) {
     if (event instanceof ZeaMouseEvent && event.button == 0) {
       const ray = event.pointerRay
       const dist = ray.intersectRayPlane(new Ray(new Vec3(), new Vec3(0, 0, 1)))
