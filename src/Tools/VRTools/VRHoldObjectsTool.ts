@@ -19,19 +19,7 @@ import {
 import UndoRedoManager from '../../UndoRedo/UndoRedoManager'
 import Change from '../../UndoRedo/Change'
 import { AppData } from '../../../types/types'
-
-const line = new Lines()
-line.setNumVertices(2)
-line.setNumSegments(1)
-line.setSegmentVertexIndices(0, 0, 1)
-const positions = line.getVertexAttribute('positions') as Vec3Attribute
-positions.setValue(0, new Vec3(0.0, 0.0, 0.0))
-positions.setValue(1, new Vec3(0.0, 0.0, -1.0))
-line.setBoundingBoxDirty()
-
-const pointermat = new LinesMaterial('pointermat')
-pointermat.setSelectable(false)
-pointermat.baseColorParam.value = new Color(0.2, 1.0, 0.2)
+import { line, lineMaterial } from '../../helpers/line'
 
 /**
  * Class representing a hold objects change.
@@ -159,7 +147,7 @@ class VRHoldObjectsTool extends BaseTool {
   private heldTreeItemItemRefs: number[][] = []
   private heldTreeItemItemOffsets: Array<Xfo> = []
 
-  private addIconToControllerId: number
+  private bindControllerId: number
   private change: HoldObjectsChange
   private prevCursor: string
 
@@ -185,12 +173,12 @@ class VRHoldObjectsTool extends BaseTool {
 
     const bindController = (controller: XRController) => {
       // The tool might already be deactivated.
-      if (!this.__activated) return
+      if (this.pointerGeomItems[controller.id]) return
 
       this.defaultTaycastDist = controller.raycastDist
       controller.raycastDist = this.raycastDist
 
-      const pointerGeomItem = new GeomItem('PointerRay', line, pointermat)
+      const pointerGeomItem = new GeomItem('PointerRay', line, lineMaterial)
       pointerGeomItem.setSelectable(false)
       const pointerXfo = new Xfo()
       pointerXfo.sc.set(1, 1, this.raycastDist)
@@ -203,7 +191,7 @@ class VRHoldObjectsTool extends BaseTool {
       for (const controller of xrvp.getControllers()) {
         bindController(controller)
       }
-      this.addIconToControllerId = xrvp.on('controllerAdded', (event) => bindController(event.controller))
+      this.bindControllerId = xrvp.on('controllerAdded', (event) => bindController(event.controller))
     })
   }
 
@@ -215,16 +203,18 @@ class VRHoldObjectsTool extends BaseTool {
 
     this.appData.renderer.getGLCanvas().style.cursor = this.prevCursor
     const unbindController = (controller: XRController) => {
+      if (!this.pointerGeomItems[controller.id]) return
       controller.tipItem.removeChildByHandle(this.pointerGeomItems[controller.id])
 
       controller.raycastDist = this.defaultTaycastDist
+      this.pointerGeomItems[controller.id] = null
     }
 
     this.appData.renderer.getXRViewport().then((xrvp) => {
-      for (let controller of xrvp.getControllers()) {
+      for (const controller of xrvp.getControllers()) {
         unbindController(controller)
       }
-      xrvp.removeListenerById('controllerAdded', this.addIconToControllerId)
+      xrvp.removeListenerById('controllerAdded', this.bindControllerId)
     })
   }
 
@@ -276,6 +266,16 @@ class VRHoldObjectsTool extends BaseTool {
       if (!heldTreeItem) continue
       const grabXfo = this.computeGrabXfo(this.heldTreeItemItemRefs[i])
       this.heldTreeItemItemOffsets[i] = grabXfo.inverse().multiply(heldTreeItem.globalXfoParam.value)
+    }
+  }
+
+  private setPointerLength(length: number, controller: XRController): void {
+    const pointerGeomItem = this.pointerGeomItems[controller.id]
+    if (pointerGeomItem) {
+      const pointerLocalXfo = pointerGeomItem.localXfoParam.value
+
+      pointerLocalXfo.sc.set(1, 1, length / controller.getTipXfo().sc.z)
+      pointerGeomItem.localXfoParam.value = pointerLocalXfo
     }
   }
 
@@ -364,14 +364,6 @@ class VRHoldObjectsTool extends BaseTool {
     }
   }
 
-  private setPointerLength(length: number, controller: XRController): void {
-    const pointerGeomItem = this.pointerGeomItems[controller.id]
-    const pointerLocalXfo = pointerGeomItem.localXfoParam.value
-
-    pointerLocalXfo.sc.set(1, 1, length / controller.getTipXfo().sc.z)
-    pointerGeomItem.localXfoParam.value = pointerLocalXfo
-  }
-
   /**
    * Event fired when a pointing device is moved
    *
@@ -380,7 +372,7 @@ class VRHoldObjectsTool extends BaseTool {
   onPointerMove(event: ZeaPointerEvent): void {
     if (event instanceof XRPoseEvent) {
       if (!this.change) {
-        event.controllers.forEach((controller: any) => {
+        event.controllers.forEach((controller: XRController) => {
           const id = controller.getId()
           const intersectionData = controller.getGeomItemAtTip()
           if (intersectionData) {

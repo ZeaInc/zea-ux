@@ -1,4 +1,16 @@
-import { Vec3, Xfo, EulerAngles, Color, TreeItem, GeomItem, Material, Plane, DataImage } from '@zeainc/zea-engine'
+import {
+  Vec3,
+  Xfo,
+  EulerAngles,
+  Color,
+  TreeItem,
+  GeomItem,
+  Material,
+  Plane,
+  DataImage,
+  FlatSurfaceMaterial,
+  FileImage,
+} from '@zeainc/zea-engine'
 import { AppData } from '../../../types/types.js'
 
 import domtoimage from './dom-to-image.js'
@@ -56,6 +68,18 @@ const renderElementUI = (elem: HTMLElement, rect: DOMRect, callback: (image: HTM
 }
 const plane = new Plane(1, 1)
 
+const mat = new FlatSurfaceMaterial('debug-vr-ui-mat')
+mat.overlayParam.value = 0.5
+const image1 = new FileImage('avatar1')
+image1.load('data/create-sphere-icon.png')
+mat.baseColorParam.setImage(image1)
+
+const debugGeomItem = new GeomItem('Debug', plane, mat)
+debugGeomItem.setSelectable(false)
+// Flip it over so we see the front.
+const debugGeomItemXfo = new Xfo()
+debugGeomItemXfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI)
+
 /**
  * Class representing a VR controller UI.
  * @extends TreeItem
@@ -79,10 +103,6 @@ export default class VRControllerUI extends TreeItem {
     this.vrUIDOMElement = vrUIDOMElement
     this.vrUIDOMElement.style.display = 'none'
 
-    // const debugGeomItem = new GeomItem('Debug', new Plane(1, 1), new Material('debug-ui-mat', 'FlatSurfaceShader'))
-    // // Flip it over so we see the front.
-    // const debugGeomItemXfo = new Xfo()
-    // debugGeomItemXfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI)
     // this.addChild(debugGeomItem, false)
   }
 
@@ -96,8 +116,6 @@ export default class VRControllerUI extends TreeItem {
       const dpm = 0.0005 // dots-per-meter (1 each 1/2mm)
       localXfo.sc.set(dpm, dpm, dpm)
       localXfo.ori.setFromEulerAngles(new EulerAngles(Math.PI, Math.PI, 0))
-      // localXfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI)
-      // localXfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI)
       uiOffset.localXfoParam.value = localXfo
 
       this.size = new Vec3(this.vrUIDOMElement.clientWidth * dpm, this.vrUIDOMElement.clientHeight * dpm, 1)
@@ -112,9 +130,7 @@ export default class VRControllerUI extends TreeItem {
           // console.log(elem, rect)
 
           const localXfo = new Xfo()
-
           localXfo.sc.set(rect.width, -rect.height, 1)
-
           // Note: The plane geom goes from [-0.5, -0.5] to [0.5, 0.5], so we need to offset it here.
           // To debug the placements of these UI elements, display tbe backing panel by making this class
           // in
@@ -124,10 +140,11 @@ export default class VRControllerUI extends TreeItem {
             -depth
           )
 
-          const uimat = new Material('element-vr-ui-mat', 'FlatSurfaceShader')
-          uimat.getParameter('BaseColor').value = new Color(0.3, 0.3, 0.3)
+          const uimat = new FlatSurfaceMaterial('element-vr-ui-mat')
+          uimat.baseColorParam.value = new Color(0.3, 0.3, 0.3)
+          uimat.overlayParam.value = 0.5
           const dataImage = new DataImage()
-          uimat.getParameter('BaseColor').value = dataImage
+          uimat.baseColorParam.setImage(dataImage)
 
           const geomItem = new GeomItem('element-vr-ui', plane, uimat, localXfo)
           geomItem.setSelectable(false)

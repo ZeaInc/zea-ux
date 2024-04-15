@@ -68,6 +68,8 @@
         MathFunctions,
         CADAsset,
         EnvProjectionMaterial,
+        FlatSurfaceMaterial,
+        FileImage,
         Sphere,
         Plane,
         EnvMap,
@@ -111,6 +113,18 @@
       const geomItem1 = new GeomItem('Sphere', new Sphere(30.0), envProjectionMaterial)
       geomItem1.setSelectable(false)
       scene.getRoot().addChild(geomItem1)
+
+      // const mat = new FlatSurfaceMaterial('element-vr-ui-mat')
+      // mat.overlayParam.value = 0.1
+
+      // const image1 = new FileImage('avatar1')
+      // image1.load('data/create-sphere-icon.png')
+      // mat.baseColorParam.setImage(image1)
+
+      // const geomItem = new GeomItem('element-vr-ui', new Sphere(2.0), mat)
+
+      // geomItem.setSelectable(false)
+      // scene.getRoot().addChild(geomItem, false)
 
       //endregion
 

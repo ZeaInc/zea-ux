@@ -67,6 +67,7 @@ class VRUITool extends BaseTool {
     const pointermat = new LinesMaterial('pointermat')
     pointermat.setSelectable(false)
     pointermat.baseColorParam.value = new Color(1, 0, 0)
+    pointermat.overlayParam.value = 0.5
 
     const line = new Lines()
     line.setNumVertices(2)
