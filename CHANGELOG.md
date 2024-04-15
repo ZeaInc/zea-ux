@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.5.1](https://github.com/ZeaInc/zea-ux/compare/v4.5.0...v4.5.1) (2024-04-15)
+
+
+### Bug Fixes
+
+* End rect selection dragging on mouse up ([f9dce01](https://github.com/ZeaInc/zea-ux/commit/f9dce01f6780a3d3f2c103316794cd47c6816eb2))
+* fixed crash redoing nested changes. ([2c11e04](https://github.com/ZeaInc/zea-ux/commit/2c11e04f27439188bf40630884ea4a8b5d1a2a72))
+* Rectangular selection using the 'SelectionTool' now correctly applies the selectionFilterFn to modify existing items in the selection set. ([0460f25](https://github.com/ZeaInc/zea-ux/commit/0460f25a561b85313c8785481a5f40d16d69eb4f))
+* SelectionTool now cancels a selection rect when right clicking during a drag. ([a00deea](https://github.com/ZeaInc/zea-ux/commit/a00deea7861cf8b1497946f48c5f9c9bb61b8da5))
+* The order of application of secondary changes is now reversed during undo ([d092adc](https://github.com/ZeaInc/zea-ux/commit/d092adcc692f2e483561e23bc300c03a92090c43))
+
 ## [4.5.0](https://github.com/ZeaInc/zea-ux/compare/v4.4.1...v4.5.0) (2023-08-28)
 
 
