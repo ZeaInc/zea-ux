@@ -2190,10 +2190,10 @@
     socket.io-client "^2.3.0"
     socketio-wildcard "^2.0.0"
 
-"@zeainc/zea-engine@next":
-  version "4.6.0-81076f8"
-  resolved "https://registry.yarnpkg.com/@zeainc/zea-engine/-/zea-engine-4.6.0-81076f8.tgz#06739a93022d1b04a0b3bed5bab687299cc83953"
-  integrity sha512-KL8qReXgjEkM9lSp0P4eWxppH4SQozrAA9pZFN6h9nhjOmszSo/q3LSYZX9k4AnUVDkcSC2fCBQIs4svahqPFQ==
+"@zeainc/zea-engine@^4.13.0":
+  version "4.13.0"
+  resolved "https://registry.yarnpkg.com/@zeainc/zea-engine/-/zea-engine-4.13.0.tgz#acb3066737ecb374781a155ac084be1b6461cadb"
+  integrity sha512-px7QCMXgcGx370+C+YgkHd1+MYIg7drhTNoR0dJDQ/azVTDQfA4QdgenX2zWXv5xE5IezQGODr+ynFsMu7ZieQ==
   dependencies:
     lodash-es "^4.17.21"
 
