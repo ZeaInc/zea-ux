@@ -28,7 +28,7 @@ class XfoHandle extends TreeItem {
     super('XfoHandle')
 
     this.highlightColorParam.on('valueChanged', () => {
-      const color = this.highlightColorParam.getValue()
+      const color = this.highlightColorParam.value
 
       this.traverse((item) => {
         if (item instanceof Handle) item.highlightColorParam.value = color

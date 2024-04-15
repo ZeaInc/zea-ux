@@ -1,4 +1,4 @@
-import { NumberParameter, Vec3, Xfo, XRControllerEvent, ZeaPointerEvent } from '@zeainc/zea-engine'
+import { NumberParameter, TreeItem, Vec3, Xfo, XRControllerEvent, ZeaPointerEvent } from '@zeainc/zea-engine'
 import CreateGeomTool from './CreateGeomTool'
 import CreateLineChange from './Change/CreateLineChange'
 import { UndoRedoManager } from '../../UndoRedo/index'
@@ -22,8 +22,8 @@ class CreateLineTool extends CreateGeomTool {
    * Create a create line tool.
    * @param appData - The appData value.
    */
-  constructor(appData: AppData) {
-    super(appData)
+  constructor(appData: AppData, parentItem: TreeItem) {
+    super(appData, parentItem)
     this.addParameter(this.lineThickness) // 1cm.
   }
 
@@ -32,9 +32,9 @@ class CreateLineTool extends CreateGeomTool {
    *
    * @param xfo - The xfo param.
    */
-  createStart(xfo: Xfo, event: ZeaPointerEvent): void {
-    const color = this.colorParam.getValue()
-    const lineThickness = this.lineThickness.getValue()
+  createStart(xfo: Xfo): void {
+    const color = this.colorParam.value
+    const lineThickness = this.lineThickness.value
     this.change = new CreateLineChange(this.parentItem, xfo, color, lineThickness)
     UndoRedoManager.getInstance().addChange(this.change)
 
@@ -63,22 +63,19 @@ class CreateLineTool extends CreateGeomTool {
     if (this.length == 0) {
       UndoRedoManager.getInstance().cancel()
     }
+    // After completion, make it selectable.
+    this.change.geomItem.setSelectable(true)
     this.stage = 0
     this.emit('actionFinished')
   }
 
   /**
-   * The onVRControllerButtonDown method.
+   * The onXRControllerButtonDown method.
    *
    * @param event - The event param.
    */
-  onVRControllerButtonDown(event: XRControllerEvent): void {
-    if (this.stage == 0) {
-      //@ts-ignore
-      const stageScale = event.viewport.__stageScale
-      this.lineThickness.value = stageScale * 0.003
-    }
-    super.onVRControllerButtonDown(event)
+  onXRControllerButtonDown(event: XRControllerEvent): void {
+    super.onXRControllerButtonDown(event)
   }
 }
 

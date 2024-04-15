@@ -1,4 +1,15 @@
-import { Color, GeomItem, LinesMaterial, Lines, Vec3, Vec3Attribute, TreeItem, Xfo } from '@zeainc/zea-engine'
+import {
+  Color,
+  GeomItem,
+  LinesMaterial,
+  Lines,
+  Vec3,
+  Vec3Attribute,
+  TreeItem,
+  Xfo,
+  Material,
+  FatLinesMaterial,
+} from '@zeainc/zea-engine'
 import UndoRedoManager from '../../../UndoRedo/UndoRedoManager'
 import CreateGeomChange from './CreateGeomChange'
 
@@ -20,11 +31,14 @@ class CreateLineChange extends CreateGeomChange {
    * @param color - The color value.
    * @param thickness - The thickness value.
    */
-  constructor(parentItem: TreeItem, xfo: Xfo, color: Color, thickness = 0.001) {
-    super('Create Line', parentItem, xfo)
+  constructor(parentItem: TreeItem, xfo: Xfo, color: Color, public thickness: number = 0.0) {
+    super('Create Line', parentItem, xfo, color)
+    if (this.parentItem) {
+      this.createGeomItem()
+    }
   }
 
-  protected createGeoItem() {
+  protected createGeomItem() {
     this.line = new Lines()
     this.line.setNumVertices(2)
     this.line.setNumSegments(1)
@@ -32,14 +46,22 @@ class CreateLineChange extends CreateGeomChange {
     positions.setValue(0, new Vec3())
     this.line.setSegmentVertexIndices(0, 0, 1)
 
-    const material = new LinesMaterial('Line')
-    // if (color) {
-    //   material.baseColorParam.value = color
-    // }
-    // if (material.lineThicknessParam) {
-    //   material.lineThicknessParam.value = thickness
-    // }
-    this.geomItem = new GeomItem('Line', this.line, material)
+    let material: Material
+    if (this.thickness > 0) {
+      const fatLinesMaterial = new FatLinesMaterial('Line')
+      fatLinesMaterial.baseColorParam.value = this.color
+      fatLinesMaterial.lineThicknessParam.value = this.thickness
+      material = fatLinesMaterial
+    } else {
+      const linesMaterial = new LinesMaterial('Line')
+      linesMaterial.baseColorParam.value = this.color
+      material = linesMaterial
+    }
+    this.geomItem = new GeomItem('Line', this.line, material, this.xfo)
+    this.geomItem.setSelectable(false) // At the conclusion of creation, we set selectable to true.
+    if (this.parentItem) {
+      this.parentItem.addChild(this.geomItem)
+    }
   }
 
   /**

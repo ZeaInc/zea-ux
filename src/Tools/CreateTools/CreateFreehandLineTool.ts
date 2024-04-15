@@ -1,4 +1,13 @@
-import { BooleanParameter, Vec3, XRControllerEvent, Xfo, ZeaPointerEvent } from '@zeainc/zea-engine'
+import {
+  BooleanParameter,
+  TreeItem,
+  Vec3,
+  XRPoseEvent,
+  Xfo,
+  ZeaMouseEvent,
+  ZeaPointerEvent,
+  ZeaTouchEvent,
+} from '@zeainc/zea-engine'
 import CreateLineTool from './CreateLineTool'
 import CreateFreehandLineChange from './Change/CreateFreehandLineChange'
 import { UndoRedoManager } from '../../UndoRedo/index'
@@ -13,8 +22,6 @@ import { AppData } from '../../../types/types'
  * @extends CreateLineTool
  */
 class CreateFreehandLineTool extends CreateLineTool {
-  mp = new BooleanParameter('Modulate Thickness By Stroke Speed', false)
-
   invXfo: Xfo
   prevP: Vec3
   /**
@@ -22,25 +29,12 @@ class CreateFreehandLineTool extends CreateLineTool {
    *
    * @param appData - The appData value.
    */
-  constructor(appData: AppData) {
-    super(appData)
-    this.addParameter(this.mp)
+  constructor(appData: AppData, parentItem: TreeItem) {
+    super(appData, parentItem)
   }
 
-  /**
-   * Event fired when a pointing device is moved while the cursor's hotspot is inside the viewport, while tool is activated.
-   *
-   * @param event - The event param.
-   */
-  onPointerMove(event: ZeaPointerEvent): void {
-    if (event.pointerType === 'xr') {
-      this.onVRPoseChanged(event as XRControllerEvent)
-    } else if (this.stage > 0) {
-      const snapToSurfaceUnderPointer = true
-      const xfo = this.screenPosToXfo(event, snapToSurfaceUnderPointer)
-      this.createMove(xfo.tr, event)
-      event.stopPropagation()
-    }
+  screenPosToXfo(event: ZeaMouseEvent | ZeaTouchEvent): Xfo {
+    return super.screenPosToXfo(event, true)
   }
 
   /**
@@ -48,11 +42,11 @@ class CreateFreehandLineTool extends CreateLineTool {
    *
    * @param xfo - The xfo param.
    */
-  createStart(xfo: Xfo, event: ZeaPointerEvent): void {
-    const color = this.colorParam.getValue()
-    const lineThickness = this.lineThickness.getValue()
+  createStart(xfo: Xfo): void {
+    const color = this.colorParam.value
+    const lineThickness = this.lineThickness.value
 
-    this.change = new CreateFreehandLineChange(this.parentItem, xfo)
+    this.change = new CreateFreehandLineChange(this.parentItem, xfo, color, lineThickness)
     UndoRedoManager.getInstance().addChange(this.change)
 
     this.xfo = xfo
@@ -87,6 +81,9 @@ class CreateFreehandLineTool extends CreateLineTool {
     if (this.length == 0) {
       UndoRedoManager.getInstance().cancel()
     }
+
+    // After completion, make it selectable.
+    this.change.geomItem.setSelectable(true)
 
     this.stage = 0
     this.emit('actionFinished')

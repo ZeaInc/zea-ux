@@ -9,11 +9,11 @@
     <link href="data/zea-logo.png" rel="shortcut icon" />
 
     <link rel="stylesheet" href="styles/tailwind.min.css" />
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <script src="https://websocket.zea.live/socket.io/socket.io.js"></script>
 
     <script src="../node_modules/@zeainc/zea-engine/dist/index.umd.js"></script>
     <script src="../dist/index.umd.js"></script>
-
-    <script src="https://websocket-staging.zea.live/socket.io/socket.io.js"></script>
     <script src="../node_modules/@zeainc/zea-collab/dist/index.umd.js"></script>
 
     <style>
@@ -65,6 +65,14 @@
         Material,
         GeomItem,
         ObjAsset,
+        MathFunctions,
+        CADAsset,
+        EnvProjectionMaterial,
+        FlatSurfaceMaterial,
+        FileImage,
+        Sphere,
+        Plane,
+        EnvMap,
       } = window.zeaEngine
       const {
         SelectionManager,
@@ -72,6 +80,8 @@
         ToolManager,
         SelectionTool,
         VRHoldObjectsTool,
+        DropUserTool,
+        HandHeldTool,
         CreateFreehandLineTool,
         CreateSphereTool,
         CreateCuboidTool,
@@ -87,7 +97,36 @@
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(3, 3, 2), new Vec3(0, 0, 0.75))
       renderer.setScene(scene)
 
+      //region Environment
+
+      const envMap = new EnvMap()
+      envMap.load('./data/quarry_01_4k.zenv')
+      scene.setEnvMap(envMap)
+
       scene.setupGrid(10.0, 10, new Color())
+      const envProjectionMaterial = new EnvProjectionMaterial('ground')
+      envProjectionMaterial.projectionCenter.setValue(new Vec3(0.0, 0.0, 1.7))
+      const geomItem0 = new GeomItem('Plane', new Plane(60.0, 60, 3, 3), envProjectionMaterial)
+      geomItem0.setSelectable(false)
+      scene.getRoot().addChild(geomItem0)
+
+      const geomItem1 = new GeomItem('Sphere', new Sphere(30.0), envProjectionMaterial)
+      geomItem1.setSelectable(false)
+      scene.getRoot().addChild(geomItem1)
+
+      // const mat = new FlatSurfaceMaterial('element-vr-ui-mat')
+      // mat.overlayParam.value = 0.1
+
+      // const image1 = new FileImage('avatar1')
+      // image1.load('data/create-sphere-icon.png')
+      // mat.baseColorParam.setImage(image1)
+
+      // const geomItem = new GeomItem('element-vr-ui', new Sphere(2.0), mat)
+
+      // geomItem.setSelectable(false)
+      // scene.getRoot().addChild(geomItem, false)
+
+      //endregion
 
       const appData = {
         renderer,
@@ -98,24 +137,21 @@
       const pointerOverColor = new Color(0, 1, 1)
       const pointerDownColor = new Color(1, 0, 0)
 
-      const material = new Material('surfaces', 'StandardSurfaceShader')
-      material.getParameter('BaseColor').setValue(new Color(0.75, 0.75, 0.75))
-
-      const cuboid = new Cuboid(10, 10, 0.01)
-      const geomItem2 = new GeomItem('Cuboid', cuboid, material, new Xfo(new Vec3(0, 0, -0.01)))
-      scene.getRoot().addChild(geomItem2)
-
-      const objAsset = new ObjAsset('cow')
-      objAsset.getParameter('splitGroupsIntoObjects').setValue(true)
-      scene.getRoot().addChild(objAsset)
-
+      const rootAsset = new CADAsset()
       const xfo = new Xfo()
-      xfo.tr.set(0, 0, 3.55 * 0.3048)
-      xfo.ori.setFromEulerAngles(new EulerAngles(90 * (Math.PI / 180), 0, 0))
-      xfo.sc.set(0.3048, 0.3048, 0.3048)
-      objAsset.getParameter('GlobalXfo').setValue(xfo)
-      objAsset.load('data/cow.obj').then(() => {
-        window.postMessage(`done-Loading`)
+      xfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * 0.5) // y-up
+      // xfo.ori.setFromAxisAndAngle(new Vec3(-1, 0, 0), Math.PI * 0.5); // y-down
+
+      xfo.tr.z = 1.42
+      rootAsset.globalXfoParam.value = xfo
+
+      const promises = []
+
+      rootAsset.load('./data/DodgeChallenger.xcgm.zcad')
+
+      scene.getRoot().addChild(rootAsset)
+      rootAsset.once('loaded', () => {
+        renderer.frameAll()
       })
 
       // ///////////////////////////////////////
@@ -147,8 +183,8 @@
       const userData = makeUser('', getRandomString())
       console.log('I am:', userData)
 
-      const socketUrl = 'https://websocket-staging.zea.live'
-      const session = new Session(userData, socketUrl)
+      const socketUrl = 'https://websocket.zea.live'
+      const session = new Session(userData, socketUrl, {})
       session.joinRoom('testing-vr-tools')
       session.users[userData.id] = userData
       const sessionSync = new SessionSync(session, appData, userData, { avatarScale: 5 })
@@ -162,39 +198,57 @@
         removeUser(user)
       })
 
-      // ///////////////////////////////////////
-      // Setup VR
+      // ////////////////////////////////////////////
+      // Setup a ToolManger for the main viewport.
+      const toolManager = new ToolManager(appData)
+
+      const cameraTool = renderer.getViewport().getManipulator()
+      cameraTool.deactivateTool()
+      toolManager.registerTool('CameraTool', cameraTool)
+
+      const holdObjectsTool = new VRHoldObjectsTool(appData)
+      toolManager.registerTool('VRHoldObjectsTool', holdObjectsTool)
+
+      const dropUserTool = new DropUserTool(appData, toolManager)
+      toolManager.registerTool('DropUserTool', dropUserTool)
+
+      const handToolXfo = new Xfo()
+      handToolXfo.sc.set(39.3701, 39.3701, 39.3701) // Tool model is in millimeters
+      const eulerAngles = new EulerAngles(-MathFunctions.degToRad(110), MathFunctions.degToRad(90), 0, 'XYZ')
+      handToolXfo.ori.setFromEulerAngles(eulerAngles)
+      handToolXfo.tr.set(0, 0, 0.05)
+      const handHeldTool = new HandHeldTool('data/zcad/TorqueWrench.stp.zcad', handToolXfo, appData)
+      toolManager.registerTool('HandHeldTool', handHeldTool)
+
+      const freehandLineTool = new CreateFreehandLineTool(appData)
+      toolManager.registerTool('Freehand Line Tool', freehandLineTool)
+
+      const createSphereTool = new CreateSphereTool(appData)
+      toolManager.registerTool('Create Sphere', createSphereTool)
+
+      // const createCuboidTool = new CreateCuboidTool(appData)
+      // toolManager.registerTool('Create Cuboid', createCuboidTool)
+
+      const createConeTool = new CreateConeTool(appData)
+      toolManager.registerTool('Create Cone', createConeTool)
+
+      const vrUIDOMElement = document.createElement('vr-ui')
+      document.body.appendChild(vrUIDOMElement)
+      const vrUITool = new VRUITool(appData, vrUIDOMElement.contentDiv)
+      toolManager.registerTool('VRUITool', vrUITool)
+
+      toolManager.pushTool(cameraTool)
+      toolManager.pushTool(vrUITool)
+      renderer.getViewport().setManipulator(toolManager)
+
+      vrUIDOMElement.setAppData(appData)
+      vrUIDOMElement.setToolManager(toolManager)
+      // ////////////////////////////////////////////
 
       const h = document.querySelector('#buttonHolder')
       const b = document.querySelector('#button')
-
-      const holdObjectsTool = new VRHoldObjectsTool(appData)
-      const freehandLineTool = new CreateFreehandLineTool(appData)
-      const createSphereTool = new CreateSphereTool(appData)
-      const createCuboidTool = new CreateCuboidTool(appData)
-      const createConeTool = new CreateConeTool(appData)
-      const vrToolManager = new ToolManager(appData)
-
-      // Register both tools.
-      vrToolManager.registerTool('VRHoldObjectsTool', holdObjectsTool)
-      vrToolManager.registerTool('Create Cuboid', createCuboidTool)
-      vrToolManager.registerTool('Create Sphere', createSphereTool)
-      vrToolManager.registerTool('Create Cone', createConeTool)
-      vrToolManager.registerTool('Freehand Line Tool', freehandLineTool)
-
-      const vrUIDOMElement = document.createElement('vr-ui')
-
-      vrUIDOMElement.setRenderer(renderer)
-      vrUIDOMElement.setToolManager(vrToolManager)
-      vrUIDOMElement.setSessionRecorder(sessionRecorder)
-
-      document.body.appendChild(vrUIDOMElement)
-
-      const vrUITool = new VRUITool(appData, vrUIDOMElement.contentDiv)
-      vrToolManager.registerTool('VRUITool', vrUITool)
-      // vrUITool.controllerUI.activate()
-
       renderer.getXRViewport().then((xrViewport) => {
+        appData.xrViewport = xrViewport
         h.textContent = 'XR Device Detected'
         b.textContent = 'Launch VR'
 
@@ -219,12 +273,32 @@
           }
         })
 
-        const viewManipulator = xrViewport.getManipulator()
+        // Setup VR Tools
+        const vrToolManager = new ToolManager(appData)
+        vrToolManager.registerTool('VRHoldObjectsTool', holdObjectsTool)
 
-        vrToolManager.registerTool('VRViewManipulator', viewManipulator)
+        const dropUserTool = new DropUserTool(appData, vrToolManager)
+        vrToolManager.registerTool('DropUserTool', dropUserTool)
+
+        vrToolManager.registerTool('HandHeldTool', handHeldTool)
+        // vrToolManager.registerTool('Create Cuboid', createCuboidTool)
+        // vrToolManager.registerTool('Create Sphere', createSphereTool)
+        // vrToolManager.registerTool('Create Cone', createConeTool)
+        vrToolManager.registerTool('Freehand Line Tool', freehandLineTool)
+
+        const vrUIDOMElement = document.createElement('vr-ui')
+        vrUIDOMElement.setAppData(appData)
+        vrUIDOMElement.setToolManager(vrToolManager)
+        document.body.appendChild(vrUIDOMElement)
+
+        const vrUITool = new VRUITool(appData, vrUIDOMElement.contentDiv)
+        vrToolManager.registerTool('VRUITool', vrUITool)
+        // vrUIDOMElement.setSessionRecorder(sessionRecorder)
+        const viewManipulator = xrViewport.getManipulator()
+        vrToolManager.registerTool('XRViewManipulator', viewManipulator)
         xrViewport.setManipulator(vrToolManager)
-        vrToolManager.pushTool('VRViewManipulator')
-        vrToolManager.pushTool('VRUITool')
+        vrToolManager.pushTool(viewManipulator)
+        vrToolManager.pushTool(vrUITool)
       })
     </script>
   </head>

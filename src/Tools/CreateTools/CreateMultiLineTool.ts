@@ -1,9 +1,10 @@
 import {
   GLViewport,
+  TreeItem,
   Vec3,
   Xfo,
   XRControllerEvent,
-  KeyboardEvent,
+  ZeaKeyboardEvent,
   ZeaMouseEvent,
   ZeaPointerEvent,
 } from '@zeainc/zea-engine'
@@ -30,8 +31,8 @@ class CreateMultiLineTool extends CreateGeomTool {
    * Create a create line tool.
    * @param appData - The appData value.
    */
-  constructor(appData: AppData) {
-    super(appData)
+  constructor(appData: AppData, parentItem: TreeItem) {
+    super(appData, parentItem)
   }
 
   /**
@@ -42,7 +43,7 @@ class CreateMultiLineTool extends CreateGeomTool {
   createStart(xfo: Xfo): void {
     if (this.stage == 1) return
 
-    this.change = new CreateMultiLineChange(this.parentItem, xfo)
+    this.change = new CreateMultiLineChange(this.parentItem, xfo, this.colorParam.value)
     UndoRedoManager.getInstance().addChange(this.change)
 
     this.inverseXfo = xfo.inverse()
@@ -156,6 +157,9 @@ class CreateMultiLineTool extends CreateGeomTool {
     })
 
     if (shouldFinish) {
+      // After completion, make it selectable.
+      this.change.geomItem.setSelectable(true)
+
       this.emit('actionFinished')
       this.resetTool()
     }
@@ -178,7 +182,7 @@ class CreateMultiLineTool extends CreateGeomTool {
     return shouldClosePolygon
   }
 
-  onKeyUp(event: KeyboardEvent): void {
+  onKeyUp(event: ZeaKeyboardEvent): void {
     if (event.key == 'Escape') {
       if (this.stage > 0) {
         UndoRedoManager.getInstance().cancel()
@@ -211,11 +215,11 @@ class CreateMultiLineTool extends CreateGeomTool {
   }
 
   /**
-   * The onVRControllerButtonDown method.
+   * The onXRControllerButtonDown method.
    *
    * @param event - The event param.
    */
-  onVRControllerButtonDown(event: XRControllerEvent): void {
+  onXRControllerButtonDown(event: XRControllerEvent): void {
     //
   }
 }

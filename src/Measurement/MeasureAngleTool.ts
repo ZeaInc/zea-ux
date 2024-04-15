@@ -69,8 +69,8 @@ class MeasureAngleTool extends MeasureTool {
           break
         }
         case 'Cone': {
-          const semiAngle = geomParams.getParameter('SemiAngle').getValue()
-          const startRadius = geomParams.getParameter('StartRadius').getValue() * geomXfo.sc.x
+          const semiAngle = geomParams.getParameter('SemiAngle').value
+          const startRadius = geomParams.getParameter('StartRadius').value * geomXfo.sc.x
           const zaxis = geomXfo.ori.getZaxis()
           const zaxisDist = hitPos.subtract(geomXfo.tr).dot(zaxis)
           const radiusAtPoint = startRadius + Math.tan(semiAngle) * zaxisDist
@@ -107,7 +107,7 @@ class MeasureAngleTool extends MeasureTool {
           break
         }
         case 'Cylinder': {
-          const radius = geomParams.getParameter('Radius').getValue() * geomXfo.sc.x
+          const radius = geomParams.getParameter('Radius').value * geomXfo.sc.x
           const zaxis = geomXfo.ori.getZaxis()
           const zaxisDist = hitPos.subtract(geomXfo.tr).dot(zaxis)
           const pointOnAxis = geomXfo.tr.add(zaxis.scale(zaxisDist))
@@ -166,7 +166,7 @@ class MeasureAngleTool extends MeasureTool {
 
     if (this.stage == 0) {
       if (this.highlightedItemA) {
-        const color = this.colorParam.getValue()
+        const color = this.colorParam.value
         const measurement = new MeasureAngle('MeasureAngle', color)
         this.appData.scene.getRoot().addChild(measurement)
 
@@ -238,7 +238,7 @@ class MeasureAngleTool extends MeasureTool {
             }
             this.highlightedItemA = geomItem
             this.highlightedItemA_componentId = event.intersectionData.componentId
-            const color = this.colorParam.getValue()
+            const color = this.colorParam.value
             color.a = 0.2
             this.highlightedItemA.addHighlight(this.highlightedItemA_highlightKey, color, true)
           }
@@ -259,7 +259,7 @@ class MeasureAngleTool extends MeasureTool {
           this.highlightedItemB = geomItem
           this.highlightedItemB_componentId = event.intersectionData.componentId
 
-          const color = this.colorParam.getValue().clone()
+          const color = this.colorParam.value.clone()
           color.a = 0.2
           this.highlightedItemB.addHighlight(this.highlightedItemB_highlightKey, color, true)
         }

@@ -1,4 +1,4 @@
-import { GeomItem, Circle, Xfo, TreeItem, LinesMaterial } from '@zeainc/zea-engine'
+import { GeomItem, Circle, Xfo, TreeItem, LinesMaterial, Color } from '@zeainc/zea-engine'
 import { UndoRedoManager } from '../../../UndoRedo/index'
 import CreateGeomChange from './CreateGeomChange'
 
@@ -18,14 +18,22 @@ class CreateCircleChange extends CreateGeomChange {
    * @param parentItem - The parentItem value.
    * @param xfo - The xfo value.
    */
-  constructor(parentItem: TreeItem, xfo: Xfo) {
-    super('CreateCircle', parentItem, xfo)
+  constructor(parentItem: TreeItem, xfo: Xfo, color: Color) {
+    super('CreateCircle', parentItem, xfo, color)
+
+    if (this.parentItem) {
+      this.createGeomItem()
+    }
   }
 
-  protected createGeoItem() {
+  protected createGeomItem() {
     this.circle = new Circle(0, 64)
     const material = new LinesMaterial('circle')
-    this.geomItem = new GeomItem('Circle', this.circle, material)
+    this.geomItem = new GeomItem('Circle', this.circle, material, this.xfo)
+    this.geomItem.setSelectable(false) // At the conclusion of creation, we set selectable to true.
+    if (this.parentItem) {
+      this.parentItem.addChild(this.geomItem)
+    }
   }
 
   /**

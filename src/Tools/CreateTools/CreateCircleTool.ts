@@ -20,8 +20,8 @@ class CreateCircleTool extends CreateGeomTool {
    * Create a create circle tool.
    * @param appData - The appData value.
    */
-  constructor(appData: AppData) {
-    super(appData)
+  constructor(appData: AppData, parentItem: TreeItem) {
+    super(appData, parentItem)
   }
 
   /**
@@ -30,7 +30,7 @@ class CreateCircleTool extends CreateGeomTool {
    * @param xfo - The xfo param.
    */
   createStart(xfo: Xfo, event: ZeaPointerEvent): void {
-    this.change = new CreateCircleChange(this.parentItem, xfo)
+    this.change = new CreateCircleChange(this.parentItem, xfo, this.colorParam.value)
     UndoRedoManager.getInstance().addChange(this.change)
 
     this.xfo = xfo
@@ -60,6 +60,9 @@ class CreateCircleTool extends CreateGeomTool {
     if (this.radius == 0) {
       UndoRedoManager.getInstance().cancel()
     }
+
+    // After completion, make it selectable.
+    this.change.geomItem.setSelectable(true)
 
     this.emit('actionFinished')
     this.change = null

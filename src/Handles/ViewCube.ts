@@ -297,7 +297,7 @@ class ViewCube extends TreeItem {
     const target = camera.getTargetPosition()
     const dist = camera.getFocalDistance()
 
-    const startXfo = camera.globalXfoParam.getValue()
+    const startXfo = camera.globalXfoParam.value
     const startUp = startXfo.ori.getYaxis()
     startUp.subtractInPlace(normal.scale(startUp.dot(normal)))
 

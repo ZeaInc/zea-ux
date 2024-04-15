@@ -10,6 +10,7 @@ import {
   ZeaMouseEvent,
   ZeaTouchEvent,
   XRControllerEvent,
+  XRPoseEvent,
 } from '@zeainc/zea-engine' // , PointerEvent
 
 import { getPointerRay } from '../utility'
@@ -107,10 +108,10 @@ class Handle extends TreeItem {
       this.highlight()
     }
 
-    if (event.pointerType == 'mouse' || event.pointerType == 'touch') {
+    if (event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) {
       this.handlePointerDown(event)
-    } else if (event.pointerType == 'xr') {
-      this.onVRControllerButtonDown(<XRControllerEvent>event)
+    } else if (event instanceof XRControllerEvent) {
+      this.onXRControllerButtonDown(event)
     }
   }
 
@@ -122,10 +123,10 @@ class Handle extends TreeItem {
   onPointerMove(event: ZeaPointerEvent): void {
     if (this.captured) {
       event.stopPropagation()
-      if (event.pointerType == 'mouse' || event.pointerType == 'touch') {
-        this.handlePointerMove(<ZeaMouseEvent>event)
-      } else if (event.pointerType == 'xr') {
-        this.onVRPoseChanged(<XRControllerEvent>event)
+      if (event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) {
+        this.handlePointerMove(event)
+      } else if (event instanceof XRPoseEvent) {
+        this.onXRPoseChanged(event)
       }
     }
 
@@ -146,10 +147,10 @@ class Handle extends TreeItem {
       if (event instanceof ZeaTouchEvent) {
         this.unhighlight()
       }
-      if (event.pointerType == 'mouse' || event.pointerType == 'touch') {
-        this.handlePointerUp(<ZeaMouseEvent>event)
-      } else if (event.pointerType == 'xr') {
-        this.onVRControllerButtonUp(<XRControllerEvent>event)
+      if (event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) {
+        this.handlePointerUp(event)
+      } else if (event instanceof XRControllerEvent) {
+        this.onVRControllerButtonUp(event)
       }
     }
   }
@@ -206,8 +207,8 @@ class Handle extends TreeItem {
    *
    * @param event - The event param.
    */
-  handlePointerUp(event: ZeaMouseEvent): void {
-    const ray = getPointerRay(event)
+  handlePointerUp(event: ZeaPointerEvent): void {
+    const ray = event.pointerRay
     if (ray) {
       const dist = ray.intersectRayPlane(this.gizmoRay)
       this.releasePos = ray.pointAtDist(dist)
@@ -224,7 +225,7 @@ class Handle extends TreeItem {
    *
    * @param event - The event param.
    */
-  onVRControllerButtonDown(event: XRControllerEvent): void {
+  onXRControllerButtonDown(event: XRControllerEvent): void {
     this.activeController = event.controller
     const xfo = this.activeController.getTipXfo().clone()
 
@@ -236,11 +237,11 @@ class Handle extends TreeItem {
   }
 
   /**
-   * The onVRPoseChanged method.
+   * The onXRPoseChanged method.
    *
    * @param event - The event param.
    */
-  onVRPoseChanged(event: XRControllerEvent): void {
+  onXRPoseChanged(event: XRPoseEvent): void {
     if (this.activeController) {
       const xfo = this.activeController.getTipXfo()
       const gizmoRay = this.getManipulationPlane()

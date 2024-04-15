@@ -23,14 +23,21 @@ class CreateMultiLineChange extends CreateGeomChange {
    * @param color - The color value.
    * @param thickness - The thickness value.
    */
-  constructor(parentItem: TreeItem, xfo: Xfo) {
-    super('Create Line', parentItem, xfo)
+  constructor(parentItem: TreeItem, xfo: Xfo, color: Color) {
+    super('Create Line', parentItem, xfo, color)
+    if (this.parentItem) {
+      this.createGeomItem()
+    }
   }
 
-  protected createGeoItem() {
+  protected createGeomItem() {
     this.line = new Lines()
     const material = new LinesMaterial('Line')
-    this.geomItem = new GeomItem('Line', this.line, material)
+    this.geomItem = new GeomItem('Line', this.line, material, this.xfo)
+    if (this.parentItem) {
+      this.parentItem.addChild(this.geomItem)
+    }
+    this.geomItem.setSelectable(false) // At the conclusion of creation, we set selectable to true.
     this.stage = 1
   }
 
@@ -90,12 +97,6 @@ class CreateMultiLineChange extends CreateGeomChange {
    */
   fromJSON(j: Record<any, any>, context: Record<any, any>): void {
     super.fromJSON(j, context)
-    if (j.color) {
-      const color = new Color()
-      color.fromJSON(j.color)
-      const material = this.geomItem.materialParam.value
-      material.getParameter('BaseColor').value = color
-    }
   }
 }
 

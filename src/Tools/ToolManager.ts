@@ -1,12 +1,12 @@
 /* eslint-disable require-jsdoc */
-import { BaseTool, ZeaMouseEvent, KeyboardEvent } from '@zeainc/zea-engine'
+import { BaseTool, ZeaMouseEvent, ZeaKeyboardEvent } from '@zeainc/zea-engine'
 
 /**
  * @extends BaseTool
  */
 class ToolManager extends BaseTool {
-  toolStack: any[]
-  tools: Record<string, BaseTool>
+  toolStack: BaseTool[] = []
+  tools: Record<string, BaseTool> = {}
   constructor() {
     super()
     this.tools = {}
@@ -17,11 +17,29 @@ class ToolManager extends BaseTool {
     this.tools[toolName] = tool
   }
 
-  pushTool(toolName: string): void {
-    const tool = this.tools[toolName]
-    if (!tool) throw Error('Tool not found' + toolName)
-    if (tool.activateTool) tool.activateTool()
-    this.toolStack.push(this.tools[toolName])
+  insertTool(tool: string | BaseTool, index: number): void {
+    if (!(tool instanceof BaseTool)) {
+      tool = this.tools[tool]
+    }
+    tool.activateTool()
+    this.toolStack.splice(index, 0, tool)
+  }
+
+  removeTool(tool: string | BaseTool): void {
+    if (!(tool instanceof BaseTool)) {
+      tool = this.tools[tool]
+    }
+    tool.deactivateTool()
+    const index = this.toolStack.indexOf(tool)
+    this.toolStack.splice(index, 1)
+  }
+
+  pushTool(tool: string | BaseTool): void {
+    if (!(tool instanceof BaseTool)) {
+      tool = this.tools[tool]
+    }
+    tool.activateTool()
+    this.toolStack.push(tool)
   }
 
   popTool(): void {
@@ -29,7 +47,7 @@ class ToolManager extends BaseTool {
       throw Error('Tool stack is empty')
     }
     const tool = this.toolStack[this.toolStack.length - 1]
-    if (tool.deactivateTool) tool.deactivateTool()
+    tool.deactivateTool()
     this.toolStack.pop()
   }
 
@@ -154,26 +172,11 @@ class ToolManager extends BaseTool {
   // Keyboard events
 
   /**
-   * Event fired when the user presses a key on the keyboard.
-   *
-   * @param event - The event param.
-   */
-  onKeyPressed(event: KeyboardEvent): void {
-    for (let i = this.toolStack.length - 1; i >= 0; i--) {
-      const tool = this.toolStack[i]
-      if (tool.onKeyPressed) {
-        tool.onKeyPressed(event)
-        if (!event.propagating) break
-      }
-    }
-  }
-
-  /**
    * Event fired when the user presses down a key on the keyboard.
    *
    * @param event - The event param.
    */
-  onKeyDown(event: KeyboardEvent): void {
+  onKeyDown(event: ZeaKeyboardEvent): void {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
       const tool = this.toolStack[i]
       if (tool.onKeyDown) {
@@ -188,7 +191,7 @@ class ToolManager extends BaseTool {
    *
    * @param event - The event param.
    */
-  onKeyUp(event: KeyboardEvent): void {
+  onKeyUp(event: ZeaKeyboardEvent): void {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
       const tool = this.toolStack[i]
       if (tool.onKeyUp) {

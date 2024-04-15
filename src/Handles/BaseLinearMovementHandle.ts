@@ -1,4 +1,4 @@
-import { Vec3, ZeaPointerEvent, ZeaMouseEvent, ZeaTouchEvent, XRControllerEvent } from '@zeainc/zea-engine'
+import { Vec3, ZeaPointerEvent, ZeaMouseEvent, ZeaTouchEvent, XRControllerEvent, XRPoseEvent } from '@zeainc/zea-engine'
 
 import { getPointerRay } from '../utility'
 import Handle from './Handle'
@@ -74,7 +74,7 @@ class BaseLinearMovementHandle extends Handle {
    *
    * @param event - The event param.
    */
-  onVRControllerButtonDown(event: XRControllerEvent): void {
+  onXRControllerButtonDown(event: XRControllerEvent): void {
     this.gizmoRay = this.getManipulationPlane()
 
     this.activeController = event.controller
@@ -87,11 +87,11 @@ class BaseLinearMovementHandle extends Handle {
   }
 
   /**
-   * The onVRPoseChanged method.
+   * The onXRPoseChanged method.
    *
    * @param event - The event param.
    */
-  onVRPoseChanged(event: XRControllerEvent): void {
+  onXRPoseChanged(event: XRPoseEvent): void {
     const xfo = this.activeController.getTipXfo()
     const dist = xfo.tr.subtract(this.gizmoRay.start).dot(this.gizmoRay.dir)
     this.holdPos = this.gizmoRay.start.add(this.gizmoRay.dir.scale(dist))

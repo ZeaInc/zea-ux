@@ -85,7 +85,7 @@ class SelectionGroupXfoOperator extends Operator {
     this.currGroupXfo = delta.multiply(this.currGroupXfo)
     for (let i = 1; i < this.getNumInputs(); i++) {
       const input = this.getInputByIndex(i)
-      const currXfo = input.getValue()
+      const currXfo = input.value
       const result = delta.multiply(currXfo)
       input.setValue(result)
     }
@@ -102,20 +102,20 @@ class SelectionGroupXfoOperator extends Operator {
       return
     }
 
-    const initialXfoMode = this.xfoModeInput.getValue()
+    const initialXfoMode = this.xfoModeInput.param.value
     if (initialXfoMode == KinematicGroup.INITIAL_XFO_MODES.manual) {
       // The xfo is manually set by the current global xfo.
-      this.currGroupXfo = this.xfoOutput.getValue().clone()
+      this.currGroupXfo = this.xfoOutput.getParam().value.clone()
       return
     } else if (initialXfoMode == KinematicGroup.INITIAL_XFO_MODES.first) {
-      const itemXfo = this.getInputByIndex(1).getValue()
+      const itemXfo = this.getInputByIndex(1).value
       this.currGroupXfo.tr = itemXfo.tr.clone()
       this.currGroupXfo.ori = itemXfo.ori.clone()
     } else if (initialXfoMode == KinematicGroup.INITIAL_XFO_MODES.average) {
       this.currGroupXfo.ori.set(0, 0, 0, 0)
       let numTreeItems = 0
       for (let i = 1; i < this.getNumInputs(); i++) {
-        const itemXfo = this.getInputByIndex(i).getValue()
+        const itemXfo = this.getInputByIndex(i).value
         this.currGroupXfo.tr.addInPlace(itemXfo.tr)
 
         // Note: Averaging rotations causes weird and confusing GizmoRotation.
@@ -127,7 +127,7 @@ class SelectionGroupXfoOperator extends Operator {
     } else if (initialXfoMode == KinematicGroup.INITIAL_XFO_MODES.globalOri) {
       let numTreeItems = 0
       for (let i = 1; i < this.getNumInputs(); i++) {
-        const itemXfo = this.getInputByIndex(i).getValue()
+        const itemXfo = this.getInputByIndex(i).value
         this.currGroupXfo.tr.addInPlace(itemXfo.tr)
         numTreeItems++
       }

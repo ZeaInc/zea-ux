@@ -18,15 +18,19 @@ class CreateRectChange extends CreateGeomChange {
    * @param parentItem - The parentItem value.
    * @param xfo - The xfo value.
    */
-  constructor(parentItem: TreeItem, xfo: Xfo) {
-    super('CreateRect', parentItem, xfo)
+  constructor(parentItem: TreeItem, xfo: Xfo, color: Color) {
+    super('CreateRect', parentItem, xfo, color)
+    if (this.parentItem) {
+      this.createGeomItem()
+    }
   }
 
-  protected createGeoItem() {
+  protected createGeomItem() {
     this.rect = new Rect(0, 0)
     const material = new LinesMaterial('circle')
     material.baseColorParam.value = new Color(0.7, 0.2, 0.2)
     this.geomItem = new GeomItem('Rect', this.rect, material)
+    this.geomItem.setSelectable(false) // At the conclusion of creation, we set selectable to true.
   }
 
   /**
@@ -40,7 +44,7 @@ class CreateRectChange extends CreateGeomChange {
       this.rect.sizeYParam.value = updateData.baseSize[1]
     }
     if (updateData.tr) {
-      const xfo = this.geomItem.localXfoParam.getValue()
+      const xfo = this.geomItem.localXfoParam.value
       xfo.tr.fromJSON(updateData.tr)
       this.geomItem.localXfoParam.value = xfo
     }

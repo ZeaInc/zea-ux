@@ -2181,10 +2181,10 @@
   resolved "https://registry.yarnpkg.com/@webcomponents/webcomponentsjs/-/webcomponentsjs-2.7.0.tgz#8a87aeaaa0757c95eae0e07dd45f3050d1f8be01"
   integrity sha512-j161Z9oiy8k74vchdrQGihfSp7QulrTclCUiPo0D7JF6/RjpXAmB0ThlTAFlSElkgqg0vdFgNAXaX9ZHZy25wQ==
 
-"@zeainc/zea-collab@^6.0.1":
-  version "6.1.0"
-  resolved "https://registry.yarnpkg.com/@zeainc/zea-collab/-/zea-collab-6.1.0.tgz#9f48a30921d3b99c97a4ea0f84bf65b61a24fe91"
-  integrity sha512-4YcxwW1GIF3542RLTZgnu7SlSgU6agH+RJqX1rcds9Z+Kw/Fl4PM450+vOYOgffMjeuQ0KWSbZeF1iCgD0Hvww==
+"@zeainc/zea-collab@^6.3.2":
+  version "6.3.2"
+  resolved "https://registry.yarnpkg.com/@zeainc/zea-collab/-/zea-collab-6.3.2.tgz#2eaecd7641918cfa0f7f25479a4b17893d0ac657"
+  integrity sha512-aSBqVlylCa4H16xtqsOfx67CAjpyEy/VJyG6n8aLiJoCwwhCXuhrxxPgARXBaFmGa7EFYp/sLqX0GANBo29i+w==
   dependencies:
     debug "^4.1.1"
     socket.io-client "^2.3.0"

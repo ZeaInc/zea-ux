@@ -264,7 +264,7 @@ class SelectionTool extends BaseTool {
    * @param event - The event param.
    * @return {boolean} The return value.
    */
-  onVRControllerButtonDown(event: XRControllerEvent): void {
+  onXRControllerButtonDown(event: XRControllerEvent): void {
     if (event.button == 1) {
       if (!this.selectionManager) throw 'Please set the Selection Manager on the Selection Tool before using it.'
       const intersectionData = event.controller.getGeomItemAtTip()

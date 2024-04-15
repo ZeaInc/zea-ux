@@ -6,7 +6,6 @@ export interface AppData {
   scene?: Scene
   sceneUnits?: string
   selectionManager?: SelectionManager
-  parentItem?: TreeItem
   session?: any
 }
 

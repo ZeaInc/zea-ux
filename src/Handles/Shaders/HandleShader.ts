@@ -231,13 +231,13 @@ void main(void) {
    */
   static getPackedMaterialData(material: Material): Float32Array {
     const matData = new Float32Array(8)
-    const baseColor = material.getParameter('BaseColor').getValue()
+    const baseColor = material.getParameter('BaseColor').value
     matData[0] = baseColor.r
     matData[1] = baseColor.g
     matData[2] = baseColor.b
     matData[3] = baseColor.a
-    matData[4] = material.getParameter('MaintainScreenSize').getValue()
-    matData[5] = material.getParameter('Overlay').getValue()
+    matData[4] = material.getParameter('MaintainScreenSize').value
+    matData[5] = material.getParameter('Overlay').value
     return matData
   }
 

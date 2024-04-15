@@ -25,7 +25,7 @@ class ParameterValueChange extends Change {
     super(param ? param.getName() + ' Changed' : 'ParameterValueChange')
 
     if (param) {
-      this.prevValue = param.getValue()
+      this.prevValue = param.value
       this.param = param
       if (newValue != undefined) {
         this.nextValue = newValue
@@ -107,7 +107,7 @@ class ParameterValueChange extends Change {
       return
     }
     this.param = param
-    this.prevValue = this.param.getValue()
+    this.prevValue = this.param.value
     if (this.prevValue.clone) this.nextValue = this.prevValue.clone()
     else this.nextValue = this.prevValue
 

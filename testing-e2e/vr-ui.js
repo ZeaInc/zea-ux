@@ -1,4 +1,4 @@
-const { Ray, Xfo, Vec3, Color } = window.zeaEngine
+const { Color } = window.zeaEngine
 
 /**
  * This sample UI class shows how to build a custom UI for VR interfaces.
@@ -25,35 +25,51 @@ class VRUI extends HTMLElement {
     this.toolsContainer.id = 'toolsContainer'
     this.contentDiv.appendChild(this.toolsContainer)
 
-    const addButton = (icon, cb) => {
-      const buttonDiv = document.createElement('div')
-      buttonDiv.classList.add('button')
-      this.buttonsContainer.appendChild(buttonDiv)
-      buttonDiv.addEventListener('mouseenter', () => {
-        buttonDiv.classList.add('button-hover')
-      })
-      buttonDiv.addEventListener('mouseleave', () => {
-        buttonDiv.classList.remove('button-hover')
-      })
-      buttonDiv.addEventListener('mousedown', () => {
-        buttonDiv.classList.add('button-active')
-        cb(img)
-      })
-      buttonDiv.addEventListener('mouseup', () => {
-        buttonDiv.classList.remove('button-active')
-      })
-      const img = new Image()
-      img.classList.add('button-image')
-      img.src = icon
-      buttonDiv.appendChild(img)
-    }
-    addButton('data/dustin-w-Undo-icon.png', () => {
+    this.addButton('data/dustin-w-Undo-icon.png', () => {
       const { UndoRedoManager } = window.zeaUx
       UndoRedoManager.getInstance().undo()
     })
-    addButton('data/dustin-w-Redo-icon.png', () => {
+    this.addButton('data/dustin-w-Redo-icon.png', () => {
       const { UndoRedoManager } = window.zeaUx
       UndoRedoManager.getInstance().redo()
+    })
+    this.addButton('data/Frame-All.png', () => {
+      this.appData.renderer.getXRViewport().then((xrvp) => {
+        const headXfo = xrvp.getVRHead().getTreeItem().globalXfoParam.value
+        const headLocalXfo = xrvp.getVRHead().getXfo()
+        const stageXfo = xrvp.getXfo()
+
+        const box3 = this.appData.scene.getRoot().boundingBoxParam.value
+        if (!box3.isValid()) {
+          console.warn('Bounding box not valid.')
+          return
+        }
+        // Compute the distance the camera should be to fit the entire bounding sphere
+        const newTarget = box3.center()
+        const focalDistance = box3.size() / 2
+
+        // reset the stage scale.
+        stageXfo.sc.set(focalDistance * 1.5, focalDistance * 1.5, focalDistance * 1.5)
+
+        // Calculate the translation to apply to the stage to maintain the current
+        // head position after the scale change.
+        const newHeadXfo = stageXfo.multiply(headLocalXfo)
+        const delta = headXfo.tr.subtract(newHeadXfo.tr)
+        stageXfo.tr.addInPlace(delta)
+
+        // apply the delte beteen the head postion and the controller position to the stage.
+        const headToTarget = headXfo.tr.subtract(newTarget).normalize().scale(focalDistance)
+        const newHeadPos = headToTarget.add(newTarget)
+        // const deltaTr = headXfo.tr.subtract(newHeadPos)
+        const deltaTr = newHeadPos.subtract(headXfo.tr)
+        stageXfo.tr.addInPlace(deltaTr)
+        xrvp.setXfo(stageXfo)
+
+        const viewManipulator = this.toolManager.tools['XRViewManipulator']
+        if (viewManipulator) {
+          viewManipulator.enableViewScale = true
+        }
+      })
     })
 
     // let recording = false
@@ -68,37 +84,38 @@ class VRUI extends HTMLElement {
     //     recording = false
     //   }
     // })
-    addButton('data/view_1_1.png', (img) => {
-      this.renderer.getXRViewport().then((xrvp) => {
-        const { Ray, Xfo, Vec3 } = window.zeaEngine
-        const stageXfo = xrvp.getXfo()
-        const stageScale = stageXfo.sc.z
-        const headLocalXfo = xrvp.getVRHead().getXfo()
-        const headXfo = xrvp.getVRHead().getTreeItem().getParameter('GlobalXfo').getValue()
 
-        stageXfo.sc.set(1, 1, 1)
-        const delta = headXfo.tr.subtract(stageXfo.multiply(headLocalXfo).tr)
-        stageXfo.tr.addInPlace(delta)
+    // addButton('data/view_1_1.png', () => {
+    //   this.appData.getXRViewport().then((xrvp) => {
+    //     const { Ray, Xfo, Vec3 } = window.zeaEngine
+    //     const stageXfo = xrvp.getXfo()
+    //     const stageScale = stageXfo.sc.z
+    //     const headLocalXfo = xrvp.getVRHead().getXfo()
+    //     const headXfo = xrvp.getVRHead().getTreeItem().getParameter('GlobalXfo').getValue()
 
-        // Now cast a ray straight down to te
-        const ray = new Ray()
-        ray.start = headXfo.tr
-        ray.dir.set(0, 0, -1)
-        const dist = 20 * stageScale
-        const area = 0.5
-        const rayXfo = new Xfo()
-        rayXfo.setLookAt(ray.start, ray.start.add(ray.dir), new Vec3(0, 0, 1))
+    //     stageXfo.sc.set(1, 1, 1)
+    //     const delta = headXfo.tr.subtract(stageXfo.multiply(headLocalXfo).tr)
+    //     stageXfo.tr.addInPlace(delta)
 
-        const result = this.renderer.raycast(rayXfo, ray, dist, area)
-        if (result) {
-          const worldPos = ray.pointAtDist(result.dist)
-          console.log('raycast', stageScale, worldPos.z, stageXfo.tr.z)
-          stageXfo.tr.z += worldPos.z - stageXfo.tr.z
-        }
+    //     // Now cast a ray straight down to te
+    //     const ray = new Ray()
+    //     ray.start = headXfo.tr
+    //     ray.dir.set(0, 0, -1)
+    //     const dist = 20 * stageScale
+    //     const area = 0.5
+    //     const rayXfo = new Xfo()
+    //     rayXfo.setLookAt(ray.start, ray.start.add(ray.dir), new Vec3(0, 0, 1))
 
-        xrvp.setXfo(stageXfo)
-      })
-    })
+    //     const result = this.appData.raycast(rayXfo, ray, dist, area)
+    //     if (result) {
+    //       const worldPos = ray.pointAtDist(result.dist)
+    //       console.log('raycast', stageScale, worldPos.z, stageXfo.tr.z)
+    //       stageXfo.tr.z += worldPos.z - stageXfo.tr.z
+    //     }
+
+    //     xrvp.setXfo(stageXfo)
+    //   })
+    // })
 
     const styleTag = document.createElement('style')
     styleTag.appendChild(
@@ -116,7 +133,7 @@ class VRUI extends HTMLElement {
   border: 2px solid #333333;
   width: 90px;
   height: 90px; 
-  border-radius: 15px;
+  border-radius: 50%;
   background-color: #b0b0b0;
   margin: 5px;
   display: flex;
@@ -146,6 +163,11 @@ class VRUI extends HTMLElement {
   background: #FFFFFF;
 }
 
+.button-mousedown {
+  border: 2px solid #FF0000;
+  background: #FFFFFF;
+}
+
 .label {
   color: black;
 }
@@ -155,11 +177,40 @@ class VRUI extends HTMLElement {
   }
 
   /**
-   * Sets the renderer to the UI so it can support VR actions.
-   * @param {GLRenderer} renderer
+   * Sets the appData to the UI so it can support VR actions.
+   * @param {string} icon
+   * @param {function} cb
    */
-  setRenderer(renderer) {
-    this.renderer = renderer
+  addButton(icon, cb) {
+    // const buttonDiv = document.createElement('div')
+    const buttonDiv = document.createElement('button')
+    buttonDiv.classList.add('button')
+    this.buttonsContainer.appendChild(buttonDiv)
+    buttonDiv.addEventListener('mouseenter', () => {
+      buttonDiv.classList.add('button-hover')
+    })
+    buttonDiv.addEventListener('mouseleave', () => {
+      buttonDiv.classList.remove('button-hover')
+    })
+    buttonDiv.addEventListener('mousedown', () => {
+      buttonDiv.classList.add('button-active')
+      cb(img)
+    })
+    buttonDiv.addEventListener('mouseup', () => {
+      buttonDiv.classList.remove('button-active')
+    })
+    const img = new Image()
+    img.classList.add('button-image')
+    img.src = icon
+    buttonDiv.appendChild(img)
+  }
+
+  /**
+   * Sets the appData to the UI so it can support VR actions.
+   * @param {GLRenderer} appData
+   */
+  setAppData(appData) {
+    this.appData = appData
   }
 
   /**
@@ -169,71 +220,94 @@ class VRUI extends HTMLElement {
   setToolManager(toolManager) {
     this.toolManager = toolManager
 
+    let activeTool = null
+
     const addToolButton = (name, icon) => {
       const tool = toolManager.tools[name]
-      const toolDiv = document.createElement('div')
-      toolDiv.classList.add('button')
+      const elem = document.createElement('button')
+      elem.classList.add('button')
       let toolActive = false
-      toolDiv.addEventListener('mousedown', () => {
+      elem.addEventListener('mousedown', (event) => {
+        elem.classList.add('button-mousedown')
         if (!toolActive) {
-          while (toolManager.activeToolName() != 'VRUITool') toolManager.popTool()
-          toolManager.pushTool(name)
+          if (activeTool) {
+            toolManager.removeTool(activeTool)
+          }
+          if (toolManager.activeToolName() == 'VRUITool') {
+            toolManager.insertTool(tool, toolManager.toolStack.length - 1)
+          } else {
+            toolManager.pushTool(tool)
+          }
+          activeTool = tool
         } else {
-          while (toolManager.activeToolName() != name) toolManager.popTool()
-          if (toolManager.activeToolName() == name) toolManager.popTool()
+          activeTool = null
+          toolManager.removeTool(tool)
         }
+        event.stopPropagation()
+        event.preventDefault()
+      })
+
+      elem.addEventListener('mouseup', (event) => {
+        elem.classList.remove('button-mousedown')
+        event.stopPropagation()
+        event.preventDefault()
       })
 
       tool.on('activatedChanged', (event) => {
         if (event.activated) {
-          if (tool.colorParam) tool.colorParam.setValue(color)
+          if (tool.colorParam) {
+            tool.colorParam.setValue(color)
+          }
 
-          toolDiv.classList.add('button-active')
+          elem.classList.add('button-active')
           toolActive = true
         } else {
-          toolDiv.classList.remove('button-active')
+          elem.classList.remove('button-active')
           toolActive = false
+          if (tool == activeTool) activeTool = null
         }
       })
 
-      toolDiv.addEventListener('mouseenter', () => {
-        toolDiv.classList.add('button-hover')
+      elem.addEventListener('mouseenter', (event) => {
+        elem.classList.add('button-hover')
+        event.stopPropagation()
+        event.preventDefault()
       })
 
-      toolDiv.addEventListener('mouseleave', () => {
-        toolDiv.classList.remove('button-hover')
+      elem.addEventListener('mouseleave', (event) => {
+        elem.classList.remove('button-hover')
+        event.stopPropagation()
+        event.preventDefault()
       })
 
-      this.buttonsContainer.appendChild(toolDiv)
+      this.buttonsContainer.appendChild(elem)
 
       if (icon) {
         const img = new Image()
         img.classList.add('button-image')
         img.src = icon
-        toolDiv.appendChild(img)
+        elem.appendChild(img)
       } else {
         const toolLabelSpan = document.createElement('span')
         toolLabelSpan.classList.add('label')
         const toolLabel = document.createTextNode(name)
-        toolDiv.appendChild(toolLabelSpan)
+        elem.appendChild(toolLabelSpan)
         toolLabelSpan.appendChild(toolLabel)
       }
     }
 
-    // for (const key in toolManager.tools) {
-    //   if (key == 'VRViewManipulator') continue
-    //   if (key == 'VRHoldObjectsTool') continue
-    //   addToolButton(key)
-    // }
+    addToolButton('DropUserTool', 'data/Maps-Street-View-icon.png')
     addToolButton('VRHoldObjectsTool', 'data/grab-icon.png')
+    addToolButton('HandHeldTool', 'data/wrench-icon.png')
     addToolButton('Freehand Line Tool', 'data/pen-tool.png')
-    addToolButton('Create Cuboid', 'data/create-cuboid-icon.png')
-    addToolButton('Create Sphere', 'data/create-sphere-icon.png')
-    addToolButton('Create Cone', 'data/create-cone-icon.png')
+    // addToolButton('Create Cuboid', 'data/create-cuboid-icon.png')
+    // addToolButton('Create Sphere', 'data/create-sphere-icon.png')
+    // addToolButton('Create Cone', 'data/create-cone-icon.png')
 
+    let activeButtonDiv
     let color = new Color('#FFD800')
     const addColorButton = (icon, cb) => {
-      const buttonDiv = document.createElement('div')
+      const buttonDiv = document.createElement('button')
       buttonDiv.classList.add('button')
       this.buttonsContainer.appendChild(buttonDiv)
       buttonDiv.addEventListener('mouseenter', () => {
@@ -243,13 +317,16 @@ class VRUI extends HTMLElement {
         buttonDiv.classList.remove('button-hover')
       })
       buttonDiv.addEventListener('mousedown', () => {
-        activeButtonDiv.classList.remove('button-active')
+        if (activeButtonDiv) {
+          activeButtonDiv.classList.remove('button-active')
+        }
         buttonDiv.classList.add('button-active')
         activeButtonDiv = buttonDiv
         cb(buttonDiv)
 
-        const tool = toolManager.activeTool()
-        if (tool && tool.colorParam) tool.colorParam.setValue(color)
+        if (activeTool && activeTool.colorParam) {
+          activeTool.colorParam.setValue(color)
+        }
       })
       buttonDiv.addEventListener('mouseup', () => {})
       const img = new Image()
@@ -268,7 +345,7 @@ class VRUI extends HTMLElement {
     addColorButton('data/color-blue.png', (buttonDiv) => {
       color = new Color(0, 0, 1)
     })
-    let activeButtonDiv = addColorButton('data/color-yellow.png', (buttonDiv) => {
+    addColorButton('data/color-yellow.png', (buttonDiv) => {
       color = new Color('#FFD800')
     })
   }

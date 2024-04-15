@@ -11,35 +11,28 @@ class CreateGeomChange extends Change {
   parentItem: TreeItem
   geomItem: GeomItem
   childIndex: number
+  xfo = new Xfo()
+  color = new Color(0.7, 0.2, 0.2)
   /**
    * Create a create circle change.
    * @param name - The name value.
    */
-  constructor(name: string, parentItem: TreeItem, xfo: Xfo) {
+  constructor(name: string, parentItem: TreeItem, xfo: Xfo, color = new Color(0.7, 0.2, 0.2)) {
     super(name ? name : 'CreateGeomChange')
 
-    this.createGeoItem()
-
-    if (parentItem && xfo) {
-      this.setParentAndXfo(parentItem, xfo)
+    if (parentItem) {
+      this.parentItem = parentItem
+    }
+    if (xfo) {
+      this.xfo = xfo
+    }
+    if (color) {
+      this.color = color
     }
   }
 
-  protected createGeoItem() {
+  protected createGeomItem() {
     throw 'This method must be implemented by each specialzed change class.'
-  }
-
-  /**
-   * The setParentAndXfo method.
-   * @param parentItem - The parentItem param.
-   * @param xfo - The xfo param.
-   */
-  protected setParentAndXfo(parentItem: TreeItem, xfo: Xfo): void {
-    this.parentItem = parentItem
-    const name = this.parentItem.generateUniqueName(this.geomItem.getName())
-    this.geomItem.setName(name)
-    this.geomItem.globalXfoParam.value = xfo
-    this.parentItem.addChild(this.geomItem)
   }
 
   /**
@@ -65,11 +58,9 @@ class CreateGeomChange extends Change {
   toJSON(context?: Record<any, any>): Record<any, any> {
     const j: Record<any, any> = super.toJSON(context)
     j.parentItemPath = this.parentItem.getPath()
-    j.geomItemName = this.geomItem.getName()
-    j.geomItemXfo = this.geomItem.localXfoParam.getValue()
-
-    const material = this.geomItem.getParameter('Material').getValue()
-    j.color = material.getParameter('BaseColor')?.getValue()
+    j.geomItemName = this.geomItem.name
+    j.geomItemXfo = this.geomItem.localXfoParam.value
+    j.color = this.color
     return j
   }
 
@@ -82,27 +73,14 @@ class CreateGeomChange extends Change {
   fromJSON(j: Record<any, any>, context: Record<any, any>): void {
     super.fromJSON(j, context)
 
+    this.color.fromJSON(j.color)
+    this.xfo.fromJSON(j.geomItemXfo)
     const sceneRoot = context.appData.scene.getRoot()
     this.parentItem = sceneRoot.resolvePath(j.parentItemPath, 1)
-    this.geomItem.setName(this.parentItem.generateUniqueName(j.geomItemName))
-    const xfo = new Xfo()
-    xfo.fromJSON(j.geomItemXfo)
-    this.geomItem.localXfoParam.value = xfo
-    this.childIndex = this.parentItem.getChildIndex(this.parentItem.addChild(this.geomItem, false))
 
-    if (j.color) {
-      const color = new Color(0.7, 0.2, 0.2)
-      color.fromJSON(j.color)
-      const material = this.geomItem.getParameter('Material').getValue()
-      material.getParameter('BaseColor').value = color
-    }
-  }
+    this.createGeomItem()
 
-  /**
-   * Removes geometry item reference from change change.
-   */
-  destroy(): void {
-    // this.geomItem.removeRef(this) // remove the tmp ref.
+    this.geomItem.setName(j.geomItemName)
   }
 }
 

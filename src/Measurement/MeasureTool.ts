@@ -213,7 +213,7 @@ class MeasureTool extends BaseTool {
               this.highlightedItemA_params = geomParams
               this.highlightedItemA_componentId = componentId
               this.highlightedItemA_highlightKey = 'measure:' + componentId
-              const color = this.colorParam.getValue()
+              const color = this.colorParam.value
               color.a = 0.2
               this.highlightedItemA.addHighlight(this.highlightedItemA_highlightKey, color, true)
             }

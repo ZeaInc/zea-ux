@@ -1,4 +1,16 @@
-import { Vec3, Xfo, EulerAngles, Color, TreeItem, GeomItem, Material, Plane, DataImage } from '@zeainc/zea-engine'
+import {
+  Vec3,
+  Xfo,
+  EulerAngles,
+  Color,
+  TreeItem,
+  GeomItem,
+  Material,
+  Plane,
+  DataImage,
+  FlatSurfaceMaterial,
+  FileImage,
+} from '@zeainc/zea-engine'
 import { AppData } from '../../../types/types.js'
 
 import domtoimage from './dom-to-image.js'
@@ -25,28 +37,30 @@ function traverse(node: HTMLElement, depth: number, func: any): void {
  * @param elem
  * @return {object}
  */
-function elemSize(elem: HTMLElement) {
-  // @ts-ignore
+function elemRect(elem: HTMLElement) {
+  const rect = elem.getBoundingClientRect()
   const computedStyle = elem.computedStyleMap()
-  const elmWidth = computedStyle.get('width').value
-  const elmMarginHorizontal = computedStyle.get('margin-left').value + computedStyle.get('margin-right').value
-  const elmHeight = computedStyle.get('height').value
-  const elmMarginVertical = computedStyle.get('margin-top').value + computedStyle.get('margin-bottom').value
-  return {
-    width: elmWidth + elmMarginHorizontal,
-    height: elmHeight + elmMarginVertical,
-  }
+  const elmMarginLeft = computedStyle.get('margin-left') as CSSUnitValue
+  const elmMarginRight = computedStyle.get('margin-right') as CSSUnitValue
+  const elmMarginTop = computedStyle.get('margin-top') as CSSUnitValue
+  const elmMarginBottom = computedStyle.get('margin-bottom') as CSSUnitValue
+
+  const elmMarginHorizontal = elmMarginLeft.value + elmMarginRight.value
+  const elmMarginVertical = elmMarginTop.value + elmMarginBottom.value
+  rect.width = rect.width + elmMarginHorizontal
+  rect.height = rect.height + elmMarginVertical
+  return rect
 }
 
 const idx = 'data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg"'.length
-const renderElementUI = (elem: any, size: any, key: string, callback: any) => {
+const renderElementUI = (elem: HTMLElement, rect: DOMRect, callback: (image: HTMLImageElement) => void) => {
   domtoimage.toSvg(elem).then((uri: string) => {
     // To work around a bug in domtoimage, we insert a viewBox into the SVG that ensures it renders
     // all the way to the edges. otherwise, an image is generated that crops the left and bottom borders.
-    const uri2 = uri.substring(0, idx) + ` viewBox="0 0 ${size.width} ${size.height}"` + uri.substring(idx)
+    const uri2 = uri.substring(0, idx) + ` viewBox="${0} ${0} ${rect.width} ${rect.height}"` + uri.substring(idx)
     const image = new Image()
     image.onload = function () {
-      callback(image, key)
+      callback(image)
     }
     // image.onerror = reject
     image.src = uri2
@@ -54,14 +68,27 @@ const renderElementUI = (elem: any, size: any, key: string, callback: any) => {
 }
 const plane = new Plane(1, 1)
 
+const mat = new FlatSurfaceMaterial('debug-vr-ui-mat')
+mat.overlayParam.value = 0.5
+const image1 = new FileImage('avatar1')
+image1.load('data/create-sphere-icon.png')
+mat.baseColorParam.setImage(image1)
+
+const debugGeomItem = new GeomItem('Debug', plane, mat)
+debugGeomItem.setSelectable(false)
+// Flip it over so we see the front.
+const debugGeomItemXfo = new Xfo()
+debugGeomItemXfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI)
+
 /**
  * Class representing a VR controller UI.
  * @extends TreeItem
  */
 export default class VRControllerUI extends TreeItem {
   appData: AppData
-  __vrUIDOMElement
-  ready: boolean
+  vrUIDOMElement
+  ready: boolean = false
+  open: boolean = false
   size: Vec3
   /**
    * Create a VR controller UI.
@@ -73,20 +100,15 @@ export default class VRControllerUI extends TreeItem {
 
     this.setSelectable(false)
     this.appData = appData
-    this.__vrUIDOMElement = vrUIDOMElement
-    this.__vrUIDOMElement.style.display = 'none'
+    this.vrUIDOMElement = vrUIDOMElement
+    this.vrUIDOMElement.style.display = 'none'
 
-    // const debugGeomItem = new GeomItem('Debug', new Plane(1, 1), new Material('debug-ui-mat', 'FlatSurfaceShader'))
-    // // Flip it over so we see the front.
-    // const debugGeomItemXfo = new Xfo()
-    // debugGeomItemXfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI)
     // this.addChild(debugGeomItem, false)
+  }
 
+  private traverseAndRenderDOM() {
     const uiOffset = new TreeItem('Offset')
     this.addChild(uiOffset, false)
-    this.ready = false
-
-    /* */
     const resizeObserver = new ResizeObserver((entries) => {
       resizeObserver.disconnect()
 
@@ -94,62 +116,65 @@ export default class VRControllerUI extends TreeItem {
       const dpm = 0.0005 // dots-per-meter (1 each 1/2mm)
       localXfo.sc.set(dpm, dpm, dpm)
       localXfo.ori.setFromEulerAngles(new EulerAngles(Math.PI, Math.PI, 0))
-      // localXfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI)
-      // localXfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI)
       uiOffset.localXfoParam.value = localXfo
 
-      this.size = new Vec3(vrUIDOMElement.clientWidth * dpm, vrUIDOMElement.clientHeight * dpm, 1)
+      this.size = new Vec3(this.vrUIDOMElement.clientWidth * dpm, this.vrUIDOMElement.clientHeight * dpm, 1)
 
       // debugGeomItemXfo.sc = this.size
       // debugGeomItem.localXfoParam.value = debugGeomItemXfo
 
-      traverse(vrUIDOMElement, 0, (elem: HTMLElement, depth: number): boolean => {
-        if (elem.className == 'button') {
-          const size = elemSize(elem)
-          // console.log(depth, elem.id, elem.className, size.width, size.height, elem.offsetLeft, elem.offsetTop)
+      traverse(this.vrUIDOMElement, 0, (elem: HTMLElement, depth: number): boolean => {
+        // only handle buttons for now.
+        if (elem.nodeName == 'BUTTON') {
+          const rect = elemRect(elem)
+          // console.log(elem, rect)
+
           const localXfo = new Xfo()
-
-          localXfo.sc.set(size.width, -size.height, 1)
-
+          localXfo.sc.set(rect.width, -rect.height, 1)
           // Note: The plane geom goes from [-0.5, -0.5] to [0.5, 0.5], so we need to offset it here.
           // To debug the placements of these UI elements, display tbe backing panel by making this class
           // in
           localXfo.tr.set(
-            elem.offsetLeft + size.width * 0.5 - vrUIDOMElement.clientWidth * 0.5,
-            elem.offsetTop + size.height * 0.5 - vrUIDOMElement.clientHeight * 0.5,
+            rect.x + rect.width * 0.5 - this.vrUIDOMElement.clientWidth * 0.5,
+            rect.y + rect.height * 0.5 - this.vrUIDOMElement.clientHeight * 0.5,
             -depth
           )
 
-          const uimat = new Material('element-vr-ui-mat', 'FlatSurfaceShader')
-          uimat.getParameter('BaseColor').value = new Color(0.3, 0.3, 0.3)
-          const image = new DataImage()
-          uimat.getParameter('BaseColor').value = image
+          const uimat = new FlatSurfaceMaterial('element-vr-ui-mat')
+          uimat.baseColorParam.value = new Color(0.3, 0.3, 0.3)
+          uimat.overlayParam.value = 0.5
+          const dataImage = new DataImage()
+          uimat.baseColorParam.setImage(dataImage)
 
           const geomItem = new GeomItem('element-vr-ui', plane, uimat, localXfo)
           geomItem.setSelectable(false)
           uiOffset.addChild(geomItem, false)
 
           const imageDatas = {}
-          if (size.width > 0 && size.height > 0) {
-            renderElementUI(elem, size, elem.id + elem.className, (data: any, key: string) => {
-              // console.log('Rendered', elem.id, elem.className, size.width, size.height, elem.offsetLeft, elem.offsetTop)
-              imageDatas[key] = data
-              image.setData(size.width, size.height, data)
+          if (rect.width > 0 && rect.height > 0) {
+            renderElementUI(elem, rect, (image: HTMLImageElement) => {
+              // console.log('Rendered', elem.id, elem.className, rect.width, rect.height, elem.offsetLeft, elem.offsetTop)
+              // document.body.appendChild(data)
+              imageDatas[elem.className] = image
+              dataImage.setData(rect.width, rect.height, image)
             })
           }
 
           const mutationObserver = new MutationObserver((mutations) => {
-            if (size.width == 0 || size.height == 0) return
+            if (!this.open || rect.width == 0 || rect.height == 0) return
             // Each time the dome changes, we use the classList as a key to cache
             // the generated images. Update the UI by adding and removing classes
-            const key = elem.id + elem.className
+            const key = elem.className
             if (!imageDatas[key]) {
-              renderElementUI(elem, size, key, (data: any, key: string) => {
-                imageDatas[key] = data
-                image.setData(size.width, size.height, data)
+              renderElementUI(elem, rect, (image: HTMLImageElement) => {
+                // document.body.appendChild(data) // uncomment to see the UI elements added to the page.
+                imageDatas[key] = image
+                if (key == elem.className) {
+                  dataImage.setData(rect.width, rect.height, image)
+                }
               })
             } else {
-              image.setData(size.width, size.height, imageDatas[key])
+              dataImage.setData(rect.width, rect.height, imageDatas[key])
             }
           })
 
@@ -167,8 +192,7 @@ export default class VRControllerUI extends TreeItem {
       this.ready = true
       this.emit('ready')
     })
-    resizeObserver.observe(vrUIDOMElement)
-    /* */
+    resizeObserver.observe(this.vrUIDOMElement)
   }
 
   // ///////////////////////////////////
@@ -177,14 +201,20 @@ export default class VRControllerUI extends TreeItem {
    * The activate method.
    */
   activate(): void {
-    this.__vrUIDOMElement.style.display = 'block'
+    this.open = true
+    // The browser doesn't calculate element layout till the elements are visible.
+    this.vrUIDOMElement.style.display = 'block'
+    if (!this.ready) {
+      this.traverseAndRenderDOM()
+    }
   }
 
   /**
    * The deactivate method.
    */
   deactivate(): void {
-    this.__vrUIDOMElement.style.display = 'none'
+    this.open = false
+    this.vrUIDOMElement.style.display = 'none'
   }
 
   /**
@@ -194,7 +224,7 @@ export default class VRControllerUI extends TreeItem {
    * @param element - The element param.
    * @return The return value.
    */
-  sendMouseEvent(eventName: string, args: any, element: Element): MouseEvent {
+  sendMouseEvent(element: Element, eventName: string, args: object = {}): MouseEvent {
     // console.log('sendMouseEvent:', eventName, element)
 
     const event = new MouseEvent(

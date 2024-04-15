@@ -18,8 +18,9 @@ const line = new Lines()
 line.setNumVertices(2)
 line.setNumSegments(1)
 line.setSegmentVertexIndices(0, 0, 1)
-;(<Vec3Attribute>line.getVertexAttribute('positions')).setValue(0, new Vec3())
-;(<Vec3Attribute>line.getVertexAttribute('positions')).setValue(1, new Vec3(0, 0, 1))
+const positions = line.getVertexAttribute('positions') as Vec3Attribute
+positions.setValue(0, new Vec3())
+positions.setValue(1, new Vec3(0, 0, 1))
 line.setBoundingBoxDirty()
 
 /**
@@ -52,7 +53,7 @@ class MeasureDistance extends Measure {
     const distance = vector.length()
 
     if (distance == 0) return
-    const color = this.colorParam.getValue()
+    const color = this.colorParam.value
 
     // Convert meters to mm.
     let scaleFactor = 1
@@ -143,7 +144,7 @@ class MeasureDistance extends Measure {
    * @return {string}
    */
   getMeasurementText(): any {
-    return this.label.getParameter('Text').getValue()
+    return this.label.getParameter('Text').value
   }
 }
 
