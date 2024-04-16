@@ -48,9 +48,11 @@ class VRUITool extends BaseTool {
 
   private visibilityStates: Record<string, boolean[]> = {}
   private uiController: XRController
-  private pointerController: any
+  private pointerController: XRController
   private element: Element
-  private openUIKeyboardHotkey = 'u'
+
+  public openUIKeyboardHotkey = 'u'
+  public openUiAngleTolerance = 0.4
 
   /**
    * Create a VR UI tool.
@@ -409,7 +411,7 @@ class VRUITool extends BaseTool {
               ? controllerXfo.ori.getXaxis().negate()
               : controllerXfo.ori.getXaxis()
           const angle = headToCtrlA.angleTo(controllerXAxis)
-          if (angle < 0.3) {
+          if (angle < this.openUiAngleTolerance) {
             const controllers = uiController.xrvp.controllers
             const pointerController = controllers.find((ctrl) => ctrl != uiController)
             if (pointerController) {
