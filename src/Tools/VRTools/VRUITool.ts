@@ -138,7 +138,6 @@ class VRUITool extends BaseTool {
     showFirstChild(this.pointerController.getHandedness(), this.pointerController.getTreeItem())
 
     const uiLocalXfo = this.controllerUI.localXfoParam.value
-    // uiLocalXfo.tr.set(0, -0.05, 0.08)
 
     if (this.pointerController) {
       // display the UI on the top of the thumb knuckle.
@@ -149,7 +148,7 @@ class VRUITool extends BaseTool {
       if (uiController.getHandedness() == 'right') {
         const eulerAngles = new EulerAngles(-MathFunctions.degToRad(90), MathFunctions.degToRad(90), 0, 'XYZ')
         uiLocalXfo.ori.setFromEulerAngles(eulerAngles)
-        uiLocalXfo.tr.set(-0.05, -0.02, 0.15)
+        uiLocalXfo.tr.set(-0.05, -0.05, 0.15)
       } else {
         const eulerAngles = new EulerAngles(-MathFunctions.degToRad(90), -MathFunctions.degToRad(90), 0, 'XYZ')
         uiLocalXfo.ori.setFromEulerAngles(eulerAngles)
@@ -162,26 +161,24 @@ class VRUITool extends BaseTool {
 
     this.controllerUI.localXfoParam.value = uiLocalXfo
 
-    if (this.uiController) {
-      this.uiController.getTipItem().addChild(this.controllerUI, false)
-      if (this.pointerController) this.pointerController.getTipItem().addChild(this.uiPointerItem, false)
+    this.uiController.getTipItem().addChild(this.controllerUI, false)
+    if (this.pointerController) this.pointerController.getTipItem().addChild(this.uiPointerItem, false)
 
-      if (this.appData.session) {
-        const postMessage = () => {
-          this.appData.session.pub('pose-message', {
-            interfaceType: 'VR',
-            showUIPanel: {
-              controllerId: this.uiController.getId(),
-              localXfo: uiLocalXfo.toJSON(),
-              size: this.controllerUI.size.toJSON(),
-            },
-          })
-        }
-        if (!this.controllerUI.ready) {
-          this.controllerUI.on('ready', postMessage)
-        } else {
-          postMessage()
-        }
+    if (this.appData.session) {
+      const postMessage = () => {
+        this.appData.session.pub('pose-message', {
+          interfaceType: 'VR',
+          showUIPanel: {
+            controllerId: this.uiController.getId(),
+            localXfo: uiLocalXfo.toJSON(),
+            size: this.controllerUI.size.toJSON(),
+          },
+        })
+      }
+      if (!this.controllerUI.ready) {
+        this.controllerUI.on('ready', postMessage)
+      } else {
+        postMessage()
       }
     }
     this.uiOpen = true
@@ -415,7 +412,9 @@ class VRUITool extends BaseTool {
           if (angle < 0.3) {
             const controllers = uiController.xrvp.controllers
             const pointerController = controllers.find((ctrl) => ctrl != uiController)
-            this.openUI(uiController, pointerController)
+            if (pointerController) {
+              this.openUI(uiController, pointerController)
+            }
             event.setCapture(this)
             event.stopPropagation()
           }
