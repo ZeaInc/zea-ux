@@ -152,6 +152,7 @@ class VRHoldObjectsTool extends BaseTool {
   private prevCursor: string
 
   private pointerGeomItems: GeomItem[] = []
+  private prevUpdateGrabXfos: Xfo[] = []
 
   /**
    * Create a VR hold objects tool.
@@ -226,17 +227,16 @@ class VRHoldObjectsTool extends BaseTool {
    * @param refs - The refs param.
    * @return {Xfo} The return value.
    */
-  computeGrabXfo(refs: number[]): any {
-    let grabXfo
+  computeGrabXfo(refs: number[]): Xfo {
     if (refs.length == 1) {
-      grabXfo = this.vrControllers[refs[0]].getTipXfo()
+      return this.vrControllers[refs[0]].getTipXfo()
     } else if (refs.length == 2) {
       const xfo0 = this.vrControllers[refs[0]].getTipXfo()
       const xfo1 = this.vrControllers[refs[1]].getTipXfo()
 
       xfo0.ori.alignWith(xfo1.ori)
 
-      grabXfo = new Xfo()
+      const grabXfo = new Xfo()
       grabXfo.tr = xfo0.tr.lerp(xfo1.tr, 0.5)
       grabXfo.ori = xfo0.ori.lerp(xfo1.ori, 0.5)
 
@@ -253,8 +253,8 @@ class VRHoldObjectsTool extends BaseTool {
         align.setFromAxisAndAngle(axis, angle)
         grabXfo.ori = align.multiply(grabXfo.ori)
       }
+      return grabXfo
     }
-    return grabXfo
   }
 
   /**
@@ -266,6 +266,7 @@ class VRHoldObjectsTool extends BaseTool {
       if (!heldTreeItem) continue
       const grabXfo = this.computeGrabXfo(this.heldTreeItemItemRefs[i])
       this.heldTreeItemItemOffsets[i] = grabXfo.inverse().multiply(heldTreeItem.globalXfoParam.value)
+      this.prevUpdateGrabXfos[i] = grabXfo
     }
   }
 
@@ -413,9 +414,13 @@ class VRHoldObjectsTool extends BaseTool {
       for (let i = 0; i < this.heldTreeItems.length; i++) {
         const heldTreeItem = this.heldTreeItems[i]
         if (!heldTreeItem) continue
-        const grabXfo = this.computeGrabXfo(this.heldTreeItemItemRefs[i])
+        const currUpdateGrabXfo = this.computeGrabXfo(this.heldTreeItemItemRefs[i])
+
+        const grabXfo = this.prevUpdateGrabXfos[i].lerp(currUpdateGrabXfo, 0.5)
         changeXfos.push(grabXfo.multiply(this.heldTreeItemItemOffsets[i]))
         changeXfoIds.push(i)
+
+        this.prevUpdateGrabXfos[i] = currUpdateGrabXfo
       }
 
       this.change.update({ changeXfos, changeXfoIds })
