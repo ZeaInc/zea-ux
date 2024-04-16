@@ -5,11 +5,9 @@ import {
   Color,
   TreeItem,
   GeomItem,
-  Material,
   Plane,
   DataImage,
   FlatSurfaceMaterial,
-  FileImage,
 } from '@zeainc/zea-engine'
 import { AppData } from '../../../types/types.js'
 
@@ -66,19 +64,6 @@ const renderElementUI = (elem: HTMLElement, rect: DOMRect, callback: (image: HTM
     image.src = uri2
   })
 }
-const plane = new Plane(1, 1)
-
-const mat = new FlatSurfaceMaterial('debug-vr-ui-mat')
-mat.overlayParam.value = 0.5
-const image1 = new FileImage('avatar1')
-image1.load('data/create-sphere-icon.png')
-mat.baseColorParam.setImage(image1)
-
-const debugGeomItem = new GeomItem('Debug', plane, mat)
-debugGeomItem.setSelectable(false)
-// Flip it over so we see the front.
-const debugGeomItemXfo = new Xfo()
-debugGeomItemXfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI)
 
 /**
  * Class representing a VR controller UI.
@@ -90,6 +75,8 @@ export default class VRControllerUI extends TreeItem {
   ready: boolean = false
   open: boolean = false
   size: Vec3
+  private plane = new Plane(1, 1)
+  private debugGeomItem: GeomItem
   /**
    * Create a VR controller UI.
    * @param appData - The appData value.
@@ -103,7 +90,13 @@ export default class VRControllerUI extends TreeItem {
     this.vrUIDOMElement = vrUIDOMElement
     this.vrUIDOMElement.style.display = 'none'
 
-    // this.addChild(debugGeomItem, false)
+    // const mat = new FlatSurfaceMaterial('debug-vr-ui-mat')
+    // this.debugGeomItem = new GeomItem('Debug', this.plane, mat)
+    // this.debugGeomItem.setSelectable(false)
+    // // Flip it over so we see the front.
+    // const debugGeomItemXfo = new Xfo()
+    // debugGeomItemXfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI)
+    // this.addChild(this.debugGeomItem, false)
   }
 
   private traverseAndRenderDOM() {
@@ -120,8 +113,9 @@ export default class VRControllerUI extends TreeItem {
 
       this.size = new Vec3(this.vrUIDOMElement.clientWidth * dpm, this.vrUIDOMElement.clientHeight * dpm, 1)
 
+      // const debugGeomItemXfo = this.debugGeomItem.localXfoParam.value
       // debugGeomItemXfo.sc = this.size
-      // debugGeomItem.localXfoParam.value = debugGeomItemXfo
+      // this.debugGeomItem.localXfoParam.value = debugGeomItemXfo
 
       traverse(this.vrUIDOMElement, 0, (elem: HTMLElement, depth: number): boolean => {
         // only handle buttons for now.
@@ -146,7 +140,7 @@ export default class VRControllerUI extends TreeItem {
           const dataImage = new DataImage()
           uimat.baseColorParam.setImage(dataImage)
 
-          const geomItem = new GeomItem('element-vr-ui', plane, uimat, localXfo)
+          const geomItem = new GeomItem('element-vr-ui', this.plane, uimat, localXfo)
           geomItem.setSelectable(false)
           uiOffset.addChild(geomItem, false)
 
