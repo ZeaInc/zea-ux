@@ -1,18 +1,10 @@
 import {
   BaseTool,
-  Circle,
   GeomItem,
-  Lines,
-  LinesSphere,
-  Quat,
-  Ray,
-  TreeItem,
+  IntersectionData,
   VRViewport,
-  Vec3,
   XRController,
-  XRControllerEvent,
   XRPoseEvent,
-  XRViewManipulator,
   Xfo,
   ZeaMouseEvent,
   ZeaPointerEvent,
@@ -26,7 +18,6 @@ import { Change, UndoRedoManager } from '../UndoRedo'
 
 class DeleteGeomsTool extends BaseTool {
   private appData: AppData
-  private toolManager: ToolManager
 
   private vrViewport: VRViewport
   private prevCursor: string
@@ -119,25 +110,32 @@ class DeleteGeomsTool extends BaseTool {
     }
   }
 
+  private handleGeometryIntersection(intersectionData: IntersectionData) {
+    const geomItem = intersectionData.geomItem as GeomItem
+    if (geomItem instanceof CustomGeom) {
+      const change = new DeleteGeomChange(geomItem)
+      this.change.addSecondaryChange(change)
+    }
+  }
+
   /**
    * Event fired when a pointing device is moved
    *
    * @param event - The event param.
    */
   onPointerMove(event: ZeaPointerEvent): void {
-    if (this.pointerButtonHeld) {
-      const ray = event.pointerRay
-    }
-    if (event instanceof XRPoseEvent) {
+    if (event instanceof ZeaMouseEvent) {
+      if (this.pointerButtonHeld) {
+        if (event.intersectionData) {
+          this.handleGeometryIntersection(event.intersectionData)
+        }
+      }
+    } else if (event instanceof XRPoseEvent) {
       event.controllers.forEach((controller: XRController) => {
         const intersectionData = controller.getGeomItemAtTip()
         if (intersectionData) {
+          this.handleGeometryIntersection(intersectionData)
           this.setPointerLength(intersectionData.dist, controller)
-          const geomItem = intersectionData.geomItem as GeomItem
-          if (geomItem instanceof CustomGeom) {
-            const change = new DeleteGeomChange(geomItem)
-            this.change.addSecondaryChange(change)
-          }
         } else {
           this.setPointerLength(this.raycastDist, controller)
         }
@@ -151,6 +149,7 @@ class DeleteGeomsTool extends BaseTool {
 
     this.change = new Change('Delete Geoms')
     event.setCapture(this)
+    event.stopPropagation()
   }
 
   onPointerUp(event: ZeaPointerEvent) {
