@@ -20,25 +20,15 @@ import {
 import { AppData } from '../../../types/types'
 import { ToolManager } from '../ToolManager'
 import { line, lineMaterial } from '../../helpers/line'
+import { PointerTool } from './PointerTool'
 
-class DropUserTool extends BaseTool {
-  private appData: AppData
+class DropUserTool extends PointerTool {
   private toolManager: ToolManager
-
-  private vrViewport: VRViewport
-  private prevCursor: string
-
-  private defaultTaycastDist = 0.0
-  public raycastDist = 20.0
-  private bindControllerId: number
-
-  private pointerGeomItems: GeomItem[] = []
   private dropAvatar = new TreeItem('dropAvatar')
   private floorPlane = new Ray(new Vec3(), new Vec3(0, 0, 1))
 
   constructor(appData: AppData, toolManager: ToolManager) {
-    super()
-    this.appData = appData
+    super(appData)
 
     const linesSphere = new LinesSphere(1, 32)
     const headGeomItem = new GeomItem('PointerRay', linesSphere, lineMaterial)
@@ -64,11 +54,6 @@ class DropUserTool extends BaseTool {
     // floorGeomItem.localXfoParam.value = torsoXfo
     this.dropAvatar.addChild(floorGeomItem, false)
 
-    this.appData.renderer.getXRViewport().then((xrvp) => {
-      if (xrvp instanceof VRViewport) {
-        this.vrViewport = xrvp
-      }
-    })
     this.toolManager = toolManager
   }
 
@@ -77,34 +62,6 @@ class DropUserTool extends BaseTool {
    */
   activateTool(): void {
     super.activateTool()
-
-    if (this.appData && this.appData.renderer) {
-      this.prevCursor = this.appData.renderer.getGLCanvas().style.cursor
-      this.appData.renderer.getGLCanvas().style.cursor = 'crosshair'
-    }
-
-    const bindController = (controller: XRController) => {
-      // The tool might already be deactivated.
-      if (this.pointerGeomItems[controller.id]) return
-
-      this.defaultTaycastDist = controller.raycastDist
-      controller.raycastDist = this.raycastDist
-
-      const pointerGeomItem = new GeomItem('PointerRay', line, lineMaterial)
-      pointerGeomItem.setSelectable(false)
-      const pointerXfo = new Xfo()
-      pointerXfo.sc.set(1, 1, this.raycastDist)
-      pointerGeomItem.localXfoParam.value = pointerXfo
-      controller.tipItem.addChild(pointerGeomItem, false)
-      this.pointerGeomItems[controller.id] = pointerGeomItem
-    }
-
-    if (this.vrViewport) {
-      for (const controller of this.vrViewport.getControllers()) {
-        bindController(controller)
-      }
-      this.bindControllerId = this.vrViewport.on('controllerAdded', (event) => bindController(event.controller))
-    }
 
     this.dropAvatar.setVisible(false)
     this.appData.scene.getRoot().addChild(this.dropAvatar, false)
@@ -115,34 +72,8 @@ class DropUserTool extends BaseTool {
    */
   deactivateTool(): void {
     super.deactivateTool()
-    if (this.appData && this.appData.renderer) {
-      this.appData.renderer.getGLCanvas().style.cursor = this.prevCursor
-    }
-    const unbindController = (controller: XRController) => {
-      if (!this.pointerGeomItems[controller.id]) return
-      controller.tipItem.removeChildByHandle(this.pointerGeomItems[controller.id])
-
-      controller.raycastDist = this.defaultTaycastDist
-      this.pointerGeomItems[controller.id] = null
-    }
-    if (this.vrViewport) {
-      for (const controller of this.vrViewport.getControllers()) {
-        unbindController(controller)
-      }
-      this.vrViewport.removeListenerById('controllerAdded', this.bindControllerId)
-    }
 
     this.appData.scene.getRoot().removeChildByHandle(this.dropAvatar)
-  }
-
-  private setPointerLength(length: number, controller: XRController): void {
-    const pointerGeomItem = this.pointerGeomItems[controller.id]
-    if (pointerGeomItem) {
-      const pointerLocalXfo = pointerGeomItem.localXfoParam.value
-
-      pointerLocalXfo.sc.set(1, 1, length / controller.getTipXfo().sc.z)
-      pointerGeomItem.localXfoParam.value = pointerLocalXfo
-    }
   }
 
   /**
