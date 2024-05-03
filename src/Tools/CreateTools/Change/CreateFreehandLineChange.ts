@@ -12,6 +12,7 @@ import {
 } from '@zeainc/zea-engine'
 import { UndoRedoManager } from '../../../UndoRedo/index'
 import CreateGeomChange from './CreateGeomChange'
+import { CustomGeom } from '../CustomGeom'
 
 /**
  * Class representing a create freehand line change.
@@ -60,7 +61,7 @@ class CreateFreehandLineChange extends CreateGeomChange {
       linesMaterial.baseColorParam.value = this.color
       material = linesMaterial
     }
-    this.geomItem = new GeomItem('freeHandLine', this.line, material, this.xfo)
+    this.geomItem = new CustomGeom('freeHandLine', this.line, material, this.xfo)
     this.geomItem.setSelectable(false) // At the conclusion of creation, we set selectable to true.
     if (this.parentItem) {
       this.parentItem.addChild(this.geomItem)

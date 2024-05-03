@@ -1,6 +1,7 @@
 import { Color, Rect, LinesMaterial, GeomItem, TreeItem, Xfo } from '@zeainc/zea-engine'
 import UndoRedoManager from '../../../UndoRedo/UndoRedoManager'
 import CreateGeomChange from './CreateGeomChange'
+import { CustomGeom } from '../CustomGeom'
 
 /**
  * Class representing a create rect change.
@@ -29,7 +30,7 @@ class CreateRectChange extends CreateGeomChange {
     this.rect = new Rect(0, 0)
     const material = new LinesMaterial('circle')
     material.baseColorParam.value = new Color(0.7, 0.2, 0.2)
-    this.geomItem = new GeomItem('Rect', this.rect, material)
+    this.geomItem = new CustomGeom('Rect', this.rect, material)
     this.geomItem.setSelectable(false) // At the conclusion of creation, we set selectable to true.
   }
 
