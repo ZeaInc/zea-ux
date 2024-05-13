@@ -82,7 +82,7 @@ class PointerTool extends BaseTool {
     }
 
     if (this.vrViewport) {
-      for (const controller of this.vrViewport.getControllers()) {
+      for (const controller of this.vrViewport.controllers) {
         bindController(controller)
       }
       this.bindControllerId = this.vrViewport.on('controllerAdded', (event) => bindController(event.controller))
@@ -105,7 +105,7 @@ class PointerTool extends BaseTool {
       this.pointerGeomItems[controller.id] = null
     }
     if (this.vrViewport) {
-      for (const controller of this.vrViewport.getControllers()) {
+      for (const controller of this.vrViewport.controllers) {
         unbindController(controller)
       }
       this.vrViewport.removeListenerById('controllerAdded', this.bindControllerId)

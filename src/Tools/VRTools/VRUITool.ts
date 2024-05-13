@@ -315,13 +315,13 @@ class VRUITool extends BaseTool {
         }
       }
     } else if (event instanceof XRControllerEvent) {
-      if (this.uiOpen) {
+      if (this.uiOpen && event.controller == this.pointerController && event.button == 0) {
         const ray = this.calcPointerRay()
         const hit = this.calcUIIntersection(ray)
         if (hit) {
           const element = this.getDOMElementFromPoint(hit)
           this.sendEventToUI(element, 'mousedown', hit, {
-            button: event.button - 1,
+            button: event.button,
           })
           // While the UI is open, no other tools get events.
           this.triggerHeld = true
@@ -349,21 +349,21 @@ class VRUITool extends BaseTool {
           const target = this.getDOMElementFromPoint(hit)
           if (target) {
             this.sendEventToUI(target, 'mouseup', hit, {
-              button: event.button - 1,
+              button: event.button,
             })
           }
           event.stopPropagation()
         }
       }
     } else if (event instanceof XRControllerEvent) {
-      if (event.controller == this.pointerController && this.uiOpen) {
+      if (this.uiOpen && event.controller == this.pointerController && event.button == 0) {
         const ray = this.calcPointerRay()
         const hit = this.calcUIIntersection(ray)
         if (hit) {
           const element = this.getDOMElementFromPoint(hit)
           if (element) {
             this.sendEventToUI(element, 'mouseup', hit, {
-              button: event.button - 1,
+              button: event.button,
             })
           }
           event.stopPropagation()
@@ -386,7 +386,7 @@ class VRUITool extends BaseTool {
           const target = this.getDOMElementFromPoint(hit)
           if (target) {
             this.sendEventToUI(target, 'click', hit, {
-              button: event.button - 1,
+              button: event.button,
             })
           }
           event.stopPropagation()
@@ -426,14 +426,14 @@ class VRUITool extends BaseTool {
           event.stopPropagation()
         }
         return
-      } else if (this.uiOpen && event.controller == this.pointerController) {
+      } else if (this.uiOpen && event.controller == this.pointerController && event.button == 0) {
         const ray = this.calcPointerRay()
         const hit = this.calcUIIntersection(ray)
         if (hit) {
           const element = this.getDOMElementFromPoint(hit)
           if (element) {
             this.sendEventToUI(element, 'click', hit, {
-              button: event.button - 1,
+              button: event.button,
             })
           }
           event.stopPropagation()
@@ -453,7 +453,7 @@ class VRUITool extends BaseTool {
         }
       }
     } else if (event instanceof XRControllerEvent) {
-      if (event.controller == this.pointerController && this.uiOpen) {
+      if (this.uiOpen && event.controller == this.pointerController && event.button == 0) {
         const ray = this.calcPointerRay()
         const hit = this.calcUIIntersection(ray)
         if (hit) {

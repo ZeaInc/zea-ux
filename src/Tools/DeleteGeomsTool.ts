@@ -1,4 +1,5 @@
 import {
+  Color,
   GeomItem,
   IntersectionData,
   XRController,
@@ -13,38 +14,53 @@ import { Change, UndoRedoManager } from '../UndoRedo'
 import { PointerTool } from './VRTools/PointerTool'
 
 class DeleteGeomsTool extends PointerTool {
-  private pointerButtonHeld = false
   private change: Change
+  private highlightedGeom: GeomItem
+  private highlightColor = new Color(1, 0, 0, 0.4)
 
   constructor(appData: AppData) {
     super(appData)
   }
 
+  activateTool(): void {
+    super.activateTool()
+  }
+
   private handleGeometryIntersection(intersectionData: IntersectionData) {
-    const geomItem = intersectionData.geomItem as GeomItem
-    if (geomItem instanceof CustomGeom) {
-      const change = new DeleteGeomChange(geomItem)
-      this.change.addSecondaryChange(change)
+    if (intersectionData) {
+      const geomItem = intersectionData.geomItem as GeomItem
+      if (geomItem instanceof CustomGeom) {
+        if (this.highlightedGeom && this.highlightedGeom != geomItem) {
+          this.highlightedGeom.removeHighlight('DeleteGeomsTool')
+          this.highlightedGeom = undefined
+        }
+        if (this.change) {
+          const change = new DeleteGeomChange(geomItem)
+          this.change.addSecondaryChange(change)
+        } else {
+          geomItem.addHighlight('DeleteGeomsTool', this.highlightColor)
+          this.highlightedGeom = geomItem
+        }
+      }
+    } else if (this.highlightedGeom) {
+      this.highlightedGeom.removeHighlight('DeleteGeomsTool')
     }
   }
 
-  /**
-   * Event fired when a pointing device is moved
-   *
-   * @param event - The event param.
-   */
+  onPointerDown(event: ZeaPointerEvent) {
+    this.change = new Change('Delete Geoms')
+    event.setCapture(this)
+    event.stopPropagation()
+  }
+
   onPointerMove(event: ZeaPointerEvent): void {
     if (event instanceof ZeaMouseEvent) {
-      if (this.pointerButtonHeld) {
-        if (event.intersectionData) {
-          this.handleGeometryIntersection(event.intersectionData)
-        }
-      }
+      this.handleGeometryIntersection(event.intersectionData)
     } else if (event instanceof XRPoseEvent) {
       event.controllers.forEach((controller: XRController) => {
         const intersectionData = controller.getGeomItemAtTip()
+        this.handleGeometryIntersection(intersectionData)
         if (intersectionData) {
-          this.handleGeometryIntersection(intersectionData)
           this.setPointerLength(intersectionData.dist, controller)
         } else {
           this.setPointerLength(this.raycastDist, controller)
@@ -54,19 +70,10 @@ class DeleteGeomsTool extends PointerTool {
     }
   }
 
-  onPointerDown(event: ZeaPointerEvent) {
-    this.pointerButtonHeld = true
-
-    this.change = new Change('Delete Geoms')
-    event.setCapture(this)
-    event.stopPropagation()
-  }
-
   onPointerUp(event: ZeaPointerEvent) {
-    this.pointerButtonHeld = false
-
-    if (this.change.secondaryChanges.length > 0) {
+    if (this.change && this.change.secondaryChanges.length > 0) {
       UndoRedoManager.getInstance().addChange(this.change)
+      this.change = null
     }
     event.releaseCapture()
   }

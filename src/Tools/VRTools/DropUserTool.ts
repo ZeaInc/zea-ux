@@ -27,6 +27,9 @@ class DropUserTool extends PointerTool {
   private dropAvatar = new TreeItem('dropAvatar')
   private floorPlane = new Ray(new Vec3(), new Vec3(0, 0, 1))
 
+  public faceUserTowardsSceneCenter = true
+  public sceneCenter = new Vec3()
+
   constructor(appData: AppData, toolManager: ToolManager) {
     super(appData)
 
@@ -152,6 +155,7 @@ class DropUserTool extends PointerTool {
         const headLocalXfo = this.vrViewport.getVRHead().getXfo()
         const avatarXfo = this.dropAvatar.globalXfoParam.value
         avatarXfo.tr.z += 1.7
+
         const stageXfo = this.vrViewport.getXfo()
 
         // reset the stage scale.
@@ -163,9 +167,29 @@ class DropUserTool extends PointerTool {
         const delta = headXfo.tr.subtract(newHeadXfo.tr)
         stageXfo.tr.addInPlace(delta)
 
-        // apply the delte beteen the head postion and the controller position to the stage.
+        // apply the delta beteen the head position and the controller position to the stage.
         const deltaTr = avatarXfo.tr.subtract(headXfo.tr)
         stageXfo.tr.addInPlace(deltaTr)
+
+        if (this.faceUserTowardsSceneCenter) {
+          // Face the user towards the origin
+          const dir = avatarXfo.tr.subtract(this.sceneCenter)
+          dir.z = 0
+          dir.normalizeInPlace()
+
+          const headDir = headXfo.ori.getZaxis()
+          headDir.z = 0
+          headDir.normalizeInPlace()
+
+          console.log(headDir.toString(), dir.toString(), headDir.angleTo(dir))
+
+          const quat = new Quat()
+          quat.setFrom2Vectors(headDir, dir)
+
+          // const deltaOri = headXfo.ori.inverse().multiply(avatarXfo.ori)
+          stageXfo.ori = quat.multiply(stageXfo.ori)
+          // stageXfo.ori = stageXfo.ori.multiply(deltaOri)
+        }
 
         this.vrViewport.setXfo(stageXfo)
 

@@ -60,7 +60,7 @@ class HandHeldTool extends BaseTool {
 
         let bestController: XRController
         let bestAngle: number = 0
-        for (const controller of xrvp.getControllers()) {
+        for (const controller of xrvp.controllers) {
           const angle = getControllerAngle(controller, headXfo)
           if (angle > bestAngle) {
             bestAngle = angle

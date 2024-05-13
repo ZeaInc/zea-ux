@@ -87,6 +87,7 @@
         CreateCuboidTool,
         CreateConeTool,
         VRUITool,
+        DeleteGeomsTool,
       } = window.zeaUx
       const { Session, SessionSync, SessionRecorder } = window.zeaCollab
 
@@ -221,7 +222,10 @@
       toolManager.registerTool('HandHeldTool', handHeldTool)
 
       const freehandLineTool = new CreateFreehandLineTool(appData)
-      toolManager.registerTool('Freehand Line Tool', freehandLineTool)
+      toolManager.registerTool('FreehandLineTool', freehandLineTool)
+
+      const deleteGeomsTool = new DeleteGeomsTool(appData)
+      toolManager.registerTool('EraserTool', deleteGeomsTool)
 
       const createSphereTool = new CreateSphereTool(appData)
       toolManager.registerTool('Create Sphere', createSphereTool)
@@ -238,7 +242,8 @@
       toolManager.registerTool('VRUITool', vrUITool)
 
       toolManager.pushTool(cameraTool)
-      toolManager.pushTool(vrUITool)
+      // toolManager.pushTool(vrUITool)
+
       renderer.getViewport().setManipulator(toolManager)
 
       vrUIDOMElement.setAppData(appData)
@@ -257,7 +262,14 @@
           if (state) {
             h.textContent = 'Session In Progress'
             b.textContent = 'Exit VR'
+
+            toolManager.pushTool(cameraTool)
+            toolManager.pushTool(vrUITool)
           } else {
+            while (toolManager.toolStack.length) {
+              toolManager.popTool()
+            }
+
             h.textContent = 'XR Device Detected'
             b.textContent = 'Launch VR'
           }
@@ -284,7 +296,9 @@
         // vrToolManager.registerTool('Create Cuboid', createCuboidTool)
         // vrToolManager.registerTool('Create Sphere', createSphereTool)
         // vrToolManager.registerTool('Create Cone', createConeTool)
-        vrToolManager.registerTool('Freehand Line Tool', freehandLineTool)
+        vrToolManager.registerTool('FreehandLineTool', freehandLineTool)
+
+        vrToolManager.registerTool('EraserTool', deleteGeomsTool)
 
         const vrUIDOMElement = document.createElement('vr-ui')
         vrUIDOMElement.setAppData(appData)
@@ -299,6 +313,22 @@
         xrViewport.setManipulator(vrToolManager)
         vrToolManager.pushTool(viewManipulator)
         vrToolManager.pushTool(vrUITool)
+
+        // Make the cntroller material have an overlay on it so
+        // it shows over the top of scene geometry.
+        const updateControllerMaterials = (controller) => {
+          controller.treeItem.traverse((treeItem) => {
+            if (treeItem instanceof GeomItem) {
+              const material = treeItem.materialParam.value
+              const overlayParam = material ? material.getParameter('Overlay') : null
+              if (overlayParam) overlayParam.value = 0.5
+            }
+          })
+        }
+        for (const controller of xrViewport.controllers) {
+          updateControllerMaterials(controller)
+        }
+        xrViewport.on('controllerAdded', (event) => updateControllerMaterials(event.controller))
       })
     </script>
   </head>

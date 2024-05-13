@@ -189,7 +189,7 @@ class VRHoldObjectsTool extends BaseTool {
     }
 
     this.appData.renderer.getXRViewport().then((xrvp) => {
-      for (const controller of xrvp.getControllers()) {
+      for (const controller of xrvp.controllers) {
         bindController(controller)
       }
       this.bindControllerId = xrvp.on('controllerAdded', (event) => bindController(event.controller))
@@ -212,7 +212,7 @@ class VRHoldObjectsTool extends BaseTool {
     }
 
     this.appData.renderer.getXRViewport().then((xrvp) => {
-      for (const controller of xrvp.getControllers()) {
+      for (const controller of xrvp.controllers) {
         unbindController(controller)
       }
       xrvp.removeListenerById('controllerAdded', this.bindControllerId)
