@@ -53,20 +53,21 @@ class DeleteGeomsTool extends PointerTool {
     event.stopPropagation()
   }
 
+  protected checkPointerIntersection(controller: XRController): void {
+    const intersectionData = controller.getGeomItemAtTip()
+    this.handleGeometryIntersection(intersectionData)
+    if (intersectionData) {
+      this.setPointerLength(intersectionData.dist, controller)
+    } else {
+      this.setPointerLength(this.raycastDist, controller)
+    }
+  }
+
   onPointerMove(event: ZeaPointerEvent): void {
     if (event instanceof ZeaMouseEvent) {
       this.handleGeometryIntersection(event.intersectionData)
-    } else if (event instanceof XRPoseEvent) {
-      event.controllers.forEach((controller: XRController) => {
-        const intersectionData = controller.getGeomItemAtTip()
-        this.handleGeometryIntersection(intersectionData)
-        if (intersectionData) {
-          this.setPointerLength(intersectionData.dist, controller)
-        } else {
-          this.setPointerLength(this.raycastDist, controller)
-        }
-      })
-      event.stopPropagation()
+    } else {
+      super.onPointerMove(event)
     }
   }
 

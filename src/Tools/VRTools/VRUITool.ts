@@ -18,13 +18,13 @@ import {
   ZeaMouseEvent,
   EulerAngles,
   MathFunctions,
-  TreeItem,
   VRViewport,
   LinesMaterial,
 } from '@zeainc/zea-engine'
 
 import { AppData } from '../../../types/types'
 import VRControllerUI from './VRControllerUI'
+import { line } from '../../helpers/line'
 
 interface UIIntersection {
   clientX: number
@@ -71,14 +71,6 @@ class VRUITool extends BaseTool {
     pointermat.baseColorParam.value = new Color(1, 0, 0)
     pointermat.overlayParam.value = 0.5
 
-    const line = new Lines()
-    line.setNumVertices(2)
-    line.setNumSegments(1)
-    line.setSegmentVertexIndices(0, 0, 1)
-    const positions = <Vec3Attribute>line.getVertexAttribute('positions')
-    positions.setValue(0, new Vec3(0, 0, 0))
-    positions.setValue(1, new Vec3(0, 0, -1))
-    line.setBoundingBoxDirty()
     this.pointerLocalXfo = new Xfo()
     this.pointerLocalXfo.sc.set(1, 1, 0.1)
 
@@ -128,16 +120,16 @@ class VRUITool extends BaseTool {
     this.uiController = uiController
     this.pointerController = pointerController
 
-    const showFirstChild = (handedness: string, treeItem: TreeItem) => {
-      const currentStates: boolean[] = []
-      treeItem.getChildren().forEach((child, index) => {
-        currentStates.push(child.visibleParam.value)
-        child.visibleParam.value = index < 2
-      })
-      this.visibilityStates[handedness] = currentStates
-    }
-    showFirstChild(this.uiController.getHandedness(), this.uiController.getTreeItem())
-    showFirstChild(this.pointerController.getHandedness(), this.pointerController.getTreeItem())
+    // const showFirstChild = (handedness: string, treeItem: TreeItem) => {
+    //   const currentStates: boolean[] = []
+    //   treeItem.getChildren().forEach((child, index) => {
+    //     currentStates.push(child.visibleParam.value)
+    //     child.visibleParam.value = index < 2
+    //   })
+    //   this.visibilityStates[handedness] = currentStates
+    // }
+    // showFirstChild(this.uiController.getHandedness(), this.uiController.getTreeItem())
+    // showFirstChild(this.pointerController.getHandedness(), this.pointerController.getTreeItem())
 
     const uiLocalXfo = this.controllerUI.localXfoParam.value
 
@@ -148,16 +140,15 @@ class VRUITool extends BaseTool {
       // Y = Down
       // Z = Towards handle base.
       if (uiController.getHandedness() == 'right') {
-        const eulerAngles = new EulerAngles(0, MathFunctions.degToRad(90), 0, 'XYZ')
+        const eulerAngles = new EulerAngles(-MathFunctions.degToRad(90), MathFunctions.degToRad(90), 0, 'XYZ')
         uiLocalXfo.ori.setFromEulerAngles(eulerAngles)
-        uiLocalXfo.tr.set(-0.05, 0, 0)
+        uiLocalXfo.tr.set(-0.05, 0, -0.05)
       } else {
-        const eulerAngles = new EulerAngles(0, -MathFunctions.degToRad(90), 0, 'XYZ')
+        const eulerAngles = new EulerAngles(-MathFunctions.degToRad(90), -MathFunctions.degToRad(90), 0, 'XYZ')
         uiLocalXfo.ori.setFromEulerAngles(eulerAngles)
-        uiLocalXfo.tr.set(0.05, 0, 0)
+        uiLocalXfo.tr.set(0.05, 0, -0.05)
       }
     } else {
-      // uiLocalXfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * -0.6)
       uiLocalXfo.tr.set(0, -0.05, 0.08)
     }
 
@@ -194,22 +185,22 @@ class VRUITool extends BaseTool {
     this.controllerUI.deactivate()
 
     if (this.uiController) {
-      this.uiController.getTipItem().removeChildByHandle(this.controllerUI)
+      this.uiController.getTreeItem().removeChildByHandle(this.controllerUI)
       if (this.pointerController) {
         this.pointerController.getTipItem().removeChildByHandle(this.uiPointerItem)
       }
 
       // Any tool geoemtry should be restored to is previous visibility state.
-      const restoreVibility = (handedness: string, treeItem: TreeItem) => {
-        const currentStates: boolean[] = this.visibilityStates[handedness]
-        treeItem.getChildren().forEach((child, index) => {
-          if (index < currentStates.length) {
-            child.visibleParam.value = currentStates[index]
-          }
-        })
-      }
-      restoreVibility(this.uiController.getHandedness(), this.uiController.getTreeItem())
-      restoreVibility(this.pointerController.getHandedness(), this.pointerController.getTreeItem())
+      // const restoreVibility = (handedness: string, treeItem: TreeItem) => {
+      //   const currentStates: boolean[] = this.visibilityStates[handedness]
+      //   treeItem.getChildren().forEach((child, index) => {
+      //     if (index < currentStates.length) {
+      //       child.visibleParam.value = currentStates[index]
+      //     }
+      //   })
+      // }
+      // restoreVibility(this.uiController.getHandedness(), this.uiController.getTreeItem())
+      // restoreVibility(this.pointerController.getHandedness(), this.pointerController.getTreeItem())
 
       if (this.appData.session) {
         this.appData.session.pub('pose-message', {
@@ -236,13 +227,6 @@ class VRUITool extends BaseTool {
   private setPointerLength(length: number): void {
     this.pointerLocalXfo.sc.set(1, 1, length)
     this.uiPointerItem.localXfoParam.value = this.pointerLocalXfo
-  }
-
-  calcPointerRay(): Ray {
-    const pointerXfo = this.pointerController.getTipItem().globalXfoParam.value
-    const pointerVec = pointerXfo.ori.getZaxis().negate()
-    const ray = new Ray(pointerXfo.tr, pointerVec)
-    return ray
   }
 
   private calcUIIntersection(ray: Ray): UIIntersection | null {
@@ -323,7 +307,7 @@ class VRUITool extends BaseTool {
       }
     } else if (event instanceof XRControllerEvent) {
       if (this.uiOpen && event.controller == this.pointerController && event.button == 0) {
-        const ray = this.calcPointerRay()
+        const ray = this.pointerController.pointerRay
         const hit = this.calcUIIntersection(ray)
         if (hit) {
           const element = this.getDOMElementFromPoint(hit)
@@ -364,7 +348,7 @@ class VRUITool extends BaseTool {
       }
     } else if (event instanceof XRControllerEvent) {
       if (this.uiOpen && event.controller == this.pointerController && event.button == 0) {
-        const ray = this.calcPointerRay()
+        const ray = this.pointerController.pointerRay
         const hit = this.calcUIIntersection(ray)
         if (hit) {
           const element = this.getDOMElementFromPoint(hit)
@@ -434,7 +418,7 @@ class VRUITool extends BaseTool {
         }
         return
       } else if (this.uiOpen && event.controller == this.pointerController && event.button == 0) {
-        const ray = this.calcPointerRay()
+        const ray = this.pointerController.pointerRay
         const hit = this.calcUIIntersection(ray)
         if (hit) {
           const element = this.getDOMElementFromPoint(hit)
@@ -462,7 +446,7 @@ class VRUITool extends BaseTool {
       }
     } else if (event instanceof XRControllerEvent) {
       if (this.uiOpen && event.controller == this.pointerController && event.button == 0) {
-        const ray = this.calcPointerRay()
+        const ray = this.pointerController.pointerRay
         const hit = this.calcUIIntersection(ray)
         if (hit) {
           event.stopPropagation()
@@ -500,7 +484,7 @@ class VRUITool extends BaseTool {
       }
     } else if (event instanceof XRPoseEvent) {
       if (this.uiOpen) {
-        const ray = this.calcPointerRay()
+        const ray = this.pointerController.pointerRay
         const hit = this.calcUIIntersection(ray)
         if (hit) {
           this.uiPointerItem.visibleParam.value = true

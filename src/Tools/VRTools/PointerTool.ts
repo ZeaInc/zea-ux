@@ -29,7 +29,7 @@ class PointerTool extends BaseTool {
   private geom: BaseGeom
   private material: FlatSurfaceMaterial | LinesMaterial
 
-  protected defaultTaycastDist = 0.0
+  protected defaultRaycastDist = 0.0
   public raycastDist = 20.0
   protected bindControllerId: number
   protected pointerGeomItems: GeomItem[] = []
@@ -70,7 +70,7 @@ class PointerTool extends BaseTool {
       // The tool might already be deactivated.
       if (this.pointerGeomItems[controller.id]) return
 
-      this.defaultTaycastDist = controller.raycastDist
+      this.defaultRaycastDist = controller.raycastDist
       controller.raycastDist = this.raycastDist
 
       const pointerGeomItem = new GeomItem('PointerRay', this.geom, this.material)
@@ -110,7 +110,7 @@ class PointerTool extends BaseTool {
       if (!this.pointerGeomItems[controller.id]) return
       controller.tipItem.removeChildByHandle(this.pointerGeomItems[controller.id])
 
-      controller.raycastDist = this.defaultTaycastDist
+      controller.raycastDist = this.defaultRaycastDist
       this.pointerGeomItems[controller.id] = null
     }
 
@@ -140,6 +140,15 @@ class PointerTool extends BaseTool {
     }
   }
 
+  protected checkPointerIntersection(controller: XRController): void {
+    const intersectionData = controller.getGeomItemAtTip()
+    if (intersectionData) {
+      this.setPointerLength(intersectionData.dist, controller)
+    } else {
+      this.setPointerLength(this.raycastDist, controller)
+    }
+  }
+
   /**
    * Event fired when a pointing device is moved
    *
@@ -147,14 +156,15 @@ class PointerTool extends BaseTool {
    */
   onPointerMove(event: ZeaPointerEvent): void {
     if (event instanceof XRPoseEvent) {
-      event.controllers.forEach((controller: XRController) => {
-        const intersectionData = controller.getGeomItemAtTip()
-        if (intersectionData) {
-          this.setPointerLength(intersectionData.dist, controller)
-        } else {
-          this.setPointerLength(this.raycastDist, controller)
-        }
-      })
+      if (this.pointerController) {
+        this.checkPointerIntersection(this.pointerController)
+      } else {
+        event.controllers.forEach((controller: XRController) => {
+          if (this.pointerGeomItems[controller.id]) {
+            this.checkPointerIntersection(controller)
+          }
+        })
+      }
       event.stopPropagation()
     }
   }
