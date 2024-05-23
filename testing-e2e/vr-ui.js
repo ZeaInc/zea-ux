@@ -179,30 +179,38 @@ class VRUI extends HTMLElement {
   /**
    * Sets the appData to the UI so it can support VR actions.
    * @param {string} icon
-   * @param {function} cb
+   * @param {function} callback
+   * @return {HTMLElement}
    */
-  addButton(icon, cb) {
+  addButton(icon, callback) {
     // const buttonDiv = document.createElement('div')
     const buttonDiv = document.createElement('button')
     buttonDiv.classList.add('button')
     this.buttonsContainer.appendChild(buttonDiv)
-    buttonDiv.addEventListener('mouseenter', () => {
+    buttonDiv.addEventListener('mouseenter', (event) => {
       buttonDiv.classList.add('button-hover')
+      event.stopPropagation()
+      event.preventDefault()
     })
-    buttonDiv.addEventListener('mouseleave', () => {
+    buttonDiv.addEventListener('mouseleave', (event) => {
       buttonDiv.classList.remove('button-hover')
+      event.stopPropagation()
+      event.preventDefault()
     })
-    buttonDiv.addEventListener('mousedown', () => {
-      buttonDiv.classList.add('button-active')
-      cb(img)
+    buttonDiv.addEventListener('mousedown', (event) => {
+      buttonDiv.classList.add('button-mousedown')
+      if (callback) callback(event)
+      event.stopPropagation()
+      event.preventDefault()
     })
-    buttonDiv.addEventListener('mouseup', () => {
-      buttonDiv.classList.remove('button-active')
+    buttonDiv.addEventListener('mouseup', (event) => {
+      buttonDiv.classList.remove('button-mousedown')
     })
     const img = new Image()
     img.classList.add('button-image')
     img.src = icon
     buttonDiv.appendChild(img)
+    return buttonDiv
   }
 
   /**
@@ -221,14 +229,10 @@ class VRUI extends HTMLElement {
     this.toolManager = toolManager
 
     let activeTool = null
-
-    const addToolButton = (name, icon) => {
-      const tool = toolManager.tools[name]
-      const elem = document.createElement('button')
-      elem.classList.add('button')
+    const addToolButton = (tool, icon, callback) => {
       let toolActive = false
-      elem.addEventListener('mousedown', (event) => {
-        elem.classList.add('button-mousedown')
+      const buttonDiv = this.addButton(icon, (event) => {
+        if (callback) callback(!toolActive, event)
         if (!toolActive) {
           if (activeTool) {
             toolManager.removeTool(activeTool)
@@ -243,14 +247,6 @@ class VRUI extends HTMLElement {
           activeTool = null
           toolManager.removeTool(tool)
         }
-        event.stopPropagation()
-        event.preventDefault()
-      })
-
-      elem.addEventListener('mouseup', (event) => {
-        elem.classList.remove('button-mousedown')
-        event.stopPropagation()
-        event.preventDefault()
       })
 
       tool.on('activatedChanged', (event) => {
@@ -259,48 +255,35 @@ class VRUI extends HTMLElement {
             tool.colorParam.setValue(color)
           }
 
-          elem.classList.add('button-active')
+          buttonDiv.classList.add('button-active')
           toolActive = true
         } else {
-          elem.classList.remove('button-active')
+          buttonDiv.classList.remove('button-active')
           toolActive = false
           if (tool == activeTool) activeTool = null
         }
       })
-
-      elem.addEventListener('mouseenter', (event) => {
-        elem.classList.add('button-hover')
-        event.stopPropagation()
-        event.preventDefault()
-      })
-
-      elem.addEventListener('mouseleave', (event) => {
-        elem.classList.remove('button-hover')
-        event.stopPropagation()
-        event.preventDefault()
-      })
-
-      this.buttonsContainer.appendChild(elem)
-
-      if (icon) {
-        const img = new Image()
-        img.classList.add('button-image')
-        img.src = icon
-        elem.appendChild(img)
-      } else {
-        const toolLabelSpan = document.createElement('span')
-        toolLabelSpan.classList.add('label')
-        const toolLabel = document.createTextNode(name)
-        elem.appendChild(toolLabelSpan)
-        toolLabelSpan.appendChild(toolLabel)
-      }
+      return buttonDiv
     }
 
-    addToolButton('DropUserTool', 'data/Maps-Street-View-icon.png')
-    addToolButton('VRHoldObjectsTool', 'data/grab-icon.png')
-    addToolButton('HandHeldTool', 'data/wrench-icon.png')
-    addToolButton('FreehandLineTool', 'data/pen-tool.png')
-    addToolButton('EraserTool', 'data/eraser.png')
+    const addPointerToolButton = (tool, icon, callback) => {
+      const buttonDiv = addToolButton(tool, icon, (activating, event) => {
+        if (activating && event.controller) {
+          const tool = toolManager.tools['PointerTool']
+          tool.pointerController = event.controller
+        }
+
+        if (callback) callback(activating, event)
+      })
+      return buttonDiv
+    }
+
+    addPointerToolButton(toolManager.tools['PointerTool'], 'data/laser-pointer.webp')
+    addPointerToolButton(toolManager.tools['DropUserTool'], 'data/Maps-Street-View-icon.png')
+    addToolButton(toolManager.tools['VRHoldObjectsTool'], 'data/grab-icon.png')
+    addToolButton(toolManager.tools['HandHeldTool'], 'data/wrench-icon.png')
+    addToolButton(toolManager.tools['FreehandLineTool'], 'data/pen-tool.png')
+    addPointerToolButton(toolManager.tools['EraserTool'], 'data/eraser.png')
     // addToolButton('Create Cuboid', 'data/create-cuboid-icon.png')
     // addToolButton('Create Sphere', 'data/create-sphere-icon.png')
     // addToolButton('Create Cone', 'data/create-cone-icon.png')
@@ -308,45 +291,25 @@ class VRUI extends HTMLElement {
     let activeButtonDiv
     let color = new Color('#FFD800')
     const addColorButton = (icon, cb) => {
-      const buttonDiv = document.createElement('button')
-      buttonDiv.classList.add('button')
-      this.buttonsContainer.appendChild(buttonDiv)
-      buttonDiv.addEventListener('mouseenter', () => {
-        buttonDiv.classList.add('button-hover')
-      })
-      buttonDiv.addEventListener('mouseleave', () => {
-        buttonDiv.classList.remove('button-hover')
-      })
-      buttonDiv.addEventListener('mousedown', () => {
+      const buttonDiv = this.addButton(icon, () => {
         if (activeButtonDiv) {
           activeButtonDiv.classList.remove('button-active')
         }
         buttonDiv.classList.add('button-active')
         activeButtonDiv = buttonDiv
-        cb(buttonDiv)
-
-        if (activeTool && activeTool.colorParam) {
-          activeTool.colorParam.setValue(color)
-        }
       })
-      buttonDiv.addEventListener('mouseup', () => {})
-      const img = new Image()
-      img.classList.add('button-image')
-      img.src = icon
-      buttonDiv.appendChild(img)
-      return buttonDiv
     }
 
-    addColorButton('data/color-red.png', (buttonDiv) => {
+    addColorButton('data/color-red.png', () => {
       color = new Color(1, 0, 0)
     })
-    addColorButton('data/color-green.png', (buttonDiv) => {
+    addColorButton('data/color-green.png', () => {
       color = new Color(0, 1, 0)
     })
-    addColorButton('data/color-blue.png', (buttonDiv) => {
+    addColorButton('data/color-blue.png', () => {
       color = new Color(0, 0, 1)
     })
-    addColorButton('data/color-yellow.png', (buttonDiv) => {
+    addColorButton('data/color-yellow.png', () => {
       color = new Color('#FFD800')
     })
   }

@@ -7,6 +7,7 @@ export interface AppData {
   sceneUnits?: string
   selectionManager?: SelectionManager
   session?: any
+  sessionSync?: any
 }
 
 export interface PointerObject {

@@ -78,6 +78,7 @@
         SelectionManager,
         UndoRedoManager,
         ToolManager,
+        PointerTool,
         SelectionTool,
         VRHoldObjectsTool,
         DropUserTool,
@@ -199,6 +200,9 @@
         removeUser(user)
       })
 
+      appData.session = session
+      appData.sessionSync = sessionSync
+
       // ////////////////////////////////////////////
       // Setup a ToolManger for the main viewport.
       const toolManager = new ToolManager(appData)
@@ -206,6 +210,10 @@
       const cameraTool = renderer.getViewport().getManipulator()
       cameraTool.deactivateTool()
       toolManager.registerTool('CameraTool', cameraTool)
+
+      const pointerTool = new PointerTool(appData)
+      pointerTool.pointerThickness = 0.002
+      toolManager.registerTool('PointerTool', pointerTool)
 
       const holdObjectsTool = new VRHoldObjectsTool(appData)
       toolManager.registerTool('VRHoldObjectsTool', holdObjectsTool)
@@ -242,7 +250,7 @@
       toolManager.registerTool('VRUITool', vrUITool)
 
       toolManager.pushTool(cameraTool)
-      // toolManager.pushTool(vrUITool)
+      toolManager.pushTool(vrUITool)
 
       renderer.getViewport().setManipulator(toolManager)
 
@@ -251,17 +259,17 @@
       // ////////////////////////////////////////////
 
       const h = document.querySelector('#buttonHolder')
-      const b = document.querySelector('#button')
+      const webxrButton = document.querySelector('#button')
       renderer.getXRViewport().then((xrViewport) => {
         appData.xrViewport = xrViewport
         h.textContent = 'XR Device Detected'
-        b.textContent = 'Launch VR'
+        webxrButton.textContent = 'Launch VR'
 
         xrViewport.on('presentingChanged', (event) => {
           const { state } = event
           if (state) {
             h.textContent = 'Session In Progress'
-            b.textContent = 'Exit VR'
+            webxrButton.textContent = 'Exit VR'
 
             toolManager.pushTool(cameraTool)
             toolManager.pushTool(vrUITool)
@@ -271,11 +279,11 @@
             }
 
             h.textContent = 'XR Device Detected'
-            b.textContent = 'Launch VR'
+            webxrButton.textContent = 'Launch VR'
           }
         })
 
-        b.addEventListener('click', function (event) {
+        webxrButton.addEventListener('click', function (event) {
           xrViewport.togglePresenting()
         })
 
@@ -288,6 +296,8 @@
         // Setup VR Tools
         const vrToolManager = new ToolManager(appData)
         vrToolManager.registerTool('VRHoldObjectsTool', holdObjectsTool)
+
+        vrToolManager.registerTool('PointerTool', pointerTool)
 
         const dropUserTool = new DropUserTool(appData, vrToolManager)
         vrToolManager.registerTool('DropUserTool', dropUserTool)

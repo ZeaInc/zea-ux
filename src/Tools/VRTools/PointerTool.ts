@@ -22,8 +22,9 @@ class PointerTool extends BaseTool {
   protected vrViewport: VRViewport
   protected prevCursor: string
 
+  public pointerController: XRController
   public pointerThickness = 0.0
-  public pointerColor = new Color(0.2, 1.0, 0.2)
+  public pointerColor = new Color(1.0, 0.2, 0.2)
 
   private geom: BaseGeom
   private material: FlatSurfaceMaterial | LinesMaterial
@@ -56,7 +57,7 @@ class PointerTool extends BaseTool {
     }
     if (this.pointerThickness > 0) {
       if (!this.geom || this.geom instanceof Cylinder) {
-        this.geom = new Cylinder(this.pointerThickness, 1.0, 6)
+        this.geom = new Cylinder(this.pointerThickness, 1.0, 6, 2, true, true)
         this.material = new FlatSurfaceMaterial('line')
       }
     } else {
@@ -75,17 +76,25 @@ class PointerTool extends BaseTool {
       const pointerGeomItem = new GeomItem('PointerRay', this.geom, this.material)
       pointerGeomItem.setSelectable(false)
       const pointerXfo = new Xfo()
-      pointerXfo.sc.set(1, 1, this.raycastDist)
+      pointerXfo.sc.set(1, 1, this.raycastDist / controller.getTipXfo().sc.z)
       pointerGeomItem.localXfoParam.value = pointerXfo
       controller.tipItem.addChild(pointerGeomItem, false)
       this.pointerGeomItems[controller.id] = pointerGeomItem
+
+      if (this.appData.session) {
+        this.appData.session.pub('vr-pointer', { controller: controller.id, pointerXfo })
+      }
     }
 
-    if (this.vrViewport) {
-      for (const controller of this.vrViewport.controllers) {
-        bindController(controller)
+    if (this.pointerController) {
+      bindController(this.pointerController)
+    } else {
+      if (this.vrViewport) {
+        for (const controller of this.vrViewport.controllers) {
+          bindController(controller)
+        }
+        this.bindControllerId = this.vrViewport.on('controllerAdded', (event) => bindController(event.controller))
       }
-      this.bindControllerId = this.vrViewport.on('controllerAdded', (event) => bindController(event.controller))
     }
   }
 
@@ -104,21 +113,30 @@ class PointerTool extends BaseTool {
       controller.raycastDist = this.defaultTaycastDist
       this.pointerGeomItems[controller.id] = null
     }
-    if (this.vrViewport) {
-      for (const controller of this.vrViewport.controllers) {
-        unbindController(controller)
+
+    if (this.pointerController) {
+      unbindController(this.pointerController)
+    } else {
+      if (this.vrViewport) {
+        for (const controller of this.vrViewport.controllers) {
+          unbindController(controller)
+        }
+        this.vrViewport.removeListenerById('controllerAdded', this.bindControllerId)
       }
-      this.vrViewport.removeListenerById('controllerAdded', this.bindControllerId)
     }
   }
 
   protected setPointerLength(length: number, controller: XRController): void {
     const pointerGeomItem = this.pointerGeomItems[controller.id]
     if (pointerGeomItem) {
-      const pointerLocalXfo = pointerGeomItem.localXfoParam.value
+      const pointerXfo = pointerGeomItem.localXfoParam.value
 
-      pointerLocalXfo.sc.set(1, 1, length / controller.getTipXfo().sc.z)
-      pointerGeomItem.localXfoParam.value = pointerLocalXfo
+      pointerXfo.sc.set(1, 1, length / controller.getTipXfo().sc.z)
+      pointerGeomItem.localXfoParam.value = pointerXfo
+
+      if (this.appData.session) {
+        this.appData.session.pub('vr-pointer', { controller: controller.id, pointerXfo })
+      }
     }
   }
 

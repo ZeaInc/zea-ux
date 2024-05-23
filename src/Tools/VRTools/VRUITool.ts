@@ -148,13 +148,13 @@ class VRUITool extends BaseTool {
       // Y = Down
       // Z = Towards handle base.
       if (uiController.getHandedness() == 'right') {
-        const eulerAngles = new EulerAngles(-MathFunctions.degToRad(90), MathFunctions.degToRad(90), 0, 'XYZ')
+        const eulerAngles = new EulerAngles(0, MathFunctions.degToRad(90), 0, 'XYZ')
         uiLocalXfo.ori.setFromEulerAngles(eulerAngles)
-        uiLocalXfo.tr.set(-0.05, -0.05, 0.15)
+        uiLocalXfo.tr.set(-0.05, 0, 0)
       } else {
-        const eulerAngles = new EulerAngles(-MathFunctions.degToRad(90), -MathFunctions.degToRad(90), 0, 'XYZ')
+        const eulerAngles = new EulerAngles(0, -MathFunctions.degToRad(90), 0, 'XYZ')
         uiLocalXfo.ori.setFromEulerAngles(eulerAngles)
-        uiLocalXfo.tr.set(0.05, -0.1, 0.15)
+        uiLocalXfo.tr.set(0.05, 0, 0)
       }
     } else {
       // uiLocalXfo.ori.setFromAxisAndAngle(new Vec3(1, 0, 0), Math.PI * -0.6)
@@ -163,8 +163,9 @@ class VRUITool extends BaseTool {
 
     this.controllerUI.localXfoParam.value = uiLocalXfo
 
-    this.uiController.getTipItem().addChild(this.controllerUI, false)
+    this.uiController.getTreeItem().addChild(this.controllerUI, false)
     if (this.pointerController) this.pointerController.getTipItem().addChild(this.uiPointerItem, false)
+    this.uiPointerItem.visibleParam.value = false
 
     if (this.appData.session) {
       const postMessage = () => {
@@ -172,8 +173,8 @@ class VRUITool extends BaseTool {
           interfaceType: 'VR',
           showUIPanel: {
             controllerId: this.uiController.getId(),
-            localXfo: uiLocalXfo.toJSON(),
-            size: this.controllerUI.size.toJSON(),
+            localXfo: uiLocalXfo,
+            size: this.controllerUI.size,
           },
         })
       }
@@ -238,7 +239,7 @@ class VRUITool extends BaseTool {
   }
 
   calcPointerRay(): Ray {
-    const pointerXfo = this.uiPointerItem.globalXfoParam.value
+    const pointerXfo = this.pointerController.getTipItem().globalXfoParam.value
     const pointerVec = pointerXfo.ori.getZaxis().negate()
     const ray = new Ray(pointerXfo.tr, pointerVec)
     return ray
@@ -290,10 +291,16 @@ class VRUITool extends BaseTool {
    * @param args - The args param.
    * @return The return value.
    */
-  sendEventToUI(element: Element, eventName: string, hit: UIIntersection, args: Record<string, any> = {}): void {
+  sendEventToUI(
+    controller: XRController,
+    element: Element,
+    eventName: string,
+    hit: UIIntersection,
+    args: Record<string, any> = {}
+  ): void {
     args.offsetX = args.pageX = args.pageX = args.screenX = hit.clientX
     args.offsetY = args.pageY = args.pageY = args.screenY = hit.clientY
-    this.controllerUI.sendMouseEvent(element, eventName, args)
+    this.controllerUI.sendMouseEvent(controller, element, eventName, args)
   }
 
   /**
@@ -307,7 +314,7 @@ class VRUITool extends BaseTool {
         const hit = this.calcUIIntersection(ray)
         if (hit) {
           const element = this.getDOMElementFromPoint(hit)
-          this.sendEventToUI(element, 'mousedown', hit, { button: 0 })
+          this.sendEventToUI(null, element, 'mousedown', hit, { button: 0 })
 
           // While the UI is open, no other tools get events.
           this.triggerHeld = true
@@ -320,7 +327,7 @@ class VRUITool extends BaseTool {
         const hit = this.calcUIIntersection(ray)
         if (hit) {
           const element = this.getDOMElementFromPoint(hit)
-          this.sendEventToUI(element, 'mousedown', hit, {
+          this.sendEventToUI(event.controller, element, 'mousedown', hit, {
             button: event.button,
           })
           // While the UI is open, no other tools get events.
@@ -348,7 +355,7 @@ class VRUITool extends BaseTool {
         if (hit) {
           const target = this.getDOMElementFromPoint(hit)
           if (target) {
-            this.sendEventToUI(target, 'mouseup', hit, {
+            this.sendEventToUI(null, target, 'mouseup', hit, {
               button: event.button,
             })
           }
@@ -362,7 +369,7 @@ class VRUITool extends BaseTool {
         if (hit) {
           const element = this.getDOMElementFromPoint(hit)
           if (element) {
-            this.sendEventToUI(element, 'mouseup', hit, {
+            this.sendEventToUI(event.controller, element, 'mouseup', hit, {
               button: event.button,
             })
           }
@@ -385,7 +392,7 @@ class VRUITool extends BaseTool {
         if (hit) {
           const target = this.getDOMElementFromPoint(hit)
           if (target) {
-            this.sendEventToUI(target, 'click', hit, {
+            this.sendEventToUI(null, target, 'click', hit, {
               button: event.button,
             })
           }
@@ -432,8 +439,9 @@ class VRUITool extends BaseTool {
         if (hit) {
           const element = this.getDOMElementFromPoint(hit)
           if (element) {
-            this.sendEventToUI(element, 'click', hit, {
+            this.sendEventToUI(event.controller, element, 'click', hit, {
               button: event.button,
+              handedness: event.controller.getHandedness(),
             })
           }
           event.stopPropagation()
@@ -477,16 +485,16 @@ class VRUITool extends BaseTool {
 
           if (element != this.element) {
             if (this.element) {
-              this.sendEventToUI(this.element, 'mouseleave', hit, {})
+              this.sendEventToUI(null, this.element, 'mouseleave', hit)
             }
             this.element = element
             if (this.element) {
-              this.sendEventToUI(this.element, 'mouseenter', hit, {})
+              this.sendEventToUI(null, this.element, 'mouseenter', hit)
             }
           }
           event.stopPropagation()
         } else if (this.element) {
-          this.controllerUI.sendMouseEvent(this.element, 'mouseleave', {})
+          this.controllerUI.sendMouseEvent(null, this.element, 'mouseleave')
           this.element = null
         }
       }
@@ -495,24 +503,26 @@ class VRUITool extends BaseTool {
         const ray = this.calcPointerRay()
         const hit = this.calcUIIntersection(ray)
         if (hit) {
+          this.uiPointerItem.visibleParam.value = true
           const element = this.getDOMElementFromPoint(hit)
 
           if (element != this.element) {
             if (this.element) {
-              this.sendEventToUI(this.element, 'mouseleave', hit, {})
+              this.sendEventToUI(this.pointerController, this.element, 'mouseleave', hit)
             }
             this.element = element
             if (this.element) {
-              this.sendEventToUI(this.element, 'mouseenter', hit, {})
+              this.sendEventToUI(this.pointerController, this.element, 'mouseenter', hit)
             }
           }
           if (this.element) {
-            this.sendEventToUI(this.element, 'mousemove', hit, {})
+            this.sendEventToUI(this.pointerController, this.element, 'mousemove', hit)
           }
 
           event.stopPropagation()
         } else if (this.element) {
-          this.controllerUI.sendMouseEvent(this.element, 'mouseleave', {})
+          this.uiPointerItem.visibleParam.value = false
+          this.controllerUI.sendMouseEvent(this.pointerController, this.element, 'mouseleave')
           this.element = null
         }
       }
