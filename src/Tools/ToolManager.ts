@@ -46,9 +46,8 @@ class ToolManager extends BaseTool {
     if (this.toolStack.length == 0) {
       throw Error('Tool stack is empty')
     }
-    const tool = this.toolStack[this.toolStack.length - 1]
+    const tool = this.toolStack.pop()
     tool.deactivateTool()
-    this.toolStack.pop()
   }
 
   /**

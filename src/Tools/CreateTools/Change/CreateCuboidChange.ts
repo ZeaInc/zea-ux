@@ -1,6 +1,7 @@
 import { Cuboid, SimpleSurfaceMaterial, GeomItem, TreeItem, Xfo, Color } from '@zeainc/zea-engine'
 import { UndoRedoManager } from '../../../UndoRedo/index'
 import CreateGeomChange from './CreateGeomChange'
+import { CustomGeom } from '../CustomGeom'
 
 /**
  * Class representing a create cuboid change.
@@ -28,7 +29,7 @@ class CreateCuboidChange extends CreateGeomChange {
   protected createGeomItem() {
     this.cuboid = new Cuboid(0, 0, 0, true)
     const material = new SimpleSurfaceMaterial('Cone')
-    this.geomItem = new GeomItem('Cuboid', this.cuboid, material, this.xfo)
+    this.geomItem = new CustomGeom('Cuboid', this.cuboid, material, this.xfo)
     this.geomItem.setSelectable(false) // At the conclusion of creation, we set selectable to true.
     if (this.parentItem) {
       this.parentItem.addChild(this.geomItem)

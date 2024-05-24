@@ -113,7 +113,7 @@ class CreateGeomTool extends BaseCreateTool {
 
     this.appData.renderer.getXRViewport().then((xrvp) => {
       //@ts-ignore :  TODO: Remove this after the next release of the engine.
-      for (const controller of xrvp.getControllers()) {
+      for (const controller of xrvp.controllers) {
         this.addIconToVRController(controller)
       }
       xrvp.on('controllerAdded', this.controllerAddedHandler)
@@ -129,7 +129,7 @@ class CreateGeomTool extends BaseCreateTool {
     this.appData.renderer.getGLCanvas().style.cursor = this.prevCursor
 
     this.appData.renderer.getXRViewport().then((xrvp) => {
-      // for(let controller of xrvp.getControllers()) {
+      // for(let controller of xrvp.controllers) {
       //   controller.getTipItem().removeAllChildren();
       // }
       xrvp.off('controllerAdded', this.controllerAddedHandler)

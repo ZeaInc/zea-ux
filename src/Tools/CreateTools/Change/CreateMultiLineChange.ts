@@ -1,6 +1,7 @@
 import { Color, GeomItem, LinesMaterial, Lines, Vec3, Vec3Attribute, TreeItem, Xfo } from '@zeainc/zea-engine'
 import UndoRedoManager from '../../../UndoRedo/UndoRedoManager'
 import CreateGeomChange from './CreateGeomChange'
+import { CustomGeom } from '../CustomGeom'
 
 /**
  * Class representing a create line change.
@@ -33,7 +34,7 @@ class CreateMultiLineChange extends CreateGeomChange {
   protected createGeomItem() {
     this.line = new Lines()
     const material = new LinesMaterial('Line')
-    this.geomItem = new GeomItem('Line', this.line, material, this.xfo)
+    this.geomItem = new CustomGeom('Line', this.line, material, this.xfo)
     if (this.parentItem) {
       this.parentItem.addChild(this.geomItem)
     }

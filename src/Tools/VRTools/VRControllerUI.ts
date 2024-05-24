@@ -8,6 +8,7 @@ import {
   Plane,
   DataImage,
   FlatSurfaceMaterial,
+  XRController,
 } from '@zeainc/zea-engine'
 import { AppData } from '../../../types/types.js'
 
@@ -218,7 +219,7 @@ export default class VRControllerUI extends TreeItem {
    * @param element - The element param.
    * @return The return value.
    */
-  sendMouseEvent(element: Element, eventName: string, args: object = {}): MouseEvent {
+  sendMouseEvent(controller: XRController, element: Element, eventName: string, args: object = {}): MouseEvent {
     // console.log('sendMouseEvent:', eventName, element)
 
     const event = new MouseEvent(
@@ -234,6 +235,10 @@ export default class VRControllerUI extends TreeItem {
         args
       )
     )
+
+    if (controller) {
+      event['controller'] = controller
+    }
 
     // Dispatch the event to a leaf item in the DOM tree.
     element.dispatchEvent(event)

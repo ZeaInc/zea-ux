@@ -1,6 +1,7 @@
 import { GeomItem, Material, Cone, TreeItem, Xfo, Color, SimpleSurfaceMaterial } from '@zeainc/zea-engine'
 import { UndoRedoManager } from '../../../UndoRedo/index'
 import CreateGeomChange from './CreateGeomChange'
+import { CustomGeom } from '../CustomGeom'
 
 /**
  * Class representing a create cone change.
@@ -28,7 +29,7 @@ class CreateConeChange extends CreateGeomChange {
   protected createGeomItem() {
     this.cone = new Cone(0.0, 0.0)
     const material = new SimpleSurfaceMaterial('Cone')
-    this.geomItem = new GeomItem('Cone', this.cone, material, this.xfo)
+    this.geomItem = new CustomGeom('Cone', this.cone, material, this.xfo)
     this.geomItem.setSelectable(false) // At the conclusion of creation, we set selectable to true.
     if (this.parentItem) {
       this.parentItem.addChild(this.geomItem)

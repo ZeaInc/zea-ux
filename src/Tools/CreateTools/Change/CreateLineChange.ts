@@ -12,6 +12,7 @@ import {
 } from '@zeainc/zea-engine'
 import UndoRedoManager from '../../../UndoRedo/UndoRedoManager'
 import CreateGeomChange from './CreateGeomChange'
+import { CustomGeom } from '../CustomGeom'
 
 /**
  * Class representing a create line change.
@@ -57,7 +58,7 @@ class CreateLineChange extends CreateGeomChange {
       linesMaterial.baseColorParam.value = this.color
       material = linesMaterial
     }
-    this.geomItem = new GeomItem('Line', this.line, material, this.xfo)
+    this.geomItem = new CustomGeom('Line', this.line, material, this.xfo)
     this.geomItem.setSelectable(false) // At the conclusion of creation, we set selectable to true.
     if (this.parentItem) {
       this.parentItem.addChild(this.geomItem)

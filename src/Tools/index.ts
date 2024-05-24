@@ -3,4 +3,5 @@ export * from './VRTools/index'
 
 // Create Geom Tools
 export * from './CreateTools/index'
+export * from './DeleteGeomsTool'
 export * from './ToolManager'

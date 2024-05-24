@@ -1,229 +1,232 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Zea Inc. Demo</title>
 
-  <title>Zea Inc. Demo</title>
-
-  <style>
-    body {
-      height: 100vh;
-      margin: 0;
-      overflow: hidden;
-    }
-
-    #rendererHolder {
-      width: 100%;
-      height: calc(100% - 35px);
-    }
-
-    #renderer {
-      width: 100%;
-      height: 100%;
-    }
-
-    #controllers {
-      display: flex;
-      align-items: center;
-      padding: 0.5em;
-      gap: 1em;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    #xfo-handlers {
-      display: flex;
-    }
-
-    #xfo-handlers>div,
-    #xfo-handlers span {
-      display: flex;
-      margin: 0 0.6em;
-    }
-
-    #controllers>button {
-      text-align: center;
-      margin: 5px;
-    }
-
-    ul#color-list {
-      list-style: none;
-    }
-
-    ul#color-list>li {
-      width: 100px;
-    }
-  </style>
-
-  <script src="../node_modules/@zeainc/zea-engine/dist/index.umd.js"></script>
-  <script src="../dist/index.umd.js"></script>
-
-  <script type="module">
-    const { GLRenderer, Scene, GeomItem, Material, Vec3, Xfo, Color, Cuboid, Torus, Sphere } = window.zeaEngine
-    const {
-      CreateCircleTool,
-      CreateConeTool,
-      CreateCuboidTool,
-      CreateFreehandLineTool,
-      CreateLineTool,
-      CreateMultiLineTool,
-      CreateRectTool,
-      CreateSphereTool,
-      UndoRedoManager,
-      ToolManager
-    } = window.zeaUx
-
-    const $canvas = document.getElementById('renderer')
-
-    const scene = new Scene()
-    scene.setupGrid(100, 100)
-
-    const renderer = new GLRenderer($canvas, {
-      enableFrustumCulling: false,
-    })
-    renderer.setScene(scene)
-
-    const color = new Color('#aaaaaa')
-    renderer.getViewport().backgroundColorParam.value = color
-
-    {
-      const material1 = new Material('material1', 'SimpleSurfaceShader')
-      material1.getParameter('BaseColor').setValue(new Color('#94C47D'))
-
-      const geomItem1 = new GeomItem('CuboidGeometryItem', new Cuboid(0.7, 0.7, 0.7), material1)
-
-      const geomItem1Xfo = new Xfo()
-      geomItem1Xfo.tr = new Vec3(0.5, 0, 0.35)
-      geomItem1.getParameter('GlobalXfo').setValue(geomItem1Xfo)
-
-      // scene.getRoot().addChild(geomItem1)
-
-      const material2 = new Material('material2', 'SimpleSurfaceShader')
-      material2.getParameter('BaseColor').setValue(new Color('#35257D'))
-
-      const geomItem2 = new GeomItem('TorusGeometryItem', new Torus(0.15, 0.5), material2)
-
-      const geomItem2Xfo = new Xfo()
-      geomItem2Xfo.tr = new Vec3(-1, 0, 0.35)
-      geomItem2.getParameter('GlobalXfo').setValue(geomItem2Xfo)
-
-      // scene.getRoot().addChild(geomItem2)
-    }
-
-    /** */
-    const toolManager = new ToolManager()
-
-    {
-      const appData = {
-        scene,
-        renderer,
+    <style>
+      body {
+        height: 100vh;
+        margin: 0;
+        overflow: hidden;
       }
 
-      const freeHandLineTool = new CreateFreehandLineTool(appData)
-      freeHandLineTool.getParameter('LineThickness').setValue(0.01)
+      #rendererHolder {
+        width: 100%;
+        height: calc(100% - 35px);
+      }
 
+      #renderer {
+        width: 100%;
+        height: 100%;
+      }
 
-      toolManager.registerTool('circleTool', new CreateCircleTool(appData))
-      toolManager.registerTool('coneTool', new CreateConeTool(appData))
-      toolManager.registerTool('cuboidTool', new CreateCuboidTool(appData))
-      toolManager.registerTool('freeHandLineTool', freeHandLineTool)
-      toolManager.registerTool('lineTool', new CreateLineTool(appData))
-      toolManager.registerTool('multiLineTool', new CreateMultiLineTool(appData))
-      toolManager.registerTool('rectTool', new CreateRectTool(appData))
-      toolManager.registerTool('sphereTool', new CreateSphereTool(appData))
-      toolManager.registerTool('cameraManipulator', renderer.getViewport().getManipulator())
+      #controllers {
+        display: flex;
+        align-items: center;
+        padding: 0.5em;
+        gap: 1em;
+      }
 
-      renderer.getViewport().setManipulator(toolManager)
+      .hidden {
+        display: none !important;
+      }
 
-      toolManager.pushTool('cameraManipulator')
+      #xfo-handlers {
+        display: flex;
+      }
 
-      // Pop all tools leaving only the camera manipulator
-      const resetTools = () => {
-        while (toolManager.toolStack.length > 1) {
-          toolManager.popTool()
+      #xfo-handlers > div,
+      #xfo-handlers span {
+        display: flex;
+        margin: 0 0.6em;
+      }
+
+      #controllers > button {
+        text-align: center;
+        margin: 5px;
+      }
+
+      ul#color-list {
+        list-style: none;
+      }
+
+      ul#color-list > li {
+        width: 100px;
+      }
+    </style>
+
+    <script src="../node_modules/@zeainc/zea-engine/dist/index.umd.js"></script>
+    <script src="../dist/index.umd.js"></script>
+
+    <script type="module">
+      const { GLRenderer, Scene, GeomItem, Material, Vec3, Xfo, Color, Cuboid, Torus, Sphere } = window.zeaEngine
+      const {
+        CreateCircleTool,
+        CreateConeTool,
+        CreateCuboidTool,
+        CreateFreehandLineTool,
+        CreateLineTool,
+        CreateMultiLineTool,
+        CreateRectTool,
+        CreateSphereTool,
+        DeleteGeomsTool,
+        UndoRedoManager,
+        ToolManager,
+      } = window.zeaUx
+
+      const $canvas = document.getElementById('renderer')
+
+      const scene = new Scene()
+      scene.setupGrid(100, 100)
+
+      const renderer = new GLRenderer($canvas, {
+        enableFrustumCulling: false,
+      })
+      renderer.setScene(scene)
+
+      const color = new Color('#aaaaaa')
+      renderer.getViewport().backgroundColorParam.value = color
+
+      {
+        const material1 = new Material('material1', 'SimpleSurfaceShader')
+        material1.getParameter('BaseColor').setValue(new Color('#94C47D'))
+
+        const geomItem1 = new GeomItem('CuboidGeometryItem', new Cuboid(0.7, 0.7, 0.7), material1)
+
+        const geomItem1Xfo = new Xfo()
+        geomItem1Xfo.tr = new Vec3(0.5, 0, 0.35)
+        geomItem1.getParameter('GlobalXfo').setValue(geomItem1Xfo)
+
+        // scene.getRoot().addChild(geomItem1)
+
+        const material2 = new Material('material2', 'SimpleSurfaceShader')
+        material2.getParameter('BaseColor').setValue(new Color('#35257D'))
+
+        const geomItem2 = new GeomItem('TorusGeometryItem', new Torus(0.15, 0.5), material2)
+
+        const geomItem2Xfo = new Xfo()
+        geomItem2Xfo.tr = new Vec3(-1, 0, 0.35)
+        geomItem2.getParameter('GlobalXfo').setValue(geomItem2Xfo)
+
+        // scene.getRoot().addChild(geomItem2)
+      }
+
+      /** */
+      const toolManager = new ToolManager()
+
+      {
+        const appData = {
+          scene,
+          renderer,
+        }
+
+        const freeHandLineTool = new CreateFreehandLineTool(appData)
+        freeHandLineTool.getParameter('LineThickness').setValue(0.01)
+
+        toolManager.registerTool('circleTool', new CreateCircleTool(appData))
+        toolManager.registerTool('coneTool', new CreateConeTool(appData))
+        toolManager.registerTool('cuboidTool', new CreateCuboidTool(appData))
+        toolManager.registerTool('freeHandLineTool', freeHandLineTool)
+        toolManager.registerTool('lineTool', new CreateLineTool(appData))
+        toolManager.registerTool('multiLineTool', new CreateMultiLineTool(appData))
+        toolManager.registerTool('rectTool', new CreateRectTool(appData))
+        toolManager.registerTool('sphereTool', new CreateSphereTool(appData))
+        toolManager.registerTool('deleteGeomsTool', new DeleteGeomsTool(appData))
+        toolManager.registerTool('cameraManipulator', renderer.getViewport().getManipulator())
+
+        renderer.getViewport().setManipulator(toolManager)
+
+        toolManager.pushTool('cameraManipulator')
+
+        // Pop all tools leaving only the camera manipulator
+        const resetTools = () => {
+          while (toolManager.toolStack.length > 1) {
+            toolManager.popTool()
+          }
+        }
+
+        const $toolRadios = document.querySelectorAll('input[type=radio][name="tool-radio"]')
+        $toolRadios.forEach((toolRadio) => {
+          toolRadio.addEventListener('change', (e) => {
+            if (toolRadio.id == 'cameramanipulator-cbx') {
+              resetTools()
+            } else {
+              resetTools()
+              toolManager.pushTool(e.target.value)
+            }
+          })
+        })
+      }
+
+      renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(0, 4, 3), new Vec3(0, 0, 0))
+
+      const handleHotkey = (e) => {
+        e.preventDefault()
+        const undoRedoManager = UndoRedoManager && UndoRedoManager.getInstance()
+
+        switch (e.key) {
+          case 'y':
+            if (e.ctrlKey && undoRedoManager) undoRedoManager.redo()
+            break
+          case 'z':
+            if (e.ctrlKey && undoRedoManager) undoRedoManager.undo()
+            break
         }
       }
-      
-      const $toolRadios = document.querySelectorAll('input[type=radio][name="tool-radio"]')
-      $toolRadios.forEach((toolRadio) => {
-        toolRadio.addEventListener('change', (e) => {
-          if (toolRadio.id == 'cameramanipulator-cbx') {
-            resetTools()
-          } else {
-            resetTools()
-            toolManager.pushTool(e.target.value)
-          }
-        })
-      })
-    }
 
-    renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(0, 4, 3), new Vec3(0, 0, 0))
+      document.addEventListener('keyup', handleHotkey)
+    </script>
+  </head>
 
-    const handleHotkey = (e) => {
-      e.preventDefault()
-      const undoRedoManager = UndoRedoManager && UndoRedoManager.getInstance()
-
-      switch (e.key) {
-        case 'y':
-          if (e.ctrlKey && undoRedoManager) undoRedoManager.redo()
-          break
-        case 'z':
-          if (e.ctrlKey && undoRedoManager) undoRedoManager.undo()
-          break;
-      }
-    }
-
-    document.addEventListener('keyup', handleHotkey)
-  </script>
-</head>
-
-<body>
-  <div id="controllers">
-    <div>
-      <label for="cameramanipulator-cbx">Camera Manipulator</label>
-      <input type="radio" name="tool-radio" id="cameramanipulator-cbx" value="cameraManipulator" />
+  <body>
+    <div id="controllers">
+      <div>
+        <label for="cameramanipulator-cbx">Camera Manipulator</label>
+        <input type="radio" name="tool-radio" id="cameramanipulator-cbx" value="cameraManipulator" />
+      </div>
+      <div>
+        <label for="cone-cbx">Cone</label>
+        <input type="radio" name="tool-radio" id="cone-cbx" value="coneTool" />
+      </div>
+      <div>
+        <label for="cuboid-cbx">Cuboid</label>
+        <input type="radio" name="tool-radio" id="cuboid-cbx" value="cuboidTool" />
+      </div>
+      <div>
+        <label for="freehandline-cbx">FHLine</label>
+        <input type="radio" name="tool-radio" id="freehandline-cbx" value="freeHandLineTool" />
+      </div>
+      <div>
+        <label for="circle-cbx">Circle</label>
+        <input type="radio" name="tool-radio" id="circle-cbx" value="circleTool" />
+      </div>
+      <div>
+        <label for="line-cbx">Line</label>
+        <input type="radio" name="tool-radio" id="line-cbx" value="lineTool" />
+      </div>
+      <div>
+        <label for="multi-line-cbx">Multi-segment Line</label>
+        <input type="radio" name="tool-radio" id="multi-line-cbx" value="multiLineTool" />
+      </div>
+      <div>
+        <label for="rect-cbx">Rect</label>
+        <input type="radio" name="tool-radio" id="rect-cbx" value="rectTool" />
+      </div>
+      <div>
+        <label for="sphere-cbx">Sphere</label>
+        <input type="radio" name="tool-radio" id="sphere-cbx" value="sphereTool" />
+      </div>
+      <div>
+        <label for="deleteGeomsTool-cbx">Delete</label>
+        <input type="radio" name="tool-radio" id="deleteGeomsTool-cbx" value="deleteGeomsTool" />
+      </div>
     </div>
-    <div>
-      <label for="cone-cbx">Cone</label>
-      <input type="radio" name="tool-radio" id="cone-cbx" value="coneTool" />
+    <div id="rendererHolder">
+      <canvas id="renderer"></canvas>
     </div>
-    <div>
-      <label for="cuboid-cbx">Cuboid</label>
-      <input type="radio" name="tool-radio" id="cuboid-cbx" value="cuboidTool" />
-    </div>
-    <div>
-      <label for="freehandline-cbx">FHLine</label>
-      <input type="radio" name="tool-radio" id="freehandline-cbx" value="freeHandLineTool" />
-    </div>
-    <div>
-      <label for="circle-cbx">Circle</label>
-      <input type="radio" name="tool-radio" id="circle-cbx" value="circleTool" />
-    </div>
-    <div>
-      <label for="line-cbx">Line</label>
-      <input type="radio" name="tool-radio" id="line-cbx" value="lineTool" />
-    </div>
-    <div>
-      <label for="multi-line-cbx">Multi-segment Line</label>
-      <input type="radio" name="tool-radio" id="multi-line-cbx" value="multiLineTool" />
-    </div>
-    <div>
-      <label for="rect-cbx">Rect</label>
-      <input type="radio" name="tool-radio" id="rect-cbx" value="rectTool" />
-    </div>
-    <div>
-      <label for="sphere-cbx">Sphere</label>
-      <input type="radio" name="tool-radio" id="sphere-cbx" value="sphereTool" />
-    </div>
-  </div>
-  <div id="rendererHolder">
-    <canvas id="renderer"></canvas>
-  </div>
-</body>
-
+  </body>
 </html>
