@@ -11,14 +11,11 @@ import { AppData } from '../../../types/types.js'
  * @extends Change
  */
 class TreeItemsRemoveChange extends Change {
-  items: Array<TreeItem> = []
-  itemOwners: Array<TreeItem> = []
-  itemPaths: Array<Array<string>> = []
-  itemIndices: Array<number> = []
+  private items: Array<TreeItem> = []
+  private itemOwners: Array<TreeItem> = []
+  private itemPaths: Array<Array<string>> = []
+  private itemIndices: Array<number> = []
 
-  selectionManager: SelectionManager
-  prevSelection: Set<TreeItem>
-  newSelection: Set<TreeItem>
   /**
    * Creates an instance of TreeItemsRemoveChange.
    *
@@ -29,10 +26,8 @@ class TreeItemsRemoveChange extends Change {
     super()
 
     if (items) {
-      this.selectionManager = appData.selectionManager
-      this.prevSelection = new Set(this.selectionManager.getSelection())
       this.items = items
-      this.newSelection = new Set(this.prevSelection)
+      const newSelection = new Set(appData?.selectionManager?.getSelection())
 
       const itemNames: Array<string> = []
       this.items.forEach((item: TreeItem) => {
@@ -43,23 +38,16 @@ class TreeItemsRemoveChange extends Change {
         this.itemPaths.push(item.getPath())
         this.itemIndices.push(itemIndex)
 
-        if (this.selectionManager && this.newSelection.has(item)) this.newSelection.delete(item)
-        if (item instanceof Operator) {
-          const op = item
-          op.detach()
-        } else if (item instanceof TreeItem) {
-          item.traverse((subTreeItem: TreeItem) => {
-            if (subTreeItem instanceof Operator) {
-              const op = subTreeItem
-              op.detach()
-            }
-            if (this.selectionManager && this.newSelection.has(subTreeItem)) this.newSelection.delete(subTreeItem)
-          }, false)
-        }
+        if (newSelection.has(item)) newSelection.delete(item)
+        item.traverse((subTreeItem: TreeItem) => {
+          if (newSelection.has(subTreeItem)) newSelection.delete(subTreeItem)
+        }, false)
 
         owner.removeChild(itemIndex)
       })
-      this.selectionManager.setSelection(this.newSelection, false)
+      if (appData?.selectionManager) {
+        appData.selectionManager.setSelection(newSelection, true, this)
+      }
 
       this.name = itemNames + ' Deleted'
     }
@@ -71,44 +59,15 @@ class TreeItemsRemoveChange extends Change {
   undo(): void {
     this.items.forEach((item, index) => {
       this.itemOwners[index].insertChild(item, this.itemIndices[index], false, false)
-
-      // Now re-attach all the detached operators.
-      if (item instanceof Operator) {
-        const op = item
-        op.reattach()
-      } else if (item instanceof TreeItem) {
-        item.traverse((subTreeItem: TreeItem) => {
-          if (subTreeItem instanceof Operator) {
-            const op = subTreeItem
-            op.reattach()
-          }
-        }, false)
-      }
     })
-    if (this.selectionManager) this.selectionManager.setSelection(this.prevSelection, false)
   }
 
   /**
    * Executes initial change to remove items from their owners.
    */
   redo(): void {
-    if (this.selectionManager) this.selectionManager.setSelection(this.newSelection, false)
-
-    // Now re-detach all the operators.
     this.items.forEach((item, index) => {
       this.itemOwners[index].removeChild(this.itemIndices[index])
-
-      if (item instanceof Operator) {
-        const op = item
-        op.detach()
-      } else if (item instanceof TreeItem) {
-        item.traverse((subTreeItem) => {
-          if (subTreeItem instanceof Operator) {
-            const op = subTreeItem
-            op.detach()
-          }
-        }, false)
-      }
     })
   }
 
@@ -119,15 +78,10 @@ class TreeItemsRemoveChange extends Change {
    * @return {object} - JSON Object representation of current change
    * @memberof TreeItemsRemoveChange
    */
-  toJSON(appData: AppData): Record<string, any> {
-    const j = super.toJSON({ appData })
-    j.items = [] as any[]
+  toJSON(context?: Record<any, any>): Record<string, any> {
+    const j = super.toJSON(context)
     j.itemPaths = this.itemPaths
     j.itemIndices = this.itemIndices
-
-    this.items.forEach((item) => {
-      j.items.push(item.toJSON())
-    })
     return j
   }
 
@@ -138,29 +92,24 @@ class TreeItemsRemoveChange extends Change {
    * @param appData - The appData value
    * @memberof TreeItemsRemoveChange
    */
-  fromJSON(j: Record<string, any>, appData: AppData): void {
-    super.fromJSON(j, { appData })
-    j.itemPaths.forEach((itemPath: any) => {
-      const item = <TreeItem>appData.scene.getRoot().resolvePath(itemPath, 1)
+  fromJSON(j: Record<string, any>, context: Record<any, any>): void {
+    super.fromJSON(j, context)
+
+    const sceneRoot = context.appData.scene.getRoot()
+    j.itemPaths.forEach((itemPath: string[]) => {
+      const item = sceneRoot.resolvePath(itemPath, 1)
       if (!item) {
         console.warn('resolvePath is unable to resolve', itemPath)
         return
       }
       const owner = <TreeItem>item.getOwner()
+      const itemIndex = owner.getChildIndex(item)
       this.itemOwners.push(owner)
       this.itemPaths.push(item.getPath())
-      this.itemIndices.push(owner.getChildIndex(item))
-    })
-  }
+      this.itemIndices.push(itemIndex)
 
-  /**
-   * The destroy method cleans up any data requiring manual cleanup.
-   * Deleted items still on the undo stack are then flushed and any
-   * GPU resources cleaned up.
-   */
-  destroy(): void {
-    // TODO: line below removed.
-    // this.items.forEach((item) => item.removeRef(this))
+      owner.removeChild(itemIndex)
+    })
   }
 }
 

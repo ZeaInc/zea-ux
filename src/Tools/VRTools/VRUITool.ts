@@ -59,11 +59,7 @@ class VRUITool extends PointerTool {
 
     this.vrUIDOMElement = vrUIDOMElement
     this.controllerUI = new VRControllerUI(appData, this.vrUIDOMElement)
-
-    const pointermat = new LinesMaterial('pointermat')
-    pointermat.setSelectable(false)
-    pointermat.baseColorParam.value = new Color(1, 0, 1)
-    pointermat.overlayParam.value = 0.5
+    this.raycastDist = 0.0
 
     this.appData.renderer.getXRViewport().then((xrvp) => {
       xrvp.on('presentingChanged', (event) => {
@@ -112,6 +108,7 @@ class VRUITool extends PointerTool {
     this.pointerController = pointerController
 
     this.displayPointers()
+    this.setPointerLength(0.5, this.pointerController)
 
     // Ensure the Controllers are both visible.
     const uiController_controllerTree = this.uiController.getTreeItem().getChild(1)

@@ -9,8 +9,7 @@ import {
 } from '@zeainc/zea-engine'
 import { AppData } from '../../types/types'
 import { CustomGeom } from './CreateTools/CustomGeom'
-import DeleteGeomChange from './CreateTools/Change/DeleteGeomChange'
-import { Change, UndoRedoManager } from '../UndoRedo'
+import { Change, TreeItemsRemoveChange, UndoRedoManager } from '../UndoRedo'
 import { PointerTool } from './VRTools/PointerTool'
 
 class DeleteGeomsTool extends PointerTool {
@@ -36,7 +35,8 @@ class DeleteGeomsTool extends PointerTool {
           this.highlightedGeom = undefined
         }
         if (this.change) {
-          const change = new DeleteGeomChange(geomItem)
+          const change = new TreeItemsRemoveChange([geomItem], this.appData)
+
           this.change.addSecondaryChange(change)
         } else {
           geomItem.addHighlight('DeleteGeomsTool', this.highlightColor)
