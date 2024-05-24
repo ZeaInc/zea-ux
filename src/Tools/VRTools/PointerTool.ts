@@ -23,7 +23,7 @@ class PointerTool extends BaseTool {
   protected prevCursor: string
 
   public pointerController: XRController
-  public pointerThickness = 0.0
+  public pointerThickness = 0.002
   public pointerColor = new Color(1.0, 0.2, 0.2)
 
   private geom: BaseGeom
@@ -50,7 +50,18 @@ class PointerTool extends BaseTool {
    */
   activateTool(): void {
     super.activateTool()
+    this.displayPointers()
+  }
 
+  /**
+   * The deactivateTool method.
+   */
+  deactivateTool(): void {
+    super.deactivateTool()
+    this.removePointers()
+  }
+
+  protected displayPointers() {
     if (this.appData && this.appData.renderer) {
       this.prevCursor = this.appData.renderer.getGLCanvas().style.cursor
       this.appData.renderer.getGLCanvas().style.cursor = 'crosshair'
@@ -59,10 +70,12 @@ class PointerTool extends BaseTool {
       if (!this.geom || this.geom instanceof Cylinder) {
         this.geom = new Cylinder(this.pointerThickness, 1.0, 6, 2, true, true)
         this.material = new FlatSurfaceMaterial('line')
+        this.material.overlayParam.value = 0.5
       }
     } else {
       this.geom = line
       this.material = new LinesMaterial('line')
+      this.material.overlayParam.value = 0.5
     }
     this.material.baseColorParam.value = this.pointerColor
 
@@ -109,8 +122,7 @@ class PointerTool extends BaseTool {
   /**
    * The deactivateTool method.
    */
-  deactivateTool(): void {
-    super.deactivateTool()
+  removePointers(): void {
     if (this.appData && this.appData.renderer) {
       this.appData.renderer.getGLCanvas().style.cursor = this.prevCursor
     }

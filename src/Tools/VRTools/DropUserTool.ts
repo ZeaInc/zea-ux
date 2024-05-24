@@ -24,7 +24,7 @@ import { PointerTool } from './PointerTool'
 
 class DropUserTool extends PointerTool {
   private toolManager: ToolManager
-  private dropAvatar = new TreeItem('dropAvatar')
+  private dropAvatar = new TreeItem('DropAvatar')
   private floorPlane = new Ray(new Vec3(), new Vec3(0, 0, 1))
 
   public faceUserTowardsSceneCenter = true
@@ -34,7 +34,7 @@ class DropUserTool extends PointerTool {
     super(appData)
 
     const linesSphere = new LinesSphere(1, 32)
-    const headGeomItem = new GeomItem('PointerRay', linesSphere, lineMaterial)
+    const headGeomItem = new GeomItem('DropAvatarHead', linesSphere, lineMaterial)
     headGeomItem.setSelectable(false)
     const headXfo = new Xfo()
     headXfo.sc.set(0.17 * 0.5, 0.17 * 0.5, 0.21 * 0.5) // Facing +y
@@ -42,7 +42,7 @@ class DropUserTool extends PointerTool {
     headGeomItem.localXfoParam.value = headXfo
     this.dropAvatar.addChild(headGeomItem, false)
 
-    const torosGeomItem = new GeomItem('PointerRay', linesSphere, lineMaterial)
+    const torosGeomItem = new GeomItem('DropAvatarTorso', linesSphere, lineMaterial)
     torosGeomItem.setSelectable(false)
     const torsoXfo = new Xfo()
     torsoXfo.sc.set(0.28 * 0.5, 0.28 * 0.5, 0.6 * 0.5) // Facing +y
@@ -120,7 +120,7 @@ class DropUserTool extends PointerTool {
    *
    * @param event - The event param.
    */
-  onPointerClick(event: ZeaPointerEvent) {
+  onPointerDown(event: ZeaPointerEvent) {
     if (event instanceof ZeaMouseEvent && event.button == 0) {
       const ray = event.pointerRay
       const dist = ray.intersectRayPlane(new Ray(new Vec3(), new Vec3(0, 0, 1)))

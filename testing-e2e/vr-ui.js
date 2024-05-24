@@ -278,7 +278,6 @@ class VRUI extends HTMLElement {
       return buttonDiv
     }
 
-    addPointerToolButton(toolManager.tools['PointerTool'], 'data/laser-pointer.webp')
     addPointerToolButton(toolManager.tools['DropUserTool'], 'data/Maps-Street-View-icon.png')
     addToolButton(toolManager.tools['VRHoldObjectsTool'], 'data/grab-icon.png')
     addToolButton(toolManager.tools['HandHeldTool'], 'data/wrench-icon.png', (activating, event) => {
@@ -287,6 +286,8 @@ class VRUI extends HTMLElement {
         tool.toolController = event.controller
       }
     })
+
+    addPointerToolButton(toolManager.tools['PointerTool'], 'data/laser-pointer.webp')
     addToolButton(toolManager.tools['FreehandLineTool'], 'data/pen-tool.png')
     addPointerToolButton(toolManager.tools['EraserTool'], 'data/eraser.png', (activating, event) => {
       if (activating && event.controller) {

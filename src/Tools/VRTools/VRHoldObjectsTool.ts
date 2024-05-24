@@ -20,6 +20,7 @@ import UndoRedoManager from '../../UndoRedo/UndoRedoManager'
 import Change from '../../UndoRedo/Change'
 import { AppData } from '../../../types/types'
 import { line, lineMaterial } from '../../helpers/line'
+import { PointerTool } from './PointerTool'
 
 /**
  * Class representing a hold objects change.
@@ -132,12 +133,10 @@ UndoRedoManager.registerChange('HoldObjectsChange', HoldObjectsChange)
  * Class representing a VR hold objects tool.
  * @extends BaseTool
  */
-class VRHoldObjectsTool extends BaseTool {
-  private defaultTaycastDist = 0.0
-  public raycastDist = 20.0
+class VRHoldObjectsTool extends PointerTool {
   public treeWalkSteps = 1 // Setup up form a body Part
 
-  private appData: AppData
+  // private appData: AppData
   private pressedButtonCount = 0
   private vrControllers: XRController[] = []
   private heldObjectCount = 0
@@ -147,11 +146,7 @@ class VRHoldObjectsTool extends BaseTool {
   private heldTreeItemItemRefs: number[][] = []
   private heldTreeItemItemOffsets: Array<Xfo> = []
 
-  private bindControllerId: number
   private change: HoldObjectsChange
-  private prevCursor: string
-
-  private pointerGeomItems: GeomItem[] = []
   private prevUpdateGrabXfos: Xfo[] = []
 
   /**
@@ -159,64 +154,7 @@ class VRHoldObjectsTool extends BaseTool {
    * @param appData - The appData value.
    */
   constructor(appData: AppData) {
-    super()
-    this.appData = appData
-  }
-
-  /**
-   * The activateTool method.
-   */
-  activateTool(): void {
-    super.activateTool()
-
-    this.prevCursor = this.appData.renderer.getGLCanvas().style.cursor
-    this.appData.renderer.getGLCanvas().style.cursor = 'crosshair'
-
-    const bindController = (controller: XRController) => {
-      // The tool might already be deactivated.
-      if (this.pointerGeomItems[controller.id]) return
-
-      this.defaultTaycastDist = controller.raycastDist
-      controller.raycastDist = this.raycastDist
-
-      const pointerGeomItem = new GeomItem('PointerRay', line, lineMaterial)
-      pointerGeomItem.setSelectable(false)
-      const pointerXfo = new Xfo()
-      pointerXfo.sc.set(1, 1, this.raycastDist)
-      pointerGeomItem.localXfoParam.value = pointerXfo
-      controller.tipItem.addChild(pointerGeomItem, false)
-      this.pointerGeomItems[controller.id] = pointerGeomItem
-    }
-
-    this.appData.renderer.getXRViewport().then((xrvp) => {
-      for (const controller of xrvp.controllers) {
-        bindController(controller)
-      }
-      this.bindControllerId = xrvp.on('controllerAdded', (event) => bindController(event.controller))
-    })
-  }
-
-  /**
-   * The deactivateTool method.
-   */
-  deactivateTool(): void {
-    super.deactivateTool()
-
-    this.appData.renderer.getGLCanvas().style.cursor = this.prevCursor
-    const unbindController = (controller: XRController) => {
-      if (!this.pointerGeomItems[controller.id]) return
-      controller.tipItem.removeChildByHandle(this.pointerGeomItems[controller.id])
-
-      controller.raycastDist = this.defaultTaycastDist
-      this.pointerGeomItems[controller.id] = null
-    }
-
-    this.appData.renderer.getXRViewport().then((xrvp) => {
-      for (const controller of xrvp.controllers) {
-        unbindController(controller)
-      }
-      xrvp.removeListenerById('controllerAdded', this.bindControllerId)
-    })
+    super(appData)
   }
 
   // ///////////////////////////////////
@@ -267,16 +205,6 @@ class VRHoldObjectsTool extends BaseTool {
       const grabXfo = this.computeGrabXfo(this.heldTreeItemItemRefs[i])
       this.heldTreeItemItemOffsets[i] = grabXfo.inverse().multiply(heldTreeItem.globalXfoParam.value)
       this.prevUpdateGrabXfos[i] = grabXfo
-    }
-  }
-
-  private setPointerLength(length: number, controller: XRController): void {
-    const pointerGeomItem = this.pointerGeomItems[controller.id]
-    if (pointerGeomItem) {
-      const pointerLocalXfo = pointerGeomItem.localXfoParam.value
-
-      pointerLocalXfo.sc.set(1, 1, length / controller.getTipXfo().sc.z)
-      pointerGeomItem.localXfoParam.value = pointerLocalXfo
     }
   }
 

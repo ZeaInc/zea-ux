@@ -3,7 +3,7 @@ import {
   GeomItem,
   IntersectionData,
   XRController,
-  XRPoseEvent,
+  XRControllerEvent,
   ZeaMouseEvent,
   ZeaPointerEvent,
 } from '@zeainc/zea-engine'
@@ -17,6 +17,7 @@ class DeleteGeomsTool extends PointerTool {
   private change: Change
   private highlightedGeom: GeomItem
   private highlightColor = new Color(1, 0, 0, 0.4)
+  public pointerButton = 0
 
   constructor(appData: AppData) {
     super(appData)
@@ -48,6 +49,9 @@ class DeleteGeomsTool extends PointerTool {
   }
 
   onPointerDown(event: ZeaPointerEvent) {
+    if (event instanceof XRControllerEvent && event.button != this.pointerButton) {
+      return
+    }
     this.change = new Change('Delete Geoms')
     event.setCapture(this)
     event.stopPropagation()
