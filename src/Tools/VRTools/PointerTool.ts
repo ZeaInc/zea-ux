@@ -82,7 +82,15 @@ class PointerTool extends BaseTool {
       this.pointerGeomItems[controller.id] = pointerGeomItem
 
       if (this.appData.session) {
-        this.appData.session.pub('vr-pointer', { controller: controller.id, pointerXfo })
+        this.appData.session.pub('poseChanged', {
+          interfaceType: 'VR',
+          showPointer: {
+            controllerId: controller.id,
+            thickness: this.pointerThickness,
+            xfo: pointerXfo,
+            color: this.pointerColor,
+          },
+        })
       }
     }
 
@@ -135,7 +143,13 @@ class PointerTool extends BaseTool {
       pointerGeomItem.localXfoParam.value = pointerXfo
 
       if (this.appData.session) {
-        this.appData.session.pub('vr-pointer', { controller: controller.id, pointerXfo })
+        this.appData.session.pub('poseChanged', {
+          interfaceType: 'VR',
+          updatePointer: {
+            controllerId: controller.id,
+            xfo: pointerXfo,
+          },
+        })
       }
     }
   }

@@ -281,9 +281,19 @@ class VRUI extends HTMLElement {
     addPointerToolButton(toolManager.tools['PointerTool'], 'data/laser-pointer.webp')
     addPointerToolButton(toolManager.tools['DropUserTool'], 'data/Maps-Street-View-icon.png')
     addToolButton(toolManager.tools['VRHoldObjectsTool'], 'data/grab-icon.png')
-    addToolButton(toolManager.tools['HandHeldTool'], 'data/wrench-icon.png')
+    addToolButton(toolManager.tools['HandHeldTool'], 'data/wrench-icon.png', (activating, event) => {
+      if (activating && event.controller) {
+        const tool = toolManager.tools['HandHeldTool']
+        tool.toolController = event.controller
+      }
+    })
     addToolButton(toolManager.tools['FreehandLineTool'], 'data/pen-tool.png')
-    addPointerToolButton(toolManager.tools['EraserTool'], 'data/eraser.png')
+    addPointerToolButton(toolManager.tools['EraserTool'], 'data/eraser.png', (activating, event) => {
+      if (activating && event.controller) {
+        const tool = toolManager.tools['HandHeldTool']
+        tool.toolController = event.controller
+      }
+    })
     // addToolButton('Create Cuboid', 'data/create-cuboid-icon.png')
     // addToolButton('Create Sphere', 'data/create-sphere-icon.png')
     // addToolButton('Create Cone', 'data/create-cone-icon.png')

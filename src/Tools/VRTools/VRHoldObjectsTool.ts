@@ -287,7 +287,7 @@ class VRHoldObjectsTool extends BaseTool {
    */
   onPointerDown(event: ZeaPointerEvent): void {
     if (event instanceof XRControllerEvent && event.button == 0) {
-      const id = event.controller.getId()
+      const id = event.controller.id
       this.vrControllers[id] = event.controller
 
       // const intersectionData = event.controller.getGeomItemAtTip()
@@ -333,7 +333,7 @@ class VRHoldObjectsTool extends BaseTool {
    */
   onPointerUp(event: ZeaPointerEvent): void {
     if (event instanceof XRControllerEvent) {
-      const id = event.controller.getId()
+      const id = event.controller.id
 
       this.pressedButtonCount--
       if (this.heldTreeItemItemIds[id] !== undefined) {
@@ -374,7 +374,7 @@ class VRHoldObjectsTool extends BaseTool {
     if (event instanceof XRPoseEvent) {
       if (!this.change) {
         event.controllers.forEach((controller: XRController) => {
-          const id = controller.getId()
+          const id = controller.id
           const intersectionData = controller.getGeomItemAtTip()
           if (intersectionData) {
             this.setPointerLength(intersectionData.dist, controller)

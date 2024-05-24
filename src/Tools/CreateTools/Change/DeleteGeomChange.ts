@@ -14,11 +14,15 @@ class DeleteGeomChange extends Change {
   }
 
   undo(): void {
-    this.parentItem.addChild(this.treeItem, false, false)
+    if (this.treeItem && this.parentItem) {
+      this.parentItem.addChild(this.treeItem, false, false)
+    }
   }
 
   redo(): void {
-    this.parentItem.removeChildByHandle(this.treeItem)
+    if (this.treeItem && this.parentItem) {
+      this.parentItem.removeChildByHandle(this.treeItem)
+    }
   }
 
   toJSON(context?: Record<any, any>): Record<any, any> {
@@ -33,7 +37,7 @@ class DeleteGeomChange extends Change {
     const sceneRoot = context.appData.scene.getRoot()
     this.treeItem = sceneRoot.resolvePath(j.path, 1)
 
-    if (this.treeItem) {
+    if (this.treeItem && this.treeItem.parent) {
       this.parentItem = this.treeItem.parent
       this.parentItem.removeChildByHandle(this.treeItem)
     }

@@ -20,6 +20,8 @@ import {
   MathFunctions,
   VRViewport,
   LinesMaterial,
+  TreeItem,
+  ChildAddedEvent,
 } from '@zeainc/zea-engine'
 
 import { AppData } from '../../../types/types'
@@ -46,13 +48,15 @@ class VRUITool extends BaseTool {
   private uiOpenedByMouse: boolean = false
   private triggerHeld: boolean = false
 
-  private visibilityStates: Record<string, boolean[]> = {}
+  private visibilityStates: Map<XRController, Map<TreeItem, boolean>> = new Map()
   private uiController: XRController
   private pointerController: XRController
   private element: Element
 
+  private listenerIds: Map<XRController, Record<string, number>> = new Map()
+
   public openUIKeyboardHotkey = 'u'
-  public openUiAngleTolerance = 0.4
+  public openUiAngleTolerance = 0.7
 
   /**
    * Create a VR UI tool.
@@ -68,7 +72,7 @@ class VRUITool extends BaseTool {
 
     const pointermat = new LinesMaterial('pointermat')
     pointermat.setSelectable(false)
-    pointermat.baseColorParam.value = new Color(1, 0, 0)
+    pointermat.baseColorParam.value = new Color(1, 0, 1)
     pointermat.overlayParam.value = 0.5
 
     this.pointerLocalXfo = new Xfo()
@@ -120,16 +124,23 @@ class VRUITool extends BaseTool {
     this.uiController = uiController
     this.pointerController = pointerController
 
-    // const showFirstChild = (handedness: string, treeItem: TreeItem) => {
-    //   const currentStates: boolean[] = []
-    //   treeItem.getChildren().forEach((child, index) => {
-    //     currentStates.push(child.visibleParam.value)
-    //     child.visibleParam.value = index < 2
-    //   })
-    //   this.visibilityStates[handedness] = currentStates
-    // }
-    // showFirstChild(this.uiController.getHandedness(), this.uiController.getTreeItem())
-    // showFirstChild(this.pointerController.getHandedness(), this.pointerController.getTreeItem())
+    // Ensure the Controllers are both visible.
+    const uiController_controllerTree = this.uiController.getTreeItem().getChild(1)
+    if (uiController_controllerTree) uiController_controllerTree.visibleParam.value = true
+    const pointerController_controllerTree = this.pointerController.getTreeItem().getChild(1)
+    if (pointerController_controllerTree) pointerController_controllerTree.visibleParam.value = true
+
+    const uiController_listenerIds = {}
+    const pointerController_listenerIds = {}
+    this.listenerIds.set(uiController, uiController_listenerIds)
+    this.listenerIds.set(pointerController, pointerController_listenerIds)
+    this.visibilityStates.set(this.uiController, new Map<TreeItem, boolean>())
+    this.visibilityStates.set(this.pointerController, new Map<TreeItem, boolean>())
+
+    // this.storeVisibility(this.uiController, this.uiController.getTreeItem())
+    // this.storeVisibility(this.uiController, this.uiController.getTipItem())
+    // this.storeVisibility(this.pointerController, this.pointerController.getTreeItem())
+    // this.storeVisibility(this.pointerController, this.pointerController.getTipItem())
 
     const uiLocalXfo = this.controllerUI.localXfoParam.value
 
@@ -153,18 +164,20 @@ class VRUITool extends BaseTool {
     }
 
     this.controllerUI.localXfoParam.value = uiLocalXfo
+    this.controllerUI.visibleParam.value = true
 
     this.uiController.getTreeItem().addChild(this.controllerUI, false)
-    if (this.pointerController) this.pointerController.getTipItem().addChild(this.uiPointerItem, false)
-    this.uiPointerItem.visibleParam.value = false
+
+    this.uiPointerItem.visibleParam.value = true
+    this.pointerController.getTipItem().addChild(this.uiPointerItem, false)
 
     if (this.appData.session) {
       const postMessage = () => {
-        this.appData.session.pub('pose-message', {
+        this.appData.session.pub('poseChanged', {
           interfaceType: 'VR',
           showUIPanel: {
-            controllerId: this.uiController.getId(),
-            localXfo: uiLocalXfo,
+            controllerId: this.uiController.id,
+            xfo: uiLocalXfo,
             size: this.controllerUI.size,
           },
         })
@@ -175,44 +188,70 @@ class VRUITool extends BaseTool {
         postMessage()
       }
     }
+
+    pointerController_listenerIds['treeItem_childAdded'] = this.pointerController
+      .getTreeItem()
+      .on('childAdded', (event: ChildAddedEvent) => this.childAdded(this.pointerController, event.childItem))
+
+    pointerController_listenerIds['tipItem_childAdded'] = this.pointerController
+      .getTipItem()
+      .on('childAdded', (event: ChildAddedEvent) => this.childAdded(this.pointerController, event.childItem))
+
     this.uiOpen = true
+  }
+
+  private childAdded(controller: XRController, childItem: TreeItem) {
+    const currentStates: Map<TreeItem, boolean> = this.visibilityStates.get(controller)
+    currentStates.set(childItem, childItem.visibleParam.value)
+    childItem.visibleParam.value = false
+  }
+
+  // private storeVisibility(controller: XRController, treeItem: TreeItem) {
+  //   const currentStates = new Map<TreeItem, boolean>()
+  //   treeItem.getChildren().forEach((childItem, index) => {
+  //     currentStates.set(childItem, childItem.visibleParam.value)
+  //     childItem.visibleParam.value = !childItem.visibleParam.value
+  //   })
+  //   this.visibilityStates.set(controller, currentStates)
+  // }
+
+  private restoreVisibility(controller: XRController, value: boolean) {
+    const currentStates: Map<TreeItem, boolean> = this.visibilityStates.get(controller)
+    currentStates.forEach((_, geomItem) => {
+      geomItem.visibleParam.value = value
+    })
   }
 
   /**
    * The closeUI method.
    */
   closeUI(): void {
+    if (!this.uiOpen) return
     this.controllerUI.deactivate()
 
-    if (this.uiController) {
+    if (this.uiOpenedByMouse) {
+      this.appData.renderer.removeTreeItem(this.controllerUI)
+    } else {
+      this.controllerUI.visibleParam.value = false
       this.uiController.getTreeItem().removeChildByHandle(this.controllerUI)
-      if (this.pointerController) {
-        this.pointerController.getTipItem().removeChildByHandle(this.uiPointerItem)
-      }
 
-      // Any tool geoemtry should be restored to is previous visibility state.
-      // const restoreVibility = (handedness: string, treeItem: TreeItem) => {
-      //   const currentStates: boolean[] = this.visibilityStates[handedness]
-      //   treeItem.getChildren().forEach((child, index) => {
-      //     if (index < currentStates.length) {
-      //       child.visibleParam.value = currentStates[index]
-      //     }
-      //   })
-      // }
-      // restoreVibility(this.uiController.getHandedness(), this.uiController.getTreeItem())
-      // restoreVibility(this.pointerController.getHandedness(), this.pointerController.getTreeItem())
+      this.uiPointerItem.visibleParam.value = false
+      this.pointerController.getTipItem().removeChildByHandle(this.uiPointerItem)
+
+      // Any tool geometry should be restored to is previous visibility state.
+      this.restoreVisibility(this.uiController, true)
+      const pointerController_listenerIds = this.listenerIds.get(this.pointerController)
+      this.pointerController.getTreeItem().off('childAdded', pointerController_listenerIds['treeItem_childAdded'])
+      this.pointerController.getTipItem().off('childAdded', pointerController_listenerIds['tipItem_childAdded'])
 
       if (this.appData.session) {
-        this.appData.session.pub('pose-message', {
+        this.appData.session.pub('poseChanged', {
           interfaceType: 'VR',
-          closehideUIPanel: {
-            controllerId: this.uiController.getId(),
+          hideUIPanel: {
+            controllerId: this.uiController.id,
           },
         })
       }
-    }
-    if (this.uiOpenedByMouse) {
-      this.appData.renderer.removeTreeItem(this.controllerUI)
     }
     this.uiOpen = false
   }
@@ -238,16 +277,12 @@ class VRUITool extends BaseTool {
     const plane = new Ray(planeXfo.tr, planeXfo.ori.getZaxis().negate())
     const res = ray.intersectRayPlane(plane)
     if (res <= 0) {
-      // Let the pointer shine right past the UI.
-      this.setPointerLength(0.5)
       return
     }
     const hitOffset = ray.start.add(ray.dir.scale(res)).subtract(plane.start)
     const x = hitOffset.dot(planeXfo.ori.getXaxis()) / planeSize.x
     const y = hitOffset.dot(planeXfo.ori.getYaxis()) / planeSize.y
     if (Math.abs(x) > 0.5 || Math.abs(y) > 0.5) {
-      // Let the pointer shine right past the UI.
-      this.setPointerLength(0.5)
       return
     }
     this.setPointerLength(res / planeXfo.sc.z)
@@ -402,6 +437,7 @@ class VRUITool extends BaseTool {
               ? controllerXfo.ori.getXaxis().negate()
               : controllerXfo.ori.getXaxis()
           const angle = headToCtrlA.angleTo(controllerXAxis)
+
           if (angle < this.openUiAngleTolerance) {
             const controllers = uiController.xrvp.controllers
             const pointerController = controllers.find((ctrl) => ctrl != uiController)
@@ -478,6 +514,8 @@ class VRUITool extends BaseTool {
           }
           event.stopPropagation()
         } else if (this.element) {
+          // Let the pointer shine right past the UI.
+          this.setPointerLength(0.5)
           this.controllerUI.sendMouseEvent(null, this.element, 'mouseleave')
           this.element = null
         }
@@ -487,7 +525,6 @@ class VRUITool extends BaseTool {
         const ray = this.pointerController.pointerRay
         const hit = this.calcUIIntersection(ray)
         if (hit) {
-          this.uiPointerItem.visibleParam.value = true
           const element = this.getDOMElementFromPoint(hit)
 
           if (element != this.element) {
@@ -504,10 +541,14 @@ class VRUITool extends BaseTool {
           }
 
           event.stopPropagation()
+          this.restoreVisibility(this.pointerController, false)
         } else if (this.element) {
-          this.uiPointerItem.visibleParam.value = false
+          // Let the pointer shine right past the UI.
+          this.setPointerLength(0.5)
           this.controllerUI.sendMouseEvent(this.pointerController, this.element, 'mouseleave')
           this.element = null
+
+          this.restoreVisibility(this.pointerController, true)
         }
       }
     }

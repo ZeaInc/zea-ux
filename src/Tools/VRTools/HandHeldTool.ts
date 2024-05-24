@@ -15,7 +15,6 @@ class HandHeldTool extends BaseTool {
   appData: AppData
   cadAsset: CADAsset
   toolController: XRController
-  private children: TreeItem[] = []
   constructor(assetUrl: string, offsetXfo: Xfo, appData: AppData) {
     super()
     this.appData = appData
@@ -34,44 +33,46 @@ class HandHeldTool extends BaseTool {
     // this.appData.renderer.getGLCanvas().style.cursor = 'crosshair'
 
     const addToolToController = (controller: XRController) => {
-      const treeIem = controller.getTreeItem()
+      const treeItem = controller.getTreeItem()
 
       // hide the controller geometry.
-      treeIem.getChildren().forEach((child) => {
-        child.visibleParam.value = false
-      })
+      const controllerTree = treeItem.getChild(1)
+      if (controllerTree) controllerTree.visibleParam.value = false
       this.cadAsset.visibleParam.value = true
-      treeIem.addChild(this.cadAsset, false)
+      treeItem.addChild(this.cadAsset, false)
       this.toolController = controller
     }
 
     const getControllerAngle = (controller: XRController, headXfo: Xfo) => {
-      // Note: do not open the UI when the controller buttons are pressed.
       const xfoA = controller.getTreeItem().globalXfoParam.value
       const headToCtrlA = xfoA.tr.subtract(headXfo.tr)
       headToCtrlA.normalizeInPlace()
-      // console.log(controller.getHandedness(), headToCtrlA.angleTo(xfoA.ori.getYaxis()), xfoA.sc.toString())
       return headToCtrlA.angleTo(xfoA.ori.getYaxis())
     }
 
-    this.appData.renderer.getXRViewport().then((xrvp) => {
-      if (xrvp instanceof VRViewport) {
-        const headXfo = xrvp.getVRHead().getTreeItem().globalXfoParam.value
+    if (this.toolController) {
+      addToolToController(this.toolController)
+    } else {
+      // Try to determine the best controller to hold the tool.
+      this.appData.renderer.getXRViewport().then((xrvp) => {
+        if (xrvp instanceof VRViewport) {
+          const headXfo = xrvp.getVRHead().getTreeItem().globalXfoParam.value
 
-        let bestController: XRController
-        let bestAngle: number = 0
-        for (const controller of xrvp.controllers) {
-          const angle = getControllerAngle(controller, headXfo)
-          if (angle > bestAngle) {
-            bestAngle = angle
-            bestController = controller
+          let bestController: XRController
+          let bestAngle: number = 0
+          for (const controller of xrvp.controllers) {
+            const angle = getControllerAngle(controller, headXfo)
+            if (angle > bestAngle) {
+              bestAngle = angle
+              bestController = controller
+            }
+          }
+          if (bestController) {
+            addToolToController(bestController)
           }
         }
-        if (bestController) {
-          addToolToController(bestController)
-        }
-      }
-    })
+      })
+    }
   }
   /**
    * Disables tool usage. This method is called by either the Viewport when a tool is removed, or the ToolManage if it is installed.
@@ -79,9 +80,9 @@ class HandHeldTool extends BaseTool {
   deactivateTool() {
     super.deactivateTool()
     if (this.toolController) {
-      const treeIem = this.toolController.getTreeItem()
-      treeIem.removeChildByHandle(this.cadAsset)
-      treeIem.getChildren().forEach((child) => {
+      const treeItem = this.toolController.getTreeItem()
+      treeItem.removeChildByHandle(this.cadAsset)
+      treeItem.getChildren().forEach((child) => {
         child.visibleParam.value = true
       })
 
