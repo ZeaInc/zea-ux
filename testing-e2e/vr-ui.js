@@ -290,7 +290,7 @@ class VRUI extends HTMLElement {
     addToolButton(toolManager.tools['FreehandLineTool'], 'data/pen-tool.png')
     addPointerToolButton(toolManager.tools['EraserTool'], 'data/eraser.png', (activating, event) => {
       if (activating && event.controller) {
-        const tool = toolManager.tools['HandHeldTool']
+        const tool = toolManager.tools['EraserTool']
         tool.toolController = event.controller
       }
     })
