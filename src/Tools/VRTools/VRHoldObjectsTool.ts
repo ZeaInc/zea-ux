@@ -22,6 +22,13 @@ import { AppData } from '../../../types/types'
 import { line, lineMaterial } from '../../helpers/line'
 import { PointerTool } from './PointerTool'
 
+interface HoldObjectsChangeData {
+  newItem?: TreeItem
+  newItemId?: number
+  changeXfoIds?: number[]
+  changeXfos?: Xfo[]
+}
+
 /**
  * Class representing a hold objects change.
  *
@@ -36,7 +43,7 @@ class HoldObjectsChange extends Change {
    *
    * @param data - The data value.
    */
-  constructor(data: any) {
+  constructor(data: HoldObjectsChangeData) {
     super('HoldObjectsChange')
 
     if (data) this.update(data)
@@ -68,7 +75,7 @@ class HoldObjectsChange extends Change {
    * The update method.
    * @param updateData - The updateData param.
    */
-  update(updateData: any): void {
+  update(updateData: HoldObjectsChangeData): void {
     if (updateData.newItem) {
       this.selection[updateData.newItemId] = updateData.newItem
       this.prevXfos[updateData.newItemId] = updateData.newItem.globalXfoParam.value
@@ -135,6 +142,8 @@ UndoRedoManager.registerChange('HoldObjectsChange', HoldObjectsChange)
  */
 class VRHoldObjectsTool extends PointerTool {
   public treeWalkSteps = 1 // Setup up form a body Part
+
+  public smoothFactor = 0.1
 
   // private appData: AppData
   private pressedButtonCount = 0
@@ -337,18 +346,18 @@ class VRHoldObjectsTool extends PointerTool {
         return
       }
 
-      const changeXfos = []
-      const changeXfoIds = []
+      const changeXfos: Xfo[] = []
+      const changeXfoIds: number[] = []
       for (let i = 0; i < this.heldTreeItems.length; i++) {
         const heldTreeItem = this.heldTreeItems[i]
         if (!heldTreeItem) continue
         const currUpdateGrabXfo = this.computeGrabXfo(this.heldTreeItemItemRefs[i])
 
-        const grabXfo = this.prevUpdateGrabXfos[i].lerp(currUpdateGrabXfo, 0.5)
+        const grabXfo = this.prevUpdateGrabXfos[i].lerp(currUpdateGrabXfo, this.smoothFactor)
         changeXfos.push(grabXfo.multiply(this.heldTreeItemItemOffsets[i]))
         changeXfoIds.push(i)
 
-        this.prevUpdateGrabXfos[i] = currUpdateGrabXfo
+        this.prevUpdateGrabXfos[i] = grabXfo
       }
 
       this.change.update({ changeXfos, changeXfoIds })
