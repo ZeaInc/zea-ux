@@ -1,9 +1,9 @@
-import dts from 'rollup-plugin-dts'
+import typescript from '@rollup/plugin-typescript'
+import commonjs from '@rollup/plugin-commonjs'
 import json from '@rollup/plugin-json'
-import { terser } from 'rollup-plugin-terser'
-import resolve from 'rollup-plugin-node-resolve'
-import commonjs from 'rollup-plugin-commonjs'
-import typescript from 'rollup-plugin-typescript'
+import terser from '@rollup/plugin-terser'
+import dts from 'rollup-plugin-dts'
+import resolve from '@rollup/plugin-node-resolve'
 
 import pkg from './package.json'
 
