@@ -54,7 +54,8 @@ class MeasureAngle extends Measure {
 
     const rayA = new Ray(xfoA.tr, tangentA)
     const rayB = new Ray(xfoB.tr, tangentB)
-    const params = rayA.intersectRayVector(rayB)
+    // TODO: check this return value is actually an array.
+    const params = rayA.intersectRayVector(rayB) as number[]
 
     const angle = normA.angleTo(normB)
 

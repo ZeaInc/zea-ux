@@ -22,7 +22,6 @@
     //"rootDir": "./src",
     "strictNullChecks": false,
     "strictPropertyInitialization": false,
-    "suppressImplicitAnyIndexErrors": true,
     "outDir": "dist",
     // stricter type-checking for stronger correctness. Recommended by TS
     "strict": true,

@@ -29,7 +29,8 @@ class BaseLinearMovementHandle extends Handle {
   handlePointerDown(event: ZeaPointerEvent): void {
     this.gizmoRay = this.getManipulationPlane()
     const ray = getPointerRay(event)
-    this.grabDist = ray.intersectRayVector(this.gizmoRay)[1]
+    const result = ray.intersectRayVector(this.gizmoRay)
+    this.grabDist = Array.isArray(result) ? result[1] : (result as number)
     const grabPos = this.gizmoRay.pointAtDist(this.grabDist)
     this.grabPos = grabPos
     this.onDragStart(event)
@@ -42,7 +43,9 @@ class BaseLinearMovementHandle extends Handle {
    */
   handlePointerMove(event: ZeaPointerEvent) {
     const ray = getPointerRay(event)
-    const dist = ray.intersectRayVector(this.gizmoRay)[1]
+
+    const result = ray.intersectRayVector(this.gizmoRay)
+    const dist = Array.isArray(result) ? result[1] : (result as number)
     this.holdPos = this.gizmoRay.pointAtDist(dist)
     this.holdDist = dist
     this.value = dist
@@ -58,7 +61,8 @@ class BaseLinearMovementHandle extends Handle {
   handlePointerUp(event: ZeaPointerEvent): void {
     const ray = getPointerRay(event)
     if (ray) {
-      const dist = ray.intersectRayVector(this.gizmoRay)[1]
+      const result = ray.intersectRayVector(this.gizmoRay)
+      const dist = Array.isArray(result) ? result[1] : (result as number)
       const releasePos = this.gizmoRay.pointAtDist(dist)
       this.releasePos = releasePos
     }

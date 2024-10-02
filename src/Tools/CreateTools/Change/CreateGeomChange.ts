@@ -1,6 +1,6 @@
 import { Xfo, Color, GeomItem, TreeItem } from '@zeainc/zea-engine'
 import Change from '../../../UndoRedo/Change'
-import { UndoRedoManager } from '../../..'
+import { UndoRedoManager } from '../../../UndoRedo/UndoRedoManager'
 
 /**
  * Class representing a create geom change.

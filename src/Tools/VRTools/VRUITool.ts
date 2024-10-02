@@ -116,8 +116,8 @@ class VRUITool extends PointerTool {
     const pointerController_controllerTree = this.pointerController.getTreeItem().getChild(1)
     if (pointerController_controllerTree) pointerController_controllerTree.visibleParam.value = true
 
-    const uiController_listenerIds = {}
-    const pointerController_listenerIds = {}
+    const uiController_listenerIds: Record<string, number> = {}
+    const pointerController_listenerIds: Record<string, number> = {}
     this.listenerIds.set(uiController, uiController_listenerIds)
     this.listenerIds.set(pointerController, pointerController_listenerIds)
     this.visibilityStates.set(this.uiController, new Map<TreeItem, boolean>())

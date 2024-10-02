@@ -145,7 +145,7 @@ export default class VRControllerUI extends TreeItem {
           geomItem.setSelectable(false)
           uiOffset.addChild(geomItem, false)
 
-          const imageDatas = {}
+          const imageDatas: Record<string, HTMLImageElement> = {}
           if (rect.width > 0 && rect.height > 0) {
             renderElementUI(elem, rect, (image: HTMLImageElement) => {
               // console.log('Rendered', elem.id, elem.className, rect.width, rect.height, elem.offsetLeft, elem.offsetTop)
@@ -237,6 +237,7 @@ export default class VRControllerUI extends TreeItem {
     )
 
     if (controller) {
+      //@ts-ignore
       event['controller'] = controller
     }
 
