@@ -85,7 +85,7 @@ class SelectionGroupXfoOperator extends Operator {
     this.currGroupXfo = delta.multiply(this.currGroupXfo)
     for (let i = 1; i < this.getNumInputs(); i++) {
       const input = this.getInputByIndex(i)
-      const currXfo = input.value
+      const currXfo = input.getValue()
       const result = delta.multiply(currXfo)
       input.setValue(result)
     }
@@ -108,14 +108,14 @@ class SelectionGroupXfoOperator extends Operator {
       this.currGroupXfo = this.xfoOutput.getParam().value.clone()
       return
     } else if (initialXfoMode == KinematicGroup.INITIAL_XFO_MODES.first) {
-      const itemXfo = this.getInputByIndex(1).value
+      const itemXfo = this.getInputByIndex(1).getValue()
       this.currGroupXfo.tr = itemXfo.tr.clone()
       this.currGroupXfo.ori = itemXfo.ori.clone()
     } else if (initialXfoMode == KinematicGroup.INITIAL_XFO_MODES.average) {
       this.currGroupXfo.ori.set(0, 0, 0, 0)
       let numTreeItems = 0
       for (let i = 1; i < this.getNumInputs(); i++) {
-        const itemXfo = this.getInputByIndex(i).value
+        const itemXfo = this.getInputByIndex(i).getValue()
         this.currGroupXfo.tr.addInPlace(itemXfo.tr)
 
         // Note: Averaging rotations causes weird and confusing GizmoRotation.
@@ -127,7 +127,7 @@ class SelectionGroupXfoOperator extends Operator {
     } else if (initialXfoMode == KinematicGroup.INITIAL_XFO_MODES.globalOri) {
       let numTreeItems = 0
       for (let i = 1; i < this.getNumInputs(); i++) {
-        const itemXfo = this.getInputByIndex(i).value
+        const itemXfo = this.getInputByIndex(i).getValue()
         this.currGroupXfo.tr.addInPlace(itemXfo.tr)
         numTreeItems++
       }
