@@ -2243,7 +2243,7 @@
     socket.io-client "^2.3.0"
     socketio-wildcard "^2.0.0"
 
-"@zeainc/zea-engine@^4.14.0":
+"@zeainc/zea-engine@^4.14.0-3ca55b0":
   version "4.14.0"
   resolved "https://registry.yarnpkg.com/@zeainc/zea-engine/-/zea-engine-4.14.0.tgz#96ea6c1930f3840bece1d275b988ea9c11da724e"
   integrity sha512-qFlaKwnGq80Uxpf4HHumGCEjtUQH+JY7/xW8N7iijQnrBLaF/JWEToeH/4gjOETAGNporI/gTvQDqT3WlcY9qA==
