@@ -1,4 +1,4 @@
-import { Color, ColorParameter, BaseItem, TreeItem, SelectionSet, MultiChoiceParameter } from '@zeainc/zea-engine'
+import { Color, BaseItem, TreeItem, SelectionSet, MultiChoiceParameter, CloneContext } from '@zeainc/zea-engine'
 import SelectionGroupXfoOperator from './SelectionGroupXfoOperator.js'
 
 const GROUP_XFO_MODES = {
@@ -68,9 +68,9 @@ class SelectionGroup extends SelectionSet {
    *
    * @return - Cloned selection group.
    */
-  clone(): SelectionGroup {
+  clone(context?: CloneContext): BaseItem {
     const cloned = new SelectionGroup()
-    cloned.copyFrom(this)
+    cloned.copyFrom(this, context)
     return cloned
   }
 
@@ -81,12 +81,10 @@ class SelectionGroup extends SelectionSet {
    * @private
    */
   bindItem(item: TreeItem, index: number): void {
-    if (item instanceof TreeItem) {
-      const highlightColor = this.highlightColorParam.value
-      highlightColor.a = this.highlightFillParam.value
-      item.addHighlight('selected' + this.getId(), highlightColor, true)
-      this.selectionGroupXfoOp.addItem(item)
-    }
+    const highlightColor = this.highlightColorParam.value
+    highlightColor.a = this.highlightFillParam.value
+    item.addHighlight('selected' + this.getId(), highlightColor, true)
+    this.selectionGroupXfoOp.addItem(item)
   }
 
   /**
@@ -96,10 +94,8 @@ class SelectionGroup extends SelectionSet {
    * @private
    */
   unbindItem(item: TreeItem, index: number): void {
-    if (item instanceof TreeItem) {
-      item.removeHighlight('selected' + this.getId(), true)
-      this.selectionGroupXfoOp.removeItem(item)
-    }
+    item.removeHighlight('selected' + this.getId(), true)
+    this.selectionGroupXfoOp.removeItem(item)
   }
 }
 

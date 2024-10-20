@@ -22,10 +22,7 @@ import transformVertices from './transformVertices'
  * @extends Handle
  */
 class XfoPlanarMovementHandle extends PlanarMovementHandle {
-  localXfoParam: XfoParameter
   sizeParam: NumberParameter
-  colorParam: ColorParameter
-  highlightColorParam: ColorParameter
   handle: GeomItem
   handleMat: Material
   /**
