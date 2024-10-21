@@ -67,7 +67,7 @@
     "@rollup/plugin-terser": "0.4.4",
     "@rollup/plugin-typescript": "^12.1.1",
     "@zeainc/zea-collab": "^6.3.4",
-    "@zeainc/zea-engine": "^4.14.0-3ca55b0",
+    "@zeainc/zea-engine": "4.14.0-88036c5",
     "canvas": "^2.6.1",
     "copyfiles": "^2.4.1",
     "cypress": "^5.6.0",
