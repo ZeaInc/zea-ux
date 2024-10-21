@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.7.0](https://github.com/ZeaInc/zea-ux/compare/v4.6.0...v4.7.0) (2024-10-21)
+
+
+### Features
+
+* Provide SmoothFactor setting for motion when holding objects in VR ([9b4a13c](https://github.com/ZeaInc/zea-ux/commit/9b4a13c76da0941ad453b12260b01ce9a61f82aa))
+* the tolerance for opening the UI is now customizable ([5eedbf3](https://github.com/ZeaInc/zea-ux/commit/5eedbf3486abf06b83a6c8f7d7fcc34804ab4e5f))
+
+
+### Bug Fixes
+
+* avoid opening VR UI if pointer controller is not detected. ([25dfdfb](https://github.com/ZeaInc/zea-ux/commit/25dfdfbb2d78db05f31483cd4e89965a15fd635d))
+* Fixed regression in SelectionManager caused by [#70](https://github.com/ZeaInc/zea-ux/issues/70)a8e48 ([7d5c9d7](https://github.com/ZeaInc/zea-ux/commit/7d5c9d7d8f25a121fb8d95e093f1988c08e22300)), closes [#70a8e48](https://github.com/ZeaInc/zea-ux/issues/70a8e48)
+* Fixed synchronization of node deletion through collab ([fb33c3d](https://github.com/ZeaInc/zea-ux/commit/fb33c3d4e6e44e4b8df7251f6c1ab32672894b10))
+* implemented controller smoothing for the VRHoldObjectsTool ([caa887e](https://github.com/ZeaInc/zea-ux/commit/caa887ebb9b680d9ff9113ecec5407509a875dd7))
+* upgraded typescript and fixed a bunch of compiler warnings. ([cec6505](https://github.com/ZeaInc/zea-ux/commit/cec650534c2e19d64e33349bcc70055e2797e0b2))
+* VRUITool now stops propagation of both pointerDown and pointerClick events ([898d512](https://github.com/ZeaInc/zea-ux/commit/898d512859e2e44e4076e5b3a6a7e63f7e719476))
+
 ## [4.5.0](https://github.com/ZeaInc/zea-ux/compare/v4.4.1...v4.5.0) (2023-08-28)
 
 
