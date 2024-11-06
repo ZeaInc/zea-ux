@@ -1,12 +1,4 @@
-import {
-  Color,
-  Registry,
-  shaderLibrary,
-  GLShader,
-  Material,
-  MaterialColorParam,
-  NumberParameter,
-} from '@zeainc/zea-engine'
+import { Registry, GLShader, Material } from '@zeainc/zea-engine'
 
 import { HandleMaterial } from './HandleMaterial'
 
