@@ -29,6 +29,7 @@ class CreateConeChange extends CreateGeomChange {
   protected createGeomItem() {
     this.cone = new Cone(0.0, 0.0)
     const material = new SimpleSurfaceMaterial('Cone')
+    material.baseColorParam.value = this.color
     this.geomItem = new CustomGeom('Cone', this.cone, material, this.xfo)
     this.geomItem.setSelectable(false) // At the conclusion of creation, we set selectable to true.
     if (this.parentItem) {

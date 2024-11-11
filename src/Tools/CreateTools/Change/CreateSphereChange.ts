@@ -1,4 +1,4 @@
-import { Color, GeomItem, Material, Sphere, TreeItem, Xfo } from '@zeainc/zea-engine'
+import { Color, GeomItem, Material, SimpleSurfaceMaterial, Sphere, TreeItem, Xfo } from '@zeainc/zea-engine'
 import UndoRedoManager from '../../../UndoRedo/UndoRedoManager'
 import CreateGeomChange from './CreateGeomChange'
 import { CustomGeom } from '../CustomGeom'
@@ -28,7 +28,8 @@ class CreateSphereChange extends CreateGeomChange {
 
   protected createGeomItem() {
     this.sphere = new Sphere(0, 24, 12)
-    const material = new Material('Sphere', 'SimpleSurfaceShader')
+    const material = new SimpleSurfaceMaterial('Sphere')
+    material.baseColorParam.value = this.color
     this.geomItem = new CustomGeom('Sphere', this.sphere, material, this.xfo)
     if (this.parentItem) {
       this.parentItem.addChild(this.geomItem)

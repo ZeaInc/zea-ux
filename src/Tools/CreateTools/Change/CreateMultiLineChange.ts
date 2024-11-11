@@ -34,6 +34,7 @@ class CreateMultiLineChange extends CreateGeomChange {
   protected createGeomItem() {
     this.line = new Lines()
     const material = new LinesMaterial('Line')
+    material.baseColorParam.value = this.color
     this.geomItem = new CustomGeom('Line', this.line, material, this.xfo)
     if (this.parentItem) {
       this.parentItem.addChild(this.geomItem)
