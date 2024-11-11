@@ -16,7 +16,7 @@ import transformVertices from './transformVertices'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 import SelectionGroup from '../SelectionGroup'
 import SelectionXfoChange from '../UndoRedo/Changes/SelectionXfoChange'
-import { Change } from '..'
+import { Change, HandleMaterial } from '..'
 
 /**
  * Class representing a linear movement scene widget.
@@ -24,7 +24,7 @@ import { Change } from '..'
  * @extends BaseLinearMovementHandle
  */
 class LinearMovementHandle extends BaseLinearMovementHandle {
-  private handleMat: Material
+  private handleMat: HandleMaterial
   private baseXfo: Xfo
   private change: Change
 
@@ -42,10 +42,10 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
     super(name)
     this.colorParam.value = color
 
-    this.handleMat = new Material('handle', 'HandleShader')
-    this.handleMat.getParameter('BaseColor').value = color
-    this.handleMat.getParameter('MaintainScreenSize').value = 1
-    this.handleMat.getParameter('Overlay').value = 0.9
+    this.handleMat = new HandleMaterial('handle')
+    this.handleMat.baseColorParam.value = color
+    this.handleMat.maintainScreenSizeParam.value = 1
+    this.handleMat.overlayParam.value = 0.9
 
     const handleGeom = new Cylinder(thickness, length, 64)
     handleGeom.baseZAtZeroParam.value = true
@@ -59,7 +59,7 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
     transformVertices(tipGeom, tipXfo)
 
     this.colorParam.on('valueChanged', () => {
-      this.handleMat.getParameter('BaseColor').value = this.colorParam.value
+      this.handleMat.baseColorParam.value = this.colorParam.value
     })
 
     this.addChild(handle)
@@ -71,7 +71,7 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
    */
   highlight(): void {
     super.highlight()
-    this.handleMat.getParameter('BaseColor').value = this.highlightColorParam.value
+    this.handleMat.baseColorParam.value = this.highlightColorParam.value
   }
 
   /**
@@ -79,7 +79,7 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
    */
   unhighlight(): void {
     super.unhighlight()
-    this.handleMat.getParameter('BaseColor').value = this.colorParam.value
+    this.handleMat.baseColorParam.value = this.colorParam.value
   }
 
   /**

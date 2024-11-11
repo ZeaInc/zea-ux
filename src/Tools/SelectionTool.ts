@@ -12,6 +12,7 @@ import {
   ZeaTouchEvent,
   XRControllerEvent,
   GLBaseViewport,
+  ScreenSpaceMaterial,
 } from '@zeainc/zea-engine'
 
 import Handle from '../Handles/Handle'
@@ -32,7 +33,7 @@ class SelectionTool extends BaseTool {
   private rectItem: GeomItem
   private pointerDownPos: Vec2
   public selectionRect: Rect
-  public selectionRectMat: Material
+  public selectionRectMat: ScreenSpaceMaterial
   public selectionFilterFn: (treeItem: TreeItem) => TreeItem | null = null
   /**
    * Creates an instance of SelectionTool.
@@ -50,8 +51,8 @@ class SelectionTool extends BaseTool {
     this.selectionManager = appData.selectionManager
 
     this.selectionRect = new Rect(1, 1)
-    this.selectionRectMat = new Material('marker', 'ScreenSpaceShader')
-    this.selectionRectMat.getParameter('BaseColor').value = new Color('#03E3AC')
+    this.selectionRectMat = new ScreenSpaceMaterial('marker')
+    this.selectionRectMat.baseColorParam.value = new Color('#03E3AC')
     this.selectionRectXfo = new Xfo()
     this.selectionRectXfo.sc.set(0, 0, 0)
 

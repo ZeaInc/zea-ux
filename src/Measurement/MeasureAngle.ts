@@ -83,7 +83,7 @@ class MeasureAngle extends Measure {
 
     this.colorParam.on('valueChanged', () => {
       const color = this.colorParam.value
-      this.markerMaterial.getParameter('BaseColor').value = color
+      this.markerMaterial.baseColorParam.value = color
       this.lineMaterial.baseColorParam.value = color
       this.label.backgroundColorParam.value = color
     })

@@ -17,6 +17,7 @@ import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 import SelectionXfoChange from '../UndoRedo/Changes/SelectionXfoChange'
 import SelectionGroup from '../SelectionGroup'
 import { Change } from '../UndoRedo/Change'
+import HandleMaterial from './Shaders/HandleMaterial'
 
 /**
  * Class representing an axial rotation scene widget.
@@ -35,7 +36,7 @@ class AxialRotationHandle extends Handle {
   private handleToTargetXfo: Xfo
   private vec0: Vec3
   private change: Change
-  private handleMat: Material
+  private handleMat: HandleMaterial
   private handle: GeomItem
 
   selectionGroup: SelectionGroup
@@ -58,10 +59,10 @@ class AxialRotationHandle extends Handle {
     this.colorParam.value = color
     this.addParameter(this.radiusParam)
 
-    this.handleMat = new Material('handle', 'HandleShader')
-    this.handleMat.getParameter('BaseColor').value = color
-    this.handleMat.getParameter('MaintainScreenSize').value = 1
-    this.handleMat.getParameter('Overlay').value = 0.9
+    this.handleMat = new HandleMaterial('handle')
+    this.handleMat.baseColorParam.value = color
+    this.handleMat.maintainScreenSizeParam.value = 1
+    this.handleMat.overlayParam.value = 0.9
 
     // const handleGeom = new Cylinder(radius, thickness * 2, 64, 2, false);
     const handleGeom = new Torus(thickness, radius, 64, radians)
@@ -74,7 +75,7 @@ class AxialRotationHandle extends Handle {
     })
 
     this.colorParam.on('valueChanged', () => {
-      this.handleMat.getParameter('BaseColor').value = this.colorParam.value
+      this.handleMat.baseColorParam.value = this.colorParam.value
     })
 
     this.addChild(this.handle)
@@ -85,7 +86,7 @@ class AxialRotationHandle extends Handle {
    */
   highlight(): void {
     super.highlight()
-    this.handleMat.getParameter('BaseColor').value = this.highlightColorParam.value
+    this.handleMat.baseColorParam.value = this.highlightColorParam.value
   }
 
   /**
@@ -93,7 +94,7 @@ class AxialRotationHandle extends Handle {
    */
   unhighlight(): void {
     super.unhighlight()
-    this.handleMat.getParameter('BaseColor').value = this.colorParam.value
+    this.handleMat.baseColorParam.value = this.colorParam.value
   }
 
   /**

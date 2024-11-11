@@ -19,6 +19,7 @@ import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
 import './Shaders/HandleShader'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 import { Change } from '../UndoRedo/Change'
+import HandleMaterial from './Shaders/HandleMaterial'
 
 /**
  * Class representing a slider scene widget with an arc shape. There are two parts in this widget, the slider and the handle.<br>
@@ -42,7 +43,7 @@ class ArcSlider extends Handle {
   arcAngleParam: NumberParameter
   handleRadiusParam: NumberParameter
   range: Array<number>
-  private handleMat: Material
+  private handleMat: HandleMaterial
   private handle: GeomItem
   private arc: GeomItem
   private baseXfo: Xfo
@@ -73,8 +74,8 @@ class ArcSlider extends Handle {
     // );
     this.colorParam.value = color
 
-    this.handleMat = new Material('handleMat', 'HandleShader')
-    this.handleMat.getParameter('BaseColor').value = color
+    this.handleMat = new HandleMaterial('handleMat')
+    this.handleMat.baseColorParam.value = color
 
     const arcGeom = new Circle(arcRadius, 64, arcAngle)
     const handleGeom = new Sphere(handleRadius, 64)
@@ -105,7 +106,7 @@ class ArcSlider extends Handle {
     })
 
     this.colorParam.on('valueChanged', () => {
-      this.handleMat.getParameter('BaseColor').value = this.colorParam.value
+      this.handleMat.baseColorParam.value = this.colorParam.value
     })
 
     this.addChild(this.handle)
@@ -153,7 +154,7 @@ class ArcSlider extends Handle {
    */
   highlight(): void {
     super.highlight()
-    this.handleMat.getParameter('BaseColor').value = this.highlightColorParam.value
+    this.handleMat.baseColorParam.value = this.highlightColorParam.value
   }
 
   /**
@@ -161,7 +162,7 @@ class ArcSlider extends Handle {
    */
   unhighlight(): void {
     super.unhighlight()
-    this.handleMat.getParameter('BaseColor').value = this.colorParam.value
+    this.handleMat.baseColorParam.value = this.colorParam.value
   }
 
   /**

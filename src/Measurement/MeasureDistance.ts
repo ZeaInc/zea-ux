@@ -7,7 +7,6 @@ import {
   GeomItem,
   Xfo,
   Vec3,
-  StringParameter,
   Registry,
   Vec3Attribute,
 } from '@zeainc/zea-engine'
@@ -83,8 +82,8 @@ class MeasureDistance extends Measure {
       this.addChild(this.billboard)
 
       this.lineMaterial = new LinesMaterial('Line')
-      this.lineMaterial.getParameter('BaseColor').value = new Color(0, 0, 0)
-      this.lineMaterial.getParameter('Overlay').value = 0.5
+      this.lineMaterial.baseColorParam.value = new Color(0, 0, 0)
+      this.lineMaterial.overlayParam.value = 0.5
       this.lineGeomItem = new GeomItem('Line', line, this.lineMaterial)
       this.lineGeomItem.setSelectable(false)
       this.addChild(this.lineGeomItem)

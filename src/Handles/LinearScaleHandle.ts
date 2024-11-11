@@ -14,7 +14,7 @@ import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
 import './Shaders/HandleShader'
 import transformVertices from './transformVertices'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
-import { Change } from '..'
+import { Change, HandleMaterial } from '..'
 import SelectionGroup from '../SelectionGroup'
 import SelectionXfoChange from '../UndoRedo/Changes/SelectionXfoChange'
 
@@ -24,7 +24,7 @@ import SelectionXfoChange from '../UndoRedo/Changes/SelectionXfoChange'
  * @extends BaseLinearMovementHandle
  */
 class LinearScaleHandle extends BaseLinearMovementHandle {
-  private handleMat: Material
+  private handleMat: HandleMaterial
   private oriXfo: Xfo
   private tmplocalXfo: Xfo
   private baseXfo: Xfo
@@ -45,13 +45,13 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
     super(name)
 
     this.colorParam.value = color
-    this.handleMat = new Material('handle', 'HandleShader')
-    this.handleMat.getParameter('BaseColor').value = color
-    this.handleMat.getParameter('MaintainScreenSize').value = 1
-    this.handleMat.getParameter('Overlay').value = 0.9
+    this.handleMat = new HandleMaterial('handle')
+    this.handleMat.baseColorParam.value = color
+    this.handleMat.maintainScreenSizeParam.value = 1
+    this.handleMat.overlayParam.value = 0.9
 
     const handleGeom = new Cylinder(thickness, length - thickness * 10, 64)
-    handleGeom.getParameter('BaseZAtZero').value = true
+    handleGeom.baseZAtZeroParam.value = true
     const tipGeom = new Cuboid(thickness * 10, thickness * 10, thickness * 10)
     const handle = new GeomItem('handle', handleGeom, this.handleMat)
 
@@ -66,7 +66,7 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
     transformVertices(tipGeom, tipXfo)
 
     this.colorParam.on('valueChanged', () => {
-      this.handleMat.getParameter('BaseColor').value = this.colorParam.value
+      this.handleMat.baseColorParam.value = this.colorParam.value
     })
     this.addChild(handle)
     this.addChild(tip)
@@ -77,7 +77,7 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
    */
   highlight(): void {
     super.highlight()
-    this.handleMat.getParameter('BaseColor').value = this.highlightColorParam.value
+    this.handleMat.baseColorParam.value = this.highlightColorParam.value
   }
 
   /**
@@ -85,7 +85,7 @@ class LinearScaleHandle extends BaseLinearMovementHandle {
    */
   unhighlight(): void {
     super.unhighlight()
-    this.handleMat.getParameter('BaseColor').value = this.colorParam.value
+    this.handleMat.baseColorParam.value = this.colorParam.value
   }
 
   /**

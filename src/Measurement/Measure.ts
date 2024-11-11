@@ -43,7 +43,7 @@ const sphere = new Sphere(0.003, 24, 12, false)
 class Measure extends TreeItem {
   colorParam: ColorParameter
   lineMaterial: LinesMaterial
-  markerMaterial: Material
+  markerMaterial: HandleMaterial
   markerA: GeomItem
   markerB: GeomItem
   label: Label
@@ -55,9 +55,9 @@ class Measure extends TreeItem {
     this.colorParam = <ColorParameter>this.addParameter(new ColorParameter('Color', color))
 
     this.markerMaterial = new HandleMaterial('Marker')
-    this.markerMaterial.getParameter('BaseColor').value = new Color(0, 0, 0)
-    this.markerMaterial.getParameter('MaintainScreenSize').value = 1
-    this.markerMaterial.getParameter('Overlay').value = 0.5
+    this.markerMaterial.baseColorParam.value = new Color(0, 0, 0)
+    this.markerMaterial.maintainScreenSizeParam.value = 1
+    this.markerMaterial.overlayParam.value = 0.5
 
     this.lineMaterial = new LinesMaterial('Line')
     this.lineMaterial.baseColorParam.value = new Color(0, 0, 0)
@@ -70,9 +70,9 @@ class Measure extends TreeItem {
 
     this.colorParam.on('valueChanged', () => {
       const color = this.colorParam.value
-      // this.markerMaterial.getParameter('BaseColor').value = color
-      // this.lineMaterial.getParameter('BaseColor').value = color
-      this.label.getParameter('BackgroundColor').value = color
+      // this.markerMaterial.baseColorParam.value = color
+      // this.lineMaterial.baseColorParam.value = color
+      this.label.backgroundColorParam.value = color
     })
   }
 }

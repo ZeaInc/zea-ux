@@ -13,6 +13,7 @@ import {
   ZeaMouseEvent,
   ZeaTouchEvent,
   XRControllerEvent,
+  FlatSurfaceMaterial,
 } from '@zeainc/zea-engine'
 import BaseLinearMovementHandle from './BaseLinearMovementHandle'
 import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
@@ -35,7 +36,7 @@ class SliderHandle extends BaseLinearMovementHandle {
   lengthParam: NumberParameter
   barRadiusParam: NumberParameter
   handleRadiusParam: NumberParameter
-  handleMat: Material
+  handleMat: FlatSurfaceMaterial
   handle: GeomItem
   baseBar: GeomItem
   topBar: GeomItem
@@ -62,11 +63,11 @@ class SliderHandle extends BaseLinearMovementHandle {
     this.addParameter(this.barRadiusParam)
     this.colorParam.value = color
 
-    this.handleMat = new Material('handle', 'FlatSurfaceShader')
-    this.handleMat.getParameter('BaseColor').value = this.colorParam.value
+    this.handleMat = new FlatSurfaceMaterial('handle')
+    this.handleMat.baseColorParam.value = this.colorParam.value
 
-    const topBarMat = new Material('topBar', 'FlatSurfaceShader')
-    topBarMat.getParameter('BaseColor').value = new Color(0.5, 0.5, 0.5)
+    const topBarMat = new FlatSurfaceMaterial('topBar')
+    topBarMat.baseColorParam.value = new Color(0.5, 0.5, 0.5)
 
     const barGeom = new Cylinder(radius * 0.25, 1, 64, 2, true, true)
     const handleGeom = new Sphere(radius, 64)
@@ -85,7 +86,7 @@ class SliderHandle extends BaseLinearMovementHandle {
       this.__updateSlider(<number>this.value)
     })
     this.colorParam.on('valueChanged', () => {
-      this.handleMat.getParameter('BaseColor').value = this.colorParam.value
+      this.handleMat.baseColorParam.value = this.colorParam.value
     })
 
     this.addChild(this.handle)
@@ -100,7 +101,7 @@ class SliderHandle extends BaseLinearMovementHandle {
    */
   highlight(): void {
     super.highlight()
-    this.handleMat.getParameter('BaseColor').value = this.highlightColorParam.value
+    this.handleMat.baseColorParam.value = this.highlightColorParam.value
   }
 
   /**
@@ -108,7 +109,7 @@ class SliderHandle extends BaseLinearMovementHandle {
    */
   unhighlight(): void {
     super.unhighlight()
-    this.handleMat.getParameter('BaseColor').value = this.colorParam.value
+    this.handleMat.baseColorParam.value = this.colorParam.value
   }
 
   /**

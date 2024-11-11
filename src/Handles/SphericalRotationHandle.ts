@@ -16,6 +16,7 @@ import Handle from './Handle'
 import './Shaders/HandleShader'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
 import { ParameterValueChange } from '../UndoRedo/Changes/ParameterValueChange'
+import HandleMaterial from './Shaders/HandleMaterial'
 
 /**
  * Class representing an axial rotation scene widget.
@@ -30,7 +31,7 @@ class SphericalRotationHandle extends Handle {
   deltaXfo: Xfo
   offsetXfo: Xfo
   change: ParameterValueChange
-  maskMat: Material
+  maskMat: HandleMaterial
 
   /**
    * Create an axial rotation scene widget.
@@ -45,16 +46,16 @@ class SphericalRotationHandle extends Handle {
     this.radius = radius
 
     this.colorParam.value = color
-    this.maskMat = new Material('mask', 'HandleShader')
-    this.maskMat.getParameter('BaseColor').value = color
-    this.maskMat.getParameter('MaintainScreenSize').value = 1
-    this.maskMat.getParameter('Overlay').value = 0.9
+    this.maskMat = new HandleMaterial('mask')
+    this.maskMat.baseColorParam.value = color
+    this.maskMat.maintainScreenSizeParam.value = 1
+    this.maskMat.overlayParam.value = 0.9
 
     const maskGeom = new Sphere(radius, 64)
     const maskGeomItem = new GeomItem('mask', maskGeom, this.maskMat)
 
     this.colorParam.on('valueChanged', () => {
-      this.maskMat.getParameter('BaseColor').value = this.colorParam.value
+      this.maskMat.baseColorParam.value = this.colorParam.value
     })
 
     this.addChild(maskGeomItem)
