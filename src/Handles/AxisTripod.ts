@@ -13,6 +13,7 @@ import {
   GLRenderer,
   Label,
   BillboardItem,
+  BillboardAlignment,
 } from '@zeainc/zea-engine'
 import HandleMaterial from './Shaders/HandleMaterial'
 import transformVertices from './transformVertices'
@@ -23,10 +24,12 @@ class AxisTripod extends TreeItem {
    *
    * @param size - The size value.
    */
-  constructor(size = 0.1, 
-    xaxisColor: Color = new Color(1, 0, 0), 
-    yaxisColor: Color = new Color(0, 1, 0), 
-    zaxisColor: Color = new Color(0, 0, 1)) {
+  constructor(
+    size = 0.1,
+    xaxisColor: Color = new Color(1, 0, 0),
+    yaxisColor: Color = new Color(0, 1, 0),
+    zaxisColor: Color = new Color(0, 0, 1)
+  ) {
     super('AxisTripod')
 
     const redMaterial = new HandleMaterial('redMaterial')
@@ -68,7 +71,13 @@ class AxisTripod extends TreeItem {
       // Setup the label
       const billboard = new BillboardItem('billboard' + name, label)
       billboard.pixelsPerMeterParam.value = 200 / size
-      billboard.alignedToCameraParam.value = true
+      // @ts-ignore
+      if (billboard.alignedToCameraParam) {
+        // @ts-ignore
+        billboard.alignedToCameraParam.value = true
+      } else {
+        billboard.alignmentParam.value = BillboardAlignment.AlignedToCamera
+      }
       billboard.drawOnTopParam.value = true
       billboard.alphaParam.value = 1
       billboard.fixedSizeOnscreenParam.value = true

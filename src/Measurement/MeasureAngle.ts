@@ -9,6 +9,7 @@ import {
   Registry,
   Ray,
   Vec3Attribute,
+  BillboardAlignment,
 } from '@zeainc/zea-engine'
 
 import { Measure } from './Measure'
@@ -74,7 +75,13 @@ class MeasureAngle extends Measure {
     this.billboard = new BillboardItem('DistanceBillboard', this.label)
     this.billboard.localXfoParam.value = new Xfo()
     this.billboard.pixelsPerMeterParam.value = 1500
-    this.billboard.alignedToCameraParam.value = true
+    // @ts-ignore
+    if (this.billboard.alignedToCameraParam) {
+      // @ts-ignore
+      this.billboard.alignedToCameraParam.value = true
+    } else {
+      this.billboard.alignmentParam.value = BillboardAlignment.AlignedToCamera
+    }
     this.billboard.drawOnTopParam.value = true
     this.billboard.fixedSizeOnscreenParam.value = true
     this.billboard.alphaParam.value = 1
