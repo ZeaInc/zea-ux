@@ -16,7 +16,7 @@ const plugins = [
     dedupe: ['@zeainc'],
   }), // so Rollup can find `ms`
   commonjs(), // so Rollup can convert `ms` to an ES module
-  typescript(), // so Rollup can convert TypeScript to JavaScript]
+  typescript(), // so Rollup can convert TypeScript to JavaScript
 ]
 const isProduction = !process.env.ROLLUP_WATCH
 
@@ -52,10 +52,7 @@ export default [
   {
     input: 'src/index.ts',
     external,
-    plugins: [
-      json(),
-      typescript(), // so Rollup can convert TypeScript to JavaScript
-    ],
+    plugins,
     output: [
       { file: pkg.main, format: 'cjs', sourcemap },
       { file: pkg.module, format: 'es', sourcemap },
