@@ -35,6 +35,9 @@ class MeasureAngle extends Measure {
    */
   constructor(name = 'MeasureAngle', color = new Color('#F9CE03')) {
     super(name, color)
+
+    this.addChild(this.markerA)
+    this.addChild(this.markerB)
   }
 
   /**
@@ -70,11 +73,13 @@ class MeasureAngle extends Measure {
     this.label = new Label('Distance')
     this.label.fontSizeParam.value = 20
     this.label.backgroundColorParam.value = this.colorParam.value
+    this.label.borderRadiusParam.value = 3
+    this.label.borderWidthParam.value = 0.5
     this.label.textParam.value = `${(angle / (Math.PI / 180)).toFixed(3)} °`
 
     this.billboard = new BillboardItem('DistanceBillboard', this.label)
     this.billboard.localXfoParam.value = new Xfo()
-    this.billboard.pixelsPerMeterParam.value = 1500
+    this.billboard.pixelsPerMeterParam.value = 2000
     // @ts-ignore
     if (this.billboard.alignedToCameraParam) {
       // @ts-ignore
@@ -100,13 +105,13 @@ class MeasureAngle extends Measure {
     labelXfo.tr.addInPlace(rayB.pointAtDist(params[1]))
     labelXfo.tr.scaleInPlace(0.5)
 
-    xfoA.ori.setFromDirectionAndUpvector(tangentA, normA)
+    xfoA.ori.setFromDirectionAndUpvector(tangentA.negate(), normA)
     this.markerA.globalXfoParam.value = xfoA
     xfoB.ori.setFromDirectionAndUpvector(tangentB, normA)
     this.markerB.globalXfoParam.value = xfoB
 
     const lineAXfo = new Xfo()
-    lineAXfo.sc.z = params[0]
+    lineAXfo.sc.z = -params[0]
     lineA.localXfoParam.value = lineAXfo
     const lineBXfo = new Xfo()
     lineBXfo.sc.z = params[1]

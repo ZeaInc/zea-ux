@@ -7,15 +7,23 @@ import {
   ColorParameter,
   Color,
   Sphere,
+  Cone,
   Lines,
   Vec3Attribute,
   Vec3,
   Material,
+  Mat3,
+  Xfo,
 } from '@zeainc/zea-engine'
 
 import { HandleMaterial } from '../Handles/Shaders/HandleMaterial'
+import transformVertices from '../Handles/transformVertices'
 
-const sphere = new Sphere(0.003, 24, 12, false)
+// const sphere = new Sphere(0.003, 24, 12, false)
+const cone = new Cone(0.003, 0.01, 12, true)
+const tipXfo = new Xfo()
+tipXfo.tr.set(0, 0, -cone.heightParam.value)
+transformVertices(cone, tipXfo)
 
 // // Used to debug the Xfo of the marker handle
 // const linesCross = new Lines() //new Lines(0.0)
@@ -55,18 +63,16 @@ class Measure extends TreeItem {
     this.colorParam = <ColorParameter>this.addParameter(new ColorParameter('Color', color))
 
     this.markerMaterial = new HandleMaterial('Marker')
-    this.markerMaterial.baseColorParam.value = new Color(0, 0, 0)
+    this.markerMaterial.baseColorParam.value = new Color(0, 0, 0, 0.7)
     this.markerMaterial.maintainScreenSizeParam.value = 1
     this.markerMaterial.overlayParam.value = 0.5
 
     this.lineMaterial = new LinesMaterial('Line')
-    this.lineMaterial.baseColorParam.value = new Color(0, 0, 0)
+    this.lineMaterial.baseColorParam.value = new Color(0, 0, 0, 0.7)
     this.lineMaterial.overlayParam.value = 0.5
 
-    this.markerA = new GeomItem(`markerA`, sphere, this.markerMaterial)
-    this.markerB = new GeomItem(`markerB`, sphere, this.markerMaterial)
-    this.addChild(this.markerA)
-    this.addChild(this.markerB)
+    this.markerA = new GeomItem(`markerA`, cone, this.markerMaterial)
+    this.markerB = new GeomItem(`markerB`, cone, this.markerMaterial)
 
     this.colorParam.on('valueChanged', () => {
       const color = this.colorParam.value

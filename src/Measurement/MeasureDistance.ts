@@ -9,6 +9,8 @@ import {
   Vec3,
   Registry,
   Vec3Attribute,
+  BillboardAlignment,
+  Vec2,
 } from '@zeainc/zea-engine'
 
 import { Measure } from './Measure'
@@ -18,8 +20,8 @@ line.setNumVertices(2)
 line.setNumSegments(1)
 line.setSegmentVertexIndices(0, 0, 1)
 const positions = line.getVertexAttribute('positions') as Vec3Attribute
-positions.setValue(0, new Vec3())
-positions.setValue(1, new Vec3(0, 0, 1))
+positions.setValue(0, new Vec3(0, 0, -0.5))
+positions.setValue(1, new Vec3(0, 0, 0.5))
 line.setBoundingBoxDirty()
 
 /**
@@ -29,6 +31,8 @@ line.setBoundingBoxDirty()
  */
 class MeasureDistance extends Measure {
   lineGeomItem: GeomItem = null
+  startPos: Vec3 = new Vec3()
+  endPos: Vec3 = new Vec3()
   sceneUnits: String = null
   /**
    * Creates an instance of MeasureDistance.
@@ -45,14 +49,10 @@ class MeasureDistance extends Measure {
    * Updates the measured value
    */
   updateMeasurement(): void {
-    const startXfo = this.markerA.globalXfoParam.value
-    const endXfo = this.markerB.globalXfoParam.value
-
-    const vector = endXfo.tr.subtract(startXfo.tr)
+    const vector = this.endPos.subtract(this.startPos)
     const distance = vector.length()
 
     if (distance == 0) return
-    const color = this.colorParam.value
 
     // Convert meters to mm.
     let scaleFactor = 1
@@ -67,41 +67,57 @@ class MeasureDistance extends Measure {
     const labelTest = `${parseFloat(distanceInMM.toFixed(3))}mm`
     if (!this.label) {
       this.label = new Label('Distance')
-      this.label.getParameter('FontSize').value = 20
-      this.label.getParameter('BackgroundColor').value = color
-      this.label.getParameter('Text').value = labelTest
+      this.label.fontSizeParam.value = 20
+      this.label.backgroundColorParam.value = this.colorParam.value
+      this.label.textParam.value = labelTest
+      this.label.borderRadiusParam.value = 3
+      this.label.borderWidthParam.value = 0.5
 
       this.billboard = new BillboardItem('DistanceBillboard', this.label)
       this.billboard.localXfoParam.value = new Xfo()
-      this.billboard.getParameter('PixelsPerMeter').value = 1500
-      this.billboard.getParameter('AlignedToCamera').value = true
-      this.billboard.getParameter('DrawOnTop').value = true
-      this.billboard.getParameter('FixedSizeOnscreen').value = true
-      this.billboard.getParameter('Alpha').value = 1
+      this.billboard.pixelsPerMeterParam.value = 2000
+      this.billboard.alignmentParam.value = BillboardAlignment.AlignedToCameraAndXAxis
+      this.billboard.pivotParam.value = new Vec2(0.5, 0.5)
+      this.billboard.drawOnTopParam.value = true
+      this.billboard.opacityParam.value = 0.1
+      this.billboard.fixedSizeOnscreenParam.value = true
 
       this.addChild(this.billboard)
 
       this.lineMaterial = new LinesMaterial('Line')
-      this.lineMaterial.baseColorParam.value = new Color(0, 0, 0)
-      this.lineMaterial.overlayParam.value = 0.5
+      this.lineMaterial.baseColorParam.value = new Color(0, 0, 0, 0.7)
+      this.lineMaterial.overlayParam.value = 0.1
       this.lineGeomItem = new GeomItem('Line', line, this.lineMaterial)
       this.lineGeomItem.setSelectable(false)
       this.addChild(this.lineGeomItem)
+      this.addChild(this.markerA)
+      this.addChild(this.markerB)
     } else {
-      this.label.getParameter('Text').value = labelTest
+      this.label.textParam.value = labelTest
     }
 
-    const lineXfo = startXfo.clone()
-    lineXfo.ori.setFromDirectionAndUpvector(vector, new Vec3(vector.z, vector.x, vector.y))
-    lineXfo.sc.z = distance
-
-    this.lineGeomItem.globalXfoParam.value = lineXfo
-
     vector.normalizeInPlace()
-    const midPoint = startXfo.tr.add(vector.scale(distance * 0.5))
-    const labelXfo = new Xfo(midPoint)
-    labelXfo.ori.setFromDirectionAndUpvector(vector, new Vec3(vector.z, vector.x, vector.y))
-    this.billboard.globalXfoParam.value = labelXfo
+    const xfo = new Xfo()
+    xfo.tr = this.startPos.lerp(this.endPos, 0.5)
+    xfo.ori.setFromDirectionAndUpvector(vector, new Vec3(vector.z, vector.x, vector.y))
+    this.globalXfoParam.value = xfo
+
+    const lineXfo = new Xfo()
+    lineXfo.sc.z = distance
+    this.lineGeomItem.localXfoParam.value = lineXfo
+
+    const markerAXfo = new Xfo()
+    markerAXfo.tr.z = distance * 0.5
+    this.markerA.localXfoParam.value = markerAXfo
+
+    const markerBXfo = new Xfo()
+    markerBXfo.tr.z = distance * -0.5
+    markerBXfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI)
+    this.markerB.localXfoParam.value = markerBXfo
+
+    const billboardXfo = new Xfo()
+    billboardXfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI / 2)
+    this.billboard.localXfoParam.value = billboardXfo
   }
 
   /**
@@ -110,9 +126,7 @@ class MeasureDistance extends Measure {
    * @param position
    */
   setStartMarkerPos(position: Vec3): void {
-    const newXfo = this.markerA.globalXfoParam.value
-    newXfo.tr = position
-    this.markerA.globalXfoParam.value = newXfo
+    this.startPos = position
     if (this.label) this.updateMeasurement()
   }
 
@@ -122,9 +136,7 @@ class MeasureDistance extends Measure {
    * @param position
    */
   setEndMarkerPos(position: Vec3): void {
-    const endXfo = this.markerB.globalXfoParam.value
-    endXfo.tr = position
-    this.markerB.globalXfoParam.value = endXfo
+    this.endPos = position
     this.updateMeasurement()
   }
 
