@@ -22,6 +22,7 @@
   </head>
   <body>
     <canvas id="canvas"></canvas>
+    <zea-view-cube id="view-cube" class="hud"></zea-view-cube>
     <div id="status" class="hud"></div>
     <div class="variant-buttons">
       <button class="variant-button" id="variant-01">variant-01</button>
@@ -64,12 +65,16 @@
 
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(3, 3, 1.7), new Vec3(0, 0, 0))
 
-      const viewCube = new ViewCube()
-      viewCube.bindToViewport(renderer, renderer.getViewport(), 100)
+      // const viewCube = new ViewCube()
+      // viewCube.bindToViewport(renderer, renderer.getViewport(), 100)
+
+      const viewCube2 = document.getElementById('view-cube')
+      viewCube2.setViewport(renderer.getViewport())
 
       const manipulator = renderer.getViewport().getManipulator()
       manipulator.setDefaultManipulationMode(CameraManipulator.MANIPULATION_MODES.turntable)
       // manipulator.setDefaultManipulationMode(CameraManipulator.MANIPULATION_MODES.tumbler)
+      const camera = renderer.getViewport().getCamera()
 
       renderer.getViewport().on('keyDown', (event) => {
         if (event.key == 'f') renderer.frameAll()

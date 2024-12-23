@@ -1,4 +1,4 @@
-import { CameraManipulator, GLViewport, MathFunctions, Quat, Vec3, Xfo } from '@zeainc/zea-engine'
+import { CameraManipulator, Color, GLViewport, MathFunctions, Quat, Vec3, Xfo } from '@zeainc/zea-engine'
 import { ToolManager } from '../Tools/ToolManager'
 
 // This ViewCube was created while referencing the following tutorial.
@@ -10,7 +10,9 @@ class ZeaViewCube extends HTMLElement {
   scene: HTMLDivElement
   cube: HTMLDivElement
   viewport: GLViewport
-  perspective: boolean = true
+
+  faceColor = new Color(1, 0.8, 0.15)
+  faceHighlightColor = new Color(1, 0.9, 0.5)
   constructor() {
     super()
 
@@ -23,49 +25,48 @@ class ZeaViewCube extends HTMLElement {
     this.cube.classList.add('cube')
     this.scene.appendChild(this.cube)
 
-    const addCubeFace = (name: string, normal: Vec3) => {
+    const addCubeFace = (name: string, label: string, normal: Vec3) => {
       const cubeFace = document.createElement('div')
       cubeFace.classList.add('cube__face')
       cubeFace.classList.add('cube__face_' + name)
-      cubeFace.textContent = name
+      cubeFace.textContent = label
       cubeFace.addEventListener('click', () => {
         this.alignFace(normal)
       })
+      cubeFace.style.background = this.faceColor.toHex()
       this.cube.appendChild(cubeFace)
     }
-    addCubeFace('X', new Vec3(1, 0, 0))
-    addCubeFace('-X', new Vec3(-1, 0, 0))
-    addCubeFace('Y', new Vec3(0, 1, 0))
-    addCubeFace('-Y', new Vec3(0, -1, 0))
-    addCubeFace('Z', new Vec3(0, 0, 1))
-    addCubeFace('-Z', new Vec3(0, 0, -1))
+    addCubeFace('X', 'LEFT', new Vec3(1, 0, 0))
+    addCubeFace('-X', 'RIGHT', new Vec3(-1, 0, 0))
+    addCubeFace('Y', 'FRONT', new Vec3(0, 1, 0))
+    addCubeFace('-Y', 'BACK', new Vec3(0, -1, 0))
+    addCubeFace('Z', 'TOP', new Vec3(0, 0, 1))
+    addCubeFace('-Z', 'BOTTOM', new Vec3(0, 0, -1))
 
     const home = document.createElement('div')
     home.classList.add('home')
     this.shadowRoot?.appendChild(home)
-    const label = document.createElement('label')
-    const input = document.createElement('input')
-    const span = document.createElement('span')
-    input.setAttribute('type', 'checkbox')
-    label.classList.add('switch')
-    span.classList.add('slider')
-    span.classList.add('round')
-    label.appendChild(input)
-    const spanText = document.createElement('span')
-    spanText.classList.add('switch-label')
-    spanText.textContent = 'Persp'
-    home.appendChild(spanText)
-    label.appendChild(span)
-    home.appendChild(label)
-    input.checked = true
-    input.addEventListener('change', () => {
-      this.perspective = !this.perspective
-
-      const camera = this.viewport.getCamera()
-      const startXfo = camera.globalXfoParam.value
-      const normal = startXfo.ori.getZaxis()
-      this.alignFace(normal)
-    })
+    // const label = document.createElement('label')
+    // const input = document.createElement('input')
+    // const span = document.createElement('span')
+    // input.setAttribute('type', 'checkbox')
+    // label.classList.add('switch')
+    // span.classList.add('slider')
+    // span.classList.add('round')
+    // label.appendChild(input)
+    // const spanText = document.createElement('span')
+    // spanText.classList.add('switch-label')
+    // spanText.textContent = 'Persp'
+    // home.appendChild(spanText)
+    // label.appendChild(span)
+    // home.appendChild(label)
+    // input.checked = true
+    // input.addEventListener('change', () => {
+    //   const camera = this.viewport.getCamera()
+    //   const startXfo = camera.globalXfoParam.value
+    //   const normal = startXfo.ori.getZaxis()
+    //   this.alignFace(normal)
+    // })
 
     const styleTag = document.createElement('style')
     styleTag.appendChild(
@@ -152,7 +153,7 @@ input:checked + .slider:before {
         height: 95px;
         border: 0px;
         margin: 20px;
-        perspective: 800px;
+        perspective: 200px;
         font-family: sans-serif;
         -webkit-touch-callout: none; /* iOS Safari */
         -webkit-user-select: none; /* Safari */
@@ -165,32 +166,23 @@ input:checked + .slider:before {
         height: 80px;
         position: relative;
         transform-style: preserve-3d;
-        transform: translateZ(-80px);
       }
       
       .cube__face {
         position: absolute;
-        width: 76px;
-        height: 76px;
-        border: 2px solid black;
-        line-height: 76px;
-        font-size: 20px;
-        font-weight: bold;
+        width: 78px;
+        height: 78px;
+        border: 1px solid black;
+        line-height: 78px;
+        font-size: 16px;
         color: black;
         text-align: center;
       }
       
       .cube__face:hover {
-        border: 2px solid white;
+        border: 1px solid white;
         color: white;
       }
-      
-      .cube__face_X   { background: rgba(255, 0, 0, 0.85); }
-      .cube__face_-X  { background: rgba(255, 0, 0, 0.85); }
-      .cube__face_Y  { background: rgba(  0, 255, 0, 0.85); }
-      .cube__face_-Y   { background: rgba(  0, 255, 0, 0.85); }
-      .cube__face_Z    { background: rgba(0, 0, 255, 0.85); }
-      .cube__face_-Z { background: rgba(0, 0, 255, 0.85); }
       
       .cube__face_X   { transform: rotateY(-90deg) translateZ(40px); }
       .cube__face_-X  { transform: rotateY( 90deg) translateZ(40px); }
@@ -212,8 +204,6 @@ input:checked + .slider:before {
 
     const startXfo = camera.globalXfoParam.value
     const startUp = startXfo.ori.getYaxis()
-    // const startViewHeight = Math.sin(camera.fovParam.value * 0.5) * startDist * 2
-    const startOrtho = camera.isOrthographicParam.value
 
     startUp.subtractInPlace(normal.scale(startUp.dot(normal)))
 
@@ -265,17 +255,7 @@ input:checked + .slider:before {
     endOri.setFromDirectionAndUpvector(normal, endUp)
     endOri.alignWith(startXfo.ori)
     const endTarget = startTarget.clone()
-    const endDist = startDist
     // const endViewHeight = Math.sin(camera.fovParam.value * 0.5) * endDist * 2
-
-    const endOrtho = this.perspective ? 0 : 1
-    if (endOrtho > 0.5 && startOrtho < 0.5) {
-      // IF we are transitioning to an orthographic projection, we match the orthographic
-      // view height with the current perspective projection height at the target distance.
-      // This keeps the framing consistent as we change the camera.
-      //@ts-ignore
-      camera.viewHeight = Math.sin(camera.fovParam.value * 0.5) * startDist * 2
-    }
 
     // ////////////////////////////////////////////////////
     // Now blend the camera from the starting values to the end values.
@@ -292,24 +272,12 @@ input:checked + .slider:before {
 
       // interpolate the target and distance between the start and the end ones.
       const target = startTarget.lerp(endTarget, lerpValue)
-      const dist = MathFunctions.lerp(startDist, endDist, lerpValue)
 
       // Move the camera back away from the new target using the orientation.
       const newDir = xfo.ori.getZaxis().negate()
-      xfo.tr = target.subtract(newDir.scale(dist))
+      xfo.tr = target.subtract(newDir.scale(startDist))
 
       camera.globalXfoParam.setValue(xfo)
-      camera.setFocalDistance(dist)
-      if ((endOrtho > 0.5 && startOrtho < 0.5) || (endOrtho < 0.5 && startOrtho > 0.5)) {
-        const ortho = MathFunctions.lerp(startOrtho, endOrtho, lerpValue)
-
-        // Also set the perspective value on the viewcube itself.
-        if (endOrtho > 0.5) this.scene.style.perspective = `none`
-        else this.scene.style.perspective = `800px`
-
-        camera.setIsOrthographic(ortho, 0)
-      }
-
       i++
       if (i <= count) {
         id = setTimeout(applyMovement, 20)
