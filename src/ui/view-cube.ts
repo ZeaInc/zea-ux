@@ -17,7 +17,9 @@ class ZeaViewCube extends HTMLElement {
     super()
 
     this.attachShadow({ mode: 'open' })
+  }
 
+  private build() {
     this.scene = document.createElement('div')
     this.scene.classList.add('scene')
     this.shadowRoot?.appendChild(this.scene)
@@ -46,157 +48,67 @@ class ZeaViewCube extends HTMLElement {
     const home = document.createElement('div')
     home.classList.add('home')
     this.shadowRoot?.appendChild(home)
-    // const label = document.createElement('label')
-    // const input = document.createElement('input')
-    // const span = document.createElement('span')
-    // input.setAttribute('type', 'checkbox')
-    // label.classList.add('switch')
-    // span.classList.add('slider')
-    // span.classList.add('round')
-    // label.appendChild(input)
-    // const spanText = document.createElement('span')
-    // spanText.classList.add('switch-label')
-    // spanText.textContent = 'Persp'
-    // home.appendChild(spanText)
-    // label.appendChild(span)
-    // home.appendChild(label)
-    // input.checked = true
-    // input.addEventListener('change', () => {
-    //   const camera = this.viewport.getCamera()
-    //   const startXfo = camera.globalXfoParam.value
-    //   const normal = startXfo.ori.getZaxis()
-    //   this.alignFace(normal)
-    // })
 
     const styleTag = document.createElement('style')
     styleTag.appendChild(
       document.createTextNode(`
 
-      
-      .home {
-        position: absolute;
-        bottom: 0px;
-        right: 10px;
-        font-family: sans-serif;
-      }
+.home {
+  position: absolute;
+  bottom: 0px;
+  right: 10px;
+  font-family: sans-serif;
+}
 
-      /* The switch - the box around the slider */
-.switch {
+.scene {
+  width: 80px;
+  height: 80px;
+  border: 0px;
+  margin: 10px;
+  perspective: 200px;
+  font-family: sans-serif;
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  user-select: none; /* Non-prefixed version, currently
+                            supported by Chrome, Edge, Opera and Firefox */
+}
+
+.cube {
+  width: 80px;
+  height: 80px;
   position: relative;
-  display: inline-block;
-  width: 40px;
-  height: 20px;
+  transform-style: preserve-3d;
 }
 
-.switch-label {
+.cube__face {
   position: absolute;
-  left: -50px;
+  width: 78px;
+  height: 78px;
+  border: 1px solid black;
+  line-height: 78px;
+  font-size: 16px;
+  color: black;
+  text-align: center;
 }
 
-/* Hide default HTML checkbox */
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
+.cube__face:hover {
+  border: 1px solid white;
+  color: white;
 }
 
-/* The slider */
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 16px;
-  width: 16px;
-  left: 2px;
-  bottom: 2px;
-  background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
-
-input:checked + .slider {
-  background-color: #2196F3;
-}
-
-input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
-}
-
-input:checked + .slider:before {
-  -webkit-transform: translateX(20px);
-  -ms-transform: translateX(20px);
-  transform: translateX(20px);
-}
-
-/* Rounded sliders */
-.slider.round {
-  border-radius: 10px;
-}
-
-.slider.round:before {
-  border-radius: 50%;
-}
-
-      .scene {
-        width: 80px;
-        height: 95px;
-        border: 0px;
-        margin: 20px;
-        perspective: 200px;
-        font-family: sans-serif;
-        -webkit-touch-callout: none; /* iOS Safari */
-        -webkit-user-select: none; /* Safari */
-        user-select: none; /* Non-prefixed version, currently
-                                  supported by Chrome, Edge, Opera and Firefox */
-      }
-      
-      .cube {
-        width: 80px;
-        height: 80px;
-        position: relative;
-        transform-style: preserve-3d;
-      }
-      
-      .cube__face {
-        position: absolute;
-        width: 78px;
-        height: 78px;
-        border: 1px solid black;
-        line-height: 78px;
-        font-size: 16px;
-        color: black;
-        text-align: center;
-      }
-      
-      .cube__face:hover {
-        border: 1px solid white;
-        color: white;
-      }
-      
-      .cube__face_X   { transform: rotateY(-90deg) translateZ(40px); }
-      .cube__face_-X  { transform: rotateY( 90deg) translateZ(40px); }
-      .cube__face_Y  { transform: rotateY(  0deg) translateZ(40px); }
-      .cube__face_-Y   { transform: rotateY(180deg) translateZ(40px); }
-      .cube__face_Z    { transform: rotateX( 90deg) translateZ(40px); }
-      .cube__face_-Z { transform: rotateX(-90deg) translateZ(40px); }
+.cube__face_X   { transform: rotateY(-90deg) translateZ(40px); }
+.cube__face_-X  { transform: rotateY( 90deg) translateZ(40px); }
+.cube__face_Y  { transform: rotateY(  0deg) translateZ(40px); }
+.cube__face_-Y   { transform: rotateY(180deg) translateZ(40px); }
+.cube__face_Z    { transform: rotateX( 90deg) translateZ(40px); }
+.cube__face_-Z { transform: rotateX(-90deg) translateZ(40px); }
       
 `)
     )
     this.shadowRoot?.appendChild(styleTag)
   }
 
-  alignFace(normal: Vec3, duration = 400) {
+  private alignFace(normal: Vec3, duration = 400) {
     const camera = this.viewport.getCamera()
 
     const startTarget = camera.getTargetPosition()
@@ -289,7 +201,7 @@ input:checked + .slider:before {
     applyMovement()
   }
 
-  updateViewCubeTransform(xfo: Xfo) {
+  private updateViewCubeTransform(xfo: Xfo) {
     const m = xfo.inverse().toMat4()
 
     // The following matrices will be multiplied right to left, which the following effect.
@@ -304,6 +216,7 @@ input:checked + .slider:before {
   setViewport(viewport: GLViewport) {
     this.viewport = viewport
     const camera = this.viewport.getCamera()
+    this.build()
     this.updateViewCubeTransform(camera.globalXfoParam.value)
     camera.globalXfoParam.on('valueChanged', () => {
       this.updateViewCubeTransform(camera.globalXfoParam.value)

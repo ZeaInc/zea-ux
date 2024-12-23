@@ -69,6 +69,7 @@
       // viewCube.bindToViewport(renderer, renderer.getViewport(), 100)
 
       const viewCube2 = document.getElementById('view-cube')
+      viewCube2.faceColor = new Color(0.8, 0.15, 1)
       viewCube2.setViewport(renderer.getViewport())
 
       const manipulator = renderer.getViewport().getManipulator()
