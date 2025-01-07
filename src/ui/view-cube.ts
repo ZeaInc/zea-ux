@@ -27,27 +27,117 @@ class ZeaViewCube extends HTMLElement {
     this.cube.classList.add('cube')
     this.scene.appendChild(this.cube)
 
-    const addCubeFace = (name: string, label: string, normal: Vec3) => {
-      const cubeFace = document.createElement('div')
-      cubeFace.classList.add('cube__face')
-      cubeFace.classList.add('cube__face_' + name)
-      cubeFace.textContent = label
-      cubeFace.addEventListener('click', () => {
-        this.alignFace(normal)
-      })
-      cubeFace.style.background = this.faceColor.toHex()
-      this.cube.appendChild(cubeFace)
+    const faceVectors = {
+      '+x': new Vec3(1, 0, 0),
+      '-x': new Vec3(-1, 0, 0),
+      '+y': new Vec3(0, 1, 0),
+      '-y': new Vec3(0, -1, 0),
+      '+z': new Vec3(0, 0, 1),
+      '-z': new Vec3(0, 0, -1),
     }
-    addCubeFace('X', 'LEFT', new Vec3(1, 0, 0))
-    addCubeFace('-X', 'RIGHT', new Vec3(-1, 0, 0))
-    addCubeFace('Y', 'FRONT', new Vec3(0, 1, 0))
-    addCubeFace('-Y', 'BACK', new Vec3(0, -1, 0))
-    addCubeFace('Z', 'TOP', new Vec3(0, 0, 1))
-    addCubeFace('-Z', 'BOTTOM', new Vec3(0, 0, -1))
+    const edgeVectors = {
+      '+x+y': new Vec3(1, 1, 0),
+      '+x-y': new Vec3(1, -1, 0),
+      '-x+y': new Vec3(-1, 1, 0),
+      '-x-y': new Vec3(-1, -1, 0),
+      '+y+z': new Vec3(0, 1, 1),
+      '-y-z': new Vec3(0, -1, -1),
+      '-y+z': new Vec3(0, -1, 1),
+      '+x+z': new Vec3(1, 0, 1),
+      '+x-z': new Vec3(1, 0, -1),
+      '-x-z': new Vec3(-1, 0, -1),
+      '-x+z': new Vec3(-1, 0, 1),
+      '+y-z': new Vec3(0, 1, -1),
+    }
+    const cornerVectors = {
+      '+x+y+z': new Vec3(1, 1, 1),
+      '+x-y+z': new Vec3(1, -1, 1),
+      '-x+y+z': new Vec3(-1, 1, 1),
+      '-x-y+z': new Vec3(-1, -1, 1),
+      '+x+y-z': new Vec3(1, 1, -1),
+      '+x-y-z': new Vec3(1, -1, -1),
+      '-x+y-z': new Vec3(-1, 1, -1),
+      '-x-y-z': new Vec3(-1, -1, -1),
+    }
+    const faceQuats = {
+      '+x': new Quat(0, 0.7071, 0, 0.7071),
+      '-x': new Quat(0, -0.7071, 0, 0.7071),
+      '+y': new Quat(-0.7071, 0, 0, 0.7071),
+      '-y': new Quat(0.7071, 0, 0, 0.7071),
+      '+z': new Quat(0, 0, 0, 1),
+      '-z': new Quat(0, 1, 0, 0),
+    }
 
-    const home = document.createElement('div')
-    home.classList.add('home')
-    this.shadowRoot?.appendChild(home)
+    const addCubeFace = (label: string, normal: Vec3) => {
+      const cubeFace = document.createElement('div')
+      cubeFace.classList.add('face')
+      cubeFace.classList.add(label)
+      cubeFace.textContent = label.toUpperCase()
+      cubeFace.addEventListener('click', (event) => {
+        console.log('click', event)
+        this.alignFace(normal.normalize())
+        event.stopPropagation()
+      })
+      // cubeFace.style.background = this.faceColor.toHex()
+      this.cube.appendChild(cubeFace)
+
+      // addCubeBorder(cubeFace, 'border-top', top)
+      // addCubeBorder(cubeFace, 'border-bottom', bottom)
+      // addCubeBorder(cubeFace, 'border-left', left)
+      // addCubeBorder(cubeFace, 'border-right', right)
+
+      // addCubeCorner(cubeFace, 'corner-tl')
+      // addCubeCorner(cubeFace, 'corner-tr')
+      // addCubeCorner(cubeFace, 'corner-bl')
+      // addCubeCorner(cubeFace, 'corner-br')
+    }
+    addCubeFace('left', faceVectors['+x'])
+    addCubeFace('right', faceVectors['-x'])
+    addCubeFace('front', faceVectors['+y'])
+    addCubeFace('back', faceVectors['-y'])
+    addCubeFace('top', faceVectors['+z'])
+    addCubeFace('bottom', faceVectors['-z'])
+
+    const addCubeBorderFace = (borderDiv: HTMLDivElement, classStr: string, normal: Vec3) => {
+      const borderFaceDiv = document.createElement('div')
+      borderFaceDiv.classList.add('border-face')
+      borderFaceDiv.classList.add(classStr)
+      borderFaceDiv.addEventListener('click', (event) => {
+        this.alignFace(normal.normalize())
+        event.stopPropagation()
+      })
+      // borderFaceDiv.style.background = this.faceColor.toHex()
+      borderDiv.appendChild(borderFaceDiv)
+    }
+    const addCubeBorder = (classStr: string, borderClassStr: string[], normal: Vec3) => {
+      const borderDiv = document.createElement('div')
+      borderDiv.classList.add('border')
+      borderDiv.classList.add(classStr)
+      this.cube.appendChild(borderDiv)
+      addCubeBorderFace(borderDiv, borderClassStr[0], normal)
+      addCubeBorderFace(borderDiv, borderClassStr[1], normal)
+    }
+    addCubeBorder('border-xy', ['border-front', 'border-right'], edgeVectors['-x+y'])
+    addCubeBorder('border--xy', ['border-front', 'border-left'], edgeVectors['+x+y'])
+    addCubeBorder('border-x-y', ['border-back', 'border-left'], edgeVectors['+x-y'])
+    addCubeBorder('border--x-y', ['border-back', 'border-right'], edgeVectors['-x-y'])
+    addCubeBorder('border-yz', ['border-front', 'border-top'], edgeVectors['+y+z'])
+    addCubeBorder('border-y-z', ['border-front', 'border-bottom'], edgeVectors['+y-z'])
+    addCubeBorder('border-xz', ['border-right', 'border-top'], edgeVectors['-x+z'])
+
+    // const borderDivXY = document.createElement('div')
+    // borderDivXY.classList.add('border')
+    // borderDivXY.classList.add('border-xy')
+    // this.cube.appendChild(borderDivXY)
+    // addCubeBorderFace(borderDivXY, 'border-front', edgeVectors['-x+y'])
+    // addCubeBorderFace(borderDivXY, 'border-right', edgeVectors['-x+y'])
+
+    // const borderDivnegXY = document.createElement('div')
+    // borderDivnegXY.classList.add('border')
+    // borderDivnegXY.classList.add('border--xy')
+    // this.cube.appendChild(borderDivnegXY)
+    // addCubeBorderFace(borderDivnegXY, 'border-front', edgeVectors['+x+y'])
+    // addCubeBorderFace(borderDivnegXY, 'border-left', edgeVectors['+x+y'])
 
     const styleTag = document.createElement('style')
     styleTag.appendChild(
@@ -74,35 +164,135 @@ class ZeaViewCube extends HTMLElement {
 }
 
 .cube {
+  position: relative;
   width: 80px;
   height: 80px;
-  position: relative;
+  transform-style: preserve-3d;
+  background: rgba(200, 200, 200, 1);
+}
+
+.face {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  background: rgba(200, 200, 200, 1);
+  border: 1px solid #000000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.0rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+.face:hover {
+  background: rgba(255, 255, 255, 1);
+}
+
+/* Position each face */
+.front { transform: translateZ(50px);  }
+.back { transform: rotateY(180deg) translateZ(50px);  }
+.left { transform: rotateY(-90deg) translateZ(50px);  }
+.right { transform: rotateY(90deg) translateZ(50px);  }
+.top { transform: rotateX(90deg) translateZ(50px);  }
+.bottom { transform: rotateX(-90deg) translateZ(50px);  }
+
+/* Clickable edge borders */
+.border {
+  position: absolute;
+  background: rgba(200, 200, 200, 1);
+  border: none;
+  cursor: pointer;
+  border: none;
   transform-style: preserve-3d;
 }
+.border:hover {
+  background: rgba(255, 255, 255, 1);
+}
+  
+.border-xy { 
+  width: 10px;
+  height: 80px;
+  transform: translate3d(80px, 0px, 45px);
+}
 
-.cube__face {
+.border--xy { 
+  width: 10px;
+  height: 80px;
+  transform: translate3d(-10px, 0px, 45px);
+}
+
+.border-x-y { 
+  width: 10px;
+  height: 80px;
+  transform: translate3d(-10px, 0px, -45px);
+}
+
+.border--x-y { 
+  width: 10px;
+  height: 80px;
+  transform: translate3d(80px, 0px, -45px);
+}
+
+.border-yz { 
+  width: 80px;
+  height: 10px;
+  transform: translate3d(0px, -10px, 45px);
+}
+
+.border-y-z { 
+  width: 80px;
+  height: 10px;
+  transform: translate3d(0px, 80px, 45px);
+}
+
+.border-xz { 
+  width: 10px;
+  height: 80px;
+  transform: translate3d(45px, -10px, 0px);
+}
+
+
+.border-face { 
   position: absolute;
-  width: 78px;
-  height: 78px;
-  border: 1px solid black;
-  line-height: 78px;
-  font-size: 16px;
-  color: black;
-  text-align: center;
+  width: 100%;
+  height: 100%;
+  background: inherit;
+  border: 1px solid #000000;
 }
 
-.cube__face:hover {
-  border: 1px solid white;
-  color: white;
+
+/* Position each border-face */
+.border-front { transform: translate3d(0px, 0px, 5px);  }
+.border-back { transform: rotateY(180deg) translate3d(0px, 0px, 5px);  }
+.border-left { transform: rotateY(-90deg) translate3d(0px, 0px, 5px);  }
+.border-right { transform: rotateY(90deg) translate3d(0px, 0px, 5px);  }
+.border-top { transform: rotateX(90deg) translate3d(0px, 0px, 5px);  }
+.border-bottom { transform: rotateX(-90deg) translate3d(0px, 0px, 5px);  }
+
+
+
+/* Mini corner cubes */
+.corner {
+  position: absolute;
+  width: 10px; /* 1/10 of main cube size */
+  height: 10px; /* 1/10 of main cube size */
+  background: rgba(200, 200, 200, 1);
+  border: 1px solid #000000;
+  cursor: pointer;
+  transform-style: preserve-3d;
+}
+.corner:hover {
+  background: rgba(255, 255, 255, 1);
 }
 
-.cube__face_X   { transform: rotateY(-90deg) translateZ(40px); }
-.cube__face_-X  { transform: rotateY( 90deg) translateZ(40px); }
-.cube__face_Y  { transform: rotateY(  0deg) translateZ(40px); }
-.cube__face_-Y   { transform: rotateY(180deg) translateZ(40px); }
-.cube__face_Z    { transform: rotateX( 90deg) translateZ(40px); }
-.cube__face_-Z { transform: rotateX(-90deg) translateZ(40px); }
-      
+/* Corner positioning for the front face */
+.corner-tl { top: -10px; left: -10px; }
+.corner-tr { top: -10px; right: -10px; }
+.corner-bl { bottom: -10px; left: -10px; }
+.corner-br { bottom: -10px; right: -10px; }
+
+
+
 `)
     )
     this.shadowRoot?.appendChild(styleTag)
