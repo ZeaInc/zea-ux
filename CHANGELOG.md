@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.7.2](https://github.com/ZeaInc/zea-ux/compare/v4.7.1...v4.7.2) (2025-01-07)
+
+
+### Bug Fixes
+
+* Cleaned up 'custom-element' ViewCube to display correct colors and provide same face text as the 3d Geometry view cube. ([9a12aa2](https://github.com/ZeaInc/zea-ux/commit/9a12aa2f11d332fd39511270553b912f1e95e80b))
+* Cleaned up Measurement tools. Now Measure distance displays arrow heads and the label is aligned ot the measurement line. ([404c54a](https://github.com/ZeaInc/zea-ux/commit/404c54a74c9d45228b2cf8fd522c8bb0095ca373))
+* Create Tools now correctly created geometries with the specified color ([692f19c](https://github.com/ZeaInc/zea-ux/commit/692f19cd684ff0a496852634c22f9d6eeb632709))
+* enable setting the custom element face color before binding. ([187ec9c](https://github.com/ZeaInc/zea-ux/commit/187ec9cd8d57e6e7e474653bd6771a076a81a02e))
+
 ### [4.7.1](https://github.com/ZeaInc/zea-ux/compare/v4.7.0...v4.7.1) (2024-11-06)
 
 ## [4.7.0](https://github.com/ZeaInc/zea-ux/compare/v4.6.0...v4.7.0) (2024-10-21)
