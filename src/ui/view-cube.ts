@@ -15,7 +15,6 @@ class ZeaViewCube extends HTMLElement {
   faceHighlightColor = new Color(1, 0.9, 0.5)
   constructor() {
     super()
-
     this.attachShadow({ mode: 'open' })
   }
 
@@ -224,4 +223,6 @@ class ZeaViewCube extends HTMLElement {
   }
 }
 
-customElements.define('zea-view-cube', ZeaViewCube)
+if (!customElements.get('zea-view-cube')) {
+  customElements.define('zea-view-cube', ZeaViewCube)
+}
