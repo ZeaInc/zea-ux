@@ -1,121 +1,93 @@
-import { CameraManipulator, Color, GLViewport, MathFunctions, Quat, Vec3, Xfo } from '@zeainc/zea-engine'
+import {
+  Camera,
+  CameraManipulator,
+  Color,
+  GLRenderer,
+  GLViewport,
+  MathFunctions,
+  Quat,
+  Scene,
+  Vec3,
+  Xfo,
+  ZeaPointerEvent,
+} from '@zeainc/zea-engine'
 import { ToolManager } from '../Tools/ToolManager'
-
-// This ViewCube was created while referencing the following tutorial.
-// https://3dtransforms.desandro.com/cube
-// https://codepen.io/desandro/pen/KRWjzm
+import { ViewCube } from '../Handles/ViewCube'
 
 class ZeaViewCube extends HTMLElement {
-  home: HTMLDivElement
-  scene: HTMLDivElement
-  cube: HTMLDivElement
-  viewport: GLViewport
+  private div: HTMLDivElement
+  private sceneViewport: GLViewport
+  private viewCubeCamera: Camera
+  private viewCube: ViewCube
+  private canvas: HTMLCanvasElement
+  private movingViewCubeCamera: boolean = false
 
-  faceColor = new Color(1, 0.8, 0.15)
-  faceHighlightColor = new Color(1, 0.9, 0.5)
   constructor() {
     super()
     this.attachShadow({ mode: 'open' })
-  }
+    this.div = document.createElement('div')
+    this.canvas = document.createElement('canvas')
+    this.div.appendChild(this.canvas)
+    this.shadowRoot?.appendChild(this.div)
+    this.div.style.width = '100%'
+    this.div.style.height = '100%'
 
-  private build() {
-    this.scene = document.createElement('div')
-    this.scene.classList.add('scene')
-    this.shadowRoot?.appendChild(this.scene)
-    this.cube = document.createElement('div')
-    this.cube.classList.add('cube')
-    this.scene.appendChild(this.cube)
+    const scene = new Scene()
+    const renderer = new GLRenderer(this.canvas)
+    renderer.getViewport().backgroundColorParam.value = new Color(1, 1, 1, 0)
+    this.viewCubeCamera = renderer.getViewport().getCamera()
+    this.viewCubeCamera.focalDistanceParam.value = 2.75
 
-    const addCubeFace = (name: string, label: string, normal: Vec3) => {
-      const cubeFace = document.createElement('div')
-      cubeFace.classList.add('cube__face')
-      cubeFace.classList.add('cube__face_' + name)
-      cubeFace.textContent = label
-      cubeFace.addEventListener('click', () => {
-        this.alignFace(normal)
-      })
-      cubeFace.style.background = this.faceColor.toHex()
-      this.cube.appendChild(cubeFace)
+    const updateSceneCameraXfo = () => {
+      if (!this.movingViewCubeCamera && this.sceneViewport) {
+        const viewCubeCameraXfo = this.viewCubeCamera.globalXfoParam.value
+
+        const camera = this.sceneViewport.getCamera()
+        const target = camera.getTargetPosition()
+        const dist = camera.getFocalDistance()
+
+        const xfo = camera.globalXfoParam.value.clone()
+        xfo.ori = viewCubeCameraXfo.ori.clone()
+
+        // Move the camera back away from the new target using the orientation.
+        const newDir = xfo.ori.getZaxis().negate()
+        xfo.tr = target.subtract(newDir.scale(dist))
+
+        camera.globalXfoParam.value = xfo
+      }
     }
-    addCubeFace('X', 'LEFT', new Vec3(1, 0, 0))
-    addCubeFace('-X', 'RIGHT', new Vec3(-1, 0, 0))
-    addCubeFace('Y', 'FRONT', new Vec3(0, 1, 0))
-    addCubeFace('-Y', 'BACK', new Vec3(0, -1, 0))
-    addCubeFace('Z', 'TOP', new Vec3(0, 0, 1))
-    addCubeFace('-Z', 'BOTTOM', new Vec3(0, 0, -1))
 
-    const home = document.createElement('div')
-    home.classList.add('home')
-    this.shadowRoot?.appendChild(home)
+    this.viewCubeCamera.globalXfoParam.on('valueChanged', updateSceneCameraXfo)
 
-    const styleTag = document.createElement('style')
-    styleTag.appendChild(
-      document.createTextNode(`
+    renderer.setScene(scene)
 
-.home {
-  position: absolute;
-  bottom: 0px;
-  right: 10px;
-  font-family: sans-serif;
-}
+    this.viewCube = new ViewCube()
+    this.viewCube.visibleParam.value = false
+    scene.getRoot().addChild(this.viewCube)
 
-.scene {
-  width: 80px;
-  height: 80px;
-  border: 0px;
-  margin: 10px;
-  perspective: 200px;
-  font-family: sans-serif;
-  -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none; /* Safari */
-  user-select: none; /* Non-prefixed version, currently
-                            supported by Chrome, Edge, Opera and Firefox */
-}
-
-.cube {
-  width: 80px;
-  height: 80px;
-  position: relative;
-  transform-style: preserve-3d;
-}
-
-.cube__face {
-  position: absolute;
-  width: 78px;
-  height: 78px;
-  border: 1px solid black;
-  line-height: 78px;
-  font-size: 16px;
-  color: black;
-  text-align: center;
-}
-
-.cube__face:hover {
-  border: 1px solid white;
-  color: white;
-}
-
-.cube__face_X   { transform: rotateY(-90deg) translateZ(40px); }
-.cube__face_-X  { transform: rotateY( 90deg) translateZ(40px); }
-.cube__face_Y  { transform: rotateY(  0deg) translateZ(40px); }
-.cube__face_-Y   { transform: rotateY(180deg) translateZ(40px); }
-.cube__face_Z    { transform: rotateX( 90deg) translateZ(40px); }
-.cube__face_-Z { transform: rotateX(-90deg) translateZ(40px); }
-      
-`)
-    )
-    this.shadowRoot?.appendChild(styleTag)
+    this.viewCube.on('pointerClick', (event: ZeaPointerEvent) => {
+      const geomItem = event.intersectionData!.geomItem
+      const vec = geomItem.globalXfoParam.value.ori.rotateVec3(new Vec3(0, 0, 1))
+      this.alignSceneCameraToVector(vec)
+      event.stopPropagation()
+    })
   }
 
-  private alignFace(normal: Vec3, duration = 400) {
-    const camera = this.viewport.getCamera()
+  setFaceColor(faceColor = new Color(1, 0.8, 0.15), faceHighlightColor?: Color): void {
+    this.viewCube.setFaceColor(
+      faceColor,
+      faceHighlightColor ? faceHighlightColor : faceColor.lerp(new Color(1, 1, 1), 0.5)
+    )
+  }
 
-    const startTarget = camera.getTargetPosition()
-    const startDist = camera.getFocalDistance()
+  private alignSceneCameraToVector(normal: Vec3, duration = 400) {
+    const camera = this.sceneViewport.getCamera()
+
+    const target = camera.getTargetPosition()
+    const dist = camera.getFocalDistance()
 
     const startXfo = camera.globalXfoParam.value
     const startUp = startXfo.ori.getYaxis()
-
     startUp.subtractInPlace(normal.scale(startUp.dot(normal)))
 
     const endUp = new Vec3()
@@ -135,7 +107,7 @@ class ZeaViewCube extends HTMLElement {
       }
     }
 
-    let manipulator = this.viewport.getManipulator()
+    let manipulator = this.sceneViewport.getManipulator()
     if (manipulator instanceof ToolManager) {
       const toolManager: ToolManager = manipulator
       if ('CameraManipulator' in toolManager.tools) {
@@ -159,14 +131,14 @@ class ZeaViewCube extends HTMLElement {
       } else {
         calcUpVector()
       }
+    } else {
+      calcUpVector()
     }
 
     // Calculate the target orientation of the camera.
     const endOri = new Quat()
     endOri.setFromDirectionAndUpvector(normal, endUp)
     endOri.alignWith(startXfo.ori)
-    const endTarget = startTarget.clone()
-    // const endViewHeight = Math.sin(camera.fovParam.value * 0.5) * endDist * 2
 
     // ////////////////////////////////////////////////////
     // Now blend the camera from the starting values to the end values.
@@ -175,20 +147,18 @@ class ZeaViewCube extends HTMLElement {
     let id
     let i = 1
     const applyMovement = () => {
-      const lerpValue = MathFunctions.smoothStep(0, 1, i / count)
+      const lerpValue = count > 0 ? MathFunctions.smoothStep(0, 1, i / count) : 1.0
 
       // interpolate the orientation between the start and the end ones.
       const xfo = new Xfo()
       xfo.ori = startXfo.ori.slerp(endOri, lerpValue).normalize()
 
-      // interpolate the target and distance between the start and the end ones.
-      const target = startTarget.lerp(endTarget, lerpValue)
-
       // Move the camera back away from the new target using the orientation.
       const newDir = xfo.ori.getZaxis().negate()
-      xfo.tr = target.subtract(newDir.scale(startDist))
+      xfo.tr = target.subtract(newDir.scale(dist))
 
-      camera.globalXfoParam.setValue(xfo)
+      camera.globalXfoParam.value = xfo
+
       i++
       if (i <= count) {
         id = setTimeout(applyMovement, 20)
@@ -200,26 +170,28 @@ class ZeaViewCube extends HTMLElement {
     applyMovement()
   }
 
-  private updateViewCubeTransform(xfo: Xfo) {
-    const m = xfo.inverse().toMat4()
-
-    // The following matrices will be multiplied right to left, which the following effect.
-    // stepBack80px rotateFromNegZupPoZ viewMatrix rotateZUpTpYUp
-    const value = `translateZ(-80px) rotateY(180deg) matrix3d(${m.m00},${m.m01},${m.m02},${m.m03},${m.m10},${m.m11},${
-      m.m12
-    },${m.m13},${m.m20},${m.m21},${m.m22},${m.m23},${0},${0},${0},${1}) rotateX( 90deg)`
-
-    this.cube.style.transform = value
-  }
-
   setViewport(viewport: GLViewport) {
-    this.viewport = viewport
-    const camera = this.viewport.getCamera()
-    this.build()
-    this.updateViewCubeTransform(camera.globalXfoParam.value)
-    camera.globalXfoParam.on('valueChanged', () => {
-      this.updateViewCubeTransform(camera.globalXfoParam.value)
+    this.sceneViewport = viewport
+
+    const camera = this.sceneViewport.getCamera()
+    const updateViewCubeCameraXfo = () => {
+      this.movingViewCubeCamera = true
+      const focalDistance = this.viewCubeCamera.focalDistanceParam.value
+      const sceneCameraXfo = camera.globalXfoParam.value
+      const xfo = new Xfo()
+      xfo.ori = sceneCameraXfo.ori.clone()
+      xfo.tr.addInPlace(sceneCameraXfo.ori.getZaxis().scale(focalDistance))
+      this.viewCubeCamera.globalXfoParam.value = xfo
+      this.movingViewCubeCamera = false
+    }
+
+    updateViewCubeCameraXfo()
+    camera.globalXfoParam.on('valueChanged', updateViewCubeCameraXfo)
+    camera.on('movementFinished', () => {
+      // This event tells the viewport to re-render the picking buffer.
+      this.viewCubeCamera.emit('movementFinished')
     })
+    this.viewCube.visibleParam.value = true
   }
 }
 

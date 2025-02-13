@@ -13,6 +13,8 @@
       }
       #view-cube {
         position: absolute;
+        width: 100px;
+        height: 100px;
         top: 8px;
         right: 8px;
       }
@@ -59,18 +61,15 @@
       scene.setupGrid(10, 10)
       const color = new Color('#E5E5E5')
 
-      const renderer = new GLRenderer(domElement, { hideSplash: true })
+      const renderer = new GLRenderer(domElement)
       renderer.getViewport().backgroundColorParam.value = color
       renderer.setScene(scene)
 
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(3, 3, 1.7), new Vec3(0, 0, 0))
 
-      // const viewCube = new ViewCube()
-      // viewCube.bindToViewport(renderer, renderer.getViewport(), 100)
-
-      const viewCube2 = document.getElementById('view-cube')
-      viewCube2.faceColor = new Color(0.8, 0.15, 1)
-      viewCube2.setViewport(renderer.getViewport())
+      const viewCube = document.getElementById('view-cube')
+      viewCube.setFaceColor(new Color(0.8, 0.15, 1))
+      viewCube.setViewport(renderer.getViewport())
 
       const manipulator = renderer.getViewport().getManipulator()
       manipulator.setDefaultManipulationMode(CameraManipulator.MANIPULATION_MODES.turntable)
@@ -86,7 +85,6 @@
 
       const axisTripod = new AxisTripod(0.07)
       axisTripod.bindToViewport(renderer, renderer.getViewport(), 200, [1, -1])
-      // scene.getRoot().addChild(axisTripod)
 
       const material1 = new Material('material1', 'SimpleSurfaceShader')
       material1.getParameter('BaseColor').setValue(new Color('#94C47D'))
