@@ -32,7 +32,7 @@ class MeasureCenterDistancesTool extends MeasureTool {
 
     this.geomConstraints = {
       CurveType: ['Circle'],
-      SurfaceType: ['Cylinder'],
+      SurfaceType: ['Cylinder', 'Cone', 'Plane'],
     }
     this.numStages = 2
   }
@@ -58,6 +58,11 @@ class MeasureCenterDistancesTool extends MeasureTool {
       const surfaceType = geomParams.getParameter('SurfaceType').value
 
       switch (surfaceType) {
+        case 'Plane': {
+          const srfToPnt = pos.subtract(geomXfo.tr)
+          const zaxis = geomXfo.ori.getZaxis()
+          return pos.subtract(zaxis.scale(srfToPnt.dot(zaxis)))
+        }
         case 'Cylinder':
         case 'Cone': {
           const srfToPnt = pos.subtract(geomXfo.tr)
