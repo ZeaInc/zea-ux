@@ -215,63 +215,6 @@ class MeasureAngleTool extends MeasureTool {
       }
     }
   }
-
-  /**
-   *
-   *
-   * @param event - The event value
-  onPointerMove(event: ZeaPointerEvent): void {
-    // skip if the alt key is held. Allows the camera tool to work
-    if (
-      ((event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) && event.altKey) ||
-      (event instanceof ZeaMouseEvent && event.button !== 0)
-    )
-      return
-
-    if (this.stage == 0) {
-      if (event.intersectionData && event.intersectionData.geomItem instanceof GeomItem) {
-        const geomItem = <GeomItem>event.intersectionData.geomItem
-        if (this.checkSurface(geomItem)) {
-          if (geomItem != this.highlightedItemA) {
-            if (this.highlightedItemA) {
-              this.highlightedItemA.removeHighlight(this.highlightedItemA_highlightKey, true)
-            }
-            this.highlightedItemA = geomItem
-            this.highlightedItemA_componentId = event.intersectionData.componentId
-            const color = this.colorParam.value
-            color.a = 0.2
-            this.highlightedItemA.addHighlight(this.highlightedItemA_highlightKey, color, true)
-          }
-        }
-      } else {
-        if (this.highlightedItemA) {
-          this.highlightedItemA.removeHighlight(this.highlightedItemA_highlightKey, true)
-          this.highlightedItemA = null
-        }
-      }
-    } else if (this.stage == 1) {
-      if (event.intersectionData && event.intersectionData.geomItem instanceof GeomItem) {
-        const geomItem = <GeomItem>event.intersectionData.geomItem
-        if (geomItem != this.highlightedItemA && geomItem != this.highlightedItemB && this.checkSurface(geomItem)) {
-          if (this.highlightedItemB) {
-            this.highlightedItemB.removeHighlight(this.highlightedItemB_highlightKey, true)
-          }
-          this.highlightedItemB = geomItem
-          this.highlightedItemB_componentId = event.intersectionData.componentId
-
-          const color = this.colorParam.value.clone()
-          color.a = 0.2
-          this.highlightedItemB.addHighlight(this.highlightedItemB_highlightKey, color, true)
-        }
-      } else {
-        if (this.highlightedItemB) {
-          this.highlightedItemB.removeHighlight(this.highlightedItemB_highlightKey, true)
-          this.highlightedItemB = null
-        }
-      }
-    }
-  }
-   */
 }
 
 export { MeasureAngleTool }

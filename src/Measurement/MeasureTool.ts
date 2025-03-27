@@ -84,19 +84,20 @@ class MeasureTool extends BaseTool {
       this.appData.renderer.getGLCanvas().style.cursor = this.prevCursor
     }
 
+    if (this.highlightedItemB) {
+      this.highlightedItemB.removeHighlight(this.highlightedItemB_highlightKey, true)
+      this.highlightedItemB = null
+    }
+    if (this.highlightedItemA) {
+      this.highlightedItemA.removeHighlight(this.highlightedItemA_highlightKey, true)
+      this.highlightedItemA = null
+    }
+
     if (this.stage != 0) {
       const parentItem = <TreeItem>this.measurement.getOwner()
       parentItem.removeChild(parentItem.getChildIndex(this.measurement))
       this.measurement = null
 
-      if (this.highlightedItemB) {
-        this.highlightedItemB.removeHighlight(this.highlightedItemB_highlightKey, true)
-        this.highlightedItemB = null
-      }
-      if (this.highlightedItemA) {
-        this.highlightedItemA.removeHighlight(this.highlightedItemA_highlightKey, true)
-        this.highlightedItemA = null
-      }
       this.stage = 0
     }
   }
