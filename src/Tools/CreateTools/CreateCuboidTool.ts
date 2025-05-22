@@ -36,7 +36,7 @@ class CreateCuboidTool extends CreateGeomTool {
     this.change = new CreateCuboidChange(this.parentItem, xfo, this.colorParam.value)
 
     // During construction, make it note selectable.
-    this.change.geomItem.setSelectable(false)
+    this.change.geomItem.pickableParam.value = false
 
     UndoRedoManager.getInstance().addChange(this.change)
 
@@ -85,7 +85,7 @@ class CreateCuboidTool extends CreateGeomTool {
       this.stage = 0
 
       // After completion, make it selectable.
-      this.change.geomItem.setSelectable(true)
+      this.change.geomItem.pickableParam.value = true
 
       this.emit('actionFinished')
     }

@@ -39,7 +39,7 @@ class CreateMultiLineChange extends CreateGeomChange {
     if (this.parentItem) {
       this.parentItem.addChild(this.geomItem)
     }
-    this.geomItem.setSelectable(false) // At the conclusion of creation, we set selectable to true.
+    this.geomItem.pickableParam.value = false // At the conclusion of creation, we set selectable to true.
     this.stage = 1
   }
 

@@ -31,7 +31,7 @@ class CreateRectChange extends CreateGeomChange {
     const material = new LinesMaterial('circle')
     material.baseColorParam.value = this.color
     this.geomItem = new CustomGeom('Rect', this.rect, material)
-    this.geomItem.setSelectable(false) // At the conclusion of creation, we set selectable to true.
+    this.geomItem.pickableParam.value = false // At the conclusion of creation, we set selectable to true.
   }
 
   /**

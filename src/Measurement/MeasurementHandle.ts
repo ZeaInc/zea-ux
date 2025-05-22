@@ -54,10 +54,10 @@ class MeasurementHandle extends ScreenSpaceMovementHandle {
     }
     super.onDragStart(event)
     const owner = <TreeItem>this.getOwner()
-    owner.setSelectable(false)
+    owner.pickableParam.value = false
     owner.traverse((item) => {
       if (item instanceof GeomItem) {
-        item.setSelectable(false)
+        item.pickableParam.value = false
       }
     })
     const viewport = <GLViewport>event.viewport
@@ -97,7 +97,7 @@ class MeasurementHandle extends ScreenSpaceMovementHandle {
     const owner = <TreeItem>this.getOwner()
     owner.traverse((item) => {
       if (item instanceof GeomItem) {
-        item.setSelectable(true)
+        item.pickableParam.value = true
       }
     })
     const viewport = <GLViewport>event.viewport

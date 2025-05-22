@@ -59,7 +59,7 @@ class CreateLineChange extends CreateGeomChange {
       material = linesMaterial
     }
     this.geomItem = new CustomGeom('Line', this.line, material, this.xfo)
-    this.geomItem.setSelectable(false) // At the conclusion of creation, we set selectable to true.
+    this.geomItem.pickableParam.value = false // At the conclusion of creation, we set selectable to true.
     if (this.parentItem) {
       this.parentItem.addChild(this.geomItem)
     }

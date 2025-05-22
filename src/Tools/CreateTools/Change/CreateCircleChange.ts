@@ -32,7 +32,7 @@ class CreateCircleChange extends CreateGeomChange {
     const material = new LinesMaterial('circle')
     material.baseColorParam.value = this.color
     this.geomItem = new CustomGeom('Circle', this.circle, material, this.xfo)
-    this.geomItem.setSelectable(false) // At the conclusion of creation, we set selectable to true.
+    this.geomItem.pickableParam.value = false // At the conclusion of creation, we set selectable to true.
     if (this.parentItem) {
       this.parentItem.addChild(this.geomItem)
     }

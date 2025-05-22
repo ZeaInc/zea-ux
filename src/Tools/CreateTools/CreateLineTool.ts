@@ -64,7 +64,7 @@ class CreateLineTool extends CreateGeomTool {
       UndoRedoManager.getInstance().cancel()
     }
     // After completion, make it selectable.
-    this.change.geomItem.setSelectable(true)
+    this.change.geomItem.pickableParam.value = true
     this.stage = 0
     this.emit('actionFinished')
   }

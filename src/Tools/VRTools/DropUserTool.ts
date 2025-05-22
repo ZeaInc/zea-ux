@@ -35,7 +35,7 @@ class DropUserTool extends PointerTool {
 
     const linesSphere = new LinesSphere(1, 32)
     const headGeomItem = new GeomItem('DropAvatarHead', linesSphere, lineMaterial)
-    headGeomItem.setSelectable(false)
+    headGeomItem.pickableParam.value = false
     const headXfo = new Xfo()
     headXfo.sc.set(0.17 * 0.5, 0.17 * 0.5, 0.21 * 0.5) // Facing +y
     headXfo.tr.set(0, 0, 1.5)
@@ -43,7 +43,7 @@ class DropUserTool extends PointerTool {
     this.dropAvatar.addChild(headGeomItem, false)
 
     const torosGeomItem = new GeomItem('DropAvatarTorso', linesSphere, lineMaterial)
-    torosGeomItem.setSelectable(false)
+    torosGeomItem.pickableParam.value = false
     const torsoXfo = new Xfo()
     torsoXfo.sc.set(0.28 * 0.5, 0.28 * 0.5, 0.6 * 0.5) // Facing +y
     torsoXfo.tr.set(0, 0, 1.0)
@@ -51,7 +51,7 @@ class DropUserTool extends PointerTool {
     this.dropAvatar.addChild(torosGeomItem, false)
 
     const floorGeomItem = new GeomItem('floor', new Circle(0.3, 32), lineMaterial)
-    floorGeomItem.setSelectable(false)
+    floorGeomItem.pickableParam.value = false
     // const torsoXfo = new Xfo()
     // torsoXfo.tr.set(0, 0, 1.1)
     // floorGeomItem.localXfoParam.value = torsoXfo

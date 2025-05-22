@@ -158,7 +158,7 @@ class CreateMultiLineTool extends CreateGeomTool {
 
     if (shouldFinish) {
       // After completion, make it selectable.
-      this.change.geomItem.setSelectable(true)
+      this.change.geomItem.pickableParam.value = true
 
       this.emit('actionFinished')
       this.resetTool()

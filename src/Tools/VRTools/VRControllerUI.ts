@@ -86,14 +86,14 @@ export default class VRControllerUI extends TreeItem {
   constructor(appData: AppData, vrUIDOMElement: HTMLElement) {
     super('VRControllerUI')
 
-    this.setSelectable(false)
+    this.pickableParam.value = false
     this.appData = appData
     this.vrUIDOMElement = vrUIDOMElement
     this.vrUIDOMElement.style.display = 'none'
 
     // const mat = new FlatSurfaceMaterial('debug-vr-ui-mat')
     // this.debugGeomItem = new GeomItem('Debug', this.plane, mat)
-    // this.debugGeomItem.setSelectable(false)
+    // this.debugGeomItem.pickableParam.value = false
     // // Flip it over so we see the front.
     // const debugGeomItemXfo = new Xfo()
     // debugGeomItemXfo.ori.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI)
@@ -142,7 +142,7 @@ export default class VRControllerUI extends TreeItem {
           uimat.baseColorParam.setImage(dataImage)
 
           const geomItem = new GeomItem('element-vr-ui', this.plane, uimat, localXfo)
-          geomItem.setSelectable(false)
+          geomItem.pickableParam.value = false
           uiOffset.addChild(geomItem, false)
 
           const imageDatas: Record<string, HTMLImageElement> = {}

@@ -88,7 +88,7 @@ class MeasureDistance extends Measure {
       this.lineMaterial.baseColorParam.value = new Color(0, 0, 0, 0.7)
       this.lineMaterial.overlayParam.value = 0.1
       this.lineGeomItem = new GeomItem('Line', line, this.lineMaterial)
-      this.lineGeomItem.setSelectable(false)
+      this.lineGeomItem.pickableParam.value = false
       this.addChild(this.lineGeomItem)
       this.addChild(this.markerA)
       this.addChild(this.markerB)
@@ -146,8 +146,8 @@ class MeasureDistance extends Measure {
    * @param isVisible -
    */
   setGeomBuffersVisibility(isVisible: boolean): void {
-    this.markerA.setSelectable(!isVisible)
-    this.markerB.setSelectable(!isVisible)
+    this.markerA.pickableParam.value = !isVisible
+    this.markerB.pickableParam.value = !isVisible
   }
 
   /**

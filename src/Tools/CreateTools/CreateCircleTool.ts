@@ -62,7 +62,7 @@ class CreateCircleTool extends CreateGeomTool {
     }
 
     // After completion, make it selectable.
-    this.change.geomItem.setSelectable(true)
+    this.change.geomItem.pickableParam.value = true
 
     this.emit('actionFinished')
     this.change = null

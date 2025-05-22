@@ -64,7 +64,7 @@ class ViewCube extends TreeItem {
 
     const linesItem = new GeomItem('borderlines', lines, linesMaterial)
     linesItem.setOverlay(true)
-    linesItem.setSelectable(false)
+    linesItem.pickableParam.value = false
     this.addChild(linesItem, false, false)
 
     const buildFace = (quat: Quat, name: string) => {
@@ -93,7 +93,7 @@ class ViewCube extends TreeItem {
 
       const planeLabelItem = new GeomItem('face' + name, plane, labelMaterial, new Xfo(new Vec3(0, 0, 0.001)))
       planeLabelItem.setOverlay(true)
-      planeLabelItem.setSelectable(false)
+      planeLabelItem.pickableParam.value = false
       planeItem.addChild(planeLabelItem, false, false)
 
       label.once('labelRendered', (event: any) => {

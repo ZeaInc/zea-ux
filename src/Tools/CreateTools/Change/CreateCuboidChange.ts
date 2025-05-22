@@ -31,7 +31,7 @@ class CreateCuboidChange extends CreateGeomChange {
     const material = new SimpleSurfaceMaterial('Cone')
     material.baseColorParam.value = this.color
     this.geomItem = new CustomGeom('Cuboid', this.cuboid, material, this.xfo)
-    this.geomItem.setSelectable(false) // At the conclusion of creation, we set selectable to true.
+    this.geomItem.pickableParam.value = false // At the conclusion of creation, we set selectable to true.
     if (this.parentItem) {
       this.parentItem.addChild(this.geomItem)
     }

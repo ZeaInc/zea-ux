@@ -87,7 +87,7 @@ class PointerTool extends BaseTool {
       controller.raycastDist = this.raycastDist
 
       const pointerGeomItem = new GeomItem('PointerRay', this.geom, this.material)
-      pointerGeomItem.setSelectable(false)
+      pointerGeomItem.pickableParam.value = false
       const pointerXfo = new Xfo()
       pointerXfo.sc.set(1, 1, this.raycastDist / controller.getTipXfo().sc.z)
       pointerGeomItem.localXfoParam.value = pointerXfo

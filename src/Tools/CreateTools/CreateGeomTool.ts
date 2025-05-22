@@ -90,11 +90,9 @@ class CreateGeomTool extends BaseCreateTool {
       this.vrControllerToolTip = new Cross(0.05)
       this.vrControllerToolTipMat = new LinesMaterial('VRController Cross')
       this.vrControllerToolTipMat.baseColorParam.value = this.colorParam.value
-      this.vrControllerToolTipMat.setSelectable(false)
     }
     const geomItem = new GeomItem('CreateGeomToolTip', this.vrControllerToolTip, this.vrControllerToolTipMat)
-    geomItem.setSelectable(false)
-    // controller.getTipItem().removeAllChildren()
+    geomItem.pickableParam.value = false
     controller.getTipItem().addChild(geomItem, false)
   }
 

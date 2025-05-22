@@ -58,7 +58,7 @@ class SelectionTool extends BaseTool {
 
     this.rectItem = new GeomItem('selectionRect', this.selectionRect, this.selectionRectMat)
     this.rectItem.visibleParam.value = false
-    this.rectItem.setSelectable(false)
+    this.rectItem.pickableParam.value = false
     this.appData.renderer.addTreeItem(this.rectItem)
   }
 
