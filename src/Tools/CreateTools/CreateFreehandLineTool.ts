@@ -1,6 +1,7 @@
 import {
   BooleanParameter,
   TreeItem,
+  Vec2,
   Vec3,
   XRPoseEvent,
   Xfo,
@@ -22,8 +23,11 @@ import { AppData } from '../../../types/types'
  * @extends CreateLineTool
  */
 class CreateFreehandLineTool extends CreateLineTool {
-  invXfo: Xfo
-  prevP: Vec3
+  private invXfo: Xfo
+  private prevPointerPos: Vec2
+
+  drawLineOnSurface = true
+
   /**
    * Create a create freehand line tool.
    *
@@ -34,7 +38,7 @@ class CreateFreehandLineTool extends CreateLineTool {
   }
 
   screenPosToXfo(event: ZeaMouseEvent | ZeaTouchEvent): Xfo {
-    return super.screenPosToXfo(event, true)
+    return super.screenPosToXfo(event, this.drawLineOnSurface)
   }
 
   /**
@@ -42,7 +46,7 @@ class CreateFreehandLineTool extends CreateLineTool {
    *
    * @param xfo - The xfo param.
    */
-  createStart(xfo: Xfo): void {
+  createStart(xfo: Xfo, event: ZeaPointerEvent): void {
     const color = this.colorParam.value
     const lineThickness = this.lineThickness.value
 
@@ -52,7 +56,7 @@ class CreateFreehandLineTool extends CreateLineTool {
     this.xfo = xfo
     this.invXfo = xfo.inverse()
     this.stage = 1
-    this.prevP = xfo.tr
+    this.prevPointerPos = event.pointerPos
     this.length = 0
   }
 
@@ -62,14 +66,20 @@ class CreateFreehandLineTool extends CreateLineTool {
    * @param pt - The pt param.
    */
   createMove(pt: Vec3, event: ZeaPointerEvent): void {
-    const p = this.invXfo.transformVec3(pt)
-    const delta = p.subtract(this.prevP).length()
-    this.change.update({
-      point: p,
-    })
+    const pointerPos = event.pointerPos
 
-    this.length += delta
-    this.prevP = p
+    const p = this.invXfo.transformVec3(pt)
+    const delta = pointerPos.distanceTo(this.prevPointerPos)
+    // Add a point only if the distance is greater than 5 pixels.
+    // This is to avoid adding too many points when the mouse is moved slowly.
+    if (delta > 5) {
+      this.change.update({
+        point: p,
+      })
+
+      this.length += delta
+      this.prevPointerPos = pointerPos
+    }
   }
 
   /**

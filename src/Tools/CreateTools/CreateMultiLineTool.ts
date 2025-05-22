@@ -40,7 +40,7 @@ class CreateMultiLineTool extends CreateGeomTool {
    *
    * @param xfo - The xfo param.
    */
-  createStart(xfo: Xfo): void {
+  createStart(xfo: Xfo, event: ZeaPointerEvent): void {
     if (this.stage == 1) return
 
     this.change = new CreateMultiLineChange(this.parentItem, xfo, this.colorParam.value)

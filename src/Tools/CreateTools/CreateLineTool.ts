@@ -32,7 +32,7 @@ class CreateLineTool extends CreateGeomTool {
    *
    * @param xfo - The xfo param.
    */
-  createStart(xfo: Xfo): void {
+  createStart(xfo: Xfo, event: ZeaPointerEvent): void {
     const color = this.colorParam.value
     const lineThickness = this.lineThickness.value
     this.change = new CreateLineChange(this.parentItem, xfo, color, lineThickness)

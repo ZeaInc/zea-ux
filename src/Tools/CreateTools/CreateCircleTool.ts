@@ -29,7 +29,7 @@ class CreateCircleTool extends CreateGeomTool {
    *
    * @param xfo - The xfo param.
    */
-  createStart(xfo: Xfo): void {
+  createStart(xfo: Xfo, event: ZeaPointerEvent): void {
     this.change = new CreateCircleChange(this.parentItem, xfo, this.colorParam.value)
     UndoRedoManager.getInstance().addChange(this.change)
 
