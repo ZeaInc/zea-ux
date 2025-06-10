@@ -1,6 +1,6 @@
 {
   "name": "@zeainc/zea-ux",
-  "version": "4.7.2",
+  "version": "4.8.0",
   "description": "Zea UX",
   "homepage": "https://github.com/ZeaInc/zea-ux#readme",
   "author": "Zea Inc.",
@@ -67,7 +67,7 @@
     "@rollup/plugin-terser": "0.4.4",
     "@rollup/plugin-typescript": "^12.1.1",
     "@zeainc/zea-collab": "^6.3.4",
-    "@zeainc/zea-engine": "4.16.0-aaf8253b",
+    "@zeainc/zea-engine": "4.17.0",
     "canvas": "^2.6.1",
     "copyfiles": "^2.4.1",
     "cypress": "^5.6.0",
