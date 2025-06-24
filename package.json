@@ -25,7 +25,8 @@
   },
   "types": "dist/zea-ux.d.ts",
   "files": [
-    "dist/"
+    "dist/",
+    "src/"
   ],
   "keywords": [
     "Zea",

@@ -16,7 +16,11 @@ const plugins = [
     dedupe: ['@zeainc'],
   }), // so Rollup can find `ms`
   commonjs(), // so Rollup can convert `ms` to an ES module
-  typescript(), // so Rollup can convert TypeScript to JavaScript
+  typescript({
+    outputToFilesystem: true, // so Rollup can output types
+    sourceMap: true,
+    inlineSources: true,
+  }), // so Rollup can convert TypeScript to JavaScript
 ]
 const isProduction = !process.env.ROLLUP_WATCH
 
@@ -25,6 +29,12 @@ if (isProduction) {
 }
 
 const sourcemap = true
+const sourcemapPathTransform = (relativePath, sourcemapPath) => {
+  // 👇 this corrects paths like "../../src/..." to "../src/..."
+  // Without this, the paths in the sourcemap would be incorrect
+  // when the package is installed in a monorepo or similar structure.
+  return relativePath.replace(/^\.\.[\\\/]\.\.[\\\/]src[\\\/]?/, '../src/')
+}
 
 export default [
   // Browser-friendly UMD build.
@@ -36,6 +46,7 @@ export default [
       file: pkg.browser,
       format: 'umd',
       sourcemap,
+      sourcemapPathTransform,
       globals: {
         '@zeainc/zea-engine': 'zeaEngine',
       },
@@ -54,14 +65,14 @@ export default [
     external,
     plugins,
     output: [
-      { file: pkg.main, format: 'cjs', sourcemap },
-      { file: pkg.module, format: 'es', sourcemap },
+      { file: pkg.main, format: 'cjs', sourcemap, sourcemapPathTransform },
+      { file: pkg.module, format: 'es', sourcemap, sourcemapPathTransform },
     ],
   },
 
   {
     input: 'src/index.ts',
-    output: [{ file: pkg.types, format: 'es' }],
+    output: [{ file: pkg.types, format: 'es', sourcemapPathTransform }],
     plugins: [dts()],
   },
 ]
