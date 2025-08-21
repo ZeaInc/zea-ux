@@ -55,10 +55,12 @@ class CreateCuboidTool extends CreateGeomTool {
     if (this.stage == 1) {
       const delta = this.invXfo.transformVec3(pt)
 
-      // const delta = pt.subtract(this.xfo.tr)
+      const xfo = this.xfo.clone()
+      xfo.tr.addInPlace(xfo.ori.rotateVec3(delta.scale(0.5)))
+
       this.change.update({
         baseSize: [Math.abs(delta.x), Math.abs(delta.y)],
-        tr: this.xfo.tr.add(delta.scale(0.5)),
+        xfo,
       })
     } else {
       const vec = this.invXfo.transformVec3(pt)

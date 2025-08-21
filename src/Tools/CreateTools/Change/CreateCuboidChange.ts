@@ -47,10 +47,8 @@ class CreateCuboidChange extends CreateGeomChange {
       this.cuboid.sizeXParam.value = updateData.baseSize[0]
       this.cuboid.sizeYParam.value = updateData.baseSize[1]
     }
-    if (updateData.tr) {
-      const xfo = this.geomItem.localXfoParam.value
-      xfo.tr.fromJSON(updateData.tr)
-      this.geomItem.localXfoParam.value = xfo
+    if (updateData.xfo) {
+      this.geomItem.globalXfoParam.value = updateData.xfo
     }
     if (updateData.height) {
       this.cuboid.sizeZParam.value = updateData.height

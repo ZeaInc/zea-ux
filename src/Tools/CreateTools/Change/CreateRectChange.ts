@@ -30,8 +30,11 @@ class CreateRectChange extends CreateGeomChange {
     this.rect = new Rect(0, 0)
     const material = new LinesMaterial('circle')
     material.baseColorParam.value = this.color
-    this.geomItem = new CustomGeom('Rect', this.rect, material)
+    this.geomItem = new CustomGeom('Rect', this.rect, material, this.xfo)
     this.geomItem.pickableParam.value = false // At the conclusion of creation, we set selectable to true.
+    if (this.parentItem) {
+      this.parentItem.addChild(this.geomItem)
+    }
   }
 
   /**
@@ -40,17 +43,27 @@ class CreateRectChange extends CreateGeomChange {
    * @param updateData - The updateData param.
    */
   update(updateData: Record<any, any>): void {
-    if (updateData.baseSize) {
-      this.rect.sizeXParam.value = updateData.baseSize[0]
-      this.rect.sizeYParam.value = updateData.baseSize[1]
+    if (updateData.size) {
+      this.rect.sizeXParam.value = updateData.size[0]
+      this.rect.sizeYParam.value = updateData.size[1]
     }
-    if (updateData.tr) {
-      const xfo = this.geomItem.localXfoParam.value
-      xfo.tr.fromJSON(updateData.tr)
-      this.geomItem.localXfoParam.value = xfo
+    if (updateData.xfo) {
+      this.geomItem.globalXfoParam.value = updateData.xfo
     }
 
     this.emit('updated', updateData)
+  }
+
+  /**
+   * Serializes change as a JSON object.
+   *
+   * @return - The return value.
+   */
+  toJSON(): Record<any, any> {
+    const j: Record<any, any> = super.toJSON()
+    j.size = [this.rect.sizeXParam.value, this.rect.sizeYParam.value]
+    j.xfo = this.geomItem.globalXfoParam.value.toJSON()
+    return j
   }
 }
 
