@@ -12,6 +12,7 @@ import {
   ZeaPointerEvent,
   ZeaMouseEvent,
   ZeaTouchEvent,
+  CADAsset,
 } from '@zeainc/zea-engine'
 import { MeasureDistance } from './MeasureDistance'
 import { Measure } from './Measure'
@@ -102,48 +103,35 @@ class MeasureTool extends BaseTool {
     }
   }
 
+  // Overload this method in subclasses if needed to customize how CAD asset metadata is loaded.
+  protected async loadCADAssetMetadata(cadAsset: CADAsset): Promise<void> {
+    await cadAsset.loadMetadata()
+  }
+
   /**
-   * @protected
    * @param geomItem
    * @returns
    */
-  getGeomParams(geomItem: GeomItem, componentId: number = -1): Promise<ParameterOwner> {
-    return new Promise<ParameterOwner>((resolve) => {
-      const geom = geomItem.geomParam.value
-      if (geomItem instanceof CADBody && geom instanceof CompoundGeom) {
-        const cadBody: CADBody = geomItem
-        // @ts-ignore
-        cadBody.assetItem.loadMetadata().then(() => {
-          // @ts-ignore
-          resolve(geom.subGeoms[componentId])
+  protected getGeomParams(geomItem: GeomItem, componentId: number = -1): Promise<ParameterOwner> {
+    return new Promise<ParameterOwner>((resolve, reject) => {
+      // @ts-ignore
+      const cadAsset = geomItem.assetItem
+      if (geomItem instanceof CADBody && cadAsset instanceof CADAsset) {
+        this.loadCADAssetMetadata(cadAsset).then(() => {
+          const geom = geomItem.geomParam.value
+          if (geom instanceof CompoundGeom) {
+            resolve(geom.subGeoms[componentId])
+          } else {
+            resolve(geomItem)
+          }
         })
       } else {
-        resolve(geomItem)
+        reject('Geom Item is not a CADBody')
       }
     })
   }
 
-  /**
-   * @protected
-   * @param geomItem
-   * @returns
-   */
-  getGeomParamsSync(geomItem: GeomItem, componentId: number = -1): ParameterOwner {
-    const geom = geomItem.geomParam.value
-    if (geomItem instanceof CADBody && geom instanceof CompoundGeom) {
-      const cadBody: CADBody = geomItem
-      // @ts-ignore
-      return geom.subGeoms[componentId]
-    }
-    return geomItem
-  }
-
-  /**
-   * @private
-   * @param geomItem
-   * @returns
-   */
-  getGeomXfo(geomItem: GeomItem, componentId: number = -1): Xfo {
+  protected getGeomXfo(geomItem: GeomItem, componentId: number = -1): Xfo {
     const geom = geomItem.geomParam.value
     if (geom instanceof CompoundGeom) {
       const subGeom = geom.subGeoms[componentId]
@@ -160,7 +148,7 @@ class MeasureTool extends BaseTool {
    * @param geomItem - The geomItem to check
    * @return {boolean}
    */
-  checkGeom(geomItem: GeomItem, componentId: number = -1): Promise<ParameterOwner | null> {
+  private checkGeom(geomItem: GeomItem, componentId: number = -1): Promise<ParameterOwner | null> {
     return new Promise<ParameterOwner | null>((resolve) => {
       this.getGeomParams(geomItem, componentId).then((geomParams) => {
         if (geomParams) {
