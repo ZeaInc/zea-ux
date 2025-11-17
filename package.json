@@ -1,6 +1,6 @@
 {
   "name": "@zeainc/zea-ux",
-  "version": "4.9.0",
+  "version": "4.10.0",
   "description": "Zea UX",
   "homepage": "https://github.com/ZeaInc/zea-ux#readme",
   "author": "Zea Inc.",
@@ -83,7 +83,7 @@
     "prettier": "^2.2.1",
     "rollup": "^2.34.1",
     "rollup-plugin-dts": "^4.2.3",
-    "standard-version": "^9.0.0",
+    "standard-version": "^9.5.0",
     "ts-node": "^10.4.0",
     "tslib": "^2.3.1",
     "typedoc": "^0.23.21",
