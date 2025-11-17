@@ -141,7 +141,7 @@ class PointerTool extends BaseTool {
         for (const controller of this.vrViewport.controllers) {
           unbindController(controller)
         }
-        this.vrViewport.removeListenerById('controllerAdded', this.bindControllerId)
+        this.vrViewport.off('controllerAdded', this.bindControllerId)
       }
     }
   }

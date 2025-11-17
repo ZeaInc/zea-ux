@@ -537,7 +537,7 @@ class VRUITool extends PointerTool {
         const rot = new Quat()
         rot.setFromAxisAndAngle(new Vec3(0, 1, 0), Math.PI)
         xfo.ori.multiplyInPlace(rot)
-        camera.setFocalDistance(0.75)
+        camera.focalDistanceParam.value = 0.75
         this.controllerUI.globalXfoParam.value = xfo
 
         this.appData.renderer.addTreeItem(this.controllerUI)

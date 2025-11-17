@@ -1,1 +1,3 @@
-export PERCY_TOKEN=copy_from_percy_project_settings
+# vim: syntax=sh
+
+export ZEA_GITHUB_NPM_TOKEN=some-token-value

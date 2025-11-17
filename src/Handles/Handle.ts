@@ -11,9 +11,19 @@ import {
   ZeaTouchEvent,
   XRControllerEvent,
   XRPoseEvent,
+  TreeItemEventMap,
+  BaseEvent,
 } from '@zeainc/zea-engine' // , PointerEvent
 
 import { getPointerRay } from '../utility'
+
+interface HandleEventMap extends TreeItemEventMap {
+  highlight: BaseEvent
+  unhighlight: BaseEvent
+  dragStart: BaseEvent
+  drag: BaseEvent
+  dragEnd: BaseEvent
+}
 
 /**
  * A Handle is an UI widget that lives in the scene, it translates a series of pointer events into a higher level interaction.
@@ -304,6 +314,22 @@ class Handle extends TreeItem {
   setTargetParam(param: Parameter<unknown>): void {
     console.warn('setTargetParam not implemented')
   }
+
+  // #region Event Emitter Interfaces
+
+  on<K extends keyof HandleEventMap>(eventName: K, callback: (event?: HandleEventMap[K]) => void): number {
+    return super.on(eventName as any, callback)
+  }
+
+  off<K extends keyof HandleEventMap>(eventName: K, listenerOrId: number | ((event?: HandleEventMap[K]) => void)) {
+    return super.off(eventName as any, listenerOrId)
+  }
+
+  emit<K extends keyof HandleEventMap>(eventName: K, event?: HandleEventMap[K]): void {
+    super.emit(eventName as any, event)
+  }
+
+  // #endregion
 }
 
 export default Handle

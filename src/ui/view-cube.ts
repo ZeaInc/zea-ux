@@ -14,7 +14,7 @@ import {
 import { ToolManager } from '../Tools/ToolManager'
 import { ViewCube } from '../Handles/ViewCube'
 
-class ZeaViewCube extends HTMLElement {
+class ZeaViewCubeElement extends HTMLElement {
   private div: HTMLDivElement
   private sceneViewport: GLViewport
   private viewCubeCamera: Camera
@@ -43,8 +43,8 @@ class ZeaViewCube extends HTMLElement {
         const viewCubeCameraXfo = this.viewCubeCamera.globalXfoParam.value
 
         const camera = this.sceneViewport.getCamera()
-        const target = camera.getTargetPosition()
-        const dist = camera.getFocalDistance()
+        const target = camera.focalPointParam.value
+        const dist = camera.focalDistanceParam.value
 
         const xfo = camera.globalXfoParam.value.clone()
         xfo.ori = viewCubeCameraXfo.ori.clone()
@@ -83,8 +83,8 @@ class ZeaViewCube extends HTMLElement {
   private alignSceneCameraToVector(normal: Vec3, duration = 400) {
     const camera = this.sceneViewport.getCamera()
 
-    const target = camera.getTargetPosition()
-    const dist = camera.getFocalDistance()
+    const target = camera.focalPointParam.value
+    const dist = camera.focalDistanceParam.value
 
     const startXfo = camera.globalXfoParam.value
     const startUp = startXfo.ori.getYaxis()
@@ -196,5 +196,7 @@ class ZeaViewCube extends HTMLElement {
 }
 
 if (!customElements.get('zea-view-cube')) {
-  customElements.define('zea-view-cube', ZeaViewCube)
+  customElements.define('zea-view-cube', ZeaViewCubeElement)
 }
+
+export { ZeaViewCubeElement }

@@ -9,10 +9,16 @@ import {
   DataImage,
   FlatSurfaceMaterial,
   XRController,
+  TreeItemEventMap,
+  BaseEvent,
 } from '@zeainc/zea-engine'
 import { AppData } from '../../../types/types.js'
 
 import domtoimage from './dom-to-image.js'
+
+interface VRControllerUIEventMap extends TreeItemEventMap {
+  ready: BaseEvent
+}
 
 /**
  * Traverse a dom tree and call a callback at each node.
@@ -247,4 +253,26 @@ export default class VRControllerUI extends TreeItem {
     // The event is re-cycled to generate a 'click' event on mouse down.
     return event
   }
+
+  // #region Event Emitter Interfaces
+
+  on<K extends keyof VRControllerUIEventMap>(
+    eventName: K,
+    callback: (event?: VRControllerUIEventMap[K]) => void
+  ): number {
+    return super.on(eventName as any, callback)
+  }
+
+  off<K extends keyof VRControllerUIEventMap>(
+    eventName: K,
+    listenerOrId: number | ((event?: VRControllerUIEventMap[K]) => void)
+  ) {
+    return super.off(eventName as any, listenerOrId)
+  }
+
+  emit<K extends keyof VRControllerUIEventMap>(eventName: K, event?: VRControllerUIEventMap[K]): void {
+    super.emit(eventName as any, event)
+  }
+
+  // #endregion
 }

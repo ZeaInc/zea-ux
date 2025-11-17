@@ -140,7 +140,7 @@ class CreateGeomTool extends BaseCreateTool {
     const viewport = event.viewport as GLViewport
     const camera = viewport.getCamera()
     this.constructionPlane = camera.globalXfoParam.value.clone()
-    this.constructionPlane.tr = pointerRay.pointAtDist(camera.getFocalDistance())
+    this.constructionPlane.tr = pointerRay.pointAtDist(camera.focalDistanceParam.value)
 
     // this code align the construction plane with the current view direction
     // It tries to orthogonalize the view directionto get a perfect orthogonal plane.
@@ -183,7 +183,7 @@ class CreateGeomTool extends BaseCreateTool {
     const viewport = event.viewport as GLViewport
     const camera = viewport.getCamera()
     const xfo = camera.globalXfoParam.value.clone()
-    xfo.tr = ray.pointAtDist(camera.getFocalDistance())
+    xfo.tr = ray.pointAtDist(camera.focalDistanceParam.value)
     return xfo
   }
 
