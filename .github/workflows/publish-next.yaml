@@ -16,12 +16,14 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - run: yarn install --frozen-lockfile
-
       - uses: actions/setup-node@v4
         with:
           node-version: 'lts/*'
           registry-url: 'https://npm.pkg.github.com'
+
+      - run: yarn install --frozen-lockfile
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: get-npm-version
         id: package-version
