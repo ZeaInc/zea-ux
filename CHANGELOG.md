@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.12.0](https://github.com/ZeaInc/zea-ux/compare/v4.9.0...v4.12.0) (2025-11-24)
+
+
+### Features
+
+* Provide a simple model to support customizing how CADAsset metadata is loaded ([4eb1424](https://github.com/ZeaInc/zea-ux/commit/4eb1424b7c5850f398b34f545e8aefda1ad73d37))
+
+
+### Bug Fixes
+
+* Rect and Cuboid tool did not correctly position the geometry on creation. ([e812da7](https://github.com/ZeaInc/zea-ux/commit/e812da778da5d0e2c1124644fdc2ac216ca795b6))
+
+## [4.8.0](https://github.com/ZeaInc/zea-ux/compare/v4.7.2...v4.8.0) (2025-06-10)
+
 ## [4.11.0](https://github.com/ZeaInc/zea-ux/compare/v4.9.0...v4.11.0) (2025-11-24)
 
 
