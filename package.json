@@ -5,6 +5,9 @@
   "homepage": "https://github.com/ZeaInc/zea-ux#readme",
   "author": "Zea Inc.",
   "license": "MIT",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/ZeaInc/zea-ux.git"

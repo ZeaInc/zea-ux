@@ -26,7 +26,26 @@ The Zea UX plug-in is under a [`MIT`](https://en.wikipedia.org/wiki/MIT_License)
 </br>
 
 # Add it to your project
-The process to add Zea UX to your projects is easy. 
+The process to add Zea UX to your projects is easy.
+
+## *Development Setup*
+This project depends on private `@zeainc` packages hosted on GitHub Packages. To install dependencies locally, you need to configure authentication in your global npm configuration:
+
+1. Create a GitHub Personal Access Token (classic) with `read:packages` scope:
+   - Go to GitHub Settings → Developer settings → Personal access tokens → Tokens (classic)
+   - Generate new token with `read:packages` permission
+
+2. Add the token to your global `~/.npmrc` file:
+   ```bash
+   echo "//npm.pkg.github.com/:_authToken=YOUR_GITHUB_TOKEN" >> ~/.npmrc
+   ```
+
+3. Now you can install dependencies:
+   ```bash
+   yarn install
+   ```
+
+> **Note**: The authentication token should only be in your global `~/.npmrc`, never commit tokens to the repository. 
 
 ## *Using CDNs*
 For static websites or quick implementation you can always use CDNs like JsDelivr or Unpkg:

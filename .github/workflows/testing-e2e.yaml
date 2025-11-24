@@ -20,7 +20,10 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+          registry-url: 'https://npm.pkg.github.com'
       - run: yarn install --frozen-lockfile
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: yarn run start &
       - name: E2E testing
         run: yarn run test:e2e
