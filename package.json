@@ -1,6 +1,6 @@
 {
   "name": "@zeainc/zea-ux",
-  "version": "4.10.0",
+  "version": "4.11.0",
   "description": "Zea UX",
   "homepage": "https://github.com/ZeaInc/zea-ux#readme",
   "author": "Zea Inc.",
@@ -66,7 +66,7 @@
     "@rollup/plugin-node-resolve": "^13.0.6",
     "@rollup/plugin-terser": "0.4.4",
     "@rollup/plugin-typescript": "^12.1.1",
-    "@zeainc/zea-engine": "4.18.0-3478718",
+    "@zeainc/zea-engine": "4.18.0",
     "copyfiles": "^2.4.1",
     "docsify-cli": "^4.4.2",
     "documentation": "^13.1.0",
