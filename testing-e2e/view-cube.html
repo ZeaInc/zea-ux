@@ -16,7 +16,7 @@
         width: 100px;
         height: 100px;
         top: 8px;
-        right: 8px;
+        right: -8px;
       }
     </style>
     <link rel="stylesheet" href="styles/tailwind.min.css" />
@@ -53,6 +53,9 @@
         Cuboid,
         Torus,
         CameraManipulator,
+        Label,
+        BillboardItem,
+        MathFunctions,
       } = window.zeaEngine
       const { ViewCube, AxisTripod } = window.zeaUx
       const domElement = document.getElementById('canvas')
@@ -68,8 +71,7 @@
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(3, 3, 1.7), new Vec3(0, 0, 0))
 
       const viewCube = document.getElementById('view-cube')
-      viewCube.setFaceColor(new Color(0.8, 0.15, 1))
-      viewCube.setViewport(renderer.getViewport())
+      viewCube.init(renderer.getViewport(), new Color(0.8, 0.15, 1), new Color(0.9, 0.25, 1), new Color(1, 1, 1))
 
       const manipulator = renderer.getViewport().getManipulator()
       manipulator.setDefaultManipulationMode(CameraManipulator.MANIPULATION_MODES.turntable)

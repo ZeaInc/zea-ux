@@ -16,6 +16,7 @@ import { ViewCube } from '../Handles/ViewCube'
 
 class ZeaViewCubeElement extends HTMLElement {
   private div: HTMLDivElement
+  private scene: Scene = new Scene()
   private sceneViewport: GLViewport
   private viewCubeCamera: Camera
   private viewCube: ViewCube
@@ -24,17 +25,19 @@ class ZeaViewCubeElement extends HTMLElement {
 
   constructor() {
     super()
-    this.attachShadow({ mode: 'open' })
+  }
+
+  connectedCallback() {
     this.div = document.createElement('div')
     this.canvas = document.createElement('canvas')
     this.div.appendChild(this.canvas)
-    this.shadowRoot?.appendChild(this.div)
     this.div.style.width = '100%'
     this.div.style.height = '100%'
+    this.appendChild(this.div)
 
-    const scene = new Scene()
-    const renderer = new GLRenderer(this.canvas)
+    const renderer = new GLRenderer(this.canvas, { antialias: true })
     renderer.getViewport().backgroundColorParam.value = new Color(1, 1, 1, 0)
+
     this.viewCubeCamera = renderer.getViewport().getCamera()
     this.viewCubeCamera.focalDistanceParam.value = 2.75
 
@@ -59,25 +62,7 @@ class ZeaViewCubeElement extends HTMLElement {
 
     this.viewCubeCamera.globalXfoParam.on('valueChanged', updateSceneCameraXfo)
 
-    renderer.setScene(scene)
-
-    this.viewCube = new ViewCube()
-    this.viewCube.visibleParam.value = false
-    scene.getRoot().addChild(this.viewCube)
-
-    this.viewCube.on('pointerClick', (event: ZeaPointerEvent) => {
-      const geomItem = event.intersectionData!.geomItem
-      const vec = geomItem.globalXfoParam.value.ori.rotateVec3(new Vec3(0, 0, 1))
-      this.alignSceneCameraToVector(vec)
-      event.stopPropagation()
-    })
-  }
-
-  setFaceColor(faceColor = new Color(1, 0.8, 0.15), faceHighlightColor?: Color): void {
-    this.viewCube.setFaceColor(
-      faceColor,
-      faceHighlightColor ? faceHighlightColor : faceColor.lerp(new Color(1, 1, 1), 0.5)
-    )
+    renderer.setScene(this.scene)
   }
 
   private alignSceneCameraToVector(normal: Vec3, duration = 400) {
@@ -170,7 +155,44 @@ class ZeaViewCubeElement extends HTMLElement {
     applyMovement()
   }
 
-  setViewport(viewport: GLViewport) {
+  init(
+    viewport: GLViewport,
+    faceColor = new Color(1, 0.8, 0.15),
+    faceHighlightColor = new Color(1, 0.9, 0.5),
+    fontColor = new Color(0, 0, 0),
+    font = 'Verdana',
+    size = 1,
+    edgeBorderRatio = 0.15,
+    fontSize = 50,
+    margin = 10,
+    labels: Record<string, string> = {
+      YPos: 'FRONT',
+      YNeg: 'BACK',
+      XPos: 'LEFT',
+      XNeg: 'RIGHT',
+      ZPos: 'TOP',
+      ZNeg: 'BOTTOM',
+    }
+  ): void {
+    this.viewCube = new ViewCube(
+      faceColor,
+      faceHighlightColor,
+      fontColor,
+      font,
+      size,
+      edgeBorderRatio,
+      fontSize,
+      margin,
+      labels
+    )
+    this.viewCube.on('pointerClick', (event: ZeaPointerEvent) => {
+      const geomItem = event.intersectionData!.geomItem
+      const vec = geomItem.globalXfoParam.value.ori.rotateVec3(new Vec3(0, 0, 1))
+      this.alignSceneCameraToVector(vec)
+      event.stopPropagation()
+    })
+    this.scene.getRoot().addChild(this.viewCube)
+
     this.sceneViewport = viewport
 
     const camera = this.sceneViewport.getCamera()
@@ -191,7 +213,6 @@ class ZeaViewCubeElement extends HTMLElement {
       // This event tells the viewport to re-render the picking buffer.
       this.viewCubeCamera.emit('movementFinished')
     })
-    this.viewCube.visibleParam.value = true
   }
 }
 
