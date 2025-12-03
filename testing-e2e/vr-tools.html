@@ -225,7 +225,7 @@
       const handToolXfo = new Xfo()
       handToolXfo.sc.set(39.3701, 39.3701, 39.3701) // Tool model is in millimeters
       const eulerAngles = new EulerAngles(-MathFunctions.degToRad(110), MathFunctions.degToRad(90), 0, 'XYZ')
-      handToolXfo.ori.setFromEulerAngles(eulerAngles)
+      handToolXfo.ori = eulerAngles.toQuat()
       handToolXfo.tr.set(0, 0, 0.05)
       const handHeldTool = new HandHeldTool('data/zcad/TorqueWrench.stp.zcad', handToolXfo, appData)
       toolManager.registerTool('HandHeldTool', handHeldTool)

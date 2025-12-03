@@ -115,7 +115,8 @@ export default class VRControllerUI extends TreeItem {
       const localXfo = new Xfo()
       const dpm = 0.0005 // dots-per-meter (1 each 1/2mm)
       localXfo.sc.set(dpm, dpm, dpm)
-      localXfo.ori.setFromEulerAngles(new EulerAngles(Math.PI, Math.PI, 0))
+      const eulerAngles = new EulerAngles(Math.PI, Math.PI, 0)
+      localXfo.ori = eulerAngles.toQuat()
       uiOffset.localXfoParam.value = localXfo
 
       this.size = new Vec3(this.vrUIDOMElement.clientWidth * dpm, this.vrUIDOMElement.clientHeight * dpm, 1)

@@ -137,11 +137,11 @@ class VRUITool extends PointerTool {
     // Z = Towards handle base.
     if (this.uiController.getHandedness() == 'right') {
       const eulerAngles = new EulerAngles(-MathFunctions.degToRad(90), MathFunctions.degToRad(90), 0, 'XYZ')
-      uiLocalXfo.ori.setFromEulerAngles(eulerAngles)
+      uiLocalXfo.ori = eulerAngles.toQuat()
       uiLocalXfo.tr.set(-0.05, 0, -0.05)
     } else {
       const eulerAngles = new EulerAngles(-MathFunctions.degToRad(90), -MathFunctions.degToRad(90), 0, 'XYZ')
-      uiLocalXfo.ori.setFromEulerAngles(eulerAngles)
+      uiLocalXfo.ori = eulerAngles.toQuat()
       uiLocalXfo.tr.set(0.05, 0, -0.05)
     }
 
