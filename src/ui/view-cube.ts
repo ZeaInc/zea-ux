@@ -19,6 +19,7 @@ class ZeaViewCubeElement extends HTMLElement {
   private scene: Scene = new Scene()
   private sceneViewport: GLViewport
   private viewCubeCamera: Camera
+  private viewCubeCameraDistance: number = 2.75
   private viewCube: ViewCube
   private canvas: HTMLCanvasElement
   private movingViewCubeCamera: boolean = false
@@ -39,7 +40,7 @@ class ZeaViewCubeElement extends HTMLElement {
     renderer.getViewport().backgroundColorParam.value = new Color(1, 1, 1, 0)
 
     this.viewCubeCamera = renderer.getViewport().getCamera()
-    this.viewCubeCamera.focalDistanceParam.value = 2.75
+    this.viewCubeCamera.focalDistanceParam.value = this.viewCubeCameraDistance
 
     const updateSceneCameraXfo = () => {
       if (!this.movingViewCubeCamera && this.sceneViewport) {
@@ -198,11 +199,10 @@ class ZeaViewCubeElement extends HTMLElement {
     const camera = this.sceneViewport.getCamera()
     const updateViewCubeCameraXfo = () => {
       this.movingViewCubeCamera = true
-      const focalDistance = this.viewCubeCamera.focalDistanceParam.value
       const sceneCameraXfo = camera.globalXfoParam.value
       const xfo = new Xfo()
       xfo.ori = sceneCameraXfo.ori.clone()
-      xfo.tr.addInPlace(sceneCameraXfo.ori.getZaxis().scale(focalDistance))
+      xfo.tr.addInPlace(sceneCameraXfo.ori.getZaxis().scale(this.viewCubeCameraDistance))
       this.viewCubeCamera.globalXfoParam.value = xfo
       this.movingViewCubeCamera = false
     }

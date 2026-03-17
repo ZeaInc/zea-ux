@@ -7,7 +7,6 @@ import {
   TreeItem,
   FlatSurfaceMaterial,
   MathFunctions,
-  GLViewport,
   ZeaPointerEvent,
   Plane,
   Label,
@@ -17,7 +16,6 @@ import {
 } from '@zeainc/zea-engine'
 
 class ViewCube extends TreeItem {
-  private viewport: GLViewport
   private faceMaterial = new FlatSurfaceMaterial('material')
   private highlightedMaterial = new FlatSurfaceMaterial('material')
   private highlightedGeom: GeomItem
