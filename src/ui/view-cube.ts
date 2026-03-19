@@ -70,12 +70,11 @@ class ZeaViewCubeElement extends HTMLElement {
     const camera = this.sceneViewport.getCamera()
 
     const target = camera.focalPointParam.value
-    const dist = camera.focalDistanceParam.value
-
     const startXfo = camera.globalXfoParam.value
+    const targetOffset = startXfo.inverse().transformVec3(target).negate()
+
     const startUp = startXfo.ori.getYaxis()
     startUp.subtractInPlace(normal.scale(startUp.dot(normal)))
-
     const endUp = new Vec3()
     const calcUpVector = () => {
       if (Math.abs(startUp.x) > Math.abs(startUp.y) && Math.abs(startUp.x) > Math.abs(startUp.z)) {
@@ -130,7 +129,6 @@ class ZeaViewCubeElement extends HTMLElement {
     // Now blend the camera from the starting values to the end values.
 
     const count = Math.round(duration / 20) // each step is 20ms
-    let id
     let i = 1
     const applyMovement = () => {
       const lerpValue = count > 0 ? MathFunctions.smoothStep(0, 1, i / count) : 1.0
@@ -138,16 +136,14 @@ class ZeaViewCubeElement extends HTMLElement {
       // interpolate the orientation between the start and the end ones.
       const xfo = new Xfo()
       xfo.ori = startXfo.ori.slerp(endOri, lerpValue).normalize()
-
-      // Move the camera back away from the new target using the orientation.
-      const newDir = xfo.ori.getZaxis().negate()
-      xfo.tr = target.subtract(newDir.scale(dist))
+      xfo.tr = target
+      xfo.tr = xfo.transformVec3(targetOffset)
 
       camera.globalXfoParam.value = xfo
 
       i++
       if (i <= count) {
-        id = setTimeout(applyMovement, 20)
+        setTimeout(applyMovement, 20)
       } else {
         // This event tells the viewport to re-render the picking buffer.
         camera.emit('movementFinished')
