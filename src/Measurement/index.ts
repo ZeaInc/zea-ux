@@ -1,3 +1,4 @@
+export * from './Measure'
 export * from './MeasureDistance'
 export * from './MeasureAngle'
 export * from './MeasurementChange'
