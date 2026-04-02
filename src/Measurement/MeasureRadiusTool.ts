@@ -109,10 +109,10 @@ class MeasureRadiusTool extends MeasureTool {
       }
       const color = this.colorParam.value
 
-      const measurement = new MeasureDistance('MeasureRadius', color, this.appData.sceneUnits)
+      const measurement = new MeasureDistance('MeasureRadius', color)
       measurement.setStartMarkerPos(axisPos)
       measurement.setEndMarkerPos(edgePos)
-      measurement.setGeomBuffersVisibility(false)
+      measurement.setIsPickable(true)
       this.parentItem.addChild(measurement)
 
       const measurementChange = new MeasurementChange(measurement)

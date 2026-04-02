@@ -41,7 +41,7 @@ class MeasurementChange extends Change {
    *
    */
   end(): void {
-    this.measurement.setGeomBuffersVisibility(true)
+    this.measurement.setIsPickable(true)
   }
 
   /**

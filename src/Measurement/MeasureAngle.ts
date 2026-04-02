@@ -65,33 +65,14 @@ class MeasureAngle extends Measure {
 
     // ////////////////////////////////////////
     // Build the visualization parts.
-    const lineA = new GeomItem('Line', line, this.lineMaterial)
-    const lineB = new GeomItem('Line', line, this.lineMaterial)
+    const lineA = new GeomItem('LineA', line, this.lineMaterial)
+    lineA.pickableParam.value = false
+    const lineB = new GeomItem('LineB', line, this.lineMaterial)
+    lineB.pickableParam.value = false
+    const lineC = new GeomItem('LineC', line, this.lineMaterial)
+    lineC.pickableParam.value = false
     this.markerA.addChild(lineA, false)
     this.markerB.addChild(lineB, false)
-
-    this.label = new Label('Distance')
-    this.label.fontSizeParam.value = 20
-    this.label.backgroundColorParam.value = this.colorParam.value
-    this.label.borderRadiusParam.value = 3
-    this.label.borderWidthParam.value = 0.5
-    this.label.textParam.value = `${(angle / (Math.PI / 180)).toFixed(3)} °`
-
-    this.billboard = new BillboardItem('DistanceBillboard', this.label)
-    this.billboard.localXfoParam.value = new Xfo()
-    this.billboard.pixelsPerMeterParam.value = 2000
-    // @ts-ignore
-    if (this.billboard.alignedToCameraParam) {
-      // @ts-ignore
-      this.billboard.alignedToCameraParam.value = true
-    } else {
-      this.billboard.alignmentParam.value = BillboardAlignment.AlignedToCamera
-    }
-    this.billboard.drawOnTopParam.value = true
-    this.billboard.fixedSizeOnscreenParam.value = true
-    this.billboard.alphaParam.value = 1
-
-    this.addChild(this.billboard)
 
     this.colorParam.on('valueChanged', () => {
       const color = this.colorParam.value
@@ -117,6 +98,7 @@ class MeasureAngle extends Measure {
     lineBXfo.sc.z = params[1]
     lineB.localXfoParam.value = lineBXfo
 
+    this.createLabel(`${(angle / (Math.PI / 180)).toFixed(3)} °`, BillboardAlignment.AlignedToCamera)
     this.billboard.globalXfoParam.value = labelXfo
   }
 

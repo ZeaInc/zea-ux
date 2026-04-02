@@ -14,6 +14,9 @@ import {
   Material,
   Mat3,
   Xfo,
+  NumberParameter,
+  BillboardAlignment,
+  Vec2,
 } from '@zeainc/zea-engine'
 
 import { HandleMaterial } from '../Handles/Shaders/HandleMaterial'
@@ -49,7 +52,8 @@ transformVertices(cone, tipXfo)
  * @extends {TreeItem}
  */
 class Measure extends TreeItem {
-  colorParam: ColorParameter
+  colorParam = new ColorParameter('Color')
+  fontSizeParam = new NumberParameter('Font Size', 24)
   lineMaterial: LinesMaterial
   markerMaterial: HandleMaterial
   markerA: GeomItem
@@ -60,26 +64,69 @@ class Measure extends TreeItem {
   constructor(name = 'Measure', color = new Color('#F9CE03')) {
     super(name)
 
-    this.colorParam = <ColorParameter>this.addParameter(new ColorParameter('Color', color))
+    this.addParameter(this.colorParam)
+    this.addParameter(this.fontSizeParam)
+    this.colorParam.value = color
 
     this.markerMaterial = new HandleMaterial('Marker')
     this.markerMaterial.baseColorParam.value = new Color(0, 0, 0, 0.7)
     this.markerMaterial.maintainScreenSizeParam.value = 1
-    this.markerMaterial.overlayParam.value = 0.5
+    this.markerMaterial.overlayParam.value = 0
 
     this.lineMaterial = new LinesMaterial('Line')
     this.lineMaterial.baseColorParam.value = new Color(0, 0, 0, 0.7)
-    this.lineMaterial.overlayParam.value = 0.5
+    this.lineMaterial.overlayParam.value = 0.002
 
     this.markerA = new GeomItem(`markerA`, cone, this.markerMaterial)
+    this.markerA.pickableParam.value = false
     this.markerB = new GeomItem(`markerB`, cone, this.markerMaterial)
+    this.markerB.pickableParam.value = false
+  }
 
+  createLabel(text: string, alignment: number): void {
+    this.label = new Label('Label')
+    this.label.backgroundColorParam.value = this.colorParam.value
+    this.label.borderRadiusParam.value = 3
+    this.label.borderWidthParam.value = 0.5
+    this.label.fontSizeParam.value = this.fontSizeParam.value
     this.colorParam.on('valueChanged', () => {
-      const color = this.colorParam.value
-      // this.markerMaterial.baseColorParam.value = color
-      // this.lineMaterial.baseColorParam.value = color
-      this.label.backgroundColorParam.value = color
+      this.label.backgroundColorParam.value = this.colorParam.value
     })
+    this.fontSizeParam.on('valueChanged', () => {
+      const fontSize = this.fontSizeParam.value
+      this.label.fontSizeParam.value = fontSize
+    })
+    this.label.textParam.value = text
+    this.label.renderLabelToImage()
+
+    this.billboard = new BillboardItem('AngleBillboard', this.label)
+    this.billboard.drawOnTopParam.value = true
+    this.billboard.pixelsPerMeterParam.value = 2000
+    this.billboard.pivotParam.value = new Vec2(0.5, 0.5)
+    this.billboard.alignmentParam.value = alignment
+
+    this.billboard.drawOnTopParam.value = true
+    this.billboard.fixedSizeOnscreenParam.value = true
+    this.billboard.alphaParam.value = 1
+
+    this.addChild(this.billboard)
+  }
+  /**
+   *
+   *
+   * @param isPickable -
+   */
+  setIsPickable(isPickable: boolean): void {
+    this.markerA.pickableParam.value = isPickable
+    this.markerB.pickableParam.value = isPickable
+  }
+
+  /**
+   *
+   * @return {string}
+   */
+  getMeasurementText(): any {
+    return this.label.getParameter('Text').value
   }
 }
 

@@ -15,10 +15,19 @@ import {
   CADAsset,
   BaseToolEventMap,
   BaseEvent,
+  Sphere,
 } from '@zeainc/zea-engine'
 import { Measure } from './Measure'
 import { MeasurementChange } from './MeasurementChange'
 import { AppData } from '../../types/types'
+import { HandleMaterial } from '../Handles'
+
+const color = new Color('#F9CE03')
+const sphere = new Sphere(0.003, 24, 12)
+const pickPointMaterial = new HandleMaterial('Marker')
+pickPointMaterial.baseColorParam.value = color
+pickPointMaterial.maintainScreenSizeParam.value = 1
+pickPointMaterial.overlayParam.value = 0.5
 
 interface MeasureToolEventMap extends BaseToolEventMap {
   actionFinished: BaseEvent
@@ -31,7 +40,7 @@ interface MeasureToolEventMap extends BaseToolEventMap {
  */
 class MeasureTool extends BaseTool {
   protected appData: AppData
-  colorParam: ColorParameter
+  colorParam = new ColorParameter('Color', color)
   parentItem: TreeItem
 
   protected measurement: Measure
@@ -44,6 +53,9 @@ class MeasureTool extends BaseTool {
   protected highlightedItemB_params: ParameterOwner
   protected highlightedItemB_componentId: number
   protected highlightedItemB_highlightKey: string
+
+  protected pickPointA: GeomItem
+  protected pickPointB: GeomItem
 
   protected stage: number = 0
   protected numStages: number = 1
@@ -58,9 +70,7 @@ class MeasureTool extends BaseTool {
    */
   constructor(appData: AppData, parentItem: TreeItem) {
     super()
-
     this.parentItem = parentItem
-    this.colorParam = new ColorParameter('Color', new Color('#F9CE03'))
     this.addParameter(this.colorParam)
     if (!appData) console.error('App data not provided to tool')
     this.appData = appData
@@ -105,6 +115,15 @@ class MeasureTool extends BaseTool {
       this.measurement = null
 
       this.stage = 0
+    }
+
+    if (this.pickPointA) {
+      this.appData.scene.getRoot().removeChildByHandle(this.pickPointA)
+      this.pickPointA = null
+    }
+    if (this.pickPointB) {
+      this.appData.scene.getRoot().removeChildByHandle(this.pickPointB)
+      this.pickPointB = null
     }
   }
 
@@ -211,6 +230,15 @@ class MeasureTool extends BaseTool {
               color.a = 0.2
               this.highlightedItemA.addHighlight(this.highlightedItemA_highlightKey, color, true)
             }
+
+            if (!this.pickPointA) {
+              this.pickPointA = new GeomItem(`markerA`, sphere, pickPointMaterial)
+              this.pickPointA.pickableParam.value = false
+              this.appData.scene.getRoot().addChild(this.pickPointA)
+            }
+            const position = event.pointerRay.start.add(event.pointerRay.dir.scale(event.intersectionData.dist))
+            this.pickPointA.globalXfoParam.value = new Xfo(position)
+            this.pickPointA.visibleParam.value = true
           }
         })
       } else {
@@ -221,6 +249,10 @@ class MeasureTool extends BaseTool {
             if (cadBody.shattered) cadBody.setShatterState(false)
           }
           this.highlightedItemA = null
+
+          if (this.pickPointA) {
+            this.pickPointA.visibleParam.value = false
+          }
         }
       }
       event.stopPropagation()
@@ -257,6 +289,14 @@ class MeasureTool extends BaseTool {
             }
           })
         }
+        if (!this.pickPointB) {
+          this.pickPointB = new GeomItem(`markerA`, sphere, pickPointMaterial)
+          this.pickPointB.pickableParam.value = false
+          this.appData.scene.getRoot().addChild(this.pickPointB)
+        }
+        const position = event.pointerRay.start.add(event.pointerRay.dir.scale(event.intersectionData.dist))
+        this.pickPointB.globalXfoParam.value = new Xfo(position)
+        this.pickPointB.visibleParam.value = true
       } else {
         if (this.highlightedItemB) {
           this.highlightedItemB.removeHighlight(this.highlightedItemB_highlightKey, true)
@@ -265,39 +305,44 @@ class MeasureTool extends BaseTool {
             if (cadBody.shattered) cadBody.setShatterState(false)
           }
           this.highlightedItemB = null
+
+          if (this.pickPointB) {
+            this.pickPointB.visibleParam.value = false
+          }
         }
       }
       event.stopPropagation()
     }
   }
 
-  /**
-   *
-   *
-   * @param event - The event value
-   */
-  onPointerUp(event: ZeaPointerEvent): void {
-    if (this.stage == this.numStages) {
-      this.measurementChange = null
+  removeHighlightsAndMakers(): void {
+    this.measurementChange = null
 
-      if (this.highlightedItemA) {
-        this.highlightedItemA.removeHighlight(this.highlightedItemA_highlightKey, true)
-        if (this.highlightedItemA_componentId >= 0) {
-          const cadBody = <CADBody>this.highlightedItemA
-          if (cadBody.shattered) cadBody.setShatterState(false)
-        }
-        this.highlightedItemA = null
+    if (this.highlightedItemA) {
+      this.highlightedItemA.removeHighlight(this.highlightedItemA_highlightKey, true)
+      if (this.highlightedItemA_componentId >= 0) {
+        const cadBody = <CADBody>this.highlightedItemA
+        if (cadBody.shattered) cadBody.setShatterState(false)
       }
+      this.highlightedItemA = null
+    }
 
-      if (this.highlightedItemB) {
-        this.highlightedItemB.removeHighlight(this.highlightedItemB_highlightKey, true)
-        if (this.highlightedItemB_componentId >= 0) {
-          const cadBody = <CADBody>this.highlightedItemB
-          if (cadBody.shattered) cadBody.setShatterState(false)
-        }
-        this.highlightedItemB = null
+    if (this.highlightedItemB) {
+      this.highlightedItemB.removeHighlight(this.highlightedItemB_highlightKey, true)
+      if (this.highlightedItemB_componentId >= 0) {
+        const cadBody = <CADBody>this.highlightedItemB
+        if (cadBody.shattered) cadBody.setShatterState(false)
       }
-      event.stopPropagation()
+      this.highlightedItemB = null
+    }
+
+    if (this.pickPointA) {
+      this.appData.scene.getRoot().removeChildByHandle(this.pickPointA)
+      this.pickPointA = null
+    }
+    if (this.pickPointB) {
+      this.appData.scene.getRoot().removeChildByHandle(this.pickPointB)
+      this.pickPointB = null
     }
   }
 

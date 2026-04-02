@@ -33,16 +33,14 @@ class MeasureDistance extends Measure {
   lineGeomItem: GeomItem = null
   startPos: Vec3 = new Vec3()
   endPos: Vec3 = new Vec3()
-  sceneUnits: String = null
+  sceneUnits = 'Meters'
   /**
    * Creates an instance of MeasureDistance.
    * @param name
    * @param color
    */
-  constructor(name = 'MeasureDistance', color = new Color('#F9CE03'), sceneUnits = 'Meters') {
+  constructor(name = 'MeasureDistance', color = new Color('#F9CE03')) {
     super(name, color)
-
-    this.sceneUnits = sceneUnits
   }
 
   /**
@@ -64,36 +62,17 @@ class MeasureDistance extends Measure {
         break
     }
     const distanceInMM = distance * scaleFactor
-    const labelTest = `${parseFloat(distanceInMM.toFixed(3))}mm`
-    if (!this.label) {
-      this.label = new Label('Distance')
-      this.label.fontSizeParam.value = 20
-      this.label.backgroundColorParam.value = this.colorParam.value
-      this.label.textParam.value = labelTest
-      this.label.borderRadiusParam.value = 3
-      this.label.borderWidthParam.value = 0.5
+    const labelText = `${parseFloat(distanceInMM.toFixed(3))}mm`
+    if (!this.billboard) {
+      this.createLabel(labelText, BillboardAlignment.AlignedToCameraAndXAxis)
 
-      this.billboard = new BillboardItem('DistanceBillboard', this.label)
-      this.billboard.localXfoParam.value = new Xfo()
-      this.billboard.pixelsPerMeterParam.value = 2000
-      this.billboard.alignmentParam.value = BillboardAlignment.AlignedToCameraAndXAxis
-      this.billboard.pivotParam.value = new Vec2(0.5, 0.5)
-      this.billboard.drawOnTopParam.value = true
-      this.billboard.opacityParam.value = 0.1
-      this.billboard.fixedSizeOnscreenParam.value = true
-
-      this.addChild(this.billboard)
-
-      this.lineMaterial = new LinesMaterial('Line')
-      this.lineMaterial.baseColorParam.value = new Color(0, 0, 0, 0.7)
-      this.lineMaterial.overlayParam.value = 0.1
       this.lineGeomItem = new GeomItem('Line', line, this.lineMaterial)
       this.lineGeomItem.pickableParam.value = false
       this.addChild(this.lineGeomItem)
       this.addChild(this.markerA)
       this.addChild(this.markerB)
     } else {
-      this.label.textParam.value = labelTest
+      this.label.textParam.value = labelText
     }
 
     vector.normalizeInPlace()
@@ -127,7 +106,7 @@ class MeasureDistance extends Measure {
    */
   setStartMarkerPos(position: Vec3): void {
     this.startPos = position
-    if (this.label) this.updateMeasurement()
+    this.updateMeasurement()
   }
 
   /**
@@ -138,16 +117,6 @@ class MeasureDistance extends Measure {
   setEndMarkerPos(position: Vec3): void {
     this.endPos = position
     this.updateMeasurement()
-  }
-
-  /**
-   *
-   *
-   * @param isVisible -
-   */
-  setGeomBuffersVisibility(isVisible: boolean): void {
-    this.markerA.pickableParam.value = !isVisible
-    this.markerB.pickableParam.value = !isVisible
   }
 
   /**

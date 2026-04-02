@@ -169,7 +169,6 @@ class MeasureAngleTool extends MeasureTool {
       if (this.highlightedItemA) {
         const color = this.colorParam.value
         const measurement = new MeasureAngle('MeasureAngle', color)
-        this.parentItem.addChild(measurement)
 
         const ray = event.pointerRay
         const hitPos = ray.start.add(ray.dir.scale(event.intersectionData.dist))
@@ -199,19 +198,15 @@ class MeasureAngleTool extends MeasureTool {
         const measurement = <MeasureAngle>this.measurement
         measurement.setXfoA(xfoA)
         measurement.setXfoB(xfoB)
+        this.parentItem.addChild(measurement)
 
         const measurementChange = new MeasurementChange(measurement)
         UndoRedoManager.getInstance().addChange(measurementChange)
 
-        if (this.highlightedItemA) {
-          this.highlightedItemA.removeHighlight(this.highlightedItemA_highlightKey, true)
-          this.highlightedItemA = null
-        }
-        if (this.highlightedItemB) {
-          this.highlightedItemB.removeHighlight(this.highlightedItemB_highlightKey, true)
-          this.highlightedItemB = null
-        }
+        this.removeHighlightsAndMakers()
+
         this.stage = 0
+        this.measurement = null
         event.stopPropagation()
         this.emit('actionFinished')
       }

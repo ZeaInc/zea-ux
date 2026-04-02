@@ -82,7 +82,7 @@ class MeasureCenterDistancesTool extends MeasureTool {
    *
    * @param event - The event value
    */
-  onPointerDown(event: ZeaPointerEvent): void {
+  onPointerUp(event: ZeaPointerEvent): void {
     // skip if the alt key is held. Allows the camera tool to work
     if (
       ((event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) && event.altKey) ||
@@ -108,10 +108,9 @@ class MeasureCenterDistancesTool extends MeasureTool {
         const startPos = this.snapToParametricCenter(xfoA, this.highlightedItemA_params, hitPos)
         const color = this.colorParam.value
 
-        const measurement = new MeasureDistance('Measure Distance', color, this.appData.sceneUnits)
+        const measurement = new MeasureDistance('Measure Distance', color)
         measurement.setStartMarkerPos(startPos)
         measurement.setEndMarkerPos(startPos)
-        this.parentItem.addChild(measurement)
 
         this.measurementChange = new MeasurementChange(measurement)
         UndoRedoManager.getInstance().addChange(this.measurementChange)
@@ -138,15 +137,10 @@ class MeasureCenterDistancesTool extends MeasureTool {
         const measurement = <MeasureDistance>this.measurement
         measurement.setStartMarkerPos(startPos)
         measurement.setEndMarkerPos(endPos)
+        this.parentItem.addChild(measurement)
 
-        if (this.highlightedItemA) {
-          this.highlightedItemA.removeHighlight(this.highlightedItemA_highlightKey, true)
-          this.highlightedItemA = null
-        }
-        if (this.highlightedItemB) {
-          this.highlightedItemB.removeHighlight(this.highlightedItemB_highlightKey, true)
-          this.highlightedItemB = null
-        }
+        this.removeHighlightsAndMakers()
+
         this.stage = 0
         this.measurement = null
         event.stopPropagation()
