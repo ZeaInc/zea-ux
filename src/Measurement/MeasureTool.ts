@@ -23,7 +23,7 @@ import { AppData } from '../../types/types'
 import { HandleMaterial } from '../Handles'
 
 const color = new Color('#F9CE03')
-const sphere = new Sphere(0.003, 24, 12)
+const sphere = new Sphere(0.005, 24, 12)
 const pickPointMaterial = new HandleMaterial('Marker')
 pickPointMaterial.baseColorParam.value = color
 pickPointMaterial.maintainScreenSizeParam.value = 1
@@ -44,7 +44,6 @@ class MeasureTool extends BaseTool {
   parentItem: TreeItem
 
   protected measurement: Measure
-  protected measurementChange: MeasurementChange
   protected highlightedItemA: GeomItem
   protected highlightedItemA_params: ParameterOwner
   protected highlightedItemA_componentId: number
@@ -74,7 +73,6 @@ class MeasureTool extends BaseTool {
     this.addParameter(this.colorParam)
     if (!appData) console.error('App data not provided to tool')
     this.appData = appData
-    this.measurementChange = null
     this.highlightedItemA = null
     this.highlightedItemB = null
     this.stage = 0
@@ -100,30 +98,9 @@ class MeasureTool extends BaseTool {
       this.appData.renderer.getGLCanvas().style.cursor = this.prevCursor
     }
 
-    if (this.highlightedItemB) {
-      this.highlightedItemB.removeHighlight(this.highlightedItemB_highlightKey, true)
-      this.highlightedItemB = null
-    }
-    if (this.highlightedItemA) {
-      this.highlightedItemA.removeHighlight(this.highlightedItemA_highlightKey, true)
-      this.highlightedItemA = null
-    }
-
     if (this.stage != 0) {
-      const parentItem = <TreeItem>this.measurement.getOwner()
-      parentItem.removeChild(parentItem.getChildIndex(this.measurement))
-      this.measurement = null
-
+      this.removeHighlightsAndMakers()
       this.stage = 0
-    }
-
-    if (this.pickPointA) {
-      this.appData.scene.getRoot().removeChildByHandle(this.pickPointA)
-      this.pickPointA = null
-    }
-    if (this.pickPointB) {
-      this.appData.scene.getRoot().removeChildByHandle(this.pickPointB)
-      this.pickPointB = null
     }
   }
 
@@ -226,7 +203,7 @@ class MeasureTool extends BaseTool {
               this.highlightedItemA_params = geomParams
               this.highlightedItemA_componentId = componentId
               this.highlightedItemA_highlightKey = 'measure:' + componentId
-              const color = this.colorParam.value
+              const color = this.colorParam.value.clone()
               color.a = 0.2
               this.highlightedItemA.addHighlight(this.highlightedItemA_highlightKey, color, true)
             }
@@ -316,8 +293,6 @@ class MeasureTool extends BaseTool {
   }
 
   removeHighlightsAndMakers(): void {
-    this.measurementChange = null
-
     if (this.highlightedItemA) {
       this.highlightedItemA.removeHighlight(this.highlightedItemA_highlightKey, true)
       if (this.highlightedItemA_componentId >= 0) {

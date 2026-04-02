@@ -124,9 +124,6 @@ class MeasureDistanceTool extends MeasureTool {
         measurement.setStartMarkerPos(startPos)
         measurement.setEndMarkerPos(startPos)
 
-        this.measurementChange = new MeasurementChange(measurement)
-        UndoRedoManager.getInstance().addChange(this.measurementChange)
-
         this.measurement = measurement
         this.stage++
         event.stopPropagation()
@@ -146,6 +143,9 @@ class MeasureDistanceTool extends MeasureTool {
         measurement.setStartMarkerPos(startPos)
         measurement.setEndMarkerPos(endPos)
         this.parentItem.addChild(measurement)
+
+        const measurementChange = new MeasurementChange(measurement)
+        UndoRedoManager.getInstance().addChange(measurementChange)
 
         this.removeHighlightsAndMakers()
 
