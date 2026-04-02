@@ -1,5 +1,9 @@
 /* eslint-disable require-jsdoc */
-import { BaseTool, ZeaMouseEvent, ZeaKeyboardEvent } from '@zeainc/zea-engine'
+import { BaseTool, ZeaMouseEvent, ZeaKeyboardEvent, BaseToolEventMap, BaseEvent } from '@zeainc/zea-engine'
+
+interface ToolManagerEventMap extends BaseToolEventMap {
+  toolChanged: BaseEvent
+}
 
 /**
  * @extends BaseTool
@@ -23,6 +27,7 @@ class ToolManager extends BaseTool {
     }
     tool.activateTool()
     this.toolStack.splice(index, 0, tool)
+    this.emit('toolChanged', { tool: this.activeToolName() })
   }
 
   removeTool(tool: string | BaseTool): void {
@@ -32,6 +37,7 @@ class ToolManager extends BaseTool {
     tool.deactivateTool()
     const index = this.toolStack.indexOf(tool)
     this.toolStack.splice(index, 1)
+    this.emit('toolChanged', { tool: this.activeToolName() })
   }
 
   pushTool(tool: string | BaseTool): void {
@@ -40,6 +46,8 @@ class ToolManager extends BaseTool {
     }
     tool.activateTool()
     this.toolStack.push(tool)
+
+    this.emit('toolChanged', { tool: this.activeToolName() })
   }
 
   popTool(): void {
@@ -48,6 +56,7 @@ class ToolManager extends BaseTool {
     }
     const tool = this.toolStack.pop()
     tool.deactivateTool()
+    this.emit('toolChanged', { tool: this.activeToolName() })
   }
 
   /**
@@ -183,6 +192,25 @@ class ToolManager extends BaseTool {
       if (!event.propagating) break
     }
   }
+
+  // #region Event Emitter Interfaces
+
+  on<K extends keyof ToolManagerEventMap>(eventName: K, callback: (event?: ToolManagerEventMap[K]) => void): number {
+    return super.on(eventName as any, callback)
+  }
+
+  off<K extends keyof ToolManagerEventMap>(
+    eventName: K,
+    listenerOrId: number | ((event?: ToolManagerEventMap[K]) => void)
+  ) {
+    return super.off(eventName as any, listenerOrId)
+  }
+
+  emit<K extends keyof ToolManagerEventMap>(eventName: K, event?: ToolManagerEventMap[K]): void {
+    super.emit(eventName as any, event)
+  }
+
+  // #endregion
 }
 
 export { ToolManager }
