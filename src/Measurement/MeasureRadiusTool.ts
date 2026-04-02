@@ -118,7 +118,7 @@ class MeasureRadiusTool extends MeasureTool {
       const measurementChange = new MeasurementChange(measurement)
       UndoRedoManager.getInstance().addChange(measurementChange)
 
-      if (this.highlightedItemA) this.highlightedItemA.removeHighlight(this.highlightedItemA_highlightKey, true)
+      this.removeHighlightsAndMakers()
       event.stopPropagation()
 
       this.emit('actionFinished')
