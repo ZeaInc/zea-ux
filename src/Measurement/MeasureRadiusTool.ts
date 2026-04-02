@@ -32,8 +32,8 @@ class MeasureRadiusTool extends MeasureTool {
    *
    * @param appData - The appData value
    */
-  constructor(appData: AppData) {
-    super(appData)
+  constructor(appData: AppData, parentItem: TreeItem) {
+    super(appData, parentItem)
 
     this.geomConstraints = {
       CurveType: ['Circle'],
@@ -113,13 +113,15 @@ class MeasureRadiusTool extends MeasureTool {
       measurement.setStartMarkerPos(axisPos)
       measurement.setEndMarkerPos(edgePos)
       measurement.setGeomBuffersVisibility(false)
-      this.appData.scene.getRoot().addChild(measurement)
+      this.parentItem.addChild(measurement)
 
       const measurementChange = new MeasurementChange(measurement)
       UndoRedoManager.getInstance().addChange(measurementChange)
 
       if (this.highlightedItemA) this.highlightedItemA.removeHighlight(this.highlightedItemA_highlightKey, true)
       event.stopPropagation()
+
+      this.emit('actionFinished')
     }
   }
 }

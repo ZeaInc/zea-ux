@@ -12,6 +12,7 @@ import {
   ParameterOwner,
   XfoParameter,
   Ray,
+  TreeItem,
 } from '@zeainc/zea-engine'
 import { MeasurementChange } from './MeasurementChange'
 import { MeasureTool } from './MeasureTool'
@@ -33,8 +34,8 @@ class MeasureAngleTool extends MeasureTool {
   /**
    * @param appData - The appData value
    */
-  constructor(appData: AppData) {
-    super(appData)
+  constructor(appData: AppData, parentItem: TreeItem) {
+    super(appData, parentItem)
 
     this.geomConstraints = {
       SurfaceType: ['Plane', 'Cylinder', 'Cone'],
@@ -168,7 +169,7 @@ class MeasureAngleTool extends MeasureTool {
       if (this.highlightedItemA) {
         const color = this.colorParam.value
         const measurement = new MeasureAngle('MeasureAngle', color)
-        this.appData.scene.getRoot().addChild(measurement)
+        this.parentItem.addChild(measurement)
 
         const ray = event.pointerRay
         const hitPos = ray.start.add(ray.dir.scale(event.intersectionData.dist))
@@ -212,6 +213,7 @@ class MeasureAngleTool extends MeasureTool {
         }
         this.stage = 0
         event.stopPropagation()
+        this.emit('actionFinished')
       }
     }
   }

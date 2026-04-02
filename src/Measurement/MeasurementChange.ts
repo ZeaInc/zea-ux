@@ -48,7 +48,6 @@ class MeasurementChange extends Change {
    * Removes recently created geometry from its parent.
    */
   undo(): void {
-    console.log('undo MeasurementChange')
     this.parentItem = <TreeItem>this.measurement.getOwner()
     this.childIndex = this.parentItem.getChildIndex(this.measurement)
     this.parentItem.removeChild(this.childIndex)
@@ -58,7 +57,6 @@ class MeasurementChange extends Change {
    * Restores recently created geometry and adds it to the specified parent tree item.
    */
   redo(): void {
-    console.log('redo MeasurementChange')
     this.parentItem.insertChild(this.measurement, this.childIndex)
   }
 

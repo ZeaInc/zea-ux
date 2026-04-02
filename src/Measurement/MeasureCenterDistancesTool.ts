@@ -10,6 +10,7 @@ import {
   CADBody,
   CompoundGeom,
   Xfo,
+  TreeItem,
 } from '@zeainc/zea-engine'
 import { MeasureDistance } from './MeasureDistance'
 import { MeasureTool } from './MeasureTool'
@@ -27,8 +28,8 @@ class MeasureCenterDistancesTool extends MeasureTool {
   /**
    * @param appData - The appData value
    */
-  constructor(appData: AppData) {
-    super(appData)
+  constructor(appData: AppData, parentItem: TreeItem) {
+    super(appData, parentItem)
 
     this.geomConstraints = {
       CurveType: ['Circle'],
@@ -110,7 +111,7 @@ class MeasureCenterDistancesTool extends MeasureTool {
         const measurement = new MeasureDistance('Measure Distance', color, this.appData.sceneUnits)
         measurement.setStartMarkerPos(startPos)
         measurement.setEndMarkerPos(startPos)
-        this.appData.scene.getRoot().addChild(measurement)
+        this.parentItem.addChild(measurement)
 
         this.measurementChange = new MeasurementChange(measurement)
         UndoRedoManager.getInstance().addChange(this.measurementChange)
@@ -149,6 +150,7 @@ class MeasureCenterDistancesTool extends MeasureTool {
         this.stage = 0
         this.measurement = null
         event.stopPropagation()
+        this.emit('actionFinished')
       }
     }
   }

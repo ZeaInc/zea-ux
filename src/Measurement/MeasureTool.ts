@@ -13,13 +13,16 @@ import {
   ZeaMouseEvent,
   ZeaTouchEvent,
   CADAsset,
+  BaseToolEventMap,
+  BaseEvent,
 } from '@zeainc/zea-engine'
-import { MeasureDistance } from './MeasureDistance'
 import { Measure } from './Measure'
 import { MeasurementChange } from './MeasurementChange'
 import { AppData } from '../../types/types'
 
-import { getPointerRay } from '../utility'
+interface MeasureToolEventMap extends BaseToolEventMap {
+  actionFinished: BaseEvent
+}
 
 /**
  * UI Tool for measurements
@@ -29,6 +32,7 @@ import { getPointerRay } from '../utility'
 class MeasureTool extends BaseTool {
   protected appData: AppData
   colorParam: ColorParameter
+  parentItem: TreeItem
 
   protected measurement: Measure
   protected measurementChange: MeasurementChange
@@ -52,9 +56,10 @@ class MeasureTool extends BaseTool {
    *
    * @param appData - The appData value
    */
-  constructor(appData: AppData) {
+  constructor(appData: AppData, parentItem: TreeItem) {
     super()
 
+    this.parentItem = parentItem
     this.colorParam = new ColorParameter('Color', new Color('#F9CE03'))
     this.addParameter(this.colorParam)
     if (!appData) console.error('App data not provided to tool')
@@ -295,6 +300,25 @@ class MeasureTool extends BaseTool {
       event.stopPropagation()
     }
   }
+
+  // #region Event Emitter Interfaces
+
+  on<K extends keyof MeasureToolEventMap>(eventName: K, callback: (event?: MeasureToolEventMap[K]) => void): number {
+    return super.on(eventName as any, callback)
+  }
+
+  off<K extends keyof MeasureToolEventMap>(
+    eventName: K,
+    listenerOrId: number | ((event?: MeasureToolEventMap[K]) => void)
+  ) {
+    return super.off(eventName as any, listenerOrId)
+  }
+
+  emit<K extends keyof MeasureToolEventMap>(eventName: K, event?: MeasureToolEventMap[K]): void {
+    super.emit(eventName as any, event)
+  }
+
+  // #endregion
 }
 
 export { MeasureTool }

@@ -159,10 +159,10 @@
       {
         const appData = { scene, renderer, sceneUnits }
         const toolManager = new ToolManager()
-        const measureDistanceTool = new MeasureDistanceTool(appData)
-        const measureRadiusTool = new MeasureRadiusTool(appData)
-        const measureAngleTool = new MeasureAngleTool(appData)
-        const measureCenterDistancesTool = new MeasureCenterDistancesTool(appData)
+        const measureDistanceTool = new MeasureDistanceTool(appData, scene.getRoot())
+        const measureRadiusTool = new MeasureRadiusTool(appData, scene.getRoot())
+        const measureAngleTool = new MeasureAngleTool(appData, scene.getRoot())
+        const measureCenterDistancesTool = new MeasureCenterDistancesTool(appData, scene.getRoot())
 
         const cameraManipulator = renderer.getViewport().getManipulator()
         toolManager.registerTool('cameraManipulator', cameraManipulator)

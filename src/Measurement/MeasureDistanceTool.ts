@@ -1,5 +1,14 @@
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
-import { Ray, Vec3, ZeaPointerEvent, ZeaMouseEvent, ZeaTouchEvent, ParameterOwner, Xfo } from '@zeainc/zea-engine'
+import {
+  Ray,
+  Vec3,
+  ZeaPointerEvent,
+  ZeaMouseEvent,
+  ZeaTouchEvent,
+  ParameterOwner,
+  Xfo,
+  TreeItem,
+} from '@zeainc/zea-engine'
 import { MeasureDistance } from './MeasureDistance'
 import { MeasurementChange } from './MeasurementChange'
 import { MeasureTool } from './MeasureTool'
@@ -16,8 +25,8 @@ class MeasureDistanceTool extends MeasureTool {
   /**
    * @param appData - The appData value
    */
-  constructor(appData: AppData) {
-    super(appData)
+  constructor(appData: AppData, parentItem: TreeItem) {
+    super(appData, parentItem)
 
     this.geomConstraints = {
       CurveType: ['Line', 'Circle'],
@@ -114,7 +123,7 @@ class MeasureDistanceTool extends MeasureTool {
         const measurement = new MeasureDistance('Measure Distance', color, this.appData.sceneUnits)
         measurement.setStartMarkerPos(startPos)
         measurement.setEndMarkerPos(startPos)
-        this.appData.scene.getRoot().addChild(measurement)
+        this.parentItem.addChild(measurement)
 
         this.measurementChange = new MeasurementChange(measurement)
         UndoRedoManager.getInstance().addChange(this.measurementChange)
@@ -149,6 +158,7 @@ class MeasureDistanceTool extends MeasureTool {
         this.stage = 0
         this.measurement = null
         event.stopPropagation()
+        this.emit('actionFinished')
       }
     }
   }

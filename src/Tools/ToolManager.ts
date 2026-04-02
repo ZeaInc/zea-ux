@@ -85,10 +85,8 @@ class ToolManager extends BaseTool {
   onPointerDown(event: ZeaMouseEvent): void {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
       const tool = this.toolStack[i]
-      if (tool.onPointerDown) {
-        tool.onPointerDown(event)
-        if (!event.propagating) break
-      }
+      tool.onPointerDown(event)
+      if (!event.propagating) break
     }
   }
 
@@ -100,10 +98,8 @@ class ToolManager extends BaseTool {
   onPointerMove(event: ZeaMouseEvent): void {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
       const tool = this.toolStack[i]
-      if (tool.onPointerMove) {
-        tool.onPointerMove(event)
-        if (!event.propagating) break
-      }
+      tool.onPointerMove(event)
+      if (!event.propagating) break
     }
   }
 
@@ -115,10 +111,8 @@ class ToolManager extends BaseTool {
   onPointerUp(event: ZeaMouseEvent): void {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
       const tool = this.toolStack[i]
-      if (tool.onPointerUp) {
-        tool.onPointerUp(event)
-        if (!event.propagating) break
-      }
+      tool.onPointerUp(event)
+      if (!event.propagating) break
     }
   }
 
@@ -130,10 +124,8 @@ class ToolManager extends BaseTool {
   onPointerClick(event: ZeaMouseEvent): void {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
       const tool = this.toolStack[i]
-      if (tool.onPointerUp) {
-        tool.onPointerClick(event)
-        if (!event.propagating) break
-      }
+      tool.onPointerClick(event)
+      if (!event.propagating) break
     }
   }
 
@@ -145,10 +137,8 @@ class ToolManager extends BaseTool {
   onPointerDoubleClick(event: ZeaMouseEvent): void {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
       const tool = this.toolStack[i]
-      if (tool.onPointerDoubleClick) {
-        tool.onPointerDoubleClick(event)
-        if (!event.propagating) break
-      }
+      tool.onPointerDoubleClick(event)
+      if (!event.propagating) break
     }
   }
 
@@ -160,10 +150,8 @@ class ToolManager extends BaseTool {
   onWheel(event: ZeaMouseEvent): void {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
       const tool = this.toolStack[i]
-      if (tool.onWheel) {
-        tool.onWheel(event)
-        if (!event.propagating) break
-      }
+      tool.onWheel(event)
+      if (!event.propagating) break
     }
   }
 
@@ -178,10 +166,8 @@ class ToolManager extends BaseTool {
   onKeyDown(event: ZeaKeyboardEvent): void {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
       const tool = this.toolStack[i]
-      if (tool.onKeyDown) {
-        tool.onKeyDown(event)
-        if (!event.propagating) break
-      }
+      tool.onKeyDown(event)
+      if (!event.propagating) break
     }
   }
 
@@ -193,10 +179,8 @@ class ToolManager extends BaseTool {
   onKeyUp(event: ZeaKeyboardEvent): void {
     for (let i = this.toolStack.length - 1; i >= 0; i--) {
       const tool = this.toolStack[i]
-      if (tool.onKeyUp) {
-        tool.onKeyUp(event)
-        if (!event.propagating) break
-      }
+      tool.onKeyUp(event)
+      if (!event.propagating) break
     }
   }
 }
