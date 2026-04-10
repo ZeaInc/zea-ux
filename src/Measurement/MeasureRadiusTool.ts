@@ -118,11 +118,11 @@ class MeasureRadiusTool extends MeasureTool {
       const measurementChange = new MeasurementChange(measurement)
       UndoRedoManager.getInstance().addChange(measurementChange)
 
-      this.removeHighlightsAndMakers()
-      event.stopPropagation()
+      this.removeHighlightsAndMarkers()
 
       this.emit('actionFinished')
     }
+    event.stopPropagation()
   }
 }
 

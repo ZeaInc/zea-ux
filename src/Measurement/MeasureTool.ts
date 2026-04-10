@@ -99,7 +99,7 @@ class MeasureTool extends BaseTool {
     }
 
     if (this.stage != 0) {
-      this.removeHighlightsAndMakers()
+      this.removeHighlightsAndMarkers()
       this.stage = 0
     }
   }
@@ -151,19 +151,24 @@ class MeasureTool extends BaseTool {
    */
   private checkGeom(geomItem: GeomItem, componentId: number = -1): Promise<ParameterOwner | null> {
     return new Promise<ParameterOwner | null>((resolve) => {
-      this.getGeomParams(geomItem, componentId).then((geomParams) => {
-        if (geomParams) {
-          for (let key in this.geomConstraints) {
-            const param = geomParams.getParameter(key)
-            if (param && this.geomConstraints[key].includes(param.value)) {
-              resolve(geomParams)
+      this.getGeomParams(geomItem, componentId)
+        .then((geomParams) => {
+          if (geomParams) {
+            for (let key in this.geomConstraints) {
+              const param = geomParams.getParameter(key)
+              if (param && this.geomConstraints[key].includes(param.value)) {
+                resolve(geomParams)
+                return
+              }
             }
+            resolve(null)
+          } else {
+            resolve(null)
           }
+        })
+        .catch(() => {
           resolve(null)
-        } else {
-          resolve(null)
-        }
-      })
+        })
     })
   }
 
@@ -210,27 +215,18 @@ class MeasureTool extends BaseTool {
 
             if (!this.pickPointA) {
               this.pickPointA = new GeomItem(`markerA`, sphere, pickPointMaterial)
-              this.pickPointA.pickableParam.value = false
               this.appData.scene.getRoot().addChild(this.pickPointA)
+              this.pickPointA.pickableParam.value = false
             }
             const position = event.pointerRay.start.add(event.pointerRay.dir.scale(event.intersectionData.dist))
             this.pickPointA.globalXfoParam.value = new Xfo(position)
             this.pickPointA.visibleParam.value = true
+          } else {
+            this.removeHighlightAndMarkerA()
           }
         })
       } else {
-        if (this.highlightedItemA) {
-          this.highlightedItemA.removeHighlight(this.highlightedItemA_highlightKey, true)
-          if (this.highlightedItemA_componentId >= 0) {
-            const cadBody = <CADBody>this.highlightedItemA
-            if (cadBody.shattered) cadBody.setShatterState(false)
-          }
-          this.highlightedItemA = null
-
-          if (this.pickPointA) {
-            this.pickPointA.visibleParam.value = false
-          }
-        }
+        this.removeHighlightAndMarkerA()
       }
       event.stopPropagation()
     } else {
@@ -245,54 +241,49 @@ class MeasureTool extends BaseTool {
           }
         }
 
-        if (
-          (geomItem != this.highlightedItemA || componentId != this.highlightedItemA_componentId) &&
-          (geomItem != this.highlightedItemB || componentId != this.highlightedItemB_componentId)
-        ) {
-          this.checkGeom(geomItem, componentId).then((geomParams: ParameterOwner) => {
-            if (geomParams) {
-              if (this.highlightedItemB) {
-                this.highlightedItemB.removeHighlight(this.highlightedItemB_highlightKey, true)
-                this.highlightedItemB = null
+        this.checkGeom(geomItem, componentId)
+          .then((geomParams: ParameterOwner) => {
+            if (
+              (geomItem != this.highlightedItemA || componentId != this.highlightedItemA_componentId) &&
+              (geomItem != this.highlightedItemB || componentId != this.highlightedItemB_componentId)
+            ) {
+              if (geomParams) {
+                if (this.highlightedItemB) {
+                  this.highlightedItemB.removeHighlight(this.highlightedItemB_highlightKey, true)
+                  this.highlightedItemB = null
+                }
+
+                this.highlightedItemB = geomItem
+                this.highlightedItemB_params = geomParams
+                this.highlightedItemB_componentId = componentId
+                this.highlightedItemB_highlightKey = 'measure:' + componentId
+                const color = this.colorParam.value.clone()
+                color.a = 0.2
+                this.highlightedItemB.addHighlight(this.highlightedItemB_highlightKey, color, true)
+              } else {
+                this.removeHighlightAndMarkerB()
               }
-
-              this.highlightedItemB = geomItem
-              this.highlightedItemB_params = geomParams
-              this.highlightedItemB_componentId = componentId
-              this.highlightedItemB_highlightKey = 'measure:' + componentId
-              const color = this.colorParam.value.clone()
-              color.a = 0.2
-              this.highlightedItemB.addHighlight(this.highlightedItemB_highlightKey, color, true)
             }
+            if (!this.pickPointB) {
+              this.pickPointB = new GeomItem(`markerB`, sphere, pickPointMaterial)
+              this.pickPointB.pickableParam.value = false
+              this.appData.scene.getRoot().addChild(this.pickPointB)
+            }
+            const position = event.pointerRay.start.add(event.pointerRay.dir.scale(event.intersectionData.dist))
+            this.pickPointB.globalXfoParam.value = new Xfo(position)
+            this.pickPointB.visibleParam.value = true
           })
-        }
-        if (!this.pickPointB) {
-          this.pickPointB = new GeomItem(`markerA`, sphere, pickPointMaterial)
-          this.pickPointB.pickableParam.value = false
-          this.appData.scene.getRoot().addChild(this.pickPointB)
-        }
-        const position = event.pointerRay.start.add(event.pointerRay.dir.scale(event.intersectionData.dist))
-        this.pickPointB.globalXfoParam.value = new Xfo(position)
-        this.pickPointB.visibleParam.value = true
+          .catch(() => {
+            this.removeHighlightAndMarkerB()
+          })
       } else {
-        if (this.highlightedItemB) {
-          this.highlightedItemB.removeHighlight(this.highlightedItemB_highlightKey, true)
-          if (this.highlightedItemA_componentId >= 0) {
-            const cadBody = <CADBody>this.highlightedItemA
-            if (cadBody.shattered) cadBody.setShatterState(false)
-          }
-          this.highlightedItemB = null
-
-          if (this.pickPointB) {
-            this.pickPointB.visibleParam.value = false
-          }
-        }
+        this.removeHighlightAndMarkerB()
       }
       event.stopPropagation()
     }
   }
 
-  removeHighlightsAndMakers(): void {
+  removeHighlightAndMarkerA(): void {
     if (this.highlightedItemA) {
       this.highlightedItemA.removeHighlight(this.highlightedItemA_highlightKey, true)
       if (this.highlightedItemA_componentId >= 0) {
@@ -302,6 +293,13 @@ class MeasureTool extends BaseTool {
       this.highlightedItemA = null
     }
 
+    if (this.pickPointA) {
+      this.appData.scene.getRoot().removeChildByHandle(this.pickPointA)
+      this.pickPointA = null
+    }
+  }
+
+  removeHighlightAndMarkerB(): void {
     if (this.highlightedItemB) {
       this.highlightedItemB.removeHighlight(this.highlightedItemB_highlightKey, true)
       if (this.highlightedItemB_componentId >= 0) {
@@ -311,14 +309,15 @@ class MeasureTool extends BaseTool {
       this.highlightedItemB = null
     }
 
-    if (this.pickPointA) {
-      this.appData.scene.getRoot().removeChildByHandle(this.pickPointA)
-      this.pickPointA = null
-    }
     if (this.pickPointB) {
       this.appData.scene.getRoot().removeChildByHandle(this.pickPointB)
       this.pickPointB = null
     }
+  }
+
+  removeHighlightsAndMarkers(): void {
+    this.removeHighlightAndMarkerA()
+    this.removeHighlightAndMarkerB()
   }
 
   // #region Event Emitter Interfaces

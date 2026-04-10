@@ -126,7 +126,6 @@ class MeasureDistanceTool extends MeasureTool {
 
         this.measurement = measurement
         this.stage++
-        event.stopPropagation()
       }
     } else if (this.stage == 1) {
       if (this.highlightedItemB) {
@@ -147,14 +146,14 @@ class MeasureDistanceTool extends MeasureTool {
         const measurementChange = new MeasurementChange(measurement)
         UndoRedoManager.getInstance().addChange(measurementChange)
 
-        this.removeHighlightsAndMakers()
+        this.removeHighlightsAndMarkers()
 
         this.stage = 0
         this.measurement = null
-        event.stopPropagation()
         this.emit('actionFinished')
       }
     }
+    event.stopPropagation()
   }
 }
 

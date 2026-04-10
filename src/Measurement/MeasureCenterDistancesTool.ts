@@ -82,7 +82,7 @@ class MeasureCenterDistancesTool extends MeasureTool {
    *
    * @param event - The event value
    */
-  onPointerUp(event: ZeaPointerEvent): void {
+  onPointerDown(event: ZeaPointerEvent): void {
     // skip if the alt key is held. Allows the camera tool to work
     if (
       ((event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) && event.altKey) ||
@@ -114,7 +114,6 @@ class MeasureCenterDistancesTool extends MeasureTool {
 
         this.measurement = measurement
         this.stage++
-        event.stopPropagation()
       }
     } else if (this.stage == 1) {
       if (this.highlightedItemB) {
@@ -139,14 +138,14 @@ class MeasureCenterDistancesTool extends MeasureTool {
         const measurementChange = new MeasurementChange(measurement)
         UndoRedoManager.getInstance().addChange(measurementChange)
 
-        this.removeHighlightsAndMakers()
+        this.removeHighlightsAndMarkers()
 
         this.stage = 0
         this.measurement = null
-        event.stopPropagation()
         this.emit('actionFinished')
       }
     }
+    event.stopPropagation()
   }
 }
 

@@ -99,8 +99,10 @@
       const renderer = new GLRenderer($canvas, { hideSplash: true })
       renderer.setScene(scene)
 
+      const camera = renderer.getViewport().getCamera()
+      camera.setPositionAndTarget(new Vec3(3, 3, 3), new Vec3(0, 0, 0))
+
       const sceneUnits = 'Meters'
-      // const sceneUnits = 'Millimeters'
 
       const cadAsset = new CADAsset()
       const context = new AssetLoadContext()
@@ -120,42 +122,21 @@
       renderer.getViewport().on('keyDown', (event) => {
         if (event.key == 'f') renderer.frameAll()
       })
-      /*
+
       {
+        const cuboid = new Cuboid(0.1, 0.1, 0.1)
         const material1 = new Material('material1', 'SimpleSurfaceShader')
         material1.getParameter('BaseColor').setValue(new Color('#94C47D'))
 
-        const geomItem1 = new GeomItem('CuboidGeometryItem1', new Cuboid(1, 1, 1, true), material1)
+        const geomItem1 = new GeomItem('CuboidGeometryItem1', cuboid, material1)
 
         const geomItem1Xfo = new Xfo()
-        geomItem1Xfo.tr = new Vec3(1.5, -0.5, 0)
+        geomItem1Xfo.tr = new Vec3(-0.15, 0.0, 0)
         geomItem1.getParameter('GlobalXfo').setValue(geomItem1Xfo)
 
         scene.getRoot().addChild(geomItem1)
-
-        const material2 = new Material('material2', 'SimpleSurfaceShader')
-        material2.getParameter('BaseColor').setValue(new Color('#35257D'))
-
-        const geomItem2 = new GeomItem('CuboidGeometryItem2', new Cuboid(1, 1, 1, true), material2)
-
-        const geomItem2Xfo = new Xfo()
-        geomItem2Xfo.tr = new Vec3(-1.5, -0.5, 0)
-        geomItem2.getParameter('GlobalXfo').setValue(geomItem2Xfo)
-
-        scene.getRoot().addChild(geomItem2)
-
-        const material3 = new Material('material3', 'SimpleSurfaceShader')
-        material3.getParameter('BaseColor').setValue(new Color('#FF257D'))
-
-        const geomItem3 = new GeomItem('CuboidGeometryItem3', new Cuboid(1, 1, 1, true), material3)
-
-        const geomItem3Xfo = new Xfo()
-        geomItem3Xfo.tr = new Vec3(0, -4.5, 1)
-        geomItem3.getParameter('GlobalXfo').setValue(geomItem3Xfo)
-
-        scene.getRoot().addChild(geomItem3)
       }
-*/
+
       {
         const appData = { scene, renderer, sceneUnits }
         const toolManager = new ToolManager()
@@ -252,8 +233,6 @@
           toggleMode(4)
         })
       }
-
-      renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(0, 6, 5), new Vec3(0, 0, 0))
     </script>
   </head>
   <body class="bg-blue-100 h-full">

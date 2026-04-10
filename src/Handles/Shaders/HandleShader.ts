@@ -32,6 +32,7 @@ attribute vec2 texCoords;
 <%include file="drawItemTexture.glsl"/>
 <%include file="modelMatrix.glsl"/>
 <%include file="materialparams.glsl"/>
+<%include file="geomItemFlags.glsl"/>
 
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
@@ -180,6 +181,7 @@ void main(void) {
 #endif
 
   int drawItemId = int(v_drawItemId + 0.5);
+  int flags = int(round(v_geomItemData.x));
 
   //////////////////////////////////////////////
   // Color
@@ -198,7 +200,8 @@ void main(void) {
   // GeomData
 #elif defined(DRAW_GEOMDATA)
 
-  fragColor = setFragColor_geomData(v_viewPos, floatGeomBuffer, passId, v_drawItemId, isOrthographic);
+  fragColor = setFragColor_geomData(v_viewPos, v_drawItemId, 0.0, isOrthographic, flags, TRIANGLES);
+  
   //////////////////////////////////////////////
   // Highlight
 #elif defined(DRAW_HIGHLIGHT)
