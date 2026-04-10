@@ -79,23 +79,21 @@ class ViewCube extends TreeItem {
       label.marginParam.value = margin
       label.outlineColorParam.value = faceColor
       label.strokeBackgroundOutlineParam.value = false
-      // Mip mapping just makes the font blurrier.
-      // label.mipMapped = true
-      // label.magFilter = 'LINEAR_MIPMAP_LINEAR'
       label.textParam.value = labels[name]
 
       const labelMaterial = new FlatSurfaceMaterial('material')
       labelMaterial.baseColorParam.value = faceColor
       labelMaterial.baseColorParam.setImage(label)
 
-      const planeLabelItem = new GeomItem('face' + name, plane, labelMaterial, new Xfo(new Vec3(0, 0, 0.001)))
-      planeLabelItem.pickableParam.value = false
-      planeItem.addChild(planeLabelItem, false, false)
-      label.once('labelRendered', (event: any) => {
+      label.once('updated', () => {
+        label.getParams() //  force the label to generate the image.
+        const planeLabelItem = new GeomItem('face' + name, plane, labelMaterial, new Xfo(new Vec3(0, 0, 0.001)))
+        planeLabelItem.pickableParam.value = false
         const xfo = planeLabelItem.localXfoParam.value
-        xfo.sc.x = event.width / 160
-        xfo.sc.y = event.height / 100
+        xfo.sc.x = label.width / 160
+        xfo.sc.y = label.height / 100
         planeLabelItem.localXfoParam.value = xfo
+        planeItem.addChild(planeLabelItem, false, false)
       })
     }
 
