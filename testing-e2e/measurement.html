@@ -80,6 +80,7 @@
         GLBoundingBoxPass,
         CADAsset,
         AssetLoadContext,
+        TreeItem,
       } = window.zeaEngine
       const {
         UndoRedoManager,
@@ -137,13 +138,15 @@
         scene.getRoot().addChild(geomItem1)
       }
 
+      const measurements = new TreeItem('measurements')
+      scene.getRoot().addChild(measurements)
       {
         const appData = { scene, renderer, sceneUnits }
         const toolManager = new ToolManager()
-        const measureDistanceTool = new MeasureDistanceTool(appData, scene.getRoot())
-        const measureRadiusTool = new MeasureRadiusTool(appData, scene.getRoot())
-        const measureAngleTool = new MeasureAngleTool(appData, scene.getRoot())
-        const measureCenterDistancesTool = new MeasureCenterDistancesTool(appData, scene.getRoot())
+        const measureDistanceTool = new MeasureDistanceTool(appData, measurements)
+        const measureRadiusTool = new MeasureRadiusTool(appData, measurements)
+        const measureAngleTool = new MeasureAngleTool(appData, measurements)
+        const measureCenterDistancesTool = new MeasureCenterDistancesTool(appData, measurements)
 
         const cameraManipulator = renderer.getViewport().getManipulator()
         toolManager.registerTool('cameraManipulator', cameraManipulator)
@@ -160,6 +163,16 @@
           switch (e.key) {
             case 'Escape':
               toggleMode(0)
+              break
+            case 's':
+              if (e.ctrlKey) {
+                console.log('Save')
+                const json = measurements.toJSON()
+                localStorage.setItem('measurements', JSON.stringify(json))
+              }
+              e.preventDefault()
+              e.stopPropagation()
+              break
           }
         })
 
@@ -176,6 +189,16 @@
             console.log('Redo')
             undoRedoManager.redo()
           })
+        }
+
+        const load = () => {
+          const json = localStorage.getItem('measurements')
+          if (json) {
+            measurements.fromJSON(JSON.parse(json))
+          }
+        }
+        if (localStorage.getItem('measurements')) {
+          load()
         }
 
         let mode = 0

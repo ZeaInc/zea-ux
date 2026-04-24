@@ -13,15 +13,8 @@ import {
 } from '@zeainc/zea-engine'
 
 import { Measure } from './Measure'
+import { line } from '../helpers/line'
 
-const line = new Lines() //new Lines(0.0)
-line.setNumVertices(2)
-line.setNumSegments(1)
-line.setSegmentVertexIndices(0, 0, 1)
-const positions = <Vec3Attribute>line.getVertexAttribute('positions')
-positions.setValue(0, new Vec3())
-positions.setValue(1, new Vec3(0, 0, 1))
-line.setBoundingBoxDirty()
 /**
  *
  *
@@ -35,15 +28,14 @@ class MeasureAngle extends Measure {
    */
   constructor(name = 'MeasureAngle', color = new Color('#F9CE03')) {
     super(name, color)
-
-    this.addChild(this.markerA)
-    this.addChild(this.markerB)
   }
 
   /**
    * Given the 2 marker positions, calculate and display the angle.
    */
   createLinesAndLabel(): void {
+    this.addChild(this.markerA)
+    this.addChild(this.markerB)
     // ////////////////////////////////////////
     // Calculate the angle
     const xfoA = this.markerA.globalXfoParam.value
@@ -73,13 +65,6 @@ class MeasureAngle extends Measure {
     lineC.pickableParam.value = false
     this.markerA.addChild(lineA, false)
     this.markerB.addChild(lineB, false)
-
-    this.colorParam.on('valueChanged', () => {
-      const color = this.colorParam.value
-      this.markerMaterial.baseColorParam.value = color
-      this.lineMaterial.baseColorParam.value = color
-      this.label.backgroundColorParam.value = color
-    })
 
     const labelXfo = new Xfo()
     labelXfo.tr.addInPlace(rayA.pointAtDist(params[0]))

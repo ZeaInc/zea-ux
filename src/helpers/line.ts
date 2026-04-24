@@ -4,9 +4,8 @@ const line = new Lines()
 line.setNumVertices(2)
 line.setNumSegments(1)
 line.setSegmentVertexIndices(0, 0, 1)
-const positions = line.getVertexAttribute('positions') as Vec3Attribute
-positions.setValue(0, new Vec3(0.0, 0.0, 0.0))
-positions.setValue(1, new Vec3(0.0, 0.0, 1.0))
+line.positions.setValue(0, new Vec3(0.0, 0.0, 0.0))
+line.positions.setValue(1, new Vec3(0.0, 0.0, 1.0))
 line.setBoundingBoxDirty()
 
 const lineMaterial = new LinesMaterial('line')

@@ -108,7 +108,7 @@ class MeasureCenterDistancesTool extends MeasureTool {
         const startPos = this.snapToParametricCenter(xfoA, this.highlightedItemA_params, hitPos)
         const color = this.colorParam.value
 
-        const measurement = new MeasureDistance('Measure Distance', color)
+        const measurement = new MeasureDistance('Measure Center Distance', color)
         measurement.setStartMarkerPos(startPos)
         measurement.setEndMarkerPos(startPos)
 

@@ -98,10 +98,8 @@ class MeasureTool extends BaseTool {
       this.appData.renderer.getGLCanvas().style.cursor = this.prevCursor
     }
 
-    if (this.stage != 0) {
-      this.removeHighlightsAndMarkers()
-      this.stage = 0
-    }
+    this.removeHighlightsAndMarkers()
+    this.stage = 0
   }
 
   // Overload this method in subclasses if needed to customize how CAD asset metadata is loaded.
@@ -215,7 +213,7 @@ class MeasureTool extends BaseTool {
 
             if (!this.pickPointA) {
               this.pickPointA = new GeomItem(`markerA`, sphere, pickPointMaterial)
-              this.appData.scene.getRoot().addChild(this.pickPointA)
+              this.appData.renderer.addTreeItem(this.pickPointA)
               this.pickPointA.pickableParam.value = false
             }
             const position = event.pointerRay.start.add(event.pointerRay.dir.scale(event.intersectionData.dist))
@@ -267,7 +265,7 @@ class MeasureTool extends BaseTool {
             if (!this.pickPointB) {
               this.pickPointB = new GeomItem(`markerB`, sphere, pickPointMaterial)
               this.pickPointB.pickableParam.value = false
-              this.appData.scene.getRoot().addChild(this.pickPointB)
+              this.appData.renderer.addTreeItem(this.pickPointB)
             }
             const position = event.pointerRay.start.add(event.pointerRay.dir.scale(event.intersectionData.dist))
             this.pickPointB.globalXfoParam.value = new Xfo(position)
@@ -294,7 +292,7 @@ class MeasureTool extends BaseTool {
     }
 
     if (this.pickPointA) {
-      this.appData.scene.getRoot().removeChildByHandle(this.pickPointA)
+      this.appData.renderer.removeTreeItem(this.pickPointA)
       this.pickPointA = null
     }
   }
@@ -310,7 +308,7 @@ class MeasureTool extends BaseTool {
     }
 
     if (this.pickPointB) {
-      this.appData.scene.getRoot().removeChildByHandle(this.pickPointB)
+      this.appData.renderer.removeTreeItem(this.pickPointB)
       this.pickPointB = null
     }
   }

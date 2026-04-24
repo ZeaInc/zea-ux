@@ -81,6 +81,19 @@ class Measure extends TreeItem {
     this.markerA.pickableParam.value = false
     this.markerB = new GeomItem(`markerB`, cone, this.markerMaterial)
     this.markerB.pickableParam.value = false
+
+    this.colorParam.on('valueChanged', () => {
+      const color = this.colorParam.value
+      this.markerMaterial.baseColorParam.value = color
+      this.lineMaterial.baseColorParam.value = color
+      if (this.label) {
+        this.label.backgroundColorParam.value = color
+      }
+    })
+    this.fontSizeParam.on('valueChanged', () => {
+      const fontSize = this.fontSizeParam.value
+      this.label.fontSizeParam.value = fontSize
+    })
   }
 
   createLabel(text: string, alignment: number): void {
@@ -89,13 +102,7 @@ class Measure extends TreeItem {
     this.label.borderRadiusParam.value = 3
     this.label.borderWidthParam.value = 0.5
     this.label.fontSizeParam.value = this.fontSizeParam.value
-    this.colorParam.on('valueChanged', () => {
-      this.label.backgroundColorParam.value = this.colorParam.value
-    })
-    this.fontSizeParam.on('valueChanged', () => {
-      const fontSize = this.fontSizeParam.value
-      this.label.fontSizeParam.value = fontSize
-    })
+
     this.label.textParam.value = text
     this.label.renderLabelToImage()
 
