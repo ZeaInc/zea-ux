@@ -213,7 +213,7 @@ class DropUserTool extends PointerTool {
    */
   onPointerDoubleClick(event: ZeaPointerEvent) {
     if (this.vrViewport) {
-      const box3 = this.appData.scene.getRoot().boundingBoxParam.value
+      const box3 = this.appData.scene.getRoot().getBoundingBox()
       if (!box3.isValid()) {
         console.warn('Bounding box not valid.')
         return

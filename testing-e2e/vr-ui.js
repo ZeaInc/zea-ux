@@ -39,7 +39,7 @@ class VRUI extends HTMLElement {
         const headLocalXfo = xrvp.getVRHead().getXfo()
         const stageXfo = xrvp.getXfo()
 
-        const box3 = this.appData.scene.getRoot().boundingBoxParam.value
+        const box3 = this.appData.scene.getRoot().getBoundingBox()
         if (!box3.isValid()) {
           console.warn('Bounding box not valid.')
           return
