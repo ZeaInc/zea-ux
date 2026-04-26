@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.14.0](https://github.com/ZeaInc/zea-ux/compare/v4.13.0...v4.14.0) (2026-04-26)
+
+
+### Features
+
+* Measure objects now expose a fontSizeParam for adjusting label size. ([658afc1](https://github.com/ZeaInc/zea-ux/commit/658afc103514652ae8df3770b772bbe5588dee39))
+* Measure tools now take an explicit parent node param like the Create tools. ([76bd2e9](https://github.com/ZeaInc/zea-ux/commit/76bd2e9e1e139f9827144b32a321346feaf16a2b))
+* Refactor view-cube to enable setting the viewcube font color. ([1322c8d](https://github.com/ZeaInc/zea-ux/commit/1322c8da8dd0c38222a1e146af2853d0369f0668))
+* ToolManager now emits 'toolChanged' event. ([8bb8dda](https://github.com/ZeaInc/zea-ux/commit/8bb8ddae14542c8f88bc7510eab5d6ca0cd1ba8d))
+
+
+### Bug Fixes
+
+* Cleaned up Measurement tools ([e81e67d](https://github.com/ZeaInc/zea-ux/commit/e81e67d4ee9a9dcf86382043959734b0019043ac))
+* Export 'Measure' class. ([785ab71](https://github.com/ZeaInc/zea-ux/commit/785ab712905b68a1eb45fa8c572af927dbbde1ed))
+* Make sure to remove all highlights when deactivating a measurement tool ([9320065](https://github.com/ZeaInc/zea-ux/commit/9320065366706ba6079e59654d2b6629e1b0c5c7))
+* prevent mouse wheel from changing the focal distance of the view cube. ([40dbc87](https://github.com/ZeaInc/zea-ux/commit/40dbc870ace260bb522b3aa53379eaa24ad62214))
+* Updated to get engine fix that includes bi-linear filtering. ([38535cc](https://github.com/ZeaInc/zea-ux/commit/38535ccba5f9c76b7b746f39551e797abc78c8b4))
+* ViewCube now maintains camera target position when orienting the camera. ([8d38205](https://github.com/ZeaInc/zea-ux/commit/8d382056a2a66fac2085130451534ef367ac09d6))
+
 ## [4.13.0](https://github.com/ZeaInc/zea-ux/compare/v4.9.0...v4.13.0) (2025-11-24)
 
 
