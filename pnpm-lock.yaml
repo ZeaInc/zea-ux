@@ -37,8 +37,8 @@ importers:
         specifier: ^12.1.1
         version: 12.3.0(rollup@2.79.2)(tslib@2.8.1)(typescript@5.9.3)
       '@zeainc/zea-engine':
-        specifier: 4.20.0-452d89a
-        version: 4.20.0-452d89a
+        specifier: 4.21.0-3d20c0f
+        version: 4.21.0-3d20c0f
       copyfiles:
         specifier: ^2.4.1
         version: 2.4.1
@@ -1162,8 +1162,8 @@ packages:
   '@webcomponents/webcomponentsjs@2.8.0':
     resolution: {integrity: sha512-loGD63sacRzOzSJgQnB9ZAhaQGkN7wl2Zuw7tsphI5Isa0irijrRo6EnJii/GgjGefIFO8AIO7UivzRhFaEk9w==}
 
-  '@zeainc/zea-engine@4.20.0-452d89a':
-    resolution: {integrity: sha512-qpLpgdgHe3r/xoEiu8Emdxkk5g5sy0SVkK3vryBJeq7fhidr8bdJPtHzljlErmJRZdUYfZl7qyu5J/HSbpgLag==, tarball: https://npm.pkg.github.com/download/@ZeaInc/zea-engine/4.20.0-452d89a/1735b29f7d3cc81b1606a91faafa2413291b128c}
+  '@zeainc/zea-engine@4.21.0-3d20c0f':
+    resolution: {integrity: sha512-cIdIcKO8SJ3WqLbgTNXBBH5pQAiuXQJHh2DbCh8+RvG6zOqx3vRVLharybLMM165fklCQFiOkmD7d+pOR5gPPQ==, tarball: https://npm.pkg.github.com/download/@ZeaInc/zea-engine/4.21.0-3d20c0f/13852ce60d8193aea3bfb8bd36737f466dc421e0}
     engines: {node: '>=20'}
 
   JSONStream@1.3.5:
@@ -7345,7 +7345,7 @@ snapshots:
 
   '@webcomponents/webcomponentsjs@2.8.0': {}
 
-  '@zeainc/zea-engine@4.20.0-452d89a':
+  '@zeainc/zea-engine@4.21.0-3d20c0f':
     dependencies:
       lodash-es: 4.17.21
 

@@ -71,7 +71,7 @@ class ViewCube extends TreeItem {
       this.addChild(planeItem, false, false)
 
       const label = new Label(name)
-      label.fontParam.value = font
+      label.fontParam.setValue(font)
       label.fontColorParam.value = fontColor
       label.fontSizeParam.value = fontSize
       label.backgroundColorParam.value = faceColor
@@ -85,15 +85,15 @@ class ViewCube extends TreeItem {
       labelMaterial.baseColorParam.value = faceColor
       labelMaterial.baseColorParam.setImage(label)
 
+      const planeLabelItem = new GeomItem('face' + name, plane, labelMaterial, new Xfo(new Vec3(0, 0, 0.001)))
+      planeItem.addChild(planeLabelItem, false, false)
       label.once('updated', () => {
         label.getParams() //  force the label to generate the image.
-        const planeLabelItem = new GeomItem('face' + name, plane, labelMaterial, new Xfo(new Vec3(0, 0, 0.001)))
         planeLabelItem.pickableParam.value = false
         const xfo = planeLabelItem.localXfoParam.value
         xfo.sc.x = label.width / 160
         xfo.sc.y = label.height / 100
         planeLabelItem.localXfoParam.value = xfo
-        planeItem.addChild(planeLabelItem, false, false)
       })
     }
 
