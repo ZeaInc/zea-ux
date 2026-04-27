@@ -51,7 +51,7 @@ class MeasureAngle extends Measure {
     const rayA = new Ray(xfoA.tr, tangentA)
     const rayB = new Ray(xfoB.tr, tangentB)
     // TODO: check this return value is actually an array.
-    const params = rayA.intersectRayVector(rayB) as number[]
+    const result = rayA.intersectRayVector(rayB)
 
     const angle = normA.angleTo(normB)
 
@@ -67,8 +67,8 @@ class MeasureAngle extends Measure {
     this.markerB.addChild(lineB, false)
 
     const labelXfo = new Xfo()
-    labelXfo.tr.addInPlace(rayA.pointAtDist(params[0]))
-    labelXfo.tr.addInPlace(rayB.pointAtDist(params[1]))
+    labelXfo.tr.addInPlace(rayA.pointAtDist(result.tMin))
+    labelXfo.tr.addInPlace(rayB.pointAtDist(result.tMax))
     labelXfo.tr.scaleInPlace(0.5)
 
     xfoA.ori.setFromDirectionAndUpvector(tangentA.negate(), normA)
@@ -77,10 +77,10 @@ class MeasureAngle extends Measure {
     this.markerB.globalXfoParam.value = xfoB
 
     const lineAXfo = new Xfo()
-    lineAXfo.sc.z = -params[0]
+    lineAXfo.sc.z = -result.tMin
     lineA.localXfoParam.value = lineAXfo
     const lineBXfo = new Xfo()
-    lineBXfo.sc.z = params[1]
+    lineBXfo.sc.z = result.tMax
     lineB.localXfoParam.value = lineBXfo
 
     this.createLabel(`${(angle / (Math.PI / 180)).toFixed(3)} °`, BillboardAlignment.AlignedToCamera)
