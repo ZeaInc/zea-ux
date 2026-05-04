@@ -67,8 +67,8 @@ class MeasureAngle extends Measure {
     this.markerB.addChild(lineB, false)
 
     const labelXfo = new Xfo()
-    labelXfo.tr.addInPlace(rayA.pointAtDist(result.tMin))
-    labelXfo.tr.addInPlace(rayB.pointAtDist(result.tMax))
+    labelXfo.tr.addInPlace(rayA.pointAtDist(result.this_t))
+    labelXfo.tr.addInPlace(rayB.pointAtDist(result.ray_t))
     labelXfo.tr.scaleInPlace(0.5)
 
     xfoA.ori.setFromDirectionAndUpvector(tangentA.negate(), normA)
@@ -77,10 +77,10 @@ class MeasureAngle extends Measure {
     this.markerB.globalXfoParam.value = xfoB
 
     const lineAXfo = new Xfo()
-    lineAXfo.sc.z = -result.tMin
+    lineAXfo.sc.z = -result.this_t
     lineA.localXfoParam.value = lineAXfo
     const lineBXfo = new Xfo()
-    lineBXfo.sc.z = result.tMax
+    lineBXfo.sc.z = result.ray_t
     lineB.localXfoParam.value = lineBXfo
 
     this.createLabel(`${(angle / (Math.PI / 180)).toFixed(3)} °`, BillboardAlignment.AlignedToCamera)

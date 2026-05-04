@@ -80,7 +80,6 @@ class ViewCube extends TreeItem {
       label.outlineColorParam.value = faceColor
       label.strokeBackgroundOutlineParam.value = false
       label.textParam.value = labels[name]
-      label.premultipliedAlpha = false
 
       const labelMaterial = new FlatSurfaceMaterial('material')
       labelMaterial.baseColorParam.value = faceColor

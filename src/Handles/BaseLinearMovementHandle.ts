@@ -30,7 +30,7 @@ class BaseLinearMovementHandle extends Handle {
     this.gizmoRay = this.getManipulationPlane()
     const ray = getPointerRay(event)
     const result = ray.intersectRayVector(this.gizmoRay)
-    this.grabDist = result ? result.tMin : 0
+    this.grabDist = result ? result.ray_t : 0
     const grabPos = this.gizmoRay.pointAtDist(this.grabDist)
     this.grabPos = grabPos
     this.onDragStart(event)
@@ -45,7 +45,7 @@ class BaseLinearMovementHandle extends Handle {
     const ray = getPointerRay(event)
 
     const result = ray.intersectRayVector(this.gizmoRay)
-    const dist = result ? result.tMin : 0
+    const dist = result ? result.ray_t : 0
     this.holdPos = this.gizmoRay.pointAtDist(dist)
     this.holdDist = dist
     this.value = dist
@@ -62,7 +62,7 @@ class BaseLinearMovementHandle extends Handle {
     const ray = getPointerRay(event)
     if (ray) {
       const result = ray.intersectRayVector(this.gizmoRay)
-      const dist = result ? result.tMin : 0
+      const dist = result ? result.ray_t : 0
       const releasePos = this.gizmoRay.pointAtDist(dist)
       this.releasePos = releasePos
     }
