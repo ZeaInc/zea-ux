@@ -1,6 +1,7 @@
 import { Parameter, TreeItem, Xfo } from '@zeainc/zea-engine'
 import UndoRedoManager from '../UndoRedoManager'
 import Change from '../Change'
+import { SelectionGroup } from '../../SelectionGroup'
 
 /**
  * Represents a `Change` class for storing `Parameter` values.
@@ -17,18 +18,20 @@ class SelectionXfoChange extends Change {
   localXfos: Xfo[] = []
   prevValues: Xfo[] = []
   newValues: Xfo[] = []
+  prevValue = new Xfo()
+  newValue = new Xfo()
   /**
    * Creates an instance of SelectionXfoChange.
    *
    * @param param - The Parameter object that is modified by this change.
    * @param newValue - The newValue value.
    */
-  constructor(treeItems: TreeItem[], baseXfo: Xfo) {
+  constructor(public selectionGroup: SelectionGroup, baseXfo: Xfo) {
     super('SelectionXfoChange')
 
-    if (!treeItems || !baseXfo) return
+    if (!selectionGroup || !baseXfo) return
 
-    this.treeItems = treeItems
+    this.treeItems = Array.from(selectionGroup.getItems())
 
     this.baseXfo = baseXfo
     const invBaseXfo = baseXfo.inverse()
@@ -37,14 +40,19 @@ class SelectionXfoChange extends Change {
       this.prevValues.push(treeItem.globalXfoParam.value)
       this.newValues.push(treeItem.globalXfoParam.value)
     })
+
+    this.baseXfo = baseXfo
+    this.prevValue = this.selectionGroup.globalXfoParam.value.clone()
+
+    this.selectionGroup.selectionGroupXfoOp.startChange(baseXfo)
   }
 
-  setDeltaXfo(delta: Xfo) {
+  setDeltaXfo(deltaXfo: Xfo) {
     // Add the values in global space.
     const newBase = this.baseXfo.clone()
-    newBase.tr = delta.tr.add(newBase.tr)
-    newBase.ori = delta.ori.multiply(newBase.ori)
-    newBase.sc = delta.sc.multiply(newBase.sc)
+    newBase.tr = deltaXfo.tr.add(newBase.tr)
+    newBase.ori = deltaXfo.ori.multiply(newBase.ori)
+    newBase.sc = deltaXfo.sc.multiply(newBase.sc)
 
     this.prevValues.forEach((prevValue: Xfo, index: number) => {
       const newValue = newBase.multiply(this.localXfos[index])
@@ -53,10 +61,14 @@ class SelectionXfoChange extends Change {
       this.treeItems[index].globalXfoParam.value = this.newValues[index].clone()
     })
 
+    this.selectionGroup.selectionGroupXfoOp.setDeltaXfo(deltaXfo)
+
     this.emit('updated', { newValues: [...this.newValues] })
   }
 
   setDone() {
+    this.newValue = this.selectionGroup.globalXfoParam.value.clone()
+    this.selectionGroup.selectionGroupXfoOp.endChange()
     this.emit('done')
   }
 
@@ -67,6 +79,8 @@ class SelectionXfoChange extends Change {
     this.treeItems.forEach((treeItem: TreeItem, index: number) => {
       treeItem.globalXfoParam.value = this.prevValues[index]
     })
+
+    this.selectionGroup.selectionGroupXfoOp.setManualXfo(this.prevValue.clone())
   }
 
   /**
@@ -77,6 +91,8 @@ class SelectionXfoChange extends Change {
     this.treeItems.forEach((treeItem: TreeItem, index: number) => {
       treeItem.globalXfoParam.value = this.newValues[index]
     })
+
+    this.selectionGroup.selectionGroupXfoOp.setManualXfo(this.newValue.clone())
   }
 
   /**
@@ -143,7 +159,6 @@ class SelectionXfoChange extends Change {
   }
 }
 
-// @ts-ignore
 UndoRedoManager.registerChange('SelectionXfoChange', SelectionXfoChange)
 
 export default SelectionXfoChange

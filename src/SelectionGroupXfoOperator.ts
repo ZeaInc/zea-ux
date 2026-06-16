@@ -1,5 +1,6 @@
 import {
   Xfo,
+  Box3,
   KinematicGroup,
   Operator,
   XfoOperatorInput,
@@ -10,6 +11,12 @@ import {
   XfoParameter,
 } from '@zeainc/zea-engine'
 
+const HANDLE_CENTER_MODES = {
+  objectOrigin: 0,
+  objectCentroid: 1,
+  manual: 2,
+}
+
 /**
  * An operator for aiming items at targets.
  *
@@ -17,20 +24,59 @@ import {
  */
 class SelectionGroupXfoOperator extends Operator {
   currGroupXfo: Xfo
-  xfoModeInput = new NumberOperatorInput('InitialXfoMode')
+  handleCenterMode: number = HANDLE_CENTER_MODES.objectOrigin
   xfoOutput = new XfoOperatorOutput('GroupGlobalXfo')
+
+  manualXfoPlacement: Xfo = new Xfo()
+  baseXfo: Xfo = new Xfo()
+  manualXfoDelta: Xfo = new Xfo()
+
+  /**
+   * Returns enum of available handle center modes.
+   *
+   * | Name | Value |
+   * | --- | --- |
+   * | objectOrigin | `0` |
+   * | objectCentroid | `1` |
+   */
+  static get HANDLE_CENTER_MODES() {
+    return HANDLE_CENTER_MODES
+  }
+
   /**
    * Creates an instance of SelectionGroupXfoOperator.
    *
-   * @param initialXfoModeParam - Initial XFO Mode, check `INITIAL_XFO_MODES` in `KinematicGroup` documentation
    * @param globalXfoParam - The GlobalXfo param found on the KinematicKinematicGroup.
    */
-  constructor(initialXfoModeParam: NumberParameter, globalXfoParam: XfoParameter) {
+  constructor(globalXfoParam: XfoParameter) {
     super()
-    this.addInput(this.xfoModeInput).setParam(initialXfoModeParam)
     this.addOutput(this.xfoOutput).setParam(globalXfoParam)
 
     this.currGroupXfo = new Xfo()
+  }
+
+  setManualXfo(xfo: Xfo): void {
+    if (this.handleCenterMode == HANDLE_CENTER_MODES.manual) {
+      this.manualXfoPlacement = xfo
+      this.manualXfoDelta = new Xfo()
+      this.setDirty()
+    }
+  }
+  startChange(baseXfo: Xfo): void {
+    this.baseXfo = baseXfo
+  }
+  setDeltaXfo(delta: Xfo) {
+    if (this.handleCenterMode == HANDLE_CENTER_MODES.manual) {
+      this.manualXfoDelta = delta
+      this.setDirty()
+    }
+  }
+  endChange() {
+    if (this.handleCenterMode == HANDLE_CENTER_MODES.manual) {
+      this.manualXfoPlacement.tr = this.manualXfoDelta.tr.add(this.manualXfoPlacement.tr)
+      this.manualXfoPlacement.ori = this.manualXfoDelta.ori.multiply(this.manualXfoPlacement.ori)
+      this.manualXfoDelta = new Xfo()
+    }
   }
 
   /**
@@ -53,7 +99,7 @@ class SelectionGroupXfoOperator extends Operator {
   removeItem(item: TreeItem): void {
     // The first input it the 'InitialXfoMode', so remove the input for the specified item.
     const xfoParam = item.globalXfoParam
-    for (let i = 1; i < this.getNumInputs(); i++) {
+    for (let i = 0; i < this.getNumInputs(); i++) {
       const input: XfoOperatorInput = <XfoOperatorInput>this.getInputByIndex(i)
       if (input.getParam() == xfoParam) {
         this.removeInput(input)
@@ -70,26 +116,7 @@ class SelectionGroupXfoOperator extends Operator {
    *
    * @param xfo - The new value being set to the Groups GlobalXfo param.
    */
-  backPropagateValue(xfo: Xfo): void {
-    const invXfo = this.currGroupXfo.inverse()
-    const delta = xfo.multiply(invXfo)
-    delta.ori.normalizeInPlace()
-
-    // During interactive manipulation, it is possible on heavy scenes
-    // that multiple backPropagateValue calls occur between renders.
-    // Note: that the currGroupXfo would not be re-computed in that time,
-    // and to this means that we cannot calculate the delta based on the current
-    // Value of the output. ('GroupGlobalXfo')
-    // By updating the cache of the currGroupXfo value, a successive call to
-    // backPropagateValue will apply to the result of the previous call to backPropagateValue
-    this.currGroupXfo = delta.multiply(this.currGroupXfo)
-    for (let i = 1; i < this.getNumInputs(); i++) {
-      const input = this.getInputByIndex(i)
-      const currXfo = input.getValue()
-      const result = delta.multiply(currXfo)
-      input.setValue(result)
-    }
-  }
+  backPropagateValue(xfo: Xfo): void {}
 
   /**
    * Calculates a new Xfo for the group based on the members.
@@ -97,45 +124,40 @@ class SelectionGroupXfoOperator extends Operator {
   evaluate(): void {
     this.currGroupXfo = new Xfo()
 
-    if (this.getNumInputs() == 1) {
+    if (this.getNumInputs() == 0) {
       this.xfoOutput.setClean(this.currGroupXfo)
       return
     }
 
-    const initialXfoMode = this.xfoModeInput.param.value
-    if (initialXfoMode == KinematicGroup.INITIAL_XFO_MODES.manual) {
-      // The xfo is manually set by the current global xfo.
-      this.currGroupXfo = this.xfoOutput.getParam().value.clone()
-      return
-    } else if (initialXfoMode == KinematicGroup.INITIAL_XFO_MODES.first) {
-      const itemXfo = this.getInputByIndex(1).getValue()
-      this.currGroupXfo.tr = itemXfo.tr.clone()
-      this.currGroupXfo.ori = itemXfo.ori.clone()
-    } else if (initialXfoMode == KinematicGroup.INITIAL_XFO_MODES.average) {
-      this.currGroupXfo.ori.set(0, 0, 0, 0)
-      let numTreeItems = 0
-      for (let i = 1; i < this.getNumInputs(); i++) {
+    if (this.handleCenterMode == HANDLE_CENTER_MODES.objectOrigin) {
+      // Calculate the translation with the combined bounding box center.
+      for (let i = 0; i < this.getNumInputs(); i++) {
         const itemXfo = this.getInputByIndex(i).getValue()
         this.currGroupXfo.tr.addInPlace(itemXfo.tr)
 
         // Note: Averaging rotations causes weird and confusing GizmoRotation.
-        if (numTreeItems == 0) this.currGroupXfo.ori.addInPlace(itemXfo.ori)
-        numTreeItems++
+        if (i == 0) this.currGroupXfo.ori = itemXfo.ori.clone()
       }
-      this.currGroupXfo.tr.scaleInPlace(1 / numTreeItems)
-      // this.currGroupXfo.sc.scaleInPlace(1 / numTreeItems);
-    } else if (initialXfoMode == KinematicGroup.INITIAL_XFO_MODES.globalOri) {
-      let numTreeItems = 0
-      for (let i = 1; i < this.getNumInputs(); i++) {
-        const itemXfo = this.getInputByIndex(i).getValue()
-        this.currGroupXfo.tr.addInPlace(itemXfo.tr)
-        numTreeItems++
+      this.currGroupXfo.tr.scaleInPlace(1 / this.getNumInputs())
+    } else if (this.handleCenterMode == HANDLE_CENTER_MODES.objectCentroid) {
+      // Override the translation with the combined bounding box center.
+      const combinedBox = new Box3()
+      for (let i = 0; i < this.getNumInputs(); i++) {
+        const input: XfoOperatorInput = <XfoOperatorInput>this.getInputByIndex(i)
+        const itemXfo = input.getValue()
+        const treeItem = input.getParam().getOwner() as TreeItem
+        if (treeItem) combinedBox.addBox3(treeItem.getBoundingBox())
+        if (i == 0) this.currGroupXfo.ori = itemXfo.ori.clone()
       }
-      this.currGroupXfo.tr.scaleInPlace(1 / numTreeItems)
-    } else {
-      throw new Error('Invalid KinematicGroup.INITIAL_XFO_MODES.')
+      if (combinedBox.isValid()) this.currGroupXfo.tr = combinedBox.center()
+    } else if (this.handleCenterMode == HANDLE_CENTER_MODES.manual) {
+      // this.currGroupXfo = this.manualXfoPlacement.multiply(this.manualXfoDelta)
+
+      // this.currGroupXfo = this.manualXfoDelta.multiply(this.manualXfoPlacement)
+      this.currGroupXfo.tr = this.manualXfoDelta.tr.add(this.manualXfoPlacement.tr)
+      this.currGroupXfo.ori = this.manualXfoDelta.ori.multiply(this.manualXfoPlacement.ori)
     }
-    this.currGroupXfo.ori.normalizeInPlace()
+
     this.xfoOutput.setClean(this.currGroupXfo)
   }
 }

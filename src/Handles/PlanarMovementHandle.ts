@@ -67,8 +67,7 @@ class PlanarMovementHandle extends Handle {
     this.baseXfo = <Xfo>param.value
 
     if (this.selectionGroup) {
-      const items = this.selectionGroup.getItems()
-      this.change = new SelectionXfoChange(Array.from(items), this.globalXfoParam.value)
+      this.change = new SelectionXfoChange(this.selectionGroup, this.globalXfoParam.value)
       UndoRedoManager.getInstance().addChange(this.change)
     } else {
       this.change = new ParameterValueChange(param)

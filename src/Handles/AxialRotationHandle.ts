@@ -140,8 +140,7 @@ class AxialRotationHandle extends Handle {
 
     // this.offsetXfo = this.localXfoParam.value.inverse()
     if (this.selectionGroup) {
-      const items = this.selectionGroup.getItems()
-      this.change = new SelectionXfoChange(Array.from(items), this.baseXfo)
+      this.change = new SelectionXfoChange(this.selectionGroup, this.baseXfo)
       UndoRedoManager.getInstance().addChange(this.change)
     } else {
       const invBaseXfo = this.baseXfo.inverse()

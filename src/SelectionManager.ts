@@ -1,10 +1,42 @@
-import { EventEmitter, Color, TreeItem, GLRenderer } from '@zeainc/zea-engine'
+import { EventEmitter, Color, TreeItem, GLRenderer, Xfo } from '@zeainc/zea-engine'
 import { AppData } from '../types/types'
 import XfoHandle from './Handles/XfoHandle'
 import SelectionGroup from './SelectionGroup'
+import SelectionGroupXfoOperator from './SelectionGroupXfoOperator'
 import SelectionChange from './UndoRedo/Changes/SelectionChange'
 import UndoRedoManager from './UndoRedo/UndoRedoManager'
-import { Change } from './UndoRedo'
+import { Change, SelectionXfoChange } from './UndoRedo'
+
+class HandleCenterModeChange extends Change {
+  prevMode: number
+  newMode: number
+  constructor(
+    public selectionGroupXfoOp?: SelectionGroupXfoOperator,
+    public mode?: 'objectOrigin' | 'objectCentroid' | 'manual'
+  ) {
+    super()
+
+    if (!selectionGroupXfoOp) {
+      return
+    }
+    const modes = SelectionGroupXfoOperator.HANDLE_CENTER_MODES
+    this.prevMode = selectionGroupXfoOp.handleCenterMode
+    this.newMode = modes[this.mode]
+
+    this.selectionGroupXfoOp.handleCenterMode = this.newMode
+    this.selectionGroupXfoOp.setDirty()
+  }
+  undo(): void {
+    this.selectionGroupXfoOp.handleCenterMode = this.prevMode
+    this.selectionGroupXfoOp.setDirty()
+  }
+
+  redo(): void {
+    this.selectionGroupXfoOp.handleCenterMode = this.newMode
+    this.selectionGroupXfoOp.setDirty()
+  }
+}
+UndoRedoManager.registerChange('HandleCenterModeChange', HandleCenterModeChange)
 
 /**
  * Class representing a selection manager
@@ -71,19 +103,6 @@ class SelectionManager extends EventEmitter {
   }
 
   /**
-   * Sets initial Xfo mode of the selection group.
-   *
-   * @see `KinematicGroup` class documentation
-   *
-   * @param mode - The Xfo mode
-   */
-  setXfoMode(mode: number): void {
-    if (this.xfoHandle) {
-      this.selectionGroup.initialXfoModeParam.value = mode
-    }
-  }
-
-  /**
    * Displays handles depending on the specified mode(Move, Rotate, Scale).
    * If nothing is specified, it hides all of them.
    * @deprecated
@@ -91,6 +110,30 @@ class SelectionManager extends EventEmitter {
    */
   showHandles(enabled: boolean): void {
     this.xfoHandleVisible = enabled
+  }
+
+  /**
+   * Sets the mode that controls where the Xfo handle is centered relative to the selection.
+   *
+   * | Mode | Behavior |
+   * | --- | --- |
+   * | `objectOrigin` | Handle is placed at the object's origin (default) |
+   * | `objectCentroid` | Handle is placed at the center of the selection's bounding box |
+   * | `manual` | Handle is placed at a manually specified position |
+   * @param mode - One of the keys from `SelectionGroupXfoOperator.HANDLE_CENTER_MODES`
+   */
+  setHandleCenterMode(mode: 'objectOrigin' | 'objectCentroid' | 'manual'): void {
+    const modes = SelectionGroupXfoOperator.HANDLE_CENTER_MODES
+    if (mode in modes) {
+      const change = new HandleCenterModeChange(this.selectionGroup.selectionGroupXfoOp, mode)
+      UndoRedoManager.getInstance().addChange(change)
+    } else {
+      console.warn(`Unknown handle center mode: "${mode}"`)
+    }
+  }
+
+  setManualTransform(xfo: Xfo): void {
+    this.selectionGroup.selectionGroupXfoOp.setManualXfo(xfo)
   }
 
   /**
@@ -379,6 +422,7 @@ class SelectionManager extends EventEmitter {
    */
   endPickingMode(): void {
     this.pickCB = undefined
+    this.pickFilter = undefined
   }
 
   /**

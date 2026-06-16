@@ -8,15 +8,24 @@
     <title>Zea UX</title>
 
     <style>
+      * {
+        box-sizing: border-box;
+      }
+
       body {
         height: 100vh;
         margin: 0;
+        font-family: system-ui, sans-serif;
+        font-size: 13px;
+        background: #1a1a1a;
+        color: #e0e0e0;
       }
 
       #rendererHolder {
         width: 100%;
-        height: calc(100% - 35px);
+        height: calc(100% - 44px);
       }
+
       #renderer {
         width: 100%;
         height: 100%;
@@ -25,24 +34,77 @@
       #controllers {
         display: flex;
         align-items: center;
-        padding: 0.5em;
+        gap: 1.5em;
+        height: 44px;
+        padding: 0 1em;
+        background: #242424;
+        border-bottom: 1px solid #333;
+      }
+
+      .control-group {
+        display: flex;
+        align-items: center;
+        gap: 0.6em;
+      }
+
+      .control-group + .control-group {
+        padding-left: 1.5em;
+        border-left: 1px solid #3a3a3a;
+      }
+
+      #controllers label {
+        color: #aaa;
+        user-select: none;
+        cursor: pointer;
+      }
+
+      #controllers input[type='checkbox'] {
+        accent-color: #4a9eff;
+        width: 14px;
+        height: 14px;
+        cursor: pointer;
+      }
+
+      #controllers select {
+        background: #2e2e2e;
+        color: #e0e0e0;
+        border: 1px solid #444;
+        border-radius: 4px;
+        padding: 3px 6px;
+        cursor: pointer;
+        outline: none;
+      }
+
+      #controllers select:hover {
+        border-color: #666;
+      }
+
+      #controllers button {
+        background: #2e2e2e;
+        color: #e0e0e0;
+        border: 1px solid #444;
+        border-radius: 4px;
+        padding: 3px 10px;
+        cursor: pointer;
+      }
+
+      #controllers button:hover {
+        border-color: #666;
+      }
+
+      #controllers button.active {
+        background: #1a4a7a;
+        border-color: #4a9eff;
+        color: #fff;
+      }
+
+      #controllers button:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
       }
 
       .hidden {
         display: none !important;
-      }
-
-      #controllers > button {
-        text-align: center;
-        margin: 5px;
-      }
-
-      ul#color-list {
-        list-style: none;
-      }
-
-      ul#color-list > li {
-        width: 100px;
       }
     </style>
 
@@ -64,6 +126,8 @@
         Torus,
         SimpleSurfaceMaterial,
         KinematicGroup,
+        CADAsset,
+        AssetLoadContext,
       } = window.zeaEngine
       const { ToolManager, SelectionManager, SelectionTool, UndoRedoManager } = window.zeaUx
 
@@ -75,13 +139,24 @@
       const renderer = new GLRenderer($canvas, { hideSplash: true })
       renderer.setScene(scene)
 
+      const cadAsset = new CADAsset()
+      const context = new AssetLoadContext()
+      context.units = 'Inches'
+      // const url = 'data/zcad/3.6.0/Dead_eye_bearingSTEP.zcad'
+      const url = 'data/zcad/3.9.1/Dead_eye_bearing.stp.zcad'
+      cadAsset.globalXfoParam.value.tr.set(-6, 0, 0)
+      cadAsset.load(url, context).then(() => {
+        renderer.frameAll()
+      })
+      scene.getRoot().addChild(cadAsset)
+
       const count = 100
       const dim = Math.round(Math.cbrt(count))
 
       const detail = 40
       const torus = new Torus(0.15, 0.5)
       const sphere = new Sphere(0.3, 2 * detail, detail)
-      const cubiod = new Cuboid(0.7, 0.7, 0.7)
+      const cuboid = new Cuboid(0.7, 0.7, 0.7)
 
       let geomItemCount = 0
       const addLayers = (layerId, treeItem) => {
@@ -102,7 +177,7 @@
                 geom = sphere
                 break
               case 2:
-                geom = cubiod
+                geom = cuboid
                 break
               case 3:
                 geom = torus
@@ -235,6 +310,54 @@
             selectionManager.showHandles(value)
           })
         })
+
+        const $xfoModeSelect = document.getElementById('xfo-mode-select')
+        const $pickBtn = document.getElementById('pick-btn')
+
+        const updatePickBtnState = () => {
+          $pickBtn.disabled = $xfoModeSelect.value !== 'manual'
+        }
+        updatePickBtnState()
+
+        $xfoModeSelect.addEventListener('change', (e) => {
+          selectionManager.setHandleCenterMode(e.target.value)
+          updatePickBtnState()
+        })
+        let pickingSessionActive = false
+
+        const endPickSession = () => {
+          selectionManager.endPickingMode()
+          toolManager.popTool()
+          document.body.style.cursor = 'default'
+          $pickBtn.textContent = 'Pick Object'
+          $pickBtn.classList.remove('active')
+          pickingSessionActive = false
+        }
+
+        $pickBtn.addEventListener('click', () => {
+          if (pickingSessionActive) {
+            endPickSession()
+          } else {
+            toolManager.pushTool('selectionTool')
+            selectionManager.startPickingMode(
+              (treeItem) => {
+                selectionManager.setManualTransform(treeItem.globalXfoParam.value)
+                endPickSession()
+              },
+              (treeItem) => {
+                if (treeItem) {
+                  document.body.style.cursor = 'crosshair'
+                  return treeItem
+                } else {
+                  document.body.style.cursor = 'default'
+                }
+              }
+            )
+            $pickBtn.textContent = 'Cancel Pick'
+            $pickBtn.classList.add('active')
+            pickingSessionActive = true
+          }
+        })
       }
 
       renderer.getViewport().getCamera().setPositionAndTarget(new Vec3(-6, -6, 3), new Vec3(1, 1, 2))
@@ -242,11 +365,22 @@
   </head>
   <body>
     <div id="controllers">
-      <div>
-        <label for="selection-cbx">Select Tool</label>
+      <div class="control-group">
         <input type="checkbox" name="selection-cbx" id="selection-cbx" />
-        <label for="selection-cbx">Picking Mode</label>
+        <label for="selection-cbx">Select Tool</label>
+      </div>
+      <div class="control-group">
         <input type="checkbox" name="picking-cbx" id="picking-cbx" />
+        <label for="picking-cbx">Picking Mode</label>
+      </div>
+      <div class="control-group">
+        <label for="xfo-mode-select">Xfo Mode</label>
+        <select id="xfo-mode-select">
+          <option value="objectOrigin">objectOrigin</option>
+          <option value="objectCenter">objectCenter</option>
+          <option value="manual">manual</option>
+        </select>
+        <button id="pick-btn">Pick Object</button>
       </div>
     </div>
     <div id="rendererHolder">

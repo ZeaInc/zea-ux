@@ -1,13 +1,5 @@
-import { Color, BaseItem, TreeItem, SelectionSet, MultiChoiceParameter, CloneContext } from '@zeainc/zea-engine'
+import { Color, BaseItem, TreeItem, SelectionSet, CloneContext } from '@zeainc/zea-engine'
 import SelectionGroupXfoOperator from './SelectionGroupXfoOperator.js'
-
-const GROUP_XFO_MODES = {
-  disabled: 0,
-  manual: 1,
-  first: 2,
-  average: 3,
-  globalOri: 4,
-}
 
 /**
  * A specific type of `SelectionSet` class that contains/handles selection of one or more items from the scene.
@@ -22,13 +14,8 @@ const GROUP_XFO_MODES = {
  * @extends {SelectionSet}
  */
 class SelectionGroup extends SelectionSet {
-  initialXfoModeParam = new MultiChoiceParameter('InitialXfoMode', GROUP_XFO_MODES.average, [
-    'manual',
-    'first',
-    'average',
-    'global',
-  ])
   selectionGroupXfoOp: SelectionGroupXfoOperator
+
   /**
    * Creates an instance of SelectionGroup.
    *
@@ -45,22 +32,7 @@ class SelectionGroup extends SelectionSet {
     this.highlightColorParam.value = selectionColor
     this.itemsParam.setFilterFn((item) => item instanceof BaseItem)
 
-    this.addParameter(this.initialXfoModeParam)
-    this.selectionGroupXfoOp = new SelectionGroupXfoOperator(this.initialXfoModeParam, this.globalXfoParam)
-  }
-
-  /**
-   * Returns enum of available xfo modes.
-   *
-   * | Name | Default |
-   * | --- | --- |
-   * | manual | <code>0</code> |
-   * | first | <code>1</code> |
-   * | average | <code>2</code> |
-   * | globalOri | <code>3</code> |
-   */
-  static get INITIAL_XFO_MODES() {
-    return GROUP_XFO_MODES
+    this.selectionGroupXfoOp = new SelectionGroupXfoOperator(this.globalXfoParam)
   }
 
   /**
