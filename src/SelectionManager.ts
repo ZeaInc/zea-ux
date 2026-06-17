@@ -122,7 +122,7 @@ class SelectionManager extends EventEmitter {
    * | `manual` | Handle is placed at a manually specified position |
    * @param mode - One of the keys from `SelectionGroupXfoOperator.HANDLE_CENTER_MODES`
    */
-  setHandleCenterMode(mode: 'objectOrigin' | 'objectCentroid' | 'manual'): void {
+  set handleCenterMode(mode: 'objectOrigin' | 'objectCentroid' | 'manual') {
     const modes = SelectionGroupXfoOperator.HANDLE_CENTER_MODES
     if (mode in modes) {
       const change = new HandleCenterModeChange(this.selectionGroup.selectionGroupXfoOp, mode)
@@ -132,7 +132,13 @@ class SelectionManager extends EventEmitter {
     }
   }
 
-  setManualTransform(xfo: Xfo): void {
+  get handleCenterMode(): 'objectOrigin' | 'objectCentroid' | 'manual' {
+    const modes = SelectionGroupXfoOperator.HANDLE_CENTER_MODES
+    const modeIndex = this.selectionGroup.selectionGroupXfoOp.handleCenterMode
+    return Object.keys(modes)[modeIndex] as 'objectOrigin' | 'objectCentroid' | 'manual'
+  }
+
+  setManualHandleTransform(xfo: Xfo): void {
     this.selectionGroup.selectionGroupXfoOp.setManualXfo(xfo)
   }
 
