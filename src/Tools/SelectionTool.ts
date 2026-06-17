@@ -25,6 +25,8 @@ import { GLViewport } from '@zeainc/zea-engine'
  * @extends BaseTool
  */
 class SelectionTool extends BaseTool {
+  public rectangularSelectionHotKey: keyof ZeaMouseEvent = 'shiftKey'
+  private rectangularSelectionMode: boolean = false
   private appData: AppData
   private dragging: boolean
   private selectionManager: SelectionManager
@@ -124,20 +126,17 @@ class SelectionTool extends BaseTool {
    * @return {boolean} The return value.
    */
   onPointerDown(event: ZeaPointerEvent): void {
-    // Ingnore pointer down events with alt key pressed, as those are used for camera controls.
-    if (event instanceof ZeaMouseEvent && event.altKey) return
-    if (this.dragging) {
-      // cancel the select
-      this.selectionRectXfo.sc.set(0, 0, 0)
-      this.rectItem.globalXfoParam.value = this.selectionRectXfo
-      this.rectItem.visibleParam.value = false
-      this.pointerDownPos = undefined
-      this.dragging = false
-      event.stopPropagation()
-    } else if (event instanceof ZeaTouchEvent || (event instanceof ZeaMouseEvent && event.button == 0)) {
+    if (event instanceof ZeaTouchEvent || (event instanceof ZeaMouseEvent && event.button == 0)) {
       this.pointerDownPos = event.pointerPos.scale(window.devicePixelRatio)
-      this.dragging = false
-      event.stopPropagation()
+
+      this.rectangularSelectionMode = event instanceof ZeaMouseEvent && event[this.rectangularSelectionHotKey] === true
+      if (this.rectangularSelectionMode) {
+        this.dragging = true
+        this.rectItem.visibleParam.value = true
+        this.resizeRect(event.viewport, new Vec2(0, 0))
+        this.selectionManager.xfoHandle.pickableParam.value = false
+        event.stopPropagation()
+      }
     }
   }
 
@@ -148,24 +147,16 @@ class SelectionTool extends BaseTool {
    * @return {boolean} The return value.
    */
   onPointerMove(event: ZeaPointerEvent): void {
-    // Ingnore pointer down events with alt key pressed, as those are used for camera controls.
-    if (event instanceof ZeaMouseEvent && event.altKey) return
     if (!(event instanceof ZeaMouseEvent) && !(event instanceof ZeaTouchEvent)) {
       console.warn('not handling VR')
       return
     }
-    if (this.pointerDownPos) {
+    if (this.rectangularSelectionMode && this.dragging) {
       const pointerPos = event.pointerPos.scale(window.devicePixelRatio)
       const delta = this.pointerDownPos.subtract(pointerPos)
-      const dist = delta.length()
-      // dragging only is activated after 4 pixels.
-      // This is to avoid causing as rect selection for nothing.
-      if (dist > 4) {
-        this.dragging = true
-        // Start drawing the selection rectangle on screen.
-        this.rectItem.visibleParam.value = true
-        this.resizeRect(event.viewport, delta)
-      }
+
+      this.resizeRect(event.viewport, delta)
+
       event.stopPropagation()
     } else {
       if (this.selectionManager.pickingModeActive()) {
@@ -174,6 +165,7 @@ class SelectionTool extends BaseTool {
         } else {
           this.selectionManager.pickFilter(null)
         }
+        event.stopPropagation()
       }
     }
   }
@@ -185,12 +177,11 @@ class SelectionTool extends BaseTool {
    * @return {boolean} The return value.
    */
   onPointerUp(event: ZeaPointerEvent): void {
-    // Ingnore pointer down events with alt key pressed, as those are used for camera controls.
-    if (event instanceof ZeaMouseEvent && event.altKey) return
     if ((event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) && this.pointerDownPos) {
-      if (this.dragging) {
+      if (this.rectangularSelectionMode && this.dragging) {
         this.dragging = false
         this.rectItem.visibleParam.value = false
+        this.selectionManager.xfoHandle.pickableParam.value = true
         const pointerUpPos = event.pointerPos.scale(window.devicePixelRatio)
         const tl = new Vec2(
           Math.min(this.pointerDownPos.x, pointerUpPos.x),
@@ -222,7 +213,7 @@ class SelectionTool extends BaseTool {
         } else {
           const geomItemsSet: Set<TreeItem> = new Set(geomItems)
 
-          if (!event.shiftKey) {
+          if (!event.ctrlKey) {
             this.selectionManager.selectItems(geomItemsSet, !event.ctrlKey)
           } else {
             this.selectionManager.deselectItems(geomItemsSet)
@@ -257,7 +248,6 @@ class SelectionTool extends BaseTool {
         }
       }
       this.pointerDownPos = undefined
-      event.stopPropagation()
     }
   }
 

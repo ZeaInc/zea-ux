@@ -221,16 +221,12 @@
           ...appData,
         })
 
-        selectionTool.selectionFilterFn = (geomItem) => {
-          if (geomItem.geomParam.value instanceof Torus) return geomItem
-          return null
-        }
-
         const toolManager = new ToolManager()
         toolManager.registerTool('cameraManipulator', cameraManipulator)
         toolManager.registerTool('selectionTool', selectionTool)
         renderer.getViewport().setManipulator(toolManager)
         toolManager.pushTool('cameraManipulator')
+        toolManager.pushTool('selectionTool')
 
         let pickingOn = false
 
@@ -260,16 +256,6 @@
           }
         })
 
-        const $selectionCheckbox = document.getElementById('selection-cbx')
-
-        $selectionCheckbox.addEventListener('change', (e) => {
-          if ($selectionCheckbox.checked) {
-            toolManager.pushTool('selectionTool')
-          } else {
-            toolManager.popTool()
-          }
-        })
-
         const $pickingCheckbox = document.getElementById('picking-cbx')
 
         const group = new KinematicGroup()
@@ -277,7 +263,6 @@
 
         $pickingCheckbox.addEventListener('change', (e) => {
           if ($pickingCheckbox.checked) {
-            toolManager.pushTool('selectionTool')
             selectionManager.startPickingMode(
               (treeItem) => {
                 group.addItem(treeItem)
@@ -365,10 +350,6 @@
   </head>
   <body>
     <div id="controllers">
-      <div class="control-group">
-        <input type="checkbox" name="selection-cbx" id="selection-cbx" />
-        <label for="selection-cbx">Select Tool</label>
-      </div>
       <div class="control-group">
         <input type="checkbox" name="picking-cbx" id="picking-cbx" />
         <label for="picking-cbx">Picking Mode</label>

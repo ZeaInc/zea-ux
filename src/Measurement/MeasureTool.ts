@@ -85,7 +85,6 @@ class MeasureTool extends BaseTool {
     super.activateTool()
     if (this.appData && this.appData.renderer) {
       this.prevCursor = this.appData.renderer.getGLCanvas().style.cursor
-      this.appData.renderer.getGLCanvas().style.cursor = 'crosshair'
     }
   }
 
@@ -219,6 +218,7 @@ class MeasureTool extends BaseTool {
             const position = event.pointerRay.start.add(event.pointerRay.dir.scale(event.intersectionData.dist))
             this.pickPointA.globalXfoParam.value = new Xfo(position)
             this.pickPointA.visibleParam.value = true
+            this.appData.renderer.getGLCanvas().style.cursor = 'crosshair'
           } else {
             this.removeHighlightAndMarkerA()
           }
@@ -270,6 +270,7 @@ class MeasureTool extends BaseTool {
             const position = event.pointerRay.start.add(event.pointerRay.dir.scale(event.intersectionData.dist))
             this.pickPointB.globalXfoParam.value = new Xfo(position)
             this.pickPointB.visibleParam.value = true
+            this.appData.renderer.getGLCanvas().style.cursor = 'crosshair'
           })
           .catch(() => {
             this.removeHighlightAndMarkerB()
@@ -295,6 +296,7 @@ class MeasureTool extends BaseTool {
       this.appData.renderer.removeTreeItem(this.pickPointA)
       this.pickPointA = null
     }
+    this.appData.renderer.getGLCanvas().style.cursor = 'default'
   }
 
   removeHighlightAndMarkerB(): void {
@@ -311,6 +313,7 @@ class MeasureTool extends BaseTool {
       this.appData.renderer.removeTreeItem(this.pickPointB)
       this.pickPointB = null
     }
+    this.appData.renderer.getGLCanvas().style.cursor = 'default'
   }
 
   removeHighlightsAndMarkers(): void {

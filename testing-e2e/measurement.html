@@ -84,6 +84,8 @@
       } = window.zeaEngine
       const {
         UndoRedoManager,
+        SelectionManager,
+        SelectionTool,
         ToolManager,
         MeasureDistanceTool,
         MeasureRadiusTool,
@@ -149,7 +151,14 @@
         const measureCenterDistancesTool = new MeasureCenterDistancesTool(appData, measurements)
 
         const cameraManipulator = renderer.getViewport().getManipulator()
+
+        const selectionManager = new SelectionManager(appData, {
+          enableXfoHandles: true,
+        })
+        appData.selectionManager = selectionManager
+        const selectionTool = new SelectionTool(appData, measurements)
         toolManager.registerTool('cameraManipulator', cameraManipulator)
+        toolManager.registerTool('selectionTool', selectionTool)
         toolManager.registerTool('measureDistanceTool', measureDistanceTool)
         toolManager.registerTool('measureRadiusTool', measureRadiusTool)
         toolManager.registerTool('measureAngleTool', measureAngleTool)
@@ -158,6 +167,7 @@
 
         // Push the Camera Manipultor onto the base of the stack.
         toolManager.pushTool('cameraManipulator')
+        toolManager.pushTool('selectionTool')
 
         document.addEventListener('keydown', (e) => {
           switch (e.key) {
@@ -209,6 +219,7 @@
           }
 
           if (mode == 0) {
+            toolManager.popTool()
           } else if (mode == 1) {
             $measurePt2Pt.classList.remove('checked')
             toolManager.popTool()
@@ -224,6 +235,7 @@
           }
 
           if (index == 0) {
+            toolManager.pushTool('selectionTool')
           } else if (index == 1) {
             $measurePt2Pt.classList.add('checked')
             toolManager.pushTool('measureDistanceTool')
@@ -238,6 +250,7 @@
             toolManager.pushTool('measureCenterDistancesTool')
           }
           mode = index
+          selectionManager.clearSelection()
         }
         const $measurePt2Pt = document.getElementById('measure-pt-2-pt')
         $measurePt2Pt.addEventListener('click', (e) => {
