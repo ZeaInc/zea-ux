@@ -320,7 +320,7 @@
         updatePickBtnState()
 
         $xfoModeSelect.addEventListener('change', (e) => {
-          selectionManager.setHandleCenterMode(e.target.value)
+          selectionManager.handleCenterMode = e.target.value
           updatePickBtnState()
         })
         let pickingSessionActive = false
@@ -341,7 +341,7 @@
             toolManager.pushTool('selectionTool')
             selectionManager.startPickingMode(
               (treeItem) => {
-                selectionManager.setManualTransform(treeItem.globalXfoParam.value)
+                selectionManager.setManualHandleTransform(treeItem.globalXfoParam.value)
                 endPickSession()
               },
               (treeItem) => {
