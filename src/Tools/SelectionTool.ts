@@ -3,7 +3,6 @@ import {
   Color,
   Xfo,
   GeomItem,
-  Material,
   Rect,
   BaseTool,
   TreeItem,
@@ -125,6 +124,8 @@ class SelectionTool extends BaseTool {
    * @return {boolean} The return value.
    */
   onPointerDown(event: ZeaPointerEvent): void {
+    // Ingnore pointer down events with alt key pressed, as those are used for camera controls.
+    if (event instanceof ZeaMouseEvent && event.altKey) return
     if (this.dragging) {
       // cancel the select
       this.selectionRectXfo.sc.set(0, 0, 0)
@@ -147,6 +148,8 @@ class SelectionTool extends BaseTool {
    * @return {boolean} The return value.
    */
   onPointerMove(event: ZeaPointerEvent): void {
+    // Ingnore pointer down events with alt key pressed, as those are used for camera controls.
+    if (event instanceof ZeaMouseEvent && event.altKey) return
     if (!(event instanceof ZeaMouseEvent) && !(event instanceof ZeaTouchEvent)) {
       console.warn('not handling VR')
       return
@@ -182,6 +185,8 @@ class SelectionTool extends BaseTool {
    * @return {boolean} The return value.
    */
   onPointerUp(event: ZeaPointerEvent): void {
+    // Ingnore pointer down events with alt key pressed, as those are used for camera controls.
+    if (event instanceof ZeaMouseEvent && event.altKey) return
     if ((event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) && this.pointerDownPos) {
       if (this.dragging) {
         this.dragging = false
