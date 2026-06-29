@@ -24,12 +24,12 @@ const HANDLE_CENTER_MODES = {
  */
 class SelectionGroupXfoOperator extends Operator {
   currGroupXfo: Xfo
-  handleCenterMode: number = HANDLE_CENTER_MODES.objectOrigin
+  #pivotMode: number = HANDLE_CENTER_MODES.objectOrigin
   xfoOutput = new XfoOperatorOutput('GroupGlobalXfo')
 
-  manualXfoPlacement: Xfo = new Xfo()
+  #manualXfoPlacement: Xfo = new Xfo()
+  #manualXfoDelta: Xfo = new Xfo()
   baseXfo: Xfo = new Xfo()
-  manualXfoDelta: Xfo = new Xfo()
 
   /**
    * Returns enum of available handle center modes.
@@ -55,27 +55,45 @@ class SelectionGroupXfoOperator extends Operator {
     this.currGroupXfo = new Xfo()
   }
 
-  setManualXfo(xfo: Xfo): void {
-    if (this.handleCenterMode == HANDLE_CENTER_MODES.manual) {
-      this.manualXfoPlacement = xfo
-      this.manualXfoDelta = new Xfo()
+  get pivotMode(): number {
+    return this.#pivotMode
+  }
+  set pivotMode(mode: number) {
+    if (mode !== this.#pivotMode) {
+      if (mode == HANDLE_CENTER_MODES.manual) {
+        this.#manualXfoPlacement = this.currGroupXfo.clone()
+        this.#manualXfoDelta = new Xfo()
+      }
+      this.#pivotMode = mode
       this.setDirty()
     }
   }
+
+  get pivotXfo(): Xfo {
+    return this.currGroupXfo
+  }
+
+  set pivotXfo(xfo: Xfo) {
+    this.pivotMode = HANDLE_CENTER_MODES.manual
+    this.#manualXfoPlacement = xfo
+    this.#manualXfoDelta = new Xfo()
+    this.setDirty()
+  }
+
   startChange(baseXfo: Xfo): void {
     this.baseXfo = baseXfo
   }
   setDeltaXfo(delta: Xfo) {
-    if (this.handleCenterMode == HANDLE_CENTER_MODES.manual) {
-      this.manualXfoDelta = delta
+    if (this.pivotMode == HANDLE_CENTER_MODES.manual) {
+      this.#manualXfoDelta = delta
       this.setDirty()
     }
   }
   endChange() {
-    if (this.handleCenterMode == HANDLE_CENTER_MODES.manual) {
-      this.manualXfoPlacement.tr = this.manualXfoDelta.tr.add(this.manualXfoPlacement.tr)
-      this.manualXfoPlacement.ori = this.manualXfoDelta.ori.multiply(this.manualXfoPlacement.ori)
-      this.manualXfoDelta = new Xfo()
+    if (this.pivotMode == HANDLE_CENTER_MODES.manual) {
+      this.#manualXfoPlacement.tr = this.#manualXfoDelta.tr.add(this.#manualXfoPlacement.tr)
+      this.#manualXfoPlacement.ori = this.#manualXfoDelta.ori.multiply(this.#manualXfoPlacement.ori)
+      this.#manualXfoDelta = new Xfo()
     }
   }
 
@@ -129,7 +147,7 @@ class SelectionGroupXfoOperator extends Operator {
       return
     }
 
-    if (this.handleCenterMode == HANDLE_CENTER_MODES.objectOrigin) {
+    if (this.pivotMode == HANDLE_CENTER_MODES.objectOrigin) {
       // Calculate the translation with the combined bounding box center.
       for (let i = 0; i < this.getNumInputs(); i++) {
         const itemXfo = this.getInputByIndex(i).getValue()
@@ -139,7 +157,7 @@ class SelectionGroupXfoOperator extends Operator {
         if (i == 0) this.currGroupXfo.ori = itemXfo.ori.clone()
       }
       this.currGroupXfo.tr.scaleInPlace(1 / this.getNumInputs())
-    } else if (this.handleCenterMode == HANDLE_CENTER_MODES.objectCentroid) {
+    } else if (this.pivotMode == HANDLE_CENTER_MODES.objectCentroid) {
       // Override the translation with the combined bounding box center.
       const combinedBox = new Box3()
       for (let i = 0; i < this.getNumInputs(); i++) {
@@ -150,12 +168,12 @@ class SelectionGroupXfoOperator extends Operator {
         if (i == 0) this.currGroupXfo.ori = itemXfo.ori.clone()
       }
       if (combinedBox.isValid()) this.currGroupXfo.tr = combinedBox.center()
-    } else if (this.handleCenterMode == HANDLE_CENTER_MODES.manual) {
+    } else if (this.pivotMode == HANDLE_CENTER_MODES.manual) {
       // this.currGroupXfo = this.manualXfoPlacement.multiply(this.manualXfoDelta)
 
       // this.currGroupXfo = this.manualXfoDelta.multiply(this.manualXfoPlacement)
-      this.currGroupXfo.tr = this.manualXfoDelta.tr.add(this.manualXfoPlacement.tr)
-      this.currGroupXfo.ori = this.manualXfoDelta.ori.multiply(this.manualXfoPlacement.ori)
+      this.currGroupXfo.tr = this.#manualXfoDelta.tr.add(this.#manualXfoPlacement.tr)
+      this.currGroupXfo.ori = this.#manualXfoDelta.ori.multiply(this.#manualXfoPlacement.ori)
     }
 
     this.xfoOutput.setClean(this.currGroupXfo)

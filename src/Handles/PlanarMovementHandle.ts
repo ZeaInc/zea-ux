@@ -1,10 +1,20 @@
 import Handle from './Handle'
 import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
 import UndoRedoManager from '../UndoRedo/UndoRedoManager'
-import { Parameter, Vec3, Xfo, ZeaPointerEvent, XRControllerEvent, XfoParameter, XRPoseEvent } from '@zeainc/zea-engine'
+import {
+  Parameter,
+  Vec3,
+  Xfo,
+  ZeaPointerEvent,
+  XRControllerEvent,
+  XfoParameter,
+  XRPoseEvent,
+  ZeaMouseEvent,
+} from '@zeainc/zea-engine'
 import { Change } from '..'
 import SelectionGroup from '../SelectionGroup'
 import SelectionXfoChange from '../UndoRedo/Changes/SelectionXfoChange'
+import HandlePivotChange from '../UndoRedo/Changes/HandlePivotChange'
 
 /**
  * Class representing a planar movement scene widget.
@@ -67,7 +77,11 @@ class PlanarMovementHandle extends Handle {
     this.baseXfo = <Xfo>param.value
 
     if (this.selectionGroup) {
-      this.change = new SelectionXfoChange(this.selectionGroup, this.globalXfoParam.value)
+      if (event instanceof ZeaMouseEvent && event.ctrlKey) {
+        this.change = new HandlePivotChange(this.selectionGroup)
+      } else {
+        this.change = new SelectionXfoChange(this.selectionGroup, this.globalXfoParam.value)
+      }
       UndoRedoManager.getInstance().addChange(this.change)
     } else {
       this.change = new ParameterValueChange(param)
@@ -83,7 +97,7 @@ class PlanarMovementHandle extends Handle {
   onDrag(event: ZeaPointerEvent): void {
     const dragVec = this.holdPos.subtract(this.grabPos)
 
-    if (this.change instanceof SelectionXfoChange) {
+    if (this.change instanceof SelectionXfoChange || this.change instanceof HandlePivotChange) {
       const deltaXfo = new Xfo(dragVec)
       this.change.setDeltaXfo(deltaXfo)
     } else {

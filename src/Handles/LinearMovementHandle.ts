@@ -1,4 +1,14 @@
-import { Color, Xfo, GeomItem, Cylinder, Cone, Parameter, XfoParameter, ZeaPointerEvent } from '@zeainc/zea-engine'
+import {
+  Color,
+  Xfo,
+  GeomItem,
+  Cylinder,
+  Cone,
+  Parameter,
+  XfoParameter,
+  ZeaPointerEvent,
+  ZeaMouseEvent,
+} from '@zeainc/zea-engine'
 import BaseLinearMovementHandle from './BaseLinearMovementHandle'
 import ParameterValueChange from '../UndoRedo/Changes/ParameterValueChange'
 import './Shaders/HandleShader'
@@ -7,6 +17,7 @@ import SelectionGroup from '../SelectionGroup'
 import SelectionXfoChange from '../UndoRedo/Changes/SelectionXfoChange'
 import HandleMaterial from '../Handles/Shaders/HandleMaterial'
 import { Change, UndoRedoManager } from '../UndoRedo'
+import HandlePivotChange from '../UndoRedo/Changes/HandlePivotChange'
 
 /**
  * Class representing a linear movement scene widget.
@@ -110,7 +121,11 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
     this.baseXfo = param.value
 
     if (this.selectionGroup) {
-      this.change = new SelectionXfoChange(this.selectionGroup, this.globalXfoParam.value)
+      if (event instanceof ZeaMouseEvent && event.ctrlKey) {
+        this.change = new HandlePivotChange(this.selectionGroup)
+      } else {
+        this.change = new SelectionXfoChange(this.selectionGroup, this.globalXfoParam.value)
+      }
       UndoRedoManager.getInstance().addChange(this.change)
     } else {
       this.change = new ParameterValueChange(param)
@@ -126,7 +141,7 @@ class LinearMovementHandle extends BaseLinearMovementHandle {
   onDrag(event: ZeaPointerEvent): void {
     const dragVec = this.holdPos.subtract(this.grabPos)
 
-    if (this.change instanceof SelectionXfoChange) {
+    if (this.change instanceof SelectionXfoChange || this.change instanceof HandlePivotChange) {
       const deltaXfo = new Xfo(dragVec)
       this.change.setDeltaXfo(deltaXfo)
     } else {

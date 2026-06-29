@@ -1,42 +1,29 @@
-import { EventEmitter, Color, TreeItem, GLRenderer, Xfo } from '@zeainc/zea-engine'
+import { EventEmitter, Color, TreeItem, GLRenderer, Xfo, EventEmitterEventMap, BaseEvent } from '@zeainc/zea-engine'
 import { AppData } from '../types/types'
 import XfoHandle from './Handles/XfoHandle'
 import SelectionGroup from './SelectionGroup'
 import SelectionGroupXfoOperator from './SelectionGroupXfoOperator'
 import SelectionChange from './UndoRedo/Changes/SelectionChange'
 import UndoRedoManager from './UndoRedo/UndoRedoManager'
-import { Change, SelectionXfoChange } from './UndoRedo'
+import { Change } from './UndoRedo'
+import HandlePivotModeChange from './UndoRedo/Changes/HandlePivotModeChange'
 
-class HandleCenterModeChange extends Change {
-  prevMode: number
-  newMode: number
-  constructor(
-    public selectionGroupXfoOp?: SelectionGroupXfoOperator,
-    public mode?: 'objectOrigin' | 'objectCentroid' | 'manual'
-  ) {
+class SelectionChangedEvent extends BaseEvent {
+  constructor(public prevSelection: Set<TreeItem>, public selection: Set<TreeItem>) {
     super()
-
-    if (!selectionGroupXfoOp) {
-      return
-    }
-    const modes = SelectionGroupXfoOperator.HANDLE_CENTER_MODES
-    this.prevMode = selectionGroupXfoOp.handleCenterMode
-    this.newMode = modes[this.mode]
-
-    this.selectionGroupXfoOp.handleCenterMode = this.newMode
-    this.selectionGroupXfoOp.setDirty()
-  }
-  undo(): void {
-    this.selectionGroupXfoOp.handleCenterMode = this.prevMode
-    this.selectionGroupXfoOp.setDirty()
-  }
-
-  redo(): void {
-    this.selectionGroupXfoOp.handleCenterMode = this.newMode
-    this.selectionGroupXfoOp.setDirty()
   }
 }
-UndoRedoManager.registerChange('HandleCenterModeChange', HandleCenterModeChange)
+class LeadSelectionChangedEvent extends BaseEvent {
+  constructor(public leadSelection: TreeItem) {
+    super()
+  }
+}
+
+interface SelectionManagerEventMap extends EventEmitterEventMap {
+  selectionChanged: SelectionChangedEvent
+  leadSelectionChanged: LeadSelectionChangedEvent
+  pivotModeChanged: BaseEvent
+}
 
 /**
  * Class representing a selection manager
@@ -44,6 +31,7 @@ UndoRedoManager.registerChange('HandleCenterModeChange', HandleCenterModeChange)
  * **Events**
  * **leadSelectionChanged:** Triggered when selecting one item.
  * **selectionChanged:** Triggered when the selected objects change.
+ * **pivotModeChanged:** Triggered when the pivot mode changes.
  *
  * @extends {EventEmitter}
  */
@@ -71,6 +59,22 @@ class SelectionManager extends EventEmitter {
     this.appData = appData
 
     this.selectionGroup = new SelectionGroup(options)
+
+    let prevPivotMode = this.selectionGroup.pivotMode
+    this.selectionGroup.on('pivotModeChanged', () => {
+      const newPivotMode = this.selectionGroup.pivotMode
+      if (newPivotMode != SelectionGroupXfoOperator.HANDLE_CENTER_MODES.manual) {
+        prevPivotMode = newPivotMode
+      }
+      this.emit('pivotModeChanged')
+    })
+    this.on('leadSelectionChanged', () => {
+      // Restore the pivot mode to before it was set to manual
+      const pivotMode = this.selectionGroup.pivotMode
+      if (pivotMode == SelectionGroupXfoOperator.HANDLE_CENTER_MODES.manual) {
+        this.selectionGroup.pivotMode = prevPivotMode
+      }
+    })
 
     if (options.enableXfoHandles === true) {
       this.xfoHandle = new XfoHandle()
@@ -122,24 +126,27 @@ class SelectionManager extends EventEmitter {
    * | `manual` | Handle is placed at a manually specified position |
    * @param mode - One of the keys from `SelectionGroupXfoOperator.HANDLE_CENTER_MODES`
    */
-  set handleCenterMode(mode: 'objectOrigin' | 'objectCentroid' | 'manual') {
+  set pivotMode(mode: 'objectOrigin' | 'objectCentroid' | 'manual') {
     const modes = SelectionGroupXfoOperator.HANDLE_CENTER_MODES
     if (mode in modes) {
-      const change = new HandleCenterModeChange(this.selectionGroup.selectionGroupXfoOp, mode)
+      const change = new HandlePivotModeChange(this.selectionGroup, mode)
       UndoRedoManager.getInstance().addChange(change)
     } else {
       console.warn(`Unknown handle center mode: "${mode}"`)
     }
   }
 
-  get handleCenterMode(): 'objectOrigin' | 'objectCentroid' | 'manual' {
+  get pivotMode(): 'objectOrigin' | 'objectCentroid' | 'manual' {
     const modes = SelectionGroupXfoOperator.HANDLE_CENTER_MODES
-    const modeIndex = this.selectionGroup.selectionGroupXfoOp.handleCenterMode
+    const modeIndex = this.selectionGroup.pivotMode
     return Object.keys(modes)[modeIndex] as 'objectOrigin' | 'objectCentroid' | 'manual'
   }
 
-  setManualHandleTransform(xfo: Xfo): void {
-    this.selectionGroup.selectionGroupXfoOp.setManualXfo(xfo)
+  set pivotXfo(xfo: Xfo) {
+    this.selectionGroup.pivotXfo = xfo
+  }
+  get pivotXfo(): Xfo {
+    return this.selectionGroup.pivotXfo
   }
 
   /**
@@ -197,7 +204,7 @@ class SelectionManager extends EventEmitter {
       else UndoRedoManager.getInstance().addChange(change)
     }
 
-    this.emit('selectionChanged', { prevSelection, selection })
+    this.emit('selectionChanged', new SelectionChangedEvent(prevSelection, selection))
   }
 
   /**
@@ -206,7 +213,7 @@ class SelectionManager extends EventEmitter {
   private setLeadSelection(treeItem?: TreeItem): void {
     if (this.leadSelection != treeItem) {
       this.leadSelection = treeItem
-      this.emit('leadSelectionChanged', { treeItem })
+      this.emit('leadSelectionChanged', new LeadSelectionChangedEvent(treeItem))
     }
   }
 
@@ -448,6 +455,28 @@ class SelectionManager extends EventEmitter {
       }
     }
   }
+
+  // #region Event Emitter Interfaces
+
+  on<K extends keyof SelectionManagerEventMap>(
+    eventName: K,
+    callback: (event?: SelectionManagerEventMap[K]) => void
+  ): number {
+    return super.on(eventName as any, callback)
+  }
+
+  off<K extends keyof SelectionManagerEventMap>(
+    eventName: K,
+    listenerOrId: number | ((event?: SelectionManagerEventMap[K]) => void)
+  ) {
+    return super.off(eventName as any, listenerOrId)
+  }
+
+  emit<K extends keyof SelectionManagerEventMap>(eventName: K, event?: SelectionManagerEventMap[K]): void {
+    super.emit(eventName as any, event)
+  }
+
+  // #endregion
 }
 
 export default SelectionManager

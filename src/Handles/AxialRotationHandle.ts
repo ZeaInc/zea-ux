@@ -18,6 +18,7 @@ import SelectionXfoChange from '../UndoRedo/Changes/SelectionXfoChange'
 import SelectionGroup from '../SelectionGroup'
 import { Change } from '../UndoRedo/Change'
 import HandleMaterial from './Shaders/HandleMaterial'
+import HandlePivotChange from '../UndoRedo/Changes/HandlePivotChange'
 
 /**
  * Class representing an axial rotation scene widget.
@@ -140,7 +141,11 @@ class AxialRotationHandle extends Handle {
 
     // this.offsetXfo = this.localXfoParam.value.inverse()
     if (this.selectionGroup) {
-      this.change = new SelectionXfoChange(this.selectionGroup, this.baseXfo)
+      if (event instanceof ZeaMouseEvent && event.ctrlKey) {
+        this.change = new HandlePivotChange(this.selectionGroup)
+      } else {
+        this.change = new SelectionXfoChange(this.selectionGroup, this.globalXfoParam.value)
+      }
       UndoRedoManager.getInstance().addChange(this.change)
     } else {
       const invBaseXfo = this.baseXfo.inverse()
@@ -171,7 +176,7 @@ class AxialRotationHandle extends Handle {
     const deltaXfo = new Xfo()
     deltaXfo.ori.setFromAxisAndAngle(this.baseXfo.ori.getZaxis(), angle)
 
-    if (this.change instanceof SelectionXfoChange) {
+    if (this.change instanceof SelectionXfoChange || this.change instanceof HandlePivotChange) {
       this.change.setDeltaXfo(deltaXfo)
     } else {
       // Add the values in global space.

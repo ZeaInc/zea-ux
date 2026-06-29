@@ -299,14 +299,12 @@
         const $xfoModeSelect = document.getElementById('xfo-mode-select')
         const $pickBtn = document.getElementById('pick-btn')
 
-        const updatePickBtnState = () => {
-          $pickBtn.disabled = $xfoModeSelect.value !== 'manual'
-        }
-        updatePickBtnState()
+        selectionManager.on('pivotModeChanged', (e) => {
+          $xfoModeSelect.value = selectionManager.pivotMode
+        })
 
         $xfoModeSelect.addEventListener('change', (e) => {
-          selectionManager.handleCenterMode = e.target.value
-          updatePickBtnState()
+          selectionManager.pivotMode = e.target.value
         })
         let pickingSessionActive = false
 
@@ -326,7 +324,7 @@
             toolManager.pushTool('selectionTool')
             selectionManager.startPickingMode(
               (treeItem) => {
-                selectionManager.setManualHandleTransform(treeItem.globalXfoParam.value)
+                selectionManager.pivotXfo = treeItem.globalXfoParam.value
                 endPickSession()
               },
               (treeItem) => {
@@ -358,7 +356,7 @@
         <label for="xfo-mode-select">Xfo Mode</label>
         <select id="xfo-mode-select">
           <option value="objectOrigin">objectOrigin</option>
-          <option value="objectCenter">objectCenter</option>
+          <option value="objectCentroid">objectCentroid</option>
           <option value="manual">manual</option>
         </select>
         <button id="pick-btn">Pick Object</button>

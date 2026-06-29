@@ -1,5 +1,18 @@
-import { Color, BaseItem, TreeItem, SelectionSet, CloneContext } from '@zeainc/zea-engine'
+import {
+  Color,
+  BaseItem,
+  TreeItem,
+  SelectionSet,
+  CloneContext,
+  Xfo,
+  BaseGroupEventMap,
+  BaseEvent,
+} from '@zeainc/zea-engine'
 import SelectionGroupXfoOperator from './SelectionGroupXfoOperator.js'
+
+interface SelectionGroupEventMap extends BaseGroupEventMap {
+  pivotModeChanged: BaseEvent
+}
 
 /**
  * A specific type of `SelectionSet` class that contains/handles selection of one or more items from the scene.
@@ -69,6 +82,52 @@ class SelectionGroup extends SelectionSet {
     item.removeHighlight('selected' + this.getId(), true)
     this.selectionGroupXfoOp.removeItem(item)
   }
+
+  get pivotMode(): number {
+    return this.selectionGroupXfoOp.pivotMode
+  }
+
+  set pivotMode(mode: number) {
+    const modeChanged = this.selectionGroupXfoOp.pivotMode != mode
+    this.selectionGroupXfoOp.pivotMode = mode
+    if (modeChanged) {
+      this.emit('pivotModeChanged')
+    }
+  }
+
+  get pivotXfo(): Xfo {
+    return this.selectionGroupXfoOp.pivotXfo
+  }
+
+  set pivotXfo(xfo: Xfo) {
+    const modeChanged = this.selectionGroupXfoOp.pivotMode != SelectionGroupXfoOperator.HANDLE_CENTER_MODES.manual
+    this.selectionGroupXfoOp.pivotXfo = xfo
+    if (modeChanged) {
+      this.emit('pivotModeChanged')
+    }
+  }
+
+  // #region Event Emitter Interfaces
+
+  on<K extends keyof SelectionGroupEventMap>(
+    eventName: K,
+    callback: (event?: SelectionGroupEventMap[K]) => void
+  ): number {
+    return super.on(eventName as any, callback)
+  }
+
+  off<K extends keyof SelectionGroupEventMap>(
+    eventName: K,
+    listenerOrId: number | ((event?: SelectionGroupEventMap[K]) => void)
+  ) {
+    return super.off(eventName as any, listenerOrId)
+  }
+
+  emit<K extends keyof SelectionGroupEventMap>(eventName: K, event?: SelectionGroupEventMap[K]): void {
+    super.emit(eventName as any, event)
+  }
+
+  // #endregion
 }
 
 export default SelectionGroup

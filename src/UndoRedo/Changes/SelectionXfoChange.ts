@@ -80,7 +80,7 @@ class SelectionXfoChange extends Change {
       treeItem.globalXfoParam.value = this.prevValues[index]
     })
 
-    this.selectionGroup.selectionGroupXfoOp.setManualXfo(this.prevValue.clone())
+    this.selectionGroup.selectionGroupXfoOp.pivotXfo = this.prevValue.clone()
   }
 
   /**
@@ -92,7 +92,7 @@ class SelectionXfoChange extends Change {
       treeItem.globalXfoParam.value = this.newValues[index]
     })
 
-    this.selectionGroup.selectionGroupXfoOp.setManualXfo(this.newValue.clone())
+    this.selectionGroup.selectionGroupXfoOp.pivotXfo = this.newValue.clone()
   }
 
   /**
