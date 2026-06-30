@@ -298,9 +298,13 @@
 
         const $xfoModeSelect = document.getElementById('xfo-mode-select')
         const $pickBtn = document.getElementById('pick-btn')
+        $pickBtn.disabled = !selectionManager.leadSelection
 
         selectionManager.on('pivotModeChanged', (e) => {
           $xfoModeSelect.value = selectionManager.pivotMode
+        })
+        selectionManager.on('leadSelectionChanged', (e) => {
+          $pickBtn.disabled = !selectionManager.leadSelection
         })
 
         $xfoModeSelect.addEventListener('change', (e) => {
@@ -310,7 +314,6 @@
 
         const endPickSession = () => {
           selectionManager.endPickingMode()
-          toolManager.popTool()
           document.body.style.cursor = 'default'
           $pickBtn.textContent = 'Pick Object'
           $pickBtn.classList.remove('active')

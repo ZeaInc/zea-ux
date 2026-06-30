@@ -266,7 +266,9 @@ class SelectionTool extends BaseTool {
             }
           }
         } else {
-          this.selectionManager.clearSelection()
+          if (!this.selectionManager.pickingModeActive()) {
+            this.selectionManager.clearSelection()
+          }
         }
       }
       this.pointerDownPos = undefined
