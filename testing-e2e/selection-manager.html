@@ -321,7 +321,6 @@
           if (pickingSessionActive) {
             endPickSession()
           } else {
-            toolManager.pushTool('selectionTool')
             selectionManager.startPickingMode(
               (treeItem) => {
                 selectionManager.pivotXfo = treeItem.globalXfoParam.value

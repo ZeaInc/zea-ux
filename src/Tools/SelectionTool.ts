@@ -126,6 +126,13 @@ class SelectionTool extends BaseTool {
    * @return {boolean} The return value.
    */
   onPointerDown(event: ZeaPointerEvent): void {
+    // skip if the alt key is held. Allows the camera tool to work
+    if (
+      ((event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) && event.altKey) ||
+      (event instanceof ZeaMouseEvent && event.button !== 0)
+    ) {
+      return
+    }
     if (event instanceof ZeaTouchEvent || (event instanceof ZeaMouseEvent && event.button == 0)) {
       this.pointerDownPos = event.pointerPos.scale(window.devicePixelRatio)
 
@@ -147,6 +154,14 @@ class SelectionTool extends BaseTool {
    * @return {boolean} The return value.
    */
   onPointerMove(event: ZeaPointerEvent): void {
+    // skip if the alt key is held. Allows the camera tool to work
+    if (
+      ((event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) && event.altKey) ||
+      (event instanceof ZeaMouseEvent && event.button !== 0)
+    ) {
+      return
+    }
+
     if (!(event instanceof ZeaMouseEvent) && !(event instanceof ZeaTouchEvent)) {
       console.warn('not handling VR')
       return
@@ -177,6 +192,13 @@ class SelectionTool extends BaseTool {
    * @return {boolean} The return value.
    */
   onPointerUp(event: ZeaPointerEvent): void {
+    // skip if the alt key is held. Allows the camera tool to work
+    if (
+      ((event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) && event.altKey) ||
+      (event instanceof ZeaMouseEvent && event.button !== 0)
+    ) {
+      return
+    }
     if ((event instanceof ZeaMouseEvent || event instanceof ZeaTouchEvent) && this.pointerDownPos) {
       if (this.rectangularSelectionMode && this.dragging) {
         this.dragging = false
