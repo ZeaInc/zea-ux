@@ -30,3 +30,4 @@ class HandlePivotModeChange extends Change {
 
 UndoRedoManager.registerChange('HandlePivotModeChange', HandlePivotModeChange)
 export default HandlePivotModeChange
+export { HandlePivotModeChange }
