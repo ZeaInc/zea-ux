@@ -1,5 +1,12 @@
-import { EventEmitter, Registry } from '@zeainc/zea-engine'
+import { EventEmitter, EventEmitterEventMap, Registry } from '@zeainc/zea-engine'
 import { Change } from '.'
+
+interface UndoRedoManagerEventMap extends EventEmitterEventMap {
+  changeAdded: { change: Change }
+  changeUpdated: Record<any, any>
+  changeUndone: { change: Change }
+  changeRedone: { change: Change }
+}
 
 const undoChangeTree = (change: Change) => {
   change.undo()
@@ -201,6 +208,28 @@ class UndoRedoManager extends EventEmitter {
     }
     return inst
   }
+
+  // #region Event Emitter Interfaces
+
+  on<K extends keyof UndoRedoManagerEventMap>(
+    eventName: K,
+    callback: (event?: UndoRedoManagerEventMap[K]) => void
+  ): number {
+    return super.on(eventName as any, callback)
+  }
+
+  off<K extends keyof UndoRedoManagerEventMap>(
+    eventName: K,
+    listenerOrId: number | ((event?: UndoRedoManagerEventMap[K]) => void)
+  ) {
+    return super.off(eventName as any, listenerOrId)
+  }
+
+  emit<K extends keyof UndoRedoManagerEventMap>(eventName: K, event?: UndoRedoManagerEventMap[K]): void {
+    super.emit(eventName as any, event)
+  }
+
+  // #endregion
 }
 
 let inst: any

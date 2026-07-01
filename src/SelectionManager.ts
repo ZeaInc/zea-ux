@@ -7,17 +7,7 @@ import SelectionChange from './UndoRedo/Changes/SelectionChange'
 import UndoRedoManager from './UndoRedo/UndoRedoManager'
 import { Change } from './UndoRedo'
 import HandlePivotModeChange from './UndoRedo/Changes/HandlePivotModeChange'
-
-class SelectionChangedEvent extends BaseEvent {
-  constructor(public prevSelection: Set<TreeItem>, public selection: Set<TreeItem>) {
-    super()
-  }
-}
-class LeadSelectionChangedEvent extends BaseEvent {
-  constructor(public leadSelection: TreeItem) {
-    super()
-  }
-}
+import { LeadSelectionChangedEvent, SelectionChangedEvent } from './Events'
 
 interface SelectionManagerEventMap extends EventEmitterEventMap {
   selectionChanged: SelectionChangedEvent
@@ -302,7 +292,7 @@ class SelectionManager extends EventEmitter {
     }
 
     this.updateHandleVisibility()
-    this.emit('selectionChanged', { prevSelection, selection })
+    this.emit('selectionChanged', new SelectionChangedEvent(prevSelection, selection))
   }
 
   /**
@@ -332,7 +322,7 @@ class SelectionManager extends EventEmitter {
       else UndoRedoManager.getInstance().addChange(change)
     }
 
-    this.emit('selectionChanged', { selection, prevSelection })
+    this.emit('selectionChanged', new SelectionChangedEvent(prevSelection, selection))
   }
 
   /**
@@ -370,7 +360,7 @@ class SelectionManager extends EventEmitter {
       else UndoRedoManager.getInstance().addChange(change)
     }
 
-    this.emit('selectionChanged', { prevSelection, selection })
+    this.emit('selectionChanged', new SelectionChangedEvent(prevSelection, selection))
   }
 
   /**
@@ -404,7 +394,7 @@ class SelectionManager extends EventEmitter {
       else UndoRedoManager.getInstance().addChange(change)
     }
 
-    this.emit('selectionChanged', { prevSelection, selection })
+    this.emit('selectionChanged', new SelectionChangedEvent(prevSelection, selection))
   }
 
   // ////////////////////////////////////

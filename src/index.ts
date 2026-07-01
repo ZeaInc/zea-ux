@@ -15,5 +15,6 @@ export * from './Tools/index'
 export * from './Handles/index'
 export * from './Measurement/index'
 export * from './ui/index'
+export * from './Events/index'
 
 export type { AppData } from '../types/types'
