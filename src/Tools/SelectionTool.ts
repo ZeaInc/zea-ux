@@ -174,7 +174,7 @@ class SelectionTool extends BaseTool {
 
       event.stopPropagation()
     } else {
-      if (this.selectionManager.pickingModeActive()) {
+      if (event instanceof ZeaMouseEvent && event.buttons == 0 && this.selectionManager.pickingModeActive()) {
         if (event.intersectionData) {
           this.selectionManager.pickFilter(event.intersectionData.geomItem)
         } else {
