@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/ZeaInc/zea-ux.git"
+    "url": "git+https://github.com/ZeaInc/zea-ux.git"
   },
   "bugs": {
     "url": "https://github.com/ZeaInc/zea-ux/issues"
